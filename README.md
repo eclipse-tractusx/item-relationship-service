@@ -90,3 +90,6 @@ If you want to run it against connector you need to add the following VM options
 
 [System tests](integration-tests/src/test/java/net/catenax/prs/systemtest) are running against multiple PRS deployments and reconstructing a parts tree from multiple partial trees.
 To run the tests, download the file artifact `dataspace-deployments.json` from the latest PRS Deploy GitHub Actions run into the `dev/local` folder.
+
+## Licenses
+Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
