@@ -1,0 +1,12 @@
+{
+  "bmw": {
+    "connector_url": {
+      "value": "http://provider:8181"
+    }
+  },
+  "zf": {
+    "connector_url": {
+      "value": "http://provider:8181"
+    }
+  }
+}

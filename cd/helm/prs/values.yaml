@@ -1,0 +1,28 @@
+replicaCount: 1
+
+ingress:
+  host: prs.local
+  className: nginx
+  prefix: /mtpdc
+
+prs:
+  image:
+    repository: prs-api
+    tag: "latest"
+  env: {}
+brokerproxy:
+  image:
+    repository: broker-proxy
+    tag: "latest"
+  env: {}
+
+#postgresql:
+#  url: "jdbc:postgresql://postgresql:5432/postgres"
+#  postgresqlUsername: prs-user
+#  postgresqlPassword: <postgres-password>
+
+#eventHubs:
+#  namespace: NAMESPACENAME
+#  name: HUBNAME
+#  sendConnectionString: XXXX
+#  receiveConnectionString: XXXX
