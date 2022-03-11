@@ -16,7 +16,9 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-    tmpfs: "/var/lib/zookeeper/log"
+    volumes:
+      - /tmp/zookeeperlog:/var/lib/zookeeper/log
+#    tmpfs: "/var/lib/zookeeper/log"
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -35,9 +37,12 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-    tmpfs:
-      - /var/lib/kafka/data
-      - /etc/kafka/secrets
+    volumes:
+      - /tmp/kafkadata:/var/lib/kafka/data
+      - /tmp/kafkasecrets:/etc/kafka/secrets
+#    tmpfs:
+#      - /var/lib/kafka/data
+#      - /etc/kafka/secrets
 
   broker-proxy:
     build:
