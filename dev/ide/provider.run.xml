@@ -7,9 +7,9 @@
       <env name="EDC_KEYSTORE" value="../../dev/dataspaceconnector-keystore.jks" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="org.eclipse.dataspaceconnector.system.runtime.BaseRuntime" />
-    <module name="prs-connector-provider" />
+    <module name="irs-connector-provider" />
     <option name="VM_PARAMETERS" value="-Djava.util.logging.config.file=./src/main/resources/logging.properties" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/connector/prs-connector-provider" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/connector/irs-connector-provider" />
     <extension name="net.ashald.envfile">
       <option name="IS_ENABLED" value="false" />
       <option name="IS_SUBST" value="false" />

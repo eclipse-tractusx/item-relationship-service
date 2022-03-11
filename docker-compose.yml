@@ -58,24 +58,24 @@ services:
       APPLICATIONINSIGHTS_ROLE_NAME: broker-proxy
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
-  prs:
+  irs:
     build:
       context: .
-      target: prs-api
+      target: irs-api
       args:
-        BUILD_TARGET: prs-api
+        BUILD_TARGET: irs-api
     depends_on:
       - db
     profiles:
-      - prs
-    container_name: prs
+      - irs
+    container_name: irs
     ports:
       - 8080:8080
       - 4004:4004
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db/postgres
       APPLICATIONINSIGHTS_CONNECTION_STRING: "${APPLICATIONINSIGHTS_CONNECTION_STRING}"
-      APPLICATIONINSIGHTS_ROLE_NAME: PRS
+      APPLICATIONINSIGHTS_ROLE_NAME: IRS
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
   connector-provider:
@@ -84,12 +84,12 @@ services:
     container_name: provider
     build:
       context: .
-      target: prs-connector-provider
+      target: irs-connector-provider
       args:
-        BUILD_TARGET: prs-connector-provider
+        BUILD_TARGET: irs-connector-provider
     environment:
       APPLICATIONINSIGHTS_CONNECTION_STRING: "${APPLICATIONINSIGHTS_CONNECTION_STRING}"
-      PRS_API_URL: "http://prs:8080"
+      IRS_API_URL: "http://irs:8080"
       APPLICATIONINSIGHTS_ROLE_NAME: connector-provider
     ports:
       - 8181:8181
@@ -101,9 +101,9 @@ services:
     container_name: consumer
     build:
       context: .
-      target: prs-connector-consumer
+      target: irs-connector-consumer
       args:
-        BUILD_TARGET: prs-connector-consumer
+        BUILD_TARGET: irs-connector-consumer
     environment:
       APPLICATIONINSIGHTS_CONNECTION_STRING: "${APPLICATIONINSIGHTS_CONNECTION_STRING}"
       APPLICATIONINSIGHTS_ROLE_NAME: connector-consumer
@@ -112,8 +112,8 @@ services:
       edc.vault.certificate: /devlocal/cert.pfx
       edc.vault.name: ${edc_vault_name}
       edc.storage.account.name: ${edc_storage_account_name}
-      prs.dataspace.partitions: /files/dataspace-partitions.json
-      prs.dataspace.partition.deployments: /files/dataspace-deployments.json
+      irs.dataspace.partitions: /files/dataspace-partitions.json
+      irs.dataspace.partition.deployments: /files/dataspace-deployments.json
     ports:
       - 9191:8181
       - 4007:4006

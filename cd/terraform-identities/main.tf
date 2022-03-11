@@ -8,7 +8,7 @@ data "azuread_client_config" "current" {}
 
 # Create central Key Vault for storing generated identity information and credentials
 resource "azurerm_key_vault" "identities" {
-  name                        = "${var.prefix}-${var.environment}-prs-id"
+  name                        = "${var.prefix}-${var.environment}-irs-id"
   resource_group_name         = local.resource_group_name
   location                    = local.location
   enabled_for_disk_encryption = false
@@ -34,8 +34,8 @@ resource "azurerm_role_assignment" "current-user-certificates" {
 }
 
 # Generate a certificate to be used by the generated principal
-resource "azurerm_key_vault_certificate" "prs-connector-consumer" {
-  name         = "prs-connector-consumer-certificate"
+resource "azurerm_key_vault_certificate" "irs-connector-consumer" {
+  name         = "irs-connector-consumer-certificate"
   key_vault_id = azurerm_key_vault.identities.id
 
   certificate_policy {
@@ -89,22 +89,22 @@ resource "azurerm_key_vault_certificate" "prs-connector-consumer" {
 
 
 # Generate an app registration to be used by the generated principal
-resource "azuread_application" "prs-connector-consumer" {
-  display_name = "CatenaX PRS Connector Consumer - ${var.environment}"
+resource "azuread_application" "irs-connector-consumer" {
+  display_name = "CatenaX IRS Connector Consumer - ${var.environment}"
 }
 
 # Allow the app to authenticate with the generated principal
-resource "azuread_application_certificate" "prs-connector-consumer" {
+resource "azuread_application_certificate" "irs-connector-consumer" {
   type                  = "AsymmetricX509Cert"
-  application_object_id = azuread_application.prs-connector-consumer.id
-  value                 = azurerm_key_vault_certificate.prs-connector-consumer.certificate_data_base64
-  end_date              = azurerm_key_vault_certificate.prs-connector-consumer.certificate_attribute[0].expires
-  start_date            = azurerm_key_vault_certificate.prs-connector-consumer.certificate_attribute[0].not_before
+  application_object_id = azuread_application.irs-connector-consumer.id
+  value                 = azurerm_key_vault_certificate.irs-connector-consumer.certificate_data_base64
+  end_date              = azurerm_key_vault_certificate.irs-connector-consumer.certificate_attribute[0].expires
+  start_date            = azurerm_key_vault_certificate.irs-connector-consumer.certificate_attribute[0].not_before
 }
 
 # Generate a service principal
-resource "azuread_service_principal" "prs-connector-consumer" {
-  application_id               = azuread_application.prs-connector-consumer.application_id
+resource "azuread_service_principal" "irs-connector-consumer" {
+  application_id               = azuread_application.irs-connector-consumer.application_id
   app_role_assignment_required = false
   tags = [
     "terraform"
@@ -114,17 +114,17 @@ resource "azuread_service_principal" "prs-connector-consumer" {
 # Store the client ID in the central Key Vault.
 # Though the Client ID is not a sensitive value, is it convenient to manage it
 # in the same place as its certificate.
-resource "azurerm_key_vault_secret" "prs-connector-consumer-client-id" {
-  name         = "prs-connector-consumer-client-id"
-  value        = azuread_service_principal.prs-connector-consumer.application_id
+resource "azurerm_key_vault_secret" "irs-connector-consumer-client-id" {
+  name         = "irs-connector-consumer-client-id"
+  value        = azuread_service_principal.irs-connector-consumer.application_id
   key_vault_id = azurerm_key_vault.identities.id
   depends_on = [
     azurerm_role_assignment.current-user-secrets
   ]
 }
-resource "azurerm_key_vault_secret" "prs-connector-consumer-object-id" {
-  name         = "prs-connector-consumer-object-id"
-  value        = azuread_service_principal.prs-connector-consumer.object_id
+resource "azurerm_key_vault_secret" "irs-connector-consumer-object-id" {
+  name         = "irs-connector-consumer-object-id"
+  value        = azuread_service_principal.irs-connector-consumer.object_id
   key_vault_id = azurerm_key_vault.identities.id
   depends_on = [
     azurerm_role_assignment.current-user-secrets

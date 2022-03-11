@@ -3,13 +3,13 @@
   <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.catenax.prs</groupId>
-        <artifactId>prs-connector-parent</artifactId>
+        <groupId>net.catenax.irs</groupId>
+        <artifactId>irs-connector-parent</artifactId>
         <version>${revision}</version>
-        <relativePath>../prs-connector-parent</relativePath>
+        <relativePath>../irs-connector-parent</relativePath>
     </parent>
 
-    <groupId>net.catenax.prs</groupId>
+    <groupId>net.catenax.irs</groupId>
     <artifactId>edc-patched-core</artifactId>
 
     <properties>

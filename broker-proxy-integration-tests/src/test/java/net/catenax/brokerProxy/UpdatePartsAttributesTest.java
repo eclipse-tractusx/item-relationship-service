@@ -10,7 +10,7 @@
 package net.catenax.brokerProxy;
 
 import io.restassured.http.ContentType;
-import net.catenax.prs.dtos.events.PartAttributeUpdateRequest;
+import net.catenax.irs.dtos.events.PartAttributeUpdateRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
-import static net.catenax.prs.dtos.ValidationConstants.INPUT_FIELD_MAX_LENGTH;
+import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MAX_LENGTH;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -3,9 +3,9 @@
     <option name="ALTERNATIVE_JRE_PATH" value="11" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="org.eclipse.dataspaceconnector.system.runtime.BaseRuntime" />
-    <module name="prs-connector-consumer" />
+    <module name="irs-connector-consumer" />
     <option name="VM_PARAMETERS" value="-Djava.util.logging.config.file=./src/main/resources/logging.properties" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/connector/prs-connector-consumer" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/connector/irs-connector-consumer" />
     <extension name="net.ashald.envfile">
       <option name="IS_ENABLED" value="false" />
       <option name="IS_SUBST" value="false" />

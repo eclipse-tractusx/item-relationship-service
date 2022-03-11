@@ -13,9 +13,9 @@ import io.micrometer.core.instrument.DistributionSummary;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.brokerproxy.exceptions.MessageProducerFailedException;
-import net.catenax.prs.dtos.events.PartAspectsUpdateRequest;
-import net.catenax.prs.dtos.events.PartAttributeUpdateRequest;
-import net.catenax.prs.dtos.events.PartRelationshipsUpdateRequest;
+import net.catenax.irs.dtos.events.PartAspectsUpdateRequest;
+import net.catenax.irs.dtos.events.PartAttributeUpdateRequest;
+import net.catenax.irs.dtos.events.PartRelationshipsUpdateRequest;
 import org.springframework.stereotype.Service;
 
 /**

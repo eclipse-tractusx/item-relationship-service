@@ -17,7 +17,7 @@ terraform {
     storage_account_name = "catenaxterraformstate"
     container_name       = "tfstate"
     # Key will be overriden with "terraform init -backend-config=key=${TERRAFORM_STATE_KEY}"
-    key = "prs.prs.dev.terraform.tfstate"
+    key = "irs.irs.dev.terraform.tfstate"
   }
 
   required_version = "~> 1.0"

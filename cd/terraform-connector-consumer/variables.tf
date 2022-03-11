@@ -36,7 +36,7 @@ variable "image_tag" {
 variable "application_insights_name" {
   type        = string
   description = "The Application Insights resource name."
-  default     = "cxmtpdc1-dev-prs-appi"
+  default     = "cxmtpdc1-dev-irs-appi"
 }
 
 variable "prefix" {

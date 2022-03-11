@@ -3,10 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.catenax.prs</groupId>
-        <artifactId>prs-parent-spring-boot</artifactId>
+        <groupId>net.catenax.irs</groupId>
+        <artifactId>irs-parent-spring-boot</artifactId>
         <version>${revision}</version>
-        <relativePath>../prs-parent-spring-boot</relativePath>
+        <relativePath>../irs-parent-spring-boot</relativePath>
     </parent>
 
     <artifactId>broker-proxy</artifactId>
@@ -45,8 +45,8 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.catenax.prs</groupId>
-            <artifactId>prs-models</artifactId>
+            <groupId>net.catenax.irs</groupId>
+            <artifactId>irs-models</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -56,8 +56,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.catenax.prs</groupId>
-            <artifactId>prs-testing</artifactId>
+            <groupId>net.catenax.irs</groupId>
+            <artifactId>irs-testing</artifactId>
             <version>${revision}</version>
             <scope>test</scope>
         </dependency>
