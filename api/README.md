@@ -1,4 +1,4 @@
-# Parts Relationship Service API documentation
+# Item Relationship Service API documentation
 
 This documentation is manually downloaded from Swagger UI (see Swagger UI section in the project's [README](../README.md) for how to run).
 
