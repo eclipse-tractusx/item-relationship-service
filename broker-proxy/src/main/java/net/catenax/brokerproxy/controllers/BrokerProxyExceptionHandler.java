@@ -11,8 +11,8 @@ package net.catenax.brokerproxy.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.brokerproxy.exceptions.MessageProducerFailedException;
-import net.catenax.prs.annotations.ExcludeFromCodeCoverageGeneratedReport;
-import net.catenax.prs.dtos.ErrorResponse;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
+import net.catenax.irs.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;

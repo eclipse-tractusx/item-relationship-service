@@ -1,8 +1,8 @@
 # Dependencies
 FROM maven:3-jdk-11 AS maven
-ARG BUILD_TARGET=prs-api
-ARG PRS_EDC_PKG_USERNAME
-ARG PRS_EDC_PKG_PASSWORD
+ARG BUILD_TARGET=irs-api
+ARG IRS_EDC_PKG_USERNAME
+ARG IRS_EDC_PKG_PASSWORD
 
 WORKDIR /build
 
@@ -18,20 +18,20 @@ COPY connector/pom.xml connector/pom.xml
 COPY connector/edc-patched-core connector/edc-patched-core
 COPY connector/edc-recursive-job connector/edc-recursive-job
 COPY connector/edc-transfer-process-watchdog connector/edc-transfer-process-watchdog
-COPY connector/prs-connector-commons connector/prs-connector-commons
-COPY connector/prs-connector-consumer connector/prs-connector-consumer
-COPY connector/prs-connector-models connector/prs-connector-models
-COPY connector/prs-connector-parent connector/prs-connector-parent
-COPY connector/prs-connector-provider connector/prs-connector-provider
-COPY connector/prs-connector-testing connector/prs-connector-testing
+COPY connector/irs-connector-commons connector/irs-connector-commons
+COPY connector/irs-connector-consumer connector/irs-connector-consumer
+COPY connector/irs-connector-models connector/irs-connector-models
+COPY connector/irs-connector-parent connector/irs-connector-parent
+COPY connector/irs-connector-provider connector/irs-connector-provider
+COPY connector/irs-connector-testing connector/irs-connector-testing
 COPY integration-tests integration-tests
-COPY prs-api prs-api
-COPY prs-client prs-client
-COPY prs-common prs-common
-COPY prs-models prs-models
-COPY prs-parent prs-parent
-COPY prs-parent-spring-boot prs-parent-spring-boot
-COPY prs-testing prs-testing
+COPY irs-api irs-api
+COPY irs-client irs-client
+COPY irs-common irs-common
+COPY irs-models irs-models
+COPY irs-parent irs-parent
+COPY irs-parent-spring-boot irs-parent-spring-boot
+COPY irs-testing irs-testing
 
 # the --mount option requires BuildKit.
 RUN --mount=type=cache,target=/root/.m2 mvn -B -s settings.xml clean package -pl :$BUILD_TARGET -am -DskipTests
@@ -66,12 +66,12 @@ ENTRYPOINT ["java", "-javaagent:./applicationinsights-agent.jar", "-jar", "app.j
 FROM runtime AS broker-proxy
 COPY --from=maven /build/broker-proxy/target/broker-proxy-*-exec.jar app.jar
 
-FROM runtime AS prs-api
-COPY --from=maven /build/prs-api/target/prs-api-*-exec.jar app.jar
+FROM runtime AS irs-api
+COPY --from=maven /build/irs-api/target/irs-api-*-exec.jar app.jar
 
-FROM runtime AS prs-connector-provider
-COPY --from=maven /build/connector/prs-connector-provider/target/prs-connector-provider-*.jar app.jar
-COPY --from=maven /build/connector/prs-connector-provider/src/main/resources/logging.properties .
+FROM runtime AS irs-connector-provider
+COPY --from=maven /build/connector/irs-connector-provider/target/irs-connector-provider-*.jar app.jar
+COPY --from=maven /build/connector/irs-connector-provider/src/main/resources/logging.properties .
 COPY --from=wget jmx-prometheus-agent.jar .
 COPY cd/jmx_prometheus_config.yml .
 
@@ -84,9 +84,9 @@ RUN keytool -genkey -noprompt -alias alias1  -dname "CN=dummy" -keystore dataspa
 
 ENTRYPOINT ["java", "-javaagent:./applicationinsights-agent.jar", "-javaagent:./jmx-prometheus-agent.jar=4006:./jmx_prometheus_config.yml", "-Djava.util.logging.config.file=./logging.properties", "-jar", "app.jar"]
 
-FROM runtime AS prs-connector-consumer
-COPY --from=maven /build/connector/prs-connector-consumer/target/prs-connector-consumer-*.jar app.jar
-COPY --from=maven /build/connector/prs-connector-consumer/src/main/resources/logging.properties .
+FROM runtime AS irs-connector-consumer
+COPY --from=maven /build/connector/irs-connector-consumer/target/irs-connector-consumer-*.jar app.jar
+COPY --from=maven /build/connector/irs-connector-consumer/src/main/resources/logging.properties .
 COPY --from=wget jmx-prometheus-agent.jar .
 COPY cd/jmx_prometheus_config.yml .
 ENTRYPOINT ["java", "-javaagent:./applicationinsights-agent.jar", "-javaagent:./jmx-prometheus-agent.jar=4006:./jmx_prometheus_config.yml", "-Djava.util.logging.config.file=./logging.properties", "-jar", "app.jar"]

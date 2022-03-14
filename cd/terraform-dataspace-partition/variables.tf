@@ -29,7 +29,7 @@ variable "resource_group_name" {
 variable "application_insights_name" {
   type        = string
   description = "The Application Insights resource name."
-  default     = "cxmtpdc1-dev-prs-appi"
+  default     = "cxmtpdc1-dev-irs-appi"
 }
 
 variable "aks_cluster_name" {
@@ -40,14 +40,14 @@ variable "aks_cluster_name" {
 
 variable "image_registry" {
   type        = string
-  description = "Registry containing PRS images."
+  description = "Registry containing IRS images."
   default     = "catenaxdev001acr.azurecr.io"
 }
 
 variable "release_name" {
   type        = string
   description = "Helm release name."
-  default     = "prs"
+  default     = "irs"
 }
 
 variable "ingress_host" {
@@ -64,5 +64,5 @@ variable "ingress_class_name" {
 
 variable "image_tag" {
   type        = string
-  description = "PRS image tag that will be deployed."
+  description = "IRS image tag that will be deployed."
 }

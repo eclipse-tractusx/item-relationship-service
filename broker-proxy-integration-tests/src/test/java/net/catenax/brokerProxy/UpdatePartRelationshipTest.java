@@ -1,8 +1,8 @@
 package net.catenax.brokerProxy;
 
 import io.restassured.http.ContentType;
-import net.catenax.prs.dtos.events.PartRelationshipUpdate;
-import net.catenax.prs.dtos.events.PartRelationshipsUpdateRequest;
+import net.catenax.irs.dtos.events.PartRelationshipUpdate;
+import net.catenax.irs.dtos.events.PartRelationshipsUpdateRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
-import static net.catenax.prs.dtos.ValidationConstants.RELATIONSHIP_UPDATE_LIST_MAX_SIZE;
+import static net.catenax.irs.dtos.ValidationConstants.RELATIONSHIP_UPDATE_LIST_MAX_SIZE;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static org.assertj.core.api.Assertions.assertThat;

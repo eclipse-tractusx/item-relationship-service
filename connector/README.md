@@ -6,8 +6,8 @@ Create a [personal access token](https://docs.github.com/en/authentication/keepi
 
 Configure the following GitHub *repository secrets*:
 
-- PRS_EDC_PKG_USERNAME (your_github_username)
-- PRS_EDC_PKG_PASSWORD (your_github_pat_token)
+- IRS_EDC_PKG_USERNAME (your_github_username)
+- IRS_EDC_PKG_PASSWORD (your_github_pat_token)
 
 ## Local build
 
@@ -24,18 +24,18 @@ See `run-integration-test.sh` file.
 
 ## Running tests
 
-Download certificate for the PRS Connector Consumer to communicate with its Key Vault to local filesystem. In the `cd/terraform-identities` directory run:
+Download certificate for the IRS Connector Consumer to communicate with its Key Vault to local filesystem. In the `cd/terraform-identities` directory run:
 
 ```sh
 terraform init
-az keyvault secret download --file ../../dev/local/cert.pfx --vault-name "$(terraform output -raw vault_name)" --name "$(terraform output -raw prs_connector_consumer_cert_name)" --encoding base64
+az keyvault secret download --file ../../dev/local/cert.pfx --vault-name "$(terraform output -raw vault_name)" --name "$(terraform output -raw irs_connector_consumer_cert_name)" --encoding base64
 ```
 
 Set environment variables for GitHub access:
 
 ```bash
-export PRS_EDC_PKG_USERNAME=your_github_username
-export PRS_EDC_PKG_PASSWORD=your_github_pat_token
+export IRS_EDC_PKG_USERNAME=your_github_username
+export IRS_EDC_PKG_PASSWORD=your_github_pat_token
 ```
 Make sure you have configured the env properties. It can be done by creating .env file and copying content of the .env.example file into it.
 Run integration tests:
@@ -46,7 +46,7 @@ Run integration tests:
 
 ### Debugging connectors from IDE
 
-Download certificate for the PRS Connector Consumer as explained in the previous section.
+Download certificate for the IRS Connector Consumer as explained in the previous section.
 
 Create empty file for the Provider Connector filesystem vault (FsVault):
 
@@ -54,7 +54,7 @@ Create empty file for the Provider Connector filesystem vault (FsVault):
 touch ../dev/local/dataspaceconnector-vault.properties
 ```
 
-Import run configurations in the `dev/ide` folder into your IDE and use these to debug the consumer and provider connectors. As default the provider connector will try to use a local PRS running at `localhost:8080`, make sure to previously start the PRS api at that port as well.
+Import run configurations in the `dev/ide` folder into your IDE and use these to debug the consumer and provider connectors. As default the provider connector will try to use a local IRS running at `localhost:8080`, make sure to previously start the IRS api at that port as well.
 
 Send a request to the local consumer connector by issuing:
 ```bash

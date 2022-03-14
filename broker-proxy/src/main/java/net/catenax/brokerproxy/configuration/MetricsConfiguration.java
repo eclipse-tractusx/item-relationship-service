@@ -12,7 +12,7 @@ package net.catenax.brokerproxy.configuration;
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
-import net.catenax.prs.dtos.events.PartRelationshipsUpdateRequest;
+import net.catenax.irs.dtos.events.PartRelationshipsUpdateRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

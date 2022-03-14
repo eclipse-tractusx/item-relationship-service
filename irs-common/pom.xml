@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.catenax.irs</groupId>
+        <artifactId>irs-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../irs-parent</relativePath>
+    </parent>
+
+    <artifactId>irs-common</artifactId>
+
+    <name>IRS Common</name>
+    <description>Common code for all IRS.
+    </description>
+
+    <dependencies>
+        <!-- Should not add any library dependencies in this module, except annotations in provided scope -->
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+            <version>${spotbugs.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

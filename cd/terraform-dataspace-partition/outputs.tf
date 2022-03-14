@@ -13,23 +13,23 @@ output "dataspace_partition" {
   description = "The dataspace partition short code."
 }
 
-output "prs_db_fqdn" {
-  value       = module.prs_postgresql.fqdn
+output "irs_db_fqdn" {
+  value       = module.irs_postgresql.fqdn
   description = "The PostgreSQL FQDN."
 }
 
-output "prs_db_administrator_username" {
-  value       = module.prs_postgresql.administrator_username
+output "irs_db_administrator_username" {
+  value       = module.irs_postgresql.administrator_username
   description = "The administrator user login name."
 }
 
-output "prs_db_administrator_login_password" {
-  value       = module.prs_postgresql.administrator_login_password
+output "irs_db_administrator_login_password" {
+  value       = module.irs_postgresql.administrator_login_password
   description = "The administrator user password."
   sensitive   = true
 }
 
-output "prs_db_name" {
-  value       = module.prs_postgresql.db_name
+output "irs_db_name" {
+  value       = module.irs_postgresql.db_name
   description = "The PostgreSQL database name."
 }

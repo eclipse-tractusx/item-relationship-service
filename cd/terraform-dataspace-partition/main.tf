@@ -1,5 +1,5 @@
 ####################################################################################################
-# PRS infrastructure
+# IRS infrastructure
 ####################################################################################################
 
 data "azurerm_application_insights" "main" {
@@ -7,17 +7,17 @@ data "azurerm_application_insights" "main" {
   resource_group_name = data.azurerm_resource_group.main.name
 }
 
-module "prs_postgresql" {
+module "irs_postgresql" {
   source              = "./modules/postgresql"
-  name                = "${var.prefix}-${var.environment}-${var.dataspace_partition}-prs-psql"
-  database_name       = "prs"
+  name                = "${var.prefix}-${var.environment}-${var.dataspace_partition}-irs-psql"
+  database_name       = "irs"
   resource_group_name = local.resource_group_name
   location            = local.location
 }
 
 module "eventhubs_namespace" {
   source              = "./modules/eventhubs_namespace"
-  name                = "${var.prefix}-${var.environment}-${var.dataspace_partition}-prs-ehub"
+  name                = "${var.prefix}-${var.environment}-${var.dataspace_partition}-irs-ehub"
   resource_group_name = local.resource_group_name
   location            = local.location
 }
@@ -32,26 +32,26 @@ module "eventhub_catenax_events" {
   receive_and_send_primary_connection_string = module.eventhubs_namespace.receive_and_send_primary_connection_string
 }
 
-# create namespace for PRS
-resource "kubernetes_namespace" "prs" {
+# create namespace for IRS
+resource "kubernetes_namespace" "irs" {
   metadata {
-    name = "prs-${var.dataspace_partition}"
+    name = "irs-${var.dataspace_partition}"
   }
 }
 
 locals {
   ingress_prefix                    = "/${var.dataspace_partition}/mtpdc"
-  ingress_prefix_prs                = "${local.ingress_prefix}/prs"
+  ingress_prefix_irs                = "${local.ingress_prefix}/irs"
   ingress_prefix_connector_provider = "${local.ingress_prefix}/connector"
-  api_url                           = "https://${var.ingress_host}${local.ingress_prefix_prs}"
+  api_url                           = "https://${var.ingress_host}${local.ingress_prefix_irs}"
   connector_url                     = "https://${var.ingress_host}${local.ingress_prefix_connector_provider}"
 }
 
-# Deploy the PRS service with Helm
-resource "helm_release" "prs" {
-  name      = "prs-${var.dataspace_partition}"
-  chart     = "../helm/prs"
-  namespace = kubernetes_namespace.prs.metadata[0].name
+# Deploy the IRS service with Helm
+resource "helm_release" "irs" {
+  name      = "irs-${var.dataspace_partition}"
+  chart     = "../helm/irs"
+  namespace = kubernetes_namespace.irs.metadata[0].name
   timeout   = 300
 
   set {
@@ -66,21 +66,21 @@ resource "helm_release" "prs" {
 
   set {
     name  = "ingress.prefix"
-    value = local.ingress_prefix_prs
+    value = local.ingress_prefix_irs
   }
 
   set {
-    name  = "prs.image.repository"
-    value = "${var.image_registry}/prs-api"
+    name  = "irs.image.repository"
+    value = "${var.image_registry}/irs-api"
   }
 
   set {
-    name  = "prs.image.tag"
+    name  = "irs.image.tag"
     value = var.image_tag
   }
 
   set {
-    name  = "prs.apiUrl"
+    name  = "irs.apiUrl"
     value = local.api_url
   }
 
@@ -95,13 +95,13 @@ resource "helm_release" "prs" {
   }
 
   set_sensitive {
-    name  = "prs.env.APPLICATIONINSIGHTS_CONNECTION_STRING"
+    name  = "irs.env.APPLICATIONINSIGHTS_CONNECTION_STRING"
     value = data.azurerm_application_insights.main.connection_string
   }
 
   set {
-    name  = "prs.env.APPLICATIONINSIGHTS_ROLE_NAME"
-    value = "${var.dataspace_partition} PRS"
+    name  = "irs.env.APPLICATIONINSIGHTS_ROLE_NAME"
+    value = "${var.dataspace_partition} IRS"
   }
 
   set_sensitive {
@@ -136,25 +136,25 @@ resource "helm_release" "prs" {
 
   set {
     name  = "postgresql.url"
-    value = "jdbc:postgresql://${module.prs_postgresql.fqdn}/${module.prs_postgresql.db_name}?sslmode=require"
+    value = "jdbc:postgresql://${module.irs_postgresql.fqdn}/${module.irs_postgresql.db_name}?sslmode=require"
   }
 
   set {
     name  = "postgresql.postgresqlUsername"
-    value = module.prs_postgresql.administrator_username
+    value = module.irs_postgresql.administrator_username
   }
 
   set_sensitive {
     name  = "postgresql.postgresqlPassword"
-    value = module.prs_postgresql.administrator_login_password
+    value = module.irs_postgresql.administrator_login_password
   }
 }
 
-# Deploy the PRS Provider with Helm
-resource "helm_release" "prs-connector-provider" {
-  name      = "prs-${var.dataspace_partition}-prs-connector-provider"
-  chart     = "../helm/prs-connector-provider"
-  namespace = kubernetes_namespace.prs.metadata[0].name
+# Deploy the IRS Provider with Helm
+resource "helm_release" "irs-connector-provider" {
+  name      = "irs-${var.dataspace_partition}-irs-connector-provider"
+  chart     = "../helm/irs-connector-provider"
+  namespace = kubernetes_namespace.irs.metadata[0].name
   timeout   = 300
 
   set {
@@ -174,7 +174,7 @@ resource "helm_release" "prs-connector-provider" {
 
   set {
     name  = "image.repository"
-    value = "${var.image_registry}/prs-connector-provider"
+    value = "${var.image_registry}/irs-connector-provider"
   }
 
   set {
@@ -193,7 +193,7 @@ resource "helm_release" "prs-connector-provider" {
   }
 
   set {
-    name  = "prs.apiUrl"
+    name  = "irs.apiUrl"
     value = local.api_url
   }
 }
