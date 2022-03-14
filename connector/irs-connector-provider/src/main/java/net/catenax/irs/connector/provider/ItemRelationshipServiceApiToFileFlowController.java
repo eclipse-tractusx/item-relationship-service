@@ -12,7 +12,7 @@ package net.catenax.irs.connector.provider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.catenax.irs.client.ApiException;
-import net.catenax.irs.client.api.PartsRelationshipServiceApi;
+import net.catenax.irs.client.api.ItemRelationshipServiceApi;
 import net.catenax.irs.client.model.PartRelationshipsWithInfos;
 import net.catenax.irs.connector.requests.PartsTreeByObjectIdRequest;
 import org.eclipse.dataspaceconnector.schema.azure.AzureBlobStoreSchema;
@@ -31,7 +31,7 @@ import static net.catenax.irs.connector.constants.IrsConnectorConstants.DATA_REQ
  * Handles a data flow to call IRS API and save the result to a file.
  */
 @SuppressWarnings("PMD.GuardLogStatement") // Monitor doesn't offer guard statements
-public class PartsRelationshipServiceApiToFileFlowController implements DataFlowController {
+public class ItemRelationshipServiceApiToFileFlowController implements DataFlowController {
 
     /**
      * JSON serializer / deserializer.
@@ -46,7 +46,7 @@ public class PartsRelationshipServiceApiToFileFlowController implements DataFlow
     /**
      * Client stub to call IRS API.
      */
-    private final PartsRelationshipServiceApi irsClient;
+    private final ItemRelationshipServiceApi irsClient;
 
     /**
      * Blob storage client
@@ -58,7 +58,7 @@ public class PartsRelationshipServiceApiToFileFlowController implements DataFlow
      * @param irsClient Client used to call IRS API
      * @param blobStorageClient Blob storage client
      */
-    public PartsRelationshipServiceApiToFileFlowController(final Monitor monitor, final PartsRelationshipServiceApi irsClient, final BlobStorageClient blobStorageClient) {
+    public ItemRelationshipServiceApiToFileFlowController(final Monitor monitor, final ItemRelationshipServiceApi irsClient, final BlobStorageClient blobStorageClient) {
         this.monitor = monitor;
         this.irsClient = irsClient;
         this.blobStorageClient = blobStorageClient;

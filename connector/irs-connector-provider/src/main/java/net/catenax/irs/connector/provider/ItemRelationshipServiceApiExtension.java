@@ -11,7 +11,7 @@ package net.catenax.irs.connector.provider;
 
 import io.micrometer.jmx.JmxMeterRegistry;
 import net.catenax.irs.client.ApiClient;
-import net.catenax.irs.client.api.PartsRelationshipServiceApi;
+import net.catenax.irs.client.api.ItemRelationshipServiceApi;
 import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.connector.http.HttpClientFactory;
 import net.catenax.irs.connector.metrics.MeterRegistryFactory;
@@ -41,7 +41,7 @@ import static org.eclipse.dataspaceconnector.policy.model.Operator.IN;
  */
 @SuppressWarnings("PMD.GuardLogStatement") // Monitor doesn't offer guard statements
 @ExcludeFromCodeCoverageGeneratedReport
-public class PartsRelationshipServiceApiExtension implements ServiceExtension {
+public class ItemRelationshipServiceApiExtension implements ServiceExtension {
 
     /**
      * {@inheritDoc}
@@ -69,7 +69,7 @@ public class PartsRelationshipServiceApiExtension implements ServiceExtension {
 
         final var monitor = context.getMonitor();
         final var irsApiUrl = context.getSetting("IRS_API_URL", "http://localhost:8080");
-        final var irsClient = new PartsRelationshipServiceApi(new ApiClient(httpClient));
+        final var irsClient = new ItemRelationshipServiceApi(new ApiClient(httpClient));
         irsClient.getApiClient().setBasePath(irsApiUrl);
 
         final var jsonUtil = new JsonUtil(monitor);
@@ -78,7 +78,7 @@ public class PartsRelationshipServiceApiExtension implements ServiceExtension {
         final var blobStorageClient = new BlobStorageClient(monitor, jsonUtil, vault, blobClientFactory);
 
         final var dataFlowMgr = context.getService(DataFlowManager.class);
-        final var flowController = new PartsRelationshipServiceApiToFileFlowController(monitor, irsClient, blobStorageClient);
+        final var flowController = new ItemRelationshipServiceApiToFileFlowController(monitor, irsClient, blobStorageClient);
         dataFlowMgr.register(flowController);
 
         registerDataEntries(context);

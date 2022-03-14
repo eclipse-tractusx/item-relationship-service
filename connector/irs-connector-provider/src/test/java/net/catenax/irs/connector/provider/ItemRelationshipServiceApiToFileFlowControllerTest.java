@@ -3,7 +3,7 @@ package net.catenax.irs.connector.provider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import net.catenax.irs.client.ApiException;
-import net.catenax.irs.client.api.PartsRelationshipServiceApi;
+import net.catenax.irs.client.api.ItemRelationshipServiceApi;
 import net.catenax.irs.client.model.PartInfo;
 import net.catenax.irs.client.model.PartRelationshipsWithInfos;
 import net.catenax.irs.connector.requests.PartsTreeByObjectIdRequest;
@@ -41,13 +41,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class PartsRelationshipServiceApiToFileFlowControllerTest {
+class ItemRelationshipServiceApiToFileFlowControllerTest {
 
     @Spy
     Monitor monitor = new ConsoleMonitor();
 
     @Mock
-    PartsRelationshipServiceApi client;
+    ItemRelationshipServiceApi client;
 
     @Mock
     BlobStorageClient blobStorageClient;
@@ -56,7 +56,7 @@ class PartsRelationshipServiceApiToFileFlowControllerTest {
     Vault vault;
 
     @InjectMocks
-    PartsRelationshipServiceApiToFileFlowController sut;
+    ItemRelationshipServiceApiToFileFlowController sut;
 
     Faker faker = new Faker();
 
