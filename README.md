@@ -53,11 +53,6 @@ select * from part_relationship;
 - API docs: http://localhost:8080/api/api-docs
 - API docs in yaml:  http://localhost:8080/api/api-docs.yaml
 
-### Broker Proxy API  
-- Swagger UI: http://localhost:8081/broker-proxy/swagger-ui
-- API docs: http://localhost:8081/broker-proxy/api-docs
-- API docs in yaml:  http://localhost:8081/broker-proxy/api-docs.yaml
-
 ## Terraform
 
 See [Terraform deployment](terraform).

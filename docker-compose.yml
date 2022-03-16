@@ -44,25 +44,6 @@ services:
 #      - /var/lib/kafka/data
 #      - /etc/kafka/secrets
 
-  broker-proxy:
-    build:
-      context: .
-      target: broker-proxy
-      args:
-        BUILD_TARGET: broker-proxy
-    depends_on:
-      - kafka
-    profiles:
-      - broker-proxy
-    container_name: broker-proxy
-    ports:
-      - 8081:8081
-      - 4005:4005
-    environment:
-      APPLICATIONINSIGHTS_CONNECTION_STRING: "${APPLICATIONINSIGHTS_CONNECTION_STRING}"
-      APPLICATIONINSIGHTS_ROLE_NAME: broker-proxy
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-
   irs:
     build:
       context: .
@@ -82,23 +63,6 @@ services:
       APPLICATIONINSIGHTS_CONNECTION_STRING: "${APPLICATIONINSIGHTS_CONNECTION_STRING}"
       APPLICATIONINSIGHTS_ROLE_NAME: IRS
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-
-  connector-provider:
-    profiles:
-      - connector
-    container_name: provider
-    build:
-      context: .
-      target: irs-connector-provider
-      args:
-        BUILD_TARGET: irs-connector-provider
-    environment:
-      APPLICATIONINSIGHTS_CONNECTION_STRING: "${APPLICATIONINSIGHTS_CONNECTION_STRING}"
-      IRS_API_URL: "http://irs:8080"
-      APPLICATIONINSIGHTS_ROLE_NAME: connector-provider
-    ports:
-      - 8181:8181
-      - 4006:4006
 
   connector-consumer:
     profiles:
