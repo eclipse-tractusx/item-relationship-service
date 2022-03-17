@@ -1,0 +1,21 @@
+@startuml
+title IRS API sequence diagramm v0.2
+
+actor CE as "CE Dashboard"
+
+box Item Relationship Service
+participant IRS_API as " API v0.2"
+end box
+
+participant AAS_W as "AAS Wrapper"
+
+box Catena-X Network
+participant AAS_Registry
+end box
+
+autonumber "<b> [00]"
+
+CE -> IRS_API: GET /irs/item/{globalAssetId}/{bomLifecycle} 
+
+
+@enduml
