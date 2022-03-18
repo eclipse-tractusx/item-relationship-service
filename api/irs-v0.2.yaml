@@ -5,7 +5,7 @@ info:
 servers:
   - url: https://api.server.test/api/v0.2
 paths:
-  /irs/item/{globalAssetId}/{bomLifecycle}:
+  /irs/item/{globalAssetId}:
     get:
       operationId: getBomLifecycleByGlobalAssetId
       parameters:
@@ -21,7 +21,7 @@ paths:
           example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
       - description: "Unique identifier of a single, unique (sub)component/part/batch,\
           \ given by its globalAssetId/ digital twin id"
-        in: path
+        in: query
         name: bomLifecycle
         required: true
         schema:
