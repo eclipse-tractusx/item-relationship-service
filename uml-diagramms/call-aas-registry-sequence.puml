@@ -1,0 +1,15 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber "<b>[000]"
+box "Consumer" #LightBlue
+IrsAASCrawler -> IRSClient: lookupAasId(aasID)
+IRSClient -> AASAdapter: GET /shells/{aasIdentifier]
+end box
+participant "EDC" as L #99FF99
+box "Provider" #LightBlue
+AASAdapter -> AASRegistry: /shell/{aasIdentifier}
+AASAdapter <-- AASRegistry: ASS descriptor
+IRSClient <-- AASAdapter: AAS descriptor
+IrsAASCrawler <-- IRSClient: AAS descriptor
+@enduml
