@@ -21,8 +21,6 @@ The two following subsections provide instructions for running either only the i
 * (Optional) Copy the file `.env.example` to `.env` and provide your Application Insights connection string.
 * Run `docker-compose --profile debug up`
 * This will start additional containers:
-  * [`kafkacat`](https://docs.confluent.io/platform/current/app-development/kafkacat-usage.html), a generic kafka command-line client, used here to output messages to the Docker-compose output stream as they are sent to the broker
-  * [`kafka-ui`](https://github.com/provectus/kafka-ui), a UI interface to manage local kafka cluster, which can be used for similar purposes through a Web UI. `kafka-ui` is available at http://localhost:9090/.
   * [Prometheus](https://prometheus.io/docs/introduction/overview/), a server to collect and query metrics. Prometheus is available at http://localhost:9091/.
 
 ## Work with sample data
@@ -76,9 +74,9 @@ Before inserting all records with oneIds from json files are deleted from the da
 ## Smoke tests
 
 [Smoke tests](integration-tests/src/test/java/net/catenax/irs/smoketest) are running against the application and the consumer connectors in the IRS Smoke tests pipeline.
-To run the tests against locally running application provide `baseURI` (IRS API base URI, by default http://localhost:8080) `brokerProxyBaseURI` (Broker Proxy API base URI, by default: http://localhost:8081). If only `baseURI` is provided, `brokerProxyBaseURI` has the same value as `baseURI`.
+To run the tests against locally running application provide `baseURI` (IRS API base URI, by default http://localhost:8080).
 If you want to run it against connector you need to add the following VM options:
-`-DbaseURI=<consumer-artifact-uri> -DbrokerProxyBaseURI=<broker-proxy-uri> -Dusername=<username-to-access-consumer> -Dpassword=<password>`
+`-DbaseURI=<consumer-artifact-uri> -Dusername=<username-to-access-consumer> -Dpassword=<password>`
 
 ## System tests
 
