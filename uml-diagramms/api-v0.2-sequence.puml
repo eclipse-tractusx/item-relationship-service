@@ -9,13 +9,46 @@ end box
 
 participant AAS_W as "AAS Wrapper"
 
-box Catena-X Network
-participant AAS_Registry
-end box
+' box Catena-X Network
+' participant AAS_R as "AAS Registry"
+' end box
 
 autonumber "<b> [00]"
 
-CE -> IRS_API: GET /irs/item/{globalAssetId}/{bomLifecycle} 
+CE -> IRS_API: GET /irs/item/{globalAssetId}
+activate IRS_API
+IRS_API -> AAS_W: GET /lookup/shells
 
+note over IRS_API
+Request for Batch XOR Lookup
+end note
+
+AAS_W -> IRS_API: AAS identification
+
+alt fetch
+IRS_API -> AAS_W: GET /registry/shell-descriptors/batch
+note over IRS_API
+JSON Body needed
+end note
+
+else 
+
+loop for each globalAssetId
+IRS_API -> AAS_W: GET /registry/shell-descriptors/{aasIdentifier}
+end
+end
+
+
+IRS_API --> CE: HTTP 202 : Status json
+IRS_API --> CE: HTTP 4xx : 
+IRS_API --> CE: HTTP 4xx : 
+deactivate IRS_API
+
+
+CE -> IRS_API: GET /irs/item/{globalAssetId}
+activate IRS_API
+IRS_API --> CE: HTTP 202 : Status json + current Payload
+
+deactivate IRS_API
 
 @enduml
