@@ -239,19 +239,8 @@ components:
           },
           "relationships": [
             {
-              "parent": {
-                "id": "055c1128-0375-47c8-98de-7cf802c3241d"
-              },
-              "child": {
-                "id": "d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447"
-              }
-            }
-          ],
-          "filteredSubmodells": [
-            {
               "catenaXId": "d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
-              "childParts": [
-                {
+              "childItem": {
                   "quantity": {
                     "quantityNumber": 1,
                     "measurementUnit": {
@@ -263,19 +252,80 @@ components:
                   "assembledOn": "2022-02-03T14:48:54.709Z",
                   "lastModifiedOn": "2022-02-03T14:48:54.709Z",
                   "childCatenaXId": "a45a2246-f6e1-42da-b47d-5c3b58ed62e9"
+                }
+              }
+          ],
+          "shells": [
+            {
+              "description": [
+                {
+                  "language": "en",
+                  "text": "The shell for a vehicle"
+                }
+              ],
+              "globalAssetId": {
+                "value": [
+                  "a45a2246-f6e1-42da-b47d-5c3b58ed62e9"
+                ]
+              },
+              "idShort": "future concept x",
+              "identification": "882fc530-b69b-4707-95f6-5dbc5e9baaa8",
+              "specificAssetIds": [
+                {
+                  "key": "engineserialid",
+                  "value": "12309481209312"
+                }
+              ],
+              "submodelDescriptors": [
+                {
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Provides base vehicle information"
+                    }
+                  ],
+                  "idShort": "vehicle base details",
+                  "identification": "4a738a24-b7d8-4989-9cd6-387772f40565",
+                  "semanticId": {
+                    "value": [
+                      "urn:bamm:com.catenax.vehicle:0.1.1"
+                    ]
+                  },
+                  "endpoints": [
+                    {
+                      "interface": "HTTP",
+                      "protocolInformation": {
+                        "endpointAddress": "https://catena-x.net/vehicle/basedetails/",
+                        "endpointProtocol": "HTTPS",
+                        "endpointProtocolVersion": "1.0"
+                      }
+                    }
+                  ]
                 },
                 {
-                  "quantity": {
-                    "quantityNumber": 1,
-                    "measurementUnit": {
-                      "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                      "lexicalValue": "piece"
+                  "description": [
+                    {
+                      "language": "en",
+                      "text": "Provides base vehicle information"
                     }
+                  ],
+                  "idShort": "vehicle part details",
+                  "identification": "dae4d249-6d66-4818-b576-bf52f3b9ae90",
+                  "semanticId": {
+                    "value": [
+                      "urn:bamm:com.catenax.vehicle:0.1.1#PartDetails"
+                    ]
                   },
-                  "lifecycleContext": "AsBuilt",
-                  "assembledOn": "2022-02-03T14:48:54.709Z",
-                  "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                  "childCatenaXId": "77fc94af-5c2e-480b-a320-1260d2444696"
+                  "endpoints": [
+                    {
+                      "interface": "HTTP",
+                      "protocolInformation": {
+                        "endpointAddress": "https://catena-x.net/vehicle/partdetails/",
+                        "endpointProtocol": "HTTPS",
+                        "endpointProtocolVersion": "1.0"
+                      }
+                    }
+                  ]
                 }
               ]
             }
