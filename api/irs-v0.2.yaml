@@ -81,9 +81,9 @@ paths:
               - upward
               - downward
             default: downward
-        - description: "If true, the endpoint returns partial results of the parts tree."
+        - description: "If true, the endpoint returns the uncompleted results of the parts tree."
           in: query
-          name: returnPartialTree
+          name: returnUncompletedResultTree
           required: false
           schema:
             type: boolean
@@ -101,7 +101,7 @@ paths:
                 complete:
                   $ref: '#/components/examples/complete-job-result'
         "206":
-          description: partial livecycle tree representation with the starting point of the given globalAssetId
+          description: uncompleted livecycle tree representation with the starting point of the given globalAssetId
           content:
             application/json:
               examples:
