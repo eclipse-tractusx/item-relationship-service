@@ -13,17 +13,3 @@ spec:
   selector:
     app.kubernetes.io/name: irs-api
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: broker-proxy
-  labels:
-    app.kubernetes.io/name: broker-proxy
-spec:
-  type: ClusterIP
-  ports:
-    - port: 80
-      targetPort: 8081
-      protocol: TCP
-  selector:
-    app.kubernetes.io/name: broker-proxy

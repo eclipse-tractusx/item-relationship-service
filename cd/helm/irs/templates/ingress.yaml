@@ -19,10 +19,3 @@ spec:
                 name: irs
                 port:
                   number: 80
-          - path: {{ .Values.ingress.prefix }}/(broker-proxy/.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: broker-proxy
-                port:
-                  number: 80

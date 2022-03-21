@@ -10,11 +10,6 @@ irs:
     repository: irs-api
     tag: "latest"
   env: {}
-brokerproxy:
-  image:
-    repository: broker-proxy
-    tag: "latest"
-  env: {}
 
 #postgresql:
 #  url: "jdbc:postgresql://postgresql:5432/postgres"
