@@ -5,7 +5,7 @@ info:
 servers:
   - url: https://api.server.test/api/v0.2
 paths:
-  /irs/item/{globalAssetId}:
+  /irs/items/{globalAssetId}:
     get:
       operationId: getBomLifecycleByGlobalAssetId
       parameters:
