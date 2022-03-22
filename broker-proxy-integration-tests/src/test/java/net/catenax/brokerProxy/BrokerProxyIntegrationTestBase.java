@@ -39,7 +39,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.support.converter.AbstractJavaTypeMapper;
+import org.springframework.kafka.support.mapping.AbstractJavaTypeMapper;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.test.annotation.DirtiesContext;
 import org.testcontainers.containers.KafkaContainer;

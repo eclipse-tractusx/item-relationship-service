@@ -23,7 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependencies -->
-        <springboot.version>2.5.4</springboot.version>
+        <springboot.version>2.6.4</springboot.version>
         <springdoc.version>1.5.10</springdoc.version>
         <micrometer.version>1.7.3</micrometer.version>
         <junit.version>5.7.2</junit.version>

@@ -72,3 +72,13 @@ irs:
   partsTreeMaxDepth: 100
   kafkaTopic: catenax_events
 
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full
+      digitalTwinRegistry:
+        url: https://catenaxdev042akssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry
+
