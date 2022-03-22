@@ -84,20 +84,24 @@ paths:
             default: downward
       responses:
         "200":
-          content:
-            application/json:
-              example:
-                $ref: '#/components/examples/job-id-response'
           description: job id response for successful job registration
-        "400":
           content:
             application/json:
-              example:
-                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                complete:
+                  $ref: '#/components/examples/job-id-response'
+
+        "400":
           description: Bad request
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/schemas/ErrorResponse'
+
       summary: Get a PartsTree for a part
       tags:
-        - Parts Relationship Service
+        - Item Relationship Service
   /irs/jobs/{jobId}:
     get:
       operationId: getPartTreeForJobId
@@ -150,6 +154,8 @@ paths:
               example:
                 complete:
                   $ref: '#/components/examples/failed-job-result'
+      tags:
+        - Item Relationship Service
   /irs/jobs/{processingState}:
     get:
       operationId: getJobsByProcessingState
@@ -183,6 +189,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Bad Request
+      tags:
+        - Item Relationship Service
 components:
   schemas:
     BoMLifecycle:
