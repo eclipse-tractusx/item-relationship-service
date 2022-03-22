@@ -42,8 +42,6 @@ jobs:
       matrix:
         image:
           - irs-api
-          - broker-proxy
-          - irs-connector-provider
           - irs-connector-consumer
     runs-on: ubuntu-latest
     steps:
