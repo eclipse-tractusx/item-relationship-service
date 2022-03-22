@@ -1,0 +1,283 @@
+openapi: '3.0.2'
+info:
+  title: IRS API
+  version: '0.2'
+servers:
+  - url: https://api.server.test/api/v0.2
+paths:
+  /irs/item/{globalAssetId}:
+    get:
+      operationId: getBomLifecycleByGlobalAssetId
+      parameters:
+        - description: Readable ID of manufacturer including plant
+          in: path
+          name: globalAssetId
+          required: true
+          schema:
+            type: string
+            maxLength: 16
+            minLength: 1
+            pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+            example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
+        - description: "Unique identifier of a single, unique (sub)component/part/batch,\
+          \ given by its globalAssetId/ digital twin id"
+          in: query
+          name: bomLifecycle
+          required: true
+          schema:
+            type: string
+            enum:
+              - asBuilt # Release 1 relevant --> AssemblyPartRelationship
+              #- asMaintained # Release X
+              #- asPlanned # Release X
+              #- asDesigned # Release X
+              #- asOrdered # Release X
+              #- asRecycled # Release X
+        - description: Aspect information to add to the returned tree
+          example: SerialPartTypization
+          in: query
+          name: aspect
+          required: false
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - SerialPartTypization
+                - PartDimension
+                - SupplyRelationData
+                - PCFCoreData
+                - PCFTechnicalData
+                - MarketPlaceOffer
+                - MaterialAspect
+                - BatteryPass
+                - ProducDescription.Vehicle
+                - ProducDescription.Battery
+                - ReturnRequest
+                - CertificateOfDestruction
+                - CertificateOfDismantler
+                - Adress
+                - Contact
+              default: SerialPartTypization
+        - description: "Max depth of the returned tree, if empty max depth is returned"
+          in: query
+          name: depth
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 100
+            default: 1
+        - description: "Direction in which the tree shall be traversed"
+          in: query
+          name: direction
+          required: false
+          schema:
+            type: string
+            format: enum
+            enum:
+              - upward
+              - downward
+            default: downward
+      responses:
+        "200":
+          # content:
+          #   application/json:
+          #     schema:
+          #       $ref: '#/components/schemas/BoMLifecycle'
+          description: livecycle tree representation with the starting point of the given globalAssetId
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/complete-job-result'
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Bad request
+      summary: Get a PartsTree for a part
+      tags:
+        - Parts Relationship Service
+  # /irs/job/{jobID}:
+  #   get:
+  #     description: 'Retrieve the status of a running job or the payload of a finished job'
+  #     parameters:
+  #       - description: "ID of the Job"
+  #         in: query
+  #         name: jobID
+  #         required: true
+  #         schema:
+  #           type: string
+  #           maxLength: 16
+  #           minLength: 1
+  #           pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+  #           example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
+  #     responses:
+  #       '200':
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/JobStatus'
+  #         description: OK
+components:
+  schemas:
+    BoMLifecycle:
+      type: object
+      description: result object of tree representation
+      # properties: to be defined
+    ErrorResponse:
+      type: object
+      description: Error response
+      properties:
+        errors:
+          type: array
+          description: List of errors
+          items:
+            type: string
+            description: List of errors
+        message:
+          type: string
+          description: Error message
+        statusCode:
+          type: string
+          description: Error code
+          enum:
+            - 100 CONTINUE
+            - 101 SWITCHING_PROTOCOLS
+            - 102 PROCESSING
+            - 103 CHECKPOINT
+            - 200 OK
+            - 201 CREATED
+            - 202 ACCEPTED
+            - 203 NON_AUTHORITATIVE_INFORMATION
+            - 204 NO_CONTENT
+            - 205 RESET_CONTENT
+            - 206 PARTIAL_CONTENT
+            - 207 MULTI_STATUS
+            - 208 ALREADY_REPORTED
+            - 226 IM_USED
+            - 300 MULTIPLE_CHOICES
+            - 301 MOVED_PERMANENTLY
+            - 302 FOUND
+            - 302 MOVED_TEMPORARILY
+            - 303 SEE_OTHER
+            - 304 NOT_MODIFIED
+            - 305 USE_PROXY
+            - 307 TEMPORARY_REDIRECT
+            - 308 PERMANENT_REDIRECT
+            - 400 BAD_REQUEST
+            - 401 UNAUTHORIZED
+            - 402 PAYMENT_REQUIRED
+            - 403 FORBIDDEN
+            - 404 NOT_FOUND
+            - 405 METHOD_NOT_ALLOWED
+            - 406 NOT_ACCEPTABLE
+            - 407 PROXY_AUTHENTICATION_REQUIRED
+            - 408 REQUEST_TIMEOUT
+            - 409 CONFLICT
+            - 410 GONE
+            - 411 LENGTH_REQUIRED
+            - 412 PRECONDITION_FAILED
+            - 413 PAYLOAD_TOO_LARGE
+            - 413 REQUEST_ENTITY_TOO_LARGE
+            - 414 URI_TOO_LONG
+            - 414 REQUEST_URI_TOO_LONG
+            - 415 UNSUPPORTED_MEDIA_TYPE
+            - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+            - 417 EXPECTATION_FAILED
+            - 418 I_AM_A_TEAPOT
+            - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+            - 420 METHOD_FAILURE
+            - 421 DESTINATION_LOCKED
+            - 422 UNPROCESSABLE_ENTITY
+            - 423 LOCKED
+            - 424 FAILED_DEPENDENCY
+            - 425 TOO_EARLY
+            - 426 UPGRADE_REQUIRED
+            - 428 PRECONDITION_REQUIRED
+            - 429 TOO_MANY_REQUESTS
+            - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+            - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+            - 500 INTERNAL_SERVER_ERROR
+            - 501 NOT_IMPLEMENTED
+            - 502 BAD_GATEWAY
+            - 503 SERVICE_UNAVAILABLE
+            - 504 GATEWAY_TIMEOUT
+            - 505 HTTP_VERSION_NOT_SUPPORTED
+            - 506 VARIANT_ALSO_NEGOTIATES
+            - 507 INSUFFICIENT_STORAGE
+            - 508 LOOP_DETECTED
+            - 509 BANDWIDTH_LIMIT_EXCEEDED
+            - 510 NOT_EXTENDED
+            - 511 NETWORK_AUTHENTICATION_REQUIRED
+  examples:
+    complete-job-result:
+      value:
+        {
+          "job": {
+            "jobID": "6c311d29-5753-46d4-b32c-19b918ea93b0/as_built?aspect=SerialPartTypization&depth=1&direction=downward",
+            "jobStatus": "Running",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+            "jobFinished": "2022-02-03T14:48:54.709Z",
+            "requestURL": "https://api.server.test/api/v0.2/irs/item/6c311d29-5753-46d4-b32c-19b918ea93b0/as_built?aspect=SerialPartTypization&depth=1&direction=downward",
+            "action": "GET",
+            "owner": "",
+            "Summary": {
+              "asyncFetchedItems": {
+                "queued": 0,
+                "running": 0,
+                "complete": 0,
+                "failed": 0,
+                "lost": 0
+              }
+            }
+          },
+          "relationships": [
+            {
+              "parent": {
+                "id": "055c1128-0375-47c8-98de-7cf802c3241d"
+              },
+              "child": {
+                "id": "d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447"
+              }
+            }
+          ],
+          "filteredSubmodells": [
+            {
+              "catenaXId": "d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
+              "childParts": [
+                {
+                  "quantity": {
+                    "quantityNumber": 1,
+                    "measurementUnit": {
+                      "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+                      "lexicalValue": "piece"
+                    }
+                  },
+                  "lifecycleContext": "AsBuilt",
+                  "assembledOn": "2022-02-03T14:48:54.709Z",
+                  "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                  "childCatenaXId": "a45a2246-f6e1-42da-b47d-5c3b58ed62e9"
+                },
+                {
+                  "quantity": {
+                    "quantityNumber": 1,
+                    "measurementUnit": {
+                      "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+                      "lexicalValue": "piece"
+                    }
+                  },
+                  "lifecycleContext": "AsBuilt",
+                  "assembledOn": "2022-02-03T14:48:54.709Z",
+                  "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                  "childCatenaXId": "77fc94af-5c2e-480b-a320-1260d2444696"
+                }
+              ]
+            }
+          ]
+        }

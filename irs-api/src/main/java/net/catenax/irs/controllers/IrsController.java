@@ -50,7 +50,7 @@ public class IrsController {
     private final PartsTreeQueryService queryService;
     private final PartsTreeQueryByVinService queryByVinService;
 
-    @Operation(operationId = "getPartsTreeByVin", summary = "Get a PartsTree for a VIN")
+    @Operation(operationId = "getBomLifecycleByGlobalAssetId", summary = "Readable ID of manufacturer including plant")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Parts tree for a vehicle",
                 content = {@Content(mediaType = APPLICATION_JSON_VALUE,
@@ -62,7 +62,7 @@ public class IrsController {
                 content = {@Content(mediaType = APPLICATION_JSON_VALUE,
                         schema = @Schema(implementation = ErrorResponse.class))}),
     })
-    @GetMapping("/vins/{vin}/partsTree")
+    @GetMapping("/item/{globalAssetId}")
     public PartRelationshipsWithInfos getPartsTree(final @Valid @ParameterObject PartsTreeByVinRequest request) {
         return queryByVinService.getPartsTree(request);
     }
