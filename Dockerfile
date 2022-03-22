@@ -12,8 +12,6 @@ COPY .mvn .mvn
 COPY settings.xml .
 COPY pom.xml .
 
-COPY broker-proxy-integration-tests broker-proxy-integration-tests
-COPY broker-proxy broker-proxy
 COPY connector/pom.xml connector/pom.xml
 COPY connector/edc-patched-core connector/edc-patched-core
 COPY connector/edc-recursive-job connector/edc-recursive-job
@@ -22,7 +20,6 @@ COPY connector/irs-connector-commons connector/irs-connector-commons
 COPY connector/irs-connector-consumer connector/irs-connector-consumer
 COPY connector/irs-connector-models connector/irs-connector-models
 COPY connector/irs-connector-parent connector/irs-connector-parent
-COPY connector/irs-connector-provider connector/irs-connector-provider
 COPY connector/irs-connector-testing connector/irs-connector-testing
 COPY integration-tests integration-tests
 COPY irs-api irs-api
@@ -63,15 +60,9 @@ COPY cd/applicationinsights.json .
 
 ENTRYPOINT ["java", "-javaagent:./applicationinsights-agent.jar", "-jar", "app.jar"]
 
-FROM runtime AS broker-proxy
-COPY --from=maven /build/broker-proxy/target/broker-proxy-*-exec.jar app.jar
-
 FROM runtime AS irs-api
 COPY --from=maven /build/irs-api/target/irs-api-*-exec.jar app.jar
 
-FROM runtime AS irs-connector-provider
-COPY --from=maven /build/connector/irs-connector-provider/target/irs-connector-provider-*.jar app.jar
-COPY --from=maven /build/connector/irs-connector-provider/src/main/resources/logging.properties .
 COPY --from=wget jmx-prometheus-agent.jar .
 COPY cd/jmx_prometheus_config.yml .
 

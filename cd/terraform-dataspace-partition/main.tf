@@ -84,16 +84,6 @@ resource "helm_release" "irs" {
     value = local.api_url
   }
 
-  set {
-    name  = "brokerproxy.image.repository"
-    value = "${var.image_registry}/broker-proxy"
-  }
-
-  set {
-    name  = "brokerproxy.image.tag"
-    value = var.image_tag
-  }
-
   set_sensitive {
     name  = "irs.env.APPLICATIONINSIGHTS_CONNECTION_STRING"
     value = data.azurerm_application_insights.main.connection_string
@@ -102,16 +92,6 @@ resource "helm_release" "irs" {
   set {
     name  = "irs.env.APPLICATIONINSIGHTS_ROLE_NAME"
     value = "${var.dataspace_partition} IRS"
-  }
-
-  set_sensitive {
-    name  = "brokerProxy.env.APPLICATIONINSIGHTS_CONNECTION_STRING"
-    value = data.azurerm_application_insights.main.connection_string
-  }
-
-  set {
-    name  = "brokerProxy.env.APPLICATIONINSIGHTS_ROLE_NAME"
-    value = "${var.dataspace_partition} BrokerProxy"
   }
 
   set {

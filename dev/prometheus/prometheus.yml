@@ -14,17 +14,7 @@ scrape_configs:
         labels:
           service: 'IRS-API'
       - targets:
-          - 'broker-proxy:4005'
-          - 'host.docker.internal:4005'
-        labels:
-          service: 'Broker-Proxy'
-      - targets:
           - 'consumer:4006'
           - 'host.docker.internal:4007'
         labels:
           service: 'Consumer'
-      - targets:
-          - 'provider:4006'
-          - 'host.docker.internal:4006'
-        labels:
-          service: 'Provider'
