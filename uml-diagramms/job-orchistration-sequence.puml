@@ -1,0 +1,63 @@
+@startuml
+
+actor APIConsumer
+database Blobstore
+
+autonumber "<b>[000]"
+
+box "Consumer" #LightBlue
+ApiEndpointExtension -> JobOrchestrator: new()
+activate JobOrchestrator
+ApiEndpointExtension -> ConsumerService: new()
+
+activate WebService
+ApiEndpointExtension -> ConsumerApiController: new()
+activate ConsumerApiController
+activate ConsumerService
+ApiEndpointExtension -> WebService: new()
+ApiEndpointExtension -> InMemoryJobStore: new()
+activate InMemoryJobStore
+ApiEndpointExtension ->  PartsTreeRecursiveLogic: new()
+activate PartsTreeRecursiveLogic
+ApiEndpointExtension ->  DataRequestFactory: new()
+activate DataRequestFactory
+
+
+WebService -> ConsumerApiController: register (monitor, service, middleware)
+
+APIConsumer -> ConsumerApiController: retrievePartsTree
+ConsumerApiController -> ConsumerService : retrievePartsTree(request)
+ConsumerService -> Blobstore : createContainer(storageAccountName, UUID)
+note over ConsumerService
+startJob -> JobOrchestrator
+end note
+ConsumerApiController -> JobOrchestrator: startJob(aasId, BlobstoreContainer, destinationKey)
+JobOrchestrator -> InMemoryJobStore: create(Job)
+
+
+InMemoryJobStore -> InMemoryJobStore: create(job)
+JobOrchestrator -> PartsTreeRecursiveJobHandler: initiate(Job)
+PartsTreeRecursiveJobHandler -> PartsTreeRecursiveJobHandler: initiate(Job)
+PartsTreeRecursiveJobHandler -> PartsTreeRecursiveJobHandler: getPartsTreeRequest(Job)
+PartsTreeRecursiveJobHandler -> InMemoryJobStore : get(jobRequest)
+
+
+PartsTreeRecursiveJobHandler -> PartsTreeRecursiveLogic : createInitialPartsTreeRequest(request)
+PartsTreeRecursiveJobHandler -> DataRequestFactory :createRequest
+DataRequestFactory -> DataRequestFactory: getRequestFromRegistry or Endpoint
+DataRequestFactory --> Blobstore: store request in Blobstore
+PartsTreeRecursiveJobHandler <-- DataRequestFactory: Stream<DataRequest>
+JobOrchestrator <-- PartsTreeRecursiveJobHandler: Stream<DataRequest>
+PartsTreeRecursiveJobHandler -> PartsTreeRecursiveJobHandler:startTransfers
+note over PartsTreeRecursiveJobHandler
+    Some other stuff
+end note
+JobOrchestrator --> InMemoryJobStore: (completeTransferProcess)
+JobOrchestrator <-- InMemoryJobStore: success
+ConsumerService <-- JobOrchestrator:  return JobInitiateResponse
+ConsumerApiController <-- ConsumerService:  return JobInitiateResponse
+APIConsumer <-- ConsumerApiController: 200 (jobId)
+
+
+
+@enduml
