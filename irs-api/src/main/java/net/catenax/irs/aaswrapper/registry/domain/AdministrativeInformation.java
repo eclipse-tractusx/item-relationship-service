@@ -7,21 +7,23 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.registry.rest;
-
-import java.util.List;
+package net.catenax.irs.aaswrapper.registry.domain;
 
 import lombok.Data;
 
 /**
- *
+ * AdministrativeInformation
  */
 @Data
-class Descriptor {
+class AdministrativeInformation {
 
     /**
-     *
+     * revision
      */
-    private List<Endpoint> endpoints;
+    private String revision;
+    /**
+     * version
+     */
+    private String version;
 
 }

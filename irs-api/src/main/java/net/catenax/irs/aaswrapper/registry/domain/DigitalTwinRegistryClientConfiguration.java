@@ -7,21 +7,24 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.registry.rest;
+package net.catenax.irs.aaswrapper.registry.domain;
 
 import feign.RequestInterceptor;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 
 /**
- *
+ * Digital Twin Registry Rest Client configuration.
  */
+@ExcludeFromCodeCoverageGeneratedReport
 class DigitalTwinRegistryClientConfiguration {
 
    /**
+    * Register authorization request interceptor - every request contains authorization header.
     *
-    * @return asd
+    * @return authorizationRequestInterceptor
     */
     @Bean
     public RequestInterceptor authorizationRequestInterceptor() {
@@ -29,7 +32,8 @@ class DigitalTwinRegistryClientConfiguration {
     }
 
     private String getAccessToken() {
-        // TODO: check how authorization against AAS Wrapper is gonna be implemented, right now (22.03) its not secured
+        // TODO: check how authorization against AAS Wrapper is gonna be implemented
+        //  right now (22.03) API not secured
         return StringUtils.EMPTY;
     }
 }

@@ -7,25 +7,19 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.registry.rest;
+package net.catenax.irs.aaswrapper.registry.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
- *
+ * HasSemantics
  */
 @Data
-class Endpoint {
+class HasSemantics {
 
     /**
-     *
+     * semanticId
      */
-    @JsonProperty("interface")
-    private String interfaceInformation;
-    /**
-     *
-     */
-    private ProtocolInformation protocolInformation;
+    private Reference semanticId;
 
 }

@@ -7,21 +7,25 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.registry.rest;
+package net.catenax.irs.aaswrapper.registry.domain;
 
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
- *
+ * Endpoint
  */
 @Data
-class Reference {
+class Endpoint {
 
     /**
-     *
+     * interfaceInformation
      */
-    private List<String> value;
+    @JsonProperty("interface")
+    private String interfaceInformation;
+    /**
+     * protocolInformation
+     */
+    private ProtocolInformation protocolInformation;
 
 }

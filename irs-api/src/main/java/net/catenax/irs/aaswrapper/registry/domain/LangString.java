@@ -7,22 +7,22 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.registry.rest;
+package net.catenax.irs.aaswrapper.registry.domain;
 
 import lombok.Data;
 
 /**
- *
+ * LangString
  */
 @Data
 class LangString {
 
     /**
-     *
+     * language
      */
     private String language;
     /**
-     *
+     * text
      */
     private String text;
 

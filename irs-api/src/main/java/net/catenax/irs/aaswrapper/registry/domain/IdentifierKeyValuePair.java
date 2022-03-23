@@ -7,37 +7,27 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.registry.rest;
-
-import java.util.List;
+package net.catenax.irs.aaswrapper.registry.domain;
 
 import lombok.Data;
 
 /**
- *
+ * IdentifierKeyValuePair
  */
 @Data
-class SubmodelDescriptor extends Descriptor {
+class IdentifierKeyValuePair extends HasSemantics {
 
     /**
-     *
+     * key
      */
-    private AdministrativeInformation administration;
+    private String key;
     /**
-     *
+     * subjectId
      */
-    private List<LangString> description;
+    private Reference subjectId;
     /**
-     *
+     * value
      */
-    private String idShort;
-    /**
-     *
-     */
-    private String identification;
-    /**
-     *
-     */
-    private Reference semanticId;
+    private String value;
 
 }
