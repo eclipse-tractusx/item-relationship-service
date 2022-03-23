@@ -46,6 +46,7 @@ paths:
               type: string
               enum:
                 - SerialPartTypization
+                - AssemblyPartRelationship
                 - PartDimension
                 - SupplyRelationData
                 - PCFCoreData
@@ -331,24 +332,33 @@ components:
       value:
         {
           "job": {
-            "jobID": "e5347f30-a921-11ec-b909-0242ac120002",
+            "jobID": "e5347c88-a921-11ec-b909-0242ac120002",
             "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
             "jobStatus": "Failed",
-            "exception": "",
             "createdOn": "2022-02-03T14:48:54.709Z",
+            "startedOn": "2022-02-03T14:48:54.709Z",
             "lastModifiedOn": "2022-02-03T14:48:54.709Z",
             "jobFinished": "",
-            "requestURL": "https://api.server.test/api/v0.2/irs/item/6c311d29-5753-46d4-b32c-19b918ea93b0/as_built?aspect=SerialPartTypization&depth=1&direction=downward",
-            "action": "GET",
+            "requestURL": "https://api.server.test/api/../",
             "owner": "",
-            "Summary": {
+            "summary": {
               "asyncFetchedItems": {
                 "queued": 0,
                 "running": 0,
                 "complete": 0,
-                "failed": 0,
+                "failed": 1,
                 "lost": 0
-              }
+              } },
+            "queryParameter": {
+              "bomLifecycle": "asBuilt",
+              "aspect": "SerialPartTypization",
+              "depth": 4,
+              "direction": "downward"
+            },
+            "exception": {
+              "exception": "IrsTimeoutException",
+              "cause": "Timeout while requesting Digital Registry.",
+              "exceptionDate": "2022-02-03T14:48:54.709Z"
             }
           }
         }
@@ -356,24 +366,33 @@ components:
       value:
         {
           "job": {
-            "jobID": "e5347f30-a921-11ec-b909-0242ac120002",
+            "jobID": "e5347c88-a921-11ec-b909-0242ac120002",
             "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
-            "jobStatus": "Running",
-            "exception": "",
+            "jobStatus": "Finished",
             "createdOn": "2022-02-03T14:48:54.709Z",
+            "startedOn": "2022-02-03T14:48:54.709Z",
             "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-            "jobFinished": "",
-            "requestURL": "https://api.server.test/api/v0.2/irs/item/6c311d29-5753-46d4-b32c-19b918ea93b0/as_built?aspect=SerialPartTypization&depth=1&direction=downward",
-            "action": "GET",
+            "jobFinished": "2022-02-03T14:48:54.709Z",
+            "requestURL": "https://api.server.test/api/../",
             "owner": "",
-            "Summary": {
+            "summary": {
               "asyncFetchedItems": {
                 "queued": 0,
                 "running": 0,
                 "complete": 0,
                 "failed": 0,
                 "lost": 0
-              }
+              } },
+            "queryParameter": {
+              "bomLifecycle": "asBuilt",
+              "aspect": "SerialPartTypization",
+              "depth": 4,
+              "direction": "downward"
+            },
+            "exception": {
+              "exception": "IrsTimeoutException",
+              "cause": "Timeout while requesting Digital Registry.",
+              "exceptionDate": "2022-02-03T14:48:54.709Z"
             }
           },
           "relationships": [
@@ -387,7 +406,7 @@ components:
                     "lexicalValue": "piece"
                   }
                 },
-                "lifecycleContext": "AsBuilt",
+                "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
                 "childCatenaXId": "a45a2246-f6e1-42da-b47d-5c3b58ed62e9"
@@ -477,21 +496,30 @@ components:
             "jobID": "e5347c88-a921-11ec-b909-0242ac120002",
             "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
             "jobStatus": "Canceled",
-            "exception": "IRSJobCanceledException",
             "createdOn": "2022-02-03T14:48:54.709Z",
+            "startedOn": "2022-02-03T14:48:54.709Z",
             "lastModifiedOn": "2022-02-03T14:48:54.709Z",
             "jobFinished": "2022-02-03T14:48:54.709Z",
-            "requestURL": "https://api.server.test/api/v0.2/irs/item/6c311d29-5753-46d4-b32c-19b918ea93b0/as_built?aspect=SerialPartTypization&depth=1&direction=downward",
-            "action": "GET",
+            "requestURL": "https://api.server.test/api/../",
             "owner": "",
-            "Summary": {
+            "summary": {
               "asyncFetchedItems": {
                 "queued": 0,
                 "running": 0,
                 "complete": 0,
                 "failed": 0,
                 "lost": 0
-              }
+              } },
+            "queryParameter": {
+              "bomLifecycle": "asBuilt",
+              "aspect": "SerialPartTypization",
+              "depth": 4,
+              "direction": "downward"
+            },
+            "exception": {
+              "exception": "IrsTimeoutException",
+              "cause": "Timeout while requesting Digital Registry.",
+              "exceptionDate": "2022-02-03T14:48:54.709Z"
             }
           }
         }
@@ -502,21 +530,30 @@ components:
             "jobID": "e5347c88-a921-11ec-b909-0242ac120002",
             "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
             "jobStatus": "Finished",
-            "exception": "",
             "createdOn": "2022-02-03T14:48:54.709Z",
+            "startedOn": "2022-02-03T14:48:54.709Z",
             "lastModifiedOn": "2022-02-03T14:48:54.709Z",
             "jobFinished": "2022-02-03T14:48:54.709Z",
-            "requestURL": "https://api.server.test/api/v0.2/irs/item/6c311d29-5753-46d4-b32c-19b918ea93b0/as_built?aspect=SerialPartTypization&depth=1&direction=downward",
-            "action": "GET",
+            "requestURL": "https://api.server.test/api/../",
             "owner": "",
-            "Summary": {
+            "summary": {
               "asyncFetchedItems": {
                 "queued": 0,
                 "running": 0,
                 "complete": 0,
                 "failed": 0,
                 "lost": 0
-              }
+              } },
+            "queryParameter": {
+              "bomLifecycle": "asBuilt",
+              "aspect": "SerialPartTypization",
+              "depth": 4,
+              "direction": "downward"
+            },
+            "exception": {
+              "exception": "IrsTimeoutException",
+              "cause": "Timeout while requesting Digital Registry.",
+              "exceptionDate": "2022-02-03T14:48:54.709Z"
             }
           },
           "relationships": [
@@ -530,7 +567,7 @@ components:
                     "lexicalValue": "piece"
                   }
                 },
-                "lifecycleContext": "AsBuilt",
+                "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
                 "childCatenaXId": "a45a2246-f6e1-42da-b47d-5c3b58ed62e9"
