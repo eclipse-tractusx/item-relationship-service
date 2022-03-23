@@ -9,7 +9,7 @@ box "Consumer" #LightBlue
 ApiEndpointExtension -> JobOrchestrator: new()
 activate JobOrchestrator
 ApiEndpointExtension -> ConsumerService: new()
-
+participant TransferProcessManager
 activate WebService
 ApiEndpointExtension -> ConsumerApiController: new()
 activate ConsumerApiController
@@ -21,7 +21,6 @@ ApiEndpointExtension ->  PartsTreeRecursiveLogic: new()
 activate PartsTreeRecursiveLogic
 ApiEndpointExtension ->  DataRequestFactory: new()
 activate DataRequestFactory
-
 
 WebService -> ConsumerApiController: register (monitor, service, middleware)
 
@@ -48,6 +47,13 @@ DataRequestFactory -> DataRequestFactory: getRequestFromRegistry or Endpoint
 DataRequestFactory --> Blobstore: store request in Blobstore
 PartsTreeRecursiveJobHandler <-- DataRequestFactory: Stream<DataRequest>
 JobOrchestrator <-- PartsTreeRecursiveJobHandler: Stream<DataRequest>
+loop over  Stream<DataRequest>
+    JobOrchestrator -> JobOrchestrator: startTransfer
+    ref over JobOrchestrator, TransferProcessManager
+        TransferProcessManager: initiateConsumerRequest(dataRequest)
+    end ref
+    JobOrchestrator --> InMemoryJobStore: addTransferProcess
+end loop
 PartsTreeRecursiveJobHandler -> PartsTreeRecursiveJobHandler:startTransfers
 note over PartsTreeRecursiveJobHandler
     Some other stuff
@@ -58,6 +64,10 @@ ConsumerService <-- JobOrchestrator:  return JobInitiateResponse
 ConsumerApiController <-- ConsumerService:  return JobInitiateResponse
 APIConsumer <-- ConsumerApiController: 200 (jobId)
 
+note over APIConsumer
+    returns FATAL_ERROR in case of any Exception during processing
+end note
+APIConsumer <-- ConsumerApiController: FATAL_ERROR (jobId)
 
 
 @enduml
