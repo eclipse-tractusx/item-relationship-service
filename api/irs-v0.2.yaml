@@ -338,7 +338,7 @@ components:
             "createdOn": "2022-02-03T14:48:54.709Z",
             "startedOn": "2022-02-03T14:48:54.709Z",
             "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-            "jobFinished": "",
+            "jobCompleted": "",
             "requestURL": "https://api.server.test/api/../",
             "owner": "",
             "summary": {
@@ -357,7 +357,7 @@ components:
             },
             "exception": {
               "exception": "IrsTimeoutException",
-              "cause": "Timeout while requesting Digital Registry.",
+              "errorDetail": "Timeout while requesting Digital Registry.",
               "exceptionDate": "2022-02-03T14:48:54.709Z"
             }
           }
@@ -368,11 +368,11 @@ components:
           "job": {
             "jobID": "e5347c88-a921-11ec-b909-0242ac120002",
             "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
-            "jobStatus": "Finished",
+            "jobStatus": "Completed",
             "createdOn": "2022-02-03T14:48:54.709Z",
             "startedOn": "2022-02-03T14:48:54.709Z",
             "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-            "jobFinished": "2022-02-03T14:48:54.709Z",
+            "jobCompleted": "2022-02-03T14:48:54.709Z",
             "requestURL": "https://api.server.test/api/../",
             "owner": "",
             "summary": {
@@ -391,7 +391,7 @@ components:
             },
             "exception": {
               "exception": "IrsTimeoutException",
-              "cause": "Timeout while requesting Digital Registry.",
+              "errorDetail": "Timeout while requesting Digital Registry.",
               "exceptionDate": "2022-02-03T14:48:54.709Z"
             }
           },
@@ -499,7 +499,7 @@ components:
             "createdOn": "2022-02-03T14:48:54.709Z",
             "startedOn": "2022-02-03T14:48:54.709Z",
             "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-            "jobFinished": "2022-02-03T14:48:54.709Z",
+            "jobCompleted": "2022-02-03T14:48:54.709Z",
             "requestURL": "https://api.server.test/api/../",
             "owner": "",
             "summary": {
@@ -518,7 +518,7 @@ components:
             },
             "exception": {
               "exception": "IrsTimeoutException",
-              "cause": "Timeout while requesting Digital Registry.",
+              "errorDetail": "Timeout while requesting Digital Registry.",
               "exceptionDate": "2022-02-03T14:48:54.709Z"
             }
           }
@@ -529,11 +529,11 @@ components:
           "job": {
             "jobID": "e5347c88-a921-11ec-b909-0242ac120002",
             "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
-            "jobStatus": "Finished",
+            "jobStatus": "Completed",
             "createdOn": "2022-02-03T14:48:54.709Z",
             "startedOn": "2022-02-03T14:48:54.709Z",
             "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-            "jobFinished": "2022-02-03T14:48:54.709Z",
+            "jobCompleted": "2022-02-03T14:48:54.709Z",
             "requestURL": "https://api.server.test/api/../",
             "owner": "",
             "summary": {
@@ -552,7 +552,7 @@ components:
             },
             "exception": {
               "exception": "IrsTimeoutException",
-              "cause": "Timeout while requesting Digital Registry.",
+              "errorDetail": "Timeout while requesting Digital Registry.",
               "exceptionDate": "2022-02-03T14:48:54.709Z"
             }
           },

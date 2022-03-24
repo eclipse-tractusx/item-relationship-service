@@ -1,0 +1,44 @@
+@startuml
+entity MultiTransferJob {
+--
+* jobId : string (UUID)
+* transferProcessIds: Set<string>
+* state : JobState
+* jobData: Map<String, String>
+* errorDetail: string
+* completedTransfers: List<TransferProcess>
+}
+
+MultiTransferJob -> JobState
+
+
+enum JobState {
+    UNSAVED,
+    INITIAL,
+    IN_PROGRESS,
+    TRANSFERS_FINISHED,
+    COMPLETED,
+    ERROR;
+}
+
+MultiTransferJob -> TransferProcess
+
+class TransferProcess {
+* String id;
+* Type type = Type.CONSUMER;
+* int state;
+* int stateCount = TransferProcessStates.UNSAVED;
+* long stateTimestamp;
+* String errorDetail;
+* DataRequest dataRequest;
+* ResourceManifest resourceManifest;
+* ProvisionedResourceSet provisionedResourceSet;
+}
+
+TransferProcess -> TransferProcessStates
+
+enum TransferProcessStates {
+    UNSAVED
+}
+
+@enduml
