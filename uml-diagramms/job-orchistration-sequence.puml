@@ -1,36 +1,44 @@
 @startuml
 
 actor APIConsumer
-database Blobstore
 
 autonumber "<b>[000]"
 
 box "Consumer" #LightBlue
-ApiEndpointExtension -> JobOrchestrator: new()
-activate JobOrchestrator
-ApiEndpointExtension -> ConsumerService: new()
-participant TransferProcessManager
+participant ApiEndpointExtension
 activate WebService
+ApiEndpointExtension -> WebService: new()
 ApiEndpointExtension -> ConsumerApiController: new()
 activate ConsumerApiController
+ApiEndpointExtension -> ConsumerService: new()
+
+
+
 activate ConsumerService
-ApiEndpointExtension -> WebService: new()
+ApiEndpointExtension -> JobOrchestrator: new()
+activate JobOrchestrator
+
+
 ApiEndpointExtension -> InMemoryJobStore: new()
 activate InMemoryJobStore
 ApiEndpointExtension ->  PartsTreeRecursiveLogic: new()
 activate PartsTreeRecursiveLogic
 ApiEndpointExtension ->  DataRequestFactory: new()
 activate DataRequestFactory
+participant PartsTreeRecursiveJobHandler
+participant TransferProcessManager
+database Blobstore
 
 WebService -> ConsumerApiController: register (monitor, service, middleware)
 
 APIConsumer -> ConsumerApiController: retrievePartsTree
 ConsumerApiController -> ConsumerService : retrievePartsTree(request)
 ConsumerService -> Blobstore : createContainer(storageAccountName, UUID)
+ConsumerService <- Blobstore : success
 note over ConsumerService
 startJob -> JobOrchestrator
 end note
-ConsumerApiController -> JobOrchestrator: startJob(aasId, BlobstoreContainer, destinationKey)
+ConsumerService -> JobOrchestrator: startJob(aasId, BlobstoreContainer, destinationKey)
 JobOrchestrator -> InMemoryJobStore: create(Job)
 
 
