@@ -1,0 +1,18 @@
+@startuml 
+skinparam monochrome true
+skinparam shadowing false  
+
+component [**IRS**] <<System>> as IRS {
+component [**IRS API**] <<Component>> as API
+component [**WebService (Servlet)**] <<Component>> as WebService
+component [**ConsumerAPIControllerService**] <<Component>> as ConsumerAPIControllerService
+component [**ConsumerService**] <<Component>> as ConsumerService
+component [**JobOrchestrator**] <<Component>> as JobOrchestrator
+component [**JobStore**] <<Component>> as JobStore
+component [**RecursiveJobHandler**] <<Component>> as RecursiveJobHandler
+component [**IRSAASClient**] <<Component>> as IRSAASClient
+component [**PartsTreeRecursiveLogic**] <<Component>> as PartsTreeRecursiveLogic
+component [**BlobStoreApi**] <<Component>> as DataStoreApi
+component [**BlobStoreClient**] <<Component>> as DataStoreClient
+}
+@enduml
