@@ -1,0 +1,56 @@
+@startuml
+
+actor APIConsumer
+activate APIConsumer
+
+box "Consumer" #LightBlue
+participant WebService
+activate WebService
+participant ConsumerApiController
+activate ConsumerApiController
+participant ConsumerService
+activate ConsumerService
+participant JobOrchestrator
+activate JobOrchestrator
+
+APIConsumer -> WebService : /irs/items/{globalAssetId}
+WebService -> ConsumerApiController :  retrievePartsTree
+ConsumerApiController -> ConsumerService :  retrievePartsTree
+ConsumerService -> JobOrchestrator: startJob
+JobOrchestrator -> InMemoryJobStore: create(Job)
+
+JobOrchestrator --> PartsTreeRecursiveJobHandler: initiate(Job)
+activate PartsTreeRecursiveJobHandler
+
+ConsumerService <-- JobOrchestrator : success jobID (UUID)
+ConsumerApiController <-- ConsumerService : success jobID (UUID)
+WebService <-- ConsumerApiController : success jobID (UUID)
+APIConsumer <-- ConsumerApiController : success jobID (UUID)
+
+loop poll until response is  "200"
+     APIConsumer -> WebService : /irs/jobs/{jobId}
+
+     ref over WebService,  JobOrchestrator
+        lookupJobId in JobStore
+     end ref
+     opt job.hasCompleted()
+            APIConsumer <-- WebService : "200" + document
+     else job.isRunning()
+           alt ?returnUncompletedResultTree=true
+             APIConsumer <-- WebService : "206" + document
+           else
+             APIConsumer <-- WebService : "200"
+            end alt
+     else job.hasCancled()
+             APIConsumer <-- WebService : "404"
+     else job.hasFailed()
+        alt ?returnUncompletedResultTree=true
+            APIConsumer <-- WebService : "417" + document
+        else
+            APIConsumer <-- WebService : "417"
+        end alt
+     end opt
+
+end loop
+
+@enduml
