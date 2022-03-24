@@ -49,7 +49,7 @@ class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
     @Override
     public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
         return new AssetAdministrationShellDescriptor.AssetAdministrationShellDescriptorBuilder()
-              .identification("identification")
+              .identification(aasIdentifier)
               .idShort("idShort")
               .build();
     }
