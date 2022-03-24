@@ -23,7 +23,7 @@ public class LoggerMonitorTests {
     static Faker faker = new Faker();
     final String message = faker.lorem().sentence();
     final String extraParams = faker.lorem().sentence();
-    TestLogHandler handler = new TestLogHandler();;
+    TestLogHandler handler = new TestLogHandler();
     LoggerMonitor sut = new LoggerMonitor();
 
     @BeforeEach
