@@ -1,5 +1,5 @@
 @startuml
-entity MultiTransferJob {
+class MultiTransferJob {
 --
 * jobId : string (UUID)
 * transferProcessIds: Set<string>
@@ -21,9 +21,7 @@ enum JobState {
     ERROR;
 }
 
-MultiTransferJob -> TransferProcess
-
-class TransferProcess {
+class  TransferProcess {
 * String id;
 * Type type = Type.CONSUMER;
 * int state;
@@ -35,10 +33,43 @@ class TransferProcess {
 * ProvisionedResourceSet provisionedResourceSet;
 }
 
+class DataRequest{
+ id : String
+ processId : String
+ connectorAddress : String
+ protocol : String
+ connectorId : String
+ dataEntry : DataEntry
+ dataDestination : DataAddress
+ managedResources : boolean (true)
+ properties : Map<String, String>
+ * transferType : TransferType
+
+}
 TransferProcess -> TransferProcessStates
+
+class DataEntry {
+    id : String
+    policyId : String
+    catalogEntry : DataCatalogEntry
+}
+
+interface DataCatalogEntry {
+    dataAddress : DataAddress
+}
+
+
+class TransferType {
+    ..
+}
 
 enum TransferProcessStates {
     UNSAVED
 }
 
+MultiTransferJob -> TransferProcess
+DataRequest -> DataEntry
+DataEntry -> DataCatalogEntry
+DataRequest -> TransferType
+TransferProcess -> DataRequest
 @enduml
