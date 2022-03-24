@@ -2,7 +2,7 @@
 skinparam monochrome true
 skinparam shadowing false
 
-[\n IRS \n] <<Component>> as IRS
+[\n IRS \n] <<System>> as IRS
 
 [\n AAS Wrapper / AAS Proxy \n] <<Component>> as AASW
 [\n AAS Resgistry \n] <<Component>> as AASR
