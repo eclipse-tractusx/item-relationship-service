@@ -3,13 +3,13 @@ data "azurerm_client_config" "current" {}
 
 # Retrieve the Key Vault for storing generated identity information and credentials
 data "azurerm_key_vault" "identities" {
-  name                = "${var.prefix}-${var.environment}-prs-id"
+  name                = "${var.prefix}-${var.environment}-irs-id"
   resource_group_name = "catenax-terraform"
 }
 
-# Retrieve the prs_connector_consumer_object_id secret.
-data "azurerm_key_vault_secret" "prs_connector_consumer_object_id" {
-  name         = "prs-connector-consumer-object-id"
+# Retrieve the irs_connector_consumer_object_id secret.
+data "azurerm_key_vault_secret" "irs_connector_consumer_object_id" {
+  name         = "irs-connector-consumer-object-id"
   key_vault_id = data.azurerm_key_vault.identities.id
 }
 
@@ -64,11 +64,11 @@ resource "azurerm_key_vault_secret" "consumer-dataexchange-account-key" {
   depends_on   = [azurerm_role_assignment.consumer-vault-current-user]
 }
 
-# Role assignment so that the PRS Consumer primary identity may access the vault.
+# Role assignment so that the IRS Consumer primary identity may access the vault.
 resource "azurerm_role_assignment" "primary-id" {
   scope                = azurerm_key_vault.consumer-vault.id
   role_definition_name = "Key Vault Secrets Officer"
-  principal_id         = data.azurerm_key_vault_secret.prs_connector_consumer_object_id.value
+  principal_id         = data.azurerm_key_vault_secret.irs_connector_consumer_object_id.value
 }
 
 # Role assignment so that the currently logged in user may access the vault, needed to add secrets.

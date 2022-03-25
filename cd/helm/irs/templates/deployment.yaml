@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: irs-api
+  labels:
+    app.kubernetes.io/name: irs-api
+    app.kubernetes.io/part-of: irs
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: irs-api
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "4004"
+        prometheus.io/scheme: "http"
+        prometheus.io/path: "/actuator/prometheus"
+      labels:
+        app.kubernetes.io/name: irs-api
+    spec:
+      containers:
+        - name: irs
+          image: "{{ .Values.irs.image.repository }}:{{ .Values.irs.image.tag }}"
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 4004
+              name: actuator
+          env:
+            - name: irs.apiUrl
+              value: {{ .Values.irs.apiUrl }}
+            - name: spring.datasource.url
+              value: {{ .Values.postgresql.url | quote }}
+            - name: spring.datasource.username
+              value: {{ .Values.postgresql.postgresqlUsername | quote }}
+            - name: spring.datasource.password
+              valueFrom:
+                secretKeyRef:
+                  name: irs-secrets
+                  key: postgresql_password
+{{- range $key, $value := .Values.irs.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+{{- end }}
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          startupProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: actuator
+            periodSeconds: 3
+            timeoutSeconds: 1
+            failureThreshold: 90
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: actuator
+            periodSeconds: 3
+            timeoutSeconds: 1
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: actuator
+            periodSeconds: 3
+            timeoutSeconds: 1
+            failureThreshold: 30
+---

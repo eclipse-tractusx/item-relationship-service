@@ -1,0 +1,23 @@
+replicaCount: 1
+
+ingress:
+  host: irs.local
+  className: nginx
+  prefix: /mtpdc
+
+irs:
+  image:
+    repository: irs-api
+    tag: "latest"
+  env: {}
+
+#postgresql:
+#  url: "jdbc:postgresql://postgresql:5432/postgres"
+#  postgresqlUsername: irs-user
+#  postgresqlPassword: <postgres-password>
+
+#eventHubs:
+#  namespace: NAMESPACENAME
+#  name: HUBNAME
+#  sendConnectionString: XXXX
+#  receiveConnectionString: XXXX

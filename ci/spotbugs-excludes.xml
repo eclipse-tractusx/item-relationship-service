@@ -9,14 +9,14 @@
     </Match>
     <Match>
         <!-- Filter generated sources.. -->
-        <Package name="net.catenax.prs.client.api"/>
+        <Package name="net.catenax.irs.client.api"/>
     </Match>
     <Match>
         <!-- Filter generated sources.. -->
-        <Package name="net.catenax.prs.client"/>
+        <Package name="net.catenax.irs.client"/>
     </Match>
     <Match>
         <!-- Filter generated sources.. -->
-        <Package name="net.catenax.prs.client.auth"/>
+        <Package name="net.catenax.irs.client.auth"/>
     </Match>
 </FindBugsFilter>

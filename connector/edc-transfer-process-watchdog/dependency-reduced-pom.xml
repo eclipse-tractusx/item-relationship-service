@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
-    <artifactId>prs-connector-parent</artifactId>
-    <groupId>net.catenax.prs</groupId>
+    <artifactId>irs-connector-parent</artifactId>
+    <groupId>net.catenax.irs</groupId>
     <version>${revision}</version>
-    <relativePath>../prs-connector-parent/pom.xml</relativePath>
+    <relativePath>../irs-connector-parent/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>net.catenax.prs</groupId>
+  <groupId>net.catenax.irs</groupId>
   <artifactId>edc-transfer-process-watchdog</artifactId>
   <name>EDC Transfer Process Watchdog</name>
   <description>Module to clean up hanging transfer processes</description>

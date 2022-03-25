@@ -16,7 +16,7 @@ to pass this field along in the IDS message in a field called
 {
   "@type": "ids:ArtifactRequestMessage",
   "@id": "https://w3id.org/idsa/autogen/artifactRequestMessage/c1197694-209c-4cb7-b9eb-7bee82b334bd",
-  "ids:requestedArtifact": "prs-request",
+  "ids:requestedArtifact": "irs-request",
   "ids:issuerConnector": "edc-82546323-4b63-4ba9-846f-621a3fd0c0d4",
   "ids:securityToken": {
     "@type": "ids:DynamicAttributeToken",
@@ -28,7 +28,7 @@ to pass this field along in the IDS message in a field called
   },
   "ids:modelVersion": "1.0",
   "dataspaceconnector-properties": {
-    "prs-request-parameters": "{\"oneIDManufacturer\":\"CAXSWPFTJQEVZNZZ\",\"objectIDManufacturer\":\"1\",\"view\":\"AS_BUILT\",\"aspect\":null,\"depth\":null}"
+    "irs-request-parameters": "{\"oneIDManufacturer\":\"CAXSWPFTJQEVZNZZ\",\"objectIDManufacturer\":\"1\",\"view\":\"AS_BUILT\",\"aspect\":null,\"depth\":null}"
   },
   "dataspaceconnector-destination-token": "{\"edctype\":\"dataspaceconnector:azuretoken\",\"sas\":\"?sv=2020-06-12&se=2021-11-18T07%3A51%3A17Z&sr=c&sp=w&sig=kgjf%2FlLw%xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxD\",\"expiration\":1637221877219}",
   "dataspaceconnector-data-destination": {

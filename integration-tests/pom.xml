@@ -3,16 +3,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.catenax.prs</groupId>
-        <artifactId>prs-parent-spring-boot</artifactId>
+        <groupId>net.catenax.irs</groupId>
+        <artifactId>irs-parent-spring-boot</artifactId>
         <version>${revision}</version>
-        <relativePath>../prs-parent-spring-boot</relativePath>
+        <relativePath>../irs-parent-spring-boot</relativePath>
     </parent>
 
     <artifactId>integration-tests</artifactId>
 
-    <name>PRS Tests</name>
-    <description>Part Relationship Service Integration Tests</description>
+    <name>IRS Tests</name>
+    <description>Item Relationship Service Integration Tests</description>
 
     <properties>
         <groups>IntegrationTests</groups>
@@ -20,14 +20,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.catenax.prs</groupId>
-            <artifactId>prs-api</artifactId>
+            <groupId>net.catenax.irs</groupId>
+            <artifactId>irs-api</artifactId>
             <version>${revision}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -35,14 +30,14 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.catenax.prs</groupId>
-            <artifactId>prs-testing</artifactId>
+            <groupId>net.catenax.irs</groupId>
+            <artifactId>irs-testing</artifactId>
             <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>net.catenax.prs</groupId>
-            <artifactId>prs-connector-models</artifactId>
+            <groupId>net.catenax.irs</groupId>
+            <artifactId>irs-connector-models</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>

@@ -1,6 +1,6 @@
 # Terraform code
 
-Terraform scripts to deploy the PRS infrastructure on Microsoft Azure.
+Terraform scripts to deploy the IRS infrastructure on Microsoft Azure.
 
 As you can see in `version.tf`, the terraform state is persisted in a storage account. The storage account and the container have been created manually.
 

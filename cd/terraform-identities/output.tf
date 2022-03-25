@@ -8,17 +8,17 @@ output "vault_name" {
   description = "Name of the Azure Key Vault storing generated credentials."
 }
 
-output "prs_connector_consumer_client_id" {
-  value       = azuread_service_principal.prs-connector-consumer.application_id
-  description = "Client ID (Application ID) of the service principal generated for the PRS Connector Consumer."
+output "irs_connector_consumer_client_id" {
+  value       = azuread_service_principal.irs-connector-consumer.application_id
+  description = "Client ID (Application ID) of the service principal generated for the IRS Connector Consumer."
 }
 
-output "prs_connector_consumer_object_id" {
-  value       = azuread_service_principal.prs-connector-consumer.object_id
-  description = "Object ID of the service principal generated for the PRS Connector Consumer."
+output "irs_connector_consumer_object_id" {
+  value       = azuread_service_principal.irs-connector-consumer.object_id
+  description = "Object ID of the service principal generated for the IRS Connector Consumer."
 }
 
-output "prs_connector_consumer_cert_name" {
-  value       = azurerm_key_vault_certificate.prs-connector-consumer.name
-  description = "Name of the Certificate in Azure Key Vault for the service principal generated for the PRS Connector Consumer."
+output "irs_connector_consumer_cert_name" {
+  value       = azurerm_key_vault_certificate.irs-connector-consumer.name
+  description = "Name of the Certificate in Azure Key Vault for the service principal generated for the IRS Connector Consumer."
 }

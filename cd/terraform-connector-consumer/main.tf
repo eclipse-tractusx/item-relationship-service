@@ -2,9 +2,9 @@
 # Later on, providers will be deployed in terraform-dataspace-partition as we will have one provider per partition.
 # The consumer will use terraform-dataspace-partition output to be aware of all the provider urls.
 
-resource "kubernetes_namespace" "prs-connectors" {
+resource "kubernetes_namespace" "irs-connectors" {
   metadata {
-    name = "prs-connectors"
+    name = "irs-connectors"
   }
 }
 
@@ -15,32 +15,32 @@ data "azurerm_application_insights" "main" {
 
 # Retrieve the Key Vault for storing generated identity information and credentials
 data "azurerm_key_vault" "identities" {
-  name                = "${var.prefix}-${var.environment}-prs-id"
+  name                = "${var.prefix}-${var.environment}-irs-id"
   resource_group_name = "catenax-terraform"
 }
 
-# Retrieve the Client ID for the PRS Connector Consumer from the central Key Vault.
-data "azurerm_key_vault_secret" "prs_connector_consumer_client_id" {
-  name         = "prs-connector-consumer-client-id"
+# Retrieve the Client ID for the IRS Connector Consumer from the central Key Vault.
+data "azurerm_key_vault_secret" "irs_connector_consumer_client_id" {
+  name         = "irs-connector-consumer-client-id"
   key_vault_id = data.azurerm_key_vault.identities.id
 }
 
-# Retrieve the Certificate for the PRS Connector Consumer from the central Key Vault.
+# Retrieve the Certificate for the IRS Connector Consumer from the central Key Vault.
 # Note that the data source is actually a Certificate in Key Vault, and not a Secret.
 # However this actually works, and retrieves the Certificate base64 encoded.
 # An advantage of this method is that the "Key Vault Secrets User" (read-only)
 # role is then sufficient to export the certificate.
 # This is documented at https://docs.microsoft.com/azure/key-vault/certificates/how-to-export-certificate.
-data "azurerm_key_vault_secret" "prs_connector_consumer_certificate" {
-  name         = "prs-connector-consumer-certificate"
+data "azurerm_key_vault_secret" "irs_connector_consumer_certificate" {
+  name         = "irs-connector-consumer-certificate"
   key_vault_id = data.azurerm_key_vault.identities.id
 }
 
-# Deploy the PRS Consumer with Helm
-resource "helm_release" "prs-connector-consumer" {
-  name      = "prs-connector-consumer"
-  chart     = "../helm/prs-connector-consumer"
-  namespace = kubernetes_namespace.prs-connectors.metadata[0].name
+# Deploy the IRS Consumer with Helm
+resource "helm_release" "irs-connector-consumer" {
+  name      = "irs-connector-consumer"
+  chart     = "../helm/irs-connector-consumer"
+  namespace = kubernetes_namespace.irs-connectors.metadata[0].name
   timeout   = 300
 
   set {
@@ -55,12 +55,12 @@ resource "helm_release" "prs-connector-consumer" {
 
   set {
     name  = "ingress.prefix"
-    value = "/prs-connector-consumer"
+    value = "/irs-connector-consumer"
   }
 
   set {
     name  = "image.repository"
-    value = "${var.image_registry}/prs-connector-consumer"
+    value = "${var.image_registry}/irs-connector-consumer"
   }
 
   set {
@@ -73,7 +73,7 @@ resource "helm_release" "prs-connector-consumer" {
   # from the Terraform plan display.
   set_sensitive {
     name  = "consumer.env.edc\\.vault\\.clientid"
-    value = data.azurerm_key_vault_secret.prs_connector_consumer_client_id.value
+    value = data.azurerm_key_vault_secret.irs_connector_consumer_client_id.value
   }
 
   set {
@@ -98,7 +98,7 @@ resource "helm_release" "prs-connector-consumer" {
 
   set_sensitive {
     name  = "identity.certificateBase64"
-    value = data.azurerm_key_vault_secret.prs_connector_consumer_certificate.value
+    value = data.azurerm_key_vault_secret.irs_connector_consumer_certificate.value
   }
 
 

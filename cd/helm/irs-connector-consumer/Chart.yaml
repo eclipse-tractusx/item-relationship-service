@@ -1,0 +1,5 @@
+apiVersion: v2
+name: irs-connector-consumer
+description: A Helm chart to deploy the IRS Connector Consumer to Kubernetes.
+type: application
+version: 0.0.1

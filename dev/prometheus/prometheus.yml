@@ -8,23 +8,13 @@ scrape_configs:
     static_configs:
       - targets:
           # When target is running in Docker
-          - 'prs:4004'
+          - 'irs:4004'
           # When target is running on Host
           - 'host.docker.internal:4004'
         labels:
-          service: 'PRS-API'
-      - targets:
-          - 'broker-proxy:4005'
-          - 'host.docker.internal:4005'
-        labels:
-          service: 'Broker-Proxy'
+          service: 'IRS-API'
       - targets:
           - 'consumer:4006'
           - 'host.docker.internal:4007'
         labels:
           service: 'Consumer'
-      - targets:
-          - 'provider:4006'
-          - 'host.docker.internal:4006'
-        labels:
-          service: 'Provider'
