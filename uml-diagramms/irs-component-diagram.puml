@@ -1,6 +1,6 @@
 @startuml 
 skinparam monochrome true
-skinparam shadowing false  
+skinparam shadowing false
 
 component [**IRS**] <<System>> as IRS {
 interface ServiceExtension as ServiceExtension
