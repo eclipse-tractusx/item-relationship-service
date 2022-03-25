@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-import static net.catenax.irs.dtos.PartsTreeView.AS_BUILT;
+import static net.catenax.irs.dtos.ItemsTreeView.AS_BUILT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 

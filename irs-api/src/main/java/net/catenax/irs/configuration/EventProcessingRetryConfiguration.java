@@ -10,7 +10,6 @@
 package net.catenax.irs.configuration;
 
 import lombok.Data;
-import org.springframework.kafka.support.ExponentialBackOffWithMaxRetries;
 
 /**
  * Configuration settings for retrying incoming event processing.
@@ -27,18 +26,5 @@ public class EventProcessingRetryConfiguration {
      */
     private int maxRetries = DEFAULT_MAX_RETRIES;
 
-    /**
-     * Initial exponential back-off retry interval in milliseconds.
-     */
-    private long initialIntervalMilliseconds = ExponentialBackOffWithMaxRetries.DEFAULT_INITIAL_INTERVAL;
 
-    /**
-     * Exponential back-off retry multiplier (e.g. 1.5 increases the interval by 50%).
-     */
-    private double multiplier = ExponentialBackOffWithMaxRetries.DEFAULT_MULTIPLIER;
-
-    /**
-     * Exponential back-off retry * maximum time.
-     */
-    private long maxIntervalMilliseconds = ExponentialBackOffWithMaxRetries.DEFAULT_MAX_INTERVAL;
 }

@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
-import net.catenax.irs.dtos.PartLifecycleStage;
+import net.catenax.irs.dtos.ItemLifecycleStage;
 import net.catenax.irs.dtos.PartRelationship;
 
 import javax.validation.Valid;
@@ -42,7 +42,7 @@ public class PartRelationshipUpdate {
 
     @NotNull
     @Schema(description = "Whether the update applies to the time the part was built, or a maintenance operation on the part after it was built.")
-    private PartLifecycleStage stage;
+    private ItemLifecycleStage stage;
 
     @Past
     @NotNull

@@ -46,4 +46,6 @@ public class ValidationConstants {
      * VIN length for input field.
      */
     public static final int VIN_FIELD_LENGTH = 17;
+
+    public static final int JOB_ID_FIELD_MAX_LENGTH = 16;
 }

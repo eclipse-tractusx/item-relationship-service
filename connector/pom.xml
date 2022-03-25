@@ -16,7 +16,6 @@
         <module>edc-transfer-process-watchdog</module>
         <module>irs-connector-models</module>
         <module>irs-connector-consumer</module>
-        <module>irs-connector-provider</module>
         <module>irs-connector-testing</module>
         <module>irs-connector-commons</module>
     </modules>

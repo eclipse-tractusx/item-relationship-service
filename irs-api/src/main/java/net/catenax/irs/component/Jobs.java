@@ -1,0 +1,26 @@
+package net.catenax.irs.component;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
+import lombok.Value;
+
+@Schema(description = "List of Job and relationship to parts")
+@Value
+@Builder(toBuilder = true, setterPrefix = "with")
+@JsonDeserialize(builder = Jobs.JobsBuilder.class)
+public class Jobs {
+
+   @Schema(description = "Information and data for the Job", implementation = Job.JobBuilder.class)
+   private Job job;
+
+   @Schema(description = "Parts relationship information")
+   private Relationship relationship;
+
+   @Schema
+   private Optional<List<Shells>> shells;
+
+}

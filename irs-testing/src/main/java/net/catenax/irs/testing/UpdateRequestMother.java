@@ -11,7 +11,7 @@ package net.catenax.irs.testing;
 
 import com.github.javafaker.Faker;
 import net.catenax.irs.dtos.PartAttribute;
-import net.catenax.irs.dtos.PartLifecycleStage;
+import net.catenax.irs.dtos.ItemLifecycleStage;
 import net.catenax.irs.dtos.events.PartAspectsUpdateRequest;
 import net.catenax.irs.dtos.events.PartAttributeUpdateRequest;
 import net.catenax.irs.dtos.events.PartRelationshipUpdate;
@@ -71,7 +71,7 @@ public class UpdateRequestMother {
         return PartRelationshipUpdate.builder()
                 .withRelationship(generate.partRelationship())
                 .withRemove(false)
-                .withStage(faker.options().option(PartLifecycleStage.class))
+                .withStage(faker.options().option(ItemLifecycleStage.class))
                 .withEffectTime(faker.date().past(100, DAYS).toInstant())
                 .build();
     }

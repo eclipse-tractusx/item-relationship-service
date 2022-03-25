@@ -9,7 +9,10 @@
 //
 package net.catenax.irs.controllers;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
+import javax.validation.Valid;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,18 +25,13 @@ import net.catenax.irs.IrsApplication;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.dtos.PartRelationshipsWithInfos;
-import net.catenax.irs.requests.PartsTreeByObjectIdRequest;
-import net.catenax.irs.requests.PartsTreeByVinRequest;
-import net.catenax.irs.services.PartsTreeQueryByVinService;
-import net.catenax.irs.services.PartsTreeQueryService;
+import net.catenax.irs.requests.IrsPartsTreeRequest;
+import net.catenax.irs.component.IrsPartRelationshipsWithInfos;
+import net.catenax.irs.services.IrsPartsTreeQueryService;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Application REST controller.
@@ -47,12 +45,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @SuppressWarnings({"checkstyle:MissingJavadocMethod", "PMD.CommentRequired"})
 public class IrsController {
 
-    private final PartsTreeQueryService queryService;
-    private final PartsTreeQueryByVinService queryByVinService;
+    private final IrsPartsTreeQueryService itemJobService;
 
-    @Operation(operationId = "getBomLifecycleByGlobalAssetId", summary = "Readable ID of manufacturer including plant")
+
+    @Operation(operationId = "getBomLifecycleByGlobalAssetId", summary = " Registers and starts a AAS crawler job for given {globalAssetId}")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Parts tree for a vehicle",
+        @ApiResponse(responseCode = "200", description = "job id response for successful job registration",
                 content = {@Content(mediaType = APPLICATION_JSON_VALUE,
                         schema = @Schema(implementation = PartRelationshipsWithInfos.class))}),
         @ApiResponse(responseCode = "404", description = "A vehicle was not found with the given VIN",
@@ -63,21 +61,25 @@ public class IrsController {
                         schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/item/{globalAssetId}")
-    public PartRelationshipsWithInfos getPartsTree(final @Valid @ParameterObject PartsTreeByVinRequest request) {
-        return queryByVinService.getPartsTree(request);
+    public IrsPartRelationshipsWithInfos getPartsTree(final @Valid @ParameterObject IrsPartsTreeRequest request) {
+        return itemJobService.registerItemJob(request);
     }
 
-    @Operation(operationId = "getPartsTreeByOneIdAndObjectId", summary = "Get a PartsTree for a part")
+    @Operation(operationId = "getPartTreeForJobId", summary = " Registers and starts a AAS crawler job for given {globalAssetId}")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Parts tree for a part",
-            content = {@Content(mediaType = APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = PartRelationshipsWithInfos.class))}),
-        @ApiResponse(responseCode = "400", description = "Bad request",
+          @ApiResponse(responseCode = "200", description = "job id response for successful job registration",
                 content = {@Content(mediaType = APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = ErrorResponse.class))}),
+                      schema = @Schema(implementation = PartRelationshipsWithInfos.class))}),
+          @ApiResponse(responseCode = "404", description = "A vehicle was not found with the given VIN",
+                content = {@Content(mediaType = APPLICATION_JSON_VALUE,
+                      schema = @Schema(implementation = ErrorResponse.class))}),
+          @ApiResponse(responseCode = "400", description = "Bad request",
+                content = {@Content(mediaType = APPLICATION_JSON_VALUE,
+                      schema = @Schema(implementation = ErrorResponse.class))}),
     })
-    @GetMapping("/parts/{oneIDManufacturer}/{objectIDManufacturer}/partsTree")
-    public PartRelationshipsWithInfos getPartsTree(final @Valid @ParameterObject PartsTreeByObjectIdRequest request) {
-        return queryService.getPartsTree(request);
+    @GetMapping("/jobs/{jobId}")
+    public IrsPartRelationshipsWithInfos getPartTreeForJobId(final @Valid @ParameterObject IrsPartsTreeRequest request) {
+        return itemJobService.registerItemJob(request);
     }
+
 }

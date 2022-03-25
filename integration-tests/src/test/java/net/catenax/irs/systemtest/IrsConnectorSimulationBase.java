@@ -7,7 +7,7 @@ import io.gatling.javaapi.core.Simulation;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
 import net.catenax.irs.connector.requests.PartsTreeByObjectIdRequest;
 import net.catenax.irs.connector.requests.PartsTreeRequest;
-import net.catenax.irs.dtos.PartsTreeView;
+import net.catenax.irs.dtos.ItemsTreeView;
 
 import java.time.Duration;
 
@@ -56,7 +56,7 @@ public class IrsConnectorSimulationBase extends Simulation {
                         PartsTreeByObjectIdRequest.builder()
                                 .oneIDManufacturer(vehicleOneId)
                                 .objectIDManufacturer(vehicleObjectId)
-                                .view(PartsTreeView.AS_BUILT.name())
+                                .view(ItemsTreeView.AS_BUILT.name())
                                 .aspect(IrsConnectorStressTest.ASPECT_MATERIAL)
                                 .depth(depth)
                                 .build()).build();

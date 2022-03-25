@@ -28,10 +28,6 @@
             <artifactId>springdoc-openapi-ui</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
@@ -80,6 +76,12 @@
             <artifactId>json-unit-assertj</artifactId>
             <version>2.28.0</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.6.3</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
