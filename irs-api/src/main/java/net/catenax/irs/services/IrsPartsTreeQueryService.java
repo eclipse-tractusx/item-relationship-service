@@ -9,8 +9,14 @@
 //
 package net.catenax.irs.services;
 
+import java.util.List;
+import java.util.Optional;
+
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.component.Job;
+import net.catenax.irs.component.Jobs;
 import net.catenax.irs.requests.IrsPartsTreeRequest;
 import net.catenax.irs.component.IrsPartRelationshipsWithInfos;
 import org.springframework.stereotype.Service;
@@ -21,10 +27,25 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class IrsPartsTreeQueryService {
+public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
 
-   public IrsPartRelationshipsWithInfos registerItemJob(IrsPartsTreeRequest request) {
-      return IrsPartRelationshipsWithInfos.builder().build();
+   @Override
+   public IrsPartRelationshipsWithInfos registerItemJob(final @NonNull IrsPartsTreeRequest request) {
+      return null;
    }
 
+   @Override
+   public Jobs jobLifecycle(final @NonNull String jobId) {
+      return null;
+   }
+
+   @Override
+   public Optional<List<Job>> getJobsByProcessingState(final @NonNull String processingState) {
+      return Optional.empty();
+   }
+
+   @Override
+   public Job cancelJobById(final @NonNull String jobId) {
+      return null;
+   }
 }
