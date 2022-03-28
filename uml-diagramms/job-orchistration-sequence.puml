@@ -1,10 +1,11 @@
 @startuml
+skinparam shadowing false
 
 actor APIConsumer
 
 autonumber "<b>[000]"
 
-box "Consumer" #LightBlue
+box "Consumer" #LightGrey
 participant ApiEndpointExtension
 activate WebService
 ApiEndpointExtension -> WebService: new()

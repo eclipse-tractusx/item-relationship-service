@@ -1,9 +1,10 @@
 @startuml
+skinparam shadowing false
 
 actor APIConsumer
 activate APIConsumer
 
-box "Consumer" #LightBlue
+box "Consumer" #LightGrey
 participant WebService
 activate WebService
 participant ConsumerApiController
