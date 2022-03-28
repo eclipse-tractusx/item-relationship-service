@@ -6,7 +6,7 @@ servers:
   - url: https://api.server.test/api/v0.2
 paths:
   /irs/items/{globalAssetId}:
-    get:
+    post:
       operationId: getBomLifecycleByGlobalAssetId
       description: Registers and starts a AAS crawler job for given {globalAssetId}
       parameters:
