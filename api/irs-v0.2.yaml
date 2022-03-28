@@ -113,7 +113,6 @@ paths:
           required: true
           schema:
             type: string
-            default: true
             maxLength: 16
             minLength: 1
             pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
@@ -202,7 +201,6 @@ paths:
               required: true
               schema:
                 type: string
-                default: true
                 maxLength: 16
                 minLength: 1
                 pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
