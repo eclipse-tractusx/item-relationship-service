@@ -115,8 +115,8 @@ paths:
             type: string
             maxLength: 16
             minLength: 1
-            pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
-            example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
+            format: uuid
+            example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
         - description: "If true, the endpoint returns the uncompleted results of the parts tree."
           in: query
           name: returnUncompletedResultTree
@@ -203,7 +203,7 @@ paths:
                 type: string
                 maxLength: 16
                 minLength: 1
-                pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+                format: uuid
                 example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
       responses:
         '200':
@@ -322,7 +322,7 @@ components:
       value:
         {
           "job": {
-            "jobID": "e5347c88-a921-11ec-b909-0242ac120002",
+            "jobId": "e5347c88-a921-11ec-b909-0242ac120002",
             "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
             "jobStatus": "Failed",
             "createdOn": "2022-02-03T14:48:54.709Z",
@@ -356,7 +356,7 @@ components:
       value:
         {
           "job": {
-            "jobID": "e5347c88-a921-11ec-b909-0242ac120002",
+            "jobId": "e5347c88-a921-11ec-b909-0242ac120002",
             "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
             "jobStatus": "Completed",
             "createdOn": "2022-02-03T14:48:54.709Z",
@@ -483,7 +483,7 @@ components:
       value:
         {
           "job": {
-            "jobID": "e5347c88-a921-11ec-b909-0242ac120002",
+            "jobId": "e5347c88-a921-11ec-b909-0242ac120002",
             "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
             "jobStatus": "Canceled",
             "createdOn": "2022-02-03T14:48:54.709Z",
@@ -517,7 +517,7 @@ components:
       value:
         {
           "job": {
-            "jobID": "e5347c88-a921-11ec-b909-0242ac120002",
+            "jobId": "e5347c88-a921-11ec-b909-0242ac120002",
             "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
             "jobStatus": "Completed",
             "createdOn": "2022-02-03T14:48:54.709Z",
