@@ -316,15 +316,7 @@ components:
     complete-job-list-processing-state:
       value:
         {
-          "job": [ {
-            "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
-            "status": "Running"
-          },
-            {
-              "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
-              "status": "Running"
-            }
-          ],
+          "jobs": [ "6c311d29-5753-46d4-b32c-19b918ea93b0","46cd8fb1-34c1-4426-9c16-84b913bcfd95"]
         }
     failed-job-result:
       value:
