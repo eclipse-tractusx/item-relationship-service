@@ -48,6 +48,7 @@ QueryParameter ||--  Direction
 QueryParameter ||--  BomLifecycle
 QueryParameter }|--  AspectType
 Summary ||--  AsyncFetchedItems
+Job ||-- QueryParameter
 
 
 enum Direction {
