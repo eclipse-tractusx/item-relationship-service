@@ -21,11 +21,11 @@ public class Quantity {
     private Double quantityNumber;
 
     @NotNull
-    private Curie measurementUnit;
+    private MeasurementUnit measurementUnit;
 
     @JsonCreator
     public Quantity(@JsonProperty(value = "quantityNumber") Double quantityNumber,
-            @JsonProperty(value = "measurementUnit") Curie measurementUnit) {
+            @JsonProperty(value = "measurementUnit") MeasurementUnit measurementUnit) {
         this.quantityNumber = quantityNumber;
         this.measurementUnit = measurementUnit;
     }
@@ -44,7 +44,7 @@ public class Quantity {
      *
      * @return {@link #measurementUnit}
      */
-    public Curie getMeasurementUnit() {
+    public MeasurementUnit getMeasurementUnit() {
         return this.measurementUnit;
     }
 
