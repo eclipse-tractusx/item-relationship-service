@@ -127,14 +127,21 @@ paths:
       responses:
         "200":
           # complete job result with part tree:
-          description: livecycle tree representation with the starting point of the given globalAssetId
+          description: livecycle tree representation with the starting point of the given jobId
           content:
             application/json:
               examples:
                 complete:
                   $ref: '#/components/examples/complete-job-result'
+        "201":
+          description: job details for given jobId
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/job-result-without-uncompleted-result-tree'
         "206":
-          description: uncompleted livecycle tree representation with the starting point of the given globalAssetId
+          description: uncompleted livecycle tree representation with the starting point of the given jobId
           content:
             application/json:
               examples:
@@ -195,16 +202,16 @@ paths:
     post:
       operationId: cancelJobForJobId
       parameters:
-            - description: "Id of the job in registry."
-              in: path
-              name: jobId
-              required: true
-              schema:
-                type: string
-                maxLength: 16
-                minLength: 1
-                format: uuid
-                example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
+        - description: "Id of the job in registry."
+          in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+            maxLength: 16
+            minLength: 1
+            format: uuid
+            example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
       responses:
         '200':
           description: Job with {jobId} was canceled
@@ -387,6 +394,40 @@ components:
             }
           }
     partial-job-result:
+      value:
+        {
+          "job": {
+            "jobId": "e5347c88-a921-11ec-b909-0242ac120002",
+            "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
+            "jobStatus": "InProgress",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "startedOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+            "jobCompleted": "2022-02-03T14:48:54.709Z",
+            "requestURL": "https://api.server.test/api/../",
+            "owner": "",
+            "summary": {
+              "asyncFetchedItems": {
+                "queued": 0,
+                "running": 0,
+                "complete": 0,
+                "failed": 0,
+                "lost": 0
+              } },
+            "queryParameter": {
+              "bomLifecycle": "asBuilt",
+              "aspect": "SerialPartTypization",
+              "depth": 4,
+              "direction": "downward"
+            },
+            "exception": {
+              "exception": "IrsTimeoutException",
+              "errorDetail": "Timeout while requesting Digital Registry.",
+              "exceptionDate": "2022-02-03T14:48:54.709Z"
+            }
+          }
+        }
+    job-result-without-uncompleted-result-tree:
       value:
         {
           "job": {
