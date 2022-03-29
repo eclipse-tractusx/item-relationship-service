@@ -9,10 +9,17 @@
 //
 package net.catenax.irs.aaswrapper.registry.domain;
 
-import io.swagger.v3.oas.annotations.Hidden;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.aaswrapper.AASWrapperClient;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
+import net.catenax.irs.aspectmodels.AspectModel;
+import net.catenax.irs.aspectmodels.AspectModelTypes;
+import net.catenax.irs.aspectmodels.assemblypartrelationship.AssemblyPartRelationship;
+import net.catenax.irs.services.ItemTreeQueryService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Test purposes only controller
  * TODO: Remove this class before merging to main branch
  */
-@Hidden
+//@Hidden
 @ExcludeFromCodeCoverageGeneratedReport
 @RestController
 @RequiredArgsConstructor
@@ -29,17 +36,59 @@ import org.springframework.web.bind.annotation.RestController;
 class TestController {
 
     /**
-     * Digital Twin Registry Rest Client
+     * AAS Wrapper Rest Client
      */
-    private final DigitalTwinRegistryClient digitalTwinRegistryClient;
+    private final AASWrapperClient aasWrapperClient;
+
+    /**
+     * Item Tree Query Service
+     */
+    private final ItemTreeQueryService itemTreeQueryService;
 
     /**
      * @param aasIdentifier The Asset Administration Shell’s unique id
      * @return Returns all Asset Administration Shell Descriptors
      */
     @GetMapping("/registry/shell-descriptors/{aasIdentifier}")
-    public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(@PathVariable("aasIdentifier") final String aasIdentifier) {
-        return digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aasIdentifier);
+    public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(
+            @PathVariable("aasIdentifier") final String aasIdentifier) {
+        return aasWrapperClient.getAssetAdministrationShellDescriptor(aasIdentifier);
     }
+
+    /**
+     * @param aasIdentifier The Asset Administration Shell’s unique id
+     * @return Returns all Asset Administration Shell Descriptors
+     */
+    @GetMapping("/getSubmodel/{aasIdentifier}")
+    public List<AssemblyPartRelationship> getSubmodelEndpoints(
+            @PathVariable("aasIdentifier") final String aasIdentifier) {
+        //            @PathVariable("aasIdentifier") final String aasIdentifier, @RequestParam final AspectModel aspectModel) {
+        AspectModelTypes aspectModel = AspectModelTypes.ASSEMBLY_PART_RELATIONSHIP;
+        final AssetAdministrationShellDescriptor assetAdministrationShellDescriptor = aasWrapperClient.getAssetAdministrationShellDescriptor(
+                aasIdentifier);
+        final List<String> endpointsForAspectModel = itemTreeQueryService.getEndpointsForAspectModel(
+                assetAdministrationShellDescriptor, aspectModel);
+        final List<AssemblyPartRelationship> submodels = new ArrayList<>();
+        endpointsForAspectModel.forEach(s -> submodels.add(itemTreeQueryService.getSubmodel(s, aspectModel)));
+        return submodels;
+    }
+
+    /**
+     * @param aasIdentifier The Asset Administration Shell’s unique id
+     * @return Returns all Asset Administration Shell Descriptors
+     */
+    @GetMapping("/getItemTreeTest/{aasIdentifier}")
+    public List<AspectModel> getItemTreeTest(@PathVariable("aasIdentifier") final String aasIdentifier) {
+        AspectModelTypes aspectModel = AspectModelTypes.ASSEMBLY_PART_RELATIONSHIP;
+        final AssetAdministrationShellDescriptor assetAdministrationShellDescriptor = aasWrapperClient.getAssetAdministrationShellDescriptor(
+                aasIdentifier);
+        final List<String> endpointsForAspectModel = itemTreeQueryService.getEndpointsForAspectModel(
+                assetAdministrationShellDescriptor, aspectModel);
+        final List<AspectModel> submodels = new ArrayList<>();
+        endpointsForAspectModel.forEach(s -> submodels.add(aasWrapperClient.getSubmodel(s, aspectModel)));
+        submodels.add(aasWrapperClient.getSubmodel("test", AspectModelTypes.SERIAL_PART_TYPIZATION));
+        return submodels;
+    }
+
 }
 

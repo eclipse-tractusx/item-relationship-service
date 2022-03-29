@@ -7,23 +7,23 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain;
+package net.catenax.irs.aaswrapper.registry.domain.model;
 
+import java.util.List;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * AdministrativeInformation
+ * Reference
  */
 @Data
-class AdministrativeInformation {
+@AllArgsConstructor
+public class Reference {
 
     /**
-     * revision
+     * value
      */
-    private String revision;
-    /**
-     * version
-     */
-    private String version;
+    private List<String> value;
 
 }

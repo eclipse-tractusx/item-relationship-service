@@ -7,27 +7,23 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain;
+package net.catenax.irs.aaswrapper.registry.domain.model;
 
 import lombok.Data;
 
 /**
- * IdentifierKeyValuePair
+ * AdministrativeInformation
  */
 @Data
-class IdentifierKeyValuePair extends HasSemantics {
+public class AdministrativeInformation {
 
     /**
-     * key
+     * revision
      */
-    private String key;
+    private String revision;
     /**
-     * subjectId
+     * version
      */
-    private Reference subjectId;
-    /**
-     * value
-     */
-    private String value;
+    private String version;
 
 }

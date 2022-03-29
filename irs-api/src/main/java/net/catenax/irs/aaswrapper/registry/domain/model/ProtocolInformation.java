@@ -7,15 +7,17 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain;
+package net.catenax.irs.aaswrapper.registry.domain.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
  * ProtocolInformation
  */
 @Data
-class ProtocolInformation {
+@AllArgsConstructor
+public class ProtocolInformation {
 
     /**
      * endpointAddress
@@ -32,14 +34,14 @@ class ProtocolInformation {
     /**
      * subprotocol
      */
-    private String subprotocol;
+    //    private String subprotocol;
     /**
      * subprotocolBody
      */
-    private String subprotocolBody;
+    //    private String subprotocolBody;
     /**
      * subprotocolBodyEncoding
      */
-    private String subprotocolBodyEncoding;
+    //    private String subprotocolBodyEncoding;
 
 }

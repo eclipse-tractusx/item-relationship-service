@@ -15,6 +15,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.catenax.irs.aaswrapper.registry.domain.model.AdministrativeInformation;
+import net.catenax.irs.aaswrapper.registry.domain.model.Descriptor;
+import net.catenax.irs.aaswrapper.registry.domain.model.IdentifierKeyValuePair;
+import net.catenax.irs.aaswrapper.registry.domain.model.LangString;
+import net.catenax.irs.aaswrapper.registry.domain.model.Reference;
+import net.catenax.irs.aaswrapper.submodel.domain.SubmodelDescriptor;
 
 /**
  * AssetAdministrationShellDescriptor
@@ -23,7 +29,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-class AssetAdministrationShellDescriptor extends Descriptor {
+public class AssetAdministrationShellDescriptor extends Descriptor {
 
     /**
      * administration

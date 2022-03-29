@@ -21,11 +21,11 @@ import org.springframework.http.HttpHeaders;
 @ExcludeFromCodeCoverageGeneratedReport
 class DigitalTwinRegistryClientConfiguration {
 
-   /**
-    * Register authorization request interceptor - every request contains authorization header.
-    *
-    * @return authorizationRequestInterceptor
-    */
+    /**
+     * Register authorization request interceptor - every request contains authorization header.
+     *
+     * @return authorizationRequestInterceptor
+     */
     @Bean
     public RequestInterceptor authorizationRequestInterceptor() {
         return requestTemplate -> requestTemplate.header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken());

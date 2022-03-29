@@ -7,23 +7,21 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain;
+package net.catenax.irs.aaswrapper.registry.domain.model;
+
+import java.util.List;
 
 import lombok.Data;
 
 /**
- * LangString
+ * Descriptor
  */
 @Data
-class LangString {
+public class Descriptor {
 
     /**
-     * language
+     * endpoints
      */
-    private String language;
-    /**
-     * text
-     */
-    private String text;
+    private List<Endpoint> endpoints;
 
 }
