@@ -1,0 +1,32 @@
+@startuml
+
+hide empty description
+
+state INITIAL {
+    state "MultiTransferJob registered"
+
+}
+state IN_PROGRESS {
+    state "MultiTransferJob running"
+
+}
+state TRANSFERS_FINISHED {
+    state "TransferProcess completed"
+}
+state COMPLETED {
+    state "MultiTransferJob complete"
+}
+
+[*] --> UNSAVED
+UNSAVED -> INITIAL : register job
+INITIAL -> IN_PROGRESS : start job
+IN_PROGRESS -> TRANSFERS_FINISHED : execute TransferProcesses
+TRANSFERS_FINISHED -> COMPLETED : complete job execution
+COMPLETED --> [*]
+UNSAVED --> ERROR
+INITIAL --> ERROR
+IN_PROGRESS --> ERROR
+TRANSFERS_FINISHED --> ERROR
+ERROR -> [*]
+
+@enduml
