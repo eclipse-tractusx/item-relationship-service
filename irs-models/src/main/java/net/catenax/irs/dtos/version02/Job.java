@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
-import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.dtos.version02.enums.JobState;
 
 /**
  * A job to retrieve item relationship data.

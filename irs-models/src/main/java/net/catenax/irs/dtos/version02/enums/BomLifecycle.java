@@ -7,7 +7,7 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.component.enums;
+package net.catenax.irs.dtos.version02.enums;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;

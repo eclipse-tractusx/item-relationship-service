@@ -11,7 +11,7 @@ package net.catenax.irs.component.enums;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import net.catenax.irs.component.IStatusCodeEnum;
+import net.catenax.irs.dtos.version02.IStatusCodeEnum;
 
 /**
  * Http return status code

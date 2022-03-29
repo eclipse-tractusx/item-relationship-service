@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
-import net.catenax.irs.component.enums.BomLifecycle;
+import net.catenax.irs.dtos.version02.enums.BomLifecycle;
 
 /*** API type for ChildItem name/url entry. */
 @Schema(description = "Describe child item of a global asset ")
