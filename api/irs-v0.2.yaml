@@ -105,7 +105,7 @@ paths:
         - Item Relationship Service
   /irs/jobs/{jobId}:
     get:
-      operationId: getPartTreeForJobId
+      operationId: getBoMForJobId
       parameters:
         - description: "Id of the job in registry. "
           in: path
@@ -118,7 +118,7 @@ paths:
             minLength: 1
             pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
             example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
-        - description: "If true, the endpoint returns the uncompleted results of the parts tree."
+        - description: "If true, the endpoint returns the uncompleted results of the BoM tree."
           in: query
           name: returnUncompletedResultTree
           required: false
@@ -127,7 +127,7 @@ paths:
             default: true
       responses:
         "200":
-          # complete job result with part tree:
+          # complete job result with BoM tree:
           description: livecycle tree representation with the starting point of the given globalAssetId
           content:
             application/json:
