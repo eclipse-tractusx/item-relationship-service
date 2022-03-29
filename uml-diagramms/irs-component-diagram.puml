@@ -1,0 +1,30 @@
+@startuml 
+skinparam monochrome true
+skinparam shadowing false
+
+component [**IRS**] <<System>> as IRS {
+interface ServiceExtension as ServiceExtension
+component [**ApiEndpointExtension**] as ApiEndpointExtension
+component [**RequestMiddleware**]
+component [**IRS API**] <<Component>> as API
+interface "WebService (Servlet)"  as WebService
+component [**JerseyRestService**] as JerseyRestService
+component [**ConsumerAPIControllerService**] <<Component>> as ConsumerAPIControllerService
+component [**ConsumerService**] <<Component>> as ConsumerService
+component [**JobOrchestrator**] <<Component>> as JobOrchestrator
+interface JobStore
+component [**InMemoryJobStore**] <<Component>> as InMemoryJobStore
+component [**RecursiveJobHandler**] <<Component>> as RecursiveJobHandler
+component [**IRSAASClient**] <<Component>> as IRSAASClient
+component [**PartsTreeRecursiveLogic**] <<Component>> as PartsTreeRecursiveLogic
+interface BlobStoreApi as DataStoreApi
+component [**BlobStoreClient**] <<Component>> as DataStoreClient
+component [**PartsTreesAssembler**] as PartsTreesAssembler
+
+JobStore -  [InMemoryJobStore]
+DataStoreApi - [DataStoreClient]
+WebService - [JerseyRestService]
+ServiceExtension - [ApiEndpointExtension]
+
+}
+@enduml
