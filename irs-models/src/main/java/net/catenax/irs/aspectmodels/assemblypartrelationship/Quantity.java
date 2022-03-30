@@ -3,25 +3,25 @@
  */
 package net.catenax.irs.aspectmodels.assemblypartrelationship;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.openmanufacturing.sds.metamodel.datatypes.Curie;
 
 /**
  * Generated class for Quantity. Comprises the number of objects and the unit of measurement for the
  * respective child objects
  */
-public class Quantity {
+public class Quantity implements Serializable {
 
     @NotNull
-    private Double quantityNumber;
+    private final Double quantityNumber;
 
     @NotNull
-    private MeasurementUnit measurementUnit;
+    private final MeasurementUnit measurementUnit;
 
     @JsonCreator
     public Quantity(@JsonProperty(value = "quantityNumber") Double quantityNumber,
@@ -40,7 +40,7 @@ public class Quantity {
     }
 
     /**
-     * Returns measurementUnit
+     * Returns Measurement Unit
      *
      * @return {@link #measurementUnit}
      */
@@ -59,5 +59,15 @@ public class Quantity {
         final Quantity that = (Quantity) o;
         return Objects.equals(quantityNumber, that.quantityNumber) && Objects.equals(measurementUnit,
                 that.measurementUnit);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(quantityNumber, measurementUnit);
+    }
+
+    @Override
+    public String toString() {
+        return "Quantity{" + "quantityNumber=" + quantityNumber + ", measurementUnit=" + measurementUnit + '}';
     }
 }

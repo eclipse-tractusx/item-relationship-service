@@ -9,22 +9,27 @@
 //
 package net.catenax.irs.aaswrapper.registry.domain;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
+import net.catenax.irs.aaswrapper.registry.domain.model.AssetAdministrationShellDescriptor;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Profile;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 /**
  * Digital Twin Registry Rest Client
  */
-//@Profile("!local")
-//@FeignClient(
-//      contextId = "digitalTwinRegistryClientContextId",
-//      value = "digitalTwinRegistryClient",
-//      url = "${feign.client.config.digitalTwinRegistry.url}",
-//      configuration = DigitalTwinRegistryClientConfiguration.class)
+@Profile("!local")
+@FeignClient(contextId = "digitalTwinRegistryClientContextId", value = "digitalTwinRegistryClient",
+        url = "${feign.client.config.digitalTwinRegistry.url}",
+        configuration = DigitalTwinRegistryClientConfiguration.class)
 public interface DigitalTwinRegistryClient {
 
     /**
      * @param aasIdentifier The Asset Administration Shell’s unique id
      * @return Returns a specific Asset Administration Shell Descriptor
      */
-    //    @GetMapping(value = "/registry/shell-descriptors/{aasIdentifier}", consumes = APPLICATION_JSON_VALUE)
-    AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(String aasIdentifier);
-
+    @GetMapping(value = "/registry/shell-descriptors/{aasIdentifier}", consumes = APPLICATION_JSON_VALUE)
+    AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(@PathVariable final String aasIdentifier);
 }

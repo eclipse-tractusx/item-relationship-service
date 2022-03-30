@@ -22,74 +22,82 @@ import net.catenax.irs.aspectmodels.AspectModel;
  */
 public class SerialPartTypization extends AspectModel implements CollectionAspect<Set<KeyValueList>, KeyValueList> {
 
-  @NotNull
-  @Pattern(regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
-  private String catenaXId;
+    @NotNull
+    @Pattern(regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+    private final String catenaXId;
 
-  @NotNull private Set<KeyValueList> localIdentifiers;
+    @NotNull
+    private final Set<KeyValueList> localIdentifiers;
 
-  @NotNull private ManufacturingEntity manufacturingInformation;
+    @NotNull
+    private final ManufacturingEntity manufacturingInformation;
 
-  @NotNull private PartTypeInformationEntity partTypeInformation;
+    @NotNull
+    private final PartTypeInformationEntity partTypeInformation;
 
-  @JsonCreator
-  public SerialPartTypization(
-      @JsonProperty(value = "catenaXId") String catenaXId,
-      @JsonProperty(value = "localIdentifiers") Set<KeyValueList> localIdentifiers,
-      @JsonProperty(value = "manufacturingInformation")
-          ManufacturingEntity manufacturingInformation,
-      @JsonProperty(value = "partTypeInformation") PartTypeInformationEntity partTypeInformation) {
-    this.catenaXId = catenaXId;
-    this.localIdentifiers = localIdentifiers;
-    this.manufacturingInformation = manufacturingInformation;
-    this.partTypeInformation = partTypeInformation;
-  }
-
-  /**
-   * Returns Catena-X Identifier
-   *
-   * @return {@link #catenaXId}
-   */
-  public String getCatenaXId() {
-    return this.catenaXId;
-  }
-  /**
-   * Returns Local Identifiers
-   *
-   * @return {@link #localIdentifiers}
-   */
-  public Set<KeyValueList> getLocalIdentifiers() {
-    return this.localIdentifiers;
-  }
-  /**
-   * Returns Manufacturing Information
-   *
-   * @return {@link #manufacturingInformation}
-   */
-  public ManufacturingEntity getManufacturingInformation() {
-    return this.manufacturingInformation;
-  }
-  /**
-   * Returns Part Type Information
-   *
-   * @return {@link #partTypeInformation}
-   */
-  public PartTypeInformationEntity getPartTypeInformation() {
-    return this.partTypeInformation;
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
-      return true;
+    @JsonCreator
+    public SerialPartTypization(@JsonProperty(value = "catenaXId") String catenaXId,
+            @JsonProperty(value = "localIdentifiers") Set<KeyValueList> localIdentifiers,
+            @JsonProperty(value = "manufacturingInformation") ManufacturingEntity manufacturingInformation,
+            @JsonProperty(value = "partTypeInformation") PartTypeInformationEntity partTypeInformation) {
+        this.catenaXId = catenaXId;
+        this.localIdentifiers = localIdentifiers;
+        this.manufacturingInformation = manufacturingInformation;
+        this.partTypeInformation = partTypeInformation;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Returns Catena-X Identifier
+     *
+     * @return {@link #catenaXId}
+     */
+    public String getCatenaXId() {
+        return this.catenaXId;
     }
-    final SerialPartTypization that = (SerialPartTypization) o;
-    return Objects.equals(catenaXId, that.catenaXId)
-        && Objects.equals(localIdentifiers, that.localIdentifiers)
-        && Objects.equals(manufacturingInformation, that.manufacturingInformation)
-        && Objects.equals(partTypeInformation, that.partTypeInformation);
-  }
+
+    /**
+     * Returns Local Identifiers
+     *
+     * @return {@link #localIdentifiers}
+     */
+    public Set<KeyValueList> getLocalIdentifiers() {
+        return this.localIdentifiers;
+    }
+
+    /**
+     * Returns Manufacturing Information
+     *
+     * @return {@link #manufacturingInformation}
+     */
+    public ManufacturingEntity getManufacturingInformation() {
+        return this.manufacturingInformation;
+    }
+
+    /**
+     * Returns Part Type Information
+     *
+     * @return {@link #partTypeInformation}
+     */
+    public PartTypeInformationEntity getPartTypeInformation() {
+        return this.partTypeInformation;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final SerialPartTypization that = (SerialPartTypization) o;
+        return Objects.equals(catenaXId, that.catenaXId) && Objects.equals(localIdentifiers, that.localIdentifiers)
+                && Objects.equals(manufacturingInformation, that.manufacturingInformation) && Objects.equals(
+                partTypeInformation, that.partTypeInformation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(catenaXId, localIdentifiers, manufacturingInformation, partTypeInformation);
+    }
 }

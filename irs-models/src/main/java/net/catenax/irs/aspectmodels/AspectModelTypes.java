@@ -8,7 +8,7 @@ public enum AspectModelTypes {
     SERIAL_PART_TYPIZATION("serialPartTypization"),
     ASSEMBLY_PART_RELATIONSHIP("assemblyPartRelationship");
 
-    private String value;
+    private final String value;
 
     AspectModelTypes(String value) {
         this.value = value;

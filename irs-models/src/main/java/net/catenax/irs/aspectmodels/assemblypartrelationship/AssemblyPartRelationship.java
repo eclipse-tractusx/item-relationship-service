@@ -67,6 +67,11 @@ public class AssemblyPartRelationship extends AspectModel
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(catenaXId, childParts);
+    }
+
+    @Override
     public String toString() {
         return "AssemblyPartRelationship{" + "catenaXId='" + catenaXId + '\'' + ", childParts=" + childParts + '}';
     }

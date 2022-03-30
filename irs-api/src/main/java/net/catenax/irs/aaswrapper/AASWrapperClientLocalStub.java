@@ -2,8 +2,8 @@ package net.catenax.irs.aaswrapper;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.aaswrapper.registry.domain.AssetAdministrationShellDescriptor;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryClient;
+import net.catenax.irs.aaswrapper.registry.domain.model.AssetAdministrationShellDescriptor;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelClient;
 import net.catenax.irs.aspectmodels.AspectModel;
 import net.catenax.irs.aspectmodels.AspectModelTypes;

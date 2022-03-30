@@ -12,6 +12,7 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import net.catenax.irs.aaswrapper.registry.domain.model.Endpoint;
 import net.catenax.irs.aaswrapper.registry.domain.model.Reference;
@@ -21,6 +22,7 @@ import net.catenax.irs.aaswrapper.registry.domain.model.Reference;
  */
 @Data
 @AllArgsConstructor
+@Builder
 public class SubmodelDescriptor {
 
     /**
@@ -40,14 +42,5 @@ public class SubmodelDescriptor {
      * endpoints
      */
     private List<Endpoint> endpoints;
-
-    /**
-     * administration
-     */
-//    private AdministrativeInformation administration;
-    /**
-     * description
-     */
-//    private List<LangString> description;
 
 }

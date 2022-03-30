@@ -1,12 +1,12 @@
 package net.catenax.irs.aspectmodels.assemblypartrelationship;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.openmanufacturing.sds.metamodel.datatypes.Curie;
 import lombok.Getter;
 
 /**
@@ -14,7 +14,7 @@ import lombok.Getter;
  * respective quantity
  */
 @Getter
-public class MeasurementUnit {
+public class MeasurementUnit implements Serializable {
 
     @NotNull
     private final String datatypeURI;
@@ -39,5 +39,16 @@ public class MeasurementUnit {
         }
         final MeasurementUnit that = (MeasurementUnit) o;
         return Objects.equals(datatypeURI, that.datatypeURI) && Objects.equals(lexicalValue, that.lexicalValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(datatypeURI, lexicalValue);
+    }
+
+    @Override
+    public String toString() {
+        return "MeasurementUnit{" + "datatypeURI='" + datatypeURI + '\'' + ", lexicalValue='" + lexicalValue + '\''
+                + '}';
     }
 }

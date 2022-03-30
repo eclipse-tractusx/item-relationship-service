@@ -7,7 +7,7 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain;
+package net.catenax.irs.aaswrapper.registry.domain.model;
 
 import java.util.List;
 
@@ -15,11 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.catenax.irs.aaswrapper.registry.domain.model.AdministrativeInformation;
-import net.catenax.irs.aaswrapper.registry.domain.model.Descriptor;
-import net.catenax.irs.aaswrapper.registry.domain.model.IdentifierKeyValuePair;
-import net.catenax.irs.aaswrapper.registry.domain.model.LangString;
-import net.catenax.irs.aaswrapper.registry.domain.model.Reference;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelDescriptor;
 
 /**

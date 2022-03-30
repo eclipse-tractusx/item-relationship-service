@@ -12,10 +12,12 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 
 /**
  * Generated class for Child Data. Catena-X ID and meta data of the assembled child part.
  */
+//@Builder
 public class ChildData implements Serializable {
 
     private final XMLGregorianCalendar lastModifiedOn;

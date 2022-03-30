@@ -19,7 +19,8 @@ class DigitalTwinRegistryClientLocalTests {
     @BeforeEach
     void setUp() {
 
-        aasWrapperClientLocalStub = new AASWrapperClientLocalStub(new DigitalTwinRegistryClientLocalStub(), new SubmodelClientLocalStub());
+        aasWrapperClientLocalStub = new AASWrapperClientLocalStub(new DigitalTwinRegistryClientLocalStub(),
+                new SubmodelClientLocalStub());
     }
 
     @Test
@@ -32,7 +33,9 @@ class DigitalTwinRegistryClientLocalTests {
 
     @Test
     void testStubResponseForAssemblyPartRelationship() {
-        final AspectModel test = aasWrapperClientLocalStub.getSubmodel("test",
+        String catenaXId = "testCatenaXId";
+        final AspectModel test = aasWrapperClientLocalStub.getSubmodel(
+                "edc://offer-trace-assembly-part-relationship/shells/" + catenaXId + "/aas/assembly-part-relationship",
                 AspectModelTypes.ASSEMBLY_PART_RELATIONSHIP);
 
         assertThat(test).isInstanceOf(AssemblyPartRelationship.class);
@@ -41,12 +44,13 @@ class DigitalTwinRegistryClientLocalTests {
                 null;
 
         assertThat(assemblyPartRelationship).isNotNull();
-        assertThat(assemblyPartRelationship.getCatenaXId()).isEqualTo("catenaXIdAssemblyPartRelationship");
+        assertThat(assemblyPartRelationship.getCatenaXId()).isEqualTo(catenaXId);
     }
 
     @Test
     void testStubResponseForSerialPartTypization() {
-        final AspectModel test = aasWrapperClientLocalStub.getSubmodel("catenaXIdSerialPartTypization", AspectModelTypes.SERIAL_PART_TYPIZATION);
+        final AspectModel test = aasWrapperClientLocalStub.getSubmodel("catenaXIdSerialPartTypization",
+                AspectModelTypes.SERIAL_PART_TYPIZATION);
 
         assertThat(test).isInstanceOf(SerialPartTypization.class);
         final SerialPartTypization serialPartTypization = test instanceof SerialPartTypization ?

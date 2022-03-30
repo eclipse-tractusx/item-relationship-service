@@ -1,6 +1,6 @@
 package net.catenax.irs.aaswrapper;
 
-import net.catenax.irs.aaswrapper.registry.domain.AssetAdministrationShellDescriptor;
+import net.catenax.irs.aaswrapper.registry.domain.model.AssetAdministrationShellDescriptor;
 import net.catenax.irs.aspectmodels.AspectModel;
 import net.catenax.irs.aspectmodels.AspectModelTypes;
 import org.springframework.context.annotation.Profile;
