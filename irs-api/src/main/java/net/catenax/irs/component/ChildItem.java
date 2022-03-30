@@ -3,15 +3,16 @@ package net.catenax.irs.component;
 import java.time.Instant;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import net.catenax.irs.component.enums.BomLifecycle;
 
 /*** API type for ChildItem name/url entry. */
-@Schema(description = "ChildItem ")
+@Schema(description = "Describe child item of a global asset ")
 @Value
-@Builder(toBuilder = true, setterPrefix = "with")
+@Builder
 @JsonDeserialize(builder = ChildItem.ChildItemBuilder.class)
 public class ChildItem {
 
@@ -30,4 +31,7 @@ public class ChildItem {
 
    @Schema(description = "CatenaX child Id", implementation = Instant.class)
    private String childCatenaXId;
+
+   @JsonPOJOBuilder(withPrefix = "with")
+   public static class ChildItemBuilder {}
 }

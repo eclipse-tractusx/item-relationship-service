@@ -21,7 +21,7 @@ import net.catenax.irs.connector.consumer.service.DataRequestFactory;
 import net.catenax.irs.connector.consumer.service.PartsTreeRecursiveJobHandler;
 import net.catenax.irs.connector.consumer.service.PartsTreeRecursiveLogic;
 import net.catenax.irs.connector.consumer.service.PartsTreesAssembler;
-import net.catenax.irs.connector.job.InMemoryJobStore;
+import net.catenax.irs.connector.job.InMemoryIrsPartRelationshipsWithInfos;
 import net.catenax.irs.connector.job.JobOrchestrator;
 import net.catenax.irs.connector.metrics.MeterRegistryFactory;
 import net.catenax.irs.connector.http.HttpClientFactory;

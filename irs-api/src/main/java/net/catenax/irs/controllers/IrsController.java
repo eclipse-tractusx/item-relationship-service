@@ -25,7 +25,6 @@ import net.catenax.irs.IrsApplication;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.dtos.ErrorResponse;
-import net.catenax.irs.dtos.IrsPartRelationshipsWithInfos;
 import net.catenax.irs.requests.IrsPartsTreeRequest;
 import net.catenax.irs.component.IrsPartRelationshipsWithInfos;
 import net.catenax.irs.services.IrsPartsTreeQueryService;
@@ -65,7 +64,7 @@ public class IrsController {
                         schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/item/{globalAssetId}")
-    public IrsPartRelationshipsWithInfos getPartsTree(final @Valid @ParameterObject IrsPartsTreeRequest request) {
+    public IrsPartRelationshipsWithInfos getBomLifecycleByGlobalAssetId(final @Valid @ParameterObject IrsPartsTreeRequest request) {
         return itemJobService.registerItemJob(request);
     }
 
@@ -77,10 +76,10 @@ public class IrsController {
           @ApiResponse(responseCode = "206", description = "uncompleted livecycle tree representation with the starting point of the given globalAssetId",
                 content = {@Content(mediaType = APPLICATION_JSON_VALUE,
                       schema = @Schema(implementation = IrsPartRelationshipsWithInfos.class))}),
-          @ApiResponse(responseCode = "404", description = "A vehicle was not found with the given VIN",
+          @ApiResponse(responseCode = "404", description = "processing of job was canceled",
                 content = {@Content(mediaType = APPLICATION_JSON_VALUE,
                       schema = @Schema(implementation = ErrorResponse.class))}),
-          @ApiResponse(responseCode = "400", description = "Bad request",
+          @ApiResponse(responseCode = "417", description = "Processing of job failed",
                 content = {@Content(mediaType = APPLICATION_JSON_VALUE,
                       schema = @Schema(implementation = ErrorResponse.class))}),
     })

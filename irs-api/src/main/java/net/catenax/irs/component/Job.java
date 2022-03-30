@@ -9,13 +9,16 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import net.catenax.irs.component.enums.JobState;
 
 @Value
-@Builder(toBuilder = true, setterPrefix = "with")
+@Builder
+@JsonDeserialize(builder = Job.JobBuilder.class)
 public class Job {
 
    @NotNull
@@ -64,5 +67,8 @@ public class Job {
     * Owner of the job
     */
    private String owner;
+
+   @JsonPOJOBuilder(withPrefix = "with")
+   public static class JobBuilder {}
 
 }

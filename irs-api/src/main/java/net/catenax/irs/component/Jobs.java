@@ -4,13 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 
 @Schema(description = "List of Job and relationship to parts")
 @Value
-@Builder(toBuilder = true, setterPrefix = "with")
+@Builder
 @JsonDeserialize(builder = Jobs.JobsBuilder.class)
 public class Jobs {
 
@@ -22,5 +23,8 @@ public class Jobs {
 
    @Schema
    private Optional<List<Shells>> shells;
+
+   @JsonPOJOBuilder(withPrefix = "with")
+   public static class JobsBuilder {}
 
 }
