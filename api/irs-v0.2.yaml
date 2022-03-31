@@ -100,12 +100,12 @@ paths:
                 complete:
                   $ref: '#/components/schemas/ErrorResponse'
 
-      summary: Get a PartsTree for a part
+      summary: Get a BOM for a part
       tags:
         - Item Relationship Service
   /irs/jobs/{jobId}:
     get:
-      operationId: getPartTreeForJobId
+      operationId: getBOMForJobId
       parameters:
         - description: "Id of the job in registry. "
           in: path
