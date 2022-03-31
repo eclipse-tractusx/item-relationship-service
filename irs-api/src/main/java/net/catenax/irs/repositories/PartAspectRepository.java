@@ -9,20 +9,23 @@
 //
 package net.catenax.irs.repositories;
 
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.entities.PartAspectEntity;
 import net.catenax.irs.entities.PartAspectEntityKey;
 import net.catenax.irs.entities.PartIdEntityPart;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
  * JPA Repository for managing {@link PartAspectEntity} objects.
  */
-public interface PartAspectRepository extends JpaRepository<PartAspectEntity, PartAspectEntityKey> {
+public interface PartAspectRepository extends Repository<PartAspectEntity, PartAspectEntityKey> {
     /**
      * Returns all instances of the type {@link PartAspectEntity} for the given Part IDs and aspect name.
      * <p>
@@ -43,4 +46,16 @@ public interface PartAspectRepository extends JpaRepository<PartAspectEntity, Pa
             Collection<PartIdEntityPart> partIds,
             @Param("name")
             String name);
+}
+
+/**
+ *
+ */
+@Component
+@ExcludeFromCodeCoverageGeneratedReport
+class PartAspectRepositoryStub implements PartAspectRepository {
+    @Override
+    public List<PartAspectEntity> findAllBy(final Collection<PartIdEntityPart> partIds, final String name) {
+        return new ArrayList<>();
+    }
 }

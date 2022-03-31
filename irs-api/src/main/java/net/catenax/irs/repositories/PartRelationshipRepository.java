@@ -9,19 +9,22 @@
 //
 package net.catenax.irs.repositories;
 
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.entities.PartIdEntityPart;
 import net.catenax.irs.entities.PartRelationshipEntity;
 import net.catenax.irs.entities.PartRelationshipEntityKey;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * JPA Repository for managing {@link PartRelationshipEntity} objects.
  */
-public interface PartRelationshipRepository extends JpaRepository<PartRelationshipEntity, PartRelationshipEntityKey> {
+public interface PartRelationshipRepository extends Repository<PartRelationshipEntity, PartRelationshipEntityKey> {
     /**
      * Call database function (analog to a stored procedure)
      * to recursively retrieve the parts tree from a given part.
@@ -47,4 +50,18 @@ public interface PartRelationshipRepository extends JpaRepository<PartRelationsh
             @Param("maxDepth")
             int maxDepth);
 }
+
+/**
+ *
+ */
+@Component
+@ExcludeFromCodeCoverageGeneratedReport
+class PartRelationshipRepositoryStub implements PartRelationshipRepository {
+    @Override
+    public List<PartRelationshipEntity> getPartsTree(final String oneIDManufacturer, final String objectIDManufacturer,
+          final int maxDepth) {
+        return new ArrayList<>();
+    }
+}
+
 
