@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.registry.domain.model.AssetAdministrationShellDescriptor;
 import net.catenax.irs.aaswrapper.registry.domain.model.Endpoint;
 import net.catenax.irs.aaswrapper.registry.domain.model.IdentifierKeyValuePair;
@@ -23,7 +22,6 @@ import net.catenax.irs.aspectmodels.AspectModel;
 import net.catenax.irs.aspectmodels.assemblypartrelationship.AssemblyPartRelationship;
 
 @AllArgsConstructor
-@Slf4j
 public class TestdataCreator {
 
     private final ObjectMapper objectMapper;
@@ -67,36 +65,45 @@ public class TestdataCreator {
         }
     }
 
+    public AssetAdministrationShellDescriptor createAASShellDescriptorForIdFromTestData(final String catenaXId,
+            List<TestData> testData) {
+        final AssemblyPartRelationship assemblyPartRelationship = createDummyAssemblyPartRelationshipForId(testData,
+                catenaXId);
+        return createDummyAssetAdministrationShellDescriptorForId(catenaXId, List.of(assemblyPartRelationship));
+    }
+
     public AssetAdministrationShellDescriptor createDummyAssetAdministrationShellDescriptorForId(final String catenaXId,
             List<AspectModel> endpointAspectModels) {
+
         final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
         endpointAspectModels.forEach(aspectModel -> submodelDescriptors.add(
-                createAssemblyPartRelationshipSubmodelDescriptor(
-                        "edc://offer-trace-assembly-part-relationship/shells/" + catenaXId
-                                + "/aas/assembly-part-relationship")));
+                createAssemblyPartRelationshipSubmodelDescriptor(catenaXId + "/aas/assembly-part-relationship",
+                        catenaXId)));
 
         return AssetAdministrationShellDescriptor.builder()
                                                  .description(List.of(new LangString("en", "Test data")))
                                                  .globalAssetId(new Reference(
-                                                         List.of("urn:twin:com.tsystems#d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447")))
-                                                 .idShort("brake_dt_2019_snr.asm")
+                                                         List.of("urn:twin:com.test#d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447")))
+                                                 .idShort("testdata")
                                                  .identification(catenaXId)
                                                  .specificAssetIds(List.of(new IdentifierKeyValuePair(
-                                                                 "http://pwc.t-systems.com/datamodel/common", "0000000251"),
+                                                                 "http://test.com/datamodel/common", "0000000251"),
                                                          new IdentifierKeyValuePair("urn:VR:wt.part.WTPart#",
                                                                  "25054146@nis11c130.epdm-d.edm.dsh.de")))
                                                  .submodelDescriptors(submodelDescriptors)
                                                  .build();
     }
 
-    private SubmodelDescriptor createAssemblyPartRelationshipSubmodelDescriptor(final String endpointAddress) {
+    private SubmodelDescriptor createAssemblyPartRelationshipSubmodelDescriptor(final String endpointAddress,
+            final String catenaXId) {
         return SubmodelDescriptor.builder()
-                                 .identification("assembly-part-relationship")
+                                 .identification(catenaXId)
                                  .idShort("idShort")
                                  .semanticId(new Reference(
                                          List.of("urn:bamm:com.catenax.assembly_part_relationtship:1.0.0")))
                                  .endpoints(List.of(new Endpoint("https://OEM.connector",
-                                         new ProtocolInformation(endpointAddress, "AAS/SUBMODEL", "1.0RC02"))))
+                                         new ProtocolInformation("edc://test.url/shells/" + endpointAddress,
+                                                 "AAS/SUBMODEL", "1.0RC02"))))
                                  .build();
     }
 }

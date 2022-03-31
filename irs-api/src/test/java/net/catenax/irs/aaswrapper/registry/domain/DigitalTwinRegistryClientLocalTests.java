@@ -28,7 +28,7 @@ class DigitalTwinRegistryClientLocalTests {
         var input = aasWrapperClientLocalStub.getAssetAdministrationShellDescriptor("assetIdentifier");
 
         assertThat(input.getIdentification()).isEqualTo("assetIdentifier");
-        assertThat(input.getIdShort()).isEqualTo("brake_dt_2019_snr.asm");
+        assertThat(input.getIdShort()).isEqualTo("testdata");
     }
 
     @Test

@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import net.catenax.irs.aaswrapper.registry.domain.model.Endpoint;
+import net.catenax.irs.aaswrapper.registry.domain.model.LangString;
 import net.catenax.irs.aaswrapper.registry.domain.model.Reference;
 
 /**
@@ -42,5 +43,8 @@ public class SubmodelDescriptor {
      * endpoints
      */
     private List<Endpoint> endpoints;
-
+    /**
+     * description
+     */
+    private List<LangString> description;
 }
