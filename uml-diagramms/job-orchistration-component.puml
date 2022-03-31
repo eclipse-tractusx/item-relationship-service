@@ -1,0 +1,44 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+skinparam monochrome true
+skinparam shadowing false
+
+package "IRS" {
+
+  interface "WebService (Servlet)"  as WebService
+  component [**JerseyRestService**] as JerseyRestService
+  WebService - JerseyRestService
+  interface "IRS API"  as IrsAPI
+  [ConsumerApiController]
+  [ConsumerService]
+  ConsumerApiController --> ConsumerService : retrievePartsTree(request)
+  BlobstoreAPI - [BlobstoreAPIImpl]
+
+  ConsumerService ---( BlobstoreAPI : createContainer(storageAccountName, containerName)
+  [JobOrchestrator]
+  ConsumerService -> JobOrchestrator : uses
+  BlobstoreAPIImpl ..> API : use
+  JobStore -  [InMemoryJobStore]
+  JobOrchestrator -( JobStore : create(job)
+
+  RecursiveJobHandler --- [PartsTreeRecursiveJobHandler]
+  JobOrchestrator --( RecursiveJobHandler: initiate(job)
+
+  TransferProcessManager - [TransferProcessManagerImpl]
+  JobOrchestrator --( TransferProcessManager: initiateConsumerRequest(dataRequest)
+
+  JobOrchestrator ---> [JobTransferCallback]
+}
+
+
+package "Blobstore" {
+  API --( [BlobstoreDriver]
+
+}
+
+database Blobstore {
+}
+
+
+@enduml

@@ -50,4 +50,11 @@
             <property name="maxLineLength" value="100" />
         </properties>
     </rule>
+    <rule ref="category/java/documentation.xml/CommentRequired">
+        <properties>
+            <property name="fieldCommentRequirement" value="Ignored" />
+            <property name="publicMethodCommentRequirement" value="Ignored" />
+            <property name="protectedMethodCommentRequirement" value="Ignored" />
+        </properties>
+    </rule>
 </ruleset>
