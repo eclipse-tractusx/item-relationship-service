@@ -31,7 +31,7 @@ class Quantity {
      * MeasurementUnit
      */
     @Data
-    static class MeasurementUnit {
+    /* package */ static class MeasurementUnit {
         private String lexicalValue;
     }
 }
