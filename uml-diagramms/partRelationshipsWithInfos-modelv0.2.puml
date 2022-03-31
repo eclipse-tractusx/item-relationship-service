@@ -33,7 +33,6 @@ entity AsyncFetchedItems {
     * running : Number (Default :0)
     * complete : Number (Default :0)
     * failed : Number (Default :0)
-    * lost : Number (Default :0)
 }
 
 entity QueryParameter {

@@ -15,8 +15,7 @@
                 "queued": 0,
                 "running": 0,
                 "complete": 0,
-                "failed": 0,
-                "lost": 0
+                "failed": 0
              }},
             "queryParameter": {
                 "bomLifecycle" : "asBuilt",
