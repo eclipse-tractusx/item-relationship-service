@@ -117,7 +117,7 @@ paths:
             minLength: 1
             format: uuid
             example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
-        - description: "If true, the endpoint returns the uncompleted results of the parts tree."
+        - description: "If true, the endpoint returns the uncompleted results of the bom tree."
           in: query
           name: returnUncompletedResultTree
           required: false
@@ -126,7 +126,7 @@ paths:
             default: true
       responses:
         "200":
-          # complete job result with part tree:
+          # complete job result with bom tree:
           description: livecycle tree representation with the starting point of the given jobId
           content:
             application/json:
