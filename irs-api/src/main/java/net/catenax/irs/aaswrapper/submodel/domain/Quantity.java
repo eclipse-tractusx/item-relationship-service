@@ -27,6 +27,9 @@ class Quantity {
      */
     private MeasurementUnit measurementUnit;
 
+    /**
+     * MeasurementUnit
+     */
     @Data
     static class MeasurementUnit {
         private String lexicalValue;
