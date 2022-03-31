@@ -11,11 +11,13 @@ package net.catenax.irs;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * Application entry point.
  */
 @SpringBootApplication
+@EnableFeignClients
 public class IrsApplication {
 
     /** The IRS API version. */

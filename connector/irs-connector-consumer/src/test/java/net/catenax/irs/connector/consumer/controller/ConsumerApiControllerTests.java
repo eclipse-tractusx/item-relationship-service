@@ -61,9 +61,9 @@ public class ConsumerApiControllerTests {
             .jobId(faker.lorem().characters())
             .status(faker.options().option(ResponseStatus.class)).build();
 
-    private ConstraintViolation<GetStatusParameters> getStatusViolation = mock(ConstraintViolation.class);
+    private final ConstraintViolation<GetStatusParameters> getStatusViolation = mock(ConstraintViolation.class);
 
-    private ConstraintViolation<PartsTreeRequest> partsTreeRequestViolation = mock(ConstraintViolation.class);
+    private final ConstraintViolation<PartsTreeRequest> partsTreeRequestViolation = mock(ConstraintViolation.class);
 
     @Test
     public void checkHealth_Returns() {

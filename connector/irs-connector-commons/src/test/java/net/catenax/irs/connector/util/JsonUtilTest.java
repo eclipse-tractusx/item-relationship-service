@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 
 class JsonUtilTest {
 
-    private JsonUtil sut = new JsonUtil(new ConsoleMonitor());
+    private final JsonUtil sut = new JsonUtil(new ConsoleMonitor());
 
     @Test
     void asString_onSuccess() {
