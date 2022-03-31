@@ -199,7 +199,7 @@ paths:
       tags:
         - Item Relationship Service
   /irs/jobs/{jobId}/cancel:
-    post:
+    put:
       operationId: cancelJobForJobId
       parameters:
         - description: "Id of the job in registry."
