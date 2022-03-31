@@ -65,5 +65,22 @@ If you want to run it against connector you need to add the following VM options
 [System tests](integration-tests/src/test/java/net/catenax/irs/systemtest) are running against multiple IRS deployments and reconstructing a parts tree from multiple partial trees.
 To run the tests, download the file artifact `dataspace-deployments.json` from the latest IRS Deploy GitHub Actions run into the `dev/local` folder.
 
+## Commit messages
+The commit messages have to match a pattern in the form of:  
+<type>(optional scope):[<Ticket_ID>] <description>
+
+Example:  
+chore(api):[TRI-123] some text
+
+Detailed pattern can be found here: [commit-msg](dev/commit-msg)
+
+###Installation
+```shell
+curl --fail -o .git/hooks/commit-msg https://raw.githubusercontent.com/catenax/ItemRelationshipServices/main/dev/commit-msg \
+  && chmod 500 .git/hooks/commit-msg
+```
+
+For further information please see https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commit-message-format
+
 ## Licenses
 Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
