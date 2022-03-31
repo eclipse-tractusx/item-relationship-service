@@ -9,7 +9,6 @@
 //
 package net.catenax.irs.integrationtest;
 
-import static net.catenax.irs.testing.TestUtil.DATABASE_TESTCONTAINER;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 import com.github.javafaker.Faker;
@@ -23,10 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
 
 @Tag("IntegrationTests")
-@TestPropertySource(properties = DATABASE_TESTCONTAINER)
 @SpringBootTest(classes = { IrsApplication.class }, webEnvironment = RANDOM_PORT)
 @DirtiesContext
 public class IrsIntegrationTestsBase {

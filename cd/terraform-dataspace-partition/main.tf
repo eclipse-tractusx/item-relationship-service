@@ -7,14 +7,6 @@ data "azurerm_application_insights" "main" {
   resource_group_name = data.azurerm_resource_group.main.name
 }
 
-module "irs_postgresql" {
-  source              = "./modules/postgresql"
-  name                = "${var.prefix}-${var.environment}-${var.dataspace_partition}-irs-psql"
-  database_name       = "irs"
-  resource_group_name = local.resource_group_name
-  location            = local.location
-}
-
 module "eventhubs_namespace" {
   source              = "./modules/eventhubs_namespace"
   name                = "${var.prefix}-${var.environment}-${var.dataspace_partition}-irs-ehub"
@@ -114,20 +106,6 @@ resource "helm_release" "irs" {
     value = module.eventhub_catenax_events.receive_primary_connection_string
   }
 
-  set {
-    name  = "postgresql.url"
-    value = "jdbc:postgresql://${module.irs_postgresql.fqdn}/${module.irs_postgresql.db_name}?sslmode=require"
-  }
-
-  set {
-    name  = "postgresql.postgresqlUsername"
-    value = module.irs_postgresql.administrator_username
-  }
-
-  set_sensitive {
-    name  = "postgresql.postgresqlPassword"
-    value = module.irs_postgresql.administrator_login_password
-  }
 }
 
 # Deploy the IRS Provider with Helm

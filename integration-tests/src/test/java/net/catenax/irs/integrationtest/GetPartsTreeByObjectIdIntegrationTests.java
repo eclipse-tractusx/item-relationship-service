@@ -11,6 +11,7 @@ package net.catenax.irs.integrationtest;
 
 import net.catenax.irs.controllers.ApiErrorsConstants;
 import net.catenax.irs.dtos.PartsTreeView;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -25,6 +26,7 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static org.hamcrest.Matchers.hasSize;
 
+@Disabled("Integrations test not possible without DB")
 public class GetPartsTreeByObjectIdIntegrationTests extends IrsIntegrationTestsBase {
 
     private static final String PART_ONE_ID = "ZF";

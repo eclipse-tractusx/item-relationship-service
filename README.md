@@ -31,18 +31,6 @@ The two following subsections provide instructions for running either only the i
 curl -X GET "http://localhost:8080/api/v0.1/vins/BMWOVCDI21L5DYEUU/partsTree?view=AS_BUILT"
 ```
 
-## Inspect data
-
-### Get persisted data
-
-```bash
-docker exec -it db bash -c 'psql -U $POSTGRES_USER postgres'
-```
-
-```sql
-select * from part_relationship;
-```
-
 ## Swagger UI
 
 ### IRS API
@@ -64,12 +52,6 @@ If you want to make sure the IRS deployment will work well with your changes, yo
 ## Deploy to INT
 
 A deployment to the INT environment can be triggered manually with the `IRS Deploy` workflow as well by overriding the default target environment parameter to "int". INT environment deployments should be coordinated with the consumers of the IRS systems.
-
-## Load Test Data
-
-Test data can be loaded using `IRS Load Test Data` workflow. This workflow is triggered manually. It checks out the json files stored in
-[test-data folder](./coreservices/partsrelationshipservice/cd/test-data), converts the data into sql queries and inserts the data into IRS database.
-Before inserting all records with oneIds from json files are deleted from the database.
 
 ## Smoke tests
 
