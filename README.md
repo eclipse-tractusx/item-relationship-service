@@ -67,7 +67,7 @@ To run the tests, download the file artifact `dataspace-deployments.json` from t
 
 ## Commit messages
 The commit messages have to match a pattern in the form of:  
-<type>(optional scope):[<Ticket_ID>] <description>
+< type >(optional scope):[<Ticket_ID>] < description >
 
 Example:  
 chore(api):[TRI-123] some text
@@ -80,7 +80,7 @@ curl --fail -o .git/hooks/commit-msg https://raw.githubusercontent.com/catenax/I
   && chmod 500 .git/hooks/commit-msg
 ```
 
-For further information please see https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commit-message-format
+For further information please see https://github.com/hazcod/semantic-commit-hook
 
 ## Licenses
 Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
