@@ -54,7 +54,7 @@ public interface PartAttributeRepository extends Repository<PartAttributeEntity,
 }
 
 /**
- *
+ * Substitute repository implementation without DB
  */
 @Component
 @ExcludeFromCodeCoverageGeneratedReport

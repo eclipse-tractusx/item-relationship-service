@@ -49,7 +49,7 @@ public interface PartAspectRepository extends Repository<PartAspectEntity, PartA
 }
 
 /**
- *
+ * Substitute repository implementation without DB
  */
 @Component
 @ExcludeFromCodeCoverageGeneratedReport

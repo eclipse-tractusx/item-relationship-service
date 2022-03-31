@@ -52,7 +52,7 @@ public interface PartRelationshipRepository extends Repository<PartRelationshipE
 }
 
 /**
- *
+ * Substitute repository implementation without DB
  */
 @Component
 @ExcludeFromCodeCoverageGeneratedReport
