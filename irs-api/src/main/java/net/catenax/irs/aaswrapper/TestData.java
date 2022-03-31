@@ -1,15 +1,27 @@
+//
+// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
+//
+// See the AUTHORS file(s) distributed with this work for additional
+// information regarding authorship.
+//
+// See the LICENSE file(s) distributed with this work for
+// additional information regarding license terms.
+//
 package net.catenax.irs.aaswrapper;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
+import lombok.Value;
 import net.catenax.irs.aspectmodels.assemblypartrelationship.AssemblyPartRelationship;
 
-@Getter
+/**
+ * TestData Class used to store data provided by JSON
+ */
+@Value
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TestData {
     @JsonProperty("catenaXId")
@@ -18,23 +30,17 @@ public class TestData {
     private final AssemblyPartRelationship assemblyPartRelationship;
 
     @JsonCreator
-    public TestData(@JsonProperty(value = "catenaXId") final String catenaXId,
-            @JsonProperty("AssemblyPartRelationship") final AssemblyPartRelationship[] assemblyPartRelationship) {
+    public TestData(@JsonProperty("catenaXId") final String catenaXId,
+            @JsonProperty("AssemblyPartRelationship") final List<AssemblyPartRelationship> assemblyPartRelationship) {
         this.catenaXId = catenaXId;
-        AssemblyPartRelationship tmp = new AssemblyPartRelationship(catenaXId, Set.of());
-        try {
-            if (assemblyPartRelationship != null && Arrays.stream(assemblyPartRelationship).findAny().isPresent()) {
-                tmp = assemblyPartRelationship[0];
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        final AssemblyPartRelationship emptyAssemblyPartRelationship = new AssemblyPartRelationship(catenaXId,
+                Set.of());
+        if (assemblyPartRelationship == null) {
+            this.assemblyPartRelationship = emptyAssemblyPartRelationship;
+        } else {
+            this.assemblyPartRelationship = assemblyPartRelationship.stream()
+                                                                    .findFirst()
+                                                                    .orElse(emptyAssemblyPartRelationship);
         }
-        this.assemblyPartRelationship = tmp;
-    }
-
-    @Override
-    public String toString() {
-        return "TestData{" + "catenaXId='" + catenaXId + '\'' + ", assemblyPartRelationship=" + assemblyPartRelationship
-                + '}';
     }
 }

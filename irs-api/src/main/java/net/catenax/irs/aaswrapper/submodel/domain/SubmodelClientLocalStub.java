@@ -1,3 +1,12 @@
+//
+// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
+//
+// See the AUTHORS file(s) distributed with this work for additional
+// information regarding authorship.
+//
+// See the LICENSE file(s) distributed with this work for
+// additional information regarding license terms.
+//
 package net.catenax.irs.aaswrapper.submodel.domain;
 
 import java.io.File;
@@ -9,7 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import net.catenax.irs.aaswrapper.TestData;
 import net.catenax.irs.aaswrapper.TestdataCreator;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.aspectmodels.AspectModel;
 import net.catenax.irs.aspectmodels.AspectModelTypes;
 import net.catenax.irs.aspectmodels.serialparttypization.ClassificationCharacteristic;
@@ -25,7 +33,6 @@ import org.springframework.stereotype.Service;
  */
 @Profile("local")
 @Service
-@ExcludeFromCodeCoverageGeneratedReport
 public class SubmodelClientLocalStub implements SubmodelClient {
 
     @Override
@@ -36,22 +43,25 @@ public class SubmodelClientLocalStub implements SubmodelClient {
                 new File("src/main/resources/Testdata/AASShelDescriptorTestData.json"));
 
         switch (aspectModel) {
-        case ASSEMBLY_PART_RELATIONSHIP: {
-            // Extract the catenaXId from the endpointPath.
-            // This is only applicable for the test data in "src/main/resources/Testdata/AASShelDescriptorTestData.json"
-            String catenaXId = endpointPath.replaceFirst("edc://offer-trace-assembly-part-relationship/shells/", "");
-            catenaXId = catenaXId.replaceFirst("/aas/assembly-part-relationship", "");
+            case ASSEMBLY_PART_RELATIONSHIP:
+                return getAssemblyPartRelationship(endpointPath, testdataCreator, testData);
+            case SERIAL_PART_TYPIZATION:
+                return new SerialPartTypization("catenaXIdSerialPartTypization", Set.of(new KeyValueList("key", "value")),
+                        new ManufacturingEntity(null, Optional.of("de")),
+                        new PartTypeInformationEntity("manufacturerPartId", Optional.of("customerPartId"),
+                                "nameAtManufacturer", Optional.of("nameAtCustomer"), ClassificationCharacteristic.PRODUCT));
+            default:
+                return null;
+        }
+    }
 
-            return testdataCreator.createDummyAssemblyPartRelationshipForId(testData, catenaXId);
-        }
-        case SERIAL_PART_TYPIZATION: {
-            return new SerialPartTypization("catenaXIdSerialPartTypization", Set.of(new KeyValueList("key", "value")),
-                    new ManufacturingEntity(null, Optional.of("de")),
-                    new PartTypeInformationEntity("manufacturerPartId", Optional.of("customerPartId"),
-                            "nameAtManufacturer", Optional.of("nameAtCustomer"), ClassificationCharacteristic.PRODUCT));
-        }
-        default:
-            return null;
-        }
+    private net.catenax.irs.aspectmodels.assemblypartrelationship.AssemblyPartRelationship getAssemblyPartRelationship(
+            final String endpointPath, final TestdataCreator testdataCreator, final List<TestData> testData) {
+        // Extract the catenaXId from the endpointPath.
+        // only applicable for the test data in "src/main/resources/Testdata/AASShelDescriptorTestData.json"
+        String catenaXId = endpointPath.replaceFirst("edc://offer-trace-assembly-part-relationship/shells/", "");
+        catenaXId = catenaXId.replaceFirst("/aas/assembly-part-relationship", "");
+
+        return testdataCreator.createDummyAssemblyPartRelationshipForId(testData, catenaXId);
     }
 }

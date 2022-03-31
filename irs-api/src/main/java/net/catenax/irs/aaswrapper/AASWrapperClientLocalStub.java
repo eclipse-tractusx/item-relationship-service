@@ -1,3 +1,12 @@
+//
+// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
+//
+// See the AUTHORS file(s) distributed with this work for additional
+// information regarding authorship.
+//
+// See the LICENSE file(s) distributed with this work for
+// additional information regarding license terms.
+//
 package net.catenax.irs.aaswrapper;
 
 import lombok.AllArgsConstructor;
@@ -24,13 +33,11 @@ public class AASWrapperClientLocalStub implements AASWrapperClient {
 
     @Override
     public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
-        log.info("Requesting AAS Shell Descriptor for id: " + aasIdentifier);
         return digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aasIdentifier);
     }
 
     @Override
     public AspectModel getSubmodel(final String endpointPath, final AspectModelTypes aspectModel) {
-        log.info("Requesting Submodel for path: " + endpointPath + " and aspectModel: " + aspectModel);
         return submodelClient.getSubmodel(endpointPath, aspectModel);
     }
 }

@@ -1,3 +1,12 @@
+//
+// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
+//
+// See the AUTHORS file(s) distributed with this work for additional
+// information regarding authorship.
+//
+// See the LICENSE file(s) distributed with this work for
+// additional information regarding license terms.
+//
 package net.catenax.irs.aaswrapper;
 
 import java.io.File;
@@ -11,6 +20,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.registry.domain.model.AssetAdministrationShellDescriptor;
 import net.catenax.irs.aaswrapper.registry.domain.model.Endpoint;
 import net.catenax.irs.aaswrapper.registry.domain.model.IdentifierKeyValuePair;
@@ -21,38 +31,41 @@ import net.catenax.irs.aaswrapper.submodel.domain.SubmodelDescriptor;
 import net.catenax.irs.aspectmodels.AspectModel;
 import net.catenax.irs.aspectmodels.assemblypartrelationship.AssemblyPartRelationship;
 
+/**
+ * Class to create Testdata from a JSON File
+ */
 @AllArgsConstructor
+@Slf4j
 public class TestdataCreator {
 
     private final ObjectMapper objectMapper;
 
-    public List<TestData> getTestData(File testdataFile) {
+    public List<TestData> getTestData(final File testdataFile) {
         try {
             final List<TestData> testData = Arrays.stream(objectMapper.readValue(testdataFile, TestData[].class))
                                                   .collect(Collectors.toList());
             return testData.stream().map(testData1 -> {
                 if (testData1.getAssemblyPartRelationship().getChildParts() == null) {
-                    return new TestData(testData1.getCatenaXId(), new AssemblyPartRelationship[] {
-                            new AssemblyPartRelationship(testData1.getCatenaXId(), Set.of())
-                    });
+                    return new TestData(testData1.getCatenaXId(),
+                            List.of(new AssemblyPartRelationship(testData1.getCatenaXId(), Set.of())));
                 } else {
                     return testData1;
                 }
             }).collect(Collectors.toList());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return new ArrayList<>();
     }
 
-    public AssemblyPartRelationship getDummyAssemblyPartRelationshipFromAASDescriptor(List<TestData> testData,
-            AssetAdministrationShellDescriptor aasDescriptor) {
+    public AssemblyPartRelationship getDummyAssemblyPartRelationshipFromAASDescriptor(final List<TestData> testData,
+            final AssetAdministrationShellDescriptor aasDescriptor) {
         final String catenaXId = aasDescriptor.getIdentification();
         return createDummyAssemblyPartRelationshipForId(testData, catenaXId);
     }
 
-    public AssemblyPartRelationship createDummyAssemblyPartRelationshipForId(List<TestData> testData,
-            String catenaXId) {
+    public AssemblyPartRelationship createDummyAssemblyPartRelationshipForId(final List<TestData> testData,
+            final String catenaXId) {
 
         final List<TestData> collect = testData.stream()
                                                .filter(testData1 -> testData1.getCatenaXId().equals(catenaXId))
@@ -66,14 +79,14 @@ public class TestdataCreator {
     }
 
     public AssetAdministrationShellDescriptor createAASShellDescriptorForIdFromTestData(final String catenaXId,
-            List<TestData> testData) {
+            final List<TestData> testData) {
         final AssemblyPartRelationship assemblyPartRelationship = createDummyAssemblyPartRelationshipForId(testData,
                 catenaXId);
         return createDummyAssetAdministrationShellDescriptorForId(catenaXId, List.of(assemblyPartRelationship));
     }
 
     public AssetAdministrationShellDescriptor createDummyAssetAdministrationShellDescriptorForId(final String catenaXId,
-            List<AspectModel> endpointAspectModels) {
+            final List<AspectModel> endpointAspectModels) {
 
         final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
         endpointAspectModels.forEach(aspectModel -> submodelDescriptors.add(

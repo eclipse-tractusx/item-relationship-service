@@ -10,7 +10,6 @@
 package net.catenax.irs.aaswrapper.registry.domain.model;
 
 import lombok.Data;
-import net.catenax.irs.aaswrapper.registry.domain.model.Reference;
 
 /**
  * HasSemantics

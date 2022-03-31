@@ -1,3 +1,12 @@
+//
+// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
+//
+// See the AUTHORS file(s) distributed with this work for additional
+// information regarding authorship.
+//
+// See the LICENSE file(s) distributed with this work for
+// additional information regarding license terms.
+//
 package net.catenax.irs.aaswrapper;
 
 import net.catenax.irs.aaswrapper.registry.domain.model.AssetAdministrationShellDescriptor;
@@ -13,7 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface AASWrapperClient {
 
-    AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier);
+    AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(String aasIdentifier);
 
-    AspectModel getSubmodel(final String endpointPath, final AspectModelTypes aspectModel);
+    AspectModel getSubmodel(String endpointPath, AspectModelTypes aspectModel);
 }

@@ -1,19 +1,27 @@
+//
+// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
+//
+// See the AUTHORS file(s) distributed with this work for additional
+// information regarding authorship.
+//
+// See the LICENSE file(s) distributed with this work for
+// additional information regarding license terms.
+//
 package net.catenax.irs.aspectmodels.assemblypartrelationship;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
+import lombok.Value;
 
 /**
- * Created class for MeasurementUnit. Comprises the datatypeURI and the lexical value for the
+ * Class for MeasurementUnit. Comprises the datatypeURI and the lexical value for the
  * respective quantity
  */
-@Getter
+@Value
 public class MeasurementUnit implements Serializable {
 
     @NotNull
@@ -23,32 +31,9 @@ public class MeasurementUnit implements Serializable {
     private final String lexicalValue;
 
     @JsonCreator
-    public MeasurementUnit(@JsonProperty(value = "datatypeURI") String datatypeURI,
-            @JsonProperty(value = "lexicalValue") String lexicalValue) {
+    public MeasurementUnit(@JsonProperty("datatypeURI") final String datatypeURI,
+            @JsonProperty("lexicalValue") final String lexicalValue) {
         this.datatypeURI = datatypeURI;
         this.lexicalValue = lexicalValue;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final MeasurementUnit that = (MeasurementUnit) o;
-        return Objects.equals(datatypeURI, that.datatypeURI) && Objects.equals(lexicalValue, that.lexicalValue);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(datatypeURI, lexicalValue);
-    }
-
-    @Override
-    public String toString() {
-        return "MeasurementUnit{" + "datatypeURI='" + datatypeURI + '\'' + ", lexicalValue='" + lexicalValue + '\''
-                + '}';
     }
 }

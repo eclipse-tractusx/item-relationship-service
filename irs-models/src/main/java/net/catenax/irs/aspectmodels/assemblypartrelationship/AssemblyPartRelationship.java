@@ -1,10 +1,15 @@
-/*
- * Copyright (c) 2022 Robert Bosch Manufacturing Solutions GmbH, Germany. All rights reserved.
- */
+//
+// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
+//
+// See the AUTHORS file(s) distributed with this work for additional
+// information regarding authorship.
+//
+// See the LICENSE file(s) distributed with this work for
+// additional information regarding license terms.
+//
 package net.catenax.irs.aspectmodels.assemblypartrelationship;
 
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -13,14 +18,16 @@ import javax.validation.constraints.Pattern;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.openmanufacturing.sds.aspectmodel.java.CollectionAspect;
+import lombok.Value;
 import net.catenax.irs.aspectmodels.AspectModel;
 
 /**
  * Generated class for Assembly Part Relationship. The aspect provides the child parts (one
  * structural level down) which the given object assembles.
  */
-public class AssemblyPartRelationship extends AspectModel
-        implements CollectionAspect<Set<ChildData>, ChildData>, Serializable {
+@Value
+public class AssemblyPartRelationship
+        implements AspectModel, CollectionAspect<Set<ChildData>, ChildData>, Serializable {
 
     @NotNull
     @Pattern(regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
@@ -30,49 +37,9 @@ public class AssemblyPartRelationship extends AspectModel
     private final Set<ChildData> childParts;
 
     @JsonCreator
-    public AssemblyPartRelationship(@JsonProperty(value = "catenaXId") String catenaXId,
-            @JsonProperty(value = "childParts") Set<ChildData> childParts) {
+    public AssemblyPartRelationship(@JsonProperty("catenaXId") final String catenaXId,
+            @JsonProperty("childParts") final Set<ChildData> childParts) {
         this.catenaXId = catenaXId;
         this.childParts = childParts;
-    }
-
-    /**
-     * Returns Catena-X Identifier
-     *
-     * @return {@link #catenaXId}
-     */
-    public String getCatenaXId() {
-        return this.catenaXId;
-    }
-
-    /**
-     * Returns Child Parts
-     *
-     * @return {@link #childParts}
-     */
-    public Set<ChildData> getChildParts() {
-        return this.childParts;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final AssemblyPartRelationship that = (AssemblyPartRelationship) o;
-        return Objects.equals(catenaXId, that.catenaXId) && Objects.equals(childParts, that.childParts);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(catenaXId, childParts);
-    }
-
-    @Override
-    public String toString() {
-        return "AssemblyPartRelationship{" + "catenaXId='" + catenaXId + '\'' + ", childParts=" + childParts + '}';
     }
 }

@@ -18,7 +18,9 @@ import net.catenax.irs.aspectmodels.AspectModelTypes;
 public interface SubmodelClient {
 
     /**
-     * @return Returns the Submodel
+     * @param endpointPath the url pointing to the endpoint
+     * @param aspectModelTypes the aspect model which is expected
+     * @return Returns the expected aspect model
      */
-    AspectModel getSubmodel(final String endpointPath, final AspectModelTypes aspectModelTypes);
+    AspectModel getSubmodel(String endpointPath, AspectModelTypes aspectModelTypes);
 }

@@ -31,5 +31,5 @@ public interface DigitalTwinRegistryClient {
      * @return Returns a specific Asset Administration Shell Descriptor
      */
     @GetMapping(value = "/registry/shell-descriptors/{aasIdentifier}", consumes = APPLICATION_JSON_VALUE)
-    AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(@PathVariable final String aasIdentifier);
+    AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(@PathVariable String aasIdentifier);
 }
