@@ -28,13 +28,13 @@ class TestdataCreatorTest {
         objectMapper.registerModule(new Jdk8Module());
         testdataCreator = new TestdataCreator(objectMapper);
 
-        final File file = new File("src/test/resources/AASShelDescriptorTestData.json");
+        final File file = new File("src/main/resources/Testdata/AASShelDescriptorTestData.json");
         testData = testdataCreator.getTestData(file);
     }
 
     @Test
     void testGetTestData() {
-        final File file = new File("src/test/resources/AASShelDescriptorTestData.json");
+        final File file = new File("src/main/resources/Testdata/AASShelDescriptorTestData.json");
         List<TestData> testData = testdataCreator.getTestData(file);
         // number of entries in AASShelDescriptorTestData.json
         assertEquals(842, testData.size());
