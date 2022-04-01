@@ -74,7 +74,7 @@ chore(api):[TRI-123] some text
 
 Detailed pattern can be found here: [commit-msg](dev/commit-msg)
 
-###Installation
+### Installation
 ```shell
 cp dev/commit-msg .git/hooks/commit-msg && chmod 500 .git/hooks/commit-msg
 ```
