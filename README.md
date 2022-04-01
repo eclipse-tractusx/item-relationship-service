@@ -76,8 +76,7 @@ Detailed pattern can be found here: [commit-msg](dev/commit-msg)
 
 ###Installation
 ```shell
-curl --fail -o .git/hooks/commit-msg https://raw.githubusercontent.com/catenax/ItemRelationshipServices/main/dev/commit-msg \
-  && chmod 500 .git/hooks/commit-msg
+cp dev/commit-msg .git/hooks/commit-msg && chmod 500 .git/hooks/commit-msg
 ```
 
 For further information please see https://github.com/hazcod/semantic-commit-hook
