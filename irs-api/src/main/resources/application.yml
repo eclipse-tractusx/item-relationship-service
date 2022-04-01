@@ -4,27 +4,22 @@ server:
 spring:
   application:
     name: item-relationship-service
-  datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: compose-postgres
-    password: compose-postgres
-    ## default connection pool
-    hikari:
-      connectionTimeout: 20000
-      maximumPoolSize: 5
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
 management:
   endpoints:
     web:
       exposure:
-        include: health, flyway, threaddump, loggers, prometheus
+        include: health, threaddump, loggers, prometheus
   endpoint:
     health:
       probes:
         enabled: true
       group:
         readiness:
-          include: readinessState, db, diskSpace
+          include: readinessState, diskSpace
       show-details: always
   health:
     livenessstate:
@@ -43,7 +38,6 @@ logging:
   level:
     root: WARN
     org.springframework: INFO
-    org.flywaydb: INFO
     net.catenax.irs: INFO
 
 springdoc:
@@ -56,4 +50,14 @@ springdoc:
 irs:
   apiUrl: https://api.server.test/api/v0.2
   partsTreeMaxDepth: 100
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full
+      digitalTwinRegistry:
+        url: https://catenaxdev042akssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry
 

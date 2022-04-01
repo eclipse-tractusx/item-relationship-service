@@ -9,20 +9,25 @@
 //
 package net.catenax.irs.repositories;
 
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.entities.PartAttributeEntity;
 import net.catenax.irs.entities.PartAttributeEntityKey;
 import net.catenax.irs.entities.PartIdEntityPart;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
  * JPA Repository for managing {@link PartAttributeEntity} objects.
  */
-public interface PartAttributeRepository extends JpaRepository<PartAttributeEntity, PartAttributeEntityKey> {
+public interface PartAttributeRepository extends Repository<PartAttributeEntity, PartAttributeEntityKey> {
     /**
      * Returns all instances of the type {@link PartAttributeEntity}
      * for the given Part IDs and attribute name.
@@ -44,4 +49,25 @@ public interface PartAttributeRepository extends JpaRepository<PartAttributeEnti
             Collection<PartIdEntityPart> partIds,
             @Param("name")
             String name);
+
+    List<PartAttributeEntity> findAll(Example<PartAttributeEntity> searchFilter, Sort sortedByOneid);
 }
+
+/**
+ * Substitute repository implementation without DB
+ */
+@Component
+@ExcludeFromCodeCoverageGeneratedReport
+class PartAttributeRepositoryStub implements PartAttributeRepository {
+    @Override
+    public List<PartAttributeEntity> findAllBy(final Collection<PartIdEntityPart> partIds, final String name) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<PartAttributeEntity> findAll(final Example<PartAttributeEntity> searchFilter,
+          final Sort sortedByOneid) {
+        return new ArrayList<>();
+    }
+}
+

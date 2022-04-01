@@ -1,0 +1,33 @@
+@startuml 
+skinparam monochrome true
+skinparam shadowing false
+
+[\n IRS \n] <<System>> as IRS
+
+[\n AAS Wrapper / AAS Proxy \n] <<Component>> as AASW
+
+
+node "Digital Twin Registry" {
+    [\n AAS Registry \n] <<Component>> as AASR
+}
+
+node "Group of Submodel Endpoints" {
+  [\n Submodel-Server \n] <<Component>> as SN
+}
+actor Consumer
+interface "IRS API" as IAPI
+interface "AASProxyAPI" as IAASW
+interface "IRegistryAPI" as IRAPI
+interface "ISubmodelAPI" as ISubModelAPI
+
+Consumer -( IAPI
+IAPI - IRS
+IAASW - AASW
+IRS -( IAASW
+IRAPI - AASR
+AASW --( IRAPI
+ISubModelAPI - SN
+AASW -( ISubModelAPI
+
+
+@enduml

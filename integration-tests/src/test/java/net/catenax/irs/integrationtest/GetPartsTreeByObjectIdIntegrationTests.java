@@ -10,7 +10,8 @@
 package net.catenax.irs.integrationtest;
 
 import net.catenax.irs.controllers.ApiErrorsConstants;
-import net.catenax.irs.dtos.ItemsTreeView;
+import net.catenax.irs.dtos.PartsTreeView;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -20,11 +21,12 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-import static net.catenax.irs.dtos.ItemsTreeView.AS_MAINTAINED;
+import static net.catenax.irs.dtos.PartsTreeView.AS_MAINTAINED;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static org.hamcrest.Matchers.hasSize;
 
+@Disabled("Integrations test not possible without DB")
 public class GetPartsTreeByObjectIdIntegrationTests extends IrsIntegrationTestsBase {
 
     private static final String PART_ONE_ID = "ZF";
@@ -35,8 +37,8 @@ public class GetPartsTreeByObjectIdIntegrationTests extends IrsIntegrationTestsB
     private static final String PART_INFOS = "partInfos";
 
     @ParameterizedTest
-    @EnumSource(ItemsTreeView.class)
-    public void getPartsTreeByObjectId_success(ItemsTreeView view) {
+    @EnumSource(PartsTreeView.class)
+    public void getPartsTreeByObjectId_success(PartsTreeView view) {
 
         var response =
             given()
@@ -99,7 +101,7 @@ public class GetPartsTreeByObjectIdIntegrationTests extends IrsIntegrationTestsB
                    .extract().asString();
 
         assertThatJson(response)
-                .isEqualTo(expected.invalidArgument(List.of(VIEW +":"+ ApiErrorsConstants.ITEM_VIEW_NOT_NULL)));
+                .isEqualTo(expected.invalidArgument(List.of(VIEW +":"+ ApiErrorsConstants.PARTS_TREE_VIEW_NOT_NULL)));
     }
 
     @Test
@@ -119,12 +121,12 @@ public class GetPartsTreeByObjectIdIntegrationTests extends IrsIntegrationTestsB
                         .extract().asString();
 
         assertThatJson(response)
-                .isEqualTo(expected.invalidMaxDepth(List.of(MessageFormat.format(ApiErrorsConstants.ITEM_MAX_DEPTH, maxDepth))));
+                .isEqualTo(expected.invalidMaxDepth(List.of(MessageFormat.format(ApiErrorsConstants.PARTS_TREE_MAX_DEPTH, maxDepth))));
     }
 
     @ParameterizedTest
-    @EnumSource(ItemsTreeView.class)
-    public void getPartsTreeByObjectId_directChildren_success(ItemsTreeView view) {
+    @EnumSource(PartsTreeView.class)
+    public void getPartsTreeByObjectId_directChildren_success(PartsTreeView view) {
 
         var response =
                 given()
@@ -145,8 +147,8 @@ public class GetPartsTreeByObjectIdIntegrationTests extends IrsIntegrationTestsB
     }
 
     @ParameterizedTest
-    @EnumSource(ItemsTreeView.class)
-    public void getPartsTreeByObjectId_CEAspect_success(ItemsTreeView view) {
+    @EnumSource(PartsTreeView.class)
+    public void getPartsTreeByObjectId_CEAspect_success(PartsTreeView view) {
 
         var response =
                 given()
@@ -167,8 +169,8 @@ public class GetPartsTreeByObjectIdIntegrationTests extends IrsIntegrationTestsB
     }
 
     @ParameterizedTest
-    @EnumSource(ItemsTreeView.class)
-    public void getPartsTreeByObjectId_leafNode_searchedNode(ItemsTreeView view) {
+    @EnumSource(PartsTreeView.class)
+    public void getPartsTreeByObjectId_leafNode_searchedNode(PartsTreeView view) {
 
         // a part with no children
         var leafPart = expected.gearwheelpinPartId2();
