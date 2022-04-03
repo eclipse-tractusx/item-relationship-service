@@ -1,6 +1,8 @@
-package net.catenax.irs.dtos;
+package net.catenax.irs.modeldtos;
 
 import com.github.javafaker.Faker;
+import net.catenax.irs.dtos.PartId;
+import net.catenax.irs.dtos.PartRelationship;
 import net.catenax.irs.dtos.PartRelationship.PartRelationshipBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

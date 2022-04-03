@@ -25,4 +25,6 @@ public class Relationship {
 
     private ChildItem childItem;
 
+   private ChildItem parentItem;
+
 }

@@ -9,17 +9,10 @@
 //
 package net.catenax.irs.connector.consumer.service;
 
-import net.catenax.irs.client.model.PartId;
-import net.catenax.irs.client.model.PartRelationship;
+import net.catenax.irs.dtos.version02.ChildItem;
+import net.catenax.irs.dtos.version02.Relationship;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -41,7 +34,7 @@ public final class Dijkstra {
      * @param target target part identifier.
      * @return distance, or {@link Optional#empty()} if no path is found.
      */
-    public static Optional<Integer> shortestPathLength(final Collection<PartRelationship> edges, final PartId source, final PartId target) {
+    public static Optional<Integer> shortestPathLength(final Collection<Relationship> edges, final ChildItem source, final ChildItem target) {
         if (edges.isEmpty()) {
             return Optional.empty();
         }
@@ -50,15 +43,15 @@ public final class Dijkstra {
 
         shortestDistances.put(source, 0);
 
-        final PriorityQueue<PartId> unsettledNodes =
+        final PriorityQueue<ChildItem> unsettledNodes =
                 new PriorityQueue<>(edges.size(), shortestDistances);
         unsettledNodes.add(source);
 
-        final Set<PartId> settledNodes = new HashSet<>();
+        final Set<ChildItem> settledNodes = new HashSet<>();
 
         // extract the node with the shortest distance
         while (!unsettledNodes.isEmpty()) {
-            final PartId vertex = unsettledNodes.poll();
+            final ChildItem vertex = unsettledNodes.poll();
 
             // destination reached, stop and build the path
             if (target.equals(vertex)) {
@@ -67,9 +60,8 @@ public final class Dijkstra {
 
             settledNodes.add(vertex);
 
-            for (final PartRelationship edge : getEdges(edges, vertex)) {
-                final PartId child = edge.getChild();
-
+            for (final Relationship edge : getEdges(edges, vertex)) {
+                final ChildItem child = edge.getChildItem();
                 // skip node already settled
                 if (!settledNodes.contains(child)) {
                     final int shortDist = shortestDistances.get(vertex) + 1;
@@ -86,8 +78,9 @@ public final class Dijkstra {
         return Optional.empty();
     }
 
-    private static List<PartRelationship> getEdges(final Collection<PartRelationship> edges, final PartId vertex) {
-        return edges.stream().filter(g -> g.getParent().equals(vertex)).collect(Collectors.toList());
+    private static List<Relationship> getEdges(final Collection<Relationship> edges, final ChildItem vertex) {
+        return edges.stream().filter(g -> g.getChildItem().equals(vertex)).collect(Collectors.toList());
+
     }
 
 
@@ -95,8 +88,8 @@ public final class Dijkstra {
      * {@link Comparator} for storing distances and retrieving shortest distances.
      */
     private static final class ShortestDistances
-            extends HashMap<PartId, Integer>
-            implements Comparator<PartId> {
+            extends HashMap<ChildItem, Integer>
+            implements Comparator<ChildItem> {
 
         /**
          * {@inheritDoc}
@@ -111,7 +104,7 @@ public final class Dijkstra {
          * {@inheritDoc}
          */
         @Override
-        public int compare(final PartId left, final PartId right) {
+        public int compare(final ChildItem left, final ChildItem right) {
             return get(left).compareTo(get(right));
         }
 

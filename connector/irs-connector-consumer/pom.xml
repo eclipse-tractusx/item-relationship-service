@@ -129,5 +129,11 @@
         <version>${revision}</version>
         <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>net.catenax.irs</groupId>
+      <artifactId>irs-models</artifactId>
+      <version>${revision}</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 </project>

@@ -1,6 +1,6 @@
 package net.catenax.irs.connector.consumer.service;
 
-import net.catenax.irs.client.model.PartRelationshipsWithInfos;
+import net.catenax.irs.dtos.version02.Jobs;
 import org.eclipse.dataspaceconnector.monitor.ConsoleMonitor;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.junit.jupiter.api.Test;
@@ -14,32 +14,32 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-class PartsTreesAssemblerTest {
+class JobsTreesAssemblerTest {
 
     RequestMother generate = new RequestMother();
-    PartRelationshipsWithInfos output = generate.irsOutput();
+    Jobs output = generate.irsOutput();
     @Spy
     Monitor monitor = new ConsoleMonitor();
     @InjectMocks
-    PartsTreesAssembler sut;
+    JobsTreesAssembler sut;
 
     @Test
     void retrievePartsTrees_WithEmptyInput_ReturnsEmptyResult() {
         // Act
-        var result = sut.retrievePartsTrees(Stream.empty());
+        var result = sut.retrieveJobsTrees(Stream.empty());
 
         // Assert
         assertThat(result).isEqualTo(output);
     }
 
     @Test
-    void retrievePartsTrees_WithOneInput_ReturnsPartRelationshipInput() {
+    void retrievePartsTrees_WithOneInput_ReturnsRelationshipInput() {
         // Arrange
         var relationship = generate.relationship();
-        output.addRelationshipsItem(relationship);
+        output.toBuilder().withRelationship(relationship);
 
         // Act
-        var result = sut.retrievePartsTrees(Stream.of(output));
+        var result = sut.retrieveJobsTrees(Stream.of(output));
 
         // Assert
         assertThat(result).isEqualTo(output);
@@ -54,16 +54,16 @@ class PartsTreesAssemblerTest {
         var relationship3 = generate.relationship();
         var relationship4 = generate.relationship();
         var irsOutput1 = generate.irsOutput()
-                .addRelationshipsItem(relationship1)
-                .addRelationshipsItem(relationship2);
+                .toBuilder().withRelationship(relationship1)
+                            .withRelationship(relationship2).build();
         var irsOutput2 = generate.irsOutput()
-                .addRelationshipsItem(relationship1)
-                .addRelationshipsItem(relationship3);
+                .toBuilder().withRelationship(relationship1)
+                .withRelationship(relationship3).build();
         var irsOutput3 = generate.irsOutput()
-                .addRelationshipsItem(relationship4);
+                .toBuilder().withRelationship(relationship4).build();
 
         // Act
-        var result = sut.retrievePartsTrees(Stream.of(
+        var result = sut.retrieveJobsTrees(Stream.of(
                 irsOutput1,
                 irsOutput2,
                 irsOutput1,
@@ -71,21 +71,21 @@ class PartsTreesAssemblerTest {
 
         // Assert
         var irsOutput = generate.irsOutput()
-                .addRelationshipsItem(relationship1)
-                .addRelationshipsItem(relationship2)
-                .addRelationshipsItem(relationship3)
-                .addRelationshipsItem(relationship4);
+                .toBuilder().withRelationship(relationship1)
+                .withRelationship(relationship2)
+                .withRelationship(relationship3)
+                .withRelationship(relationship4).build();
         assertThat(result).isEqualTo(irsOutput);
     }
 
     @Test
     void retrievePartsTrees_WithOneInput_ReturnsPartInfoInput() {
         // Arrange
-        var partInfo = generate.partInfo();
-        var irsOutput = generate.irsOutput().addPartInfosItem(partInfo);
+        var job = generate.job();
+        var irsOutput = generate.irsOutput().toBuilder().withJob(job).build();
 
         // Act
-        var result = sut.retrievePartsTrees(Stream.of(irsOutput));
+        var result = sut.retrieveJobsTrees(Stream.of(irsOutput));
 
         // Assert
         assertThat(result).isEqualTo(irsOutput);
@@ -94,32 +94,32 @@ class PartsTreesAssemblerTest {
     @Test
     void retrievePartsTrees_WithMultipleInputs_CombinesPartInfosWithoutDuplicates() {
         // Arrange
-        var partInfo1 = generate.partInfo();
-        var partInfo2 = generate.partInfo();
-        var partInfo3 = generate.partInfo();
-        var partInfo4 = generate.partInfo();
-        var irsOutput1 = generate.irsOutput()
-                .addPartInfosItem(partInfo1)
-                .addPartInfosItem(partInfo2);
-        var irsOutput2 = generate.irsOutput()
-                .addPartInfosItem(partInfo1)
-                .addPartInfosItem(partInfo3);
-        var irsOutput3 = generate.irsOutput()
-                .addPartInfosItem(partInfo4);
+        var job1 = generate.job();
+        var job2 = generate.job();
+        var job3 = generate.job();
+        var job4 = generate.job();
+        var irsOutput1 = generate.irsOutput().toBuilder()
+                .withJob(job1)
+                .withJob(job2).build();
+        var irsOutput2 = generate.irsOutput().toBuilder()
+                .withJob(job1)
+                .withJob(job3).build();
+        var irsOutput3 = generate.irsOutput().toBuilder()
+                .withJob(job4).build();
 
         // Act
-        var result = sut.retrievePartsTrees(Stream.of(
+        var result = sut.retrieveJobsTrees(Stream.of(
                 irsOutput1,
                 irsOutput2,
                 irsOutput1,
                 irsOutput3));
 
         // Assert
-        var irsOutput = generate.irsOutput()
-                .addPartInfosItem(partInfo1)
-                .addPartInfosItem(partInfo2)
-                .addPartInfosItem(partInfo3)
-                .addPartInfosItem(partInfo4);
+        var irsOutput = generate.irsOutput().toBuilder()
+                .withJob(job1)
+                .withJob(job2)
+                .withJob(job3)
+                .withJob(job4).build();
         assertThat(result).isEqualTo(irsOutput);
     }
 

@@ -9,9 +9,9 @@
 //
 package net.catenax.irs.connector.consumer.registry;
 
-import net.catenax.irs.client.model.PartId;
 import net.catenax.irs.connector.consumer.configuration.PartitionDeploymentsConfig;
 import net.catenax.irs.connector.consumer.configuration.PartitionsConfig;
+import net.catenax.irs.dtos.version02.ChildItem;
 
 import java.util.AbstractMap;
 import java.util.Map;
@@ -67,8 +67,8 @@ public class StubRegistryClient {
      * @param request the request containing part identifier to search.
      * @return Guaranteed to never return {@literal null} in the optional value.
      */
-    public Optional<String> getUrl(final PartId request) {
-        return getAsOptional(oneIdToUrlMappings, request.getOneIDManufacturer());
+    public Optional<String> getUrl(final ChildItem request) {
+        return getAsOptional(oneIdToUrlMappings, request.getChildCatenaXId());
     }
 
     /**

@@ -3,12 +3,12 @@ package net.catenax.irs.connector.consumer.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
-import net.catenax.irs.client.model.PartId;
 import net.catenax.irs.connector.consumer.configuration.ConsumerConfiguration;
 import net.catenax.irs.connector.consumer.registry.StubRegistryClient;
-import net.catenax.irs.connector.requests.PartsTreeRequest;
-import net.catenax.irs.connector.requests.PartsTreeByObjectIdRequest;
+import net.catenax.irs.connector.requests.JobsTreeByCatenaXIdRequest;
+import net.catenax.irs.connector.requests.JobsTreeRequest;
 import net.catenax.irs.connector.util.JsonUtil;
+import net.catenax.irs.dtos.version02.ChildItem;
 import org.eclipse.dataspaceconnector.monitor.ConsoleMonitor;
 import org.eclipse.dataspaceconnector.schema.azure.AzureBlobStoreSchema;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
@@ -30,10 +30,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static net.catenax.irs.connector.constants.IrsConnectorConstants.DATA_REQUEST_IRS_DESTINATION_PATH;
-import static net.catenax.irs.connector.constants.IrsConnectorConstants.DATA_REQUEST_IRS_REQUEST_PARAMETERS;
-import static net.catenax.irs.connector.constants.IrsConnectorConstants.IRS_REQUEST_ASSET_ID;
-import static net.catenax.irs.connector.constants.IrsConnectorConstants.IRS_REQUEST_POLICY_ID;
+import static net.catenax.irs.connector.constants.IrsConnectorConstants.*;
 import static net.catenax.irs.connector.consumer.service.DataRequestFactory.PARTIAL_PARTS_TREE_BLOB_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -45,13 +42,14 @@ class DataRequestFactoryTest {
     Faker faker = new Faker();
     int depth = faker.number().numberBetween(5, 10);
     RequestMother generate = new RequestMother();
-    PartsTreeByObjectIdRequest.PartsTreeByObjectIdRequestBuilder irsRequest = generate.request()
+    JobsTreeByCatenaXIdRequest.JobsTreeByCatenaXIdRequestBuilder irsRequest = generate.request()
             .depth(depth);
-    PartsTreeRequest partsTreeRequest = PartsTreeRequest.builder()
+    JobsTreeRequest jobsTreeRequest = JobsTreeRequest.builder()
             .byObjectIdRequest(irsRequest.build())
             .build();
-    PartId rootPartId = generate.partId();
-    PartId partId = generate.partId();
+    ChildItem childItem = generate.child();
+    ChildItem parentItem = generate.child();
+
     Monitor monitor = new ConsoleMonitor();
     String storageAccountName = faker.lorem().characters();
     String connectorAddress = faker.internet().url();
@@ -60,9 +58,8 @@ class DataRequestFactoryTest {
             .build();
     DataRequestFactory sut;
     DataRequestFactory.RequestContext.RequestContextBuilder requestContextBuilder = DataRequestFactory.RequestContext.builder()
-            .requestTemplate(partsTreeRequest)
-            .depth(depth)
-            .queriedPartId(rootPartId);
+            .requestTemplate(jobsTreeRequest)
+            .depth(depth);
     @Mock
     private StubRegistryClient registryClient;
 
@@ -75,21 +72,21 @@ class DataRequestFactoryTest {
     @NullSource
     @ValueSource(strings = {"www.connector.com"})
     void createRequests_WhenConnectorUrlSameAsPrevious_ReturnsEmpty(String connectorAddress) {
-        when(registryClient.getUrl(partId)).thenReturn(Optional.ofNullable(connectorAddress));
+        when(registryClient.getUrl(childItem)).thenReturn(Optional.ofNullable(connectorAddress));
 
-        assertThat(sut.createRequests(requestContextBuilder.previousUrlOrNull(connectorAddress).build(), Stream.of(partId))).isEmpty();
+        assertThat(sut.createRequests(requestContextBuilder.previousUrlOrNull(connectorAddress).build(), Stream.of(childItem))).isEmpty();
     }
 
     @Test
     void createRequests_WhenConnectorUrlDifferentFromPrevious_ReturnsDataRequest() throws Exception {
         // Arrange
-        when(registryClient.getUrl(partId))
+        when(registryClient.getUrl(childItem))
                 .thenReturn(Optional.of(connectorAddress));
 
-        PartsTreeByObjectIdRequest expectedIrsRequest = partsTreeRequest.getByObjectIdRequest()
+        JobsTreeByCatenaXIdRequest expectedIrsRequest = jobsTreeRequest.getByObjectIdRequest()
                 .toBuilder()
-                .oneIDManufacturer(partId.getOneIDManufacturer())
-                .objectIDManufacturer(partId.getObjectIDManufacturer())
+                .childCatenaXId(childItem.getChildCatenaXId())
+                .lifecycleContext(childItem.getLifecycleContext())
                 .build();
 
         String serializedIrsRequest = MAPPER.writeValueAsString(expectedIrsRequest);
@@ -114,8 +111,8 @@ class DataRequestFactoryTest {
 
         // Act
         var requests = sut.createRequests(requestContextBuilder
-                .queryResultRelationships(Set.of(generate.relationship(rootPartId, partId)))
-                .build(), Stream.of(partId))
+                        .relationships(Set.of(generate.relationship(parentItem, childItem)))
+                .build(), Stream.of(childItem))
                 .collect(Collectors.toList());
 
         // Assert
@@ -132,10 +129,10 @@ class DataRequestFactoryTest {
         String previousUrl = faker.internet().url();
         requestContextBuilder
                 .previousUrlOrNull(previousUrl)
-                .queryResultRelationships(Set.of(generate.relationship(rootPartId, partId)));
+                .relationships(Set.of(generate.relationship(parentItem, childItem)));
 
         // Assert
-        when(registryClient.getUrl(partId))
+        when(registryClient.getUrl(childItem))
                 .thenReturn(Optional.of(connectorAddress));
 
         // Act
@@ -145,24 +142,24 @@ class DataRequestFactoryTest {
     @Test
     void createRequests_AdjustsDepth_By2() throws Exception {
         // Arrange
-        PartId partId1 = generate.partId();
+        ChildItem childItem1 = generate.child();
         String previousUrl = faker.internet().url();
         requestContextBuilder
                 .previousUrlOrNull(previousUrl)
-                .queryResultRelationships(Set.of(
-                        generate.relationship(rootPartId, partId1),
-                        generate.relationship(partId1, partId)
+                .relationships(Set.of(
+                        generate.relationship(parentItem, childItem),
+                        generate.relationship(childItem1, childItem)
                 ));
 
-        when(registryClient.getUrl(partId))
+        when(registryClient.getUrl(childItem))
                 .thenReturn(Optional.of(connectorAddress));
 
         // Act
         assertThat(singleRequestProducedWithIrsRequest())
                 .usingRecursiveComparison()
                 .isEqualTo(irsRequest
-                        .oneIDManufacturer(partId.getOneIDManufacturer())
-                        .objectIDManufacturer(partId.getObjectIDManufacturer())
+                        .childCatenaXId(childItem.getChildCatenaXId())
+                        .lifecycleContext(childItem.getLifecycleContext())
                         .depth(depth - 2)
                         .build());
     }
@@ -171,23 +168,23 @@ class DataRequestFactoryTest {
     void createRequests_WhenDepthExhausted_ReturnsEmpty() {
         // Arrange
         requestContextBuilder
-                .queryResultRelationships(Set.of(generate.relationship(rootPartId, partId)))
+                .relationships(Set.of(generate.relationship(childItem, parentItem)))
                 .depth(1);
 
         // Act
-        var requests = sut.createRequests(requestContextBuilder.build(), Stream.of(partId))
+        var requests = sut.createRequests(requestContextBuilder.build(), Stream.of(childItem))
                 .collect(Collectors.toList());
 
         // Assert
         assertThat(requests).isEmpty();
     }
 
-    private PartsTreeByObjectIdRequest singleRequestProducedWithIrsRequest() throws JsonProcessingException {
-        var requests = sut.createRequests(requestContextBuilder.build(), Stream.of(partId))
+    private JobsTreeByCatenaXIdRequest singleRequestProducedWithIrsRequest() throws JsonProcessingException {
+        var requests = sut.createRequests(requestContextBuilder.build(), Stream.of(childItem))
                 .collect(Collectors.toList());
         assertThat(requests).singleElement();
         var request = requests.get(0);
         var newIrsRequest = request.getProperties().get(DATA_REQUEST_IRS_REQUEST_PARAMETERS);
-        return MAPPER.readValue(newIrsRequest, PartsTreeByObjectIdRequest.class);
+        return MAPPER.readValue(newIrsRequest, JobsTreeByCatenaXIdRequest.class);
     }
 }

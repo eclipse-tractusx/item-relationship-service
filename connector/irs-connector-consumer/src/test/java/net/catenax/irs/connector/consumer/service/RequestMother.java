@@ -1,30 +1,31 @@
 package net.catenax.irs.connector.consumer.service;
 
 import com.github.javafaker.Faker;
-import net.catenax.irs.client.model.PartId;
-import net.catenax.irs.client.model.PartInfo;
-import net.catenax.irs.client.model.PartRelationship;
-import net.catenax.irs.client.model.PartRelationshipsWithInfos;
-import net.catenax.irs.connector.requests.PartsTreeRequest;
-import net.catenax.irs.connector.requests.PartsTreeByObjectIdRequest;
+import net.catenax.irs.connector.requests.JobsTreeByCatenaXIdRequest;
+import net.catenax.irs.connector.requests.JobsTreeRequest;
+import net.catenax.irs.dtos.version02.*;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class RequestMother {
 
     Faker faker = new Faker();
 
-    public PartsTreeByObjectIdRequest.PartsTreeByObjectIdRequestBuilder request() {
-        return PartsTreeByObjectIdRequest.builder()
-                .oneIDManufacturer(faker.company().name())
-                .objectIDManufacturer(faker.lorem().characters(10, 20))
-                .view("AS_BUILT")
+    public JobsTreeByCatenaXIdRequest.JobsTreeByCatenaXIdRequestBuilder request() {
+        return JobsTreeByCatenaXIdRequest.builder()
+                .childCatenaXId(faker.company().name())
+                .lifecycleContext(faker.lorem().characters(10, 20))
+                .assembledOn(LocalDateTime.now())
+                .lastModifiedOn(LocalDateTime.now())
                 .depth(faker.number().numberBetween(1, 5));
     }
 
-    public PartsTreeRequest partsTreeRequest() {
-        return PartsTreeRequest.builder()
+    public JobsTreeRequest jobsTreeRequest() {
+        return JobsTreeRequest.builder()
                 .byObjectIdRequest(request().build())
                 .build();
     }
@@ -35,34 +36,40 @@ public class RequestMother {
                 .build();
     }
 
-    public PartId partId() {
-        var partId = new PartId();
-        partId.setOneIDManufacturer(faker.company().name());
-        partId.setObjectIDManufacturer(faker.lorem().characters(10, 20));
-        return partId;
+    public Job job() {
+        var job = new Job(null, null, null, null, null, null, null, null, null, null);
+        job.toBuilder().withJobId(faker.lorem().characters(0, 10));
+        job.toBuilder().withOwner(faker.lorem().characters(10, 20));
+        job.toBuilder().withLastModifiedOn(Instant.now());
+        job.toBuilder().withJobFinished(Instant.now());
+        return job;
     }
 
-    public PartRelationshipsWithInfos irsOutput() {
-        var obj = new PartRelationshipsWithInfos();
-        obj.setRelationships(new ArrayList<>());
-        obj.setPartInfos(new ArrayList<>());
+    public ChildItem child() {
+        var child = new ChildItem(null, null, null, null, null);
+        child.toBuilder().withChildCatenaXId(faker.lorem().characters(10, 20));
+        child.toBuilder().withLifecycleContext(faker.lorem().characters(0, 10));
+        child.toBuilder().withAssembledOn(Instant.now());
+        child.toBuilder().withLastModifiedOn(Instant.now());
+        return child;
+    }
+
+    public Jobs irsOutput() {
+        var obj = new Jobs(null, null, null);
+        obj.toBuilder().withJob(new Job(null, null, null,null,null,null,null,null, null, null));
+        obj.toBuilder().withRelationship(new Relationship(null, null, null));
+        obj.toBuilder().withShells(Optional.of(new ArrayList<Shells>()));
         return obj;
     }
 
-    public PartRelationship relationship() {
-        return relationship(partId(), partId());
+    public Relationship relationship() {
+        return relationship(child(), child());
     }
 
-    public PartRelationship relationship(PartId parent, PartId child) {
-        var obj = new PartRelationship();
-        obj.setParent(parent);
-        obj.setChild(child);
-        return obj;
-    }
-
-    public PartInfo partInfo() {
-        var obj = new PartInfo();
-        obj.setPart(partId());
+    public Relationship relationship(ChildItem parent, ChildItem child) {
+        var obj = new Relationship(null, null, null);
+        obj.toBuilder().withParentItem(parent);
+        obj.toBuilder().withChildItem(child);
         return obj;
     }
 }

@@ -5,11 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
+import net.catenax.irs.connector.requests.JobsTreeByCatenaXIdRequest;
+import net.catenax.irs.connector.requests.JobsTreeRequest;
 import net.catenax.irs.connector.requests.PartsTreeByObjectIdRequest;
 import net.catenax.irs.connector.requests.PartsTreeRequest;
 import net.catenax.irs.dtos.ItemsTreeView;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 import static io.gatling.javaapi.core.CoreDsl.StringBody;
 import static io.gatling.javaapi.core.CoreDsl.bodyString;
@@ -29,8 +33,8 @@ public class IrsConnectorSimulationBase extends Simulation {
             .acceptHeader("*/*").contentTypeHeader("application/json");
     // Trigger a get parts tree request. Then call status endpoint every second till it returns 200.
 
-    protected String vehicleOneId = "CAXSWPFTJQEVZNZZ";
-    protected String vehicleObjectId = "UVVZI9PKX5D37RFUB";
+    protected String catenaXId = "CAXSWPFTJQEVZNZZ";
+    protected String lifecycleObjectId = "UVVZI9PKX5D37RFUB";
     protected int depth = 2;
 
     protected ScenarioBuilder scenarioBuilder = scenario("Trigger Get parts tree for a part.")
@@ -38,7 +42,7 @@ public class IrsConnectorSimulationBase extends Simulation {
             .on(exec(
                             http("Trigger partsTree request")
                                     .post("/retrievePartsTree")
-                                    .body(StringBody(getSerializedPartsTreeRequest()))
+                                    .body(StringBody(getSerializedJobsTreeRequest()))
                                     .check(status().is(200)).check(bodyString().saveAs("requestId"))
                     )
                     // Call status endpoint every second, till it gives a 200 status code.
@@ -50,21 +54,21 @@ public class IrsConnectorSimulationBase extends Simulation {
                                                     .check(status().saveAs("status")))
                                             .pause(Duration.ofSeconds(1)))));
 
-    protected String getSerializedPartsTreeRequest() {
-        var params = PartsTreeRequest.builder()
+    protected String getSerializedJobsTreeRequest() {
+        var params = JobsTreeRequest.builder()
                 .byObjectIdRequest(
-                        PartsTreeByObjectIdRequest.builder()
-                                .oneIDManufacturer(vehicleOneId)
-                                .objectIDManufacturer(vehicleObjectId)
-                                .view(ItemsTreeView.AS_BUILT.name())
-                                .aspect(IrsConnectorStressTest.ASPECT_MATERIAL)
+                        JobsTreeByCatenaXIdRequest.builder()
+                                .childCatenaXId(catenaXId)
+                                .lifecycleContext(lifecycleObjectId)
+                                .assembledOn(LocalDateTime.now())
+                                .lastModifiedOn(LocalDateTime.now())
                                 .depth(depth)
                                 .build()).build();
 
         try {
             return MAPPER.writeValueAsString(params);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Exception serializing parts tree request", e);
+            throw new RuntimeException("Exception serializing jobs tree request", e);
         }
     }
 }

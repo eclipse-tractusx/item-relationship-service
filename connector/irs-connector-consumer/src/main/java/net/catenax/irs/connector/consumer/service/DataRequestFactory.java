@@ -12,15 +12,14 @@ package net.catenax.irs.connector.consumer.service;
 
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-import lombok.Singular;
 import lombok.Value;
-import net.catenax.irs.client.model.PartId;
-import net.catenax.irs.client.model.PartRelationship;
 import net.catenax.irs.connector.constants.IrsConnectorConstants;
 import net.catenax.irs.connector.consumer.configuration.ConsumerConfiguration;
 import net.catenax.irs.connector.consumer.registry.StubRegistryClient;
-import net.catenax.irs.connector.requests.PartsTreeRequest;
+import net.catenax.irs.connector.requests.JobsTreeRequest;
 import net.catenax.irs.connector.util.JsonUtil;
+import net.catenax.irs.dtos.version02.ChildItem;
+import net.catenax.irs.dtos.version02.Relationship;
 import org.eclipse.dataspaceconnector.schema.azure.AzureBlobStoreSchema;
 import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
@@ -28,11 +27,8 @@ import org.eclipse.dataspaceconnector.spi.types.domain.metadata.DataEntry;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataAddress;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
@@ -79,26 +75,26 @@ public class DataRequestFactory {
      * to other providers are issued in subsequent recursive retrievals.
      *
      * @param requestContext current IRS request data.
-     * @param partIds        the parts for which to retrieve partial parts trees.
+     * @param childItems        the parts for which to retrieve partial parts trees.
      * @return a {@link DataRequest} for each item {@code partIds} for which the Provider URL
      * was resolves in the registry <b>and</b> is not identical to {@code previousUrlOrNull},
      * that allows retrieving the partial parts tree for the given part.
      */
     /* package */ Stream<DataRequest> createRequests(
             final RequestContext requestContext,
-            final Stream<PartId> partIds) {
-        return partIds
-                .flatMap(partId -> createRequest(requestContext, partId).stream());
+            final Stream<ChildItem> childItems) {
+        return childItems
+                .flatMap(childItem -> createRequest(requestContext, childItem).stream());
     }
 
     private Optional<DataRequest> createRequest(
             final RequestContext requestContext,
-            final PartId partId) {
+            final ChildItem childItem) {
 
         // Resolve Provider URL for part from registry
-        final var registryResponse = registryClient.getUrl(partId);
+        final var registryResponse = registryClient.getUrl(childItem);
         if (registryResponse.isEmpty()) {
-            monitor.info(format("Registry did not resolve %s", partId));
+            monitor.info(format("Registry did not resolve %s", childItem));
             return Optional.empty();
         }
 
@@ -107,24 +103,24 @@ public class DataRequestFactory {
         // If provider URL has not changed between requests, then children
         // for that part have already been fetched in the previous request.
         if (Objects.equals(requestContext.previousUrlOrNull, providerUrlForPartId)) {
-            monitor.debug(format("Not issuing a new request for %s, URL unchanged", partId));
+            monitor.debug(format("Not issuing a new request for %s, URL unchanged", childItem));
             return Optional.empty();
         }
 
         int remainingDepth = requestContext.depth;
         if (requestContext.previousUrlOrNull != null) {
-            final var usedDepth = Dijkstra.shortestPathLength(requestContext.queryResultRelationships, requestContext.queriedPartId, partId)
-                    .orElseThrow(() -> new EdcException("Unconnected parts returned by IRS"));
+            final var usedDepth = Dijkstra.shortestPathLength(requestContext.getRelationships(), requestContext.getRelationship(), childItem)
+                    .orElseThrow(() -> new EdcException("Unconnected child items returned by IRS"));
             remainingDepth -= usedDepth;
             if (remainingDepth <= 0) {
-                monitor.debug(format("Not issuing a new request for %s, depth exhausted", partId));
+                monitor.debug(format("Not issuing a new request for %s, depth exhausted", childItem));
                 return Optional.empty();
             }
         }
 
         final var newIrsRequest = requestContext.requestTemplate.getByObjectIdRequest().toBuilder()
-                .oneIDManufacturer(partId.getOneIDManufacturer())
-                .objectIDManufacturer(partId.getObjectIDManufacturer())
+                .childCatenaXId(childItem.getChildCatenaXId())
+                .lifecycleContext(childItem.getLifecycleContext())
                 .depth(remainingDepth)
                 .build();
 
@@ -158,7 +154,7 @@ public class DataRequestFactory {
 
     /**
      * Parameter Object used to pass information about the previous IRS request
-     * and its results, to the {@link #createRequest(RequestContext, PartId)}
+     * and its results, to the {@link #createRequest(RequestContext, net.catenax.irs.dtos.version02.ChildItem)}
      * method for creatin subsequent IRS requests.
      */
     @Value
@@ -167,7 +163,11 @@ public class DataRequestFactory {
         /**
          * The original IRS request received from the client.
          */
-        private PartsTreeRequest requestTemplate;
+        private JobsTreeRequest requestTemplate;
+
+        private Collection<Relationship> relationships;
+
+        private ChildItem relationship;
         /**
          * the Provider URL used for retrieving the {@code partIds}, or {@code null} for the first retrieval.
          */
@@ -175,12 +175,16 @@ public class DataRequestFactory {
         /**
          * The queried partId in the {@link #requestTemplate}.
          */
-        private PartId queriedPartId;
+        private String childCatenaXId;
+
         /**
-         * The relationships returned in the current query response.
+         * The queried partId in the {@link #requestTemplate}.
          */
-        @Singular
-        private Collection<PartRelationship> queryResultRelationships;
+        private String lifecycleContext;
+
+        private LocalDateTime assembledOn;
+
+        private LocalDateTime lastModifiedOn;
         /**
          * The query depth used in the current query.
          */

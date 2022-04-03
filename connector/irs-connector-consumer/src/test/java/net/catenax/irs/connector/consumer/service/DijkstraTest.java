@@ -1,7 +1,7 @@
 package net.catenax.irs.connector.consumer.service;
 
-import net.catenax.irs.client.model.PartId;
-import net.catenax.irs.client.model.PartRelationship;
+import net.catenax.irs.dtos.version02.ChildItem;
+import net.catenax.irs.dtos.version02.Relationship;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -17,10 +17,10 @@ class DijkstraTest {
     static Stream<Arguments> shortestPathLengthArgs() {
 
         RequestMother generate = new RequestMother();
-        PartId source = generate.partId();
-        PartId target = generate.partId();
-        PartId other = generate.partId();
-        PartId another = generate.partId();
+        ChildItem source = generate.child();
+        ChildItem target = generate.child();
+        ChildItem other = generate.child();
+        ChildItem another = generate.child();
 
         return Stream.of(
                 Arguments.of(Set.of(generate.relationship(source, source)), source, source, Optional.of(0))
@@ -48,7 +48,7 @@ class DijkstraTest {
 
     @ParameterizedTest
     @MethodSource("shortestPathLengthArgs")
-    void shortestPathLength(Set<PartRelationship> edges, PartId source, PartId target, Optional<Integer> expected) {
+    void shortestPathLength(Set<Relationship> edges, ChildItem source, ChildItem target, Optional<Integer> expected) {
         assertThat(Dijkstra.shortestPathLength(edges, source, target))
                 .isEqualTo(expected);
     }

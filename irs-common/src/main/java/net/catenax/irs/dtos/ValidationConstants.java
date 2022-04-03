@@ -13,19 +13,20 @@ package net.catenax.irs.dtos;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
- * Helper class contains dto attributes validations as reusable constants.
+ * Helper class contains dto attributes validations as reusable dtos.
  */
+@SuppressWarnings("PMD")
 @ExcludeFromCodeCoverageGeneratedReport
 public class ValidationConstants {
     /**
      * Minimum length limit for an input field.
      */
-    public static final int INPUT_FIELD_MIN_LENGTH = 1;
+    public static final int INPUT_FIELD_MIN_LENGTH = 16;
     /**
      * Maximum length limit for an input field.
      * 10000 is chosen as a high enough value to protect api against very large inputs.
      */
-    public static final int INPUT_FIELD_MAX_LENGTH = 10_000;
+    public static final int INPUT_FIELD_MAX_LENGTH = 16;
     /**
      * Minimum number of relationships in update request.
      */
