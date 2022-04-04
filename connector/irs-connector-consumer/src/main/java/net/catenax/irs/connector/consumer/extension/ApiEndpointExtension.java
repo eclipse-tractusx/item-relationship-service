@@ -16,6 +16,7 @@ import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedRep
 import net.catenax.irs.connector.consumer.configuration.ConsumerConfiguration;
 import net.catenax.irs.connector.consumer.controller.ConsumerApiController;
 import net.catenax.irs.connector.consumer.middleware.RequestMiddleware;
+import net.catenax.irs.connector.consumer.persistence.BlobPersistence;
 import net.catenax.irs.connector.consumer.service.ConsumerService;
 import net.catenax.irs.connector.consumer.service.DataRequestFactory;
 import net.catenax.irs.connector.consumer.service.PartsTreeRecursiveJobHandler;
@@ -27,7 +28,6 @@ import net.catenax.irs.connector.metrics.MeterRegistryFactory;
 import net.catenax.irs.connector.http.HttpClientFactory;
 import net.catenax.irs.connector.util.JsonUtil;
 import okhttp3.OkHttpClient;
-import org.eclipse.dataspaceconnector.common.azure.BlobStoreApi;
 import org.eclipse.dataspaceconnector.spi.protocol.web.WebService;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
@@ -89,7 +89,7 @@ public class ApiEndpointExtension implements ServiceExtension {
         final var processManager = context.getService(TransferProcessManager.class);
         final var transferProcessObservable = context.getService(TransferProcessObservable.class);
 
-        final var blobStoreApi = context.getService(BlobStoreApi.class);
+        final var blobStoreApi = context.getService(BlobPersistence.class);
         final var jobStore = new InMemoryJobStore(monitor);
         final var configuration = ConsumerConfiguration.builder().storageAccountName(storageAccountName).build();
         final var registryClient = StubRegistryClientFactory.getRegistryClient(context, jsonUtil);

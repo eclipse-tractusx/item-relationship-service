@@ -108,9 +108,6 @@ public class ConsumerApiController {
                         return Response.status(Response.Status.NOT_FOUND).build();
                     }
                     final StatusResponse statusResponse = status.get();
-                    if (statusResponse.getSasToken() != null) {
-                        return Response.ok(statusResponse.getSasToken()).build();
-                    }
                     return Response.accepted(statusResponse.getStatus().toString()).build();
                 });
     }

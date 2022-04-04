@@ -15,11 +15,11 @@ import net.catenax.irs.client.model.PartId;
 import net.catenax.irs.client.model.PartRelationship;
 import net.catenax.irs.client.model.PartRelationshipsWithInfos;
 import net.catenax.irs.connector.constants.IrsConnectorConstants;
+import net.catenax.irs.connector.consumer.persistence.BlobPersistence;
+import net.catenax.irs.connector.consumer.persistence.BlobPersistenceException;
 import net.catenax.irs.connector.requests.PartsTreeRequest;
 import net.catenax.irs.connector.requests.PartsTreeByObjectIdRequest;
 import net.catenax.irs.connector.util.JsonUtil;
-import org.eclipse.dataspaceconnector.common.azure.BlobStoreApi;
-import org.eclipse.dataspaceconnector.schema.azure.AzureBlobStoreSchema;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
@@ -52,7 +52,7 @@ public class PartsTreeRecursiveLogic {
     /**
      * Blob store API.
      */
-    private final BlobStoreApi blobStoreApi;
+    private final BlobPersistence blobStoreApi;
     /**
      * Json Converter.
      */
@@ -127,14 +127,10 @@ public class PartsTreeRecursiveLogic {
      *
      * @param completedTransfers  the completed transfer processes, containing the location of the
      *                            blobs with partial parts trees.
-     * @param targetAccountName   Storage account name to store overall parts tree.
-     * @param targetContainerName Storage container name to store overall parts tree.
      * @param targetBlobName      Storage blob name to store overall parts tree.
      */
     /* package */ void assemblePartialPartTreeBlobs(
             final List<TransferProcess> completedTransfers,
-            final String targetAccountName,
-            final String targetContainerName,
             final String targetBlobName) {
         final var partialTrees = completedTransfers.stream()
                 .map(this::downloadPartialPartsTree)
@@ -142,25 +138,27 @@ public class PartsTreeRecursiveLogic {
         final var assembledTree = assembler.retrievePartsTrees(partialTrees);
         final var blob = jsonUtil.asString(assembledTree).getBytes(StandardCharsets.UTF_8);
 
-        monitor.info(format("Uploading assembled parts tree to %s/%s/%s",
-                targetAccountName,
-                targetContainerName,
+        monitor.info(format("Uploading assembled parts tree to %s",
                 targetBlobName
         ));
-        blobStoreApi.putBlob(targetAccountName, targetContainerName, targetBlobName, blob);
+        try {
+            blobStoreApi.putBlob(targetBlobName, blob);
+        } catch (BlobPersistenceException e) {
+            monitor.severe("Could not store blob", e);
+        }
     }
 
     private byte[] downloadPartialPartsTree(final TransferProcess transfer) {
-        final var destination = transfer.getDataRequest().getDataDestination();
-        final var sourceAccountName = destination.getProperty(AzureBlobStoreSchema.ACCOUNT_NAME);
-        final var sourceContainerName = destination.getProperty(AzureBlobStoreSchema.CONTAINER_NAME);
         final var sourceBlobName = transfer.getDataRequest().getProperties().get(IrsConnectorConstants.DATA_REQUEST_IRS_DESTINATION_PATH);
-        monitor.info(format("Downloading partial parts tree from blob at %s/%s/%s",
-                sourceAccountName,
-                sourceContainerName,
+        monitor.info(format("Downloading partial parts tree from blob at %s",
                 sourceBlobName
         ));
-        return blobStoreApi.getBlob(sourceAccountName, sourceContainerName, sourceBlobName);
+        try {
+            return blobStoreApi.getBlob(sourceBlobName);
+        } catch (BlobPersistenceException e) {
+            monitor.severe("Could not load blob", e);
+            return new byte[0];
+        }
     }
 
     private PartId toPartId(final PartsTreeByObjectIdRequest partsTreeRequest) {

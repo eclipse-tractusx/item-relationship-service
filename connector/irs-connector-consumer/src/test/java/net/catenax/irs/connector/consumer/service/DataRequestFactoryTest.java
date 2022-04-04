@@ -10,7 +10,6 @@ import net.catenax.irs.connector.requests.PartsTreeRequest;
 import net.catenax.irs.connector.requests.PartsTreeByObjectIdRequest;
 import net.catenax.irs.connector.util.JsonUtil;
 import org.eclipse.dataspaceconnector.monitor.ConsoleMonitor;
-import org.eclipse.dataspaceconnector.schema.azure.AzureBlobStoreSchema;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.domain.metadata.DataEntry;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataAddress;
@@ -104,8 +103,8 @@ class DataRequestFactoryTest {
                         .policyId(IRS_REQUEST_POLICY_ID)
                         .build())
                 .dataDestination(DataAddress.Builder.newInstance()
-                        .type(AzureBlobStoreSchema.TYPE)
-                        .property(AzureBlobStoreSchema.ACCOUNT_NAME, configuration.getStorageAccountName())
+                        .type("dummyType")
+//                        .property(AzureBlobStoreSchema.ACCOUNT_NAME, configuration.getStorageAccountName())
                         .build())
                 .properties(Map.of(DATA_REQUEST_IRS_REQUEST_PARAMETERS, serializedIrsRequest, DATA_REQUEST_IRS_DESTINATION_PATH, PARTIAL_PARTS_TREE_BLOB_NAME
                 ))
