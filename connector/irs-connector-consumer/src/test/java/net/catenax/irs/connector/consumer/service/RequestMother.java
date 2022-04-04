@@ -3,6 +3,9 @@ package net.catenax.irs.connector.consumer.service;
 import com.github.javafaker.Faker;
 import net.catenax.irs.connector.requests.JobsTreeByCatenaXIdRequest;
 import net.catenax.irs.connector.requests.JobsTreeRequest;
+import net.catenax.irs.connector.requests.PartsTreeByObjectIdRequest;
+import net.catenax.irs.connector.requests.PartsTreeRequest;
+import net.catenax.irs.dtos.PartId;
 import net.catenax.irs.dtos.version02.*;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 
@@ -22,6 +25,20 @@ public class RequestMother {
                 .assembledOn(LocalDateTime.now())
                 .lastModifiedOn(LocalDateTime.now())
                 .depth(faker.number().numberBetween(1, 5));
+    }
+
+    public PartsTreeByObjectIdRequest.PartsTreeByObjectIdRequestBuilder requestPartsTree() {
+        return PartsTreeByObjectIdRequest.builder()
+                .oneIDManufacturer(faker.company().name())
+                .objectIDManufacturer(faker.lorem().characters(10, 20))
+                .view("AS_BUILT")
+                .depth(faker.number().numberBetween(1, 5));
+    }
+
+    public PartsTreeRequest partsTreeRequest() {
+        return PartsTreeRequest.builder()
+                .byObjectIdRequest(requestPartsTree().build())
+                .build();
     }
 
     public JobsTreeRequest jobsTreeRequest() {
@@ -52,6 +69,13 @@ public class RequestMother {
         child.toBuilder().withAssembledOn(Instant.now());
         child.toBuilder().withLastModifiedOn(Instant.now());
         return child;
+    }
+
+    public PartId partId() {
+        var partId = new PartId(null, null);
+        partId.toBuilder().withOneIDManufacturer(faker.company().name()).build();
+        partId.toBuilder().withObjectIDManufacturer(faker.lorem().characters(10, 20)).build();
+        return partId;
     }
 
     public Jobs irsOutput() {

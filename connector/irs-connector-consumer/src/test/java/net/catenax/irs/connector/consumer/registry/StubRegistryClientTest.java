@@ -63,7 +63,7 @@ class StubRegistryClientTest {
         attributes.put(partition1.getKey(), attributeColl);
         attributes.put(partition2.getKey(), attributeColl);
         var client = new StubRegistryClient(partitions, attributes);
-        assertThat(client.getUrl(partId))
+        assertThat(client.getUrlPartId(partId))
                 .contains(url);
     }
 
@@ -78,7 +78,7 @@ class StubRegistryClientTest {
         attributes.put(partition1.getKey(), attributeColl);
         attributes.put(partition2.getKey(), attributeColl);
         var client = new StubRegistryClient(partitions, attributes);
-        assertThat(client.getUrl(generate.partId()))
+        assertThat(client.getUrlPartId(generate.partId()))
                 .isEmpty();
     }
 

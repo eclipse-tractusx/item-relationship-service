@@ -19,8 +19,8 @@ public class IrsConnectorStressTest extends SystemTestsBase {
     public static class StressTestsRunner extends IrsConnectorSimulationBase {
 
         {
-            this.vehicleOneId = "CAXSWPFTJQEVZNZZ";
-            this.vehicleObjectId = "OXCNTJT4D6AWSGAK3";
+            this.catenaXId = "CAXSWPFTJQEVZNZZ";
+            this.lifecycleObjectId = "OXCNTJT4D6AWSGAK3";
             this.depth = 5;
 
             // generate an open workload injection profile

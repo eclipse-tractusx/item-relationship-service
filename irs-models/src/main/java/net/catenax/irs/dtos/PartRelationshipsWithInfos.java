@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /*** API type for query response type with relationships and part information. */
@@ -30,14 +29,4 @@ public class PartRelationshipsWithInfos {
 
     @Schema(description = "List of part infos")
     private List<PartInfo> partInfos;
-
-    public PartRelationshipsWithInfos() {
-        this.relationships = null;
-        this.partInfos = null;
-    };
-
-    public void setRelationships(ArrayList<PartRelationship> partRelationships) {
-        this.relationships = partRelationships;
-    }
-
 }

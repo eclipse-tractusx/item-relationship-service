@@ -11,6 +11,7 @@ package net.catenax.irs.connector.consumer.registry;
 
 import net.catenax.irs.connector.consumer.configuration.PartitionDeploymentsConfig;
 import net.catenax.irs.connector.consumer.configuration.PartitionsConfig;
+import net.catenax.irs.dtos.PartId;
 import net.catenax.irs.dtos.version02.ChildItem;
 
 import java.util.AbstractMap;
@@ -69,6 +70,10 @@ public class StubRegistryClient {
      */
     public Optional<String> getUrl(final ChildItem request) {
         return getAsOptional(oneIdToUrlMappings, request.getChildCatenaXId());
+    }
+
+    public Optional<String> getUrlPartId(final PartId request) {
+        return getAsOptional(oneIdToUrlMappings, request.getOneIDManufacturer());
     }
 
     /**

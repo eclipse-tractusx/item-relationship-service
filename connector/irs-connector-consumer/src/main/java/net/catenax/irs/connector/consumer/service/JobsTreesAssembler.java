@@ -11,17 +11,12 @@ package net.catenax.irs.connector.consumer.service;
 
 
 import lombok.RequiredArgsConstructor;
-import net.catenax.irs.dtos.PartInfo;
-import net.catenax.irs.dtos.PartRelationship;
-import net.catenax.irs.dtos.PartRelationshipsWithInfos;
 import net.catenax.irs.dtos.version02.Job;
 import net.catenax.irs.dtos.version02.Jobs;
 import net.catenax.irs.dtos.version02.Relationship;
 import net.catenax.irs.dtos.version02.Shells;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,7 +44,7 @@ public class JobsTreesAssembler {
      */
     /* package */ Jobs retrieveJobsTrees(final Stream<Jobs> partialJobs) {
         final Job[] job = {null};
-        final Relationship[] relationships = {new Relationship(null, null)};
+        final Relationship[] relationships = {new Relationship(null, null, null)};
         final Optional<List<Shells>>[] shells = new Optional[]{Optional.empty()};
         final var numberOfPartialJobs = new AtomicInteger();
 

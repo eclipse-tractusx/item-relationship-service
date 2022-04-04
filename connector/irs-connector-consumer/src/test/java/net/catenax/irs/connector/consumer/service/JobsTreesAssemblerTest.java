@@ -24,7 +24,7 @@ class JobsTreesAssemblerTest {
     JobsTreesAssembler sut;
 
     @Test
-    void retrievePartsTrees_WithEmptyInput_ReturnsEmptyResult() {
+    void retrieveJobsTrees_WithEmptyInput_ReturnsEmptyResult() {
         // Act
         var result = sut.retrieveJobsTrees(Stream.empty());
 
@@ -33,7 +33,7 @@ class JobsTreesAssemblerTest {
     }
 
     @Test
-    void retrievePartsTrees_WithOneInput_ReturnsRelationshipInput() {
+    void retrieveJobsTrees_WithOneInput_ReturnsRelationshipInput() {
         // Arrange
         var relationship = generate.relationship();
         output.toBuilder().withRelationship(relationship);
@@ -47,7 +47,7 @@ class JobsTreesAssemblerTest {
 
 
     @Test
-    void retrievePartsTrees_WithMultipleInputs_CombinesPartRelationshipsWithoutDuplicates() {
+    void retrieveJobsTrees_WithMultipleInputs_CombinesJobRelationshipsWithoutDuplicates() {
         // Arrange
         var relationship1 = generate.relationship();
         var relationship2 = generate.relationship();
@@ -92,7 +92,7 @@ class JobsTreesAssemblerTest {
     }
 
     @Test
-    void retrievePartsTrees_WithMultipleInputs_CombinesPartInfosWithoutDuplicates() {
+    void retrieveJobsTrees_WithMultipleInputs_CombinesJobsWithoutDuplicates() {
         // Arrange
         var job1 = generate.job();
         var job2 = generate.job();
