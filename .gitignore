@@ -48,6 +48,10 @@ terraform-outputs-safe.json
 
 ### Maven generated files ###
 .flattened-pom.xml
+dependency-reduced-pom.xml
 
+
+### EDC Binaries ###
+/connector/**/bin/
 ### Local files ###
 dev/local/*
