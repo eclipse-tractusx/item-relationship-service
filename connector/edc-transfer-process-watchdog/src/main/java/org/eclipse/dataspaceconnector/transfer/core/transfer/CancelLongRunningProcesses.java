@@ -1,5 +1,5 @@
 //
-// Copyright (c) IrsPartRelationshipsWithInfos Holder (Catena-X Consortium)
+// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
 //
 // See the AUTHORS file(s) distributed with this work for additional
 // information regarding authorship.
