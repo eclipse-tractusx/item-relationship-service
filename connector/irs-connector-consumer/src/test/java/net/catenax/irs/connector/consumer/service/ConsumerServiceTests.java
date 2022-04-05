@@ -137,29 +137,9 @@ public class ConsumerServiceTests {
                 .usingRecursiveComparison()
                 .isEqualTo(StatusResponse.builder()
                         .status(job.getState())
-//                        .sasToken(format("https://%s.blob.core.windows.net/%s/%s?%s",
-//                                accountName,
-//                                containerName,
-//                                blobName,
-//                                sasToken
-//                        ))
                         .build());
-//        assertThat(offsetCaptor.getValue()).isBetween(
-//                before.plus(SAS_TOKEN_VALIDITY),
-//                after.plus(SAS_TOKEN_VALIDITY));
     }
-//
-//    @ParameterizedTest
-//    @MethodSource("provideIncompleteJobData")
-//    public void getStatus_WhenCompletedAndJobDataMissing_Throws(Map<String, String> jobData, String errorMessage) {
-//        // Arrange
-//        job = job.toBuilder().jobData(jobData).state(JobState.COMPLETED).build();
-//        when(jobStore.find(jobId)).thenReturn(Optional.of(job));
-//        // Act
-//        assertThatExceptionOfType(NullPointerException.class)
-//                .isThrownBy(() -> service.getStatus(jobId))
-//                .withMessage(errorMessage);
-//    }
+
 
     @Test
     public void retrievePartsTree_WhenPartsTreeRequestValid_ReturnsProcessId() throws JsonProcessingException {
