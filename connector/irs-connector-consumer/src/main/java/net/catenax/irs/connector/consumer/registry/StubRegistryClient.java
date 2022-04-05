@@ -13,6 +13,7 @@ import net.catenax.irs.connector.consumer.configuration.PartitionDeploymentsConf
 import net.catenax.irs.connector.consumer.configuration.PartitionsConfig;
 import net.catenax.irs.dtos.PartId;
 import net.catenax.irs.dtos.version02.ChildItem;
+import net.catenax.irs.dtos.version02.Job;
 
 import java.util.AbstractMap;
 import java.util.Map;

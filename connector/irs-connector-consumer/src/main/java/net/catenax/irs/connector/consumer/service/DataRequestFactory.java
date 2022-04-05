@@ -19,6 +19,7 @@ import net.catenax.irs.connector.consumer.registry.StubRegistryClient;
 import net.catenax.irs.connector.requests.JobsTreeRequest;
 import net.catenax.irs.connector.util.JsonUtil;
 import net.catenax.irs.dtos.version02.ChildItem;
+import net.catenax.irs.dtos.version02.Job;
 import net.catenax.irs.dtos.version02.Relationship;
 import org.eclipse.dataspaceconnector.schema.azure.AzureBlobStoreSchema;
 import org.eclipse.dataspaceconnector.spi.EdcException;
@@ -75,19 +76,18 @@ public class DataRequestFactory {
      * to other providers are issued in subsequent recursive retrievals.
      *
      * @param requestContext current IRS request data.
-     * @param childItems        the parts for which to retrieve partial parts trees.
+     * @param childItem        the child items for which to retrieve partial jobs trees.
      * @return a {@link DataRequest} for each item {@code partIds} for which the Provider URL
      * was resolves in the registry <b>and</b> is not identical to {@code previousUrlOrNull},
      * that allows retrieving the partial parts tree for the given part.
      */
     /* package */ Stream<DataRequest> createRequests(
             final RequestContext requestContext,
-            final Stream<ChildItem> childItems) {
-        return childItems
-                .flatMap(childItem -> createRequest(requestContext, childItem).stream());
+            final ChildItem childItem) {
+        return createRequest(requestContext, childItem);
     }
 
-    private Optional<DataRequest> createRequest(
+    private Stream<DataRequest> createRequest(
             final RequestContext requestContext,
             final ChildItem childItem) {
 
@@ -95,7 +95,7 @@ public class DataRequestFactory {
         final var registryResponse = registryClient.getUrl(childItem);
         if (registryResponse.isEmpty()) {
             monitor.info(format("Registry did not resolve %s", childItem));
-            return Optional.empty();
+            return Stream.empty();
         }
 
         final var providerUrlForPartId = registryResponse.get();
@@ -104,23 +104,22 @@ public class DataRequestFactory {
         // for that part have already been fetched in the previous request.
         if (Objects.equals(requestContext.previousUrlOrNull, providerUrlForPartId)) {
             monitor.debug(format("Not issuing a new request for %s, URL unchanged", childItem));
-            return Optional.empty();
+            return Stream.empty();
         }
 
         int remainingDepth = requestContext.depth;
         if (requestContext.previousUrlOrNull != null) {
-            final var usedDepth = Dijkstra.shortestPathLength(requestContext.getRelationships(), requestContext.getRelationship(), childItem)
+            final var usedDepth = Dijkstra.shortestPathLength(requestContext.getRelationships(), requestContext.getRelationship(), requestContext.getRelationship())
                     .orElseThrow(() -> new EdcException("Unconnected child items returned by IRS"));
             remainingDepth -= usedDepth;
             if (remainingDepth <= 0) {
                 monitor.debug(format("Not issuing a new request for %s, depth exhausted", childItem));
-                return Optional.empty();
+                return Stream.empty();
             }
         }
 
         final var newIrsRequest = requestContext.requestTemplate.getByObjectIdRequest().toBuilder()
                 .childCatenaXId(childItem.getChildCatenaXId())
-                .lifecycleContext(childItem.getLifecycleContext())
                 .depth(remainingDepth)
                 .build();
 
@@ -131,7 +130,7 @@ public class DataRequestFactory {
                 requestContext.depth,
                 remainingDepth));
 
-        return Optional.of(DataRequest.Builder.newInstance()
+        return Stream.of(DataRequest.Builder.newInstance()
                 .id(UUID.randomUUID().toString()) //this is not relevant, thus can be random
                 .connectorAddress(providerUrlForPartId) //the address of the provider connector
                 .protocol("ids-rest") //must be ids-rest

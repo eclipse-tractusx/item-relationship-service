@@ -79,7 +79,7 @@ class JobsTreesAssemblerTest {
     }
 
     @Test
-    void retrievePartsTrees_WithOneInput_ReturnsPartInfoInput() {
+    void retrieveJobsTrees_WithOneInput_ReturnsJobInput() {
         // Arrange
         var job = generate.job();
         var irsOutput = generate.irsOutput().toBuilder().withJob(job).build();

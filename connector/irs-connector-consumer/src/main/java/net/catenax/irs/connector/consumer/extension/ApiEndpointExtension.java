@@ -93,8 +93,8 @@ public class ApiEndpointExtension implements ServiceExtension {
         final var registryClient = StubRegistryClientFactory.getRegistryClient(context, jsonUtil);
         final var assembler = new JobsTreesAssembler(monitor);
         final var dataRequestGenerator = new DataRequestFactory(monitor, configuration, jsonUtil, registryClient);
-        // final var logic = new PartsTreeRecursiveLogic(monitor, blobStoreApi, jsonUtil, dataRequestGenerator, assembler);
-        // final var jobHandler = new PartsTreeRecursiveJobHandler(monitor, configuration, jsonUtil, null);
+        // final var logic = new JobsTreeRecursiveLogic(monitor, blobStoreApi, jsonUtil, dataRequestGenerator, assembler);
+        // final var jobHandler = new JobsTreeRecursiveJobHandler(monitor, configuration, jsonUtil, null);
         final var jobOrchestrator = new JobOrchestrator(processManager, jobStore, null, transferProcessObservable, monitor);
 
         final var service = new ConsumerService(monitor, jsonUtil, jobStore, jobOrchestrator, blobStoreApi, configuration);

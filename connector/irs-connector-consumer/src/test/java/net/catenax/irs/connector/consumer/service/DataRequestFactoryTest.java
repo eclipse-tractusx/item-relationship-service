@@ -9,6 +9,7 @@ import net.catenax.irs.connector.requests.JobsTreeByCatenaXIdRequest;
 import net.catenax.irs.connector.requests.JobsTreeRequest;
 import net.catenax.irs.connector.util.JsonUtil;
 import net.catenax.irs.dtos.version02.ChildItem;
+import net.catenax.irs.dtos.version02.Job;
 import org.eclipse.dataspaceconnector.monitor.ConsoleMonitor;
 import org.eclipse.dataspaceconnector.schema.azure.AzureBlobStoreSchema;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
@@ -24,11 +25,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static net.catenax.irs.connector.constants.IrsConnectorConstants.*;
 import static net.catenax.irs.connector.consumer.service.DataRequestFactory.PARTIAL_PARTS_TREE_BLOB_NAME;
@@ -74,7 +76,7 @@ class DataRequestFactoryTest {
     void createRequests_WhenConnectorUrlSameAsPrevious_ReturnsEmpty(String connectorAddress) {
         when(registryClient.getUrl(childItem)).thenReturn(Optional.ofNullable(connectorAddress));
 
-        assertThat(sut.createRequests(requestContextBuilder.previousUrlOrNull(connectorAddress).build(), Stream.of(childItem))).isEmpty();
+        assertThat(sut.createRequests(requestContextBuilder.previousUrlOrNull(connectorAddress).build(), childItem)).isEmpty();
     }
 
     @Test
@@ -86,7 +88,7 @@ class DataRequestFactoryTest {
         JobsTreeByCatenaXIdRequest expectedIrsRequest = jobsTreeRequest.getByObjectIdRequest()
                 .toBuilder()
                 .childCatenaXId(childItem.getChildCatenaXId())
-                .lifecycleContext(childItem.getLifecycleContext())
+                .lastModifiedOn(LocalDateTime.ofInstant(childItem.getLastModifiedOn(), ZoneId.of("Europe/London")))
                 .build();
 
         String serializedIrsRequest = MAPPER.writeValueAsString(expectedIrsRequest);
@@ -112,7 +114,7 @@ class DataRequestFactoryTest {
         // Act
         var requests = sut.createRequests(requestContextBuilder
                         .relationships(Set.of(generate.relationship(parentItem, childItem)))
-                .build(), Stream.of(childItem))
+                .build(), childItem)
                 .collect(Collectors.toList());
 
         // Assert
@@ -159,7 +161,6 @@ class DataRequestFactoryTest {
                 .usingRecursiveComparison()
                 .isEqualTo(irsRequest
                         .childCatenaXId(childItem.getChildCatenaXId())
-                        .lifecycleContext(childItem.getLifecycleContext())
                         .depth(depth - 2)
                         .build());
     }
@@ -172,7 +173,7 @@ class DataRequestFactoryTest {
                 .depth(1);
 
         // Act
-        var requests = sut.createRequests(requestContextBuilder.build(), Stream.of(childItem))
+        var requests = sut.createRequests(requestContextBuilder.build(), childItem)
                 .collect(Collectors.toList());
 
         // Assert
@@ -180,7 +181,7 @@ class DataRequestFactoryTest {
     }
 
     private JobsTreeByCatenaXIdRequest singleRequestProducedWithIrsRequest() throws JsonProcessingException {
-        var requests = sut.createRequests(requestContextBuilder.build(), Stream.of(childItem))
+        var requests = sut.createRequests(requestContextBuilder.build(), childItem)
                 .collect(Collectors.toList());
         assertThat(requests).singleElement();
         var request = requests.get(0);
