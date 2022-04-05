@@ -18,6 +18,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 
+/**
+ * Information about request items tree job
+ */
 @ApiModel(description = "Information about request items tree job")
 @Value
 @Builder

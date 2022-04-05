@@ -16,6 +16,9 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+/**
+ * An AAS shell.
+ */
 @Value
 @Jacksonized
 @Builder(toBuilder = true)

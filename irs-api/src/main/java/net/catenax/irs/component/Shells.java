@@ -16,11 +16,14 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+/**
+ * Collections of AAS shells
+ */
 @Value
 @Jacksonized
 @Builder(toBuilder = true)
 public class Shells {
 
-   @Schema(description = "Collections of AAS shells")
-   Collection<Shell> shells;
+    @Schema(description = "Collections of AAS shells")
+    Collection<Shell> shells;
 }

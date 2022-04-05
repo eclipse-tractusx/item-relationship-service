@@ -27,12 +27,12 @@ import net.catenax.irs.component.enums.StatusCodeEnum;
 @Builder(toBuilder = true)
 public class IrsApiException {
 
-   List<Throwable> exception;
+    List<Throwable> exception;
 
-   String errorDetails;
+    String errorDetails;
 
-   Instant exceptionDate;
+    Instant exceptionDate;
 
-   StatusCodeEnum statusCode;
+    StatusCodeEnum statusCode;
 
 }

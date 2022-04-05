@@ -18,6 +18,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 
+/**
+ * List of Job and relationship to parts
+ */
 @Schema(description = "List of Job and relationship to parts")
 @Value
 @Builder

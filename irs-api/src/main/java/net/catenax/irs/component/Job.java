@@ -26,7 +26,7 @@ import lombok.Value;
 import net.catenax.irs.component.enums.JobState;
 
 /**
- *
+ * A job to retrieve item relationship data.
  */
 @Value
 @Builder

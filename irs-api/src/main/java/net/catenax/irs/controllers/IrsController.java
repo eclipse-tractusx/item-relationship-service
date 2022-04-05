@@ -58,8 +58,8 @@ public class IrsController {
 
     private final IrsPartsTreeQueryService itemJobService;
 
-    @Operation(operationId = "getBomLifecycleByGlobalAssetId",
-            summary = "Get a BOM tree for a given item", tags = {"Item Relationship Service"})
+    @Operation(operationId = "getBomLifecycleByGlobalAssetId", summary = "Get a BOM tree for a given item",
+            tags = { "Item Relationship Service" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "job id response for successful job registration",
                     content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -72,13 +72,12 @@ public class IrsController {
     }),
     })
     @PostMapping("/items/{globalAssetId}")
-    public JobHandle getBomLifecycleByGlobalAssetId(
-          final @Valid @ParameterObject IrsPartsTreeRequest request) {
+    public JobHandle getBomLifecycleByGlobalAssetId(final @Valid @ParameterObject IrsPartsTreeRequest request) {
         return itemJobService.registerItemJob(request);
     }
 
-    @Operation(operationId = "getBOMForJobId",
-            summary = "Get a BOM partial or complete for a given jobId.",tags = {"Item Relationship Service"})
+    @Operation(operationId = "getBOMForJobId", summary = "Get a BOM partial or complete for a given jobId.",
+            tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
             description = "livecycle tree representation with the starting point of the given globalAssetId",
             content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -94,12 +93,15 @@ public class IrsController {
     }),
     })
     @GetMapping("/jobs/{jobId}")
-    public ResponseEntity<Jobs> getBOMForJobId(final @Valid @Parameter(description = "Id of the job in processing.") @PathVariable @Size(min = 16, max = 16) @ApiParam(name = "jobId", example = "6c311d29-5753-46d4-b32c-19b918ea93b0") UUID jobId ) {
+    public ResponseEntity<Jobs> getBOMForJobId(
+            final @Valid @Parameter(description = "Id of the job in processing.") @PathVariable @Size(min = 16,
+                    max = 16) @ApiParam(name = "jobId", example = "6c311d29-5753-46d4-b32c-19b918ea93b0") UUID jobId) {
         return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
     }
 
     @Operation(operationId = "getJobsByProcessingState",
-            summary = " List of jobs (globalAssetIds) for a certain processing state" , tags = {"Item Relationship Service"})
+            summary = " List of jobs (globalAssetIds) for a certain processing state",
+            tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "list of jobs with processing state",
             content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Jobs.class)) }),
             @ApiResponse(responseCode = "404", description = "No process found with this state", content = {
@@ -113,12 +115,13 @@ public class IrsController {
         return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
     }
 
-    @Operation(operationId = "cancelJobForJobId", summary = "Cancel job execution for a given jobId." , tags = {"Item Relationship Service"})
+    @Operation(operationId = "cancelJobForJobId", summary = "Cancel job execution for a given jobId.",
+            tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with {jobId} was canceled"),
-          @ApiResponse(responseCode = "400", description = "Bad request. JobId must be a string in UUID format."),
-          @ApiResponse(responseCode = "401", description = "Authorization information is missing or invalid."),
-          @ApiResponse(responseCode = "404", description = "A job with the specified jobId was not found."),
-          @ApiResponse(responseCode = "500", description = "Unexpected error.")
+            @ApiResponse(responseCode = "400", description = "Bad request. JobId must be a string in UUID format."),
+            @ApiResponse(responseCode = "401", description = "Authorization information is missing or invalid."),
+            @ApiResponse(responseCode = "404", description = "A job with the specified jobId was not found."),
+            @ApiResponse(responseCode = "500", description = "Unexpected error.")
     })
     @PutMapping("/jobs/{jobId}/cancel")
     public ResponseEntity<?> cancelJobForJobId(final @Valid @PathVariable String jobId) {

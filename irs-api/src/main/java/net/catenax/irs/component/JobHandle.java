@@ -8,15 +8,18 @@ import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Value;
 
+/**
+ * The unique jobId handle of the just processed job.
+ */
 @ApiModel(description = "The unique jobId handle of the just processed job.")
 @Value
 @Builder
 @JsonDeserialize(builder = JobHandle.JobHandleBuilder.class)
 public class JobHandle {
 
-   private UUID jobId;
+    private UUID jobId;
 
-   @JsonPOJOBuilder(withPrefix = "with")
-   public static class JobHandleBuilder {
-   }
+    @JsonPOJOBuilder(withPrefix = "with")
+    public static class JobHandleBuilder {
+    }
 }

@@ -31,7 +31,10 @@ import net.catenax.irs.controllers.ApiErrorsConstants;
  * Base class for IrsPartsTreeRequest
  */
 @RequiredArgsConstructor
-abstract public class IrsPartsTreeRequestBase {
+public abstract class IrsPartsTreeRequestBase {
+
+    private static final long MIN_TREE_DEPTH = 1;
+    private static final long MAX_TREE_DEPTH = 100;
 
     @NotBlank(message = ApiErrorsConstants.INVALID_ARGUMENTS)
     @ValueOfEnum(enumClass = BomLifecycle.class, message = ApiErrorsConstants.ITEM_VIEW_MUST_MATCH_ENUM)
@@ -45,8 +48,8 @@ abstract public class IrsPartsTreeRequestBase {
             example = "SerialPartTypization", schema = @Schema(implementation = AspectType.class))
     protected final List<String> aspects;
 
-    @Min(value = 1, message = ApiErrorsConstants.ITEM_MIN_DEPTH)
-    @Max(value = 100, message = ApiErrorsConstants.ITEM_MAX_DEPTH)
+    @Min(value = MIN_TREE_DEPTH, message = ApiErrorsConstants.ITEM_MIN_DEPTH)
+    @Max(value = MAX_TREE_DEPTH, message = ApiErrorsConstants.ITEM_MAX_DEPTH)
     @Parameter(description = "Max depth of the returned tree, if empty max depth is returned", in = QUERY,
             schema = @Schema(implementation = Integer.class, minimum = "1", maximum = "100"))
     protected final Integer depth;
