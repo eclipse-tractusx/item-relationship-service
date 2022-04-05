@@ -9,5 +9,18 @@
 //
 package net.catenax.irs.component;
 
+import java.util.Collection;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
+
+@Value
+@Jacksonized
+@Builder(toBuilder = true)
 public class Shells {
+
+   @Schema(description = "Collections of AAS shells")
+   Collection<Shell> shells;
 }

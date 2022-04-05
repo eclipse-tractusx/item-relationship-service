@@ -319,12 +319,12 @@ components:
       type: string
       description: The bill of material lifecycle for an asset
       enum:
-        - asBuilt
-        - asMaintained
-        - asPlanned
-        - asDesigned
-        - asOrdered
-        - asRecycled
+        - asBuilt # BoM AsBuilt describes a product as manufactured.
+        - asMaintained # BoM AsMaintained describes the BoM after purchase by a customer and updates through maintenace.
+        - asPlanned # BoM asPlanned is used to plan the manufacturing process including alternative parts.
+        - asDesigned # BoM asDesigned is generated in the design phase of a new product including alternative parts.
+        - asOrdered # BoM AsOrdered is used for manufacturing realization.
+        - asRecycled # BoM AsRecycled describes the BoM after the recycling of the product.
       default: asBuilt
     Description:
       type: object
@@ -339,7 +339,7 @@ components:
           maximum: 4000
     Aspect:
       type: string
-      decription: Aspect models containing information of OEMs
+      description: Aspect models containing information of OEMs
       enum:
         - SerialPartTypization
         - AssemblyPartRelationship

@@ -17,7 +17,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
-import net.catenax.irs.dtos.IrsPartRelationship;
 
 @ApiModel(description = "Information about request items tree job")
 @Value
@@ -28,7 +27,7 @@ public class IrsPartRelationshipsWithInfos {
     @Schema(description = "", implementation = Job.class)
     Jobs job;
 
-    List<IrsPartRelationship> relationships;
+    List<Relationship> relationships;
 
     List<Shells> shells;
 
