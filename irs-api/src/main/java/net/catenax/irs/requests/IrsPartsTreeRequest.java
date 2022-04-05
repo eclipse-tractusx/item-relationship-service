@@ -32,10 +32,11 @@ import net.catenax.irs.controllers.IrsApiExamples;
 @Value
 public class IrsPartsTreeRequest extends IrsPartsTreeRequestBase {
 
+    private static final int GLOBAL_ASSET_ID_LENGTH = 25;
     @Pattern(regexp = IrsApiConstants.GLOBAL_ASSET_ID_REGEX,
             message = ApiErrorsConstants.NOT_BLANK)
     @NotBlank
-    @Size(min = 25, max = 25)
+    @Size(min = GLOBAL_ASSET_ID_LENGTH, max = GLOBAL_ASSET_ID_LENGTH)
     @Parameter(description = "Readable ID of manufacturer including plant.", in = PATH,
             required = true, example = IrsApiExamples.GLOBAL_ASSET_ID_EXAMPLE, schema = @Schema(implementation = String.class))
     private String globalAssetId;
