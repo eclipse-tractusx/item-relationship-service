@@ -105,7 +105,7 @@ public class IrsController {
         return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
     }
 
-    @Operation(operationId = "getJobsByProcessingState", summary = "Id of the job in registry")
+    @Operation(operationId = "cancelJobForJobId", summary = "Id of the job in registry")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Id of the job in registry",
             content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = IrsPartRelationshipsWithInfos.class))
     }), @ApiResponse(responseCode = "404", description = "No process found with this state",
@@ -114,8 +114,9 @@ public class IrsController {
             content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))
     }),
     })
-    @GetMapping("/jobs/{processingState}")
-    public ResponseEntity<?> cancelJobForJobId(final @Valid @PathVariable String processingState) {
+    @GetMapping("/irs/jobs/{jobId}/cancel")
+    public ResponseEntity<?> cancelJobForJobId(final @Valid @PathVariable String jobId) {
+
         return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
     }
 
