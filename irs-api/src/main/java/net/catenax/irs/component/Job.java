@@ -1,3 +1,12 @@
+//
+// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
+//
+// See the AUTHORS file(s) distributed with this work for additional
+// information regarding authorship.
+//
+// See the LICENSE file(s) distributed with this work for
+// additional information regarding license terms.
+//
 package net.catenax.irs.component;
 
 import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
@@ -16,59 +25,64 @@ import lombok.Builder;
 import lombok.Value;
 import net.catenax.irs.component.enums.JobState;
 
+/**
+ *
+ */
 @Value
 @Builder
 @JsonDeserialize(builder = Job.JobBuilder.class)
 public class Job {
 
-   @NotNull
-   @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
-   @Schema(description = "Job Id for the request Item", minLength = INPUT_FIELD_MIN_LENGTH, maxLength = JOB_ID_FIELD_MAX_LENGTH)
-   private final String jobId;
+    @NotNull
+    @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
+    @Schema(description = "Job Id for the request Item", minLength = INPUT_FIELD_MIN_LENGTH,
+            maxLength = JOB_ID_FIELD_MAX_LENGTH)
+    private final String jobId;
 
-   @NotNull
-   @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
-   @Schema(description = "Part global unique Id", minLength = INPUT_FIELD_MIN_LENGTH, maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = GlobalAssetId.class)
-   final GlobalAssetId globalAssetId;
+    @NotNull
+    @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
+    @Schema(description = "Part global unique Id", minLength = INPUT_FIELD_MIN_LENGTH,
+            maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = GlobalAssetId.class)
+    final GlobalAssetId globalAssetId;
 
-   @NotBlank
-   @Schema()
-   private JobState jobState;
+    @NotBlank
+    @Schema()
+    private JobState jobState;
 
+    private String exception;
 
-   private String exception;
+    /**
+     * Timestamp when the job was created
+     */
+    private Instant createdOn;
 
-   /**
-    *  Timestamp when the job was created
-    */
-   private Instant createdOn;
+    /**
+     * Last time job was modified
+     */
+    private Instant lastModifiedOn;
 
-   /**
-    * Last time job was modified
-    */
-   private Instant lastModifiedOn;
+    /**
+     * Mark the time the was completed
+     */
+    private Instant jobFinished;
 
-   /**
-    * Mark the time the was completed
-    */
-   private Instant jobFinished;
+    /**
+     * Url of request that resulted to this job
+     */
+    private String requestUrl;
 
-   /**
-    * Url of request that resulted to this job
-    */
-   private String requestUrl;
+    /**
+     * Http method, only GET is supported
+     */
+    private String action;
 
-   /**
-    * Http method, only GET is supported
-    */
-   private String action;
+    /**
+     * Owner of the job
+     */
+    private String owner;
 
-   /**
-    * Owner of the job
-    */
-   private String owner;
-
-   @JsonPOJOBuilder(withPrefix = "with")
-   public static class JobBuilder {}
+    @JsonPOJOBuilder(withPrefix = "with")
+    public static class JobBuilder {
+    }
 
 }

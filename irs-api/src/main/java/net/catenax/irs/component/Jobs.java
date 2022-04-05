@@ -1,3 +1,12 @@
+//
+// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
+//
+// See the AUTHORS file(s) distributed with this work for additional
+// information regarding authorship.
+//
+// See the LICENSE file(s) distributed with this work for
+// additional information regarding license terms.
+//
 package net.catenax.irs.component;
 
 import java.util.List;
@@ -15,16 +24,17 @@ import lombok.Value;
 @JsonDeserialize(builder = Jobs.JobsBuilder.class)
 public class Jobs {
 
-   @Schema(description = "Information and data for the Job", implementation = Job.JobBuilder.class)
-   private Job job;
+    @Schema(description = "Information and data for the Job", implementation = Job.JobBuilder.class)
+    private Job job;
 
-   @Schema(description = "Parts relationship information")
-   private Relationship relationship;
+    @Schema(description = "Parts relationship information")
+    private Relationship relationship;
 
-   @Schema
-   private Optional<List<Shells>> shells;
+    @Schema
+    private Optional<List<Shells>> shells;
 
-   @JsonPOJOBuilder(withPrefix = "with")
-   public static class JobsBuilder {}
+    @JsonPOJOBuilder(withPrefix = "with")
+    public static class JobsBuilder {
+    }
 
 }

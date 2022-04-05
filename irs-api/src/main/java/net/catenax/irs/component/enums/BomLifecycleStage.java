@@ -23,9 +23,7 @@ import net.catenax.irs.dtos.ItemsTreeView;
 @Schema(description = "Stage defining whether changes apply to the AS_BUILT or AS_MAINTAINED BOM views.")
 @SuppressWarnings("PMD.CommentRequired")
 public enum BomLifecycleStage {
-    @Schema(description = "The time the part is built.")
-    BUILD,
+    @Schema(description = "The time the part is built.") BUILD,
 
-    @Schema(description = "The time after the part is built.")
-    MAINTENANCE
+    @Schema(description = "The time after the part is built.") MAINTENANCE
 }

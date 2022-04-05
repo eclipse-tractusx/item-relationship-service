@@ -1,29 +1,34 @@
+//
+// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
+//
+// See the AUTHORS file(s) distributed with this work for additional
+// information regarding authorship.
+//
+// See the LICENSE file(s) distributed with this work for
+// additional information regarding license terms.
+//
 package net.catenax.irs.services;
 
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.Valid;
-
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.IrsPartRelationshipsWithInfos;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.requests.IrsPartsTreeRequest;
-import org.springdoc.api.annotations.ParameterObject;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
-
+/**
+ * IrsPartTreeQueryService interface
+ */
 public interface IIrsPartTreeQueryService {
 
-   IrsPartRelationshipsWithInfos registerItemJob(@NonNull final IrsPartsTreeRequest request);
+    IrsPartRelationshipsWithInfos registerItemJob(@NonNull IrsPartsTreeRequest request);
 
-   Jobs jobLifecycle(@NonNull final String jobId);
+    Jobs jobLifecycle(@NonNull String jobId);
 
-   Optional<List<Job>> getJobsByProcessingState(@NonNull final String processingState);
+    Optional<List<Job>> getJobsByProcessingState(@NonNull String processingState);
 
-   Job cancelJobById(@NonNull final String jobId);
+    Job cancelJobById(@NonNull String jobId);
 
 }

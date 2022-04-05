@@ -39,7 +39,7 @@ abstract class PartsTreeRequestBase {
 
     @Pattern(regexp = "^(?!\\s*$).+", message = ApiErrorsConstants.NOT_BLANK)
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = INPUT_FIELD_MAX_LENGTH)
-    @Parameter(description = "Aspect information to add to the returned tree", in = QUERY, example = "CE", schema = @Schema(implementation = String.class))
+    @Parameter(description = "AspectType information to add to the returned tree", in = QUERY, example = "CE", schema = @Schema(implementation = String.class))
     protected final String aspect;
 
     @Min(value = 1, message = ApiErrorsConstants.ITEM_MIN_DEPTH)

@@ -26,5 +26,5 @@ public class ApiErrorsConstants {
     public static final String ITEM_MAX_DEPTH = "Depth should not be more than 100";
     public static final String VEHICLE_NOT_FOUND_BY_VIN = "Vehicle not found by VIN {0}";
     public static final String NOT_BLANK = "Must not be blank.";
-    public static final String ASPECT_NOT_SUPPORTED = "Aspect not supported";
+    public static final String ASPECT_NOT_SUPPORTED = "AspectType not supported";
 }
