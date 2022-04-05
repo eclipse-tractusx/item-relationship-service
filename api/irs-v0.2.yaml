@@ -15,25 +15,14 @@ paths:
           name: globalAssetId
           required: true
           schema:
-            type: string
-            maxLength: 25
-            minLength: 25
-            pattern: urn:uuid:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
-            example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
+            $ref: '#/components/schemas/CatenaXId'
         - description: "Unique identifier of a single, unique (sub)component/part/batch,\
           \ given by its globalAssetId/ digital twin id."
           in: query
           name: bomLifecycle
           required: true
           schema:
-            type: string
-            enum:
-              - asBuilt # Release 1 relevant --> AssemblyPartRelationship
-              #- asMaintained # Release X
-              #- asPlanned # Release X
-              #- asDesigned # Release X
-              #- asOrdered # Release X
-              #- asRecycled # Release X
+            $ref: '#/components/schemas/BomLifecycle'
         - description: Aspects information to add to the returned tree
           example: SerialPartTypization
           in: query
@@ -91,7 +80,6 @@ paths:
               examples:
                 complete:
                   $ref: '#/components/examples/job-handle'
-
         "400":
           description: Bad request
           content:
@@ -112,11 +100,7 @@ paths:
           name: jobId
           required: true
           schema:
-            type: string
-            maxLength: 16
-            minLength: 16
-            format: uuid
-            example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
+            $ref: '#/components/schemas/UUID'
         - description: "If true, the endpoint returns the uncompleted results of the bom tree."
           in: query
           name: returnUncompletedResultTree
@@ -208,11 +192,7 @@ paths:
           name: jobId
           required: true
           schema:
-            type: string
-            maxLength: 16
-            minLength: 1
-            format: uuid
-            example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
+            $ref: '#/components/schemas/UUID'
       responses:
         '200':
           description: Job with {jobId} was canceled
@@ -239,12 +219,12 @@ components:
           type: array
           description: Collection of relationships mapping the parent child relationship of AssemblyPartRelationShip aspects
           items:
-            $ref: '#/components/schemas/Relationships'
+            $ref: '#/components/schemas/Relationship'
         shells:
           type: array
           description: Collections of AAS shells
           items:
-            $ref: '#/components/schemas/Shells'
+            $ref: '#/components/schemas/Shell'
     Job:
       type: object
       description: Link between two parts.
@@ -256,10 +236,8 @@ components:
           format: uuid
         globalAssetId:
           type: string
-          maxLength: 25
-          minLength: 25
-          pattern: urn:uuid:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
-          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
+          items:
+            $ref: '#/components/schemas/CatenaXId'
         jobStatus:
           type: string
           description: Error code
@@ -309,9 +287,37 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Aspect'
+            depth:
+              type: integer
+              description: Max depth of the returned tree, if empty max depth is returned
+              minimum: 0
+              maximum: 100
+              default: 1
+            direction:
+              type: string
+              description: Direction in which the tree shall be traversed
+              default: downward
+              enum:
+                - upward
+                - downward
+        exception:
+          type: object
+          description: Exception state for this job
+          properties:
+            exception:
+              type: string
+              minimum: 0
+              maximum: 100
+            errorDetail:
+              type: string
+              minimum: 0
+              maximum: 4000
+            exceptionDate:
+              type: string
+              format: date-time
     BomLifecycle:
       type: string
-      description: Bill of material lifecycle
+      description: The bill of material lifecycle for an asset
       enum:
         - asBuilt
         - asMaintained
@@ -319,8 +325,21 @@ components:
         - asDesigned
         - asOrdered
         - asRecycled
+      default: asBuilt
+    Description:
+      type: object
+      properties:
+        language:
+          type: string
+          minimum: 0
+          maximum: 3
+        text:
+          type: string
+          minimum: 0
+          maximum: 4000
     Aspect:
       type: string
+      decription: Aspect models containing information of OEMs
       enum:
         - SerialPartTypization
         - AssemblyPartRelationship
@@ -343,26 +362,145 @@ components:
       properties:
         queued:
           type: integer
+          description: Number of 'queued' submodel requests
         running:
           type: integer
+          description: Number of 'running' submodel requests
         complete:
           type: integer
+          description: Number of 'completed' submodel requests
         failed:
           type: integer
+          description: Number of 'failed' submodel requests
         lost:
           type: integer
-    Relationships:
-      type: array
-      description: List of errors
-      items:
-        type: string
-        description: List of errors
-    Shells:
-      type: array
-      description: List of errors
-      items:
-        type: string
-        description: List of errors
+          description: Number of 'lost' submodel requests
+    Relationship:
+      type: object
+      description: Relationship of a parent child relationship between items on different levels as defined in aspect AssemblyPartRelationship.
+      properties:
+        catenaXId:
+          type: string
+          items:
+            $ref: '#/components/schemas/CatenaXId'
+        childItem:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChildItem'
+    Shell:
+      type: object
+      description: An AAS shell
+      properties:
+        description:
+          type: array
+          items:
+            $ref: '#/components/schemas/Description'
+        globalAssetId:
+          type: object
+          properties:
+            value:
+              type: array
+              items:
+                $ref: '#/components/schemas/CatenaXId'
+        idShort:
+          type: string
+        identification:
+          type: string
+        specificAssetIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpecificAssetId'
+        submodelDescriptors:
+          type: object
+          properties:
+            description:
+              type: array
+              items:
+                $ref: '#/components/schemas/Description'
+            idShort:
+              type: string
+            identification:
+              type: string
+            specificAssetIds:
+              type: array
+              items:
+                $ref: '#/components/schemas/SpecificAssetId'
+            endpoints:
+              type: array
+              items:
+                $ref: '#/components/schemas/Endpoint'
+    Endpoint:
+      type: object
+      properties:
+        interface:
+          type: string
+          default: HTTP
+        protocolInformation:
+          type: object
+          properties:
+            endpointAddress:
+              type: string
+              format: url
+            endpointProtocol:
+              type: string
+            endpointProtocolVersion:
+              type: string
+    SpecificAssetId:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ChildItem:
+      type: object
+      properties:
+        quantity:
+          type: object
+          items:
+            $ref: '#/components/schemas/Quantity'
+        lifecycleContext:
+          type: object
+          items:
+            $ref: '#/components/schemas/BomLifecycle'
+        assembledOn:
+          type: string
+          format: date-time
+        lastModifiedOn:
+          type: string
+          format: date-time
+        childCatenaXId:
+          type: string
+          items:
+            $ref: '#/components/schemas/CatenaXId'
+    Quantity:
+      type: object
+      properties:
+        quantityNumber:
+          type: object
+          items:
+            $ref: '#/components/schemas/MeasurementUnit'
+    MeasurementUnit:
+      type: object
+      properties:
+        datatypeURI:
+          type: string
+          format: urn
+        lexicalValue:
+          type: string
+    CatenaXId:
+      type: string
+      maxLength: 25
+      minLength: 25
+      format: urn
+      pattern: urn:uuid:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+      example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
+    UUID:
+      type: string
+      maxLength: 16
+      minLength: 16
+      format: uuid
+      example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
     ErrorResponse:
       type: object
       description: Error response
@@ -594,7 +732,7 @@ components:
           },
           "relationships": [
             {
-              "catenaXId": "d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
+              "catenaXId": "urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
               "childItem": {
                 "quantity": {
                   "quantityNumber": 1,
@@ -847,3 +985,4 @@ components:
             }
           ]
         }
+
