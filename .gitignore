@@ -50,5 +50,8 @@ terraform-outputs-safe.json
 .flattened-pom.xml
 dependency-reduced-pom.xml
 
+
+### EDC Binaries ###
+/connector/**/bin/
 ### Local files ###
 dev/local/*
