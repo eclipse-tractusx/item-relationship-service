@@ -30,6 +30,6 @@ class IrsApplicationTests {
     void generatedOpenApiMatchesContract() throws Exception {
         assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
                 String.class))
-                .isEqualToNormalizingNewlines(Files.readString(new File("../api/irs-v0.1.yaml").toPath(), UTF_8));
+                .isEqualToNormalizingNewlines(Files.readString(new File("../api/irs-v0.2.yaml").toPath(), UTF_8));
     }
 }

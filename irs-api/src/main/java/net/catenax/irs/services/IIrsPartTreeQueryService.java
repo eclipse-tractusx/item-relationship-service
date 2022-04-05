@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.NonNull;
-import net.catenax.irs.component.IrsPartRelationshipsWithInfos;
 import net.catenax.irs.component.Job;
+import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.requests.IrsPartsTreeRequest;
 
@@ -23,7 +23,7 @@ import net.catenax.irs.requests.IrsPartsTreeRequest;
  */
 public interface IIrsPartTreeQueryService {
 
-    IrsPartRelationshipsWithInfos registerItemJob(@NonNull IrsPartsTreeRequest request);
+    JobHandle registerItemJob(@NonNull IrsPartsTreeRequest request);
 
     Jobs jobLifecycle(@NonNull String jobId);
 

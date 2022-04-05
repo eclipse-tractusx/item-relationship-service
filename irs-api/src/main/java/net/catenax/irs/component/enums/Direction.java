@@ -13,6 +13,6 @@ package net.catenax.irs.component.enums;
  * Direction indicator
  */
 public enum Direction {
-    UPWARD,
-    DOWNWARD
+    upward,
+    downward
 }

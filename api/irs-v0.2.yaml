@@ -3,25 +3,25 @@ info:
   title: IRS API
   version: '0.2'
 servers:
-  - url: https://api.server.test/api/v0.2
+  - url: https://localhost/api/v0.2
 paths:
   /irs/items/{globalAssetId}:
     post:
       operationId: getBomLifecycleByGlobalAssetId
       description: Registers and starts a AAS crawler job for given {globalAssetId}
       parameters:
-        - description: Readable ID of manufacturer including plant
+        - description: Readable ID of manufacturer including plant.
           in: path
           name: globalAssetId
           required: true
           schema:
             type: string
-            maxLength: 16
-            minLength: 1
+            maxLength: 25
+            minLength: 25
             pattern: urn:uuid:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
             example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
         - description: "Unique identifier of a single, unique (sub)component/part/batch,\
-          \ given by its globalAssetId/ digital twin id"
+          \ given by its globalAssetId/ digital twin id."
           in: query
           name: bomLifecycle
           required: true
@@ -37,7 +37,7 @@ paths:
         - description: Aspect information to add to the returned tree
           example: SerialPartTypization
           in: query
-          name: aspect
+          name: aspects
           required: false
           explode: false
           schema:
@@ -90,7 +90,7 @@ paths:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/job-id-response'
+                  $ref: '#/components/examples/job-handle'
 
         "400":
           description: Bad request
@@ -100,23 +100,23 @@ paths:
                 complete:
                   $ref: '#/components/schemas/ErrorResponse'
 
-      summary: Get a BOM for a part
+      summary: Get a BOM tree for a given item
       tags:
         - Item Relationship Service
   /irs/jobs/{jobId}:
     get:
       operationId: getBOMForJobId
       parameters:
-        - description: "Id of the job in registry. "
+        - description: "Id of the job in processing."
           in: path
           name: jobId
           required: true
           schema:
             type: string
             maxLength: 16
-            minLength: 1
+            minLength: 16
             format: uuid
-            example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
+            example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
         - description: "If true, the endpoint returns the uncompleted results of the bom tree."
           in: query
           name: returnUncompletedResultTree
@@ -161,6 +161,7 @@ paths:
               example:
                 complete:
                   $ref: '#/components/examples/failed-job-result'
+      summary: Get a BOM partial or complete for a given jobId.
       tags:
         - Item Relationship Service
   /irs/jobs/{processingState}:
@@ -221,8 +222,9 @@ paths:
           description: Authorization information is missing or invalid.
         '404':
           description: A job with the specified jobId was not found.
-        '5XX':
+        '500':
           description: Unexpected error.
+      summary: Cancel job execution for a given jobId.
       tags:
         - Item Relationship Service
 components:
@@ -317,7 +319,7 @@ components:
             - 510 NOT_EXTENDED
             - 511 NETWORK_AUTHENTICATION_REQUIRED
   examples:
-    job-id-response:
+    job-handle:
       value:
         {"jobId": "6c311d29-5753-46d4-b32c-19b918ea93b0"}
     complete-job-list-processing-state:

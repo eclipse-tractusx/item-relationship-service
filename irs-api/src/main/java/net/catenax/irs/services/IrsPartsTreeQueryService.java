@@ -15,8 +15,8 @@ import java.util.Optional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.component.IrsPartRelationshipsWithInfos;
 import net.catenax.irs.component.Job;
+import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.requests.IrsPartsTreeRequest;
 import org.springframework.stereotype.Service;
@@ -30,8 +30,9 @@ import org.springframework.stereotype.Service;
 public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
 
     @Override
-    public IrsPartRelationshipsWithInfos registerItemJob(final @NonNull IrsPartsTreeRequest request) {
-        return null;
+    public JobHandle registerItemJob(final @NonNull IrsPartsTreeRequest request) {
+        throw new UnsupportedOperationException();
+        //return null;
     }
 
     @Override
