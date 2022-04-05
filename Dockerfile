@@ -31,7 +31,7 @@ COPY irs-parent-spring-boot irs-parent-spring-boot
 COPY irs-testing irs-testing
 
 # the --mount option requires BuildKit.
-RUN --mount=type=cache,target=/root/.m2 mvn -B -s settings.xml clean package -pl :$BUILD_TARGET -am -DskipTests
+RUN --mount=type=cache,target=/root/.m2 mvn -B -s settings.xml clean package -pl :$BUILD_TARGET -am -DskipTests -Dcheckstyle.skip -Dpmd.failOnViolation=false
 
 # Download Application Insights agent
 FROM maven:3-jdk-11 AS wget
