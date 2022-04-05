@@ -28,7 +28,7 @@ public class Jobs {
     private Job job;
 
     @Schema(description = "Parts relationship information")
-    private Relationship relationship;
+    private Optional<List<Relationship>> relationships;
 
     @Schema
     private Optional<List<Shells>> shells;

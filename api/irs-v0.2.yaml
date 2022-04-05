@@ -34,7 +34,7 @@ paths:
               #- asDesigned # Release X
               #- asOrdered # Release X
               #- asRecycled # Release X
-        - description: Aspect information to add to the returned tree
+        - description: Aspects information to add to the returned tree
           example: SerialPartTypization
           in: query
           name: aspects
@@ -229,10 +229,140 @@ paths:
         - Item Relationship Service
 components:
   schemas:
-    BoMLifecycle:
+    Jobs:
       type: object
-      description: result object of tree representation
-      # properties: to be defined
+      description: Container for a job its relationship and shells.
+      properties:
+        job:
+          $ref: '#/components/schemas/Job'
+        relationships:
+          type: array
+          description: Collection of relationships mapping the parent child relationship of AssemblyPartRelationShip aspects
+          items:
+            $ref: '#/components/schemas/Relationships'
+        shells:
+          type: array
+          description: Collections of AAS shells
+          items:
+            $ref: '#/components/schemas/Shells'
+    Job:
+      type: object
+      description: Link between two parts.
+      properties:
+        jobID:
+          type: string
+          maxLength: 16
+          minLength: 16
+          format: uuid
+        globalAssetId:
+          type: string
+          maxLength: 25
+          minLength: 25
+          pattern: urn:uuid:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
+        jobStatus:
+          type: string
+          description: Error code
+          enum:
+            - running
+            - failed
+            - complete
+            - canceled
+        createdOn:
+          type: string
+          format: date-time
+        lastModifiedOn:
+          type: string
+          format: date-time
+        jobFinished:
+          type: string
+          format: date-time
+        requestURL:
+          type: string
+          format: url
+        action:
+          type: string
+          description: HTTP verbs used by request
+          enum:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - PATCH
+        owner:
+          type: string
+          description: The requestor of the request
+        summary:
+          type: object
+          description: List of asyncFetchedItems
+          items:
+            $ref: '#/components/schemas/AsyncFetchedItems'
+        queryParameter:
+          type: object
+          description: Query parameters of current request
+          properties:
+            bomLifecycle:
+              type: object
+              items:
+                $ref: '#/components/schemas/BomLifecycle'
+            aspects:
+              type: array
+              items:
+                $ref: '#/components/schemas/Aspect'
+    BomLifecycle:
+      type: string
+      description: Bill of material lifecycle
+      enum:
+        - asBuilt
+        - asMaintained
+        - asPlanned
+        - asDesigned
+        - asOrdered
+        - asRecycled
+    Aspect:
+      type: string
+      enum:
+        - SerialPartTypization
+        - AssemblyPartRelationship
+        - PartDimension
+        - SupplyRelationData
+        - PCFCoreData
+        - PCFTechnicalData
+        - MarketPlaceOffer
+        - MaterialAspect
+        - BatteryPass
+        - ProducDescription.Vehicle
+        - ProducDescription.Battery
+        - ReturnRequest
+        - CertificateOfDestruction
+        - CertificateOfDismantler
+        - Adress
+        - Contact
+    AsyncFetchedItems:
+      type: object
+      properties:
+        queued:
+          type: integer
+        running:
+          type: integer
+        complete:
+          type: integer
+        failed:
+          type: integer
+        lost:
+          type: integer
+    Relationships:
+      type: array
+      description: List of errors
+      items:
+        type: string
+        description: List of errors
+    Shells:
+      type: array
+      description: List of errors
+      items:
+        type: string
+        description: List of errors
     ErrorResponse:
       type: object
       description: Error response
@@ -350,7 +480,7 @@ components:
               } },
             "queryParameter": {
               "bomLifecycle": "asBuilt",
-              "aspect": "SerialPartTypization",
+              "aspects": "SerialPartTypization",
               "depth": 4,
               "direction": "downward"
             },
@@ -362,39 +492,39 @@ components:
           }
         }
     partial-job-result-return-uncompleted-result-tree:
-        value:
-          {
-            "job": {
-              "jobId": "e5347c88-a921-11ec-b909-0242ac120002",
-              "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
-              "jobStatus": "InProgress",
-              "createdOn": "2022-02-03T14:48:54.709Z",
-              "startedOn": "2022-02-03T14:48:54.709Z",
-              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "jobCompleted": "2022-02-03T14:48:54.709Z",
-              "requestURL": "https://api.server.test/api/../",
-              "owner": "",
-              "summary": {
-                "asyncFetchedItems": {
-                  "queued": 0,
-                  "running": 0,
-                  "complete": 0,
-                  "failed": 0,
-                  "lost": 0
-                } },
-              "queryParameter": {
-                "bomLifecycle": "asBuilt",
-                "aspect": "SerialPartTypization",
-                "depth": 4,
-                "direction": "downward"
-              },
-              "exception": {
-                "exception": "IrsTimeoutException",
-                "errorDetail": "Timeout while requesting Digital Registry.",
-                "exceptionDate": "2022-02-03T14:48:54.709Z"
-              }
+      value:
+        {
+          "job": {
+            "jobId": "e5347c88-a921-11ec-b909-0242ac120002",
+            "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
+            "jobStatus": "InProgress",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "startedOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+            "jobCompleted": "2022-02-03T14:48:54.709Z",
+            "requestURL": "https://api.server.test/api/../",
+            "owner": "",
+            "summary": {
+              "asyncFetchedItems": {
+                "queued": 0,
+                "running": 0,
+                "complete": 0,
+                "failed": 0,
+                "lost": 0
+              } },
+            "queryParameter": {
+              "bomLifecycle": "asBuilt",
+              "aspects": "SerialPartTypization",
+              "depth": 4,
+              "direction": "downward"
+            },
+            "exception": {
+              "exception": "IrsTimeoutException",
+              "errorDetail": "Timeout while requesting Digital Registry.",
+              "exceptionDate": "2022-02-03T14:48:54.709Z"
             }
           }
+        }
     partial-job-result:
       value:
         {
@@ -418,7 +548,7 @@ components:
               } },
             "queryParameter": {
               "bomLifecycle": "asBuilt",
-              "aspect": "SerialPartTypization",
+              "aspects": "SerialPartTypization",
               "depth": 4,
               "direction": "downward"
             },
@@ -452,7 +582,7 @@ components:
               } },
             "queryParameter": {
               "bomLifecycle": "asBuilt",
-              "aspect": "SerialPartTypization",
+              "aspects": "SerialPartTypization",
               "depth": 4,
               "direction": "downward"
             },
@@ -579,7 +709,7 @@ components:
               } },
             "queryParameter": {
               "bomLifecycle": "asBuilt",
-              "aspect": "SerialPartTypization",
+              "aspects": "SerialPartTypization",
               "depth": 4,
               "direction": "downward"
             },
@@ -613,7 +743,7 @@ components:
               } },
             "queryParameter": {
               "bomLifecycle": "asBuilt",
-              "aspect": "SerialPartTypization",
+              "aspects": "SerialPartTypization",
               "depth": 4,
               "direction": "downward"
             },

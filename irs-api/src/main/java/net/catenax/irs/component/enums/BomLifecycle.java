@@ -27,4 +27,5 @@ public enum BomLifecycle {
     //,@Schema(description = "The view of the PartsTree that accounts for all updates during the vehicle lifecycle.") asDesigned
     //,@Schema(description = "The view of the PartsTree that accounts for all updates during the vehicle lifecycle.") asOrdered
     //,@Schema(description = "The view of the PartsTree that accounts for all updates during the vehicle lifecycle.") asRecycled
+
 }
