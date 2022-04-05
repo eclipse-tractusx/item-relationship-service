@@ -13,6 +13,9 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+/**
+ * MeasurementUnit
+ */
 @Value
 @Jacksonized
 @Builder(toBuilder = true)

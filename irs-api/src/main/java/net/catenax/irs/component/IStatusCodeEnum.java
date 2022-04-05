@@ -9,6 +9,9 @@
 //
 package net.catenax.irs.component;
 
+/**
+ * IStatusCodeEnum
+ */
 public interface IStatusCodeEnum {
 
     Integer getCode();

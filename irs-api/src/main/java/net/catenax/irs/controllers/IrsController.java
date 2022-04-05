@@ -53,23 +53,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(IrsApplication.API_PREFIX)
 @RequiredArgsConstructor
 @ExcludeFromCodeCoverageGeneratedReport
-@SuppressWarnings({ "checkstyle:MissingJavadocMethod", "PMD.CommentRequired" })
+@SuppressWarnings({ "checkstyle:MissingJavadocMethod",
+                    "PMD.CommentRequired"
+})
 public class IrsController {
 
     private final IrsPartsTreeQueryService itemJobService;
 
     @Operation(operationId = "getBomLifecycleByGlobalAssetId", summary = "Get a BOM tree for a given item",
             tags = { "Item Relationship Service" })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "job id response for successful job registration",
-                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = JobHandle.class))
-                    }), @ApiResponse(responseCode = "404", description = "A vehicle was not found with the given VIN",
-            content = {
-                    @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))
-            }), @ApiResponse(responseCode = "400", description = "Bad request", content = {
-            @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))
-    }),
+    @ApiResponses(value = { @ApiResponse(responseCode = "200",
+            description = "job id response for successful job registration",
+            content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = JobHandle.class))
+            }),
+                            @ApiResponse(responseCode = "404",
+                                    description = "A vehicle was not found with the given VIN",
+                                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = ErrorResponse.class))
+                                    }),
+                            @ApiResponse(responseCode = "400", description = "Bad request",
+                                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = ErrorResponse.class))
+                                    }),
     })
     @PostMapping("/items/{globalAssetId}")
     public JobHandle getBomLifecycleByGlobalAssetId(final @Valid @ParameterObject IrsPartsTreeRequest request) {
@@ -82,15 +87,20 @@ public class IrsController {
             description = "livecycle tree representation with the starting point of the given globalAssetId",
             content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = IrsPartRelationshipsWithInfos.class))
-            }), @ApiResponse(responseCode = "206",
-            description = "uncompleted livecycle tree representation with the starting point of the given globalAssetId",
-            content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = IrsPartRelationshipsWithInfos.class))
-            }), @ApiResponse(responseCode = "404", description = "processing of job was canceled", content = {
-            @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))
-    }), @ApiResponse(responseCode = "417", description = "Processing of job failed", content = {
-            @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))
-    }),
+            }),
+                            @ApiResponse(responseCode = "206",
+                                    description = "uncompleted livecycle tree representation with the starting point of the given globalAssetId",
+                                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = IrsPartRelationshipsWithInfos.class))
+                                    }),
+                            @ApiResponse(responseCode = "404", description = "processing of job was canceled",
+                                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = ErrorResponse.class))
+                                    }),
+                            @ApiResponse(responseCode = "417", description = "Processing of job failed",
+                                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = ErrorResponse.class))
+                                    }),
     })
     @GetMapping("/jobs/{jobId}")
     public ResponseEntity<Jobs> getBOMForJobId(
@@ -104,11 +114,14 @@ public class IrsController {
             tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "list of jobs with processing state",
             content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Jobs.class)) }),
-            @ApiResponse(responseCode = "404", description = "No process found with this state", content = {
-                    @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))
-            }), @ApiResponse(responseCode = "400", description = "Bad request", content = {
-            @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))
-    }),
+                            @ApiResponse(responseCode = "404", description = "No process found with this state",
+                                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = ErrorResponse.class))
+                                    }),
+                            @ApiResponse(responseCode = "400", description = "Bad request",
+                                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = ErrorResponse.class))
+                                    }),
     })
     @GetMapping("/jobs/{processingState}")
     public ResponseEntity<Jobs> getJobsByProcessingState(final @Valid @PathVariable String processingState) {
@@ -118,10 +131,13 @@ public class IrsController {
     @Operation(operationId = "cancelJobForJobId", summary = "Cancel job execution for a given jobId.",
             tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with {jobId} was canceled"),
-            @ApiResponse(responseCode = "400", description = "Bad request. JobId must be a string in UUID format."),
-            @ApiResponse(responseCode = "401", description = "Authorization information is missing or invalid."),
-            @ApiResponse(responseCode = "404", description = "A job with the specified jobId was not found."),
-            @ApiResponse(responseCode = "500", description = "Unexpected error.")
+                            @ApiResponse(responseCode = "400",
+                                    description = "Bad request. JobId must be a string in UUID format."),
+                            @ApiResponse(responseCode = "401",
+                                    description = "Authorization information is missing or invalid."),
+                            @ApiResponse(responseCode = "404",
+                                    description = "A job with the specified jobId was not found."),
+                            @ApiResponse(responseCode = "500", description = "Unexpected error.")
     })
     @PutMapping("/jobs/{jobId}/cancel")
     public ResponseEntity<?> cancelJobForJobId(final @Valid @PathVariable String jobId) {

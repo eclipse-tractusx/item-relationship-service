@@ -81,6 +81,9 @@ public class Job {
      */
     private String owner;
 
+    /**
+     * Builder class
+     */
     @JsonPOJOBuilder(withPrefix = "with")
     public static class JobBuilder {
     }

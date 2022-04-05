@@ -30,7 +30,7 @@ public enum AspectType {
     ADDRESS("Address"),
     CONTACT("Contact");
 
-    private String value;
+    private final String value;
 
     AspectType(String value) {
         this.value = value;
@@ -40,7 +40,7 @@ public enum AspectType {
      * of as a substitute/alias for valueOf handling the default value
      *
      * @param value see {@link #value}
-     * @return
+     * @return the corresponding AspectType
      */
     public static AspectType of(String value) {
         return AspectType.valueOf(value);

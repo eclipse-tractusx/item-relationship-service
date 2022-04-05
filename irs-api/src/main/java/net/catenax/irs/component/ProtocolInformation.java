@@ -14,6 +14,9 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+/**
+ * ProtocolInformation
+ */
 @Value
 @Jacksonized
 @Builder(toBuilder = true)

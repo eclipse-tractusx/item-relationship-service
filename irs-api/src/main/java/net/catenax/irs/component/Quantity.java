@@ -13,18 +13,15 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+/**
+ * Quantity
+ */
 @Value
 @Jacksonized
 @Builder(toBuilder = true)
 public class Quantity {
 
-    /**
-     *
-     */
     private Integer quantityNumber;
 
-    /**
-     *
-     */
     private MeasurementUnit measurementUnit;
 }

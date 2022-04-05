@@ -15,6 +15,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 
+/**
+ * Summary
+ */
 @Value
 @Builder
 @JsonDeserialize(builder = Summary.SummaryBuilder.class)
@@ -24,6 +27,9 @@ public class Summary {
             implementation = AsyncFetchedItems.AsyncFetchedItemsBuilder.class)
     AsyncFetchedItems asyncFetchedItems;
 
+    /**
+     * Builder class
+     */
     @JsonPOJOBuilder(withPrefix = "with")
     public static class SummaryBuilder {
     }

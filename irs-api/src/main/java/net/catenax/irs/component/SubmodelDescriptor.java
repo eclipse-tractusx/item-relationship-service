@@ -9,5 +9,8 @@
 //
 package net.catenax.irs.component;
 
+/**
+ * SubmodelDescriptor
+ */
 public class SubmodelDescriptor {
 }

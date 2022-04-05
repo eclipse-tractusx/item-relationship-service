@@ -34,6 +34,9 @@ public class IrsPartRelationshipsWithInfos {
 
     List<Shells> shells;
 
+    /**
+     * Builder class
+     */
     @JsonPOJOBuilder(withPrefix = "with")
     public static class IrsPartRelationshipsWithInfosBuilder {
     }

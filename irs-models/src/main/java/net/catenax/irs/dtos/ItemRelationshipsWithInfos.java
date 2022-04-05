@@ -16,12 +16,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 
-/*** API type for query response type with relationships and part information. */
+/**
+ *  API type for query response type with relationships and part information.
+ */
 @Schema(description = "List of relationships with information about parts.")
 @Value
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = ItemRelationshipsWithInfos.ItemRelationshipsWithInfosBuilder.class)
-@SuppressWarnings("PMD.CommentRequired")
 public class ItemRelationshipsWithInfos {
     @Schema(description = "List of the relationships")
     private List<IrsPartRelationship> relationships;

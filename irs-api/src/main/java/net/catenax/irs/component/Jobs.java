@@ -36,6 +36,9 @@ public class Jobs {
     @Schema
     private Optional<List<Shells>> shells;
 
+    /**
+     * Builder class
+     */
     @JsonPOJOBuilder(withPrefix = "with")
     public static class JobsBuilder {
     }
