@@ -4,12 +4,12 @@ import com.github.javafaker.Faker;
 import net.catenax.irs.client.model.PartId;
 import net.catenax.irs.client.model.PartRelationship;
 import net.catenax.irs.client.model.PartRelationshipsWithInfos;
+import net.catenax.irs.connector.consumer.persistence.BlobPersistence;
+import net.catenax.irs.connector.consumer.persistence.BlobPersistenceException;
 import net.catenax.irs.connector.requests.PartsTreeRequest;
 import net.catenax.irs.connector.requests.PartsTreeByObjectIdRequest;
 import net.catenax.irs.connector.util.JsonUtil;
-import org.eclipse.dataspaceconnector.common.azure.BlobStoreApi;
 import org.eclipse.dataspaceconnector.monitor.ConsoleMonitor;
-import org.eclipse.dataspaceconnector.schema.azure.AzureBlobStoreSchema;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataAddress;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
@@ -56,7 +56,7 @@ class PartsTreeRecursiveLogicTest {
             .requestTemplate(partsTreeRequest);
     PartsTreeRecursiveLogic sut;
     @Mock
-    BlobStoreApi blobStoreApi;
+    BlobPersistence blobStoreApi;
     @Mock
     DataRequestFactory dataRequestFactory;
     @Mock
@@ -108,13 +108,13 @@ class PartsTreeRecursiveLogicTest {
     }
 
     @Test
-    void createSubsequentPartsTreeRequests() {
+    void createSubsequentPartsTreeRequests() throws BlobPersistenceException {
         // Arrange
         var transfer = transferProcess(blobName);
         var relationship = generate.relationship();
         var tree = generate.irsOutput().addRelationshipsItem(relationship);
 
-        when(blobStoreApi.getBlob(storageAccountName, containerName, blobName)).thenReturn(serialize(tree));
+        when(blobStoreApi.getBlob(blobName)).thenReturn(serialize(tree));
         when(dataRequestFactory.createRequests(requestContextCaptor.capture(), partIdsCaptor.capture()))
                 .thenReturn(dataRequestStream);
 
@@ -133,13 +133,14 @@ class PartsTreeRecursiveLogicTest {
     @ParameterizedTest
     @NullSource
     @EmptySource
-    void createSubsequentPartsTreeRequests_noRelationships(List<PartRelationship> partRelationships) {
+    void createSubsequentPartsTreeRequests_noRelationships(List<PartRelationship> partRelationships)
+          throws BlobPersistenceException {
         // Arrange
         var transfer = transferProcess(blobName);
         var tree = generateIrsOutput();
         tree.setRelationships(partRelationships);
 
-        when(blobStoreApi.getBlob(storageAccountName, containerName, blobName)).thenReturn(serialize(tree));
+        when(blobStoreApi.getBlob(blobName)).thenReturn(serialize(tree));
         when(dataRequestFactory.createRequests(requestContextCaptor.capture(), partIdsCaptor.capture()))
                 .thenReturn(dataRequestStream);
 
@@ -155,18 +156,18 @@ class PartsTreeRecursiveLogicTest {
     }
 
     @Test
-    void assemblePartialPartTreeBlobs_WithNoInput() {
+    void assemblePartialPartTreeBlobs_WithNoInput() throws BlobPersistenceException {
         // Arrange
         PartRelationshipsWithInfos irsOutput = generateIrsOutput();
         when(assembler.retrievePartsTrees(partsTreesCaptor.capture()))
                 .thenReturn(irsOutput);
 
         // Act
-        sut.assemblePartialPartTreeBlobs(List.of(), storageAccountName, containerName, blobName);
+        sut.assemblePartialPartTreeBlobs(List.of(), blobName);
 
         // Assert
         assertThat(partsTreesCaptor.getValue()).isEmpty();
-        verify(blobStoreApi).putBlob(storageAccountName, containerName, blobName, serialize(irsOutput));
+        verify(blobStoreApi).putBlob(blobName, serialize(irsOutput));
     }
 
     private byte[] serialize(PartRelationshipsWithInfos irsOutput) {
@@ -174,7 +175,7 @@ class PartsTreeRecursiveLogicTest {
     }
 
     @Test
-    void assemblePartialPartTreeBlobs_WithInput() {
+    void assemblePartialPartTreeBlobs_WithInput() throws BlobPersistenceException {
         // Arrange
         var blob1 = faker.lorem().characters();
         var blob2 = faker.lorem().characters();
@@ -188,19 +189,19 @@ class PartsTreeRecursiveLogicTest {
         PartRelationshipsWithInfos irsOutput4 = generateIrsOutput();
         when(assembler.retrievePartsTrees(partsTreesCaptor.capture()))
                 .thenReturn(irsOutput4);
-        when(blobStoreApi.getBlob(storageAccountName, containerName, blob1))
+        when(blobStoreApi.getBlob( blob1))
                 .thenReturn(serialize(irsOutput1));
-        when(blobStoreApi.getBlob(storageAccountName, containerName, blob2))
+        when(blobStoreApi.getBlob(blob2))
                 .thenReturn(serialize(irsOutput2));
-        when(blobStoreApi.getBlob(storageAccountName, containerName, blob3))
+        when(blobStoreApi.getBlob(blob3))
                 .thenReturn(serialize(irsOutput3));
 
         // Act
-        sut.assemblePartialPartTreeBlobs(List.of(transfer1, transfer2, transfer3), storageAccountName, containerName, blobName);
+        sut.assemblePartialPartTreeBlobs(List.of(transfer1, transfer2, transfer3), blobName);
 
         // Assert
         assertThat(partsTreesCaptor.getValue()).containsExactly(irsOutput1, irsOutput2, irsOutput3);
-        verify(blobStoreApi).putBlob(storageAccountName, containerName, blobName, serialize(irsOutput4));
+        verify(blobStoreApi).putBlob(blobName, serialize(irsOutput4));
     }
 
     private TransferProcess transferProcess(String blobName) {
@@ -209,11 +210,7 @@ class PartsTreeRecursiveLogicTest {
                         .id(faker.lorem().characters())
                         .dataRequest(DataRequest.Builder.newInstance()
                                 .connectorAddress(rootQueryConnectorAddress)
-                                .dataDestination(DataAddress.Builder.newInstance()
-                                        .type(AzureBlobStoreSchema.TYPE)
-                                        .property(AzureBlobStoreSchema.ACCOUNT_NAME, storageAccountName)
-                                        .property(AzureBlobStoreSchema.CONTAINER_NAME, containerName)
-                                        .build())
+                                .dataDestination(DataAddress.Builder.newInstance().build())
                                 .properties(Map.of(DATA_REQUEST_IRS_DESTINATION_PATH, blobName,
                                       DATA_REQUEST_IRS_REQUEST_PARAMETERS, jsonUtil.asString(request)
                                 ))
