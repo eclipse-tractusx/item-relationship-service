@@ -10,6 +10,7 @@
 package net.catenax.irs.integrationtest;
 
 import net.catenax.irs.controllers.ApiErrorsConstants;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -22,7 +23,7 @@ import static net.catenax.irs.dtos.ValidationConstants.VIN_FIELD_LENGTH;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 
-
+@Disabled("Integrations test not possible without DB")
 public class GetPartsTreeByVinIntegrationTests extends IrsIntegrationTestsBase {
 
     private static final String PATH = "/api/v0.1/vins/{vin}/partsTree";

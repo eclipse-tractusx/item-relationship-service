@@ -1,23 +1,12 @@
 version: '3.8'
 
 services:
-  db:
-    image: 'postgres:11.13-alpine'
-    container_name: db
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=compose-postgres
-      - POSTGRES_PASSWORD=compose-postgres
-
   irs:
     build:
       context: .
       target: irs-api
       args:
         BUILD_TARGET: irs-api
-    depends_on:
-      - db
     profiles:
       - irs
     container_name: irs
@@ -25,7 +14,6 @@ services:
       - "8080:8080"
       - "4004:4004"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db/postgres
       APPLICATIONINSIGHTS_CONNECTION_STRING: "${APPLICATIONINSIGHTS_CONNECTION_STRING}"
       APPLICATIONINSIGHTS_ROLE_NAME: IRS
 

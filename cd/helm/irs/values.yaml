@@ -11,11 +11,6 @@ irs:
     tag: "latest"
   env: {}
 
-#postgresql:
-#  url: "jdbc:postgresql://postgresql:5432/postgres"
-#  postgresqlUsername: irs-user
-#  postgresqlPassword: <postgres-password>
-
 #eventHubs:
 #  namespace: NAMESPACENAME
 #  name: HUBNAME
