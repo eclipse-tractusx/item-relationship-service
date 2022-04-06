@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.component;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
@@ -19,6 +20,7 @@ import lombok.extern.jackson.Jacksonized;
 @Value
 @Jacksonized
 @Builder(toBuilder = true)
+@AllArgsConstructor
 public class Relationship {
 
     private String catenaXId;

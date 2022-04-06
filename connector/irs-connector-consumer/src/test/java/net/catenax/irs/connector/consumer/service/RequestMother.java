@@ -1,6 +1,11 @@
 package net.catenax.irs.connector.consumer.service;
 
 import com.github.javafaker.Faker;
+import net.catenax.irs.component.ChildItem;
+import net.catenax.irs.component.Job;
+import net.catenax.irs.component.Jobs;
+import net.catenax.irs.component.Relationship;
+import net.catenax.irs.component.Shells;
 import net.catenax.irs.connector.requests.JobsTreeByCatenaXIdRequest;
 import net.catenax.irs.connector.requests.JobsTreeRequest;
 import net.catenax.irs.connector.requests.PartsTreeByObjectIdRequest;
@@ -54,19 +59,19 @@ public class RequestMother {
 
     public Job job() {
         var job = new Job(null, null, null, null, null, null, null, null, null, null);
-        job.toBuilder().withJobId(faker.lorem().characters(0, 10));
-        job.toBuilder().withOwner(faker.lorem().characters(10, 20));
-        job.toBuilder().withLastModifiedOn(Instant.now());
-        job.toBuilder().withJobFinished(Instant.now());
+        job.toBuilder().jobId(faker.lorem().characters(0, 10));
+        job.toBuilder().owner(faker.lorem().characters(10, 20));
+        job.toBuilder().lastModifiedOn(Instant.now());
+        job.toBuilder().jobFinished(Instant.now());
         return job;
     }
 
     public ChildItem child() {
         var child = new ChildItem(null, null, null, null, null);
-        child.toBuilder().withChildCatenaXId(faker.lorem().characters(10, 20));
-        child.toBuilder().withLifecycleContext(faker.lorem().characters(0, 10));
-        child.toBuilder().withAssembledOn(Instant.now());
-        child.toBuilder().withLastModifiedOn(Instant.now());
+        child.toBuilder().childCatenaXId(faker.lorem().characters(10, 20));
+        child.toBuilder().lifecycleContext(faker.lorem().characters(0, 10));
+        child.toBuilder().assembledOn(Instant.now());
+        child.toBuilder().lastModifiedOn(Instant.now());
         return child;
     }
 
@@ -79,9 +84,9 @@ public class RequestMother {
 
     public Jobs irsOutput() {
         var obj = new Jobs(null, null, null);
-        obj.toBuilder().withJob(new Job(null, null, null,null,null,null,null,null, null, null));
-        obj.toBuilder().withRelationship(new Relationship(null, null, null));
-        obj.toBuilder().withShells(Optional.of(new ArrayList<Shells>()));
+        obj.toBuilder().job(new Job(null, null, null,null,null,null,null,null, null, null));
+        obj.toBuilder().relationships(new ArrayList<Relationship>());
+        obj.toBuilder().shells(Optional.of(new ArrayList<Shells>()));
         return obj;
     }
 
@@ -91,8 +96,8 @@ public class RequestMother {
 
     public Relationship relationship(ChildItem parent, ChildItem child) {
         var obj = new Relationship(null, null, null);
-        obj.toBuilder().withParentItem(parent);
-        obj.toBuilder().withChildItem(child);
+        obj.toBuilder().parentItem(parent);
+        obj.toBuilder().childItem(child);
         return obj;
     }
 }

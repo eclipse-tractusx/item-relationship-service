@@ -11,9 +11,10 @@ package net.catenax.irs.connector.consumer.service;
 
 
 import lombok.RequiredArgsConstructor;
-import net.catenax.irs.dtos.version02.Job;
-import net.catenax.irs.dtos.version02.Jobs;
-import net.catenax.irs.dtos.version02.Relationship;
+import net.catenax.irs.component.Job;
+import net.catenax.irs.component.Jobs;
+import net.catenax.irs.component.Relationship;
+import net.catenax.irs.component.Shells;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 
 import java.util.List;
@@ -49,7 +50,8 @@ public class JobsTreesAssembler {
 
         partialJobs.forEachOrdered(partialJob -> {
             job[0] = partialJob.getJob();
-            relationships[0] = partialJob.getRelationship();
+            // TODO provide solution for a list of relationships
+            relationships[0] = partialJob.getRelationships().get(0);
             shells[0] = Optional.of(partialJob.getShells().get());
             numberOfPartialJobs.incrementAndGet();
         });
@@ -57,9 +59,9 @@ public class JobsTreesAssembler {
         monitor.info(format("Assembled parts tree from %s partial trees", numberOfPartialJobs));
 
         var result = new Jobs(null, null, null);
-        result.toBuilder().withJob(job[0]);
-        result.toBuilder().withRelationship(relationships[0]);
-        result.toBuilder().withShells(shells[0]);
+        result.toBuilder().job(job[0]);
+        result.toBuilder().relationship(relationships[0]);
+        result.toBuilder().shells(shells[0]);
         return result;
     }
 }

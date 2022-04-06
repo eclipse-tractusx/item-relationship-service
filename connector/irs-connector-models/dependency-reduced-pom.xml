@@ -22,12 +22,6 @@
       <artifactId>irs-connector-testing</artifactId>
       <version>0.0.1-SNAPSHOT</version>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>hibernate-validator</artifactId>
-          <groupId>org.hibernate.validator</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

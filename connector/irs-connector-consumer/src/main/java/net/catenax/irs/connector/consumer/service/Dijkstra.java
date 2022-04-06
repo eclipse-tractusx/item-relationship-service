@@ -9,11 +9,12 @@
 //
 package net.catenax.irs.connector.consumer.service;
 
-import net.catenax.irs.dtos.version02.ChildItem;
-import net.catenax.irs.dtos.version02.Relationship;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import net.catenax.irs.component.ChildItem;
+import net.catenax.irs.component.Relationship;
 
 /**
  * Implementation of the Dijkstra algorithm for shortest path search.

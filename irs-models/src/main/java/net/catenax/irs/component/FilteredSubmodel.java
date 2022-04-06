@@ -11,15 +11,29 @@ package net.catenax.irs.component;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
+import lombok.Value;
 
 /**
  * Use to filter submodel to specific child items
  */
 @Schema(description = "Use to filter submodel to specific child items")
+@Value
+@Builder
+@JsonDeserialize(builder = FilteredSubmodel.FilteredSubmodelBuilder.class)
 public class FilteredSubmodel {
 
     private String catenaXId;
 
     private List<ChildItem> childParts;
+
+    /**
+     * Builder for FilteredSubmodel class
+     */
+    @JsonPOJOBuilder(withPrefix = "with")
+    public static class FilteredSubmodelBuilder {
+    }
 }

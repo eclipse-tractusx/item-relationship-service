@@ -234,9 +234,8 @@ components:
       properties:
         jobID:
           type: string
-          maxLength: 16
-          minLength: 16
-          format: uuid
+          items:
+            $ref: '#/components/schemas/UUID'
         globalAssetId:
           type: string
           items:
@@ -500,8 +499,8 @@ components:
       example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
     UUID:
       type: string
-      maxLength: 16
-      minLength: 16
+      maxLength: 36
+      minLength: 36
       format: uuid
       example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
     ErrorResponse:

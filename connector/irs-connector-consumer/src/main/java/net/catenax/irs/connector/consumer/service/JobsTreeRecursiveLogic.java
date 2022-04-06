@@ -11,12 +11,12 @@ package net.catenax.irs.connector.consumer.service;
 
 
 import lombok.RequiredArgsConstructor;
+import net.catenax.irs.component.ChildItem;
+import net.catenax.irs.component.Jobs;
 import net.catenax.irs.connector.constants.IrsConnectorConstants;
 import net.catenax.irs.connector.requests.JobsTreeByCatenaXIdRequest;
 import net.catenax.irs.connector.requests.JobsTreeRequest;
 import net.catenax.irs.connector.util.JsonUtil;
-import net.catenax.irs.dtos.version02.ChildItem;
-import net.catenax.irs.dtos.version02.Jobs;
 import org.eclipse.dataspaceconnector.common.azure.BlobStoreApi;
 import org.eclipse.dataspaceconnector.schema.azure.AzureBlobStoreSchema;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
@@ -161,8 +161,8 @@ public class JobsTreeRecursiveLogic {
     private ChildItem toChildItem(final JobsTreeByCatenaXIdRequest jobsTreeRequest) {
         ZoneOffset zoneOffSet = ZoneOffset.of("+01:00");
         final var childItem = new ChildItem(null,null,null,null,null);
-        childItem.toBuilder().withChildCatenaXId(jobsTreeRequest.getChildCatenaXId());
-        childItem.toBuilder().withLastModifiedOn(jobsTreeRequest.getLastModifiedOn().toInstant(zoneOffSet));
+        childItem.toBuilder().childCatenaXId(jobsTreeRequest.getChildCatenaXId());
+        childItem.toBuilder().lastModifiedOn(jobsTreeRequest.getLastModifiedOn().toInstant(zoneOffSet));
         return childItem;
     }
 }

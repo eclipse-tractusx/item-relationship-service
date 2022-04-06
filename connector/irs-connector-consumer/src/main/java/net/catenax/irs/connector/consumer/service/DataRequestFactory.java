@@ -13,14 +13,13 @@ package net.catenax.irs.connector.consumer.service;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import net.catenax.irs.component.ChildItem;
+import net.catenax.irs.component.Relationship;
 import net.catenax.irs.connector.constants.IrsConnectorConstants;
 import net.catenax.irs.connector.consumer.configuration.ConsumerConfiguration;
 import net.catenax.irs.connector.consumer.registry.StubRegistryClient;
 import net.catenax.irs.connector.requests.JobsTreeRequest;
 import net.catenax.irs.connector.util.JsonUtil;
-import net.catenax.irs.dtos.version02.ChildItem;
-import net.catenax.irs.dtos.version02.Job;
-import net.catenax.irs.dtos.version02.Relationship;
 import org.eclipse.dataspaceconnector.schema.azure.AzureBlobStoreSchema;
 import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
@@ -153,7 +152,7 @@ public class DataRequestFactory {
 
     /**
      * Parameter Object used to pass information about the previous IRS request
-     * and its results, to the {@link #createRequest(RequestContext, net.catenax.irs.dtos.version02.ChildItem)}
+     * and its results, to the
      * method for creatin subsequent IRS requests.
      */
     @Value

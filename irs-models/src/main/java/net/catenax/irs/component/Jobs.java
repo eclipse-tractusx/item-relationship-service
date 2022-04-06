@@ -15,7 +15,9 @@ import java.util.Optional;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Singular;
 import lombok.Value;
 
 /**
@@ -23,15 +25,17 @@ import lombok.Value;
  */
 @Schema(description = "List of Job and relationship to parts")
 @Value
-@Builder
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = Jobs.JobsBuilder.class)
+@AllArgsConstructor
 public class Jobs {
 
     @Schema(description = "Information and data for the Job", implementation = Job.JobBuilder.class)
     private Job job;
 
     @Schema(description = "Parts relationship information")
-    private Optional<List<Relationship>> relationships;
+    @Singular
+    private List<Relationship> relationships;
 
     @Schema
     private Optional<List<Shells>> shells;

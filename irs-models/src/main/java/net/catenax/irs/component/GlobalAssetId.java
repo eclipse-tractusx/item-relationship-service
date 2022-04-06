@@ -9,13 +9,27 @@
 //
 package net.catenax.irs.component;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
+import lombok.Value;
 
 /**
  * Global unique identifier for asset
  */
+@Value
+@Builder
+@JsonDeserialize(builder = GlobalAssetId.GlobalAssetIdBuilder.class)
 public class GlobalAssetId {
 
-    @Schema(description = "Global uniquie identifier")
+    @Schema(description = "Global unique identifier")
     private String globalAssetId;
+
+    /**
+     * Builder for GlobalAssetIdBuilder class
+     */
+    @JsonPOJOBuilder(withPrefix = "with")
+    public static class GlobalAssetIdBuilder {
+    }
 }

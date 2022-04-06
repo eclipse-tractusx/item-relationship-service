@@ -1,7 +1,7 @@
 package net.catenax.irs.connector.consumer.service;
 
-import net.catenax.irs.dtos.version02.ChildItem;
-import net.catenax.irs.dtos.version02.Relationship;
+import net.catenax.irs.component.ChildItem;
+import net.catenax.irs.component.Relationship;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

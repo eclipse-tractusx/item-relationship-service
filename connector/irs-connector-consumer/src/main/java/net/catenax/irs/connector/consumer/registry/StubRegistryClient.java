@@ -9,11 +9,10 @@
 //
 package net.catenax.irs.connector.consumer.registry;
 
+import net.catenax.irs.component.ChildItem;
 import net.catenax.irs.connector.consumer.configuration.PartitionDeploymentsConfig;
 import net.catenax.irs.connector.consumer.configuration.PartitionsConfig;
 import net.catenax.irs.dtos.PartId;
-import net.catenax.irs.dtos.version02.ChildItem;
-import net.catenax.irs.dtos.version02.Job;
 
 import java.util.AbstractMap;
 import java.util.Map;

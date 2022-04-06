@@ -1,6 +1,6 @@
 package net.catenax.irs.connector.consumer.service;
 
-import net.catenax.irs.dtos.version02.Jobs;
+import net.catenax.irs.component.Jobs;
 import org.eclipse.dataspaceconnector.monitor.ConsoleMonitor;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ class JobsTreesAssemblerTest {
     void retrieveJobsTrees_WithOneInput_ReturnsRelationshipInput() {
         // Arrange
         var relationship = generate.relationship();
-        output.toBuilder().withRelationship(relationship);
+        output.toBuilder().relationship(relationship);
 
         // Act
         var result = sut.retrieveJobsTrees(Stream.of(output));
@@ -54,13 +54,13 @@ class JobsTreesAssemblerTest {
         var relationship3 = generate.relationship();
         var relationship4 = generate.relationship();
         var irsOutput1 = generate.irsOutput()
-                .toBuilder().withRelationship(relationship1)
-                            .withRelationship(relationship2).build();
+                .toBuilder().relationship(relationship1)
+                            .relationship(relationship2).build();
         var irsOutput2 = generate.irsOutput()
-                .toBuilder().withRelationship(relationship1)
-                .withRelationship(relationship3).build();
+                .toBuilder().relationship(relationship1)
+                .relationship(relationship3).build();
         var irsOutput3 = generate.irsOutput()
-                .toBuilder().withRelationship(relationship4).build();
+                .toBuilder().relationship(relationship4).build();
 
         // Act
         var result = sut.retrieveJobsTrees(Stream.of(
@@ -71,10 +71,10 @@ class JobsTreesAssemblerTest {
 
         // Assert
         var irsOutput = generate.irsOutput()
-                .toBuilder().withRelationship(relationship1)
-                .withRelationship(relationship2)
-                .withRelationship(relationship3)
-                .withRelationship(relationship4).build();
+                .toBuilder().relationship(relationship1)
+                .relationship(relationship2)
+                .relationship(relationship3)
+                .relationship(relationship4).build();
         assertThat(result).isEqualTo(irsOutput);
     }
 
@@ -82,7 +82,7 @@ class JobsTreesAssemblerTest {
     void retrieveJobsTrees_WithOneInput_ReturnsJobInput() {
         // Arrange
         var job = generate.job();
-        var irsOutput = generate.irsOutput().toBuilder().withJob(job).build();
+        var irsOutput = generate.irsOutput().toBuilder().job(job).build();
 
         // Act
         var result = sut.retrieveJobsTrees(Stream.of(irsOutput));
@@ -99,13 +99,13 @@ class JobsTreesAssemblerTest {
         var job3 = generate.job();
         var job4 = generate.job();
         var irsOutput1 = generate.irsOutput().toBuilder()
-                .withJob(job1)
-                .withJob(job2).build();
+                .job(job1)
+                .job(job2).build();
         var irsOutput2 = generate.irsOutput().toBuilder()
-                .withJob(job1)
-                .withJob(job3).build();
+                .job(job1)
+                .job(job3).build();
         var irsOutput3 = generate.irsOutput().toBuilder()
-                .withJob(job4).build();
+                .job(job4).build();
 
         // Act
         var result = sut.retrieveJobsTrees(Stream.of(
@@ -116,10 +116,10 @@ class JobsTreesAssemblerTest {
 
         // Assert
         var irsOutput = generate.irsOutput().toBuilder()
-                .withJob(job1)
-                .withJob(job2)
-                .withJob(job3)
-                .withJob(job4).build();
+                .job(job1)
+                .job(job2)
+                .job(job3)
+                .job(job4).build();
         assertThat(result).isEqualTo(irsOutput);
     }
 
