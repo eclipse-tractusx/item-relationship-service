@@ -58,7 +58,6 @@ import org.springframework.web.bind.annotation.RestController;
 })
 public class IrsController {
 
-    private static final int JOB_ID_SIZE = 16;
     private final IrsPartsTreeQueryService itemJobService;
 
     @Operation(operationId = "getBomLifecycleByGlobalAssetId", summary = "Get a BOM tree for a given item",
@@ -105,8 +104,8 @@ public class IrsController {
     })
     @GetMapping("/jobs/{jobId}")
     public ResponseEntity<Jobs> getBOMForJobId(
-            final @Valid @Parameter(description = "Id of the job in processing.") @PathVariable @Size(min = JOB_ID_SIZE,
-                    max = JOB_ID_SIZE) @ApiParam(name = "jobId", example = "6c311d29-5753-46d4-b32c-19b918ea93b0") UUID jobId) {
+            final @Valid @Parameter(description = "Id of the job in processing.") @PathVariable @Size(min = IrsApiConstants.JOB_ID_SIZE,
+                    max = IrsApiConstants.JOB_ID_SIZE) @ApiParam(name = "jobId", example = "6c311d29-5753-46d4-b32c-19b918ea93b0") UUID jobId) {
         return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
     }
 
