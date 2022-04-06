@@ -46,9 +46,9 @@
       <version>${revision}</version>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.dataspaceconnector</groupId>
-      <artifactId>azure.blob.provision</artifactId>
-      <version>${edcVersion}</version>
+      <groupId>io.minio</groupId>
+      <artifactId>minio</artifactId>
+      <version>8.3.7</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.dataspaceconnector</groupId>
