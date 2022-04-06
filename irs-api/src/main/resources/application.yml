@@ -63,3 +63,8 @@ feign:
       submodel:
         url: http://localhost:4242
 
+blobstore:
+  endpoint:
+  accessKey:
+  secretKey:
+  bucketName: irsbucket

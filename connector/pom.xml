@@ -11,6 +11,7 @@
     <description>Root module containing connector modules.</description>
 
     <modules>
+        <module>irs-connector-parent</module>
         <module>edc-recursive-job</module>
     </modules>
 </project>

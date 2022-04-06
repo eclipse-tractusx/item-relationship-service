@@ -1,4 +1,4 @@
-package net.catenax.irs.connector.consumer.persistence;
+package net.catenax.irs.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 
 import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
-import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

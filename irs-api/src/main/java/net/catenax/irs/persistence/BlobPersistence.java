@@ -8,7 +8,7 @@
 // additional information regarding license terms.
 //
 
-package net.catenax.irs.connector.consumer.persistence;
+package net.catenax.irs.persistence;
 
 /**
  * Interface for storing data blobs.

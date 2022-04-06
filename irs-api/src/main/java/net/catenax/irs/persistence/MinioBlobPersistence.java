@@ -8,7 +8,7 @@
 // additional information regarding license terms.
 //
 
-package net.catenax.irs.connector.consumer.persistence;
+package net.catenax.irs.persistence;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,7 +35,6 @@ import io.minio.messages.LifecycleRule;
 import io.minio.messages.ResponseDate;
 import io.minio.messages.RuleFilter;
 import io.minio.messages.Status;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * BlobPersistence implementation using the min.io library
@@ -76,7 +75,6 @@ public class MinioBlobPersistence implements BlobPersistence {
                 SetBucketLifecycleArgs.builder().bucket(bucketName).config(lifecycleConfig).build());
     }
 
-    @NotNull
     private LifecycleRule createExpirationRule(final Expiration expiration) {
         return new LifecycleRule(Status.ENABLED, null, expiration, new RuleFilter(""), null, null,
                 null, null);

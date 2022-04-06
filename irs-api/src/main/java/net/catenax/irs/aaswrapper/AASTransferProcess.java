@@ -7,20 +7,27 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.jobs;
+package net.catenax.irs.aaswrapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.catenax.irs.connector.job.TransferProcess;
 
+/**
+ * Transfer Process for AAS Objects
+ */
+@Getter
+@RequiredArgsConstructor
 public class AASTransferProcess implements TransferProcess {
 
     private final String id;
 
-    public AASTransferProcess(final String id) {
-        this.id = id;
-    }
+    private final List<String> idsToProcess = new ArrayList<>();
 
-    @Override
-    public String getId() {
-        return id;
+    public void addIdsToProcess(final List<String> childIds) {
+        idsToProcess.addAll(childIds);
     }
 }
