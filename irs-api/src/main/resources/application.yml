@@ -4,41 +4,22 @@ server:
 spring:
   application:
     name: item-relationship-service
-  datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: compose-postgres
-    password: compose-postgres
-    ## default connection pool
-    hikari:
-      connectionTimeout: 20000
-      maximumPoolSize: 5
-  kafka:
-    bootstrap-servers: localhost:29092
-    consumer:
-      group-id: irs-data-processor
-      auto-offset-reset: earliest
-      # Configures the Spring Kafka ErrorHandlingDeserializer that delegates to the 'real' deserializer
-      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-      properties:
-        # Delegate deserializers
-        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
-        spring.json.trusted.packages: "*"
-    # Dead-Letter Topic producer
-    producer:
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
 management:
   endpoints:
     web:
       exposure:
-        include: health, flyway, threaddump, loggers, prometheus
+        include: health, threaddump, loggers, prometheus
   endpoint:
     health:
       probes:
         enabled: true
       group:
         readiness:
-          include: readinessState, db, diskSpace
+          include: readinessState, diskSpace
       show-details: always
   health:
     livenessstate:
@@ -57,7 +38,6 @@ logging:
   level:
     root: WARN
     org.springframework: INFO
-    org.flywaydb: INFO
     net.catenax.irs: INFO
 
 springdoc:
@@ -70,5 +50,14 @@ springdoc:
 irs:
   apiUrl: http://localhost:8080
   partsTreeMaxDepth: 100
-  kafkaTopic: catenax_events
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full
+      digitalTwinRegistry:
+        url: https://catenaxdev042akssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry
 

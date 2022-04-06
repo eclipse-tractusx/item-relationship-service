@@ -36,8 +36,8 @@ class RequestMiddlewareTest {
     Faker faker = new Faker();
     Response.Status status = faker.options().option(Response.Status.class);
     RuntimeException exception = new RuntimeException(faker.lorem().sentence());
-    private ConstraintViolation<Object> violation1 = mock(ConstraintViolation.class);
-    private ConstraintViolation<Object> violation2 = mock(ConstraintViolation.class);
+    private final ConstraintViolation<Object> violation1 = mock(ConstraintViolation.class);
+    private final ConstraintViolation<Object> violation2 = mock(ConstraintViolation.class);
 
     @Test
     void invoke_OnSuccess_ReturnsResponse() {
