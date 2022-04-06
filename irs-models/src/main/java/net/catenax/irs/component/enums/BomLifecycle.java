@@ -21,16 +21,34 @@ import net.catenax.irs.dtos.ItemLifecycleStage;
 @ExcludeFromCodeCoverageGeneratedReport
 @Schema(description = "View defining which data of the PartsTree is retrieved.")
 public enum BomLifecycle {
-    @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") ASBUILT
-    //,@Schema(description = "The view of the PartsTree that accounts "
-    //      + "for all updates during the vehicle lifecycle.") asMaintained
-    //,@Schema(description = "The view of the PartsTree that accounts "
-    //    //      + "for all updates during the vehicle lifecycle.") asPlanned
-    //,@Schema(description = "The view of the PartsTree that accounts "
-    //    //      + "for all updates during the vehicle lifecycle.") asDesigned
-    //,@Schema(description = "The view of the PartsTree that accounts "
-    //    //      + "for all updates during the vehicle lifecycle.") asOrdered
-    //,@Schema(description = "The view of the PartsTree that accounts "
-    //    //      + "for all updates during the vehicle lifecycle.") asRecycled
+    @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") AS_BUILT("asBuild")
+    ,@Schema(description = "The view of the PartsTree ... lifecycle.") AS_MAINTAINED("asMaintained")
+    ,@Schema(description = "TThe view of the PartsTree ... lifecycle.") AS_PLANNED("asPlanned")
+    ,@Schema(description = "TThe view of the PartsTree ... lifecycle.") AS_DESIGNED("asDesigned")
+    ,@Schema(description = "The view of the PartsTree ... lifecycle.") AS_ORDERED("asOrdered")
+    ,@Schema(description = "The view of the PartsTree ... lifecycle.") AS_RECYCLED("asRecycled");
 
+    private final String value;
+
+    BomLifecycle(final String value) {
+        this.value = value;
+    }
+
+    /**
+     * of as a substitute/alias for valueOf handling the default value
+     *
+     * @param value see {@link #value}
+     * @return the corresponding BomLifecycle
+     */
+    public static BomLifecycle value(final String value) {
+        return BomLifecycle.valueOf(value);
+    }
+
+    /**
+     * @return convert BomLifecycle to string value
+     */
+    @Override
+    public String toString() {
+        return value;
+    }
 }

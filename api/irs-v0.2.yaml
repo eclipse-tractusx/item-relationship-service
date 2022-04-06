@@ -18,14 +18,22 @@ paths:
           name: globalAssetId
           required: true
           schema:
-            $ref: '#/components/schemas/CatenaXId'
+            type: string
+            maxLength: 45
+            minLength: 45
+            pattern: "urn:uuid:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         - description: "Unique identifier of a single, unique (sub)component/part/batch,\
           \  given by its globalAssetId/ digital twin id."
+          example: asBuilt
           in: query
           name: bomLifecycle
           required: true
           schema:
-            $ref: '#/components/schemas/BomLifecycle'
+            type: string
+            description: View defining which data of the PartsTree is retrieved.
+            enum:
+               - asBuild
+               - asMainten
         - description: AspectType information to add to the returned tree
           example: SerialPartTypization
           in: query
@@ -382,9 +390,7 @@ components:
       description: Relationship of a parent child relationship between items on different levels as defined in aspect AssemblyPartRelationship.
       properties:
         catenaXId:
-          type: string
-          items:
-            $ref: '#/components/schemas/CatenaXId'
+          $ref: '#/components/schemas/CatenaXId'
         childItem:
           type: array
           items:
