@@ -23,15 +23,24 @@ import lombok.Value;
  */
 @ApiModel(description = "Information about request items tree job")
 @Value
-@Builder
+@Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = IrsPartRelationshipsWithInfos.IrsPartRelationshipsWithInfosBuilder.class)
 public class IrsPartRelationshipsWithInfos {
 
+    /**
+     * job
+     */
     @Schema(description = "", implementation = Job.class)
     Jobs job;
 
+    /**
+     * relationships
+     */
     List<Relationship> relationships;
 
+    /**
+     * shells
+     */
     List<Shells> shells;
 
     /**

@@ -9,10 +9,13 @@
 //
 package net.catenax.irs.component.enums;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * Direction indicator
  */
+@Schema(description = "Direction in which the tree shall be traversed")
 public enum Direction {
-    upward,
-    downward
+    @Schema(description = "The tree is traversed in upward direction.") UPWARD,
+    @Schema(description = "The tree is traversed in downward direction.")  DOWNWARD;
 }

@@ -12,6 +12,7 @@ package net.catenax.irs.component.enums;
 /**
  * AspectType information for a part tree
  */
+@SuppressWarnings("PMD.ShortMethodName")
 public enum AspectType {
     SERIAL_PART_TYPIZATION("SerialPartTypization"),
     ASSEMBLY_PART_RELATIONSHIP("AssemblyPartRelationship"),
@@ -32,7 +33,7 @@ public enum AspectType {
 
     private final String value;
 
-    AspectType(String value) {
+    AspectType(final String value) {
         this.value = value;
     }
 
@@ -42,7 +43,7 @@ public enum AspectType {
      * @param value see {@link #value}
      * @return the corresponding AspectType
      */
-    public static AspectType of(String value) {
+    public static AspectType of(final String value) {
         return AspectType.valueOf(value);
     }
 

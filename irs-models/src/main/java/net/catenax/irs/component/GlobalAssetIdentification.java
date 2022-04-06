@@ -20,8 +20,8 @@ import lombok.Value;
  */
 @Value
 @Builder
-@JsonDeserialize(builder = GlobalAssetId.GlobalAssetIdBuilder.class)
-public class GlobalAssetId {
+@JsonDeserialize(builder = GlobalAssetIdentification.GlobalAssetIdBuilder.class)
+public class GlobalAssetIdentification {
 
     @Schema(description = "Global unique identifier")
     private String globalAssetId;

@@ -33,19 +33,26 @@ import net.catenax.irs.component.enums.JobState;
 @Builder(toBuilder = true)
 @JsonDeserialize(builder = Job.JobBuilder.class)
 @AllArgsConstructor
+@SuppressWarnings("PMD.shortClassName")
 public class Job {
 
+    /**
+     * jobId
+     */
     @NotNull
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
     @Schema(description = "Job Id for the request Item", minLength = INPUT_FIELD_MIN_LENGTH,
             maxLength = JOB_ID_FIELD_MAX_LENGTH)
     private final String jobId;
 
+    /**
+     * globalAssetId
+     */
     @NotNull
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
     @Schema(description = "Part global unique Id", minLength = INPUT_FIELD_MIN_LENGTH,
-            maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = GlobalAssetId.class)
-    final GlobalAssetId globalAssetId;
+            maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = GlobalAssetIdentification.class)
+    final GlobalAssetIdentification globalAssetId;
 
     @NotBlank
     @Schema()

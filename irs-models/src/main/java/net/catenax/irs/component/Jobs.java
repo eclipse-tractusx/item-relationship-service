@@ -28,6 +28,7 @@ import lombok.Value;
 @Builder(toBuilder = true)
 @JsonDeserialize(builder = Jobs.JobsBuilder.class)
 @AllArgsConstructor
+@SuppressWarnings("PMD.shortClassName")
 public class Jobs {
 
     @Schema(description = "Information and data for the Job", implementation = Job.JobBuilder.class)

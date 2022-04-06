@@ -94,7 +94,7 @@ public enum StatusCodeEnum implements IStatusCodeEnum {
     @Getter
     String message;
 
-    StatusCodeEnum(Integer code, String message) {
+    StatusCodeEnum(final Integer code, final String message) {
         this.code = code;
         this.message = message;
     }

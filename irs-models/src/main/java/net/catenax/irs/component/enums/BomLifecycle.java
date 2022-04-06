@@ -21,11 +21,16 @@ import net.catenax.irs.dtos.ItemLifecycleStage;
 @ExcludeFromCodeCoverageGeneratedReport
 @Schema(description = "View defining which data of the PartsTree is retrieved.")
 public enum BomLifecycle {
-    @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") asBuilt
-    //,@Schema(description = "The view of the PartsTree that accounts for all updates during the vehicle lifecycle.") asMaintained
-    //,@Schema(description = "The view of the PartsTree that accounts for all updates during the vehicle lifecycle.") asPlanned
-    //,@Schema(description = "The view of the PartsTree that accounts for all updates during the vehicle lifecycle.") asDesigned
-    //,@Schema(description = "The view of the PartsTree that accounts for all updates during the vehicle lifecycle.") asOrdered
-    //,@Schema(description = "The view of the PartsTree that accounts for all updates during the vehicle lifecycle.") asRecycled
+    @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") ASBUILT
+    //,@Schema(description = "The view of the PartsTree that accounts "
+    //      + "for all updates during the vehicle lifecycle.") asMaintained
+    //,@Schema(description = "The view of the PartsTree that accounts "
+    //    //      + "for all updates during the vehicle lifecycle.") asPlanned
+    //,@Schema(description = "The view of the PartsTree that accounts "
+    //    //      + "for all updates during the vehicle lifecycle.") asDesigned
+    //,@Schema(description = "The view of the PartsTree that accounts "
+    //    //      + "for all updates during the vehicle lifecycle.") asOrdered
+    //,@Schema(description = "The view of the PartsTree that accounts "
+    //    //      + "for all updates during the vehicle lifecycle.") asRecycled
 
 }
