@@ -22,8 +22,13 @@ import lombok.extern.jackson.Jacksonized;
 @Value
 @Jacksonized
 @Builder(toBuilder = true)
+@SuppressWarnings("PMD.AvoidFieldNameMatchingTypeName")
 public class Shells {
 
+
     @Schema(description = "Collections of AAS shells")
+    /**
+     * Shells
+     */
     Collection<Shell> shells;
 }

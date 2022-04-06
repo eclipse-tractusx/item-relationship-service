@@ -24,9 +24,15 @@ import java.util.List;
 @SuppressWarnings("PMD.CommentRequired")
 public class PartRelationshipsWithInfos {
 
+    /**
+     * relationships
+     */
     @Schema(description = "List of the relationships")
     private List<PartRelationship> relationships;
 
+    /**
+     * partInfos
+     */
     @Schema(description = "List of part infos")
     private List<PartInfo> partInfos;
 }

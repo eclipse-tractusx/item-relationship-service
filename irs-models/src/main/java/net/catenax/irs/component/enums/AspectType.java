@@ -43,7 +43,7 @@ public enum AspectType {
      * @param value see {@link #value}
      * @return the corresponding AspectType
      */
-    public static AspectType of(final String value) {
+    public static AspectType value(final String value) {
         return AspectType.valueOf(value);
     }
 
