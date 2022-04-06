@@ -23,10 +23,7 @@ public class IdentifierKeyValuePair extends HasSemantics {
      * key
      */
     private String key;
-    /**
-     * subjectId
-     */
-//    private Reference subjectId;
+
     /**
      * value
      */

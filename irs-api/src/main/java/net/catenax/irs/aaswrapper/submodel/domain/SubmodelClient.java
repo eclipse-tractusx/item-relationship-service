@@ -10,7 +10,6 @@
 package net.catenax.irs.aaswrapper.submodel.domain;
 
 import net.catenax.irs.aspectmodels.AspectModel;
-import net.catenax.irs.aspectmodels.AspectModelTypes;
 
 /**
  * Submodel Rest Client
@@ -19,8 +18,8 @@ public interface SubmodelClient {
 
     /**
      * @param endpointPath the url pointing to the endpoint
-     * @param aspectModelTypes the aspect model which is expected
+     * @param aspectModelClass the class of aspect model which is expected
      * @return Returns the expected aspect model
      */
-    AspectModel getSubmodel(String endpointPath, AspectModelTypes aspectModelTypes);
+    AspectModel getSubmodel(String endpointPath, Class<? extends AspectModel> aspectModelClass);
 }

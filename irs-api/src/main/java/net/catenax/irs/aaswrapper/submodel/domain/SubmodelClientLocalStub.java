@@ -19,7 +19,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import net.catenax.irs.aaswrapper.TestData;
 import net.catenax.irs.aaswrapper.TestdataCreator;
 import net.catenax.irs.aspectmodels.AspectModel;
-import net.catenax.irs.aspectmodels.AspectModelTypes;
+import net.catenax.irs.aspectmodels.assemblypartrelationship.AssemblyPartRelationship;
 import net.catenax.irs.aspectmodels.serialparttypization.ClassificationCharacteristic;
 import net.catenax.irs.aspectmodels.serialparttypization.KeyValueList;
 import net.catenax.irs.aspectmodels.serialparttypization.ManufacturingEntity;
@@ -36,23 +36,21 @@ import org.springframework.stereotype.Service;
 public class SubmodelClientLocalStub implements SubmodelClient {
 
     @Override
-    public AspectModel getSubmodel(final String endpointPath, final AspectModelTypes aspectModel) {
+    public AspectModel getSubmodel(final String endpointPath, final Class<? extends AspectModel> aspectModelClass) {
         final TestdataCreator testdataCreator = new TestdataCreator(
                 new ObjectMapper().registerModule(new Jdk8Module()));
         final List<TestData> testData = testdataCreator.getTestData(
                 new File("src/main/resources/Testdata/AASShelDescriptorTestData.json"));
 
-        switch (aspectModel) {
-            case ASSEMBLY_PART_RELATIONSHIP:
-                return getAssemblyPartRelationship(endpointPath, testdataCreator, testData);
-            case SERIAL_PART_TYPIZATION:
-                return new SerialPartTypization("catenaXIdSerialPartTypization", Set.of(new KeyValueList("key", "value")),
-                        new ManufacturingEntity(null, Optional.of("de")),
-                        new PartTypeInformationEntity("manufacturerPartId", Optional.of("customerPartId"),
-                                "nameAtManufacturer", Optional.of("nameAtCustomer"), ClassificationCharacteristic.PRODUCT));
-            default:
-                return null;
+        if (aspectModelClass.equals(AssemblyPartRelationship.class)) {
+            return getAssemblyPartRelationship(endpointPath, testdataCreator, testData);
+        } else if (aspectModelClass.equals(SerialPartTypization.class)) {
+            return new SerialPartTypization("catenaXIdSerialPartTypization", Set.of(new KeyValueList("key", "value")),
+                    new ManufacturingEntity(null, Optional.of("de")),
+                    new PartTypeInformationEntity("manufacturerPartId", Optional.of("customerPartId"),
+                            "nameAtManufacturer", Optional.of("nameAtCustomer"), ClassificationCharacteristic.PRODUCT));
         }
+        return null;
     }
 
     private net.catenax.irs.aspectmodels.assemblypartrelationship.AssemblyPartRelationship getAssemblyPartRelationship(

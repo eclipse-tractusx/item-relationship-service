@@ -19,7 +19,7 @@
         <dependency>
             <groupId>io.openmanufacturing</groupId>
             <artifactId>sds-aspect-model-starter</artifactId>
-            <version>1.0.2</version>
+            <version>${openmanufacturing.version}</version>
         </dependency>
 
         <dependency>
@@ -75,11 +75,6 @@
             <artifactId>javafaker</artifactId>
             <version>${javafaker.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.openmanufacturing</groupId>
-            <artifactId>sds-aspect-model-starter</artifactId>
-            <version>1.0.2</version>
         </dependency>
     </dependencies>
 </project>

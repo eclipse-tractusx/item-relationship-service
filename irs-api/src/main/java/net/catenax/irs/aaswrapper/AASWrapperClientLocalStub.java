@@ -15,7 +15,6 @@ import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryClient;
 import net.catenax.irs.aaswrapper.registry.domain.model.AssetAdministrationShellDescriptor;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelClient;
 import net.catenax.irs.aspectmodels.AspectModel;
-import net.catenax.irs.aspectmodels.AspectModelTypes;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +36,7 @@ public class AASWrapperClientLocalStub implements AASWrapperClient {
     }
 
     @Override
-    public AspectModel getSubmodel(final String endpointPath, final AspectModelTypes aspectModel) {
-        return submodelClient.getSubmodel(endpointPath, aspectModel);
+    public AspectModel getSubmodel(final String endpointPath, final Class<? extends AspectModel> aspectModelClass) {
+        return submodelClient.getSubmodel(endpointPath, aspectModelClass);
     }
 }
