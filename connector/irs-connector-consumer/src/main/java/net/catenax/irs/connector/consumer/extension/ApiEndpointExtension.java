@@ -17,8 +17,6 @@ import net.catenax.irs.connector.consumer.configuration.ConsumerConfiguration;
 import net.catenax.irs.connector.consumer.controller.ConsumerApiController;
 import net.catenax.irs.connector.consumer.middleware.RequestMiddleware;
 import net.catenax.irs.connector.consumer.service.ConsumerService;
-import net.catenax.irs.connector.consumer.service.DataRequestFactory;
-import net.catenax.irs.connector.consumer.service.JobsTreesAssembler;
 import net.catenax.irs.connector.job.InMemoryJobStore;
 import net.catenax.irs.connector.job.JobOrchestrator;
 import net.catenax.irs.connector.metrics.MeterRegistryFactory;
@@ -90,11 +88,14 @@ public class ApiEndpointExtension implements ServiceExtension {
         final var blobStoreApi = context.getService(BlobStoreApi.class);
         final var jobStore = new InMemoryJobStore(monitor);
         final var configuration = ConsumerConfiguration.builder().storageAccountName(storageAccountName).build();
-        final var registryClient = StubRegistryClientFactory.getRegistryClient(context, jsonUtil);
-        final var assembler = new JobsTreesAssembler(monitor);
-        final var dataRequestGenerator = new DataRequestFactory(monitor, configuration, jsonUtil, registryClient);
-        // final var logic = new JobsTreeRecursiveLogic(monitor, blobStoreApi, jsonUtil, dataRequestGenerator, assembler);
-        // final var jobHandler = new JobsTreeRecursiveJobHandler(monitor, configuration, jsonUtil, null);
+        //final var registryClient = StubRegistryClientFactory.getRegistryClient(context, jsonUtil);
+        //final var assembler = new JobsTreesAssembler(monitor);
+        //final var dataRequestGenerator = new DataRequestFactory(monitor, configuration,
+        // jsonUtil, registryClient);
+        // final var logic = new JobsTreeRecursiveLogic(monitor, blobStoreApi, jsonUtil,
+        // dataRequestGenerator, assembler);
+        // final var jobHandler = new JobsTreeRecursiveJobHandler(monitor, configuration,
+        // jsonUtil, null);
         final var jobOrchestrator = new JobOrchestrator(processManager, jobStore, null, transferProcessObservable, monitor);
 
         final var service = new ConsumerService(monitor, jsonUtil, jobStore, jobOrchestrator, blobStoreApi, configuration);

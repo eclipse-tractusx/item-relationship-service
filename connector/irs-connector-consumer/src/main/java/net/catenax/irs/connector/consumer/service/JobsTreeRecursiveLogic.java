@@ -159,8 +159,8 @@ public class JobsTreeRecursiveLogic {
     }
 
     private ChildItem toChildItem(final JobsTreeByCatenaXIdRequest jobsTreeRequest) {
-        ZoneOffset zoneOffSet = ZoneOffset.of("+01:00");
-        final var childItem = new ChildItem(null,null,null,null,null);
+        final ZoneOffset zoneOffSet = ZoneOffset.of("+01:00");
+        final var childItem = new ChildItem(null, null, null, null, null);
         childItem.toBuilder().childCatenaXId(jobsTreeRequest.getChildCatenaXId());
         childItem.toBuilder().lastModifiedOn(jobsTreeRequest.getLastModifiedOn().toInstant(zoneOffSet));
         return childItem;

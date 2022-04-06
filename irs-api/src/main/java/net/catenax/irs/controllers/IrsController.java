@@ -53,7 +53,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(IrsApplication.API_PREFIX)
 @RequiredArgsConstructor
 @ExcludeFromCodeCoverageGeneratedReport
-@SuppressWarnings({ "PMD.AvoidDuplicateLiterals" })
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals",
+                    "PMD.ExcessiveImports"})
 public class IrsController {
 
     private final IrsPartsTreeQueryService itemJobService;

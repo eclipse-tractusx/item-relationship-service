@@ -9,11 +9,11 @@
 //
 package net.catenax.irs.connector.requests;
 
-        import jakarta.validation.Valid;
-        import jakarta.validation.constraints.NotNull;
-        import lombok.Builder;
-        import lombok.Value;
-        import lombok.extern.jackson.Jacksonized;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * JSON payload for a connector request to assemble a composite Parts Tree.
