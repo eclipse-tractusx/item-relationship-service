@@ -6,7 +6,6 @@ import net.catenax.irs.connector.requests.JobsTreeRequest;
 import net.catenax.irs.connector.requests.PartsTreeByObjectIdRequest;
 import net.catenax.irs.connector.requests.PartsTreeRequest;
 import net.catenax.irs.dtos.PartId;
-import net.catenax.irs.dtos.version02.*;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 
 import java.time.Instant;

@@ -55,7 +55,7 @@ public abstract class IrsPartsTreeRequestBase {
     protected final Integer depth;
 
     @ValueOfEnum(enumClass = Direction.class, message = ApiErrorsConstants.ITEM_VIEW_MUST_MATCH_ENUM)
-    @Parameter(description = "Specifies the direction in which the tree is to be built", in = QUERY, example = "downward",
+    @Parameter(description = "Direction in which the tree shall be traversed", in = QUERY, example = "downward",
             schema = @Schema(implementation = Direction.class))
     protected final String direction;
 

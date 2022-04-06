@@ -9,7 +9,7 @@
 //
 package net.catenax.irs.mappers;
 
-import net.catenax.irs.dtos.events.PartAspectsUpdateRequest;
+import net.catenax.irs.component.events.PartAspectsUpdateRequest;
 import net.catenax.irs.entities.PartAspectEntity;
 import net.catenax.irs.entities.PartAspectEntityKey;
 import net.catenax.irs.entities.PartIdEntityPart;

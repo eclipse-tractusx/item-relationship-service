@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import net.catenax.irs.dtos.version02.Job;
 import net.catenax.irs.dtos.version02.Jobs;
 import net.catenax.irs.dtos.version02.Relationship;
-import net.catenax.irs.dtos.version02.Shells;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 
 import java.util.List;

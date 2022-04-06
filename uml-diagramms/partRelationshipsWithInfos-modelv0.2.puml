@@ -73,8 +73,8 @@ enum AspectType {
 	MarketPlaceOffer
 	MaterialAspect
 	BatteryPass
-	ProducDescription.Vehicle
-	ProducDescription.Battery
+	ProductDescriptionVehicle
+	ProductDescriptionBattery
 	ReturnRequest
 	CertificateOfDestruction
 	CertificateOfDismantler

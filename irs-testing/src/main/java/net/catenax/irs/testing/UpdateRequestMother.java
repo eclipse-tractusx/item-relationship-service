@@ -12,10 +12,10 @@ package net.catenax.irs.testing;
 import com.github.javafaker.Faker;
 import net.catenax.irs.dtos.PartAttribute;
 import net.catenax.irs.dtos.ItemLifecycleStage;
-import net.catenax.irs.dtos.events.PartAspectsUpdateRequest;
-import net.catenax.irs.dtos.events.PartAttributeUpdateRequest;
-import net.catenax.irs.dtos.events.PartRelationshipUpdate;
-import net.catenax.irs.dtos.events.PartRelationshipsUpdateRequest;
+import net.catenax.irs.component.events.PartAspectsUpdateRequest;
+import net.catenax.irs.component.events.PartAttributeUpdateRequest;
+import net.catenax.irs.component.events.PartRelationshipUpdate;
+import net.catenax.irs.component.events.PartRelationshipsUpdateRequest;
 
 import java.util.Arrays;
 

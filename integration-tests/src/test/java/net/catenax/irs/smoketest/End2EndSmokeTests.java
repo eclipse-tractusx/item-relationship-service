@@ -3,7 +3,7 @@ package net.catenax.irs.smoketest;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import net.catenax.irs.dtos.PartRelationshipsWithInfos;
-import net.catenax.irs.dtos.events.PartRelationshipsUpdateRequest;
+import net.catenax.irs.component.events.PartRelationshipsUpdateRequest;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
