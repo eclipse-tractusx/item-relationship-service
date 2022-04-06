@@ -17,7 +17,7 @@ import lombok.Data;
  * AssemblyPartRelationship
  */
 @Data
-class AssemblyPartRelationship {
+public class AssemblyPartRelationship {
 
     /**
      * catenaXId
