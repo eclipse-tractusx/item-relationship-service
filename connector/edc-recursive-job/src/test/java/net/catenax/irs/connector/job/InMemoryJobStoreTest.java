@@ -262,7 +262,6 @@ class InMemoryJobStoreTest {
         // Act
         final List<MultiTransferJob> completedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.COMPLETED, nowPlusFiveHours);
         // Assert
-        refreshJob();
         assertThat(completedJobs.size()).isEqualTo(1);
         assertThat(completedJobs.get(0).getState()).isEqualTo(JobState.COMPLETED);
         assertTrue(completedJobs.get(0).getCompletionDate().isPresent());
@@ -278,7 +277,6 @@ class InMemoryJobStoreTest {
         // Act
         final List<MultiTransferJob> failedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.ERROR, nowPlusFiveHours);
         // Assert
-        refreshJob();
         assertThat(failedJobs.size()).isEqualTo(1);
         assertThat(failedJobs.get(0).getState()).isEqualTo(JobState.ERROR);
         assertTrue(failedJobs.get(0).getCompletionDate().isPresent());
