@@ -1,5 +1,7 @@
 openapi: '3.0.2'
 info:
+  description: API to retrieve parts tree information. See <a href="https://confluence.catena-x.net/display/CXM/PRS+Environments+and+Test+Data">this
+      page</a> for more information on test data available in this environment.
   title: IRS API
   version: '0.2'
 servers:
@@ -11,6 +13,7 @@ paths:
       description: Registers and starts a AAS crawler job for given {globalAssetId}
       parameters:
         - description: Readable ID of manufacturer including plant.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           in: path
           name: globalAssetId
           required: true
@@ -48,7 +51,7 @@ paths:
                 - ReturnRequest
                 - CertificateOfDestruction
                 - CertificateOfDismantler
-                - Adress
+                - Address
                 - Contact
               default: SerialPartTypization
         - description: "Max depth of the returned tree, if empty max depth is returned"
@@ -355,7 +358,7 @@ components:
         - ReturnRequest
         - CertificateOfDestruction
         - CertificateOfDismantler
-        - Adress
+        - Address
         - Contact
     AsyncFetchedItems:
       type: object

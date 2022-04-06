@@ -78,7 +78,7 @@ enum AspectType {
 	ReturnRequest
 	CertificateOfDestruction
 	CertificateOfDismantler
-	Adress
+	Address
 	Contact
 }
 
