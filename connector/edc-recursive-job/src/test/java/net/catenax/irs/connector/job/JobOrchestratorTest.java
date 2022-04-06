@@ -1,13 +1,5 @@
 package net.catenax.irs.connector.job;
 
-import org.eclipse.dataspaceconnector.monitor.ConsoleMonitor;
-import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
-import org.eclipse.dataspaceconnector.spi.transfer.TransferInitiateResponse;
-import org.eclipse.dataspaceconnector.spi.transfer.TransferProcessManager;
-import org.eclipse.dataspaceconnector.spi.transfer.TransferProcessObservable;
-import org.eclipse.dataspaceconnector.spi.transfer.response.ResponseStatus;
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,16 +8,17 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
@@ -37,23 +30,19 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class JobOrchestratorTest {
 
-    @Spy
-    Monitor monitor = new ConsoleMonitor();
     @Mock
-    TransferProcessManager processManager;
+    TransferProcessManager<DataRequest, TransferProcess> processManager;
     @Mock
     JobStore jobStore;
     @Mock
-    RecursiveJobHandler handler;
-    @Mock
-    TransferProcessObservable transferProcessObservable;
+    RecursiveJobHandler<DataRequest, TransferProcess> handler;
     @InjectMocks
-    JobOrchestrator sut;
+    JobOrchestrator<DataRequest, TransferProcess> sut;
 
     @Captor
     ArgumentCaptor<MultiTransferJob> jobCaptor;
     @Captor
-    ArgumentCaptor<JobTransferCallback> callbackCaptor;
+    ArgumentCaptor<Consumer<TransferProcess>> callbackCaptor;
 
     Pattern uuid = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
 
@@ -98,19 +87,19 @@ class JobOrchestratorTest {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class)))
                 .thenReturn(Stream.of(dataRequest, dataRequest2));
-        when(processManager.initiateConsumerRequest(dataRequest))
+        when(processManager.initiateRequest(eq(dataRequest), any()))
                 .thenReturn(okResponse);
-        when(processManager.initiateConsumerRequest(dataRequest2))
+        when(processManager.initiateRequest(eq(dataRequest2), any()))
                 .thenReturn(okResponse2);
 
         // Act
         var newJob = startJob();
 
         // Assert
-        verify(processManager).initiateConsumerRequest(dataRequest);
-        verify(jobStore).addTransferProcess(newJob.getJobId(), okResponse.getId());
-        verify(processManager).initiateConsumerRequest(dataRequest2);
-        verify(jobStore).addTransferProcess(newJob.getJobId(), okResponse2.getId());
+        verify(processManager).initiateRequest(eq(dataRequest), any());
+        verify(jobStore).addTransferProcess(newJob.getJobId(), okResponse.getTransferId());
+        verify(processManager).initiateRequest(eq(dataRequest2), any());
+        verify(jobStore).addTransferProcess(newJob.getJobId(), okResponse2.getTransferId());
     }
 
     @Test
@@ -139,7 +128,7 @@ class JobOrchestratorTest {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class)))
                 .thenReturn(Stream.of(dataRequest));
-        when(processManager.initiateConsumerRequest(dataRequest))
+        when(processManager.initiateRequest(eq(dataRequest), any()))
                 .thenReturn(okResponse);
 
         // Act
@@ -156,17 +145,17 @@ class JobOrchestratorTest {
     @EnumSource(value = ResponseStatus.class, names = "OK", mode = EXCLUDE)
     void startJob_WhenTransferStartUnsuccessful_Abort(ResponseStatus status) {
         // Arrange
-        when(handler.initiate(any(MultiTransferJob.class)))
+        when(handler.initiate(any()))
                 .thenReturn(Stream.of(dataRequest, dataRequest2));
-        when(processManager.initiateConsumerRequest(dataRequest))
+        when(processManager.initiateRequest(eq(dataRequest), any()))
                 .thenReturn(generate.response(status));
 
         // Act
         var response = sut.startJob(job.getJobData());
 
         // Assert
-        verify(processManager).initiateConsumerRequest(dataRequest);
-        verify(processManager, never()).initiateConsumerRequest(dataRequest2);
+        verify(processManager).initiateRequest(eq(dataRequest), any());
+        verify(processManager, never()).initiateRequest(eq(dataRequest2), any());
 
         // temporarily created job should be deleted
         verify(jobStore).create(jobCaptor.capture());
@@ -201,18 +190,18 @@ class JobOrchestratorTest {
     @Test
     void transferProcessCompleted_WhenCalledBackForCompletedTransfer_RunsNextTransfers() {
         // Arrange
-        when(processManager.initiateConsumerRequest(dataRequest))
+        when(processManager.initiateRequest(eq(dataRequest), any()))
                 .thenReturn(okResponse);
-        when(processManager.initiateConsumerRequest(dataRequest2))
+        when(processManager.initiateRequest(eq(dataRequest2), any()))
                 .thenReturn(okResponse2);
 
         // Act
         callCompleteAndReturnNextTransfers(Stream.of(dataRequest, dataRequest2));
 
         // Assert
-        verify(processManager).initiateConsumerRequest(dataRequest);
-        verify(jobStore).addTransferProcess(job.getJobId(), okResponse.getId());
-        verify(jobStore).addTransferProcess(job.getJobId(), okResponse2.getId());
+        verify(processManager).initiateRequest(eq(dataRequest), any());
+        verify(jobStore).addTransferProcess(job.getJobId(), okResponse.getTransferId());
+        verify(jobStore).addTransferProcess(job.getJobId(), okResponse2.getTransferId());
         verify(jobStore).completeTransferProcess(job.getJobId(), transfer);
     }
 
@@ -285,7 +274,6 @@ class JobOrchestratorTest {
         callTransferProcessCompletedViaCallback();
 
         // Assert
-        verify(monitor).severe("Job not found for transfer " + transfer.getId());
         verifyNoInteractions(handler);
         verifyNoMoreInteractions(jobStore);
     }
@@ -310,15 +298,15 @@ class JobOrchestratorTest {
     @EnumSource(value = ResponseStatus.class, names = "OK", mode = EXCLUDE)
     void transferProcessCompleted_WhenNextTransferStartUnsuccessful_Abort(ResponseStatus status) {
         // Arrange
-        when(processManager.initiateConsumerRequest(dataRequest))
+        when(processManager.initiateRequest(eq(dataRequest), any()))
                 .thenReturn(generate.response(status));
 
         // Act
         callCompleteAndReturnNextTransfers(Stream.of(dataRequest, dataRequest2));
 
         // Assert
-        verify(processManager).initiateConsumerRequest(dataRequest);
-        verify(processManager, never()).initiateConsumerRequest(dataRequest2);
+        verify(processManager).initiateRequest(eq(dataRequest), any());
+        verify(processManager, never()).initiateRequest(eq(dataRequest2), any());
 
         // temporarily created job should be deleted
         verify(jobStore).markJobInError(job.getJobId(), "Failed to start a transfer");
@@ -370,7 +358,6 @@ class JobOrchestratorTest {
     }
 
     private void callTransferProcessCompletedViaCallback() {
-        verify(transferProcessObservable).registerListener(callbackCaptor.capture());
-        callbackCaptor.getValue().completed(transfer);
+        sut.transferProcessCompleted(transfer);
     }
 }

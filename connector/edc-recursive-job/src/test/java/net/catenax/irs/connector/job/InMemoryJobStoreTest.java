@@ -1,9 +1,6 @@
 package net.catenax.irs.connector.job;
 
 import com.github.javafaker.Faker;
-import org.eclipse.dataspaceconnector.monitor.ConsoleMonitor;
-import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,8 +8,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class InMemoryJobStoreTest {
 
-    Monitor monitor = new ConsoleMonitor();
-    InMemoryJobStore sut = new InMemoryJobStore(monitor);
+    InMemoryJobStore sut = new InMemoryJobStore();
     Faker faker = new Faker();
     TestMother generate = new TestMother();
     MultiTransferJob job = generate.job(JobState.UNSAVED);

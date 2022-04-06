@@ -10,13 +10,7 @@
 package net.catenax.irs.connector.job;
 
 /**
- * Represents the state of a {@link MultiTransferJob}.
+ * Interface for Data Requests
  */
-public enum JobState {
-    UNSAVED,
-    INITIAL,
-    IN_PROGRESS,
-    TRANSFERS_FINISHED,
-    COMPLETED,
-    ERROR
+public interface DataRequest {
 }

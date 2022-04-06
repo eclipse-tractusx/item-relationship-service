@@ -9,35 +9,31 @@
 //
 package net.catenax.irs.connector.job;
 
-import lombok.Builder;
-import lombok.Value;
-import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
-import org.eclipse.dataspaceconnector.spi.transfer.TransferInitiateResponse;
-import org.eclipse.dataspaceconnector.spi.transfer.TransferProcessManager;
-import org.eclipse.dataspaceconnector.spi.transfer.TransferProcessObservable;
-import org.eclipse.dataspaceconnector.spi.transfer.response.ResponseStatus;
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
+import static java.util.UUID.randomUUID;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.UUID.randomUUID;
+import lombok.Builder;
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Orchestrator service for recursive {@link MultiTransferJob}s that potentially
  * comprise multiple transfers.
  */
-@SuppressWarnings({
-    "PMD.GuardLogStatement", // Monitor doesn't offer guard statements
-    "PMD.AvoidCatchingGenericException"}) // Handle RuntimeException from callbacks
-public class JobOrchestrator {
+@SuppressWarnings({ "PMD.GuardLogStatement",
+                    // Monitor doesn't offer guard statements
+                    "PMD.AvoidCatchingGenericException"
+}) // Handle RuntimeException from callbacks
+@Slf4j
+public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     /**
      * Transfer process manager.
      */
-    private final TransferProcessManager processManager;
+    private final TransferProcessManager<T, P> processManager;
 
     /**
      * Job store.
@@ -48,34 +44,20 @@ public class JobOrchestrator {
      * Job handler containing the logic to start transfers and process
      * transfer results.
      */
-    private final RecursiveJobHandler handler;
-
-    /**
-     * Logger.
-     */
-    private final Monitor monitor;
+    private final RecursiveJobHandler<T, P> handler;
 
     /**
      * Create a new instance of {@link JobOrchestrator}.
      *
-     * @param processManager            Process manager.
-     * @param jobStore                  Job store.
-     * @param handler                   Recursive job handler.
-     * @param transferProcessObservable Transfer process observable.
-     * @param monitor                   Logger.
+     * @param processManager the process manager
+     * @param jobStore       Job store.
+     * @param handler        Recursive job handler.
      */
-    public JobOrchestrator(
-            final TransferProcessManager processManager,
-            final JobStore jobStore,
-            final RecursiveJobHandler handler,
-            final TransferProcessObservable transferProcessObservable,
-            final Monitor monitor) {
+    public JobOrchestrator(final TransferProcessManager<T, P> processManager, final JobStore jobStore,
+            final RecursiveJobHandler<T, P> handler) {
         this.processManager = processManager;
         this.jobStore = jobStore;
         this.handler = handler;
-        this.monitor = monitor;
-
-        transferProcessObservable.registerListener(new JobTransferCallback(this));
     }
 
     /**
@@ -86,14 +68,14 @@ public class JobOrchestrator {
      */
     public JobInitiateResponse startJob(final Map<String, String> jobData) {
         final var job = MultiTransferJob.builder()
-                .jobId(randomUUID().toString())
-                .jobData(jobData)
-                .state(JobState.UNSAVED)
-                .build();
+                                        .jobId(randomUUID().toString())
+                                        .jobData(jobData)
+                                        .state(JobState.UNSAVED)
+                                        .build();
 
         jobStore.create(job);
 
-        final Stream<DataRequest> requests;
+        final Stream<T> requests;
         try {
             requests = handler.initiate(job);
         } catch (RuntimeException e) {
@@ -121,20 +103,20 @@ public class JobOrchestrator {
      *
      * @param process
      */
-    /* package */ void transferProcessCompleted(final TransferProcess process) {
+    /* package */ void transferProcessCompleted(final P process) {
         final var jobEntry = jobStore.findByProcessId(process.getId());
         if (!jobEntry.isPresent()) {
-            monitor.severe("Job not found for transfer " + process.getId());
+            log.error("Job not found for transfer " + process.getId());
             return;
         }
         final var job = jobEntry.get();
 
         if (job.getState() != JobState.IN_PROGRESS) {
-            monitor.info("Ignoring transfer complete event for job " + job.getJobId() + " in state " + job.getState());
+            log.info("Ignoring transfer complete event for job " + job.getJobId() + " in state " + job.getState());
             return;
         }
 
-        final Stream<DataRequest> requests;
+        final Stream<T> requests;
         try {
             requests = handler.recurse(job, process);
         } catch (RuntimeException e) {
@@ -174,24 +156,23 @@ public class JobOrchestrator {
     }
 
     private void markJobInError(final MultiTransferJob job, final Throwable exception, final String message) {
-        monitor.severe(message, exception);
+        log.error(message, exception);
         jobStore.markJobInError(job.getJobId(), message);
     }
 
-    private long startTransfers(final MultiTransferJob job, final Stream<DataRequest> dataRequests) /* throws JobException */ {
-        return dataRequests
-                .map(r -> startTransfer(job, r))
-                .collect(Collectors.counting());
+    private long startTransfers(final MultiTransferJob job, final Stream<T> dataRequests) /* throws JobException */ {
+        return dataRequests.map(r -> startTransfer(job, r)).collect(Collectors.counting());
     }
 
-    private TransferInitiateResponse startTransfer(final MultiTransferJob job, final DataRequest dataRequest)  /* throws JobException */ {
-        final var response = processManager.initiateConsumerRequest(dataRequest);
+    private TransferInitiateResponse startTransfer(final MultiTransferJob job,
+            final T dataRequest)  /* throws JobException */ {
+        final var response = processManager.initiateRequest(dataRequest, this::transferProcessCompleted);
 
         if (response.getStatus() != ResponseStatus.OK) {
             throw JobException.builder().status(response.getStatus()).build();
         }
 
-        jobStore.addTransferProcess(job.getJobId(), response.getId());
+        jobStore.addTransferProcess(job.getJobId(), response.getTransferId());
         return response;
     }
 

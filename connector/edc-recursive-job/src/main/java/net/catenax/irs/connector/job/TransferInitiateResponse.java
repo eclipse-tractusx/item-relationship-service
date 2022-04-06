@@ -9,14 +9,18 @@
 //
 package net.catenax.irs.connector.job;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
+
 /**
- * Represents the state of a {@link MultiTransferJob}.
+ * Response for initiated transfers
  */
-public enum JobState {
-    UNSAVED,
-    INITIAL,
-    IN_PROGRESS,
-    TRANSFERS_FINISHED,
-    COMPLETED,
-    ERROR
+@Value
+@Builder
+@AllArgsConstructor
+public class TransferInitiateResponse {
+
+    private final String transferId;
+    private final ResponseStatus status;
 }
