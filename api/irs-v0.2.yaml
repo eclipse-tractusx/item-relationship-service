@@ -32,8 +32,12 @@ paths:
             type: string
             description: View defining which data of the PartsTree is retrieved.
             enum:
-               - asBuild
-               - asMainten
+              - asBuild
+              - asMaintained
+              - asPlanned
+              - asDesigned
+              - asOrdered
+              - asRecycled
         - description: AspectType information to add to the returned tree
           example: SerialPartTypization
           in: query
@@ -72,7 +76,7 @@ paths:
             minimum: 1
             maximum: 100
             default: 1
-        - description: "Direction in which the tree shall be traversed"
+        - description: Direction in which the tree shall be traversed
           in: query
           name: direction
           required: false
@@ -125,13 +129,17 @@ paths:
           description: livecycle tree representation with the starting point of the given jobId
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/Jobs'
               examples:
                 complete:
                   $ref: '#/components/examples/complete-job-result'
         "201":
-          description: job details for given jobId
+          description: job details for given jobId - job is in running state
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/Jobs'
               examples:
                 complete:
                   $ref: '#/components/examples/job-result-without-uncompleted-result-tree'
@@ -139,6 +147,8 @@ paths:
           description: uncompleted livecycle tree representation with the starting point of the given jobId
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/Jobs'
               examples:
                 complete:
                   $ref: '#/components/examples/partial-job-result'
@@ -146,6 +156,8 @@ paths:
           description: processing of job was canceled
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/Jobs'
               examples:
                 complete:
                   $ref: '#/components/examples/canceled-job-result'
@@ -153,6 +165,8 @@ paths:
           description: Processing of job failed
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/Jobs'
               example:
                 complete:
                   $ref: '#/components/examples/failed-job-result'

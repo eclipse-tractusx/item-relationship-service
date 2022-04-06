@@ -46,7 +46,7 @@ public abstract class IrsPartsTreeRequestBase {
 
     @ValueOfEnum(enumClass = AspectType.class, message = ApiErrorsConstants.ITEM_VIEW_MUST_MATCH_ENUM)
     @Parameter(description = "AspectType information to add to the returned tree", in = QUERY,
-            example = "SerialPartTypization", explode = Explode.FALSE, schema = @Schema(implementation = AspectType.class))
+            example = "SerialPartTypization", explode = Explode.FALSE, schema = @Schema(implementation = AspectType.class, defaultValue = "SerialPartTypization"))
     protected final List<String> aspects;
 
     @Min(value = MIN_TREE_DEPTH, message = ApiErrorsConstants.ITEM_MIN_DEPTH)

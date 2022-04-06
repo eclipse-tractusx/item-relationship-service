@@ -16,6 +16,30 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(description = "Direction in which the tree shall be traversed")
 public enum Direction {
-    @Schema(description = "The tree is traversed in upward direction.") UPWARD,
-    @Schema(description = "The tree is traversed in downward direction.")  DOWNWARD;
+    @Schema(description = "The tree is traversed in upward direction.") UPWARD("upward"),
+    @Schema(description = "The tree is traversed in downward direction.")  DOWNWARD("downward");
+
+    private final String value;
+
+    Direction(final String value) {
+        this.value = value;
+    }
+
+    /**
+     * of as a substitute/alias for valueOf handling the default value
+     *
+     * @param value see {@link #value}
+     * @return the corresponding Direction
+     */
+    public static Direction value(final String value) {
+        return Direction.valueOf(value);
+    }
+
+    /**
+     * @return convert Direction to string value
+     */
+    @Override
+    public String toString() {
+        return value;
+    }
 }

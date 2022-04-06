@@ -60,21 +60,33 @@ public class IrsController {
 
     private final IrsPartsTreeQueryService itemJobService;
 
-    @Operation(operationId = "getBomLifecycleByGlobalAssetId", summary = "Get a BOM tree for a given item",
+    @Operation(operationId = "getBomLifecycleByGlobalAssetId", summary = "Registers and starts a AAS crawler job for given {globalAssetId}",
             tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
-            description = "job id response for successful job registration",
+            description = "ivecycle tree representation with the starting point of the given jobId",
             content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = JobHandle.class))
             }),
-                            @ApiResponse(responseCode = "404",
-                                    description = "A vehicle was not found with the given VIN",
-                                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = ErrorResponse.class))
-                                    }),
-                            @ApiResponse(responseCode = "400", description = "Bad request",
-                                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = ErrorResponse.class))
-                                    }),
+          @ApiResponse(responseCode = "201",
+                description = "job details for given jobId - job is in running state",
+                content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                      schema = @Schema(implementation = Jobs.class))
+                }),
+          @ApiResponse(responseCode = "206",
+                description = "uncompleted livecycle tree representation with the starting point of the given jobId",
+                content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                      schema = @Schema(implementation = Jobs.class))
+                }),
+          @ApiResponse(responseCode = "404",
+                description = "processing of job was canceled",
+                content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                      schema = @Schema(implementation = ErrorResponse.class))
+          }),
+          @ApiResponse(responseCode = "417",
+                description = "Processing of job failed",
+                content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                      schema = @Schema(implementation = ErrorResponse.class))
+                }),
+
     })
     @PostMapping("/items/{globalAssetId}")
     public JobHandle getBomLifecycleByGlobalAssetId(final @Valid @ParameterObject IrsPartsTreeRequest request) {
