@@ -27,7 +27,7 @@ import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
  * Assembles multiple partial parts trees into one overall parts tree.
  */
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.GuardLogStatement") // Monitor doesn't offer guard statements
+@SuppressWarnings({ "PMD.UseShortArrayInitializer" })
 public class JobsTreesAssembler {
 
     /**
@@ -49,7 +49,7 @@ public class JobsTreesAssembler {
 
         partialJobs.forEachOrdered(partialJob -> {
             job[0] = partialJob.getJob();
-            // TODO provide solution for a list of relationships
+            // TODO (mschlach): provide solution for a list of relationships
             relationships[0] = partialJob.getRelationships().get(0);
             shells[0] = Optional.of(partialJob.getShells().get());
             numberOfPartialJobs.incrementAndGet();
@@ -57,7 +57,7 @@ public class JobsTreesAssembler {
 
         monitor.info(format("Assembled parts tree from %s partial trees", numberOfPartialJobs));
 
-        var result = new Jobs(null, null, null);
+        final var result = new Jobs(null, null, null);
         result.toBuilder().job(job[0]);
         result.toBuilder().relationship(relationships[0]);
         result.toBuilder().shells(shells[0]);
