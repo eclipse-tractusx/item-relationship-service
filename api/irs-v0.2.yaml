@@ -1,43 +1,47 @@
 openapi: '3.0.2'
 info:
+  description: API to retrieve parts tree information. See <a href="https://confluence.catena-x.net/display/CXM/PRS+Environments+and+Test+Data">this
+    page</a> for more information on test data available in this environment.
   title: IRS API
   version: '0.2'
 servers:
-  - url: https://api.server.test/api/v0.2
+  - url: https://localhost/api/v0.2
 paths:
   /irs/items/{globalAssetId}:
     post:
       operationId: getBomLifecycleByGlobalAssetId
       description: Registers and starts a AAS crawler job for given {globalAssetId}
       parameters:
-        - description: Readable ID of manufacturer including plant
+        - description: Readable ID of manufacturer including plant.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           in: path
           name: globalAssetId
           required: true
           schema:
             type: string
-            maxLength: 16
-            minLength: 1
-            pattern: urn:uuid:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
-            example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
+            maxLength: 45
+            minLength: 45
+            pattern: "urn:uuid:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         - description: "Unique identifier of a single, unique (sub)component/part/batch,\
-          \ given by its globalAssetId/ digital twin id"
+          \  given by its globalAssetId/ digital twin id."
+          example: asBuilt
           in: query
           name: bomLifecycle
           required: true
           schema:
             type: string
+            description: View defining which data of the PartsTree is retrieved.
             enum:
-              - asBuilt # Release 1 relevant --> AssemblyPartRelationship
-              #- asMaintained # Release X
-              #- asPlanned # Release X
-              #- asDesigned # Release X
-              #- asOrdered # Release X
-              #- asRecycled # Release X
-        - description: Aspect information to add to the returned tree
+              - asBuild
+              - asMaintained
+              - asPlanned
+              - asDesigned
+              - asOrdered
+              - asRecycled
+        - description: AspectType information to add to the returned tree
           example: SerialPartTypization
           in: query
-          name: aspect
+          name: aspects
           required: false
           explode: false
           schema:
@@ -54,12 +58,12 @@ paths:
                 - MarketPlaceOffer
                 - MaterialAspect
                 - BatteryPass
-                - ProducDescription.Vehicle
-                - ProducDescription.Battery
+                - ProductDescriptionVehicle
+                - ProductDescriptionBattery
                 - ReturnRequest
                 - CertificateOfDestruction
                 - CertificateOfDismantler
-                - Adress
+                - Address
                 - Contact
               default: SerialPartTypization
         - description: "Max depth of the returned tree, if empty max depth is returned"
@@ -69,10 +73,10 @@ paths:
           schema:
             type: integer
             format: int32
-            minimum: 0
+            minimum: 1
             maximum: 100
             default: 1
-        - description: "Direction in which the tree shall be traversed"
+        - description: Direction in which the tree shall be traversed
           in: query
           name: direction
           required: false
@@ -90,8 +94,7 @@ paths:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/job-id-response'
-
+                  $ref: '#/components/examples/job-handle'
         "400":
           description: Bad request
           content:
@@ -100,23 +103,19 @@ paths:
                 complete:
                   $ref: '#/components/schemas/ErrorResponse'
 
-      summary: Get a BOM for a part
+      summary: Get a BOM tree for a given item
       tags:
         - Item Relationship Service
   /irs/jobs/{jobId}:
     get:
       operationId: getBOMForJobId
       parameters:
-        - description: "Id of the job in registry. "
+        - description: "Id of the job in processing."
           in: path
           name: jobId
           required: true
           schema:
-            type: string
-            maxLength: 16
-            minLength: 1
-            format: uuid
-            example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
+            $ref: '#/components/schemas/UUID'
         - description: "If true, the endpoint returns the uncompleted results of the bom tree."
           in: query
           name: returnUncompletedResultTree
@@ -130,13 +129,17 @@ paths:
           description: livecycle tree representation with the starting point of the given jobId
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/Jobs'
               examples:
                 complete:
                   $ref: '#/components/examples/complete-job-result'
         "201":
-          description: job details for given jobId
+          description: job details for given jobId - job is in running state
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/Jobs'
               examples:
                 complete:
                   $ref: '#/components/examples/job-result-without-uncompleted-result-tree'
@@ -144,6 +147,8 @@ paths:
           description: uncompleted livecycle tree representation with the starting point of the given jobId
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/Jobs'
               examples:
                 complete:
                   $ref: '#/components/examples/partial-job-result'
@@ -151,6 +156,8 @@ paths:
           description: processing of job was canceled
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/Jobs'
               examples:
                 complete:
                   $ref: '#/components/examples/canceled-job-result'
@@ -158,9 +165,12 @@ paths:
           description: Processing of job failed
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/Jobs'
               example:
                 complete:
                   $ref: '#/components/examples/failed-job-result'
+      summary: Get a BOM partial or complete for a given jobId.
       tags:
         - Item Relationship Service
   /irs/jobs/{processingState}:
@@ -207,11 +217,7 @@ paths:
           name: jobId
           required: true
           schema:
-            type: string
-            maxLength: 16
-            minLength: 1
-            format: uuid
-            example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
+            $ref: '#/components/schemas/UUID'
       responses:
         '200':
           description: Job with {jobId} was canceled
@@ -221,16 +227,302 @@ paths:
           description: Authorization information is missing or invalid.
         '404':
           description: A job with the specified jobId was not found.
-        '5XX':
+        '500':
           description: Unexpected error.
+      summary: Cancel job execution for a given jobId.
       tags:
         - Item Relationship Service
 components:
   schemas:
-    BoMLifecycle:
+    Jobs:
       type: object
-      description: result object of tree representation
-      # properties: to be defined
+      description: Container for a job its relationship and shells.
+      properties:
+        job:
+          $ref: '#/components/schemas/Job'
+        relationships:
+          type: array
+          description: Collection of relationships mapping the parent child relationship of AssemblyPartRelationShip aspects
+          items:
+            $ref: '#/components/schemas/Relationship'
+        shells:
+          type: array
+          description: Collections of AAS shells
+          items:
+            $ref: '#/components/schemas/Shell'
+    Job:
+      type: object
+      description: Link between two parts.
+      properties:
+        jobID:
+          type: string
+          items:
+            $ref: '#/components/schemas/UUID'
+        globalAssetId:
+          type: string
+          items:
+            $ref: '#/components/schemas/CatenaXId'
+        jobStatus:
+          type: string
+          description: Error code
+          enum:
+            - running
+            - failed
+            - complete
+            - canceled
+        createdOn:
+          type: string
+          format: date-time
+        lastModifiedOn:
+          type: string
+          format: date-time
+        jobFinished:
+          type: string
+          format: date-time
+        requestURL:
+          type: string
+          format: url
+        action:
+          type: string
+          description: HTTP verbs used by request
+          enum:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - PATCH
+        owner:
+          type: string
+          description: The requestor of the request
+        summary:
+          type: object
+          description: List of asyncFetchedItems
+          items:
+            $ref: '#/components/schemas/AsyncFetchedItems'
+        queryParameter:
+          type: object
+          description: Query parameters of current request
+          properties:
+            bomLifecycle:
+              type: object
+              items:
+                $ref: '#/components/schemas/BomLifecycle'
+            aspects:
+              type: array
+              items:
+                $ref: '#/components/schemas/Aspect'
+            depth:
+              type: integer
+              description: Max depth of the returned tree, if empty max depth is returned
+              minimum: 0
+              maximum: 100
+              default: 1
+            direction:
+              type: string
+              description: Direction in which the tree shall be traversed
+              default: downward
+              enum:
+                - upward
+                - downward
+        exception:
+          type: object
+          description: Exception state for this job
+          properties:
+            exception:
+              type: string
+              minimum: 0
+              maximum: 100
+            errorDetail:
+              type: string
+              minimum: 0
+              maximum: 4000
+            exceptionDate:
+              type: string
+              format: date-time
+    BomLifecycle:
+      type: string
+      description: The bill of material lifecycle for an asset
+      enum:
+        - asBuilt # BoM AsBuilt describes a product as manufactured.
+        - asMaintained # BoM AsMaintained describes the BoM after purchase by a customer and updates through maintenace.
+        - asPlanned # BoM asPlanned is used to plan the manufacturing process including alternative parts.
+        - asDesigned # BoM asDesigned is generated in the design phase of a new product including alternative parts.
+        - asOrdered # BoM AsOrdered is used for manufacturing realization.
+        - asRecycled # BoM AsRecycled describes the BoM after the recycling of the product.
+      default: asBuilt
+    Description:
+      type: object
+      properties:
+        language:
+          type: string
+          minimum: 0
+          maximum: 3
+        text:
+          type: string
+          minimum: 0
+          maximum: 4000
+    Aspect:
+      type: string
+      description: Aspect models containing information of OEMs
+      enum:
+        - SerialPartTypization
+        - AssemblyPartRelationship
+        - PartDimension
+        - SupplyRelationData
+        - PCFCoreData
+        - PCFTechnicalData
+        - MarketPlaceOffer
+        - MaterialAspect
+        - BatteryPass
+        - ProducDescription.Vehicle
+        - ProducDescription.Battery
+        - ReturnRequest
+        - CertificateOfDestruction
+        - CertificateOfDismantler
+        - Address
+        - Contact
+    AsyncFetchedItems:
+      type: object
+      properties:
+        queued:
+          type: integer
+          description: Number of 'queued' submodel requests
+        running:
+          type: integer
+          description: Number of 'running' submodel requests
+        complete:
+          type: integer
+          description: Number of 'completed' submodel requests
+        failed:
+          type: integer
+          description: Number of 'failed' submodel requests
+        lost:
+          type: integer
+          description: Number of 'lost' submodel requests
+    Relationship:
+      type: object
+      description: Relationship of a parent child relationship between items on different levels as defined in aspect AssemblyPartRelationship.
+      properties:
+        catenaXId:
+          $ref: '#/components/schemas/CatenaXId'
+        childItem:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChildItem'
+    Shell:
+      type: object
+      description: An AAS shell
+      properties:
+        description:
+          type: array
+          items:
+            $ref: '#/components/schemas/Description'
+        globalAssetId:
+          type: object
+          properties:
+            value:
+              type: array
+              items:
+                $ref: '#/components/schemas/CatenaXId'
+        idShort:
+          type: string
+        identification:
+          type: string
+        specificAssetIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpecificAssetId'
+        submodelDescriptors:
+          type: object
+          properties:
+            description:
+              type: array
+              items:
+                $ref: '#/components/schemas/Description'
+            idShort:
+              type: string
+            identification:
+              type: string
+            specificAssetIds:
+              type: array
+              items:
+                $ref: '#/components/schemas/SpecificAssetId'
+            endpoints:
+              type: array
+              items:
+                $ref: '#/components/schemas/Endpoint'
+    Endpoint:
+      type: object
+      properties:
+        interface:
+          type: string
+          default: HTTP
+        protocolInformation:
+          type: object
+          properties:
+            endpointAddress:
+              type: string
+              format: url
+            endpointProtocol:
+              type: string
+            endpointProtocolVersion:
+              type: string
+    SpecificAssetId:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ChildItem:
+      type: object
+      properties:
+        quantity:
+          type: object
+          items:
+            $ref: '#/components/schemas/Quantity'
+        lifecycleContext:
+          type: object
+          items:
+            $ref: '#/components/schemas/BomLifecycle'
+        assembledOn:
+          type: string
+          format: date-time
+        lastModifiedOn:
+          type: string
+          format: date-time
+        childCatenaXId:
+          type: string
+          items:
+            $ref: '#/components/schemas/CatenaXId'
+    Quantity:
+      type: object
+      properties:
+        quantityNumber:
+          type: object
+          items:
+            $ref: '#/components/schemas/MeasurementUnit'
+    MeasurementUnit:
+      type: object
+      properties:
+        datatypeURI:
+          type: string
+          format: urn
+        lexicalValue:
+          type: string
+    CatenaXId:
+      type: string
+      maxLength: 25
+      minLength: 25
+      format: urn
+      pattern: urn:uuid:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+      example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
+    UUID:
+      type: string
+      maxLength: 36
+      minLength: 36
+      format: uuid
+      example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
     ErrorResponse:
       type: object
       description: Error response
@@ -317,7 +609,7 @@ components:
             - 510 NOT_EXTENDED
             - 511 NETWORK_AUTHENTICATION_REQUIRED
   examples:
-    job-id-response:
+    job-handle:
       value:
         {"jobId": "6c311d29-5753-46d4-b32c-19b918ea93b0"}
     complete-job-list-processing-state:
@@ -348,7 +640,7 @@ components:
               } },
             "queryParameter": {
               "bomLifecycle": "asBuilt",
-              "aspect": "SerialPartTypization",
+              "aspects" : ["SerialPartTypization", "Contact"],
               "depth": 4,
               "direction": "downward"
             },
@@ -359,40 +651,6 @@ components:
             }
           }
         }
-    partial-job-result-return-uncompleted-result-tree:
-        value:
-          {
-            "job": {
-              "jobId": "e5347c88-a921-11ec-b909-0242ac120002",
-              "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
-              "jobStatus": "InProgress",
-              "createdOn": "2022-02-03T14:48:54.709Z",
-              "startedOn": "2022-02-03T14:48:54.709Z",
-              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "jobCompleted": "2022-02-03T14:48:54.709Z",
-              "requestURL": "https://api.server.test/api/../",
-              "owner": "",
-              "summary": {
-                "asyncFetchedItems": {
-                  "queued": 0,
-                  "running": 0,
-                  "complete": 0,
-                  "failed": 0,
-                  "lost": 0
-                } },
-              "queryParameter": {
-                "bomLifecycle": "asBuilt",
-                "aspect": "SerialPartTypization",
-                "depth": 4,
-                "direction": "downward"
-              },
-              "exception": {
-                "exception": "IrsTimeoutException",
-                "errorDetail": "Timeout while requesting Digital Registry.",
-                "exceptionDate": "2022-02-03T14:48:54.709Z"
-              }
-            }
-          }
     partial-job-result:
       value:
         {
@@ -416,7 +674,7 @@ components:
               } },
             "queryParameter": {
               "bomLifecycle": "asBuilt",
-              "aspect": "SerialPartTypization",
+              "aspects": "SerialPartTypization",
               "depth": 4,
               "direction": "downward"
             },
@@ -450,7 +708,7 @@ components:
               } },
             "queryParameter": {
               "bomLifecycle": "asBuilt",
-              "aspect": "SerialPartTypization",
+              "aspects" : ["SerialPartTypization", "Contact"],
               "depth": 4,
               "direction": "downward"
             },
@@ -462,7 +720,7 @@ components:
           },
           "relationships": [
             {
-              "catenaXId": "d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
+              "catenaXId": "urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
               "childItem": {
                 "quantity": {
                   "quantityNumber": 1,
@@ -577,7 +835,7 @@ components:
               } },
             "queryParameter": {
               "bomLifecycle": "asBuilt",
-              "aspect": "SerialPartTypization",
+              "aspects" : ["SerialPartTypization", "Contact"],
               "depth": 4,
               "direction": "downward"
             },
@@ -611,7 +869,7 @@ components:
               } },
             "queryParameter": {
               "bomLifecycle": "asBuilt",
-              "aspect": "SerialPartTypization",
+              "aspects" : ["SerialPartTypization", "Contact"],
               "depth": 4,
               "direction": "downward"
             },
@@ -715,3 +973,4 @@ components:
             }
           ]
         }
+
