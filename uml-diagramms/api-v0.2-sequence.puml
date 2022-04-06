@@ -1,5 +1,9 @@
 @startuml
-title IRS API sequence diagramm v0.2
+
+skinparam shadowing false
+
+title "IRS API sequence diagramm v0.2  -- DEPRECATED"
+
 
 actor CE as "CE Dashboard"
 
