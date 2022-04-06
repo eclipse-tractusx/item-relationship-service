@@ -1,12 +1,18 @@
+//
+// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
+//
+// See the AUTHORS file(s) distributed with this work for additional
+// information regarding authorship.
+//
+// See the LICENSE file(s) distributed with this work for
+// additional information regarding license terms.
+//
 package net.catenax.irs.services;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import net.catenax.irs.aaswrapper.submodel.domain.AssemblyPartRelationship;
 import net.catenax.irs.aaswrapper.submodel.domain.ClientBuilder;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelClient;
-
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,21 +20,25 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class SubmodelService {
 
-   public AssemblyPartRelationship retrieveSubmodel(final String uri) {
-      AssemblyPartRelationship assemblyPartRelationship = null;
+    private final ClientBuilder clientBuilder;
 
-      try {
-         final SubmodelClient client = ClientBuilder.createClient(SubmodelClient.class, uri);
-         if (client != null) {
+    public SubmodelService(final ClientBuilder clientBuilder) {
+        this.clientBuilder = clientBuilder;
+    }
+
+    public AssemblyPartRelationship retrieveSubmodel(final String uri) {
+        AssemblyPartRelationship assemblyPartRelationship = null;
+
+        final SubmodelClient client = this.clientBuilder.createClient(SubmodelClient.class, uri);
+
+        if (client != null) {
+            // To do
             assemblyPartRelationship = client.getSubmodel("", "", "");
             log.debug("assemblyPartRelationship {}", assemblyPartRelationship.toString());
-         }
-      } catch (Exception e) {
-         log.error("Unable to retrieve AssemblyPartRelationship message {}", e.getMessage());
-      }
-      return assemblyPartRelationship;
-   }
+        }
+
+        return assemblyPartRelationship;
+    }
 }
