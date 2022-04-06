@@ -7,7 +7,7 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper;
+package net.catenax.irs.aaswrapper.registry.domain;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.aspectmodels.AspectModel;
+import net.catenax.irs.aaswrapper.TestData;
 import net.catenax.irs.aspectmodels.assemblypartrelationship.AssemblyPartRelationship;
 
 /**
@@ -51,26 +51,26 @@ public class TestdataCreator {
         return new ArrayList<>();
     }
 
-//    public AssemblyPartRelationship getDummyAssemblyPartRelationshipFromAASDescriptor(final List<TestData> testData,
-//            final AssetAdministrationShellDescriptor aasDescriptor) {
-//        final String catenaXId = aasDescriptor.getIdentification();
-//        return createDummyAssemblyPartRelationshipForId(testData, catenaXId);
-//    }
-//
-//    public AssemblyPartRelationship createDummyAssemblyPartRelationshipForId(final List<TestData> testData,
-//            final String catenaXId) {
-//
-//        final List<TestData> collect = testData.stream()
-//                                               .filter(testData1 -> testData1.getCatenaXId().equals(catenaXId))
-//                                               .collect(Collectors.toList());
-//        final Optional<TestData> returnValue = collect.stream().findFirst();
-//        if (returnValue.isPresent()) {
-//            return returnValue.get().getAssemblyPartRelationship();
-//        } else {
-//            return new AssemblyPartRelationship(catenaXId, Set.of());
-//        }
-//    }
-//
+    public AssemblyPartRelationship getDummyAssemblyPartRelationshipFromAASDescriptor(final List<TestData> testData,
+            final AssetAdministrationShellDescriptor aasDescriptor) {
+        final String catenaXId = aasDescriptor.getIdentification();
+        return createDummyAssemblyPartRelationshipForId(testData, catenaXId);
+    }
+
+    public AssemblyPartRelationship createDummyAssemblyPartRelationshipForId(final List<TestData> testData,
+            final String catenaXId) {
+
+        final List<TestData> collect = testData.stream()
+                                               .filter(testData1 -> testData1.getCatenaXId().equals(catenaXId))
+                                               .collect(Collectors.toList());
+        final Optional<TestData> returnValue = collect.stream().findFirst();
+        if (returnValue.isPresent()) {
+            return returnValue.get().getAssemblyPartRelationship();
+        } else {
+            return new AssemblyPartRelationship(catenaXId, Set.of());
+        }
+    }
+
 //    public AssetAdministrationShellDescriptor createAASShellDescriptorForIdFromTestData(final String catenaXId,
 //            final List<TestData> testData) {
 //        final AssemblyPartRelationship assemblyPartRelationship = createDummyAssemblyPartRelationshipForId(testData,

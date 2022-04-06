@@ -2,33 +2,26 @@ package net.catenax.irs.aaswrapper.registry.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import net.catenax.irs.aaswrapper.AASWrapperClient;
-import net.catenax.irs.aaswrapper.AASWrapperClientLocalStub;
-import net.catenax.irs.aspectmodels.AspectModel;
-import net.catenax.irs.aspectmodels.AspectModelTypes;
-import net.catenax.irs.aspectmodels.assemblypartrelationship.AssemblyPartRelationship;
-import net.catenax.irs.aspectmodels.serialparttypization.SerialPartTypization;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class DigitalTwinRegistryClientLocalTests {
 
-//    private AASWrapperClient aasWrapperClientLocalStub;
-//
-//    @BeforeEach
-//    void setUp() {
-//        aasWrapperClientLocalStub = new AASWrapperClientLocalStub(new DigitalTwinRegistryClientLocalStub(),
-//                new SubmodelClientLocalStub());
-//    }
-//
-//    @Test
-//    void testStubResponseForAssetAdministrationShellDescriptor() {
-//        var input = aasWrapperClientLocalStub.getAssetAdministrationShellDescriptor("assetIdentifier");
-//
-//        assertThat(input.getIdentification()).isEqualTo("assetIdentifier");
-//        assertThat(input.getIdShort()).isEqualTo("testdata");
-//    }
-//
+    private DigitalTwinRegistryFacade digitalTwinRegistryFacade;
+
+    @BeforeEach
+    void setUp() {
+       digitalTwinRegistryFacade = new DigitalTwinRegistryFacade(new DigitalTwinRegistryClientLocalStub());
+    }
+
+    @Test
+    void testStubResponseForAssetAdministrationShellDescriptor() {
+        var input = digitalTwinRegistryFacade.getAASSubmodelEndpointAddresses("assetIdentifier");
+
+        assertThat(input).isNotNull();
+//        assertThat(input.size()).isEqualTo(1);
+    }
+
 //    @Test
 //    void testStubResponseForAssemblyPartRelationship() {
 //        String catenaXId = "testCatenaXId";
