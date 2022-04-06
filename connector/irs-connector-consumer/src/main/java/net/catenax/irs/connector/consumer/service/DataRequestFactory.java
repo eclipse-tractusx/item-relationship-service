@@ -9,6 +9,14 @@
 //
 package net.catenax.irs.connector.consumer.service;
 
+import static java.lang.String.format;
+
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +34,6 @@ import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.domain.metadata.DataEntry;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataAddress;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
-
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Stream;
-
-import static java.lang.String.format;
 
 /**
  * Generates EDC {@link DataRequest}s populated for calling Providers to invoke the IRS API
@@ -75,20 +77,16 @@ public class DataRequestFactory {
      * to other providers are issued in subsequent recursive retrievals.
      *
      * @param requestContext current IRS request data.
-     * @param childItem        the child items for which to retrieve partial jobs trees.
+     * @param childItem      the child items for which to retrieve partial jobs trees.
      * @return a {@link DataRequest} for each item {@code partIds} for which the Provider URL
      * was resolves in the registry <b>and</b> is not identical to {@code previousUrlOrNull},
      * that allows retrieving the partial parts tree for the given part.
      */
-    /* package */ Stream<DataRequest> createRequests(
-            final RequestContext requestContext,
-            final ChildItem childItem) {
+    /* package */ Stream<DataRequest> createRequests(final RequestContext requestContext, final ChildItem childItem) {
         return createRequest(requestContext, childItem);
     }
 
-    private Stream<DataRequest> createRequest(
-            final RequestContext requestContext,
-            final ChildItem childItem) {
+    private Stream<DataRequest> createRequest(final RequestContext requestContext, final ChildItem childItem) {
 
         // Resolve Provider URL for part from registry
         final var registryResponse = registryClient.getUrl(childItem);
@@ -108,8 +106,10 @@ public class DataRequestFactory {
 
         int remainingDepth = requestContext.depth;
         if (requestContext.previousUrlOrNull != null) {
-            final var usedDepth = Dijkstra.shortestPathLength(requestContext.getRelationships(), requestContext.getRelationship(), requestContext.getRelationship())
-                    .orElseThrow(() -> new EdcException("Unconnected child items returned by IRS"));
+            final var usedDepth = Dijkstra.shortestPathLength(requestContext.getRelationships(),
+                                                  requestContext.getRelationship(), requestContext.getRelationship())
+                                          .orElseThrow(
+                                                  () -> new EdcException("Unconnected child items returned by IRS"));
             remainingDepth -= usedDepth;
             if (remainingDepth <= 0) {
                 monitor.debug(format("Not issuing a new request for %s, depth exhausted", childItem));
@@ -117,37 +117,42 @@ public class DataRequestFactory {
             }
         }
 
-        final var newIrsRequest = requestContext.requestTemplate.getByObjectIdRequest().toBuilder()
-                .childCatenaXId(childItem.getChildCatenaXId())
-                .depth(remainingDepth)
-                .build();
+        final var newIrsRequest = requestContext.requestTemplate.getByObjectIdRequest()
+                                                                .toBuilder()
+                                                                .childCatenaXId(childItem.getChildCatenaXId())
+                                                                .depth(remainingDepth)
+                                                                .build();
 
         final var irsRequestAsString = jsonUtil.asString(newIrsRequest);
 
-        monitor.info(format("Mapped data request to url: %s, previous depth: %d, new depth: %d",
-                providerUrlForPartId,
-                requestContext.depth,
-                remainingDepth));
+        monitor.info(format("Mapped data request to url: %s, previous depth: %d, new depth: %d", providerUrlForPartId,
+                requestContext.depth, remainingDepth));
 
         return Stream.of(DataRequest.Builder.newInstance()
-                .id(UUID.randomUUID().toString()) //this is not relevant, thus can be random
-                .connectorAddress(providerUrlForPartId) //the address of the provider connector
-                .protocol("ids-rest") //must be ids-rest
-                .connectorId("consumer")
-                .dataEntry(DataEntry.Builder.newInstance() //the data entry is the source asset
-                        .id(IrsConnectorConstants.IRS_REQUEST_ASSET_ID)
-                        .policyId(IrsConnectorConstants.IRS_REQUEST_POLICY_ID)
-                        .build())
-                .dataDestination(DataAddress.Builder.newInstance()
-                        .type(AzureBlobStoreSchema.TYPE) //the provider uses this to select the correct DataFlowController
-                        .property(AzureBlobStoreSchema.ACCOUNT_NAME, configuration.getStorageAccountName())
-                        .build())
-                .properties(Map.of(
-                        IrsConnectorConstants.DATA_REQUEST_IRS_REQUEST_PARAMETERS, irsRequestAsString,
-                        IrsConnectorConstants.DATA_REQUEST_IRS_DESTINATION_PATH, PARTIAL_PARTS_TREE_BLOB_NAME
-                ))
-                .managedResources(true)
-                .build());
+                                            .id(UUID.randomUUID().toString()) //this is not relevant, thus can be random
+                                            .connectorAddress(
+                                                    providerUrlForPartId) //the address of the provider connector
+                                            .protocol("ids-rest") //must be ids-rest
+                                            .connectorId("consumer")
+                                            .dataEntry(
+                                                    DataEntry.Builder.newInstance() //the data entry is the source asset
+                                                                     .id(IrsConnectorConstants.IRS_REQUEST_ASSET_ID)
+                                                                     .policyId(
+                                                                             IrsConnectorConstants.IRS_REQUEST_POLICY_ID)
+                                                                     .build())
+                                            .dataDestination(DataAddress.Builder.newInstance()
+                                                                                .type(AzureBlobStoreSchema.TYPE) //the provider uses this to select the correct DataFlowController
+                                                                                .property(
+                                                                                        AzureBlobStoreSchema.ACCOUNT_NAME,
+                                                                                        configuration.getStorageAccountName())
+                                                                                .build())
+                                            .properties(
+                                                    Map.of(IrsConnectorConstants.DATA_REQUEST_IRS_REQUEST_PARAMETERS,
+                                                            irsRequestAsString,
+                                                            IrsConnectorConstants.DATA_REQUEST_IRS_DESTINATION_PATH,
+                                                            PARTIAL_PARTS_TREE_BLOB_NAME))
+                                            .managedResources(true)
+                                            .build());
     }
 
     /**

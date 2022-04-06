@@ -9,6 +9,12 @@
 //
 package net.catenax.irs.connector.consumer.service;
 
+import static java.lang.String.format;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.component.Job;
@@ -16,13 +22,6 @@ import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.Shells;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
-
-import static java.lang.String.format;
 
 /**
  * Assembles multiple partial parts trees into one overall parts tree.
@@ -43,9 +42,9 @@ public class JobsTreesAssembler {
      * @return A parts tree containing all the items from {@code partialTrees}, with deduplication.
      */
     /* package */ Jobs retrieveJobsTrees(final Stream<Jobs> partialJobs) {
-        final Job[] job = {null};
-        final Relationship[] relationships = {new Relationship(null, null, null)};
-        final Optional<List<Shells>>[] shells = new Optional[]{Optional.empty()};
+        final Job[] job = { null };
+        final Relationship[] relationships = { new Relationship(null, null, null) };
+        final Optional<List<Shells>>[] shells = new Optional[] { Optional.empty() };
         final var numberOfPartialJobs = new AtomicInteger();
 
         partialJobs.forEachOrdered(partialJob -> {

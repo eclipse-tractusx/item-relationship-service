@@ -9,8 +9,14 @@
 //
 package net.catenax.irs.connector.consumer.service;
 
-
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import net.catenax.irs.component.ChildItem;
@@ -35,7 +41,8 @@ public final class Dijkstra {
      * @param target target part identifier.
      * @return distance, or {@link Optional#empty()} if no path is found.
      */
-    public static Optional<Integer> shortestPathLength(final Collection<Relationship> edges, final ChildItem source, final ChildItem target) {
+    public static Optional<Integer> shortestPathLength(final Collection<Relationship> edges, final ChildItem source,
+            final ChildItem target) {
         if (edges.isEmpty()) {
             return Optional.empty();
         }
@@ -44,8 +51,7 @@ public final class Dijkstra {
 
         shortestDistances.put(source, 0);
 
-        final PriorityQueue<ChildItem> unsettledNodes =
-                new PriorityQueue<>(edges.size(), shortestDistances);
+        final PriorityQueue<ChildItem> unsettledNodes = new PriorityQueue<>(edges.size(), shortestDistances);
         unsettledNodes.add(source);
 
         final Set<ChildItem> settledNodes = new HashSet<>();
@@ -84,13 +90,10 @@ public final class Dijkstra {
 
     }
 
-
     /**
      * {@link Comparator} for storing distances and retrieving shortest distances.
      */
-    private static final class ShortestDistances
-            extends HashMap<ChildItem, Integer>
-            implements Comparator<ChildItem> {
+    private static final class ShortestDistances extends HashMap<ChildItem, Integer> implements Comparator<ChildItem> {
 
         /**
          * {@inheritDoc}
