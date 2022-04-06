@@ -32,6 +32,8 @@ import net.catenax.irs.controllers.ApiErrorsConstants;
  * Base class for IrsPartsTreeRequest
  */
 @RequiredArgsConstructor
+@SuppressWarnings({ "PMD.AbstractClassWithoutAbstractMethod",
+                    "PMD.DataClass"})
 public abstract class IrsPartsTreeRequestBase {
 
     private static final long MIN_TREE_DEPTH = 1;

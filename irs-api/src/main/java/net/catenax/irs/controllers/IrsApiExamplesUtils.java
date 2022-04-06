@@ -12,6 +12,6 @@ package net.catenax.irs.controllers;
 /**
  * Example values for the IRS API.
  */
-public class IrsApiExamples {
+public class IrsApiExamplesUtils {
     public static final String GLOBAL_ASSET_ID_EXAMPLE = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0";
 }

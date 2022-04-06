@@ -24,7 +24,7 @@ import lombok.Builder;
 import lombok.Value;
 import net.catenax.irs.controllers.ApiErrorsConstants;
 import net.catenax.irs.controllers.IrsApiConstants;
-import net.catenax.irs.controllers.IrsApiExamples;
+import net.catenax.irs.controllers.IrsApiExamplesUtils;
 
 /**
  * IrsPartsTree request object
@@ -37,7 +37,7 @@ public class IrsPartsTreeRequest extends IrsPartsTreeRequestBase {
     @NotBlank
     @Size(min = IrsApiConstants.JOB_ID_SIZE, max = IrsApiConstants.JOB_ID_SIZE)
     @Parameter(description = "Readable ID of manufacturer including plant.", in = PATH,
-            required = true, example = IrsApiExamples.GLOBAL_ASSET_ID_EXAMPLE, schema = @Schema(implementation = String.class))
+            required = true, example = IrsApiExamplesUtils.GLOBAL_ASSET_ID_EXAMPLE, schema = @Schema(implementation = String.class))
     private String globalAssetId;
 
     /**

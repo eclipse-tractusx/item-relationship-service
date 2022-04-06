@@ -31,17 +31,17 @@ public class IrsPartRelationshipsWithInfos {
      * job
      */
     @Schema(description = "", implementation = Job.class)
-    Jobs job;
+    private Jobs job;
 
     /**
      * relationships
      */
-    List<Relationship> relationships;
+    private List<Relationship> relationships;
 
     /**
      * shells
      */
-    List<Shells> shells;
+    private List<Shells> shells;
 
     /**
      * Builder class

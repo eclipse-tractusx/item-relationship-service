@@ -30,5 +30,5 @@ public class Shells {
     /**
      * Shells
      */
-    Collection<Shell> shells;
+    private Collection<Shell> shells;
 }

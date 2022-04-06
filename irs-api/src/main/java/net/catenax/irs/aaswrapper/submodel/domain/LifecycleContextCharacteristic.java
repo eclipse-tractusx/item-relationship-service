@@ -19,9 +19,22 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @ExcludeFromCodeCoverageGeneratedReport
 enum LifecycleContextCharacteristic {
     ASREQUIRED("AsRequired"),
-    ASDESIGNED("AsDesigned"), //Build up the initial BoM in design phase of a new automotive product including alternative parts Expected to have reserach & development part descriptions instead of specific part numbers
-    ASPLANNED("AsPlanned"), // BoM as it is used to plan manufacturing including alternative parts Sourcing will most likely be based on this (besides key parts which start earlier)
-    ASBUILT("AsBuilt"), // BoM as a component is built or manufacturedDuring manufactoring of a vehicle the serial numbers & batch numbers are documented (German: Verbaudokumentation) This leads to one BOM per build car
+    /**
+     * Build up the initial BoM in design phase of a new automotive product including
+     * alternative partsExpected to have reserach & development part descriptions
+     * instead of specific part numbers */
+    ASDESIGNED("AsDesigned"),
+    /**
+     * BoM as it is used to plan manufacturing including alternative parts
+     * Sourcing will most likely be based on this (besides key parts
+     * which start earlier)
+     */
+    ASPLANNED("AsPlanned"),
+    /**
+     * BoM as a component is built or manufacturedDuring manufactoring of a
+     * vehicle the serial numbers & batch numbers are documented (German: Verbaudokumentation)
+     * This leads to one BOM per build car*/
+    ASBUILT("AsBuilt"),
     ASMAINTAINED("AsMaintained"), // BoM AsMaintained describes the BoM after purchase by a customer and updates through maintenace.
     ASRECYCLED("AsRecycled"); // BoM AsRecycled describes the BoM after the recycling of the product.
 

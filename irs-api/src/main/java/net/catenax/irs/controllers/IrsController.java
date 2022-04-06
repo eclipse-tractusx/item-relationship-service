@@ -53,9 +53,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(IrsApplication.API_PREFIX)
 @RequiredArgsConstructor
 @ExcludeFromCodeCoverageGeneratedReport
-@SuppressWarnings({ "checkstyle:MissingJavadocMethod",
-                    "PMD.CommentRequired"
-})
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals" })
 public class IrsController {
 
     private final IrsPartsTreeQueryService itemJobService;
@@ -66,25 +64,25 @@ public class IrsController {
             description = "ivecycle tree representation with the starting point of the given jobId",
             content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = JobHandle.class))
             }),
-          @ApiResponse(responseCode = "201",
+        @ApiResponse(responseCode = "201",
                 description = "job details for given jobId - job is in running state",
                 content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                      schema = @Schema(implementation = Jobs.class))
+                        schema = @Schema(implementation = Jobs.class))
                 }),
-          @ApiResponse(responseCode = "206",
+        @ApiResponse(responseCode = "206",
                 description = "uncompleted livecycle tree representation with the starting point of the given jobId",
                 content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                      schema = @Schema(implementation = Jobs.class))
+                        schema = @Schema(implementation = Jobs.class))
                 }),
-          @ApiResponse(responseCode = "404",
+        @ApiResponse(responseCode = "404",
                 description = "processing of job was canceled",
                 content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                      schema = @Schema(implementation = ErrorResponse.class))
-          }),
-          @ApiResponse(responseCode = "417",
+                        schema = @Schema(implementation = ErrorResponse.class))
+                }),
+        @ApiResponse(responseCode = "417",
                 description = "Processing of job failed",
                 content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                      schema = @Schema(implementation = ErrorResponse.class))
+                        schema = @Schema(implementation = ErrorResponse.class))
                 }),
 
     })

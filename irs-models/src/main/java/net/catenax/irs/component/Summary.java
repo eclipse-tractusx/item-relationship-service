@@ -28,7 +28,7 @@ public class Summary {
      */
     @Schema(description = "Summary of the fetched jobs",
             implementation = AsyncFetchedItems.AsyncFetchedItemsBuilder.class)
-    AsyncFetchedItems asyncFetchedItems;
+    private AsyncFetchedItems asyncFetchedItems;
 
     /**
      * Builder class
