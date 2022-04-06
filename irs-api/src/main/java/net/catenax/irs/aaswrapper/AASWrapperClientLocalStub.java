@@ -9,11 +9,15 @@
 //
 package net.catenax.irs.aaswrapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryClient;
-import net.catenax.irs.aaswrapper.registry.domain.model.AssetAdministrationShellDescriptor;
-import net.catenax.irs.aaswrapper.submodel.domain.SubmodelClient;
+import net.catenax.irs.aaswrapper.dto.SubmodelEndpoint;
+import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
+import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.aspectmodels.AspectModel;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -24,19 +28,23 @@ import org.springframework.stereotype.Service;
 @Profile("local")
 @Service
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AASWrapperClientLocalStub implements AASWrapperClient {
 
-    private final DigitalTwinRegistryClient digitalTwinRegistryClient;
-    private final SubmodelClient submodelClient;
+    private final DigitalTwinRegistryFacade digitalTwinRegistryFacade;
+    private final SubmodelFacade submodelFacade;
 
-    @Override
-    public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
-        return digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aasIdentifier);
+    public List<SubmodelEndpoint> getAASSubmodelEndpointAddresses(final String aasIdentifier) {
+        return digitalTwinRegistryFacade.getAASSubmodelEndpointAddresses(aasIdentifier);
     }
 
-    @Override
-    public AspectModel getSubmodel(final String endpointPath, final Class<? extends AspectModel> aspectModelClass) {
-        return submodelClient.getSubmodel(endpointPath, aspectModelClass);
-    }
+//    @Override
+//    public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
+//        return digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aasIdentifier);
+//    }
+//
+//    @Override
+//    public AspectModel getSubmodel(final String endpointPath, final Class<? extends AspectModel> aspectModelClass) {
+//        return submodelClient.getSubmodel(endpointPath, aspectModelClass);
+//    }
 }

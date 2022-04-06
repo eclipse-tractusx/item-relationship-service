@@ -7,7 +7,7 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain.model;
+package net.catenax.irs.aaswrapper.registry.domain;
 
 import java.util.List;
 
@@ -15,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.catenax.irs.aaswrapper.submodel.domain.SubmodelDescriptor;
 
 /**
  * AssetAdministrationShellDescriptor
@@ -24,7 +23,7 @@ import net.catenax.irs.aaswrapper.submodel.domain.SubmodelDescriptor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AssetAdministrationShellDescriptor extends Descriptor {
+class AssetAdministrationShellDescriptor extends Descriptor {
 
     /**
      * administration

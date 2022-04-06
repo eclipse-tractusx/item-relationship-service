@@ -7,23 +7,19 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain.model;
+package net.catenax.irs.aaswrapper.registry.domain;
 
-import java.util.List;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Reference
+ * HasSemantics
  */
 @Data
-@AllArgsConstructor
-public class Reference {
+class HasSemantics {
 
     /**
-     * value
+     * semanticId
      */
-    private List<String> value;
+    private Reference semanticId;
 
 }

@@ -7,7 +7,7 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain.model;
+package net.catenax.irs.aaswrapper.registry.domain;
 
 import lombok.Data;
 
@@ -15,7 +15,7 @@ import lombok.Data;
  * AdministrativeInformation
  */
 @Data
-public class AdministrativeInformation {
+class AdministrativeInformation {
 
     /**
      * revision

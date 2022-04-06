@@ -7,25 +7,21 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain.model;
+package net.catenax.irs.aaswrapper.registry.domain;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
+
 import lombok.Data;
 
 /**
- * LangString
+ * Reference
  */
 @Data
-@AllArgsConstructor
-public class LangString {
+class Reference {
 
     /**
-     * language
+     * value
      */
-    private String language;
-    /**
-     * text
-     */
-    private String text;
+    private List<String> value;
 
 }

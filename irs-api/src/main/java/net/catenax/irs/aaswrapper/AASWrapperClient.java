@@ -9,8 +9,6 @@
 //
 package net.catenax.irs.aaswrapper;
 
-import net.catenax.irs.aaswrapper.registry.domain.model.AssetAdministrationShellDescriptor;
-import net.catenax.irs.aspectmodels.AspectModel;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface AASWrapperClient {
 
-    AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(String aasIdentifier);
-
-    AspectModel getSubmodel(String endpointPath, Class<? extends AspectModel> aspectModelClass);
+//    SubmodelEndpoint getAssetAdministrationShellSubmodelEndpointAddress(String aasIdentifier);
+//
+//    AspectModel getSubmodel(String endpointPath, Class<? extends AspectModel> aspectModelClass);
 }

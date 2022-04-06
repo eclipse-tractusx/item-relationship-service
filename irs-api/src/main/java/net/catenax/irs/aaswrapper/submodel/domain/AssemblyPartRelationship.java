@@ -7,26 +7,25 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain.model;
+package net.catenax.irs.aaswrapper.submodel.domain;
 
-import lombok.AllArgsConstructor;
+import java.util.Set;
+
 import lombok.Data;
 
 /**
- * IdentifierKeyValuePair
+ * AssemblyPartRelationship
  */
 @Data
-@AllArgsConstructor
-public class IdentifierKeyValuePair extends HasSemantics {
+class AssemblyPartRelationship {
 
     /**
-     * key
+     * catenaXId
      */
-    private String key;
+    private String catenaXId;
 
     /**
-     * value
+     * childParts
      */
-    private String value;
-
+    private Set<ChildData> childParts;
 }
