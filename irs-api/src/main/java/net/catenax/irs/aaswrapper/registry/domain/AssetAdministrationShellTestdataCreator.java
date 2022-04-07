@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * Class to create AssetAdministrationShell Testdata
+ * As AASWrapper is not deployed, we are using this class to Stub responses
  */
 class AssetAdministrationShellTestdataCreator {
 
