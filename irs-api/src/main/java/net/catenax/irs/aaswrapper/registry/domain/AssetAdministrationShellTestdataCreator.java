@@ -33,9 +33,8 @@ public class AssetAdministrationShellTestdataCreator {
             final List<AspectModel> endpointAspectModels) {
 
         final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
-        endpointAspectModels.forEach(aspectModel -> submodelDescriptors.add(
-                // "edc://test.url/shells/" + catenaXId + "/aas/assembly-part-relationship"
-                createAssemblyPartRelationshipSubmodelDescriptor(catenaXId, catenaXId)));
+        endpointAspectModels.forEach(
+                aspectModel -> submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId)));
 
         return AssetAdministrationShellDescriptor.builder()
                                                  .description(List.of(new LangString()))
@@ -47,10 +46,9 @@ public class AssetAdministrationShellTestdataCreator {
                                                  .build();
     }
 
-    private SubmodelDescriptor createAssemblyPartRelationshipSubmodelDescriptor(final String endpointAddress,
-            final String catenaXId) {
+    private SubmodelDescriptor createAssemblyPartRelationshipSubmodelDescriptor(final String catenaXId) {
         final ProtocolInformation protocolInformation = new ProtocolInformation();
-        protocolInformation.setEndpointAddress(endpointAddress);
+        protocolInformation.setEndpointAddress(catenaXId);
         protocolInformation.setEndpointProtocol("AAS/SUBMODEL");
         protocolInformation.setEndpointProtocolVersion("1.0RC02");
 

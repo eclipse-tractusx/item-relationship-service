@@ -6,7 +6,7 @@ import net.catenax.irs.aaswrapper.submodel.domain.SubmodelTestdataCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class RegistryAssetAdministrationShellTestdataCreatorTest {
+class AssetAdministrationShellTestdataCreatorTest {
     private AssetAdministrationShellTestdataCreator assetAdministrationShellTestdataCreator;
 
     @BeforeEach
@@ -30,8 +30,7 @@ class RegistryAssetAdministrationShellTestdataCreatorTest {
                                                     .getEndpoint()
                                                     .getProtocolInformation()
                                                     .getEndpointAddress();
-        // assertThat("edc://test.url/shells/" + aasDescriptor.getIdentification() + "/aas/assembly-part-relationship").isEqualTo(endpointAddress);
-        assertThat(aasDescriptor.getIdentification()).isEqualTo(endpointAddress);
+        assertThat(endpointAddress).isEqualTo(catenaXId);
     }
 
 }
