@@ -5,12 +5,14 @@ import net.catenax.irs.component.*;
 import net.catenax.irs.connector.requests.JobsTreeByCatenaXIdRequest;
 import net.catenax.irs.connector.requests.JobsTreeRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
+import org.junit.jupiter.api.Disabled;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
+@Disabled
 public class RequestMother {
 
     Faker faker = new Faker();

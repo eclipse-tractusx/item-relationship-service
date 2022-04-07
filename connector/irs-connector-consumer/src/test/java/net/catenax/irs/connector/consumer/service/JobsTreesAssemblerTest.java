@@ -3,6 +3,7 @@ package net.catenax.irs.connector.consumer.service;
 import net.catenax.irs.component.Jobs;
 import org.eclipse.dataspaceconnector.monitor.ConsoleMonitor;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,6 +14,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 class JobsTreesAssemblerTest {
 

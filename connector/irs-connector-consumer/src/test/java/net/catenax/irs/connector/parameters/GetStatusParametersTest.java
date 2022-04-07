@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 import static net.catenax.irs.connector.testing.SetOfConstraintViolationsAssertions.assertThat;
 
-
+@Disabled
 class GetStatusParametersTest {
 
     private static final String EMPTY = "";
