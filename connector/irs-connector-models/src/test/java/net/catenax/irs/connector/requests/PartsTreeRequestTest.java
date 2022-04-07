@@ -3,6 +3,7 @@ package net.catenax.irs.connector.requests;
 import jakarta.validation.Validator;
 import net.catenax.irs.connector.requests.PartsTreeRequest.PartsTreeRequestBuilder;
 import net.catenax.irs.connector.testing.ValidatorUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -21,6 +22,7 @@ class PartsTreeRequestTest {
 
     PartsTreeRequest sut = RequestMother.generatePartsTreeRequest();
 
+    @Disabled
     @ParameterizedTest(name = "{0}")
     @MethodSource("mutators")
     void validate(String testName, UnaryOperator<PartsTreeRequestBuilder> mutator, String expectedViolationPath) {

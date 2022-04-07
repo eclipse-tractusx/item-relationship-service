@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import net.catenax.irs.connector.consumer.configuration.PartitionDeploymentsConfig;
 import net.catenax.irs.connector.consumer.configuration.PartitionsConfig;
 import net.catenax.irs.connector.consumer.service.RequestMother;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+@Disabled
 class StubRegistryClientTest {
 
     RequestMother generate = new RequestMother();
