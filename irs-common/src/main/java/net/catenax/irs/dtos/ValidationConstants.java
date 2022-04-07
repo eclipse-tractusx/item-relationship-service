@@ -13,7 +13,7 @@ package net.catenax.irs.dtos;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
- * Helper class contains dto attributes validations as reusable dtos.
+ * Helper class contains dto attributes validations as reusable constants.
  */
 @SuppressWarnings("PMD")
 @ExcludeFromCodeCoverageGeneratedReport

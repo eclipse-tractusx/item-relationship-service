@@ -101,7 +101,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/../api/irs-v0.2.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/../api/irs-v0.1.yaml</inputSpec>
                             <generatorName>java</generatorName>
                             <apiPackage>net.catenax.irs.client.api</apiPackage>
                             <modelPackage>net.catenax.irs.client.model</modelPackage>
