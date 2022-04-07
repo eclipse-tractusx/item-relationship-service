@@ -63,8 +63,6 @@ COPY cd/jmx_prometheus_config.yml .
 ENTRYPOINT ["java", "-javaagent:./applicationinsights-agent.jar", "-javaagent:./jmx-prometheus-agent.jar=4006:./jmx_prometheus_config.yml", "-Djava.util.logging.config.file=./logging.properties", "-jar", "app.jar"]
 
 FROM runtime AS irs-connector-consumer
-COPY --from=maven /build/connector/irs-connector-consumer/target/irs-connector-consumer-*.jar app.jar
-COPY --from=maven /build/connector/irs-connector-consumer/src/main/resources/logging.properties .
 COPY --from=wget jmx-prometheus-agent.jar .
 COPY cd/jmx_prometheus_config.yml .
 ENTRYPOINT ["java", "-javaagent:./applicationinsights-agent.jar", "-javaagent:./jmx-prometheus-agent.jar=4006:./jmx_prometheus_config.yml", "-Djava.util.logging.config.file=./logging.properties", "-jar", "app.jar"]

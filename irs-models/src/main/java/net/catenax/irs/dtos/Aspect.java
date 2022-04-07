@@ -26,6 +26,7 @@ import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
 @Value
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = Aspect.AspectBuilder.class)
+
 @SuppressWarnings("PMD.CommentRequired")
 public class Aspect {
 

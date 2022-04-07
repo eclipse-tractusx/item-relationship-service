@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.catenax.irs.dtos.PartLifecycleStage;
+import net.catenax.irs.dtos.ItemLifecycleStage;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -74,5 +74,5 @@ public class PartRelationshipEntityKey implements Serializable {
      */
     @NotNull
     @Enumerated(EnumType.STRING)
-    private PartLifecycleStage lifeCycleStage;
+    private ItemLifecycleStage lifeCycleStage;
 }

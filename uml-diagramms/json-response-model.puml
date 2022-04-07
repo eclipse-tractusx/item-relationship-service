@@ -15,19 +15,19 @@
                 "queued": 0,
                 "running": 0,
                 "complete": 0,
-                "failed": 0,
-                "lost": 0
+                "failed": 0
              }},
             "queryParameter": {
                 "bomLifecycle" : "asBuilt",
-                "aspect" : "SerialPartTypization",
+                "aspect" : ["SerialPartTypization", "Contact"],
                 "depth": 4,
                 "direction": "downward"
              },
             "exception": {
                "exception": "IrsTimeoutException",
                "errorDetail": "Timeout while requesting Digital Registry.",
-               "exceptionDate" : "2022-02-03T14:48:54.709Z"
+               "exceptionDate" : "2022-02-03T14:48:54.709Z",
+               "statusCode" : "404"
             }
           },
           "relationships": [

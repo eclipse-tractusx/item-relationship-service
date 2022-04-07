@@ -6,7 +6,9 @@ import io.gatling.javaapi.core.Simulation;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import net.catenax.irs.testing.UpdateRequestMother;
+import org.junit.jupiter.api.Disabled;
 
+@Disabled
 public class SystemTestsBase {
 
     protected static final String PATH_BY_VIN = "/api/v0.1/vins/{vin}/partsTree";

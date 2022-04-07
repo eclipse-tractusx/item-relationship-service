@@ -18,7 +18,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-import static net.catenax.irs.dtos.PartsTreeView.AS_MAINTAINED;
+import static net.catenax.irs.dtos.ItemsTreeView.AS_MAINTAINED;
 import static net.catenax.irs.dtos.ValidationConstants.VIN_FIELD_LENGTH;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
@@ -81,7 +81,7 @@ public class GetPartsTreeByVinIntegrationTests extends IrsIntegrationTestsBase {
                         .extract().asString();
 
         assertThatJson(response)
-                .isEqualTo(expected.invalidArgument(List.of(VIEW +":"+ ApiErrorsConstants.PARTS_TREE_VIEW_NOT_NULL)));
+                .isEqualTo(expected.invalidArgument(List.of(VIEW +":"+ ApiErrorsConstants.ITEM_VIEW_NOT_NULL)));
     }
     
     @Test
@@ -100,7 +100,7 @@ public class GetPartsTreeByVinIntegrationTests extends IrsIntegrationTestsBase {
                         .extract().asString();
 
         assertThatJson(response)
-                .isEqualTo(expected.invalidMaxDepth(List.of(MessageFormat.format(ApiErrorsConstants.PARTS_TREE_MAX_DEPTH, maxDepth))));
+                .isEqualTo(expected.invalidMaxDepth(List.of(MessageFormat.format(ApiErrorsConstants.ITEM_MAX_DEPTH, maxDepth))));
     }
 
     @Test

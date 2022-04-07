@@ -48,7 +48,7 @@ springdoc:
   writer-with-order-by-keys: true
 
 irs:
-  apiUrl: http://localhost:8080
+  apiUrl: https://localhost/api/v0.2
   partsTreeMaxDepth: 100
 
 feign:
