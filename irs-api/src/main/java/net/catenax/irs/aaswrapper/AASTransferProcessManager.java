@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.registry.domain.model.AssetAdministrationShellDescriptor;
 import net.catenax.irs.aaswrapper.registry.domain.model.Endpoint;
+import net.catenax.irs.aaswrapper.submodel.domain.SubmodelDescriptor;
 import net.catenax.irs.aspectmodels.AspectModelTypes;
 import net.catenax.irs.aspectmodels.assemblypartrelationship.AssemblyPartRelationship;
 import net.catenax.irs.aspectmodels.assemblypartrelationship.ChildData;
@@ -72,24 +73,8 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             final ItemContainer itemContainer = new ItemContainer();
 
-            descriptor.getSubmodelDescriptors().forEach(submodel -> {
-                // TODO (jkreutzfeld) how to handle multiple endpoints in the future?
-                final Endpoint endpoint = submodel.getEndpoints().get(0);
-
-                final SerialPartTypization typization = (SerialPartTypization) aasClient.getSubmodel(
-                        endpoint.toString(), AspectModelTypes.SERIAL_PART_TYPIZATION);
-
-                final AssemblyPartRelationship relationship = (AssemblyPartRelationship) aasClient.getSubmodel(
-                        endpoint.toString(), AspectModelTypes.ASSEMBLY_PART_RELATIONSHIP);
-
-                final List<String> childIds = relationship.getChildParts()
-                                                          .stream()
-                                                          .map(ChildData::getChildCatenaXId)
-                                                          .collect(Collectors.toList());
-                aasTransferProcess.addIdsToProcess(childIds);
-                // TODO (jkreutzfeld) what do we actually need to store here?
-                itemContainer.add(typization, relationship);
-            });
+            descriptor.getSubmodelDescriptors()
+                      .forEach(submodel -> processSubmodel(aasTransferProcess, itemContainer, submodel));
 
             try {
                 final JsonUtil jsonUtil = new JsonUtil();
@@ -99,5 +84,27 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             }
             transferProcessCompleted.accept(aasTransferProcess);
         };
+    }
+
+    private void processSubmodel(final AASTransferProcess aasTransferProcess, final ItemContainer itemContainer,
+            final SubmodelDescriptor submodel) {
+        submodel.getEndpoints().forEach(endpoint -> processEndpoint(aasTransferProcess, itemContainer, endpoint));
+    }
+
+    private void processEndpoint(final AASTransferProcess aasTransferProcess, final ItemContainer itemContainer,
+            final Endpoint endpoint) {
+        final SerialPartTypization typization = (SerialPartTypization) aasClient.getSubmodel(endpoint.toString(),
+                AspectModelTypes.SERIAL_PART_TYPIZATION);
+
+        final AssemblyPartRelationship relationship = (AssemblyPartRelationship) aasClient.getSubmodel(
+                endpoint.toString(), AspectModelTypes.ASSEMBLY_PART_RELATIONSHIP);
+
+        final List<String> childIds = relationship.getChildParts()
+                                                  .stream()
+                                                  .map(ChildData::getChildCatenaXId)
+                                                  .collect(Collectors.toList());
+        aasTransferProcess.addIdsToProcess(childIds);
+        // TODO (jkreutzfeld) what do we actually need to store here?
+        itemContainer.add(typization, relationship);
     }
 }
