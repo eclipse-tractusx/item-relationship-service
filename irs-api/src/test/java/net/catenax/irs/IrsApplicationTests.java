@@ -67,7 +67,7 @@ class IrsApplicationTests {
     }
 
     @Test
-    void runAasDataJob() throws Exception {
+    void shouldStoreBlobResultWhenRunningJob() throws Exception {
         final var targetBlobId = "targetBlobId";
 
         final JobInitiateResponse response = jobOrchestrator.startJob(
