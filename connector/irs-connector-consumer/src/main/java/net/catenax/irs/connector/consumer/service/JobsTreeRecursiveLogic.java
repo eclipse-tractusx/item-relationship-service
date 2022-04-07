@@ -9,6 +9,13 @@
 //
 package net.catenax.irs.connector.consumer.service;
 
+import static java.lang.String.format;
+
+import java.nio.charset.StandardCharsets;
+import java.time.ZoneOffset;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.component.ChildItem;
@@ -22,14 +29,6 @@ import org.eclipse.dataspaceconnector.schema.azure.AzureBlobStoreSchema;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
-
-import java.nio.charset.StandardCharsets;
-import java.time.ZoneOffset;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import static java.lang.String.format;
 
 /**
  * Retrieves parts trees from potentially multiple calls to IRS API behind
@@ -78,10 +77,10 @@ public class JobsTreeRecursiveLogic {
         final var childItem = toChildItem(jobsTreeRequest.getByObjectIdRequest());
         final var irsRequest = jobsTreeRequest.getByObjectIdRequest();
         final var requestContext = DataRequestFactory.RequestContext.builder()
-                .requestTemplate(jobsTreeRequest)
-                .childCatenaXId(childItem.getChildCatenaXId())
-                .depth(irsRequest.getDepth())
-                .build();
+                                                                    .requestTemplate(jobsTreeRequest)
+                                                                    .childCatenaXId(childItem.getChildCatenaXId())
+                                                                    .depth(irsRequest.getDepth())
+                                                                    .build();
         return dataRequestFactory.createRequests(requestContext, childItem);
     }
 
@@ -97,23 +96,25 @@ public class JobsTreeRecursiveLogic {
      * @param requestTemplate client request.
      * @return {@link DataRequest}s for each child Part ID that resolves to a different Provider URL.
      */
-    /* package */ Stream<DataRequest> createSubsequentPartsTreeRequests(
-            final TransferProcess transferProcess,
+    /* package */ Stream<DataRequest> createSubsequentPartsTreeRequests(final TransferProcess transferProcess,
             final JobsTreeRequest requestTemplate) {
         final var previousUrl = transferProcess.getDataRequest().getConnectorAddress();
-        final var requestAsString = transferProcess.getDataRequest().getProperties().get(IrsConnectorConstants.DATA_REQUEST_IRS_REQUEST_PARAMETERS);
+        final var requestAsString = transferProcess.getDataRequest()
+                                                   .getProperties()
+                                                   .get(IrsConnectorConstants.DATA_REQUEST_IRS_REQUEST_PARAMETERS);
         final var request = jsonUtil.fromString(requestAsString, JobsTreeByCatenaXIdRequest.class);
         final var queriedJobId = toChildItem(request).getChildCatenaXId();
         final var blob = downloadPartialPartsTree(transferProcess);
         final var childItem = jsonUtil.fromString(new String(blob), ChildItem.class);
 
         final var requestContext = DataRequestFactory.RequestContext.builder()
-                .requestTemplate(requestTemplate)
-                .previousUrlOrNull(previousUrl)
-                .depth(request.getDepth())
-                .childCatenaXId(queriedJobId)
-                .relationship(Optional.ofNullable(childItem).orElse(childItem))
-                .build();
+                                                                    .requestTemplate(requestTemplate)
+                                                                    .previousUrlOrNull(previousUrl)
+                                                                    .depth(request.getDepth())
+                                                                    .childCatenaXId(queriedJobId)
+                                                                    .relationship(Optional.ofNullable(childItem)
+                                                                                          .orElse(childItem))
+                                                                    .build();
         return dataRequestFactory.createRequests(requestContext, childItem);
     }
 
@@ -126,22 +127,17 @@ public class JobsTreeRecursiveLogic {
      * @param targetContainerName Storage container name to store overall parts tree.
      * @param targetBlobName      Storage blob name to store overall parts tree.
      */
-    /* package */ void assemblePartialPartTreeBlobs(
-            final List<TransferProcess> completedTransfers,
-            final String targetAccountName,
-            final String targetContainerName,
-            final String targetBlobName) {
+    /* package */ void assemblePartialPartTreeBlobs(final List<TransferProcess> completedTransfers,
+            final String targetAccountName, final String targetContainerName, final String targetBlobName) {
         final var partialTrees = completedTransfers.stream()
-                .map(this::downloadPartialPartsTree)
-                .map(payload -> jsonUtil.fromString(new String(payload), Jobs.class));
+                                                   .map(this::downloadPartialPartsTree)
+                                                   .map(payload -> jsonUtil.fromString(new String(payload),
+                                                           Jobs.class));
         final var assembledTree = assembler.retrieveJobsTrees(partialTrees);
         final var blob = jsonUtil.asString(assembledTree).getBytes(StandardCharsets.UTF_8);
 
-        monitor.info(format("Uploading assembled parts tree to %s/%s/%s",
-                targetAccountName,
-                targetContainerName,
-                targetBlobName
-        ));
+        monitor.info(format("Uploading assembled parts tree to %s/%s/%s", targetAccountName, targetContainerName,
+                targetBlobName));
         blobStoreApi.putBlob(targetAccountName, targetContainerName, targetBlobName, blob);
     }
 
@@ -149,12 +145,12 @@ public class JobsTreeRecursiveLogic {
         final var destination = transfer.getDataRequest().getDataDestination();
         final var sourceAccountName = destination.getProperty(AzureBlobStoreSchema.ACCOUNT_NAME);
         final var sourceContainerName = destination.getProperty(AzureBlobStoreSchema.CONTAINER_NAME);
-        final var sourceBlobName = transfer.getDataRequest().getProperties().get(IrsConnectorConstants.DATA_REQUEST_IRS_DESTINATION_PATH);
-        monitor.info(format("Downloading partial parts tree from blob at %s/%s/%s",
-                sourceAccountName,
-                sourceContainerName,
-                sourceBlobName
-        ));
+        final var sourceBlobName = transfer.getDataRequest()
+                                           .getProperties()
+                                           .get(IrsConnectorConstants.DATA_REQUEST_IRS_DESTINATION_PATH);
+        monitor.info(
+                format("Downloading partial parts tree from blob at %s/%s/%s", sourceAccountName, sourceContainerName,
+                        sourceBlobName));
         return blobStoreApi.getBlob(sourceAccountName, sourceContainerName, sourceBlobName);
     }
 
