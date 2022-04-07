@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 import static java.util.function.UnaryOperator.identity;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled
 public class PartsTreeByObjectIdRequestTests extends RequestTestBase {
 
     PartsTreeByObjectIdRequest sut = generateRequest.byObjectId();

@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import net.catenax.irs.configuration.IrsConfiguration;
 import net.catenax.irs.dtos.ItemLifecycleStage;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static java.time.Instant.now;
@@ -72,8 +73,8 @@ public class EntitiesMother {
      */
     public PartIdEntityPart partId() {
         return PartIdEntityPart.builder()
-                .oneIDManufacturer(faker.company().name())
-                .objectIDManufacturer(faker.lorem().characters(10, 20))
+                .oneIDManufacturer(UUID.randomUUID().toString())
+                .objectIDManufacturer(UUID.randomUUID().toString())
                 .build();
     }
 
