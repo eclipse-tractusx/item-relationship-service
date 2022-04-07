@@ -12,6 +12,7 @@ package net.catenax.irs.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.exceptions.JsonParseException;
@@ -28,6 +29,9 @@ public class JsonUtil {
      * JSON object mapper implementation.
      */
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    static {
+        MAPPER.registerModule(new Jdk8Module());
+    }
 
     /**
      * Serialize an object as a JSON {@link String}.

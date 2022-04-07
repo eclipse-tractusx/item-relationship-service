@@ -36,6 +36,7 @@ import net.catenax.irs.util.JsonUtil;
  * Communicates with the AAS Wrapper.
  */
 @Slf4j
+@SuppressWarnings("PMD.DoNotUseThreads") // We want to use threads at the moment ;-)
 public class AASTransferProcessManager implements TransferProcessManager<ItemDataRequest, AASTransferProcess> {
 
     private final AASWrapperClient aasClient;

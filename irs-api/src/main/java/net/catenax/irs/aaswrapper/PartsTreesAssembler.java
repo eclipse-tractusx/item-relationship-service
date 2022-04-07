@@ -23,7 +23,6 @@ import net.catenax.irs.aspectmodels.serialparttypization.SerialPartTypization;
  */
 @Slf4j
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.GuardLogStatement") // Monitor doesn't offer guard statements
 public class PartsTreesAssembler {
 
     /**

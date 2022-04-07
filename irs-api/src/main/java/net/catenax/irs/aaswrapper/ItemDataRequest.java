@@ -18,6 +18,6 @@ import net.catenax.irs.connector.job.DataRequest;
 @Value
 public class ItemDataRequest implements DataRequest {
 
-    final String itemId;
+    private final String itemId;
 
 }

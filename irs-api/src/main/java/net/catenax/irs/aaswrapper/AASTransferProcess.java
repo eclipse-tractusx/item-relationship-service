@@ -12,6 +12,7 @@ package net.catenax.irs.aaswrapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.connector.job.TransferProcess;
@@ -23,11 +24,17 @@ import net.catenax.irs.connector.job.TransferProcess;
 @RequiredArgsConstructor
 public class AASTransferProcess implements TransferProcess {
 
-    private final String id;
+    @Getter(AccessLevel.NONE)
+    private final String transferProcessId;
 
     private final List<String> idsToProcess = new ArrayList<>();
 
     public void addIdsToProcess(final List<String> childIds) {
         idsToProcess.addAll(childIds);
+    }
+
+    @Override
+    public String getId() {
+        return transferProcessId;
     }
 }

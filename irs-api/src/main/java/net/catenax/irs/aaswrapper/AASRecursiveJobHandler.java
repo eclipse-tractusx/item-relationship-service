@@ -32,28 +32,27 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
 
     private final TreeRecursiveLogic logic;
 
-    public AASRecursiveJobHandler(TreeRecursiveLogic logic) {
+    public AASRecursiveJobHandler(final TreeRecursiveLogic logic) {
         this.logic = logic;
     }
 
     @Override
     public Stream<ItemDataRequest> initiate(final MultiTransferJob job) {
         log.info("Initiating request for job {}", job.getJobId());
-        final String partId = job.getJobData().get("partId");
-        var dr = new ItemDataRequest(partId);
-        return Stream.of(dr);
+        final var partId = job.getJobData().get("partId");
+        final var dataRequest = new ItemDataRequest(partId);
+        return Stream.of(dataRequest);
     }
 
     @Override
-    public Stream<ItemDataRequest> recurse(final MultiTransferJob job,
-            final AASTransferProcess transferProcess) {
+    public Stream<ItemDataRequest> recurse(final MultiTransferJob job, final AASTransferProcess transferProcess) {
         log.info("Starting recursive request for job {}", job.getJobId());
         return transferProcess.getIdsToProcess().stream().map(ItemDataRequest::new);
     }
 
     @Override
     public void complete(final MultiTransferJob job) {
-        log.info("Completed retrieval for Job " + job.getJobId());
+        log.info("Completed retrieval for Job {}", job.getJobId());
         final var completedTransfers = job.getCompletedTransfers();
         final var targetBlobName = job.getJobData().get(DESTINATION_PATH_KEY);
         logic.assemblePartialPartTreeBlobs(completedTransfers, targetBlobName);

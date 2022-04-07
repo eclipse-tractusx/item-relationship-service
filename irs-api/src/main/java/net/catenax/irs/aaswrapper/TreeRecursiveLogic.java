@@ -9,8 +9,6 @@
 //
 package net.catenax.irs.aaswrapper;
 
-import static java.lang.String.format;
-
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -33,7 +31,6 @@ import net.catenax.irs.util.JsonUtil;
  */
 @Slf4j
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.GuardLogStatement") // Monitor doesn't offer guard statements
 public class TreeRecursiveLogic {
 
     /**
@@ -66,7 +63,7 @@ public class TreeRecursiveLogic {
         final var assembledTree = assembler.retrievePartsTrees(partialTrees);
         final var blob = jsonUtil.asString(assembledTree).getBytes(StandardCharsets.UTF_8);
 
-        log.info(format("Uploading assembled parts tree to %s", targetBlobName));
+        log.info("Uploading assembled parts tree to {}", targetBlobName);
         try {
             blobStoreApi.putBlob(targetBlobName, blob);
         } catch (BlobPersistenceException e) {
@@ -75,7 +72,7 @@ public class TreeRecursiveLogic {
     }
 
     private byte[] downloadPartialPartsTree(final TransferProcess transfer) {
-        log.info(format("Downloading partial parts tree from blob at %s", transfer.getId()));
+        log.info("Downloading partial parts tree from blob at {}", transfer.getId());
         try {
             return blobStoreApi.getBlob(transfer.getId());
         } catch (BlobPersistenceException e) {
