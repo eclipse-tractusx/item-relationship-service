@@ -7,7 +7,7 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper;
+package net.catenax.irs.aaswrapper.job;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -17,6 +17,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.aaswrapper.AASWrapperClient;
 import net.catenax.irs.aaswrapper.registry.domain.model.AssetAdministrationShellDescriptor;
 import net.catenax.irs.aaswrapper.registry.domain.model.Endpoint;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelDescriptor;

@@ -7,7 +7,7 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper;
+package net.catenax.irs.aaswrapper.job;
 
 import lombok.Value;
 import net.catenax.irs.connector.job.DataRequest;

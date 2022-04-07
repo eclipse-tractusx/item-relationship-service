@@ -7,7 +7,7 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper;
+package net.catenax.irs.aaswrapper.job;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -45,7 +45,7 @@ public class TreeRecursiveLogic {
     /**
      * Assembles partial parts trees.
      */
-    private final PartsTreesAssembler assembler;
+    private final ItemTreesAssembler assembler;
 
     /**
      * Assembles multiple partial parts trees into one overall parts tree.

@@ -7,7 +7,7 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper;
+package net.catenax.irs.aaswrapper.job;
 
 import java.util.LinkedHashSet;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,7 +23,7 @@ import net.catenax.irs.aspectmodels.serialparttypization.SerialPartTypization;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class PartsTreesAssembler {
+public class ItemTreesAssembler {
 
     /**
      * Assembles multiple partial parts trees into one overall parts tree.

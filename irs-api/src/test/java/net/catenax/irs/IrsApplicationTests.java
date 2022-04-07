@@ -1,8 +1,8 @@
 package net.catenax.irs;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static net.catenax.irs.aaswrapper.AASRecursiveJobHandler.DESTINATION_PATH_KEY;
-import static net.catenax.irs.aaswrapper.AASRecursiveJobHandler.ROOT_ITEM_ID_KEY;
+import static net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler.DESTINATION_PATH_KEY;
+import static net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler.ROOT_ITEM_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -13,8 +13,8 @@ import java.nio.file.Files;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import net.catenax.irs.aaswrapper.AASTransferProcess;
-import net.catenax.irs.aaswrapper.ItemDataRequest;
+import net.catenax.irs.aaswrapper.job.AASTransferProcess;
+import net.catenax.irs.aaswrapper.job.ItemDataRequest;
 import net.catenax.irs.connector.job.JobInitiateResponse;
 import net.catenax.irs.connector.job.JobOrchestrator;
 import net.catenax.irs.connector.job.JobState;
@@ -29,13 +29,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = {"local","test"})

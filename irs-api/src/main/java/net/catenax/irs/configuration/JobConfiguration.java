@@ -11,14 +11,14 @@ package net.catenax.irs.configuration;
 
 import java.util.concurrent.Executors;
 
-import net.catenax.irs.aaswrapper.AASRecursiveJobHandler;
-import net.catenax.irs.aaswrapper.AASTransferProcess;
-import net.catenax.irs.aaswrapper.AASTransferProcessManager;
+import net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler;
+import net.catenax.irs.aaswrapper.job.AASTransferProcess;
+import net.catenax.irs.aaswrapper.job.AASTransferProcessManager;
 import net.catenax.irs.aaswrapper.AASWrapperClient;
-import net.catenax.irs.aaswrapper.ItemDataRequest;
+import net.catenax.irs.aaswrapper.job.ItemDataRequest;
 import net.catenax.irs.util.JsonUtil;
-import net.catenax.irs.aaswrapper.PartsTreesAssembler;
-import net.catenax.irs.aaswrapper.TreeRecursiveLogic;
+import net.catenax.irs.aaswrapper.job.ItemTreesAssembler;
+import net.catenax.irs.aaswrapper.job.TreeRecursiveLogic;
 import net.catenax.irs.connector.job.InMemoryJobStore;
 import net.catenax.irs.connector.job.JobOrchestrator;
 import net.catenax.irs.connector.job.JobStore;
@@ -40,7 +40,7 @@ public class JobConfiguration {
             final BlobPersistence blobStore, final JobStore jobStore) {
 
         final var manager = new AASTransferProcessManager(aasClient, Executors.newCachedThreadPool(), blobStore);
-        final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new PartsTreesAssembler());
+        final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);
 
         return new JobOrchestrator<>(manager, jobStore, handler);
