@@ -187,7 +187,7 @@ page at http://checkstyle.sourceforge.net/config.html -->
     </module>
 
     <module name="UpperEll">
-      <!-- Checks that long dtos are defined with an upper ell.-->
+      <!-- Checks that long constants are defined with an upper ell.-->
       <property name="severity" value="error"/>
     </module>
 
