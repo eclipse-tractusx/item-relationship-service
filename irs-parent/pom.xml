@@ -148,7 +148,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/*Application.class</exclude>
-                        <exclude>**/models/**/*</exclude>
+                        <exclude>**/component/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
