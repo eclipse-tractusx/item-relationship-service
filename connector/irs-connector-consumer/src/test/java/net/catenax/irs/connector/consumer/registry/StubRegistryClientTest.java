@@ -54,8 +54,8 @@ class StubRegistryClientTest {
 
     @Test
     void getUrl_WhenValid_Returns() {
-        var partId = generate.partId();
-        partition2.setOneIDs(List.of(randomString(), partId.getOneIDManufacturer()));
+        var child = generate.child();
+        partition2.setOneIDs(List.of(randomString(), child.getChildCatenaXId()));
         partitions.setPartitions(List.of(partition1, partition2));
         var url = randomString();
         value.setValue(url);
@@ -63,14 +63,14 @@ class StubRegistryClientTest {
         attributes.put(partition1.getKey(), attributeColl);
         attributes.put(partition2.getKey(), attributeColl);
         var client = new StubRegistryClient(partitions, attributes);
-        assertThat(client.getUrlPartId(partId))
+        assertThat(client.getUrl(child))
                 .contains(url);
     }
 
     @Test
     void getUrl_WhenUnknownOneId_ReturnsEmpty() {
-        var partId = generate.partId();
-        partition2.setOneIDs(List.of(randomString(), partId.getOneIDManufacturer()));
+        var child = generate.child();
+        partition2.setOneIDs(List.of(randomString(), child.getChildCatenaXId()));
         partitions.setPartitions(List.of(partition1, partition2));
         var url = randomString();
         value.setValue(url);
@@ -78,7 +78,7 @@ class StubRegistryClientTest {
         attributes.put(partition1.getKey(), attributeColl);
         attributes.put(partition2.getKey(), attributeColl);
         var client = new StubRegistryClient(partitions, attributes);
-        assertThat(client.getUrlPartId(generate.partId()))
+        assertThat(client.getUrl(generate.child()))
                 .isEmpty();
     }
 

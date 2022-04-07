@@ -4,12 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import net.catenax.irs.connector.consumer.configuration.ConsumerConfiguration;
-import net.catenax.irs.connector.job.JobInitiateResponse;
-import net.catenax.irs.connector.job.JobOrchestrator;
-import net.catenax.irs.connector.job.JobState;
-import net.catenax.irs.connector.job.JobStore;
-import net.catenax.irs.connector.job.MultiTransferJob;
-import net.catenax.irs.connector.requests.PartsTreeRequest;
+import net.catenax.irs.connector.job.*;
+import net.catenax.irs.connector.requests.JobsTreeRequest;
 import net.catenax.irs.connector.util.JsonUtil;
 import org.eclipse.dataspaceconnector.common.azure.BlobStoreApi;
 import org.eclipse.dataspaceconnector.monitor.ConsoleMonitor;
@@ -36,9 +32,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
-import static net.catenax.irs.connector.consumer.service.ConsumerService.CONTAINER_NAME_KEY;
-import static net.catenax.irs.connector.consumer.service.ConsumerService.DESTINATION_PATH_KEY;
-import static net.catenax.irs.connector.consumer.service.ConsumerService.PARTS_REQUEST_KEY;
+import static net.catenax.irs.connector.consumer.service.ConsumerService.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
@@ -53,7 +47,7 @@ public class ConsumerServiceTests {
     static final ObjectMapper MAPPER = new ObjectMapper();
     static final TemporalAmount SAS_TOKEN_VALIDITY = Duration.ofHours(1);
     private final RequestMother generate = new RequestMother();
-    private final PartsTreeRequest partsTreeRequest = generate.partsTreeRequest();
+    private final JobsTreeRequest jobsTreeRequest = generate.jobsTreeRequest();
     Faker faker = new Faker();
     String jobId = UUID.randomUUID().toString();
     MultiTransferJob job = MultiTransferJob.builder().build();
@@ -166,13 +160,13 @@ public class ConsumerServiceTests {
     @Test
     public void retrievePartsTree_WhenPartsTreeRequestValid_ReturnsProcessId() throws JsonProcessingException {
         // Arrange
-        String serializedRequest = MAPPER.writeValueAsString(partsTreeRequest);
+        String serializedRequest = MAPPER.writeValueAsString(jobsTreeRequest);
 
         when(jobOrchestrator.startJob(any(Map.class)))
                 .thenReturn(okResponse());
 
         // Act
-        var response = service.retrievePartsTree(partsTreeRequest);
+        var response = service.retrieveJobsTree(jobsTreeRequest);
         // Assert
         assertThat(response).isNotNull();
         // Verify that startJob got called with correct job parameters.

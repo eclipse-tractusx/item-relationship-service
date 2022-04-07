@@ -16,6 +16,7 @@ import net.catenax.irs.connector.job.JobInitiateResponse;
 import net.catenax.irs.connector.job.JobOrchestrator;
 import net.catenax.irs.connector.job.JobState;
 import net.catenax.irs.connector.job.JobStore;
+import net.catenax.irs.connector.requests.JobsTreeRequest;
 import net.catenax.irs.connector.requests.PartsTreeRequest;
 import net.catenax.irs.connector.util.JsonUtil;
 import org.eclipse.dataspaceconnector.common.azure.BlobStoreApi;
@@ -81,6 +82,31 @@ public class ConsumerService {
      * @return TransferInitiateResponse with process id.
      */
     public JobInitiateResponse retrievePartsTree(final PartsTreeRequest request) {
+        monitor.info("Received request");
+
+        final String serializedRequest = jsonUtil.asString(request);
+
+        final var storageAccountName = consumerConfiguration.getStorageAccountName();
+        final String containerName = UUID.randomUUID().toString();
+        final String destinationPath = "partsTree.json";
+        blobStoreApi.createContainer(storageAccountName, containerName);
+
+        return jobOrchestrator.startJob(
+                Map.of(
+                        PARTS_REQUEST_KEY, serializedRequest,
+                        CONTAINER_NAME_KEY, containerName,
+                        DESTINATION_PATH_KEY, destinationPath
+                )
+        );
+    }
+
+    /**
+     * Endpoint to trigger a request, so that a file get copied into a specific destination.
+     *
+     * @param request Request parameters.
+     * @return TransferInitiateResponse with process id.
+     */
+    public JobInitiateResponse retrieveJobsTree(final JobsTreeRequest request) {
         monitor.info("Received request");
 
         final String serializedRequest = jsonUtil.asString(request);
