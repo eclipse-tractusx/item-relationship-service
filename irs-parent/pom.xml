@@ -148,7 +148,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/*Application.class</exclude>
-                        <exclude>**/component/**/*</exclude>
+                        <exclude>**/irs-models/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
