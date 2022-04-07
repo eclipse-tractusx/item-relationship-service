@@ -10,6 +10,7 @@
 package net.catenax.irs.exceptions;
 
 import net.catenax.irs.configuration.IrsConfiguration;
+import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.requests.PartsTreeByObjectIdRequest;
 import net.catenax.irs.requests.PartsTreeByVinRequest;
 
@@ -18,6 +19,7 @@ import net.catenax.irs.requests.PartsTreeByVinRequest;
  * or {@link PartsTreeByVinRequest#getDepth()} parameter is larger than
  * {@link IrsConfiguration#getPartsTreeMaxDepth()}.
  */
+@ExcludeFromCodeCoverageGeneratedReport
 public class MaxDepthTooLargeException extends RuntimeException {
     /**
      * Generate a new instance of a {@link MaxDepthTooLargeException}

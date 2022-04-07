@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.controllers.ApiErrorsConstants;
 import net.catenax.irs.controllers.IrsApiConstants;
 import net.catenax.irs.controllers.IrsApiExamplesUtils;
@@ -30,6 +31,7 @@ import net.catenax.irs.controllers.IrsApiExamplesUtils;
  * IrsPartsTree request object
  */
 @Value
+@ExcludeFromCodeCoverageGeneratedReport
 public class IrsPartsTreeRequest extends IrsPartsTreeRequestBase {
 
     @Pattern(regexp = IrsApiConstants.GLOBAL_ASSET_ID_REGEX,

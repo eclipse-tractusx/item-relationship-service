@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.annotations.ValueOfEnum;
+import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.controllers.ApiErrorsConstants;
 import net.catenax.irs.dtos.ItemsTreeView;
 
@@ -31,6 +32,7 @@ import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
  */
 @RequiredArgsConstructor
 @SuppressWarnings({"PMD.CommentRequired", "PMD.AbstractClassWithoutAbstractMethod"})
+@ExcludeFromCodeCoverageGeneratedReport
 abstract class PartsTreeRequestBase {
     @NotBlank(message = ApiErrorsConstants.ITEM_VIEW_NOT_NULL)
     @ValueOfEnum(enumClass = ItemsTreeView.class, message = ApiErrorsConstants.ITEM_VIEW_MUST_MATCH_ENUM)

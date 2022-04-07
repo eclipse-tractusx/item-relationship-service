@@ -26,6 +26,7 @@ import net.catenax.irs.annotations.ValueOfEnum;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
+import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.controllers.ApiErrorsConstants;
 
 /**
@@ -33,6 +34,7 @@ import net.catenax.irs.controllers.ApiErrorsConstants;
  */
 @RequiredArgsConstructor
 @SuppressWarnings({ "PMD.AbstractClassWithoutAbstractMethod", "PMD.DataClass" })
+@ExcludeFromCodeCoverageGeneratedReport
 public abstract class IrsPartsTreeRequestBase {
 
     private static final long MIN_TREE_DEPTH = 1;
