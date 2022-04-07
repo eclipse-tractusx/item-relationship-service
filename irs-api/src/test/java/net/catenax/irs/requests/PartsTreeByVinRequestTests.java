@@ -38,8 +38,8 @@ public class PartsTreeByVinRequestTests extends RequestTestBase {
                 args("View not empty", b -> b.view(EMPTY), "view"),
                 args("View not blank", b -> b.view(faker.regexify(WHITESPACE_REGEX)), "view"),
 
-                args("Aspect not empty", b -> b.aspect(EMPTY), "aspect"),
-                args("Aspect not blank", b -> b.aspect(faker.regexify(WHITESPACE_REGEX)), "aspect"),
+                args("AspectType not empty", b -> b.aspect(EMPTY), "aspect"),
+                args("AspectType not blank", b -> b.aspect(faker.regexify(WHITESPACE_REGEX)), "aspect"),
 
                 args("Depth min 1 [1]", b -> b.depth(faker.number().numberBetween(Integer.MIN_VALUE, 0)), "depth"),
                 args("Depth min 1 [2]", b -> b.depth(0), "depth"),

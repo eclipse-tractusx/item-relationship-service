@@ -1,7 +1,7 @@
 package net.catenax.irs.requests;
 
 import com.github.javafaker.Faker;
-import net.catenax.irs.dtos.PartsTreeView;
+import net.catenax.irs.dtos.ItemsTreeView;
 import net.catenax.irs.entities.EntitiesMother;
 import net.catenax.irs.entities.PartIdEntityPart;
 
@@ -18,7 +18,7 @@ public class RequestMother {
     public PartsTreeByVinRequest byVin(String vin) {
         return PartsTreeByVinRequest.builder()
                 .vin(vin)
-                .view(faker.options().option(PartsTreeView.class).name())
+                .view(faker.options().option(ItemsTreeView.class).name())
                 .build();
     }
 
@@ -26,7 +26,7 @@ public class RequestMother {
         return PartsTreeByObjectIdRequest.builder()
                 .oneIDManufacturer(partId.getOneIDManufacturer())
                 .objectIDManufacturer(partId.getObjectIDManufacturer())
-                .view(faker.options().option(PartsTreeView.class).name())
+                .view(faker.options().option(ItemsTreeView.class).name())
                 .build();
     }
 
