@@ -25,6 +25,7 @@ class PartsTreeByObjectIdRequestTest {
 
     PartsTreeByObjectIdRequest sut = RequestMother.generateApiRequest();
 
+
     @ParameterizedTest(name = "{0}")
     @MethodSource("mutators")
     void validate(String testName, UnaryOperator<PartsTreeByObjectIdRequestBuilder> mutator, String expectedViolationPath) {
