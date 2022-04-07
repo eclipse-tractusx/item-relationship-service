@@ -11,6 +11,7 @@ package net.catenax.irs.configuration;
 
 import java.util.concurrent.TimeUnit;
 
+import feign.Client;
 import feign.Retryer;
 import feign.codec.Decoder;
 import feign.codec.Encoder;
@@ -32,7 +33,7 @@ public class SubmodelClientConfig {
     private static final int MAXATTEMPTS = 3;
 
     @Bean
-    public OkHttpClient submodelHttpClient() {
+    public Client client() {
         return new OkHttpClient();
     }
 
