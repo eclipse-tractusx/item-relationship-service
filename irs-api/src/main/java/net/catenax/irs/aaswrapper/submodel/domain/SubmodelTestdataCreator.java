@@ -7,7 +7,6 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-//
 package net.catenax.irs.aaswrapper.submodel.domain;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 class SubmodelTestdataCreator {
     private final List<AssemblyPartRelationship> testData;
 
-    SubmodelTestdataCreator() {
+    /* package */ SubmodelTestdataCreator() {
         testData = new ArrayList<>();
         testData.add(getDummyAssemblyPartRelationshipWithChildren("8a61c8db-561e-4db0-84ec-a693fc5ffdf6",
                 List.of("09b48bcc-8993-4379-a14d-a7740e1c61d4", "5ce49656-5156-4c8a-b93e-19422a49c0bc",
