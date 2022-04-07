@@ -14,7 +14,7 @@ class AssetAdministrationShellTestdataCreatorTest {
     }
 
     @Test
-    void testCreateDummyAssetAdministrationShellDescriptorForId() {
+    void shouldReturnAssetAdministrationShellDescriptorWhenRequestingWithCatenaXId() {
         final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
         final AssetAdministrationShellDescriptor aasDescriptor = assetAdministrationShellTestdataCreator.createAASShellDescriptorForIdFromTestData(
