@@ -7,19 +7,21 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.submodel.domain;
+//
+
+package net.catenax.irs.aaswrapper.dto;
 
 import java.util.Set;
 
+import lombok.Builder;
 import lombok.Data;
-import net.catenax.irs.aaswrapper.dto.AspectModel;
 
 /**
- * AssemblyPartRelationship
+ * AssemblyPartRelationshipDTO model used for internal application use
  */
 @Data
-class AssemblyPartRelationship implements AspectModel {
-
+@Builder
+public class AssemblyPartRelationshipDTO implements AspectModel {
     /**
      * catenaXId
      */
@@ -28,5 +30,5 @@ class AssemblyPartRelationship implements AspectModel {
     /**
      * childParts
      */
-    private Set<ChildData> childParts;
+    private Set<ChildDataDTO> childParts;
 }

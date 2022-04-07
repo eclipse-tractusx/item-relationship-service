@@ -7,21 +7,26 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain;
+//
 
-import java.util.List;
+package net.catenax.irs.aaswrapper.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
- * Descriptor
+ * ChildDataDTO model used for internal application use
  */
 @Data
-class Descriptor {
+@Builder
+public class ChildDataDTO {
+    /**
+     * lifecycleContext
+     */
+    private LifecycleContextCharacteristic lifecycleContext;
 
     /**
-     * endpoints
+     * childCatenaXId
      */
-    private List<Endpoint> endpoints;
-
+    private String childCatenaXId;
 }

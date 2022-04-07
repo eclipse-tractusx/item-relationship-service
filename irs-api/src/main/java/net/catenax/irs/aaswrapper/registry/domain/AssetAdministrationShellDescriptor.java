@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-class AssetAdministrationShellDescriptor extends Descriptor {
+class AssetAdministrationShellDescriptor {
 
     /**
      * administration

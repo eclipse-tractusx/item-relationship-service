@@ -7,9 +7,10 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aspectmodels;
+//
+package net.catenax.irs.aaswrapper.dto;
 
-/***
+/**
  * Interface to have a common return type for the different aspect models
  */
 public interface AspectModel {

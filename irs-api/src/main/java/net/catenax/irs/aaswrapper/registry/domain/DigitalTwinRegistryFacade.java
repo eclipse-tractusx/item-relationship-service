@@ -27,14 +27,19 @@ public class DigitalTwinRegistryFacade {
 
     /**
      * Combines required data from Digital Twin Registry Service
+     *
      * @param aasIdentifier The Asset Administration Shell’s unique id
      * @return list of submodel addresses
      */
-    public List<SubmodelEndpoint> getAASSubmodelEndpointAddresses(final String aasIdentifier) {
-        final List<SubmodelDescriptor> submodelDescriptors = digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aasIdentifier).getSubmodelDescriptors();
+    public List<SubmodelEndpoint> getAASSubmodelEndpoints(final String aasIdentifier) {
+        final List<SubmodelDescriptor> submodelDescriptors = digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(
+                aasIdentifier).getSubmodelDescriptors();
 
         return submodelDescriptors.stream()
-                                .map(submodelDescriptor -> new SubmodelEndpoint(submodelDescriptor.getEndpoints().get(0).getProtocolInformation().getEndpointAddress()))
-                                .collect(Collectors.toList());
+                                  .map(submodelDescriptor -> new SubmodelEndpoint(
+                                          submodelDescriptor.getEndpoint()
+                                                            .getProtocolInformation()
+                                                            .getEndpointAddress()))
+                                  .collect(Collectors.toList());
     }
 }

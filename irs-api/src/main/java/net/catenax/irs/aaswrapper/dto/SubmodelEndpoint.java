@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SubmodelEndpoint {
 
-    /**
+    /*
      * Endpoint address url
      */
     private final String address;
