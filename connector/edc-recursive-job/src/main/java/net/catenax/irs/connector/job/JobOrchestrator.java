@@ -25,14 +25,11 @@ import lombok.extern.slf4j.Slf4j;
  * Orchestrator service for recursive {@link MultiTransferJob}s that potentially
  * comprise multiple transfers.
  */
-@SuppressWarnings({ "PMD.GuardLogStatement",
-                    // Monitor doesn't offer guard statements
-                    "PMD.AvoidCatchingGenericException"
-}) // Handle RuntimeException from callbacks
+@SuppressWarnings("PMD.AvoidCatchingGenericException") // Handle RuntimeException from callbacks
 @Slf4j
 public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
-    private static final int TTL_CLEANUP_COMPLETED_JOBS_HOURS  = 1;
+    private static final int TTL_CLEANUP_COMPLETED_JOBS_HOURS = 1;
     private static final int TTL_CLEANUP_FAILED_JOBS_HOURS = 24;
 
     /**
@@ -106,18 +103,18 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     /**
      * Callback invoked when a transfer has completed.
      *
-     * @param process
+     * @param process the process that has completed
      */
     /* package */ void transferProcessCompleted(final P process) {
         final var jobEntry = jobStore.findByProcessId(process.getId());
-        if (!jobEntry.isPresent()) {
-            log.error("Job not found for transfer " + process.getId());
+        if (jobEntry.isEmpty()) {
+            log.error("Job not found for transfer {}", process.getId());
             return;
         }
         final var job = jobEntry.get();
 
         if (job.getState() != JobState.IN_PROGRESS) {
-            log.info("Ignoring transfer complete event for job " + job.getJobId() + " in state " + job.getState());
+            log.info("Ignoring transfer complete event for job {} in state {}", job.getJobId(), job.getState());
             return;
         }
 
@@ -143,14 +140,16 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     public List<MultiTransferJob> findAndCleanupCompletedJobs() {
         final LocalDateTime currentDateMinusHours = LocalDateTime.now().minusHours(TTL_CLEANUP_COMPLETED_JOBS_HOURS);
-        final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED, currentDateMinusHours);
+        final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
+                currentDateMinusHours);
 
         return deleteJobs(completedJobs);
     }
 
     public List<MultiTransferJob> findAndCleanupFailedJobs() {
         final LocalDateTime currentDateMinusHours = LocalDateTime.now().minusHours(TTL_CLEANUP_FAILED_JOBS_HOURS);
-        final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR, currentDateMinusHours);
+        final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR,
+                currentDateMinusHours);
 
         return deleteJobs(failedJobs);
     }
