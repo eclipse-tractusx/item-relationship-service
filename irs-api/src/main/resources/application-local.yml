@@ -3,4 +3,6 @@ feign:
     config:
       digitalTwinRegistry:
         url: http://stub
+      submodel:
+        url: http://stub
 

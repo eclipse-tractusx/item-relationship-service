@@ -58,6 +58,8 @@ feign:
         connectTimeout: 5000
         readTimeout: 5000
         loggerLevel: full
+        decode404: false
       digitalTwinRegistry:
         url: https://catenaxdev042akssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry
-
+      submodel:
+        url:

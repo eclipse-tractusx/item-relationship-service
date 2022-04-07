@@ -12,6 +12,8 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
+import net.catenax.irs.configuration.SubmodelClientConfig;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Submodel Rest Client
  */
+@Profile("!local")
+@FeignClient(contextId = "submodelClientContextId", value = "submodelClient",
+        url = "${feign.client.config.submodel.url}", configuration = SubmodelClientConfig.class)
 public interface SubmodelClient {
 
     /**
