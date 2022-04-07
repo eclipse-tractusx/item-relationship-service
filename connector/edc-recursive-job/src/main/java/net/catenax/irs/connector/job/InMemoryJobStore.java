@@ -30,9 +30,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @Slf4j
 @RequiredArgsConstructor
-@SuppressWarnings({ "PMD.GuardLogStatement",
-                    "PMD.TooManyMethods"
-}) // Monitor doesn't offer guard statements
+@SuppressWarnings("PMD.TooManyMethods")
 public class InMemoryJobStore implements JobStore {
 
     /**
@@ -132,7 +130,7 @@ public class InMemoryJobStore implements JobStore {
         writeLock(() -> {
             final var job = jobsById.get(jobId);
             if (job == null) {
-                log.warn("Job not found: " + jobId);
+                log.warn("Job not found: {}", jobId);
             } else {
                 jobsById.put(job.getJobId(), action.apply(job));
             }
