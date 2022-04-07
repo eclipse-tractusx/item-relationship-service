@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
  */
 @RequiredArgsConstructor
 @Service
-@Profile("local")
 public class SubmodelFacade {
 
     private final SubmodelClient submodelClient;

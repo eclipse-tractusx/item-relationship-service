@@ -39,7 +39,6 @@ class SubmodelDescriptor {
      * semanticId
      */
     private Reference semanticId;
-
     /**
      * endpoint
      */
