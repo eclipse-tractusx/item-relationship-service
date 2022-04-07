@@ -29,7 +29,7 @@ import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
 @Value
 @Jacksonized // Makes the class deserializable using lombok builder.
 @Builder(toBuilder = true)
-
+@ExcludeFromCodeCoverageGeneratedReport
 public class PartsTreeByObjectIdRequest {
 
     /**

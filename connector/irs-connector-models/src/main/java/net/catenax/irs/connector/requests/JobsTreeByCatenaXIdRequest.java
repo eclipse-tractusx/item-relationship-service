@@ -15,6 +15,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 import java.time.LocalDateTime;
 
@@ -29,6 +30,7 @@ import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
 @Value
 @Jacksonized // Makes the class deserializable using lombok builder.
 @Builder(toBuilder = true)
+@ExcludeFromCodeCoverageGeneratedReport
 public class JobsTreeByCatenaXIdRequest {
 
     /**

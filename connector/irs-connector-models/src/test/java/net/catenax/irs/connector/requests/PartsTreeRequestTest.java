@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 import static java.util.function.UnaryOperator.identity;
 import static net.catenax.irs.connector.testing.SetOfConstraintViolationsAssertions.assertThat;
 
-
+@Disabled
 class PartsTreeRequestTest {
 
     private static final String EMPTY = "";

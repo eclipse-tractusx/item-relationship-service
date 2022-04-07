@@ -1,8 +1,9 @@
 package net.catenax.irs.connector.requests;
 
 import com.github.javafaker.Faker;
+import org.junit.jupiter.api.Disabled;
 
-
+@Disabled
 class RequestMother {
 
     static Faker faker = new Faker();

@@ -14,6 +14,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * JSON payload for a connector request to assemble a composite Parts Tree.
@@ -21,6 +22,7 @@ import lombok.extern.jackson.Jacksonized;
 @Value
 @Jacksonized
 @Builder(toBuilder = true)
+@ExcludeFromCodeCoverageGeneratedReport
 public class PartsTreeRequest {
     /**
      * Parts Tree API Request.
