@@ -9,7 +9,6 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
-import net.catenax.irs.aaswrapper.dto.AspectModel;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,7 @@ interface SubmodelClient {
     /**
      * @return Returns the Submodel
      */
-    AspectModel getSubmodel(String endpointUrl);
+    AssemblyPartRelationship getSubmodel(String submodelEndpointAddress);
 
 }
 
@@ -33,10 +32,10 @@ interface SubmodelClient {
 class SubmodelClientLocalStub implements SubmodelClient {
 
     @Override
-    public AspectModel getSubmodel(final String endpointUrl) {
+    public AssemblyPartRelationship getSubmodel(final String submodelEndpointAddress) {
         // String level, String content, String extent
         final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
 
-        return submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(endpointUrl);
+        return submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(submodelEndpointAddress);
     }
 }

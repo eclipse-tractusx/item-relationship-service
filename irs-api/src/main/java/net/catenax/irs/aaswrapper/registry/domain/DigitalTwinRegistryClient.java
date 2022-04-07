@@ -11,7 +11,6 @@ package net.catenax.irs.aaswrapper.registry.domain;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import net.catenax.irs.aaswrapper.submodel.domain.SubmodelTestdataCreator;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Profile;
@@ -49,8 +48,7 @@ class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
 
     @Override
     public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
-        final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
-        final AssetAdministrationShellTestdataCreator testdataCreator = new AssetAdministrationShellTestdataCreator(submodelTestdataCreator);
+        final AssetAdministrationShellTestdataCreator testdataCreator = new AssetAdministrationShellTestdataCreator();
         return testdataCreator.createAASShellDescriptorForIdFromTestData(aasIdentifier);
     }
 }

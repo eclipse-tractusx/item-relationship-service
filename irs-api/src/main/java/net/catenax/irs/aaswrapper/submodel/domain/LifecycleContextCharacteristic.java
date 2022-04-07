@@ -8,7 +8,7 @@
 // additional information regarding license terms.
 //
 //
-package net.catenax.irs.aaswrapper.dto;
+package net.catenax.irs.aaswrapper.submodel.domain;
 
 import lombok.Getter;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
@@ -18,7 +18,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
  */
 @Getter
 @ExcludeFromCodeCoverageGeneratedReport
-public enum LifecycleContextCharacteristic {
+enum LifecycleContextCharacteristic {
     ASREQUIRED("AsRequired"),
     ASDESIGNED("AsDesigned"),
     ASPLANNED("AsPlanned"),

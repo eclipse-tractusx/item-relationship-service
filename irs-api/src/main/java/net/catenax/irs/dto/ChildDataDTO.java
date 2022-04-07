@@ -9,7 +9,7 @@
 //
 //
 
-package net.catenax.irs.aaswrapper.dto;
+package net.catenax.irs.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class ChildDataDTO {
     /**
      * lifecycleContext
      */
-    private LifecycleContextCharacteristic lifecycleContext;
+    private String lifecycleContext;
 
     /**
      * childCatenaXId

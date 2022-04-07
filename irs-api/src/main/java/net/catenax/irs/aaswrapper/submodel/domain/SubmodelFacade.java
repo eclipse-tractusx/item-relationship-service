@@ -13,8 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
-import net.catenax.irs.aaswrapper.dto.AssemblyPartRelationshipDTO;
-import net.catenax.irs.aaswrapper.dto.ChildDataDTO;
+import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
+import net.catenax.irs.dto.ChildDataDTO;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -29,16 +29,16 @@ public class SubmodelFacade {
     private final SubmodelClient submodelClient;
 
     /**
-     * @param endpointPath The URL to the submodel endpoint
+     * @param submodelEndpointAddress The URL to the submodel endpoint
      * @return The Aspect Model for the given submodel
      */
-    public AssemblyPartRelationshipDTO getSubmodel(final String endpointPath) {
-        final AssemblyPartRelationship submodel = (AssemblyPartRelationship) submodelClient.getSubmodel(endpointPath);
+    public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress) {
+        final AssemblyPartRelationship submodel = (AssemblyPartRelationship) submodelClient.getSubmodel(submodelEndpointAddress);
         final Set<ChildDataDTO> childParts = new HashSet<>();
         submodel.getChildParts()
                 .forEach(childData -> childParts.add(ChildDataDTO.builder()
                                                                  .childCatenaXId(childData.getChildCatenaXId())
-                                                                 .lifecycleContext(childData.getLifecycleContext())
+                                                                 .lifecycleContext(childData.getLifecycleContext().getValue())
                                                                  .build()));
         return AssemblyPartRelationshipDTO.builder().catenaXId(submodel.getCatenaXId()).childParts(childParts).build();
     }

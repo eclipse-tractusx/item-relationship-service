@@ -13,28 +13,20 @@ package net.catenax.irs.aaswrapper.registry.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import net.catenax.irs.aaswrapper.dto.AspectModel;
-import net.catenax.irs.aaswrapper.submodel.domain.SubmodelTestdataCreator;
-
 /**
  * Class to create AssetAdministrationShell Testdata
  */
-@AllArgsConstructor
-public class AssetAdministrationShellTestdataCreator {
-    private final SubmodelTestdataCreator submodelTestdataCreator;
+class AssetAdministrationShellTestdataCreator {
 
     public AssetAdministrationShellDescriptor createAASShellDescriptorForIdFromTestData(final String catenaXId) {
-        final AspectModel aspectmodel = submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(catenaXId);
-        return createDummyAssetAdministrationShellDescriptorForId(catenaXId, List.of(aspectmodel));
+        return createDummyAssetAdministrationShellDescriptorForId(catenaXId);
     }
 
-    public AssetAdministrationShellDescriptor createDummyAssetAdministrationShellDescriptorForId(final String catenaXId,
-            final List<AspectModel> endpointAspectModels) {
+    public AssetAdministrationShellDescriptor createDummyAssetAdministrationShellDescriptorForId(final String catenaXId) {
 
         final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
-        endpointAspectModels.forEach(
-                aspectModel -> submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId)));
+
+        submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId));
 
         return AssetAdministrationShellDescriptor.builder()
                                                  .description(List.of(new LangString()))

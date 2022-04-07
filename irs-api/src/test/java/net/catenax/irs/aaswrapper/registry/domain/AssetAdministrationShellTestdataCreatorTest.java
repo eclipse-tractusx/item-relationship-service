@@ -2,7 +2,6 @@ package net.catenax.irs.aaswrapper.registry.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import net.catenax.irs.aaswrapper.submodel.domain.SubmodelTestdataCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,8 +10,7 @@ class AssetAdministrationShellTestdataCreatorTest {
 
     @BeforeEach
     void setUp() {
-        SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
-        assetAdministrationShellTestdataCreator = new AssetAdministrationShellTestdataCreator(submodelTestdataCreator);
+        assetAdministrationShellTestdataCreator = new AssetAdministrationShellTestdataCreator();
     }
 
     @Test

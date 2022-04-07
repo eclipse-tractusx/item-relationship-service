@@ -9,7 +9,7 @@
 //
 //
 
-package net.catenax.irs.aaswrapper.dto;
+package net.catenax.irs.dto;
 
 import java.util.Set;
 
@@ -21,7 +21,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class AssemblyPartRelationshipDTO implements AspectModel {
+public class AssemblyPartRelationshipDTO {
     /**
      * catenaXId
      */

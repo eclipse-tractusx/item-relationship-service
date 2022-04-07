@@ -7,11 +7,20 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-//
-package net.catenax.irs.aaswrapper.dto;
+package net.catenax.irs.dto;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
- * Interface to have a common return type for the different aspect models
+ * Represents submodel descriptor endpoint addresses
  */
-public interface AspectModel {
+@Getter
+@RequiredArgsConstructor
+public class SubmodelEndpoint {
+
+    /*
+     * Endpoint address url
+     */
+    private final String address;
 }

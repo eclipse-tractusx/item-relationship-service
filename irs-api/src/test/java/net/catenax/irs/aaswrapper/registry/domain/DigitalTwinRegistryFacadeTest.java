@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import net.catenax.irs.aaswrapper.dto.SubmodelEndpoint;
+import net.catenax.irs.dto.SubmodelEndpoint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

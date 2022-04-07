@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import net.catenax.irs.aaswrapper.dto.SubmodelEndpoint;
+import net.catenax.irs.dto.SubmodelEndpoint;
 import org.springframework.stereotype.Service;
 
 /**

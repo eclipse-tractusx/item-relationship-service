@@ -12,7 +12,6 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 import java.time.LocalDateTime;
 
 import lombok.Data;
-import net.catenax.irs.aaswrapper.dto.LifecycleContextCharacteristic;
 
 /**
  *

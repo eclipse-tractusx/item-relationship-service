@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.catenax.irs.aaswrapper.dto.AssemblyPartRelationshipDTO;
-import net.catenax.irs.aaswrapper.dto.ChildDataDTO;
+import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
+import net.catenax.irs.dto.ChildDataDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
