@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.enums.JobState;
 
 /**
@@ -34,6 +35,7 @@ import net.catenax.irs.component.enums.JobState;
 @JsonDeserialize(builder = Job.JobBuilder.class)
 @AllArgsConstructor
 @SuppressWarnings("PMD.ShortClassName")
+@ExcludeFromCodeCoverageGeneratedReport
 public class Job {
 
     /**

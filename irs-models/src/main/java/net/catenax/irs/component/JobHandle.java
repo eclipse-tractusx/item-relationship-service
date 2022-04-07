@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * The unique jobId handle of the just processed job.
@@ -24,6 +25,7 @@ import lombok.Value;
 @Value
 @Builder
 @JsonDeserialize(builder = JobHandle.JobHandleBuilder.class)
+@ExcludeFromCodeCoverageGeneratedReport
 public class JobHandle {
 
     private UUID jobId;

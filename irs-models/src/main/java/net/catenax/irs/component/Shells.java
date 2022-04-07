@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Collections of AAS shells
@@ -22,6 +23,7 @@ import lombok.extern.jackson.Jacksonized;
 @Value
 @Jacksonized
 @Builder(toBuilder = true)
+@ExcludeFromCodeCoverageGeneratedReport
 @SuppressWarnings("PMD.AvoidFieldNameMatchingTypeName")
 public class Shells {
 

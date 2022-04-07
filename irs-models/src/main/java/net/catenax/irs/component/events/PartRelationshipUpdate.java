@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.dtos.ItemLifecycleStage;
 import net.catenax.irs.dtos.PartRelationship;
 
@@ -27,6 +28,7 @@ import java.time.Instant;
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = PartRelationshipUpdate.PartRelationshipUpdateBuilder.class)
 @SuppressWarnings("PMD.CommentRequired")
+@ExcludeFromCodeCoverageGeneratedReport
 public class PartRelationshipUpdate {
     @NotNull
     @Valid

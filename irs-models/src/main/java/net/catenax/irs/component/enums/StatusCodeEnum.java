@@ -11,12 +11,14 @@ package net.catenax.irs.component.enums;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.IStatusCodeEnum;
 
 /**
  * Http return status code
  */
 @Schema(description = "Http return status code")
+@ExcludeFromCodeCoverageGeneratedReport
 public enum StatusCodeEnum implements IStatusCodeEnum {
 
     CONTINUE(100, "CONTINUE"),

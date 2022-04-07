@@ -9,9 +9,12 @@
 //
 package net.catenax.irs.component.enums;
 
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
+
 /**
  * Represents the state of the current job
  */
+@ExcludeFromCodeCoverageGeneratedReport
 public enum JobState {
     UNSAVED,
     INITIAL,

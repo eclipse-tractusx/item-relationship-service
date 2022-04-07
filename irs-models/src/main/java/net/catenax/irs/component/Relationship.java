@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Relationship
@@ -21,6 +22,7 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 @Builder(toBuilder = true)
 @AllArgsConstructor
+@ExcludeFromCodeCoverageGeneratedReport
 public class Relationship {
 
     private String catenaXId;

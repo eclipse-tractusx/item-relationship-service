@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * GenericDescription
@@ -24,6 +25,7 @@ import lombok.Value;
 @Value
 @Builder
 @JsonDeserialize(builder = GenericDescription.GenericDescriptionBuilder.class)
+@ExcludeFromCodeCoverageGeneratedReport
 public class GenericDescription {
     @Schema(description = "Identification string")
     private String identification;

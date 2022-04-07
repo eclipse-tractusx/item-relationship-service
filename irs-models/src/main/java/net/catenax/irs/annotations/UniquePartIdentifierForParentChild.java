@@ -28,6 +28,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Documented
 @Constraint(validatedBy = UniquePartIdentifierForParentChildValidator.class)
+@ExcludeFromCodeCoverageGeneratedReport
 public @interface UniquePartIdentifierForParentChild {
     /***
      * Defines the message that will be showed when the input data is not valid.

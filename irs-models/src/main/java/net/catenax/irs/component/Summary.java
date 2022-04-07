@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Summary
@@ -21,6 +22,7 @@ import lombok.Value;
 @Value
 @Builder
 @JsonDeserialize(builder = Summary.SummaryBuilder.class)
+@ExcludeFromCodeCoverageGeneratedReport
 public class Summary {
 
     /**

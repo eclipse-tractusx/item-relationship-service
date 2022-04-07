@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Global unique identifier for asset
@@ -21,6 +22,7 @@ import lombok.Value;
 @Value
 @Builder
 @JsonDeserialize(builder = GlobalAssetIdentification.GlobalAssetIdBuilder.class)
+@ExcludeFromCodeCoverageGeneratedReport
 public class GlobalAssetIdentification {
 
     @Schema(description = "Global unique identifier")

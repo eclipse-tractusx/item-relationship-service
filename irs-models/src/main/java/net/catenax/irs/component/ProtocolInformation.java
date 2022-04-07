@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * ProtocolInformation
@@ -20,6 +21,7 @@ import lombok.extern.jackson.Jacksonized;
 @Value
 @Jacksonized
 @Builder(toBuilder = true)
+@ExcludeFromCodeCoverageGeneratedReport
 public class ProtocolInformation {
 
     @Schema(description = "Uniform resource identifier of endpoint",

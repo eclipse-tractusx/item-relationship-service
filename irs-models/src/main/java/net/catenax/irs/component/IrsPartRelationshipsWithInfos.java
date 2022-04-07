@@ -17,6 +17,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Information about request items tree job
@@ -25,6 +26,7 @@ import lombok.Value;
 @Value
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = IrsPartRelationshipsWithInfos.IrsPartRelationshipsWithInfosBuilder.class)
+@ExcludeFromCodeCoverageGeneratedReport
 public class IrsPartRelationshipsWithInfos {
 
     /**

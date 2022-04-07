@@ -29,6 +29,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Constraint(validatedBy = ValueOfEnumValidator.class)
 @SuppressWarnings("checkstyle:MissingJavadocMethod")
+@ExcludeFromCodeCoverageGeneratedReport
 public @interface ValueOfEnum {
     Class<? extends Enum<?>> enumClass();
     String message() default "must be any of enum {enumClass}";

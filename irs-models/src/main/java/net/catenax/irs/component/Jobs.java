@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * List of Job and relationship to parts
@@ -29,6 +30,7 @@ import lombok.Value;
 @JsonDeserialize(builder = Jobs.JobsBuilder.class)
 @AllArgsConstructor
 @SuppressWarnings("PMD.ShortClassName")
+@ExcludeFromCodeCoverageGeneratedReport
 public class Jobs {
 
     @Schema(description = "Information and data for the Job", implementation = Job.JobBuilder.class)

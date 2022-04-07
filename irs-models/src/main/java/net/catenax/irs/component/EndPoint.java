@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Communication endpoint
@@ -21,6 +22,7 @@ import lombok.extern.jackson.Jacksonized;
 @Value
 @Builder
 @Jacksonized
+@ExcludeFromCodeCoverageGeneratedReport
 public class EndPoint {
 
     @Schema(description = "Communication interface type", example = "Http", implementation = String.class)

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.dtos.Aspect;
 import net.catenax.irs.dtos.PartId;
 
@@ -33,6 +34,7 @@ import static net.catenax.irs.dtos.ValidationConstants.ASPECT_UPDATE_LIST_MIN_SI
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = PartAspectsUpdateRequest.PartAspectsUpdateRequestBuilder.class)
 @SuppressWarnings("PMD.CommentRequired")
+@ExcludeFromCodeCoverageGeneratedReport
 public class PartAspectsUpdateRequest {
     public static final String DESCRIPTION = "Describes an update of a part aspect location.";
 

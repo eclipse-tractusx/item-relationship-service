@@ -16,6 +16,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MAX_LENGTH;
 import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
@@ -28,6 +29,7 @@ import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
 @Value
 @Jacksonized // Makes the class deserializable using lombok builder.
 @Builder(toBuilder = true)
+
 public class PartsTreeByObjectIdRequest {
 
     /**

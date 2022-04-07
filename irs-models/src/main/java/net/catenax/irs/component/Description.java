@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Provide descriptions to request parts
@@ -22,6 +23,7 @@ import lombok.Value;
 @Value
 @Builder
 @JsonDeserialize(builder = Description.DescriptionBuilder.class)
+@ExcludeFromCodeCoverageGeneratedReport
 public class Description {
 
     @Schema(description = "language use to describe", example = "en", implementation = String.class)

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -28,6 +29,7 @@ import static net.catenax.irs.dtos.ValidationConstants.RELATIONSHIP_UPDATE_LIST_
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = PartRelationshipsUpdateRequest.PartRelationshipsUpdateRequestBuilder.class)
 @SuppressWarnings("PMD.CommentRequired")
+@ExcludeFromCodeCoverageGeneratedReport
 public class PartRelationshipsUpdateRequest {
     public static final String DESCRIPTION = "Describes an update of (part of) a BOM.";
 

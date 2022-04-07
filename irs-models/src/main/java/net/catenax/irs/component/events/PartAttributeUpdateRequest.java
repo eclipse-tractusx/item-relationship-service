@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.annotations.ValueOfEnum;
 import net.catenax.irs.dtos.PartAttribute;
 import net.catenax.irs.dtos.PartId;
@@ -34,6 +35,7 @@ import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = PartAttributeUpdateRequest.PartAttributeUpdateRequestBuilder.class)
 @SuppressWarnings("PMD.CommentRequired")
+@ExcludeFromCodeCoverageGeneratedReport
 public class PartAttributeUpdateRequest {
     public static final String DESCRIPTION = "Describes an update of a part attribute.";
 

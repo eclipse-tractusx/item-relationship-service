@@ -9,10 +9,13 @@
 //
 package net.catenax.irs.component.enums;
 
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
+
 /**
  * AspectType information for a part tree
  */
 @SuppressWarnings("PMD.ShortMethodName")
+@ExcludeFromCodeCoverageGeneratedReport
 public enum AspectType {
     SERIAL_PART_TYPIZATION("SerialPartTypization"),
     ASSEMBLY_PART_RELATIONSHIP("AssemblyPartRelationship"),
