@@ -27,9 +27,9 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class SubmodelClientConfig {
-    private final static long PERIOD = 1000L;
-    private final static long DURATION = 1000L;
-    private final static int MAXATTEMPTS = 3;
+    private static final long PERIOD = 1000L;
+    private static final long DURATION = 1000L;
+    private static final int MAXATTEMPTS = 3;
 
     @Bean
     public OkHttpClient submodelHttpClient() {
