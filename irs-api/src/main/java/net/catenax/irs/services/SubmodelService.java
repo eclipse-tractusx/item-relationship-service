@@ -11,7 +11,6 @@ package net.catenax.irs.services;
 
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.submodel.domain.AssemblyPartRelationship;
-import net.catenax.irs.aaswrapper.submodel.domain.ClientBuilder;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelClient;
 import org.springframework.stereotype.Service;
 
@@ -21,23 +20,16 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class SubmodelService {
+    private final SubmodelClient client;
 
-    private final ClientBuilder clientBuilder;
-
-    public SubmodelService(final ClientBuilder clientBuilder) {
-        this.clientBuilder = clientBuilder;
+    public SubmodelService(final SubmodelClient client) {
+        this.client = client;
     }
 
-    public AssemblyPartRelationship retrieveSubmodel(final String uri) {
-        AssemblyPartRelationship assemblyPartRelationship = null;
-
-        final SubmodelClient client = this.clientBuilder.createClient(SubmodelClient.class, uri);
-
-        if (client != null) {
-            // To do
-            assemblyPartRelationship = client.getSubmodel("", "", "");
-            log.debug("assemblyPartRelationship {}", assemblyPartRelationship.toString());
-        }
+    public AssemblyPartRelationship retrieveSubmodel(final String level, final String content, final String extent) {
+        // To do
+        final AssemblyPartRelationship assemblyPartRelationship = this.client.getSubmodel(level, content, extent);
+        log.debug("assemblyPartRelationship {}", assemblyPartRelationship);
 
         return assemblyPartRelationship;
     }
