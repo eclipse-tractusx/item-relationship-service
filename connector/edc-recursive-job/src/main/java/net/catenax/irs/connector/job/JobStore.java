@@ -11,6 +11,8 @@ package net.catenax.irs.connector.job;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -25,6 +27,15 @@ public interface JobStore {
      * @see MultiTransferJob#getJobId()
      */
     Optional<MultiTransferJob> find(String jobId);
+
+    /**
+     * Retrieve jobs by state with completion date older than requested date
+     *
+     * @param jobState the job state
+     * @param localDateTime requested date
+     * @return found jobs
+     */
+    List<MultiTransferJob> findByStateAndCompletionDateOlderThan(JobState jobState, LocalDateTime localDateTime);
 
     /**
      * Retrieve a job given a transfer id. Only retrieves jobs
@@ -75,4 +86,12 @@ public interface JobStore {
      * @see JobState#ERROR
      */
     void markJobInError(String jobId, @Nullable String errorDetail);
+
+    /**
+     * Delete a job by its identifier.
+     *
+     * @param jobId the job identifier.
+     * @return deleted job
+     */
+    MultiTransferJob deleteJob(String jobId);
 }

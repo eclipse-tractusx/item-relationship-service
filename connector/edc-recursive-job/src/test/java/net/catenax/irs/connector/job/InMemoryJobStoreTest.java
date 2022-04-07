@@ -5,6 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 class InMemoryJobStoreTest {
 
@@ -159,6 +163,7 @@ class InMemoryJobStoreTest {
         // Assert
         refreshJob();
         assertThat(job.getState()).isEqualTo(JobState.COMPLETED);
+        assertTrue(job.getCompletionDate().isPresent());
         assertThat(job2.getState()).isEqualTo(JobState.UNSAVED);
     }
 
@@ -173,6 +178,7 @@ class InMemoryJobStoreTest {
         // Assert
         refreshJob();
         assertThat(job.getState()).isEqualTo(JobState.COMPLETED);
+        assertTrue(job.getCompletionDate().isPresent());
     }
 
     @Test
@@ -211,6 +217,7 @@ class InMemoryJobStoreTest {
         assertThat(job.getState()).isEqualTo(JobState.ERROR);
         assertThat(job2.getState()).isEqualTo(JobState.UNSAVED);
         assertThat(job.getErrorDetail()).isEqualTo(errorDetail);
+        assertTrue(job.getCompletionDate().isPresent());
     }
 
     @Test
@@ -224,6 +231,7 @@ class InMemoryJobStoreTest {
         // Assert
         refreshJob();
         assertThat(job.getState()).isEqualTo(JobState.ERROR);
+        assertTrue(job.getCompletionDate().isPresent());
     }
 
     @Test
@@ -236,6 +244,48 @@ class InMemoryJobStoreTest {
         // Assert
         refreshJob();
         assertThat(job.getState()).isEqualTo(JobState.ERROR);
+        assertTrue(job.getCompletionDate().isPresent());
+    }
+
+    @Test
+    void shouldFindCompletedJobsOlderThanFiveHours() {
+        // Arrange
+        final LocalDateTime nowPlusFiveHours = LocalDateTime.now().plusHours(5);
+        sut.create(job);
+        sut.addTransferProcess(job.getJobId(), processId1);
+        sut.completeTransferProcess(job.getJobId(), process1);
+        sut.completeJob(job.getJobId());
+        // Act
+        final List<MultiTransferJob> completedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.COMPLETED, nowPlusFiveHours);
+        // Assert
+        assertThat(completedJobs.size()).isEqualTo(1);
+        assertThat(completedJobs.get(0).getState()).isEqualTo(JobState.COMPLETED);
+        assertTrue(completedJobs.get(0).getCompletionDate().isPresent());
+    }
+
+    @Test
+    void shouldFindFailedJobsOlderThanFiveHours() {
+        // Arrange
+        final LocalDateTime nowPlusFiveHours = LocalDateTime.now().plusHours(5);
+        sut.create(job);
+        sut.addTransferProcess(job.getJobId(), processId1);
+        sut.markJobInError(job.getJobId(), errorDetail);
+        // Act
+        final List<MultiTransferJob> failedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.ERROR, nowPlusFiveHours);
+        // Assert
+        assertThat(failedJobs.size()).isEqualTo(1);
+        assertThat(failedJobs.get(0).getState()).isEqualTo(JobState.ERROR);
+        assertTrue(failedJobs.get(0).getCompletionDate().isPresent());
+    }
+
+    @Test
+    void shouldDeleteJobById() {
+        // Arrange
+        sut.create(job);
+        // Act
+        sut.deleteJob(job.getJobId());
+        // Assert
+        assertThat(sut.find(job.getJobId())).isEmpty();
     }
 
     private void refreshJob() {

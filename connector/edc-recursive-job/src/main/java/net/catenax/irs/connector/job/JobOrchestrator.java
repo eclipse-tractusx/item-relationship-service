@@ -11,6 +11,8 @@ package net.catenax.irs.connector.job;
 
 import static java.util.UUID.randomUUID;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -29,6 +31,9 @@ import lombok.extern.slf4j.Slf4j;
 }) // Handle RuntimeException from callbacks
 @Slf4j
 public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
+
+    private static final int TTL_CLEANUP_COMPLETED_JOBS_HOURS  = 1;
+    private static final int TTL_CLEANUP_FAILED_JOBS_HOURS = 24;
 
     /**
      * Transfer process manager.
@@ -134,6 +139,24 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         jobStore.completeTransferProcess(job.getJobId(), process);
 
         callCompleteHandlerIfFinished(job.getJobId());
+    }
+
+    public List<MultiTransferJob> findAndCleanupCompletedJobs() {
+        final LocalDateTime currentDateMinusHours = LocalDateTime.now().minusHours(TTL_CLEANUP_COMPLETED_JOBS_HOURS);
+        final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED, currentDateMinusHours);
+
+        return deleteJobs(completedJobs);
+    }
+
+    public List<MultiTransferJob> findAndCleanupFailedJobs() {
+        final LocalDateTime currentDateMinusHours = LocalDateTime.now().minusHours(TTL_CLEANUP_FAILED_JOBS_HOURS);
+        final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR, currentDateMinusHours);
+
+        return deleteJobs(failedJobs);
+    }
+
+    private List<MultiTransferJob> deleteJobs(final List<MultiTransferJob> jobs) {
+        return jobs.stream().map(job -> jobStore.deleteJob(job.getJobId())).collect(Collectors.toList());
     }
 
     private void callCompleteHandlerIfFinished(final String jobId) {
