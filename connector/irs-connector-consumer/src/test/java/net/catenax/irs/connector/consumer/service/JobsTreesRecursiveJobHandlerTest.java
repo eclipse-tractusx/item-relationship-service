@@ -102,6 +102,6 @@ class JobsTreeRecursiveJobHandlerTest {
         sut.complete(job);
 
         // Assert
-        verify(logic).assemblePartialPartTreeBlobs(transfers, storageAccountName, containerName, blobName);
+        verify(logic).assemblePartialPartTreeBlobs(transfers, blobName);
     }
 }

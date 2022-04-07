@@ -28,7 +28,6 @@ import net.catenax.irs.connector.consumer.configuration.ConsumerConfiguration;
 import net.catenax.irs.connector.consumer.registry.StubRegistryClient;
 import net.catenax.irs.connector.requests.JobsTreeRequest;
 import net.catenax.irs.connector.util.JsonUtil;
-import org.eclipse.dataspaceconnector.schema.azure.AzureBlobStoreSchema;
 import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.domain.metadata.DataEntry;
@@ -128,31 +127,24 @@ public class DataRequestFactory {
         monitor.info(format("Mapped data request to url: %s, previous depth: %d, new depth: %d", providerUrlForPartId,
                 requestContext.depth, remainingDepth));
 
-        return Stream.of(DataRequest.Builder.newInstance()
-                                            .id(UUID.randomUUID().toString()) //this is not relevant, thus can be random
-                                            .connectorAddress(
-                                                    providerUrlForPartId) //the address of the provider connector
-                                            .protocol("ids-rest") //must be ids-rest
-                                            .connectorId("consumer")
-                                            .dataEntry(
-                                                    DataEntry.Builder.newInstance() //the data entry is the source asset
-                                                                     .id(IrsConnectorConstants.IRS_REQUEST_ASSET_ID)
-                                                                     .policyId(
-                                                                             IrsConnectorConstants.IRS_REQUEST_POLICY_ID)
-                                                                     .build())
-                                            .dataDestination(DataAddress.Builder.newInstance()
-                                                                                .type(AzureBlobStoreSchema.TYPE) //the provider uses this to select the correct DataFlowController
-                                                                                .property(
-                                                                                        AzureBlobStoreSchema.ACCOUNT_NAME,
-                                                                                        configuration.getStorageAccountName())
-                                                                                .build())
-                                            .properties(
-                                                    Map.of(IrsConnectorConstants.DATA_REQUEST_IRS_REQUEST_PARAMETERS,
-                                                            irsRequestAsString,
-                                                            IrsConnectorConstants.DATA_REQUEST_IRS_DESTINATION_PATH,
-                                                            PARTIAL_PARTS_TREE_BLOB_NAME))
-                                            .managedResources(true)
-                                            .build());
+        return Optional.of(DataRequest.Builder.newInstance()
+                .id(UUID.randomUUID().toString()) //this is not relevant, thus can be random
+                .connectorAddress(providerUrlForPartId) //the address of the provider connector
+                .protocol("ids-rest") //must be ids-rest
+                .connectorId("consumer")
+                .dataEntry(DataEntry.Builder.newInstance() //the data entry is the source asset
+                        .id(IrsConnectorConstants.IRS_REQUEST_ASSET_ID)
+                        .policyId(IrsConnectorConstants.IRS_REQUEST_POLICY_ID)
+                        .build())
+                .dataDestination(DataAddress.Builder.newInstance()
+                                                    .type("dummyType") //the provider uses this to select the correct DataFlowController
+                                                    .build())
+                .properties(Map.of(
+                        IrsConnectorConstants.DATA_REQUEST_IRS_REQUEST_PARAMETERS, irsRequestAsString,
+                        IrsConnectorConstants.DATA_REQUEST_IRS_DESTINATION_PATH, PARTIAL_PARTS_TREE_BLOB_NAME
+                ))
+                .managedResources(true)
+                .build());
     }
 
     /**

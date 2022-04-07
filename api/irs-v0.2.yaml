@@ -1,7 +1,7 @@
 openapi: '3.0.2'
 info:
   description: API to retrieve parts tree information. See <a href="https://confluence.catena-x.net/display/CXM/PRS+Environments+and+Test+Data">this
-      page</a> for more information on test data available in this environment.
+    page</a> for more information on test data available in this environment.
   title: IRS API
   version: '0.2'
 servers:

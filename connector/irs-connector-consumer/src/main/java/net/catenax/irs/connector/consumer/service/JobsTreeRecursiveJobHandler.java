@@ -77,10 +77,8 @@ public class JobsTreeRecursiveJobHandler implements RecursiveJobHandler {
     public void complete(final MultiTransferJob job) {
         monitor.info("Completed retrieval for Job " + job.getJobId());
         final var completedTransfers = job.getCompletedTransfers();
-        final var targetAccountName = configuration.getStorageAccountName();
-        final var targetContainerName = job.getJobData().get(ConsumerService.CONTAINER_NAME_KEY);
         final var targetBlobName = job.getJobData().get(ConsumerService.DESTINATION_PATH_KEY);
-        logic.assemblePartialPartTreeBlobs(completedTransfers, targetAccountName, targetContainerName, targetBlobName);
+        logic.assemblePartialPartTreeBlobs(completedTransfers, targetBlobName);
     }
 
     private JobsTreeRequest getJobsTreeRequest(final MultiTransferJob job) {

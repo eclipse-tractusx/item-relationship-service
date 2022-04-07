@@ -1,4 +1,6 @@
 @startuml
+skinparam shadowing false
+
 class MultiTransferJob {
 --
 * jobId : string (UUID)
