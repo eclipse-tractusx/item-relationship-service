@@ -29,12 +29,14 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.IrsApplication;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.IrsPartRelationshipsWithInfos;
+import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.requests.IrsPartsTreeRequest;
 import net.catenax.irs.services.IrsPartsTreeQueryService;
 import org.springdoc.api.annotations.ParameterObject;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -133,7 +135,20 @@ public class IrsController {
     })
     @PutMapping("/jobs/{jobId}/cancel")
     public ResponseEntity<?> cancelJobById(final @Valid @PathVariable String jobId) {
-        return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
+        if (jobId == null || jobId.isEmpty()) {
+            return ResponseEntity.badRequest().body("Request must contain a mandatory id");
+        }
+
+        final Job canceledJob = this.itemJobService.cancelJobById(jobId);
+
+        if (canceledJob == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("IRS-Header", "Cancel Job By Id");
+
+        return new ResponseEntity<>(canceledJob, headers, HttpStatus.OK);
     }
 
 }
