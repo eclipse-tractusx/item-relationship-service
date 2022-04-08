@@ -9,33 +9,46 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 /**
- * Submodel Rest Client
+ * Submodel client
  */
 interface SubmodelClient {
 
     /**
      * @return Returns the Submodel
      */
-    AssemblyPartRelationship getSubmodel(String submodelEndpointAddress);
+    <T> T getSubmodel(String submodelEndpointAddress, Class<T> submodelClass);
 
 }
 
 /**
  * Digital Twin Registry Rest Client Stub used in local environment
  */
-@Profile("local")
 @Service
 class SubmodelClientLocalStub implements SubmodelClient {
 
     @Override
-    public AssemblyPartRelationship getSubmodel(final String submodelEndpointAddress) {
-        // String level, String content, String extent
+    public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
         final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
 
-        return submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(submodelEndpointAddress);
+        return (T) submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(submodelEndpointAddress);
     }
+
+}
+
+/**
+ * Submodel Rest Client Implementation
+ */
+class SubmodelClientImpl implements SubmodelClient {
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    @Override
+    public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
+        return restTemplate.getForEntity(submodelEndpointAddress, submodelClass).getBody();
+    }
+
 }

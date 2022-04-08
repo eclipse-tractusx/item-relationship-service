@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 /**
  * Digital Twin Registry Rest Client
  */
-@Profile("!local")
+@Profile("prod")
 @FeignClient(
       contextId = "digitalTwinRegistryClientContextId",
       value = "digitalTwinRegistryClient",
@@ -41,7 +41,6 @@ interface DigitalTwinRegistryClient {
 /**
  * Digital Twin Registry Rest Client Stub used in local environment
  */
-@Profile("local")
 @Service
 @ExcludeFromCodeCoverageGeneratedReport
 class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {

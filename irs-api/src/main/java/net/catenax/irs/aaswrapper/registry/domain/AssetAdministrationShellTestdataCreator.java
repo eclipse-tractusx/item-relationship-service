@@ -19,9 +19,7 @@ import java.util.List;
  */
 class AssetAdministrationShellTestdataCreator {
 
-    public AssetAdministrationShellDescriptor createDummyAssetAdministrationShellDescriptorForId(
-            final String catenaXId) {
-
+    public AssetAdministrationShellDescriptor createDummyAssetAdministrationShellDescriptorForId(final String catenaXId) {
         final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
 
         submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId));
