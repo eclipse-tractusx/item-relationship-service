@@ -9,9 +9,13 @@
 //
 package net.catenax.irs.component;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
@@ -19,13 +23,18 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 /**
  * Global unique identifier for asset
  */
+
+
+@Schema(description = "Represents a catenaX id in the format urn:uuid:<uuid> ")
 @Value
 @Builder
 @JsonDeserialize(builder = GlobalAssetIdentification.GlobalAssetIdBuilder.class)
 @ExcludeFromCodeCoverageGeneratedReport
 public class GlobalAssetIdentification {
 
-    @Schema(description = "Global unique identifier")
+    @Min(45)
+    @Max(45)
+    @Schema(description = "Global unique C-X identifier", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0")
     private String globalAssetId;
 
     /**

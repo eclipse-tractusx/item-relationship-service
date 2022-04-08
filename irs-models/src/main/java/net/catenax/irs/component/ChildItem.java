@@ -10,6 +10,7 @@
 package net.catenax.irs.component;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -34,7 +35,7 @@ public class ChildItem {
 
     @Schema(description = "Unique identifier of a single, unique (sub)component/part/batch,given by its globalAssetId/ digital twin id",
             implementation = BomLifecycle.class)
-    private String lifecycleContext;
+    private BomLifecycle lifecycleContext;
 
     @Schema(description = "Datetime of assembly", implementation = Instant.class)
     private Instant assembledOn;
@@ -42,8 +43,8 @@ public class ChildItem {
     @Schema(description = "Last date and time part was modified", implementation = Instant.class)
     private Instant lastModifiedOn;
 
-    @Schema(description = "CatenaX child Id", implementation = Instant.class)
-    private String childCatenaXId;
+    @Schema(description = "CatenaX child Id", implementation = GlobalAssetIdentification.class)
+    private GlobalAssetIdentification childCatenaXId;
 
     /**
      * Builder for ChildItem class

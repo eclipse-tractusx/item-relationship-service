@@ -24,7 +24,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 /**
  * List of Job and relationship to parts
  */
-@Schema(description = "List of Job and relationship to parts")
+@Schema(description = "Container for a job its relationship and shells.")
 @Value
 @Builder(toBuilder = true)
 @JsonDeserialize(builder = Jobs.JobsBuilder.class)
@@ -33,14 +33,14 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @ExcludeFromCodeCoverageGeneratedReport
 public class Jobs {
 
-    @Schema(description = "Information and data for the Job", implementation = Job.JobBuilder.class)
+    @Schema(description = "Information and data for the Job", implementation = Job.class)
     private Job job;
 
-    @Schema(description = "Parts relationship information")
+    @Schema(description = "Collection of relationships mapping the parent child relationship of AssemblyPartRelationShip aspects")
     @Singular
     private List<Relationship> relationships;
 
-    @Schema
+    @Schema(description = "Collections of AAS shells")
     private Optional<List<Shells>> shells;
 
     /**

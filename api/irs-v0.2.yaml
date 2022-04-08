@@ -104,7 +104,7 @@ paths:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/schemas/ErrorResponse'
+                  $ref: '#/components/examples/error-response'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Processing of job failed
@@ -152,18 +152,18 @@ paths:
                   $ref: '#/components/examples/job-result-without-uncompleted-result-tree'
               schema:
                 $ref: '#/components/schemas/Jobs'
-              description: job details for given jobId - job is in running state and has
-                not completed.
+          description: job details for given jobId - job is in running state and has
+            not completed.
         "206":
           content:
             application/json:
               examples:
-               complete:
+                complete:
                   $ref: '#/components/examples/partial-job-result'
               schema:
-               $ref: '#/components/schemas/Jobs'
-            description: uncompleted livecycle tree representation with the starting
-              point of the given jobId
+                $ref: '#/components/schemas/Jobs'
+          description: uncompleted livecycle tree representation with the starting
+            point of the given jobId
         "404":
           content:
             application/json:
@@ -176,9 +176,9 @@ paths:
         "417":
           content:
             application/json:
-              examplea:
+              examples:
                 complete:
-                 $ref: '#/components/examples/failed-job-result'
+                  $ref: '#/components/examples/failed-job-result'
               schema:
                 $ref: '#/components/schemas/Jobs'
           description: Processing of job failed
@@ -189,84 +189,221 @@ paths:
     put:
       operationId: cancelJobForJobId
       parameters:
-        - description: "Id of the job in registry."
-          in: path
-          name: jobId
-          required: true
-          schema:
-            $ref: '#/components/schemas/UUID'
+      - description: Id of the job in processing.
+        example: 6c311d29-5753-46d4-b32c-19b918ea93b0
+        in: path
+        name: jobId
+        required: true
+        schema:
+          type: string
+          format: uuid
       responses:
-        '200':
-          description: Job with {jobId} was canceled
-        '400':
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: object
+          description: "Job with {jobId} was canceled"
+        "400":
+          content:
+            '*/*':
+              schema:
+                type: object
           description: Bad request. JobId must be a string in UUID format.
-        '401':
+        "401":
+          content:
+            '*/*':
+              schema:
+                type: object
           description: Authorization information is missing or invalid.
-        '404':
+        "404":
+          content:
+            '*/*':
+              schema:
+                type: object
           description: A job with the specified jobId was not found.
-        '500':
+        "500":
+          content:
+            '*/*':
+              schema:
+                type: object
           description: Unexpected error.
       summary: Cancel job execution for a given jobId.
       tags:
-        - Item Relationship Service
+      - Item Relationship Service
   /irs/jobs/{processingState}:
     get:
       operationId: getJobsByProcessingState
       parameters:
-        - description: List of jobs (globalAssetIds) for a certain processing state
-          in: path
-          name: processingState
-          required: true
-          schema:
-            type: string
-            format: enum
-            enum:
-              - running
-              - failed
-              - complete
-              - canceled
-              # queued
-              # waiting
-            default: running
+      - description: List of jobs (globalAssetIds) for a certain processing state
+        in: path
+        name: processingState
+        required: true
+        schema:
+          type: string
+          enum:
+          - unsaved
+          - initial
+          - running
+          - transfered
+          - complete
+          - canceled
+          - failed
+        default: running
       responses:
         "200":
-          description: list of jobs with given processingState
           content:
             application/json:
               examples:
                 complete:
                   $ref: '#/components/examples/complete-job-list-processing-state'
+              schema:
+                $ref: '#/components/schemas/JobHandleCollection'
+          description: list of jobs with given processingState
         "400":
           content:
             application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/error-response'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Bad Request
+        "404":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/error-response'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: No process found with this state
+      summary: List of jobs (globalAssetIds) for a certain processing state
       tags:
-        - Item Relationship Service
+      - Item Relationship Service
 components:
   schemas:
-    Jobs:
+    ChildItem:
       type: object
-      description: Container for a job its relationship and shells.
+      description: 'Describe child item of a global asset '
       properties:
-        job:
-          $ref: '#/components/schemas/Job'
-        relationships:
-          type: array
-          description: Collection of relationships mapping the parent child relationship of AssemblyPartRelationShip aspects
-          items:
-            $ref: '#/components/schemas/Relationship'
-        shells:
-          type: array
-          description: Collections of AAS shells
-          items:
-            $ref: '#/components/schemas/Shell'
-    JobHandle:
+        assembledOn:
+          type: string
+          format: date-time
+          description: Datetime of assembly
+        childCatenaXId:
+          $ref: '#/components/schemas/GlobalAssetIdentification'
+        lastModifiedOn:
+          type: string
+          format: date-time
+          description: Last date and time part was modified
+        lifecycleContext:
+          type: string
+          description: View defining which data of the PartsTree is retrieved.
+          enum:
+            - asBuild
+            - asMaintained
+            - asPlanned
+            - asDesigned
+            - asOrdered
+            - asRecycled
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+    ErrorResponse:
       type: object
+      description: Error response
       properties:
-        jobId:
-          format: uuid
+        errors:
+          type: array
+          description: List of errors
+          items:
+            type: string
+            description: List of errors
+        message:
+          type: string
+          description: Error message
+        statusCode:
+          type: string
+          description: Error code
+          enum:
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
+    GlobalAssetIdentification:
+      type: object
+      description: Represents a CatenaX id in the format urn:uuid:<uuid>
+      maxLength: 45
+      minLength: 45
+      properties:
+        globalAssetId:
+          type: string
+          description: Global unique identifier
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
     Job:
       type: object
       description: Link between two parts.
@@ -277,7 +414,7 @@ components:
         globalAssetId:
           type: string
           items:
-            $ref: '#/components/schemas/CatenaXId'
+            $ref: '#/components/schemas/GlobalAssetIdentification'
         jobStatus:
           type: string
           description: Error code
@@ -355,6 +492,102 @@ components:
             exceptionDate:
               type: string
               format: date-time
+    JobHandle:
+      type: object
+      properties:
+        jobId:
+          type: string
+          format: uuid
+    JobHandleCollection:
+      type: object
+      properties:
+        jobHandleCollection:
+        type: array
+        items:
+          $ref: '#/components/schemas/JobHandle'
+    Jobs:
+      type: object
+      description: Container for a job its relationship and shells.
+      properties:
+        job:
+          $ref: '#/components/schemas/Job'
+        relationships:
+          type: array
+          description: Collection of relationships mapping the parent child relationship of AssemblyPartRelationShip aspects
+          items:
+            $ref: '#/components/schemas/Relationship'
+        shells:
+          type: array
+          description: Collections of AAS shells
+          items:
+            $ref: '#/components/schemas/Shell'
+    MeasurementUnit:
+      type: object
+      properties:
+        datatypeURI:
+          type: string
+          format: urn
+        lexicalValue:
+          type: string
+    Quantity:
+      type: object
+      properties:
+        quantityNumber:
+          type: object
+          items:
+            $ref: '#/components/schemas/MeasurementUnit'
+    Relationship:
+      type: object
+      description: Relationship of a parent child relationship between items on different levels as defined in aspect AssemblyPartRelationship.
+      properties:
+        catenaXId:
+          $ref: '#/components/schemas/GlobalAssetIdentification'
+        childItem:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChildItem'
+    Shell:
+      type: object
+      description: An AAS shell
+      properties:
+        description:
+          type: array
+          items:
+            $ref: '#/components/schemas/Description'
+        globalAssetId:
+          type: object
+          properties:
+            value:
+              type: array
+              items:
+                $ref: '#/components/schemas/GlobalAssetIdentification'
+        idShort:
+          type: string
+        identification:
+          type: string
+        specificAssetIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpecificAssetId'
+        submodelDescriptors:
+          type: object
+          properties:
+            description:
+              type: array
+              items:
+                $ref: '#/components/schemas/Description'
+            idShort:
+              type: string
+            identification:
+              type: string
+            specificAssetIds:
+              type: array
+              items:
+                $ref: '#/components/schemas/SpecificAssetId'
+            endpoints:
+              type: array
+              items:
+                $ref: '#/components/schemas/Endpoint'
     BomLifecycle:
       type: string
       description: The bill of material lifecycle for an asset
@@ -415,58 +648,6 @@ components:
         lost:
           type: integer
           description: Number of 'lost' submodel requests
-    Relationship:
-      type: object
-      description: Relationship of a parent child relationship between items on different levels as defined in aspect AssemblyPartRelationship.
-      properties:
-        catenaXId:
-          $ref: '#/components/schemas/CatenaXId'
-        childItem:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChildItem'
-    Shell:
-      type: object
-      description: An AAS shell
-      properties:
-        description:
-          type: array
-          items:
-            $ref: '#/components/schemas/Description'
-        globalAssetId:
-          type: object
-          properties:
-            value:
-              type: array
-              items:
-                $ref: '#/components/schemas/CatenaXId'
-        idShort:
-          type: string
-        identification:
-          type: string
-        specificAssetIds:
-          type: array
-          items:
-            $ref: '#/components/schemas/SpecificAssetId'
-        submodelDescriptors:
-          type: object
-          properties:
-            description:
-              type: array
-              items:
-                $ref: '#/components/schemas/Description'
-            idShort:
-              type: string
-            identification:
-              type: string
-            specificAssetIds:
-              type: array
-              items:
-                $ref: '#/components/schemas/SpecificAssetId'
-            endpoints:
-              type: array
-              items:
-                $ref: '#/components/schemas/Endpoint'
     Endpoint:
       type: object
       properties:
@@ -490,140 +671,6 @@ components:
           type: string
         value:
           type: string
-    ChildItem:
-      type: object
-      properties:
-        quantity:
-          type: object
-          items:
-            $ref: '#/components/schemas/Quantity'
-        lifecycleContext:
-          type: object
-          items:
-            $ref: '#/components/schemas/BomLifecycle'
-        assembledOn:
-          type: string
-          format: date-time
-        lastModifiedOn:
-          type: string
-          format: date-time
-        childCatenaXId:
-          type: string
-          items:
-            $ref: '#/components/schemas/CatenaXId'
-    Quantity:
-      type: object
-      properties:
-        quantityNumber:
-          type: object
-          items:
-            $ref: '#/components/schemas/MeasurementUnit'
-    MeasurementUnit:
-      type: object
-      properties:
-        datatypeURI:
-          type: string
-          format: urn
-        lexicalValue:
-          type: string
-    CatenaXId:
-      type: string
-      maxLength: 25
-      minLength: 25
-      format: urn
-      pattern: urn:uuid:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
-      example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
-    UUID:
-      type: string
-      maxLength: 36
-      minLength: 36
-      format: uuid
-      example: 6c311d29-5753-46d4-b32c-19b918ea93b0 # Random Example
-    ErrorResponse:
-      type: object
-      description: Error response
-      properties:
-        errors:
-          type: array
-          description: List of errors
-          items:
-            type: string
-            description: List of errors
-        message:
-          type: string
-          description: Error message
-        statusCode:
-          type: string
-          description: Error code
-          enum:
-            - 100 CONTINUE
-            - 101 SWITCHING_PROTOCOLS
-            - 102 PROCESSING
-            - 103 CHECKPOINT
-            - 200 OK
-            - 201 CREATED
-            - 202 ACCEPTED
-            - 203 NON_AUTHORITATIVE_INFORMATION
-            - 204 NO_CONTENT
-            - 205 RESET_CONTENT
-            - 206 PARTIAL_CONTENT
-            - 207 MULTI_STATUS
-            - 208 ALREADY_REPORTED
-            - 226 IM_USED
-            - 300 MULTIPLE_CHOICES
-            - 301 MOVED_PERMANENTLY
-            - 302 FOUND
-            - 302 MOVED_TEMPORARILY
-            - 303 SEE_OTHER
-            - 304 NOT_MODIFIED
-            - 305 USE_PROXY
-            - 307 TEMPORARY_REDIRECT
-            - 308 PERMANENT_REDIRECT
-            - 400 BAD_REQUEST
-            - 401 UNAUTHORIZED
-            - 402 PAYMENT_REQUIRED
-            - 403 FORBIDDEN
-            - 404 NOT_FOUND
-            - 405 METHOD_NOT_ALLOWED
-            - 406 NOT_ACCEPTABLE
-            - 407 PROXY_AUTHENTICATION_REQUIRED
-            - 408 REQUEST_TIMEOUT
-            - 409 CONFLICT
-            - 410 GONE
-            - 411 LENGTH_REQUIRED
-            - 412 PRECONDITION_FAILED
-            - 413 PAYLOAD_TOO_LARGE
-            - 413 REQUEST_ENTITY_TOO_LARGE
-            - 414 URI_TOO_LONG
-            - 414 REQUEST_URI_TOO_LONG
-            - 415 UNSUPPORTED_MEDIA_TYPE
-            - 416 REQUESTED_RANGE_NOT_SATISFIABLE
-            - 417 EXPECTATION_FAILED
-            - 418 I_AM_A_TEAPOT
-            - 419 INSUFFICIENT_SPACE_ON_RESOURCE
-            - 420 METHOD_FAILURE
-            - 421 DESTINATION_LOCKED
-            - 422 UNPROCESSABLE_ENTITY
-            - 423 LOCKED
-            - 424 FAILED_DEPENDENCY
-            - 425 TOO_EARLY
-            - 426 UPGRADE_REQUIRED
-            - 428 PRECONDITION_REQUIRED
-            - 429 TOO_MANY_REQUESTS
-            - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
-            - 451 UNAVAILABLE_FOR_LEGAL_REASONS
-            - 500 INTERNAL_SERVER_ERROR
-            - 501 NOT_IMPLEMENTED
-            - 502 BAD_GATEWAY
-            - 503 SERVICE_UNAVAILABLE
-            - 504 GATEWAY_TIMEOUT
-            - 505 HTTP_VERSION_NOT_SUPPORTED
-            - 506 VARIANT_ALSO_NEGOTIATES
-            - 507 INSUFFICIENT_STORAGE
-            - 508 LOOP_DETECTED
-            - 509 BANDWIDTH_LIMIT_EXCEEDED
-            - 510 NOT_EXTENDED
-            - 511 NETWORK_AUTHENTICATION_REQUIRED
   examples:
     error-response:
       value:

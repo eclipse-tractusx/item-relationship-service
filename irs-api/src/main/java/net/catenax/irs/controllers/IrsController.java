@@ -30,7 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.IrsApplication;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.JobHandleCollection;
 import net.catenax.irs.component.Jobs;
+import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.requests.IrsPartsTreeRequest;
 import net.catenax.irs.services.IrsPartsTreeQueryService;
@@ -70,7 +72,7 @@ public class IrsController {
                 description = "Processing of job failed",
                 content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                         schema = @Schema(implementation = ErrorResponse.class),
-                      examples = @ExampleObject(name="complete", ref = "#/components/examples/ErrorResponse"))
+                      examples = @ExampleObject(name="complete", ref = "#/components/examples/error-response"))
                 }),
     })
     @PostMapping("/items/{globalAssetId}")
@@ -128,27 +130,32 @@ public class IrsController {
                             @ApiResponse(responseCode = "500", description = "Unexpected error.")
     })
     @PutMapping("/jobs/{jobId}/cancel")
-    public ResponseEntity<?> cancelJobForJobId(final @Valid @PathVariable String jobId) {
+    public ResponseEntity<?> cancelJobForJobId(final @Valid @Parameter(description = "Id of the job in processing.", schema = @Schema(implementation = UUID.class), name = "jobId", example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @PathVariable UUID jobId) {
 
         return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
     }
 
     @Operation(operationId = "getJobsByProcessingState",
-          summary = " List of jobs (globalAssetIds) for a certain processing state",
+          summary = "List of jobs (globalAssetIds) for a certain processing state",
           tags = { "Item Relationship Service" })
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "list of jobs with processing state",
-          content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Jobs.class)) }),
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "list of jobs with given processingState",
+          content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = JobHandleCollection.class),
+                examples = @ExampleObject(name="complete", ref = "#/components/examples/complete-job-list-processing-state"))
+          }),
+          @ApiResponse(responseCode = "400", description = "Bad Request",
+                content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                      schema = @Schema(implementation = ErrorResponse.class),
+                      examples = @ExampleObject(name="complete", ref = "#/components/examples/error-response"))
+          }),
           @ApiResponse(responseCode = "404", description = "No process found with this state",
                 content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                      schema = @Schema(implementation = ErrorResponse.class))
-                }),
-          @ApiResponse(responseCode = "400", description = "Bad request",
-                content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                      schema = @Schema(implementation = ErrorResponse.class))
-                }),
+                      schema = @Schema(implementation = ErrorResponse.class),
+                      examples = @ExampleObject(name="complete", ref = "#/components/examples/error-response"))
+          }),
+
     })
     @GetMapping("/jobs/{processingState}")
-    public ResponseEntity<Jobs> getJobsByProcessingState(final @Valid @PathVariable String processingState) {
+    public ResponseEntity<Jobs> getJobsByProcessingState(final @Valid @Parameter(description = "List of jobs (globalAssetIds) for a certain processing state", schema = @Schema(implementation = JobState.class)) @PathVariable JobState processingState) {
         return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
     }
 }
