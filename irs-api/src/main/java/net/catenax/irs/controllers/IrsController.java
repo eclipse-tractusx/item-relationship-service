@@ -88,7 +88,7 @@ public class IrsController {
 
     })
     @PostMapping("/items/{globalAssetId}")
-    public JobHandle getBomLifecycleByGlobalAssetId(final @Valid @ParameterObject IrsPartsTreeRequest request) {
+    public JobHandle getBomLifecycleByGlobalAssetId(final @ParameterObject IrsPartsTreeRequest request) {
         return itemJobService.registerItemJob(request);
     }
 

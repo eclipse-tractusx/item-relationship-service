@@ -11,6 +11,7 @@ package net.catenax.irs.requests;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.constraints.Max;
@@ -50,7 +51,7 @@ public abstract class IrsPartsTreeRequestBase {
     @Parameter(description = "AspectType information to add to the returned tree", in = QUERY,
             example = "SerialPartTypization", explode = Explode.FALSE,
             schema = @Schema(implementation = AspectType.class, defaultValue = "SerialPartTypization"))
-    protected final String aspects;
+    protected final List<String> aspects;
 
     @Min(value = MIN_TREE_DEPTH, message = ApiErrorsConstants.ITEM_MIN_DEPTH)
     @Max(value = MAX_TREE_DEPTH, message = ApiErrorsConstants.ITEM_MAX_DEPTH)
@@ -67,7 +68,7 @@ public abstract class IrsPartsTreeRequestBase {
         return bomLifecycle;
     }
 
-    public Optional<String> getAspects() {
+    public Optional<List<String>> getAspects() {
         return Optional.ofNullable(aspects);
     }
 

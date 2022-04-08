@@ -12,6 +12,8 @@ package net.catenax.irs.requests;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 
+import java.util.List;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -48,7 +50,7 @@ public class IrsPartsTreeRequest extends IrsPartsTreeRequestBase {
      * @param direction         see {@link #getDirection()}
      */
     @Builder(toBuilder = true)
-    public IrsPartsTreeRequest(final String globalAssetId, final String bomLifecycle, final String aspects,
+    public IrsPartsTreeRequest(final String globalAssetId, final String bomLifecycle, final List<String> aspects,
             final Integer depth, final String direction) {
         super(bomLifecycle, aspects, depth, direction);
         this.globalAssetId = globalAssetId;
