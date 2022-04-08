@@ -11,7 +11,6 @@
 package net.catenax.irs.aaswrapper.submodel.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.Set;
@@ -28,16 +27,16 @@ class SubmodelTestdataCreatorTest {
     }
 
     @Test
-    void testCreateDummyAssemblyPartRelationshipForIdTest() {
-
+    void shouldReturnAssemblyPartRelationshipWithoutChildrenWhenRequestingWithTestId() {
         final AssemblyPartRelationship dummyAssemblyPartRelationshipForId = submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(
-                "8a61c8db-561e-4db0-84ec-a693fc5ffdf6");
+                "test");
 
-        assertEquals("8a61c8db-561e-4db0-84ec-a693fc5ffdf6", dummyAssemblyPartRelationshipForId.getCatenaXId());
+        assertThat(dummyAssemblyPartRelationshipForId.getCatenaXId()).isEqualTo("test");
+        assertThat(dummyAssemblyPartRelationshipForId.getChildParts()).isEmpty();
     }
 
     @Test
-    void testCreateDummyAssetAdministrationShellDescriptorForId() {
+    void shouldReturnAssemblyPartRelationshipWithPreDefinedChildrenWhenRequestingWithCatenaXId() {
         final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
         final AssemblyPartRelationship assemblyPartRelationship = submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(
                 catenaXId);
@@ -50,7 +49,7 @@ class SubmodelTestdataCreatorTest {
     }
 
     @Test
-    void testGetChildPartsForCatenaXId() {
+    void shouldReturnAssemblyPartRelationshipWithCustomChildrenWhenRequestingWithCatenaXId() {
         final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
         final List<String> children = List.of("abc", "def", "ghi");

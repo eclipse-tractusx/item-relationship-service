@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
  */
 @RequiredArgsConstructor
 @Service
+@Profile("local")
 public class SubmodelFacade {
 
     private final SubmodelClient submodelClient;
@@ -32,7 +33,7 @@ public class SubmodelFacade {
      * @return The Aspect Model for the given submodel
      */
     public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress) {
-        final AssemblyPartRelationship submodel = (AssemblyPartRelationship) submodelClient.getSubmodel(submodelEndpointAddress);
+        final AssemblyPartRelationship submodel = submodelClient.getSubmodel(submodelEndpointAddress);
         final Set<ChildDataDTO> childParts = new HashSet<>();
         submodel.getChildParts()
                 .forEach(childData -> childParts.add(ChildDataDTO.builder()
