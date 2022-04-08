@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.component;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
@@ -25,7 +26,8 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @ExcludeFromCodeCoverageGeneratedReport
 public class Relationship {
 
-    private String catenaXId;
+    @Schema(implementation = GlobalAssetIdentification.class)
+    private GlobalAssetIdentification catenaXId;
 
     private ChildItem childItem;
 

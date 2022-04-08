@@ -283,6 +283,30 @@ paths:
       - Item Relationship Service
 components:
   schemas:
+    AsyncFetchedItems:
+      type: object
+      description: State of the Item fetch
+      properties:
+        complete:
+          type: integer
+          format: int32
+          description: Summary of completed job with the globalAssetId
+        failed:
+          type: integer
+          format: int32
+          description: Summary of failed job with the globalAssetId
+        lost:
+          type: integer
+          format: int32
+          description: Summary of lost job with the globalAssetId
+        queue:
+          type: integer
+          format: int32
+          description: No of job with the globalAssetId on the queue
+        running:
+          type: integer
+          format: int32
+          description: Summary of running job with the globalAssetId
     ChildItem:
       type: object
       description: 'Describe child item of a global asset '
@@ -421,19 +445,18 @@ components:
         jobFinished:
           type: string
           format: date-time
-        jobID:
-          type: string
-          format: uuid
+        jobId:
+          $ref: '#/components/schemas/GlobalAssetIdentification'
         jobState:
-           type: string
-           enum:
-           - unsaved
-           - initial
-           - running
-           - transfered
-           - complete
-           - canceled
-           - failed
+          type: string
+          enum:
+          - unsaved
+          - initial
+          - running
+          - transfered
+          - complete
+          - canceled
+          - failed
         lastModifiedOn:
           type: string
           format: date-time
@@ -443,11 +466,13 @@ components:
         requestUrl:
           type: string
           format: url
-        required:
-        - globalAssetId
-        - jobId
-        - jobState
         summary:
+          $ref: '#/components/schemas/Summary'
+      required:
+      - globalAssetId
+      - jobId
+      - jobState
+        asynFetchecItems:
           type: object
           description: List of asyncFetchedItems
           items:
@@ -505,9 +530,9 @@ components:
       type: object
       properties:
         jobHandleCollection:
-        type: array
-        items:
-          $ref: '#/components/schemas/JobHandle'
+          type: array
+          items:
+            $ref: '#/components/schemas/JobHandle'
     Jobs:
       type: object
       description: Container for a job its relationship and shells.
@@ -516,44 +541,51 @@ components:
           $ref: '#/components/schemas/Job'
         relationships:
           type: array
-          description: Collection of relationships mapping the parent child relationship of AssemblyPartRelationShip aspects
+          description: Collection of relationships mapping the parent child relationship
+            of AssemblyPartRelationShip aspects
           items:
             $ref: '#/components/schemas/Relationship'
         shells:
           type: array
           description: Collections of AAS shells
           items:
-            $ref: '#/components/schemas/Shell'
+            $ref: '#/components/schemas/Shells'
     MeasurementUnit:
       type: object
       properties:
         datatypeURI:
           type: string
-          format: urn
         lexicalValue:
           type: string
     Quantity:
       type: object
+      description: Quantity component
       properties:
+        measurementUnit:
+          $ref: '#/components/schemas/MeasurementUnit'
         quantityNumber:
-          type: object
-          items:
-            $ref: '#/components/schemas/MeasurementUnit'
+          type: integer
+          format: int32
     Relationship:
       type: object
-      description: Relationship of a parent child relationship between items on different levels as defined in aspect AssemblyPartRelationship.
+      description: Collection of relationships mapping the parent child relationship
+        of AssemblyPartRelationShip aspects
       properties:
         catenaXId:
           $ref: '#/components/schemas/GlobalAssetIdentification'
         childItem:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChildItem'
+          $ref: '#/components/schemas/ChildItem'
+        parentItem:
+          $ref: '#/components/schemas/ChildItem'
     Shell:
       type: object
-      description: An AAS shell
+      description: Collections of AAS shells
       properties:
-        description:
+        idShort:
+          type: string
+        identification:
+          type: string
+        descriptions:
           type: array
           items:
             $ref: '#/components/schemas/Description'
@@ -564,10 +596,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/GlobalAssetIdentification'
-        idShort:
-          type: string
-        identification:
-          type: string
         specificAssetIds:
           type: array
           items:
@@ -591,6 +619,21 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Endpoint'
+    Shells:
+      type: object
+      description: Collections of AAS shells
+      properties:
+        shells:
+          type: array
+          description: Collections of AAS shells
+          items:
+            $ref: '#/components/schemas/Shell'
+    Summary:
+      type: object
+      description: List of asyncFetchedItems
+      properties:
+        asyncFetchedItems:
+          $ref: '#/components/schemas/AsyncFetchedItems'
     BomLifecycle:
       type: string
       description: The bill of material lifecycle for an asset
@@ -633,24 +676,6 @@ components:
         - CertificateOfDismantler
         - Address
         - Contact
-    AsyncFetchedItems:
-      type: object
-      properties:
-        queued:
-          type: integer
-          description: Number of 'queued' submodel requests
-        running:
-          type: integer
-          description: Number of 'running' submodel requests
-        complete:
-          type: integer
-          description: Number of 'completed' submodel requests
-        failed:
-          type: integer
-          description: Number of 'failed' submodel requests
-        lost:
-          type: integer
-          description: Number of 'lost' submodel requests
     Endpoint:
       type: object
       properties:
@@ -667,9 +692,9 @@ components:
               type: string
             endpointProtocolVersion:
               type: string
-    SpecificAssetId:
+    SpecificAssetIds:
       type: object
-      properties:
+      additionalProperties:
         key:
           type: string
         value:

@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.component;
 
+import java.util.List;
 import java.util.Map;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,6 +17,7 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * An AAS shell.
@@ -25,12 +27,19 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @Builder(toBuilder = true)
 @Schema(description = "")
 @ExcludeFromCodeCoverageGeneratedReport
-public class Shell {
+public class Shell extends BaseDescriptor{
 
-    private String identification;
 
-    private String idShort;
 
-    private Map<String, String> specificAssetId;
+    @Schema(implementation = Map.class)
+    private Map<String, String> specificAssetIds;
 
+    @Schema(implementation = Description.class)
+    private List<Description> descriptions;
+
+    @Schema(implementation = GlobalAssetIdentification.class)
+    private List<GlobalAssetIdentification> globalAssetId;
+
+    @Schema(implementation = SubmodelDescriptor.class)
+    private List<SubmodelDescriptor> submodelDescriptors;
 }
