@@ -60,9 +60,9 @@ public class IrsController {
     private final IrsPartsTreeQueryService itemJobService;
 
     @Operation(operationId = "getBomLifecycleByGlobalAssetId", summary = "Registers and starts a AAS crawler job for given {globalAssetId}",
-            tags = { "Item Relationship Service" })
+            tags = { "Item Relationship Service" }, description = "Registers and starts a AAS crawler job for given {globalAssetId}")
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
-            description = "ivecycle tree representation with the starting point of the given jobId",
+            description = "Livecycle tree representation with the starting point of the given jobId",
             content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = JobHandle.class))
             }),
         @ApiResponse(responseCode = "201",

@@ -1,16 +1,16 @@
-openapi: '3.0.2'
+openapi: 3.0.1
 info:
   description: API to retrieve parts tree information. See <a href="https://confluence.catena-x.net/display/CXM/PRS+Environments+and+Test+Data">this
     page</a> for more information on test data available in this environment.
   title: IRS API
-  version: '0.2'
+  version: "0.2"
 servers:
-  - url: https://localhost/api/v0.2
+  - url: https://Specification/api/v0.2
 paths:
   /irs/items/{globalAssetId}:
     post:
+      description: "Registers and starts a AAS crawler job for given {globalAssetId}"
       operationId: getBomLifecycleByGlobalAssetId
-      description: Registers and starts a AAS crawler job for given {globalAssetId}
       parameters:
         - description: Readable ID of manufacturer including plant.
           example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
@@ -40,10 +40,10 @@ paths:
               - asRecycled
         - description: AspectType information to add to the returned tree
           example: SerialPartTypization
+          explode: false
           in: query
           name: aspects
           required: false
-          explode: false
           schema:
             type: array
             items:
@@ -73,16 +73,17 @@ paths:
           schema:
             type: integer
             format: int32
-            minimum: 1
             maximum: 100
+            minimum: 1
             default: 1
         - description: Direction in which the tree shall be traversed
+          example: downward
           in: query
           name: direction
           required: false
           schema:
             type: string
-            format: enum
+            description: Direction in which the tree shall be traversed
             enum:
               - upward
               - downward

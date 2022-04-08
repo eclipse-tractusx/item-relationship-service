@@ -20,6 +20,7 @@ import javax.validation.constraints.NotBlank;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.Explode;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.annotations.ValueOfEnum;
@@ -50,13 +51,13 @@ public abstract class IrsPartsTreeRequestBase {
     @ValueOfEnum(enumClass = AspectType.class, message = ApiErrorsConstants.ITEM_VIEW_MUST_MATCH_ENUM)
     @Parameter(description = "AspectType information to add to the returned tree", in = QUERY,
             example = "SerialPartTypization", explode = Explode.FALSE,
-            schema = @Schema(implementation = AspectType.class, defaultValue = "SerialPartTypization"))
-    protected final List<String> aspects;
+            array = @ArraySchema(schema = @Schema(implementation = AspectType.class, defaultValue = "SerialPartTypization")))
+    protected final List<AspectType> aspects;
 
     @Min(value = MIN_TREE_DEPTH, message = ApiErrorsConstants.ITEM_MIN_DEPTH)
     @Max(value = MAX_TREE_DEPTH, message = ApiErrorsConstants.ITEM_MAX_DEPTH)
     @Parameter(description = "Max depth of the returned tree, if empty max depth is returned", in = QUERY,
-            schema = @Schema(implementation = Integer.class, minimum = "1", maximum = "100"))
+            schema = @Schema(implementation = Integer.class, minimum = "1", maximum = "100", defaultValue = "1"))
     protected final Integer depth;
 
     @ValueOfEnum(enumClass = Direction.class, message = ApiErrorsConstants.ITEM_VIEW_MUST_MATCH_ENUM)
@@ -68,7 +69,7 @@ public abstract class IrsPartsTreeRequestBase {
         return bomLifecycle;
     }
 
-    public Optional<List<String>> getAspects() {
+    public Optional<List<AspectType>> getAspects() {
         return Optional.ofNullable(aspects);
     }
 

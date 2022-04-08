@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.controllers.ApiErrorsConstants;
 import net.catenax.irs.controllers.IrsApiConstants;
@@ -50,7 +51,7 @@ public class IrsPartsTreeRequest extends IrsPartsTreeRequestBase {
      * @param direction         see {@link #getDirection()}
      */
     @Builder(toBuilder = true)
-    public IrsPartsTreeRequest(final String globalAssetId, final String bomLifecycle, final List<String> aspects,
+    public IrsPartsTreeRequest(final String globalAssetId, final String bomLifecycle, final List<AspectType> aspects,
             final Integer depth, final String direction) {
         super(bomLifecycle, aspects, depth, direction);
         this.globalAssetId = globalAssetId;
