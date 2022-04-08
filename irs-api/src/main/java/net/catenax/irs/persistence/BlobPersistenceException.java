@@ -7,16 +7,15 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.connector.job;
+
+package net.catenax.irs.persistence;
 
 /**
- * Represents the state of a {@link MultiTransferJob}.
+ * Exception for everything related to BlobPersistence actions
  */
-public enum JobState {
-    UNSAVED,
-    INITIAL,
-    IN_PROGRESS,
-    TRANSFERS_FINISHED,
-    COMPLETED,
-    ERROR
+public class BlobPersistenceException extends Exception {
+
+    public BlobPersistenceException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 }

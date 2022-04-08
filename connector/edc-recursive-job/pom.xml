@@ -13,8 +13,8 @@
     <groupId>net.catenax.irs</groupId>
     <artifactId>edc-recursive-job</artifactId>
 
-    <name>EDC Recursive Job Extension</name>
-    <description>EDC Extension for recursive job management</description>
+    <name>Recursive Job Module</name>
+    <description>Module for recursive job management</description>
 
     <dependencies>
         <dependency>
@@ -35,12 +35,11 @@
             <version>23.0.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- edc-patched-core needs to appear before any other edc dependency to allow overriding of EDC classes -->
         <dependency>
-            <groupId>net.catenax.irs</groupId>
-            <artifactId>edc-patched-core</artifactId>
-            <version>${revision}</version>
-            <scope>compile</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.32</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

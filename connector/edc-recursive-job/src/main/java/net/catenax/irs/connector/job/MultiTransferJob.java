@@ -24,7 +24,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
 import lombok.ToString;
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 import org.jetbrains.annotations.Nullable;
 
 /**

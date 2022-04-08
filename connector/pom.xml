@@ -11,9 +11,7 @@
     <description>Root module containing connector modules.</description>
 
     <modules>
-        <module>edc-patched-core</module>
+        <module>irs-connector-parent</module>
         <module>edc-recursive-job</module>
-        <module>edc-transfer-process-watchdog</module>
-        <module>irs-connector-testing</module>
     </modules>
 </project>

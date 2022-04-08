@@ -11,6 +11,8 @@
 
 package net.catenax.irs.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,7 +20,8 @@ import lombok.Data;
  * ChildDataDTO model used for internal application use
  */
 @Data
-@Builder
+@Builder(toBuilder = true, setterPrefix = "with")
+@JsonDeserialize(builder = ChildDataDTO.ChildDataDTOBuilder.class)
 public class ChildDataDTO {
     /**
      * lifecycleContext
@@ -29,4 +32,12 @@ public class ChildDataDTO {
      * childCatenaXId
      */
     private String childCatenaXId;
+
+    /**
+     * Builder class
+     */
+    @JsonPOJOBuilder(withPrefix = "with")
+    public static class ChildDataDTOBuilder {
+
+    }
 }

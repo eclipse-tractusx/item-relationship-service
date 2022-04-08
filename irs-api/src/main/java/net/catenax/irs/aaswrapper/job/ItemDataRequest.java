@@ -7,16 +7,17 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.connector.job;
+package net.catenax.irs.aaswrapper.job;
+
+import lombok.Value;
+import net.catenax.irs.connector.job.DataRequest;
 
 /**
- * Represents the state of a {@link MultiTransferJob}.
+ * Data Request for CatenaX IDs
  */
-public enum JobState {
-    UNSAVED,
-    INITIAL,
-    IN_PROGRESS,
-    TRANSFERS_FINISHED,
-    COMPLETED,
-    ERROR
+@Value
+public class ItemDataRequest implements DataRequest {
+
+    private final String itemId;
+
 }

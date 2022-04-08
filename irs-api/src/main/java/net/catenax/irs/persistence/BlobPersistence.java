@@ -7,16 +7,16 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.connector.job;
+
+package net.catenax.irs.persistence;
 
 /**
- * Represents the state of a {@link MultiTransferJob}.
+ * Interface for storing data blobs.
  */
-public enum JobState {
-    UNSAVED,
-    INITIAL,
-    IN_PROGRESS,
-    TRANSFERS_FINISHED,
-    COMPLETED,
-    ERROR
+public interface BlobPersistence {
+
+    void putBlob(String targetBlobName, byte[] blob) throws BlobPersistenceException;
+
+    byte[] getBlob(String sourceBlobName) throws BlobPersistenceException;
+
 }
