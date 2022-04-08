@@ -11,6 +11,7 @@ package net.catenax.irs.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import lombok.NonNull;
 import net.catenax.irs.component.Job;
@@ -31,4 +32,5 @@ public interface IIrsPartTreeQueryService {
 
     Job cancelJobById(@NonNull String jobId);
 
+    Jobs getBOMForJobId(UUID jobId);
 }

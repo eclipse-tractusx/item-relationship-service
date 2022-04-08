@@ -5,7 +5,7 @@ info:
   title: IRS API
   version: '0.2'
 servers:
-  - url: https://localhost/api/v0.2
+  - url: http://irs.int.demo.catena-x.net
 paths:
   /irs/items/{globalAssetId}:
     post:

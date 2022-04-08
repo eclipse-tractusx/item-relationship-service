@@ -21,11 +21,6 @@ import net.catenax.irs.connector.job.RecursiveJobHandler;
 @Slf4j
 public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataRequest, AASTransferProcess> {
     /**
-     * Job Data key for the destination path of the item tree
-     */
-    public static final String DESTINATION_PATH_KEY = "destination.path.key";
-
-    /**
      * Job Data key for root item ID
      */
     public static final String ROOT_ITEM_ID_KEY = "root.item.id.key";
@@ -54,7 +49,7 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
     public void complete(final MultiTransferJob job) {
         log.info("Completed retrieval for Job {}", job.getJobId());
         final var completedTransfers = job.getCompletedTransfers();
-        final var targetBlobName = job.getJobData().get(DESTINATION_PATH_KEY);
+        final var targetBlobName = job.getJobId();
         logic.assemblePartialPartTreeBlobs(completedTransfers, targetBlobName);
     }
 }
