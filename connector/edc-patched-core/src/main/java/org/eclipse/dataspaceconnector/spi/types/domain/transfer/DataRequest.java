@@ -11,7 +11,6 @@
  *       Microsoft Corporation - initial API and implementation
  *
  */
-
 package org.eclipse.dataspaceconnector.spi.types.domain.transfer;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -30,7 +29,7 @@ import java.util.Map;
  */
 @JsonTypeName("dataspaceconnector:datarequest")
 @JsonDeserialize(builder = DataRequest.Builder.class)
-public class DataRequest implements RemoteMessage, Polymorphic {
+public final class DataRequest implements RemoteMessage, Polymorphic {
     private String id;
 
     private String processId;
@@ -57,6 +56,7 @@ public class DataRequest implements RemoteMessage, Polymorphic {
 
     /**
      * The unique request id. Request ids are provided by the originating consumer and must be unique.
+     *
      */
     public String getId() {
         return id;

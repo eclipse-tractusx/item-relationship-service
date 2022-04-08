@@ -11,7 +11,6 @@
  *       Microsoft Corporation - initial API and implementation
  *
  */
-
 package org.eclipse.dataspaceconnector.ids.api.transfer;
 
 import de.fraunhofer.iais.eis.ArtifactRequestMessage;

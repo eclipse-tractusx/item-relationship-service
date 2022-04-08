@@ -15,11 +15,14 @@ import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -56,6 +59,18 @@ public class InMemoryJobStore implements JobStore {
     @Override
     public Optional<MultiTransferJob> find(final String jobId) {
         return readLock(() -> Optional.ofNullable(jobsById.get(jobId)));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<MultiTransferJob> findByStateAndCompletionDateOlderThan(final JobState jobState, final LocalDateTime localDateTime) {
+        return readLock(() -> jobsById.values()
+                                      .stream()
+                                      .filter(hasState(jobState))
+                                      .filter(isCompletionDateBefore(localDateTime))
+                                      .collect(Collectors.toList()));
     }
 
     /**
@@ -140,6 +155,14 @@ public class InMemoryJobStore implements JobStore {
                 .findFirst();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MultiTransferJob deleteJob(final String jobId) {
+        return writeLock(() -> jobsById.remove(jobId));
+    }
+
     private <T> T readLock(final Supplier<T> work) {
         try {
             if (!lock.readLock().tryLock(TIMEOUT, TimeUnit.MILLISECONDS)) {
@@ -170,5 +193,13 @@ public class InMemoryJobStore implements JobStore {
             Thread.currentThread().interrupt();
             throw new EdcException(e);
         }
+    }
+
+    private Predicate<MultiTransferJob> isCompletionDateBefore(final LocalDateTime localDateTime) {
+        return job -> job.getCompletionDate().isPresent() && job.getCompletionDate().get().isBefore(localDateTime);
+    }
+
+    private Predicate<MultiTransferJob> hasState(final JobState jobState) {
+        return job -> job.getState().equals(jobState);
     }
 }

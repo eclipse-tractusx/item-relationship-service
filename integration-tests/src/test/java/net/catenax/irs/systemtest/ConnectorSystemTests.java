@@ -10,6 +10,7 @@
 package net.catenax.irs.systemtest;
 
 import net.catenax.irs.requests.PartsTreeByObjectIdRequest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,7 @@ import static org.awaitility.Awaitility.await;
  *
  * @see <a href="https://confluence.catena-x.net/display/ARTI/MTPDC+Testing">MTPDC Testing</a>
  */
+@Disabled
 @Tag("SystemTests")
 public class ConnectorSystemTests {
 

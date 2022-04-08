@@ -22,7 +22,7 @@
         <okhttp-version>4.9.2</okhttp-version>
         <gson-version>2.8.8</gson-version>
         <commons-lang3-version>3.12.0</commons-lang3-version>
-        <jackson-version>2.8.9</jackson-version>
+        <jackson-version>2.9.8</jackson-version>
         <threetenbp-version>1.5.0</threetenbp-version>
         <jakarta-annotation-version>1.3.5</jakarta-annotation-version>
     </properties>
@@ -76,16 +76,32 @@
     <build>
         <plugins>
             <plugin>
-                    <groupId>org.openapitools</groupId>
-                    <artifactId>openapi-generator-maven-plugin</artifactId>
-                    <version>5.3.0</version>
-                    <executions>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>5.3.0</version>
+                <executions>
                     <execution>
+                        <id>irs-v0.2</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/../api/irs-v0.1.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/../api/irs-v0.2.yaml</inputSpec>
+                            <generatorName>java</generatorName>
+                            <apiPackage>net.catenax.irs.v2.client.api</apiPackage>
+                            <modelPackage>net.catenax.irs.v2.client.model</modelPackage>
+                            <invokerPackage>net.catenax.irs.v2.client</invokerPackage>
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>irs-v0.1</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/../api/irs-v0.2.yaml</inputSpec>
                             <generatorName>java</generatorName>
                             <apiPackage>net.catenax.irs.client.api</apiPackage>
                             <modelPackage>net.catenax.irs.client.model</modelPackage>

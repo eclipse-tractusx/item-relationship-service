@@ -31,19 +31,6 @@ spec:
           env:
             - name: irs.apiUrl
               value: {{ .Values.irs.apiUrl }}
-            - name: spring.datasource.url
-              value: {{ .Values.postgresql.url | quote }}
-            - name: spring.datasource.username
-              value: {{ .Values.postgresql.postgresqlUsername | quote }}
-            - name: spring.datasource.password
-              valueFrom:
-                secretKeyRef:
-                  name: irs-secrets
-                  key: postgresql_password
-{{- range $key, $value := .Values.irs.env }}
-            - name: "{{ $key }}"
-              value: "{{ $value }}"
-{{- end }}
           resources:
             requests:
               cpu: 500m

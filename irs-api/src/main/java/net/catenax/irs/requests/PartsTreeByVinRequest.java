@@ -12,6 +12,7 @@ package net.catenax.irs.requests;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.controllers.IrsController;
 
 import javax.validation.constraints.NotBlank;
@@ -25,6 +26,7 @@ import static net.catenax.irs.dtos.ValidationConstants.VIN_FIELD_LENGTH;
  */
 @Value
 @SuppressWarnings({"PMD.CommentRequired"})
+@ExcludeFromCodeCoverageGeneratedReport
 public class PartsTreeByVinRequest extends PartsTreeRequestBase {
     @NotBlank
     @Size(min = VIN_FIELD_LENGTH, max = VIN_FIELD_LENGTH)

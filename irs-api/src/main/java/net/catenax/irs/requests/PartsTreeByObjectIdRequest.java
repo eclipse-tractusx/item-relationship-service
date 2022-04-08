@@ -12,7 +12,7 @@ package net.catenax.irs.requests;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Builder;
 import lombok.Value;
-import net.catenax.irs.controllers.IrsController;
+import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -22,10 +22,11 @@ import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MAX_LENGTH;
 import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
 
 /**
- * Parameter object for {@link IrsController#getPartsTree(PartsTreeByObjectIdRequest)} REST operation.
+ * Parameter object for  REST operation.
  */
 @Value
 @SuppressWarnings({"PMD.CommentRequired", "PMD.CommentDefaultAccessModifier", "PMD.DefaultPackage"})
+@ExcludeFromCodeCoverageGeneratedReport
 public class PartsTreeByObjectIdRequest extends PartsTreeRequestBase {
 
     @NotBlank

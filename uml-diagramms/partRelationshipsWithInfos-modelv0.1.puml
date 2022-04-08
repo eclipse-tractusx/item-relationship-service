@@ -1,0 +1,39 @@
+@startuml
+entity PartRelationshipsWithInfos {
+--
+* partInfos : List<PartInfo>
+* relationships: List<PartRelationship>
+}
+
+entity PartInfo {
+--
+aspects : List<Aspect>
+part: PartId
+partTypeName : String [optional]
+}
+
+entity PartRelationship {
+--
+child : PartId
+parent: PartId
+}
+
+entity Aspect {
+* name : String
+* url : String
+}
+
+entity PartId {
+* objectIDManufacturer : String
+* oneIDManufacturer  : String
+}
+
+PartRelationshipsWithInfos }|-- PartInfo
+PartRelationshipsWithInfos }|-- PartRelationship
+PartRelationship ||-- PartId : parent
+PartRelationship ||-- PartId : child
+PartInfo }|--  Aspect
+PartInfo ||-- PartId
+
+
+@enduml

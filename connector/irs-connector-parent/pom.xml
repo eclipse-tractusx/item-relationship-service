@@ -24,7 +24,7 @@
     <jackson.version>2.12.4</jackson.version>
     <jakarta.validation.version>3.0.0</jakarta.validation.version>
     <hibernate-validator.version>7.0.1.Final</hibernate-validator.version>
-    <lombok.version>1.18.20</lombok.version>
+    <lombok.version>1.18.22</lombok.version>
     <micrometer-registry-jmx.version>1.8.0</micrometer-registry-jmx.version>
   </properties>
 
@@ -47,12 +47,12 @@
       </snapshots>
     </repository>
     <repository>
-          <id>edc-agerax</id>
-          <url>https://maven.pkg.github.com/Agera-CatenaX/EclipseDataSpaceConnector</url>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </repository>
+       <id>edc-agerax</id>
+       <url>https://maven.pkg.github.com/Agera-CatenaX/EclipseDataSpaceConnector</url>
+       <snapshots>
+       <enabled>true</enabled>
+       </snapshots>
+    </repository>
   </repositories>
 
   <dependencies>

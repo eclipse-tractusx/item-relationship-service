@@ -11,18 +11,20 @@ package net.catenax.irs;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * Application entry point.
  */
 @SpringBootApplication
+@EnableFeignClients
 public class IrsApplication {
 
     /** The IRS API version. */
-    public static final String API_VERSION = "v0.1";
+    public static final String API_VERSION = "0.2";
 
     /** The URL prefix for IRS API URLs. */
-    public static final String API_PREFIX = "api/" + API_VERSION;
+    public static final String API_PREFIX = "irs";
 
     /**
      * Entry point.

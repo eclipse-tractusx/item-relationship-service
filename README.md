@@ -31,18 +31,6 @@ The two following subsections provide instructions for running either only the i
 curl -X GET "http://localhost:8080/api/v0.1/vins/BMWOVCDI21L5DYEUU/partsTree?view=AS_BUILT"
 ```
 
-## Inspect data
-
-### Get persisted data
-
-```bash
-docker exec -it db bash -c 'psql -U $POSTGRES_USER postgres'
-```
-
-```sql
-select * from part_relationship;
-```
-
 ## Swagger UI
 
 ### IRS API
@@ -65,12 +53,6 @@ If you want to make sure the IRS deployment will work well with your changes, yo
 
 A deployment to the INT environment can be triggered manually with the `IRS Deploy` workflow as well by overriding the default target environment parameter to "int". INT environment deployments should be coordinated with the consumers of the IRS systems.
 
-## Load Test Data
-
-Test data can be loaded using `IRS Load Test Data` workflow. This workflow is triggered manually. It checks out the json files stored in
-[test-data folder](./coreservices/partsrelationshipservice/cd/test-data), converts the data into sql queries and inserts the data into IRS database.
-Before inserting all records with oneIds from json files are deleted from the database.
-
 ## Smoke tests
 
 [Smoke tests](integration-tests/src/test/java/net/catenax/irs/smoketest) are running against the application and the consumer connectors in the IRS Smoke tests pipeline.
@@ -82,6 +64,22 @@ If you want to run it against connector you need to add the following VM options
 
 [System tests](integration-tests/src/test/java/net/catenax/irs/systemtest) are running against multiple IRS deployments and reconstructing a parts tree from multiple partial trees.
 To run the tests, download the file artifact `dataspace-deployments.json` from the latest IRS Deploy GitHub Actions run into the `dev/local` folder.
+
+## Commit messages
+The commit messages have to match a pattern in the form of:  
+< type >(optional scope):[<Ticket_ID>] < description >
+
+Example:  
+chore(api):[TRI-123] some text
+
+Detailed pattern can be found here: [commit-msg](dev/commit-msg)
+
+### Installation
+```shell
+cp dev/commit-msg .git/hooks/commit-msg && chmod 500 .git/hooks/commit-msg
+```
+
+For further information please see https://github.com/hazcod/semantic-commit-hook
 
 ## Licenses
 Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0)

@@ -1,9 +1,10 @@
 @startuml
+skinparam shadowing false
 
 actor APIConsumer
 activate APIConsumer
 
-box "Consumer" #LightBlue
+box "Consumer" #LightGrey
 participant WebService
 activate WebService
 participant ConsumerApiController
@@ -34,21 +35,27 @@ loop poll until response is  "200"
         lookupJobId in JobStore
      end ref
      opt job.hasCompleted()
-            APIConsumer <-- WebService : "200" + document
+            APIConsumer <-- WebService : "200" + payload(job details + document)
      else job.isRunning()
            alt ?returnUncompletedResultTree=true
-             APIConsumer <-- WebService : "206" + document
+             APIConsumer <-- WebService : "206" + payload(job details + document)
            else
-             APIConsumer <-- WebService : "200"
+             APIConsumer <-- WebService : "200" + payload(job details)
             end alt
      else job.hasCancled()
-             APIConsumer <-- WebService : "404"
+             APIConsumer <-- WebService : "404" + payload(job details)
      else job.hasFailed()
         alt ?returnUncompletedResultTree=true
-            APIConsumer <-- WebService : "417" + document
+            APIConsumer <-- WebService : "417" + payload(job details + document)
         else
-            APIConsumer <-- WebService : "417"
+            APIConsumer <-- WebService : "417"  + payload(job details)
         end alt
+      else  unexpected exception
+        alt ?returnUncompletedResultTree=true
+            APIConsumer <-- WebService : "500" + payload(job details + document)
+        else
+           APIConsumer <-- WebService : "500" + payload(job details)
+           end alt
      end opt
 
 end loop

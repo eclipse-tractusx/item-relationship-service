@@ -9,21 +9,23 @@
 //
 package net.catenax.irs.connector.job;
 
+import static java.lang.String.format;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
 import lombok.ToString;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static java.lang.String.format;
 
 /**
  * Entity for recursive jobs that potentially comprise multiple transfers.
@@ -64,6 +66,11 @@ public class MultiTransferJob {
     @Getter
     @Singular
     private List<TransferProcess> completedTransfers;
+    /**
+     * Sets completion date for jobs with {@link JobState#COMPLETED} and {@link JobState#ERROR} state.
+     */
+    @Getter
+    private Optional<LocalDateTime> completionDate;
 
     /* package */ Collection<String> getTransferProcessIds() {
         return Collections.unmodifiableSet(this.transferProcessIds);
@@ -98,14 +105,16 @@ public class MultiTransferJob {
          * Transition the job to the {@link JobState#COMPLETED} state.
          */
         /* package */ MultiTransferJobBuilder transitionComplete() {
-            return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL);
+            return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL)
+                  .completionDate(Optional.of(LocalDateTime.now()));
         }
 
         /**
          * Transition the job to the {@link JobState#ERROR} state.
          */
         /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail) {
-            state = JobState.ERROR;
+            this.state = JobState.ERROR;
+            this.completionDate = Optional.of(LocalDateTime.now());
             this.errorDetail = errorDetail;
             return this;
         }
@@ -115,7 +124,7 @@ public class MultiTransferJob {
             if (Arrays.stream(starts).noneMatch(s -> s == state)) {
                 throw new IllegalStateException(format("Cannot transition from state %s to %s", state, end));
             }
-            state = end;
+            this.state = end;
             return this;
         }
     }
