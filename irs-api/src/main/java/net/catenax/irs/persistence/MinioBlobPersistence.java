@@ -77,7 +77,7 @@ public class MinioBlobPersistence implements BlobPersistence {
     private void setExpirationLifecycle(final String bucketName)
             throws ErrorResponseException, InsufficientDataException, InternalException, InvalidKeyException,
             InvalidResponseException, IOException, NoSuchAlgorithmException, ServerException, XmlParserException {
-        final Expiration expiration = new Expiration((ResponseDate) null, EXPIRE_AFTER_DAYS, false);
+        final Expiration expiration = new Expiration((ResponseDate) null, EXPIRE_AFTER_DAYS, null);
         final LifecycleRule rule = createExpirationRule(expiration);
         final LifecycleConfiguration lifecycleConfig = new LifecycleConfiguration(List.of(rule));
         minioClient.setBucketLifecycle(
