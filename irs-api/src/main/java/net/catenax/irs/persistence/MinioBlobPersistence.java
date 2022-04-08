@@ -35,10 +35,13 @@ import io.minio.messages.LifecycleRule;
 import io.minio.messages.ResponseDate;
 import io.minio.messages.RuleFilter;
 import io.minio.messages.Status;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * BlobPersistence implementation using the min.io library
  */
+@Slf4j
 public class MinioBlobPersistence implements BlobPersistence {
 
     private static final Integer EXPIRE_AFTER_DAYS = 7;
@@ -47,7 +50,13 @@ public class MinioBlobPersistence implements BlobPersistence {
 
     public MinioBlobPersistence(final String endpoint, final String accessKey, final String secretKey,
             final String bucketName) throws BlobPersistenceException {
-        this(bucketName, MinioClient.builder().endpoint(endpoint).credentials(accessKey, secretKey).build());
+        this(bucketName, createClient(endpoint, accessKey, secretKey));
+    }
+
+    @NotNull
+    private static MinioClient createClient(final String endpoint, final String accessKey, final String secretKey) {
+        log.info("Building client with keys '{}' and '{}'", accessKey, secretKey);
+        return MinioClient.builder().endpoint(endpoint).credentials(accessKey, secretKey).build();
     }
 
     public MinioBlobPersistence(final String bucketName, final MinioClient client) throws BlobPersistenceException {
