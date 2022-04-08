@@ -35,7 +35,7 @@ public interface PartAspectRepository extends Repository<PartAspectEntity, PartA
      *
      * @param partIds Part IDs to retrieve aspect for.
      *                Must not be {@literal null} nor contain any {@literal null} values.
-     * @param name    Aspect name to retrieve. Must not be {@literal null}.
+     * @param name    AspectType name to retrieve. Must not be {@literal null}.
      * @return guaranteed to be not {@literal null}.
      * The size can be equal or less than the number of given {@literal partIds}.
      * @see org.springframework.data.repository.CrudRepository#findAllById(Iterable)

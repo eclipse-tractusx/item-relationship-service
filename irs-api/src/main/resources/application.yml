@@ -48,7 +48,7 @@ springdoc:
   writer-with-order-by-keys: true
 
 irs:
-  apiUrl: http://localhost:8080
+  apiUrl: https://localhost/api/v0.2
   partsTreeMaxDepth: 100
 
 feign:
@@ -58,8 +58,11 @@ feign:
         connectTimeout: 5000
         readTimeout: 5000
         loggerLevel: full
-        decode404: false
       digitalTwinRegistry:
-        url: https://catenaxdev042akssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry
-      submodel:
-        url:
+        url: http://localhost:4242
+
+blobstore:
+  endpoint:
+  accessKey:
+  secretKey:
+  bucketName: irsbucket

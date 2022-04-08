@@ -2,17 +2,17 @@
 skinparam monochrome true
 skinparam shadowing false
 
-[\n IRS \n] <<System>> as IRS
+[**IRS**] <<System>> as IRS
 
-[\n AAS Wrapper / AAS Proxy \n] <<Component>> as AASW
+[**AAS Wrapper / AAS Proxy**] <<Component>> as AASW
 
 
 node "Digital Twin Registry" {
-    [\n AAS Registry \n] <<Component>> as AASR
+    [**AAS Registry**] <<Component>> as AASR
 }
 
 node "Group of Submodel Endpoints" {
-  [\n Submodel-Server \n] <<Component>> as SN
+  [**Submodel-Server**] <<Component>> as SN
 }
 actor Consumer
 interface "IRS API" as IAPI

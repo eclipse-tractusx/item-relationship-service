@@ -11,6 +11,7 @@ package net.catenax.irs.dtos;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
@@ -21,6 +22,7 @@ import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MAX_LENGTH;
 import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
 
 /*** API type for a part identifier. */
+@AllArgsConstructor
 @Schema(description = "Unique part identifier")
 @Value
 @Builder(toBuilder = true, setterPrefix = "with")

@@ -9,14 +9,8 @@
 //
 package net.catenax.irs.connector.job;
 
-
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcessStates;
-
-
 /**
  * Represents the state of a {@link MultiTransferJob}.
- * <p>
- * This class is inspired by the {@link TransferProcessStates} class.
  */
 public enum JobState {
     UNSAVED,

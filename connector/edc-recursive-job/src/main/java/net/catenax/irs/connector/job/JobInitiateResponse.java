@@ -12,15 +12,11 @@ package net.catenax.irs.connector.job;
 
 import lombok.Builder;
 import lombok.Value;
-import org.eclipse.dataspaceconnector.spi.transfer.TransferInitiateResponse;
-import org.eclipse.dataspaceconnector.spi.transfer.response.ResponseStatus;
 
 import java.util.Map;
 
 /**
  * Represents the result of a {@link JobOrchestrator#startJob(Map)} operation.
- * <p>
- * This class is modeled after the {@link TransferInitiateResponse} class.
  */
 @Value
 @Builder
