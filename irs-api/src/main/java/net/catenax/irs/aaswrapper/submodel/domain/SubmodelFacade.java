@@ -37,9 +37,9 @@ public class SubmodelFacade {
         final Set<ChildDataDTO> childParts = new HashSet<>();
         submodel.getChildParts()
                 .forEach(childData -> childParts.add(ChildDataDTO.builder()
-                                                                 .childCatenaXId(childData.getChildCatenaXId())
-                                                                 .lifecycleContext(childData.getLifecycleContext().getValue())
+                                                                 .withChildCatenaXId(childData.getChildCatenaXId())
+                                                                 .withLifecycleContext(childData.getLifecycleContext().getValue())
                                                                  .build()));
-        return AssemblyPartRelationshipDTO.builder().catenaXId(submodel.getCatenaXId()).childParts(childParts).build();
+        return AssemblyPartRelationshipDTO.builder().withCatenaXId(submodel.getCatenaXId()).withChildParts(childParts).build();
     }
 }

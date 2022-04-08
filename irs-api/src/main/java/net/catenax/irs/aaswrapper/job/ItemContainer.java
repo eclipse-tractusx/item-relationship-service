@@ -14,8 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 import lombok.Getter;
-import net.catenax.irs.aspectmodels.assemblypartrelationship.AssemblyPartRelationship;
-import net.catenax.irs.aspectmodels.serialparttypization.SerialPartTypization;
+import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 
 /**
  * Container class to store item data
@@ -23,18 +22,13 @@ import net.catenax.irs.aspectmodels.serialparttypization.SerialPartTypization;
 @Getter
 public class ItemContainer {
 
-    private final List<SerialPartTypization> serialPartTypizations = new ArrayList<>();
+    private final List<AssemblyPartRelationshipDTO> assemblyPartRelationships = new ArrayList<>();
 
-    private final List<AssemblyPartRelationship> assemblyPartRelationships = new ArrayList<>();
-
-    public void add(final SerialPartTypization typization, final AssemblyPartRelationship relationship) {
-        serialPartTypizations.add(typization);
+    public void add(final AssemblyPartRelationshipDTO relationship) {
         assemblyPartRelationships.add(relationship);
     }
 
-    public void addAll(final Collection<SerialPartTypization> typizations,
-            final Collection<AssemblyPartRelationship> relationships) {
-        serialPartTypizations.addAll(typizations);
+    public void addAll(final Collection<AssemblyPartRelationshipDTO> relationships) {
         assemblyPartRelationships.addAll(relationships);
     }
 }

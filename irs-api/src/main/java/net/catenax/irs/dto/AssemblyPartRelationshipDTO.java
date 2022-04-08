@@ -13,6 +13,8 @@ package net.catenax.irs.dto;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Data;
 
@@ -20,7 +22,8 @@ import lombok.Data;
  * AssemblyPartRelationshipDTO model used for internal application use
  */
 @Data
-@Builder
+@Builder(toBuilder = true, setterPrefix = "with")
+@JsonDeserialize(builder = AssemblyPartRelationshipDTO.AssemblyPartRelationshipDTOBuilder.class)
 public class AssemblyPartRelationshipDTO {
     /**
      * catenaXId
@@ -31,4 +34,12 @@ public class AssemblyPartRelationshipDTO {
      * childParts
      */
     private Set<ChildDataDTO> childParts;
+
+    /**
+     * Builder class
+     */
+    @JsonPOJOBuilder(withPrefix = "with")
+    public static class AssemblyPartRelationshipDTOBuilder {
+
+    }
 }
