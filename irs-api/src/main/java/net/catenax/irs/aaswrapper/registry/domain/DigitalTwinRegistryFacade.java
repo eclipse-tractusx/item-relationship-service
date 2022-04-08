@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.dto.SubmodelEndpoint;
+import net.catenax.irs.dto.SubmodelType;
 import org.springframework.stereotype.Service;
 
 /**
@@ -37,15 +38,17 @@ public class DigitalTwinRegistryFacade {
 
         return submodelDescriptors.stream()
                                   .filter(this::isAssemblyPartRelationship)
-                                  .map(submodelDescriptor -> new SubmodelEndpoint(
+                                  .map(submodelDescriptor ->
+                                        new SubmodelEndpoint(
                                           submodelDescriptor.getEndpoint()
                                                             .getProtocolInformation()
-                                                            .getEndpointAddress()))
+                                                            .getEndpointAddress(),
+                                              SubmodelType.ASSEMBLY_PART_RELATIONSHIP))
                                   .collect(Collectors.toList());
     }
 
     /**
-     * TODO Adjust when we will know how to distinguish assembly part relationships
+     * TODO: Adjust when we will know how to distinguish assembly part relationships
      * @param submodelDescriptor
      * @return
      */
