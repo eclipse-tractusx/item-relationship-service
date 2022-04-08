@@ -9,16 +9,10 @@
 //
 package net.catenax.irs.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 /**
- * Represents submodel descriptor endpoint addresses
+ * Supported submodel types
  */
-@Getter
-@RequiredArgsConstructor
-public class SubmodelEndpoint {
-
-    private final String address;
-    private final SubmodelType submodelType;
+public enum SubmodelType {
+   ASSEMBLY_PART_RELATIONSHIP,
+   SERIAL_PART_TYPIZATION
 }

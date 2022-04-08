@@ -15,7 +15,6 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
  */
 @RequiredArgsConstructor
 @Service
-@Profile("local")
 public class SubmodelFacade {
 
     private final SubmodelClient submodelClient;
@@ -33,7 +31,7 @@ public class SubmodelFacade {
      * @return The Aspect Model for the given submodel
      */
     public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress) {
-        final AssemblyPartRelationship submodel = submodelClient.getSubmodel(submodelEndpointAddress);
+        final AssemblyPartRelationship submodel = submodelClient.getSubmodel(submodelEndpointAddress, AssemblyPartRelationship.class);
         final Set<ChildDataDTO> childParts = new HashSet<>();
         submodel.getChildParts()
                 .forEach(childData -> childParts.add(ChildDataDTO.builder()

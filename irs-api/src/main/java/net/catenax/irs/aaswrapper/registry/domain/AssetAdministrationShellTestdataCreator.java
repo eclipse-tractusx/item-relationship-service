@@ -19,12 +19,7 @@ import java.util.List;
  */
 class AssetAdministrationShellTestdataCreator {
 
-    public AssetAdministrationShellDescriptor createAASShellDescriptorForIdFromTestData(final String catenaXId) {
-        return createDummyAssetAdministrationShellDescriptorForId(catenaXId);
-    }
-
     public AssetAdministrationShellDescriptor createDummyAssetAdministrationShellDescriptorForId(final String catenaXId) {
-
         final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
 
         submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId));
@@ -54,7 +49,7 @@ class AssetAdministrationShellTestdataCreator {
 
         final SubmodelDescriptor submodelDescriptor = new SubmodelDescriptor();
         submodelDescriptor.setIdentification(catenaXId);
-        submodelDescriptor.setIdShort("idShort");
+        submodelDescriptor.setIdShort("assemblyPartRelationship");
         submodelDescriptor.setEndpoint(endpoint);
         submodelDescriptor.setSemanticId(reference);
 
