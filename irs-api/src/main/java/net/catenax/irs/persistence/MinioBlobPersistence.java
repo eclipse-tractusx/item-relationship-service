@@ -55,7 +55,7 @@ public class MinioBlobPersistence implements BlobPersistence {
 
     @NotNull
     private static MinioClient createClient(final String endpoint, final String accessKey, final String secretKey) {
-        log.info("Building client with keys '{}' and '{}'", accessKey, secretKey);
+        log.info("Building Minio client with url '{}'", endpoint);
         return MinioClient.builder().endpoint(endpoint).credentials(accessKey, secretKey).build();
     }
 
