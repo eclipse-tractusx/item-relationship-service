@@ -9,9 +9,12 @@
 //
 package net.catenax.irs.exceptions;
 
+import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
+
 /**
  * General entity not found exception.
  */
+@ExcludeFromCodeCoverageGeneratedReport
 public class EntityNotFoundException extends RuntimeException {
     /**
      * Generate a new instance of a {@link EntityNotFoundException}

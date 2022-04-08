@@ -1,0 +1,106 @@
+[
+  {
+  "catenaXId": "09b48bcc-8993-4379-a14d-a7740e1c61d4",
+  "childParts": [
+    {
+      "quantity": {
+        "quantityNumber": "0.2014",
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+          "lexicalValue": "kilogram"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "assembledOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "childCatenaXId": "c35ee875-5443-4a2d-bc14-fdacd64b9446"
+    },
+    {
+      "quantity": {
+        "quantityNumber": 1,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "assembledOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "childCatenaXId": "8c1407e8-a911-4236-ac0a-03c48e6cbf19"
+    },
+    {
+      "quantity": {
+        "quantityNumber": "0.2341",
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+          "lexicalValue": "kilogram"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "assembledOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "childCatenaXId": "ea724f73-cb93-4b7b-b92f-d97280ff888b"
+    }
+  ]
+}, {
+  "catenaXId": "09b48bcc-8993-4379-a14d-a7740e1c61d4",
+  "childParts": [
+    {
+      "quantity": {
+        "quantityNumber": "0.2014",
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+          "lexicalValue": "kilogram"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "assembledOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "childCatenaXId": "c35ee875-5443-4a2d-bc14-fdacd64b9446"
+    },
+    {
+      "quantity": {
+        "quantityNumber": 1,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "assembledOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "childCatenaXId": "8c1407e8-a911-4236-ac0a-03c48e6cbf19"
+    },
+    {
+      "quantity": {
+        "quantityNumber": "0.2341",
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+          "lexicalValue": "kilogram"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "assembledOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "childCatenaXId": "ea724f73-cb93-4b7b-b92f-d97280ff888b"
+    }
+  ]
+}, {
+  "catenaXId": "8c1407e8-a911-4236-ac0a-03c48e6cbf19",
+  "childParts": [
+    {
+      "quantity": {
+        "quantityNumber": "0.1908",
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+          "lexicalValue": "kilogram"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "assembledOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "childCatenaXId": "2fdb4252-de8b-47fd-b210-2daeb6208ff7"
+    }
+  ]
+}
+]

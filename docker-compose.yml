@@ -17,41 +17,6 @@ services:
       APPLICATIONINSIGHTS_CONNECTION_STRING: "${APPLICATIONINSIGHTS_CONNECTION_STRING}"
       APPLICATIONINSIGHTS_ROLE_NAME: IRS
 
-  connector-consumer:
-    profiles:
-      - connector
-    container_name: consumer
-    build:
-      context: .
-      target: irs-connector-consumer
-      args:
-        BUILD_TARGET: irs-connector-consumer
-    environment:
-      APPLICATIONINSIGHTS_CONNECTION_STRING: "${APPLICATIONINSIGHTS_CONNECTION_STRING}"
-      APPLICATIONINSIGHTS_ROLE_NAME: connector-consumer
-      edc.vault.clientid: ${edc_vault_clientid}
-      edc.vault.tenantid: ${edc_vault_tenantid}
-      edc.vault.certificate: /devlocal/cert.pfx
-      edc.vault.name: ${edc_vault_name}
-      edc.storage.account.name: ${edc_storage_account_name}
-      irs.dataspace.partitions: /files/dataspace-partitions.json
-      irs.dataspace.partition.deployments: /files/dataspace-deployments.json
-    ports:
-      - "9191:8181"
-      - "4007:4006"
-    volumes:
-      - ./dev/local:/devlocal
-      - ./dev/connector-integration-test-files:/files
-
-  connector-integration-test:
-    profiles:
-      - connector
-    container_name: connector-test
-    image: adoptopenjdk:11-jre-hotspot
-    command: dev-files/connector-integration-test.sh
-    volumes:
-      - ./dev:/dev-files
-
   prometheus:
     image: prom/prometheus:v2.30.3
     container_name: prometheus
@@ -61,3 +26,26 @@ services:
       - debug
     ports:
       - "9091:9090"
+
+
+  minio:
+    image: quay.io/minio/minio:RELEASE.2022-04-01T03-41-39Z
+    command: server --address 0.0.0.0:9000 --console-address ":9001" /data
+    ports:
+      # Bind explicitly to 127.0.0.1
+      - "127.0.0.1:9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    hostname: minio
+    volumes:
+      - miniodata:/data
+
+volumes:
+  miniodata:

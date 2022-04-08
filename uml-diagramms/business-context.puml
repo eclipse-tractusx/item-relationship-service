@@ -1,0 +1,23 @@
+@startuml 
+skinparam monochrome true
+skinparam shadowing false
+
+component [**DataConsumer**] <<BusinessEntity>> as DC {
+component [**Dismantler DB**] <<System>> as CE
+component [**IRS**] <<System>> as IRS   
+component [**AAS Wrapper / AAS Proxy**] <<Component>> as AASW
+interface "IRS API" as IAPI
+interface "AAS Wrapper/ \nProxy API" as AASA
+
+}
+
+component [**CX-System**] <<Network>> as CX
+
+CE .> IAPI
+IAPI - IRS
+IRS ..> AASA
+AASA -- AASW
+AASW .. CX
+
+ 
+@enduml

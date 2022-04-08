@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
+import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.requests.IrsPartsTreeRequest;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@ExcludeFromCodeCoverageGeneratedReport
 public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
 
     @Override

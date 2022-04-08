@@ -26,14 +26,15 @@ import net.catenax.irs.annotations.ValueOfEnum;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
+import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.controllers.ApiErrorsConstants;
 
 /**
  * Base class for IrsPartsTreeRequest
  */
 @RequiredArgsConstructor
-@SuppressWarnings({ "PMD.AbstractClassWithoutAbstractMethod",
-                    "PMD.DataClass"})
+@SuppressWarnings({ "PMD.AbstractClassWithoutAbstractMethod", "PMD.DataClass" })
+@ExcludeFromCodeCoverageGeneratedReport
 public abstract class IrsPartsTreeRequestBase {
 
     private static final long MIN_TREE_DEPTH = 1;
@@ -48,7 +49,8 @@ public abstract class IrsPartsTreeRequestBase {
 
     @ValueOfEnum(enumClass = AspectType.class, message = ApiErrorsConstants.ITEM_VIEW_MUST_MATCH_ENUM)
     @Parameter(description = "AspectType information to add to the returned tree", in = QUERY,
-            example = "SerialPartTypization", explode = Explode.FALSE, schema = @Schema(implementation = AspectType.class, defaultValue = "SerialPartTypization"))
+            example = "SerialPartTypization", explode = Explode.FALSE,
+            schema = @Schema(implementation = AspectType.class, defaultValue = "SerialPartTypization"))
     protected final List<String> aspects;
 
     @Min(value = MIN_TREE_DEPTH, message = ApiErrorsConstants.ITEM_MIN_DEPTH)
