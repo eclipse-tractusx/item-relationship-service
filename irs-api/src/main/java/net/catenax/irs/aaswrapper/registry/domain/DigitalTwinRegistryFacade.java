@@ -49,10 +49,10 @@ public class DigitalTwinRegistryFacade {
 
     /**
      * TODO: Adjust when we will know how to distinguish assembly part relationships
-     * @param submodelDescriptor
-     * @return
+     * @param submodelDescriptor the submodel descriptor
+     * @return True, if AssemblyPartRelationship
      */
     private boolean isAssemblyPartRelationship(final SubmodelDescriptor submodelDescriptor) {
-        return submodelDescriptor.getIdShort().equals("assemblyPartRelationship");
+        return "assemblyPartRelationship".equals(submodelDescriptor.getIdShort());
     }
 }
