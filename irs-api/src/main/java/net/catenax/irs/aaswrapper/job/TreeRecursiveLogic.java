@@ -61,7 +61,9 @@ public class TreeRecursiveLogic {
                                                    .map(payload -> jsonUtil.fromString(new String(payload),
                                                            ItemContainer.class));
         final var assembledTree = assembler.retrievePartsTrees(partialTrees);
-        final var blob = jsonUtil.asString(assembledTree).getBytes(StandardCharsets.UTF_8);
+        final String json = jsonUtil.asString(assembledTree);
+        log.info("Storing assembled tree: {}", json);
+        final var blob = json.getBytes(StandardCharsets.UTF_8);
 
         log.info("Uploading assembled parts tree to {}", targetBlobName);
         try {

@@ -113,7 +113,7 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
             }
             return Jobs.builder().job(jobToReturn).relationships(relationships).build();
         } else {
-            throw new EntityNotFoundException("No job exists with id " + jobId.toString());
+            throw new EntityNotFoundException("No job exists with id " + jobId);
         }
     }
 
@@ -146,7 +146,7 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
             case TRANSFERS_FINISHED:
                 return JobState.TRANSFERS_FINISHED;
             default:
-                throw new IllegalArgumentException("Cannot convert JobState of type " + state.toString());
+                throw new IllegalArgumentException("Cannot convert JobState of type " + state);
         }
     }
 }
