@@ -60,8 +60,6 @@ feign:
         loggerLevel: full
       digitalTwinRegistry:
         url: http://localhost:4242
-      submodel:
-        url: http://localhost:4242
 
 blobstore:
   endpoint:

@@ -17,12 +17,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.openmanufacturing</groupId>
-            <artifactId>sds-aspect-model-starter</artifactId>
-            <version>1.0.2</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
             <version>${spotbugs.version}</version>
@@ -82,7 +76,6 @@
             <version>${javafaker.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>

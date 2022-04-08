@@ -7,6 +7,7 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
+//
 package net.catenax.irs.aaswrapper.submodel.domain;
 
 import lombok.Getter;

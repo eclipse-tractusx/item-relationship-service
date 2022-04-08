@@ -9,18 +9,33 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
-import net.catenax.irs.aspectmodels.AspectModel;
-import net.catenax.irs.aspectmodels.AspectModelTypes;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
 
 /**
  * Submodel Rest Client
  */
-public interface SubmodelClient {
+interface SubmodelClient {
 
     /**
-     * @param endpointPath the url pointing to the endpoint
-     * @param aspectModelTypes the aspect model which is expected
-     * @return Returns the expected aspect model
+     * @return Returns the Submodel
      */
-    AspectModel getSubmodel(String endpointPath, AspectModelTypes aspectModelTypes);
+    AssemblyPartRelationship getSubmodel(String submodelEndpointAddress);
+
+}
+
+/**
+ * Digital Twin Registry Rest Client Stub used in local environment
+ */
+@Profile("local")
+@Service
+class SubmodelClientLocalStub implements SubmodelClient {
+
+    @Override
+    public AssemblyPartRelationship getSubmodel(final String submodelEndpointAddress) {
+        // String level, String content, String extent
+        final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
+
+        return submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(submodelEndpointAddress);
+    }
 }
