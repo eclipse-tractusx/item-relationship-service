@@ -291,22 +291,22 @@ components:
           type: string
           format: date-time
           description: Datetime of assembly
+        bomLifecycle:
+          type: string
+          description: View defining which data of the PartsTree is retrieved.
+          enum:
+          - asBuild
+          - asMaintained
+          - asPlanned
+          - asDesigned
+          - asOrdered
+          - asRecycled
         childCatenaXId:
           $ref: '#/components/schemas/GlobalAssetIdentification'
         lastModifiedOn:
           type: string
           format: date-time
           description: Last date and time part was modified
-        lifecycleContext:
-          type: string
-          description: View defining which data of the PartsTree is retrieved.
-          enum:
-            - asBuild
-            - asMaintained
-            - asPlanned
-            - asDesigned
-            - asOrdered
-            - asRecycled
         quantity:
           $ref: '#/components/schemas/Quantity'
     ErrorResponse:
@@ -397,56 +397,56 @@ components:
     GlobalAssetIdentification:
       type: object
       description: Represents a CatenaX id in the format urn:uuid:<uuid>
-      maxLength: 45
-      minLength: 45
       properties:
         globalAssetId:
           type: string
-          description: Global unique identifier
+          maxLength: 45
+          minLength: 45
+          description: Global unique C-X identifier
           example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
     Job:
       type: object
-      description: Link between two parts.
+      description: Information and data for the Job
       properties:
-        jobID:
-          type: string
-          format: uuid
-        globalAssetId:
-          type: string
-          items:
-            $ref: '#/components/schemas/GlobalAssetIdentification'
-        jobStatus:
-          type: string
-          description: Error code
-          enum:
-            - running
-            - failed
-            - complete
-            - canceled
-        createdOn:
-          type: string
-          format: date-time
-        lastModifiedOn:
-          type: string
-          format: date-time
-        jobFinished:
-          type: string
-          format: date-time
-        requestURL:
-          type: string
-          format: url
         action:
           type: string
           description: HTTP verbs used by request
-          enum:
-            - GET
-            - POST
-            - PUT
-            - DELETE
-            - PATCH
+        createdOn:
+          type: string
+          format: date-time
+        globalAssetId:
+          $ref: '#/components/schemas/GlobalAssetIdentification'
+        jobException:
+          $ref: '#/components/schemas/JobException'
+        jobFinished:
+          type: string
+          format: date-time
+        jobID:
+          type: string
+          format: uuid
+        jobState:
+           type: string
+           enum:
+           - unsaved
+           - initial
+           - running
+           - transfered
+           - complete
+           - canceled
+           - failed
+        lastModifiedOn:
+          type: string
+          format: date-time
         owner:
           type: string
           description: The requestor of the request
+        requestUrl:
+          type: string
+          format: url
+        required:
+        - globalAssetId
+        - jobId
+        - jobState
         summary:
           type: object
           description: List of asyncFetchedItems
@@ -477,21 +477,24 @@ components:
               enum:
                 - upward
                 - downward
-        exception:
-          type: object
-          description: Exception state for this job
-          properties:
-            exception:
-              type: string
-              minimum: 0
-              maximum: 100
-            errorDetail:
-              type: string
-              minimum: 0
-              maximum: 4000
-            exceptionDate:
-              type: string
-              format: date-time
+    JobException:
+      type: object
+      description: Exception state for this job
+      properties:
+        errorDetail:
+          type: string
+          minimum: 0
+          maximum: 4000
+          description: Detail information for the error occurred
+        exceptionDate:
+          type: string
+          format: date-time
+          description: Datetime when error occurred
+        exceptionName:
+          type: string
+          minimum: 0
+          maximum: 100
+          description: Name of the exception occurred
     JobHandle:
       type: object
       properties:

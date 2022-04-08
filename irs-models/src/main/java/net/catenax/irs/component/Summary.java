@@ -29,7 +29,7 @@ public class Summary {
      * asyncFetchedItems
      */
     @Schema(description = "Summary of the fetched jobs",
-            implementation = AsyncFetchedItems.AsyncFetchedItemsBuilder.class)
+            implementation = AsyncFetchedItems.class)
     private AsyncFetchedItems asyncFetchedItems;
 
     /**

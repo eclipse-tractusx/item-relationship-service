@@ -12,6 +12,7 @@ package net.catenax.irs.component;
 import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
 import static net.catenax.irs.dtos.ValidationConstants.JOB_ID_FIELD_MAX_LENGTH;
 
+import java.net.URL;
 import java.time.Instant;
 
 import javax.validation.constraints.NotBlank;
@@ -44,8 +45,8 @@ public class Job {
     @NotNull
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
     @Schema(description = "Job Id for the request Item", minLength = INPUT_FIELD_MIN_LENGTH,
-            maxLength = JOB_ID_FIELD_MAX_LENGTH)
-    private final String jobId;
+            maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = GlobalAssetIdentification.class)
+    private final GlobalAssetIdentification jobId;
 
     /**
      * globalAssetId
@@ -60,7 +61,8 @@ public class Job {
     @Schema()
     private JobState jobState;
 
-    private String exception;
+    @Schema(description = "Exception state for this job", implementation = JobException.class)
+    private JobException jobException;
 
     /**
      * Timestamp when the job was created
@@ -80,17 +82,24 @@ public class Job {
     /**
      * Url of request that resulted to this job
      */
-    private String requestUrl;
+    @Schema(implementation = URL.class)
+    private URL requestUrl;
 
     /**
      * Http method, only GET is supported
      */
+    @Schema(description = "HTTP verbs used by request")
     private String action;
 
     /**
      * Owner of the job
      */
+    @Schema(description = "The requestor of the request")
     private String owner;
+
+    @Schema(description = "List of asyncFetchedItems")
+    private Summary summary;
+
 
     /**
      * Builder class
