@@ -48,7 +48,7 @@ springdoc:
   writer-with-order-by-keys: true
 
 irs:
-  apiUrl: https://localhost/api/v0.2
+  apiUrl: http://irs.int.demo.catena-x.net
   partsTreeMaxDepth: 100
 
 feign:

@@ -116,7 +116,7 @@ public class IrsController {
     })
     @GetMapping("/jobs/{jobId}")
     public Jobs getBOMForJobId(
-            final @Valid @Parameter(description = "Id of the job in processing.") @PathVariable @Size(min = IrsApiConstants.JOB_ID_SIZE,
+            final @Parameter(description = "Id of the job in processing.") @PathVariable @Size(min = IrsApiConstants.JOB_ID_SIZE,
                     max = IrsApiConstants.JOB_ID_SIZE) @ApiParam(name = "jobId", example = "6c311d29-5753-46d4-b32c-19b918ea93b0") UUID jobId) {
         return itemJobService.getBOMForJobId(jobId);
     }
