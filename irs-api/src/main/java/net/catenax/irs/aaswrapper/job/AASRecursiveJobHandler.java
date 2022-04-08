@@ -34,7 +34,7 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
     @Override
     public Stream<ItemDataRequest> initiate(final MultiTransferJob job) {
         log.info("Initiating request for job {}", job.getJobId());
-        final var partId = job.getJobData().get("partId");
+        final var partId = job.getJobData().get(ROOT_ITEM_ID_KEY);
         final var dataRequest = new ItemDataRequest(partId);
         return Stream.of(dataRequest);
     }
