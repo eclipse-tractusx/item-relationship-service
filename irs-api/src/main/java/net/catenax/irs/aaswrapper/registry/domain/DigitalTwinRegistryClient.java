@@ -49,6 +49,6 @@ class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
     @Override
     public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
         final AssetAdministrationShellTestdataCreator testdataCreator = new AssetAdministrationShellTestdataCreator();
-        return testdataCreator.createAASShellDescriptorForIdFromTestData(aasIdentifier);
+        return testdataCreator.createDummyAssetAdministrationShellDescriptorForId(aasIdentifier);
     }
 }
