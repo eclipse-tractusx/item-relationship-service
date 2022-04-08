@@ -36,10 +36,20 @@ public class DigitalTwinRegistryFacade {
                 aasIdentifier).getSubmodelDescriptors();
 
         return submodelDescriptors.stream()
+                                  .filter(this::isAssemblyPartRelationship)
                                   .map(submodelDescriptor -> new SubmodelEndpoint(
                                           submodelDescriptor.getEndpoint()
                                                             .getProtocolInformation()
                                                             .getEndpointAddress()))
                                   .collect(Collectors.toList());
+    }
+
+    /**
+     * TODO Adjust when we will know how to distinguish assembly part relationships
+     * @param submodelDescriptor
+     * @return
+     */
+    private boolean isAssemblyPartRelationship(final SubmodelDescriptor submodelDescriptor) {
+        return submodelDescriptor.getIdShort().equals("assemblyPartRelationship");
     }
 }
