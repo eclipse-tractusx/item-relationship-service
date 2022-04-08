@@ -7,21 +7,18 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain;
+package net.catenax.irs.dto;
 
-import java.util.List;
-
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
- * Descriptor
+ * Represents submodel descriptor endpoint addresses
  */
-@Data
-class Descriptor {
+@Getter
+@RequiredArgsConstructor
+public class SubmodelEndpoint {
 
-    /**
-     * endpoints
-     */
-    private List<Endpoint> endpoints;
-
+    private final String address;
+    private final SubmodelType submodelType;
 }

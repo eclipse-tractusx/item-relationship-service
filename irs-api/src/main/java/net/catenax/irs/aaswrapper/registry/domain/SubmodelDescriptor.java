@@ -17,7 +17,7 @@ import lombok.Data;
  * SubmodelDescriptor
  */
 @Data
-class SubmodelDescriptor extends Descriptor {
+class SubmodelDescriptor {
 
     /**
      * administration
@@ -39,5 +39,9 @@ class SubmodelDescriptor extends Descriptor {
      * semanticId
      */
     private Reference semanticId;
+    /**
+     * endpoint
+     */
+    private Endpoint endpoint;
 
 }
