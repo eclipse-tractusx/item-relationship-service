@@ -65,7 +65,7 @@ public abstract class IrsPartsTreeRequestBase {
 
     @ValueOfEnum(enumClass = Direction.class, message = ApiErrorsConstants.ITEM_VIEW_MUST_MATCH_ENUM)
     @Parameter(description = "Direction in which the tree shall be traversed", in = QUERY, example = "downward",
-            schema = @Schema(implementation = Direction.class))
+            schema = @Schema(implementation = Direction.class, defaultValue = "downwards"))
     protected final String direction;
 
     public String getBomLifecycle() {
