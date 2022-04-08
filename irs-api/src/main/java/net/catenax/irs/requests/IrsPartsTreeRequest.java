@@ -37,7 +37,7 @@ public class IrsPartsTreeRequest extends IrsPartsTreeRequestBase {
     @Pattern(regexp = IrsApiConstants.GLOBAL_ASSET_ID_REGEX,
             message = ApiErrorsConstants.NOT_BLANK)
     @NotBlank
-    @Size(min = IrsApiConstants.JOB_ID_SIZE, max = IrsApiConstants.JOB_ID_SIZE)
+    @Size(min = IrsApiConstants.GLOBAL_ASSET_ID_SIZE, max = IrsApiConstants.GLOBAL_ASSET_ID_SIZE)
     @Parameter(description = "Readable ID of manufacturer including plant.", in = PATH,
             required = true, example = IrsApiExamplesUtils.GLOBAL_ASSET_ID_EXAMPLE, schema = @Schema(implementation = String.class))
     private String globalAssetId;
