@@ -29,9 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.IrsApplication;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
-import net.catenax.irs.component.IrsPartRelationshipsWithInfos;
 import net.catenax.irs.component.JobHandle;
-import net.catenax.irs.response.examples.ResponseExamples;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.requests.IrsPartsTreeRequest;
@@ -85,12 +83,12 @@ public class IrsController {
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
             description = "livecycle tree representation with the starting point of the given globalAssetId",
             content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = IrsPartRelationshipsWithInfos.class))
+                    schema = @Schema(implementation = Jobs.class))
             }),
                             @ApiResponse(responseCode = "206",
                                     description = "uncompleted livecycle tree representation with the starting point of the given globalAssetId",
                                     content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = IrsPartRelationshipsWithInfos.class))
+                                            schema = @Schema(implementation = Jobs.class))
                                     }),
                             @ApiResponse(responseCode = "404", description = "processing of job was canceled",
                                     content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -103,8 +101,8 @@ public class IrsController {
     })
     @GetMapping("/jobs/{jobId}")
     public ResponseEntity<Jobs> getBOMForJobId(
-            final @Valid @Parameter(description = "Id of the job in processing.") @PathVariable @Size(min = IrsApiConstants.JOB_ID_SIZE,
-                    max = IrsApiConstants.JOB_ID_SIZE) @ApiParam(name = "jobId", example = "6c311d29-5753-46d4-b32c-19b918ea93b0") UUID jobId) {
+            final @Valid @Parameter(description = "Id of the job in processing.", schema = @Schema(implementation = UUID.class), name = "jobId", example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @PathVariable @Size(min = IrsApiConstants.JOB_ID_SIZE,
+                    max = IrsApiConstants.JOB_ID_SIZE) UUID jobId) {
         return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
     }
 

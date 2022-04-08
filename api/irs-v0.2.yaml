@@ -100,33 +100,32 @@ paths:
                 $ref: '#/components/schemas/JobHandle'
           description: job id response for successful job registration
         "400":
-          description: Processing of job failed
           content:
             application/json:
               examples:
                 complete:
                   $ref: '#/components/schemas/ErrorResponse'
-
-      summary: Get a BOM tree for a given item
+          description: Processing of job failed
+      summary: "Registers and starts a AAS crawler job for given {globalAssetId}"
       tags:
-        - Item Relationship Service
+      - Item Relationship Service
   /irs/jobs/{jobId}:
     get:
       operationId: getBOMForJobId
       parameters:
-        - description: "Id of the job in processing."
-          in: path
-          name: jobId
-          required: true
-          schema:
-            $ref: '#/components/schemas/UUID'
-        - description: "If true, the endpoint returns the uncompleted results of the bom tree."
-          in: query
-          name: returnUncompletedResultTree
-          required: false
-          schema:
-            type: boolean
-            default: true
+      - description: "Id of the job in processing."
+        in: path
+        name: jobId
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - description: "If true, the endpoint returns the uncompleted results of the bom tree."
+        in: query
+        name: returnUncompletedResultTree
+        required: false
+        schema:
+         type: boolean
+         default: true
       responses:
         "200":
           # complete job result with bom tree:
