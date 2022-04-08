@@ -20,6 +20,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -30,6 +31,7 @@ import net.catenax.irs.IrsApplication;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.IrsPartRelationshipsWithInfos;
 import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.response.examples.ResponseExamples;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.requests.IrsPartsTreeRequest;
@@ -62,30 +64,16 @@ public class IrsController {
     @Operation(operationId = "getBomLifecycleByGlobalAssetId", summary = "Registers and starts a AAS crawler job for given {globalAssetId}",
             tags = { "Item Relationship Service" }, description = "Registers and starts a AAS crawler job for given {globalAssetId}")
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
-            description = "Livecycle tree representation with the starting point of the given jobId",
-            content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = JobHandle.class))
+            description = "job id response for successful job registration",
+            content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = JobHandle.class),
+                  examples = {@ExampleObject(name="complete", ref = "#/components/examples/job-handle")})
             }),
-        @ApiResponse(responseCode = "201",
-                description = "job details for given jobId - job is in running state",
-                content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = Jobs.class))
-                }),
-        @ApiResponse(responseCode = "206",
-                description = "uncompleted livecycle tree representation with the starting point of the given jobId",
-                content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = Jobs.class))
-                }),
-        @ApiResponse(responseCode = "404",
-                description = "processing of job was canceled",
-                content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = ErrorResponse.class))
-                }),
-        @ApiResponse(responseCode = "417",
+        @ApiResponse(responseCode = "400",
                 description = "Processing of job failed",
                 content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = ErrorResponse.class))
+                        schema = @Schema(implementation = ErrorResponse.class),
+                      examples = @ExampleObject(name="complete", ref = "#/components/schemas/ErrorResponse"))
                 }),
-
     })
     @PostMapping("/items/{globalAssetId}")
     public JobHandle getBomLifecycleByGlobalAssetId(final @Valid @ParameterObject IrsPartsTreeRequest request) {

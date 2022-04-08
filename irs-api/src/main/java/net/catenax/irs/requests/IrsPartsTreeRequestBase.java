@@ -18,6 +18,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
+import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.Explode;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -29,6 +30,7 @@ import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.controllers.ApiErrorsConstants;
+
 
 /**
  * Base class for IrsPartsTreeRequest
@@ -52,11 +54,12 @@ public abstract class IrsPartsTreeRequestBase {
     @Parameter(description = "AspectType information to add to the returned tree", in = QUERY,
             example = "SerialPartTypization", explode = Explode.FALSE,
             array = @ArraySchema(schema = @Schema(implementation = AspectType.class, defaultValue = "SerialPartTypization")))
+    @ApiParam(defaultValue = "SerialPartTypization")
     protected final List<AspectType> aspects;
 
     @Min(value = MIN_TREE_DEPTH, message = ApiErrorsConstants.ITEM_MIN_DEPTH)
     @Max(value = MAX_TREE_DEPTH, message = ApiErrorsConstants.ITEM_MAX_DEPTH)
-    @Parameter(description = "Max depth of the returned tree, if empty max depth is returned", in = QUERY,
+    @Parameter(description = "Max depth of the returned tree, if empty max depth is returned", in = QUERY, example = "1",
             schema = @Schema(implementation = Integer.class, minimum = "1", maximum = "100", defaultValue = "1"))
     protected final Integer depth;
 

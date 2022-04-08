@@ -5,99 +5,102 @@ info:
   title: IRS API
   version: "0.2"
 servers:
-  - url: https://Specification/api/v0.2
+- url: https://Specification/api/v0.2
 paths:
   /irs/items/{globalAssetId}:
     post:
       description: "Registers and starts a AAS crawler job for given {globalAssetId}"
       operationId: getBomLifecycleByGlobalAssetId
       parameters:
-        - description: Readable ID of manufacturer including plant.
-          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-          in: path
-          name: globalAssetId
-          required: true
-          schema:
-            type: string
-            maxLength: 45
-            minLength: 45
-            pattern: "urn:uuid:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-        - description: "Unique identifier of a single, unique (sub)component/part/batch,\
+      - description: Readable ID of manufacturer including plant.
+        example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+        in: path
+        name: globalAssetId
+        required: true
+        schema:
+          type: string
+          maxLength: 45
+          minLength: 45
+          pattern: "urn:uuid:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      - description: "Unique identifier of a single, unique (sub)component/part/batch,\
           \  given by its globalAssetId/ digital twin id."
-          example: asBuilt
-          in: query
-          name: bomLifecycle
-          required: true
-          schema:
+        example: asBuilt
+        in: query
+        name: bomLifecycle
+        required: true
+        schema:
+          type: string
+          description: View defining which data of the PartsTree is retrieved.
+          enum:
+          - asBuild
+          - asMaintained
+          - asPlanned
+          - asDesigned
+          - asOrdered
+          - asRecycled
+      - description: AspectType information to add to the returned tree
+        example: SerialPartTypization
+        explode: false
+        in: query
+        name: aspects
+        required: false
+        schema:
+          type: array
+          items:
             type: string
-            description: View defining which data of the PartsTree is retrieved.
             enum:
-              - asBuild
-              - asMaintained
-              - asPlanned
-              - asDesigned
-              - asOrdered
-              - asRecycled
-        - description: AspectType information to add to the returned tree
-          example: SerialPartTypization
-          explode: false
-          in: query
-          name: aspects
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-              enum:
-                - SerialPartTypization
-                - AssemblyPartRelationship
-                - PartDimension
-                - SupplyRelationData
-                - PCFCoreData
-                - PCFTechnicalData
-                - MarketPlaceOffer
-                - MaterialAspect
-                - BatteryPass
-                - ProductDescriptionVehicle
-                - ProductDescriptionBattery
-                - ReturnRequest
-                - CertificateOfDestruction
-                - CertificateOfDismantler
-                - Address
-                - Contact
-              default: SerialPartTypization
-        - description: "Max depth of the returned tree, if empty max depth is returned"
-          in: query
-          name: depth
-          required: false
-          schema:
-            type: integer
-            format: int32
-            maximum: 100
-            minimum: 1
-            default: 1
-        - description: Direction in which the tree shall be traversed
-          example: downward
-          in: query
-          name: direction
-          required: false
-          schema:
-            type: string
-            description: Direction in which the tree shall be traversed
-            enum:
-              - upward
-              - downward
-            default: downward
+            - SerialPartTypization
+            - AssemblyPartRelationship
+            - PartDimension
+            - SupplyRelationData
+            - PCFCoreData
+            - PCFTechnicalData
+            - MarketPlaceOffer
+            - MaterialAspect
+            - BatteryPass
+            - ProductDescriptionVehicle
+            - ProductDescriptionBattery
+            - ReturnRequest
+            - CertificateOfDestruction
+            - CertificateOfDismantler
+            - Address
+            - Contact
+            default: SerialPartTypization
+      - description: "Max depth of the returned tree, if empty max depth is returned"
+        example: 1
+        in: query
+        name: depth
+        required: false
+        schema:
+          type: integer
+          format: int32
+          maximum: 100
+          minimum: 1
+          default: 1
+      - description: Direction in which the tree shall be traversed
+        example: downward
+        in: query
+        name: direction
+        required: false
+        schema:
+          type: string
+          description: Direction in which the tree shall be traversed
+          enum:
+          - upward
+          - downward
+          default: downward
       responses:
         "200":
-          description: job id response for successful job registration
           content:
             application/json:
               examples:
                 complete:
                   $ref: '#/components/examples/job-handle'
+              schema:
+                $ref: '#/components/schemas/JobHandle'
+          description: job id response for successful job registration
         "400":
-          description: Bad request
+          description: Processing of job failed
           content:
             application/json:
               examples:
@@ -251,6 +254,11 @@ components:
           description: Collections of AAS shells
           items:
             $ref: '#/components/schemas/Shell'
+    JobHandle:
+      type: object
+      properties:
+        jobId:
+          format: uuid
     Job:
       type: object
       description: Link between two parts.
@@ -610,9 +618,18 @@ components:
             - 510 NOT_EXTENDED
             - 511 NETWORK_AUTHENTICATION_REQUIRED
   examples:
+    error-response:
+      value:
+        {
+         "errors": ["TimeoutException", "ParsingException"],
+         "message": "Some errors occured",
+         "statusCode": "500"
+        }
     job-handle:
       value:
-        {"jobId": "6c311d29-5753-46d4-b32c-19b918ea93b0"}
+        {
+          "jobId": "6c311d29-5753-46d4-b32c-19b918ea93b0"
+        }
     complete-job-list-processing-state:
       value:
         {
