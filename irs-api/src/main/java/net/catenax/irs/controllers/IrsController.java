@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -114,11 +115,10 @@ public class IrsController {
                                     }),
     })
     @GetMapping("/jobs/{jobId}")
-    public ResponseEntity<Jobs> getBOMForJobId(
+    public Jobs getBOMForJobId(
             final @Valid @Parameter(description = "Id of the job in processing.") @PathVariable @Size(min = IrsApiConstants.JOB_ID_SIZE,
                     max = IrsApiConstants.JOB_ID_SIZE) @ApiParam(name = "jobId", example = "6c311d29-5753-46d4-b32c-19b918ea93b0") UUID jobId) {
-        final var result = itemJobService.getBOMForJobId(jobId);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return itemJobService.getBOMForJobId(jobId);
     }
 
     @Operation(operationId = "getJobsByProcessingState",
@@ -135,8 +135,8 @@ public class IrsController {
                                             schema = @Schema(implementation = ErrorResponse.class))
                                     }),
     })
-    @GetMapping("/jobs/{processingState}")
-    public ResponseEntity<Jobs> getJobsByProcessingState(final @Valid @PathVariable String processingState) {
+    @GetMapping("/jobs")
+    public ResponseEntity<Jobs> getJobsByProcessingState(final @Valid @RequestParam("processingState") String processingState) {
         return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
     }
 
