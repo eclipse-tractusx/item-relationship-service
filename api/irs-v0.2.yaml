@@ -424,10 +424,10 @@ components:
       properties:
         globalAssetId:
           type: string
-          maxLength: 45
-          minLength: 45
           description: Global unique C-X identifier
           example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          maxLength: 45
+          minLength: 45
     Job:
       type: object
       description: Information and data for the Job
@@ -472,36 +472,6 @@ components:
       - globalAssetId
       - jobId
       - jobState
-        asynFetchecItems:
-          type: object
-          description: List of asyncFetchedItems
-          items:
-            $ref: '#/components/schemas/AsyncFetchedItems'
-        queryParameter:
-          type: object
-          description: Query parameters of current request
-          properties:
-            bomLifecycle:
-              type: object
-              items:
-                $ref: '#/components/schemas/BomLifecycle'
-            aspects:
-              type: array
-              items:
-                $ref: '#/components/schemas/Aspect'
-            depth:
-              type: integer
-              description: Max depth of the returned tree, if empty max depth is returned
-              minimum: 0
-              maximum: 100
-              default: 1
-            direction:
-              type: string
-              description: Direction in which the tree shall be traversed
-              default: downward
-              enum:
-                - upward
-                - downward
     JobException:
       type: object
       description: Exception state for this job
@@ -553,7 +523,7 @@ components:
     MeasurementUnit:
       type: object
       properties:
-        datatypeURI:
+        datatypeUri:
           type: string
         lexicalValue:
           type: string
@@ -577,18 +547,20 @@ components:
           $ref: '#/components/schemas/ChildItem'
         parentItem:
           $ref: '#/components/schemas/ChildItem'
+    SemanticId:
+      type: object
     Shell:
       type: object
       description: Collections of AAS shells
       properties:
-        idShort:
-          type: string
-        identification:
-          type: string
         descriptions:
           type: array
           items:
             $ref: '#/components/schemas/Description'
+        idShort:
+          type: string
+        identification:
+          type: string
         globalAssetId:
           type: object
           properties:
@@ -634,6 +606,36 @@ components:
       properties:
         asyncFetchedItems:
           $ref: '#/components/schemas/AsyncFetchedItems'
+    AsynFetchecItems:
+      type: object
+      description: List of asyncFetchedItems
+      items:
+        $ref: '#/components/schemas/AsyncFetchedItems'
+      queryParameter:
+        type: object
+        description: Query parameters of current request
+        properties:
+          bomLifecycle:
+            type: object
+            items:
+              $ref: '#/components/schemas/BomLifecycle'
+          aspects:
+            type: array
+            items:
+              $ref: '#/components/schemas/Aspect'
+          depth:
+            type: integer
+            description: Max depth of the returned tree, if empty max depth is returned
+            minimum: 0
+            maximum: 100
+            default: 1
+          direction:
+            type: string
+            description: Direction in which the tree shall be traversed
+            default: downward
+            enum:
+              - upward
+              - downward
     BomLifecycle:
       type: string
       description: The bill of material lifecycle for an asset
@@ -692,7 +694,7 @@ components:
               type: string
             endpointProtocolVersion:
               type: string
-    SpecificAssetIds:
+   SpecificAssetIds:
       type: object
       additionalProperties:
         key:
