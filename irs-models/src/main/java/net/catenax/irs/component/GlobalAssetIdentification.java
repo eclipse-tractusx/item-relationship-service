@@ -35,9 +35,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 public class GlobalAssetIdentification {
 
     @Valid
-    @Min(value = 45)
-    @Max(value = 45)
-    @Schema(description = "Global unique C-X identifier", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0")
+    @Schema(description = "Global unique C-X identifier", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0", minLength = 45, maxLength = 45)
     private String globalAssetId;
 
     /**

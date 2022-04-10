@@ -9,25 +9,28 @@
 //
 package net.catenax.irs.component;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * SemanticId
  */
 @Value
-@Jacksonized
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @ExcludeFromCodeCoverageGeneratedReport
 @JsonDeserialize(builder = SemanticId.SemanticIdBuilder.class)
 public class SemanticId {
+
+   @Schema(implementation = List.class)
+   private List<String> value;
    /**
     * User to build SemanticId
     */

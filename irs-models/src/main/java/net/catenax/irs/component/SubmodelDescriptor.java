@@ -9,25 +9,34 @@
 //
 package net.catenax.irs.component;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * SubmodelDescriptor
  */
 @Value
-@Jacksonized
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @ExcludeFromCodeCoverageGeneratedReport
 @JsonDeserialize(builder = SubmodelDescriptor.SubmodelDescriptorBuilder.class)
-public class SubmodelDescriptor extends BaseDescriptor {
+public class SubmodelDescriptor  {
+
+   @Schema(implementation = String.class)
+   private String identification;
+
+   @Schema(implementation = String.class)
+   private String idShort;
+
+   @Schema(implementation = Description.class)
+   private List<Description> descriptions;
 
    @Schema(implementation = SemanticId.class)
    private SemanticId semanticId;

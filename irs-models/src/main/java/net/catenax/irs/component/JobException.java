@@ -33,14 +33,10 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @ExcludeFromCodeCoverageGeneratedReport
 public class JobException {
 
-   @Min(value = 0)
-   @Max(value = 100)
-   @Schema(description = "Name of the exception occurred", implementation = String.class)
+   @Schema(description = "Name of the exception occurred", implementation = String.class, minLength = 0, maxLength = 100)
    private String exceptionName;
 
-   @Min(value = 0)
-   @Max(value = 400)
-   @Schema(description = "Detail information for the error occurred", implementation = String.class)
+   @Schema(description = "Detail information for the error occurred", implementation = String.class, minLength = 0, maxLength = 400)
    private String errorDetail;
 
    @Schema(description = "Datetime when error occurred", implementation = Instant.class)

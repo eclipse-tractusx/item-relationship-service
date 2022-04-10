@@ -17,7 +17,6 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * An AAS shell.
@@ -27,9 +26,13 @@ import org.apache.commons.lang3.tuple.Pair;
 @Builder(toBuilder = true)
 @Schema(description = "")
 @ExcludeFromCodeCoverageGeneratedReport
-public class Shell extends BaseDescriptor{
+public class Shell {
 
+    @Schema(implementation = String.class)
+    private String identification;
 
+    @Schema(implementation = String.class)
+    private String idShort;
 
     @Schema(implementation = Map.class)
     private Map<String, String> specificAssetIds;
