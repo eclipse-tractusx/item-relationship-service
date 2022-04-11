@@ -9,6 +9,17 @@
 //
 package net.catenax.irs.component.events;
 
+import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MAX_LENGTH;
+import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
+
+import java.time.Instant;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -18,16 +29,6 @@ import net.catenax.irs.annotations.ValueOfEnum;
 import net.catenax.irs.dtos.PartAttribute;
 import net.catenax.irs.dtos.PartId;
 import net.catenax.irs.dtos.PartInfo;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Size;
-import java.time.Instant;
-
-import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MAX_LENGTH;
-import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
 
 /*** Request for updates to {@link PartInfo}s. */
 @Schema(description = PartAttributeUpdateRequest.DESCRIPTION)
@@ -51,7 +52,8 @@ public class PartAttributeUpdateRequest {
 
     @NotBlank
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = INPUT_FIELD_MAX_LENGTH)
-    @Schema(description = "Attribute value", example = "Vehicle", minLength = INPUT_FIELD_MIN_LENGTH, maxLength = INPUT_FIELD_MAX_LENGTH)
+    @Schema(description = "Attribute value", example = "Vehicle", minLength = INPUT_FIELD_MIN_LENGTH,
+            maxLength = INPUT_FIELD_MAX_LENGTH)
     private String value;
 
     @Past

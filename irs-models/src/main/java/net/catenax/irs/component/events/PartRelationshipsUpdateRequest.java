@@ -9,19 +9,20 @@
 //
 package net.catenax.irs.component.events;
 
+import static net.catenax.irs.dtos.ValidationConstants.RELATIONSHIP_UPDATE_LIST_MAX_SIZE;
+import static net.catenax.irs.dtos.ValidationConstants.RELATIONSHIP_UPDATE_LIST_MIN_SIZE;
+
+import java.util.List;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
-import java.util.List;
-
-import static net.catenax.irs.dtos.ValidationConstants.RELATIONSHIP_UPDATE_LIST_MAX_SIZE;
-import static net.catenax.irs.dtos.ValidationConstants.RELATIONSHIP_UPDATE_LIST_MIN_SIZE;
 
 /*** Request for a list of {@link PartRelationshipUpdate}s. */
 @Schema(description = PartRelationshipsUpdateRequest.DESCRIPTION)

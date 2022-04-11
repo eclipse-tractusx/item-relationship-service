@@ -9,21 +9,21 @@
 //
 package net.catenax.irs.validators;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
 import net.catenax.irs.annotations.UniquePartIdentifierForParentChild;
 import net.catenax.irs.dtos.PartId;
 import net.catenax.irs.dtos.PartRelationship;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-
 /**
  * Validator for {@link PartRelationship}.
  */
-public class UniquePartIdentifierForParentChildValidator implements ConstraintValidator<UniquePartIdentifierForParentChild, PartRelationship> {
+public class UniquePartIdentifierForParentChildValidator
+        implements ConstraintValidator<UniquePartIdentifierForParentChild, PartRelationship> {
 
     /**
      * Validates parent and child {@link PartId} must not be same.
-     *
      * Null {@link PartId} for Parent or Child is considered valid input here
      * as this validator focuses only on having a unique part identifier.
      */

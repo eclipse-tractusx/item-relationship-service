@@ -39,6 +39,4 @@ public class GenericDescription {
     @Schema(description = "Description")
     private List<Description> descriptions;
 
-
-
 }

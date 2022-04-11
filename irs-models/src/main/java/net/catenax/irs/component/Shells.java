@@ -27,10 +27,8 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @SuppressWarnings("PMD.AvoidFieldNameMatchingTypeName")
 public class Shells {
 
-
     @Schema(description = "Collections of AAS shells")
     /**
      * Shells
-     */
-    private Collection<Shell> shells;
+     */ private Collection<Shell> shells;
 }

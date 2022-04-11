@@ -9,12 +9,12 @@
 //
 package net.catenax.irs.dtos;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
-
-import java.util.List;
 
 /*** API type for query response type with relationships and part information. */
 @Schema(description = "List of relationships with information about parts.")

@@ -17,7 +17,7 @@ import lombok.Builder;
 import lombok.Value;
 
 /**
- *  API type for query response type with relationships and part information.
+ * API type for query response type with relationships and part information.
  */
 @Schema(description = "List of relationships with information about parts.")
 @Value

@@ -18,6 +18,5 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @ExcludeFromCodeCoverageGeneratedReport
 @Schema(description = "Part attributes.")
 public enum PartAttribute {
-    @Schema(description = "Type of material, (sub)component/part or vehicle")
-    PART_TYPE_NAME,
+    @Schema(description = "Type of material, (sub)component/part or vehicle") PART_TYPE_NAME,
 }

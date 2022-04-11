@@ -9,14 +9,14 @@
 //
 package net.catenax.irs.dtos;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import net.catenax.irs.annotations.UniquePartIdentifierForParentChild;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 /*** API type for a relationship between two parts. */
 @Schema(description = "Link between two parts.")

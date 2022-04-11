@@ -10,7 +10,7 @@
 package net.catenax.irs.exceptions;
 
 import net.catenax.irs.configuration.IrsConfiguration;
-import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.requests.PartsTreeByObjectIdRequest;
 import net.catenax.irs.requests.PartsTreeByVinRequest;
 

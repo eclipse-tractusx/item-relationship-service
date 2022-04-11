@@ -9,17 +9,17 @@
 //
 package net.catenax.irs.dtos;
 
+import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MAX_LENGTH;
+import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import org.hibernate.validator.constraints.URL;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
-import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MAX_LENGTH;
-import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
 
 /*** API type for aspect name/url entry. */
 @Schema(description = "Aspect location data")
@@ -32,12 +32,14 @@ public class Aspect {
 
     @NotBlank
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = INPUT_FIELD_MAX_LENGTH)
-    @Schema(description = "Aspect name", example = "CE", minLength = INPUT_FIELD_MIN_LENGTH, maxLength = INPUT_FIELD_MAX_LENGTH)
+    @Schema(description = "Aspect name", example = "CE", minLength = INPUT_FIELD_MIN_LENGTH,
+            maxLength = INPUT_FIELD_MAX_LENGTH)
     private String name;
 
     @NotBlank
     @URL
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = INPUT_FIELD_MAX_LENGTH)
-    @Schema(description = "URL location of aspect data", minLength = INPUT_FIELD_MIN_LENGTH, maxLength = INPUT_FIELD_MAX_LENGTH, example = "http://aspects-url/CE", implementation = java.net.URL.class)
+    @Schema(description = "URL location of aspect data", minLength = INPUT_FIELD_MIN_LENGTH,
+            maxLength = INPUT_FIELD_MAX_LENGTH, example = "http://aspects-url/CE", implementation = java.net.URL.class)
     private String url;
 }

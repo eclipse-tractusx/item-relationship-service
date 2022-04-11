@@ -65,9 +65,14 @@ class InMemoryJobStoreTest {
     void create_and_find() {
         sut.create(job);
         assertThat(sut.find(job.getJob().getJobId())).isPresent()
-                .get()
-                .usingRecursiveComparison()
-                .isEqualTo(originalJob.toBuilder().job(job.getJob().toBuilder().jobState(JobState.INITIAL).build()).build());
+                                                     .get()
+                                                     .usingRecursiveComparison()
+                                                     .isEqualTo(originalJob.toBuilder()
+                                                                           .job(job.getJob()
+                                                                                   .toBuilder()
+                                                                                   .jobState(JobState.INITIAL)
+                                                                                   .build())
+                                                                           .build());
         assertThat(sut.find(otherJobId)).isEmpty();
     }
 
@@ -115,8 +120,8 @@ class InMemoryJobStoreTest {
         sut.completeTransferProcess(job.getJob().getJobId(), process1);
 
         // Act
-        assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> sut.completeTransferProcess(job.getJob().getJobId(), process1));
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
+                () -> sut.completeTransferProcess(job.getJob().getJobId(), process1));
 
         // Assert
         refreshJob();
@@ -199,8 +204,8 @@ class InMemoryJobStoreTest {
         sut.create(job);
         sut.addTransferProcess(job.getJob().getJobId(), processId1);
         // Act
-        assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> sut.completeJob(job.getJob().getJobId()));
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
+                () -> sut.completeJob(job.getJob().getJobId()));
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.IN_PROGRESS);
@@ -268,7 +273,8 @@ class InMemoryJobStoreTest {
         sut.completeTransferProcess(job.getJob().getJobId(), process1);
         sut.completeJob(job.getJob().getJobId());
         // Act
-        final List<MultiTransferJob> completedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.COMPLETED, nowPlusFiveHours);
+        final List<MultiTransferJob> completedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
+                nowPlusFiveHours);
         // Assert
         assertThat(completedJobs.size()).isEqualTo(1);
         assertThat(completedJobs.get(0).getJob().getJobState()).isEqualTo(JobState.COMPLETED);
@@ -283,7 +289,8 @@ class InMemoryJobStoreTest {
         sut.addTransferProcess(job.getJob().getJobId(), processId1);
         sut.markJobInError(job.getJob().getJobId(), errorDetail);
         // Act
-        final List<MultiTransferJob> failedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.ERROR, nowPlusFiveHours);
+        final List<MultiTransferJob> failedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.ERROR,
+                nowPlusFiveHours);
         // Assert
         assertThat(failedJobs.size()).isEqualTo(1);
         assertThat(failedJobs.get(0).getJob().getJobState()).isEqualTo(JobState.ERROR);
@@ -307,17 +314,24 @@ class InMemoryJobStoreTest {
         assertThat(sut.getJobState(job.getJob().getJobId())).isEqualTo(JobState.INITIAL);
     }
 
+    @Test
+    void jobStateIsInProgress() {
+        sut.create(job);
+        sut.addTransferProcess(job.getJob().getJobId(), processId1);
+        assertThat(sut.getJobState(job.getJob().getJobId())).isEqualTo(JobState.IN_PROGRESS);
+    }
+
     private void refreshJob() {
         job = sut.find(job.getJob().getJobId()).get();
     }
 
     private Job createJob() {
-        GlobalAssetIdentification globalAssetId = GlobalAssetIdentification
-                .builder()
-                .globalAssetId(UUID.randomUUID().toString())
-                .build();
+        GlobalAssetIdentification globalAssetId = GlobalAssetIdentification.builder()
+                                                                           .globalAssetId(UUID.randomUUID().toString())
+                                                                           .build();
 
-        return Job.builder().globalAssetId(globalAssetId)
+        return Job.builder()
+                  .globalAssetId(globalAssetId)
                   .jobId(UUID.randomUUID().toString())
                   .jobState(JobState.INITIAL)
                   .createdOn(Instant.now())

@@ -9,13 +9,14 @@
 //
 package net.catenax.irs.dtos;
 
+import java.util.List;
+
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
-
-import javax.validation.constraints.NotNull;
-import java.util.List;
 
 /*** API type for part information retrieved alongside a parts tree. */
 @Schema(description = "Information about parts")

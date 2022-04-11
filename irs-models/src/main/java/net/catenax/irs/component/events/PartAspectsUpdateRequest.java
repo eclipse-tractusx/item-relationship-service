@@ -9,6 +9,18 @@
 //
 package net.catenax.irs.component.events;
 
+import static net.catenax.irs.dtos.ValidationConstants.ASPECT_UPDATE_LIST_MAX_SIZE;
+import static net.catenax.irs.dtos.ValidationConstants.ASPECT_UPDATE_LIST_MIN_SIZE;
+
+import java.time.Instant;
+import java.util.List;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -16,17 +28,6 @@ import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.dtos.Aspect;
 import net.catenax.irs.dtos.PartId;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Size;
-import java.time.Instant;
-import java.util.List;
-
-import static net.catenax.irs.dtos.ValidationConstants.ASPECT_UPDATE_LIST_MAX_SIZE;
-import static net.catenax.irs.dtos.ValidationConstants.ASPECT_UPDATE_LIST_MIN_SIZE;
 
 /*** Event for updates to {@link Aspect}s. */
 @Schema(description = PartAspectsUpdateRequest.DESCRIPTION)
@@ -49,11 +50,9 @@ public class PartAspectsUpdateRequest {
     @Schema(description = "Aspect location.")
     private List<Aspect> aspects;
 
-    @Schema(description =
-            "<ul>"
-                    + "   <li>TRUE if the aspect URLs are to be deleted from the part</li>"
-                    + "   <li>FALSE otherwise (“normal case” - an aspect URL is added to a part).</li>"
-                    + "</ul>")
+    @Schema(description = "<ul>" + "   <li>TRUE if the aspect URLs are to be deleted from the part</li>"
+                                  + "   <li>FALSE otherwise (“normal case” - an aspect URL is added to a part).</li>"
+                                  + "</ul>")
     private boolean remove;
 
     @Past

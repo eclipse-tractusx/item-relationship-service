@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
-import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.controllers.ApiErrorsConstants;
 import net.catenax.irs.controllers.IrsApiConstants;
 import net.catenax.irs.controllers.IrsApiExamplesUtils;

@@ -9,22 +9,23 @@
 //
 package net.catenax.irs.annotations;
 
-import net.catenax.irs.dtos.PartRelationship;
-import net.catenax.irs.validators.UniquePartIdentifierForParentChildValidator;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import javax.validation.Constraint;
+import javax.validation.Payload;
+
+import net.catenax.irs.dtos.PartRelationship;
+import net.catenax.irs.validators.UniquePartIdentifierForParentChildValidator;
 
 /**
  * Custom annotation to validate {@link PartRelationship} input.
  */
-@Target({TYPE})
+@Target({ TYPE })
 @Retention(RUNTIME)
 @Documented
 @Constraint(validatedBy = UniquePartIdentifierForParentChildValidator.class)
@@ -38,13 +39,15 @@ public @interface UniquePartIdentifierForParentChild {
 
     /**
      * Groups to which the constraint belongs.
-     *  @return see {@link Class}
+     *
+     * @return see {@link Class}
      */
-    Class<?>[] groups() default {};
+    Class<?>[] groups() default { };
 
     /**
      * An implementation of {@link Payload}.
+     *
      * @return see {@link Class}
      */
-    Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default { };
 }

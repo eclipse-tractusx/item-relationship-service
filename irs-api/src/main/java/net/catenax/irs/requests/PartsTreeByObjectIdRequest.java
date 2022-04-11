@@ -12,7 +12,7 @@ package net.catenax.irs.requests;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Builder;
 import lombok.Value;
-import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

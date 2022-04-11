@@ -9,14 +9,14 @@
 //
 package net.catenax.irs.dtos;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import org.springframework.http.HttpStatus;
-
-import java.util.List;
 
 /*** API error response. */
 @Schema(description = "Error response")
