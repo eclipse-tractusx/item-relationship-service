@@ -36,7 +36,6 @@ import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.requests.IrsPartsTreeRequest;
 import net.catenax.irs.services.IrsPartsTreeQueryService;
 import org.springdoc.api.annotations.ParameterObject;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -145,10 +144,6 @@ public class IrsController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add("IRS-Header", "Cancel Job By Id");
-
-        return new ResponseEntity<>(canceledJob, headers, HttpStatus.OK);
+        return new ResponseEntity<>(canceledJob, HttpStatus.OK);
     }
-
 }
