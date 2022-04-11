@@ -53,12 +53,18 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
 
     @Override
     public Optional<Job> cancelJobById(final @NonNull String jobId) {
-        final MultiTransferJob multiTransferJob = this.jobStore.deleteJob(jobId);
+        this.jobStore.completeJob(jobId);
 
-        return Optional.ofNullable(Job.builder()
-                                      .jobId(multiTransferJob.getJobId())
-                                      .jobState(JobState.valueOf(multiTransferJob.getState().name()))
-                                      .exception(multiTransferJob.getErrorDetail())
-                                      .build());
+        final MultiTransferJob multiTransferJob = this.jobStore.find(jobId).orElse(null);
+
+        if (multiTransferJob != null) {
+            return Optional.ofNullable(Job.builder()
+                                          .jobId(multiTransferJob.getJobId())
+                                          .jobState(JobState.valueOf(multiTransferJob.getState().name()))
+                                          .exception(multiTransferJob.getErrorDetail())
+                                          .build());
+        }
+        return Optional.empty();
     }
+
 }
