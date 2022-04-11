@@ -167,6 +167,17 @@ public class InMemoryJobStore implements JobStore {
         return writeLock(() -> jobsById.remove(jobId));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JobState getJobState(final String jobId) {
+        return jobsById.values().stream()
+                       .filter(j -> j.getJob().getJobId().equals(jobId))
+                       .map(j -> j.getJob().getJobState())
+                       .findFirst().get();
+    }
+
     private <T> T readLock(final Supplier<T> work) {
         try {
             if (!lock.readLock().tryLock(TIMEOUT, TimeUnit.MILLISECONDS)) {

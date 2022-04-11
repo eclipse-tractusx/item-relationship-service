@@ -35,7 +35,7 @@ public interface JobStore {
      * Retrieve jobs by state with completion date older than requested date
      *
      * @param jobState the job state
-     * @param localDateTime requested date
+     * @param dateTime requested date
      * @return found jobs
      */
     List<MultiTransferJob> findByStateAndCompletionDateOlderThan(JobState jobState, Instant dateTime);
@@ -97,4 +97,12 @@ public interface JobStore {
      * @return deleted job
      */
     MultiTransferJob deleteJob(String jobId);
+
+    /**
+     * Get and return the current job state
+     *
+     * @param jobId the job identifier
+     * @return job state
+     */
+    JobState getJobState(String jobId);
 }
