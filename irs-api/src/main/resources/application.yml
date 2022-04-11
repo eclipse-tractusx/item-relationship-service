@@ -59,5 +59,10 @@ feign:
         readTimeout: 5000
         loggerLevel: full
       digitalTwinRegistry:
-        url: https://catenaxdev042akssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry
+        url: http://localhost:4242
 
+blobstore:
+  endpoint:
+  accessKey:
+  secretKey:
+  bucketName: irsbucket

@@ -9,7 +9,6 @@
 //
 package net.catenax.irs.connector.job;
 
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;

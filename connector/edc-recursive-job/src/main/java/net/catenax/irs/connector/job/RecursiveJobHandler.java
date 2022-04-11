@@ -10,23 +10,20 @@
 package net.catenax.irs.connector.job;
 
 
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
-
 import java.util.stream.Stream;
 
 /**
  * Interface for extensions to provide the logic to build jobs with
  * custom logic to run multiple transfers.
  */
-public interface RecursiveJobHandler {
+public interface RecursiveJobHandler<T extends DataRequest, P extends TransferProcess> {
     /**
      * Start the recursive process by creating any number of transfers.
      *
      * @param job job definition.
      * @return a stream of {@DataRequest}. One data transfer will be initiated for each item.
      */
-    Stream<DataRequest> initiate(MultiTransferJob job);
+    Stream<T> initiate(MultiTransferJob job);
 
     /**
      * Continue the recursive process by creating any number of transfers from
@@ -36,7 +33,7 @@ public interface RecursiveJobHandler {
      * @param transferProcess completed transfer.
      * @return a stream of {@DataRequest}. One data transfer will be initiated for each item.
      */
-    Stream<DataRequest> recurse(MultiTransferJob job, TransferProcess transferProcess);
+    Stream<T> recurse(MultiTransferJob job, P transferProcess);
 
     /**
      * Called when all transfers in the job have completed.
