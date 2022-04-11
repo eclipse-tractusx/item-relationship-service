@@ -11,6 +11,7 @@ package net.catenax.irs.requests;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +39,7 @@ import net.catenax.irs.controllers.ApiErrorsConstants;
 @RequiredArgsConstructor
 @SuppressWarnings({ "PMD.AbstractClassWithoutAbstractMethod", "PMD.DataClass" })
 @ExcludeFromCodeCoverageGeneratedReport
-public abstract class IrsPartsTreeRequestBase {
+public abstract class IrsPartsTreeRequestBase implements Serializable {
 
     private static final long MIN_TREE_DEPTH = 1;
     private static final long MAX_TREE_DEPTH = 100;
@@ -46,7 +47,7 @@ public abstract class IrsPartsTreeRequestBase {
     @NotBlank(message = ApiErrorsConstants.INVALID_ARGUMENTS)
     @ValueOfEnum(enumClass = BomLifecycle.class, message = ApiErrorsConstants.ITEM_VIEW_MUST_MATCH_ENUM)
     @Parameter(
-            description = "Unique identifier of a single, unique (sub)component/part/batch,  given by its globalAssetId/ digital twin id.",
+            description = "BoM Lifecycle of the result tree",
             in = QUERY, example = "asBuilt", schema = @Schema(implementation = BomLifecycle.class))
     protected final String bomLifecycle;
 

@@ -21,12 +21,12 @@ import net.catenax.irs.dtos.ItemLifecycleStage;
 @ExcludeFromCodeCoverageGeneratedReport
 @Schema(description = "View defining which data of the PartsTree is retrieved.")
 public enum BomLifecycle {
-    @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") AS_BUILT("asBuild"),
-    @Schema(description = "The view of the PartsTree ... lifecycle.") AS_MAINTAINED("asMaintained"),
-    @Schema(description = "TThe view of the PartsTree ... lifecycle.") AS_PLANNED("asPlanned"),
-    @Schema(description = "TThe view of the PartsTree ... lifecycle.") AS_DESIGNED("asDesigned"),
-    @Schema(description = "The view of the PartsTree ... lifecycle.") AS_ORDERED("asOrdered"),
-    @Schema(description = "The view of the PartsTree ... lifecycle.") AS_RECYCLED("asRecycled");
+    @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") AS_BUILT("asBuilt");
+    //@Schema(description = "The view of the PartsTree ... lifecycle.") AS_MAINTAINED("asMaintained"),
+    //@Schema(description = "TThe view of the PartsTree ... lifecycle.") AS_PLANNED("asPlanned"),
+    //@Schema(description = "TThe view of the PartsTree ... lifecycle.") AS_DESIGNED("asDesigned"),
+    //@Schema(description = "The view of the PartsTree ... lifecycle.") AS_ORDERED("asOrdered"),
+    // @Schema(description = "The view of the PartsTree ... lifecycle.") AS_RECYCLED("asRecycled");
 
     private final String value;
 
