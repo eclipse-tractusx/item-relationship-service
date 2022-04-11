@@ -14,7 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * Service for retrying the retirement of submodel json's from the remote aas wrapper service
+ * Service for retrying the retirement of submodel json's
+ * from the remote aas wrapper service
  */
 @Slf4j
 @Service
@@ -26,10 +27,12 @@ public class SubmodelRetryer {
     }
 
     /**
-     * Retry the call getting a submodel from the remote aas wrapper service
+     * Retry the call getting a submodel from the remote
+     * aas wrapper service
      *
      * @param submodelEndpointAddress The URL to the submodel endpoint
-     * @param submodelClass           The Aspect Model for the given submodel like AssemblyPartRelationship
+     * @param submodelClass           The Aspect Model for the given submodel
+     *                                like AssemblyPartRelationship
      * @param <T>                     the generic Aspect Model
      * @return the requested submodel
      */
