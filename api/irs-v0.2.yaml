@@ -510,7 +510,7 @@ components:
         errorDetail:
           type: string
           description: Detail information for the error occurred
-          maxLength: 400
+          maxLength: 4000
         exceptionDate:
           type: string
           format: date-time
