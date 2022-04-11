@@ -31,14 +31,14 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @JsonDeserialize(builder = SemanticId.SemanticIdBuilder.class)
 public class SemanticId {
 
-   @Schema()
-   @Singular
-   private List<String> values;
-   /**
-    * User to build SemanticId
-    */
-   @Schema(description = "User to build async fetched items")
-   @JsonPOJOBuilder(withPrefix = "with")
-   public static class SemanticIdBuilder {
-   }
+    @Schema()
+    @Singular
+    private List<String> values;
+    /**
+     * User to build SemanticId
+     */
+    @Schema(description = "User to build async fetched items")
+    @JsonPOJOBuilder(withPrefix = "with")
+    public static class SemanticIdBuilder {
+    }
 }

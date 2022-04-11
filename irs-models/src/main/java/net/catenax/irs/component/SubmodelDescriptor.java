@@ -21,7 +21,7 @@ import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
- * SubmodelDescriptor
+ * SubmodelDescriptor description
  */
 @Value
 @Builder(toBuilder = true)
@@ -30,28 +30,28 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @JsonDeserialize(builder = SubmodelDescriptor.SubmodelDescriptorBuilder.class)
 public class SubmodelDescriptor  {
 
-   @Schema(implementation = String.class)
-   private String identification;
+    @Schema(implementation = String.class)
+    private String identification;
 
-   @Schema(implementation = String.class)
-   private String idShort;
+    @Schema(implementation = String.class)
+    private String idShort;
 
-   @Schema()
-   @Singular
-   private List<Description> descriptions;
+    @Schema()
+    @Singular
+    private List<Description> descriptions;
 
-   @Schema(implementation = SemanticId.class)
-   private SemanticId semanticId;
+    @Schema(implementation = SemanticId.class)
+    private SemanticId semanticId;
 
-   @Schema()
-   @Singular
-   private List<EndPoint> endpoints;
+    @Schema()
+    @Singular
+    private List<EndPoint> endpoints;
 
-   /**
-    * User to build SubmodelDescriptor
+    /**
+     * User to build SubmodelDescriptor
     */
-   @Schema(description = "User to build async fetched items")
-   @JsonPOJOBuilder(withPrefix = "with")
-   public static class SubmodelDescriptorBuilder {
-   }
+    @Schema(description = "User to build async fetched items")
+    @JsonPOJOBuilder(withPrefix = "with")
+    public static class SubmodelDescriptorBuilder {
+    }
 }

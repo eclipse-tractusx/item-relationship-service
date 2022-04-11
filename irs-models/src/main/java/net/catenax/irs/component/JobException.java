@@ -11,9 +11,6 @@ package net.catenax.irs.component;
 
 import java.time.Instant;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,20 +30,24 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @ExcludeFromCodeCoverageGeneratedReport
 public class JobException {
 
-   @Schema(description = "Name of the exception occurred", implementation = String.class, minLength = 0, maxLength = 100)
-   private String exceptionName;
+    public static final int EXCEPTION_NAME_MAX_LENGHT = 100;
+    public static final int ZERO = 0;
+    public static final int ERROR_DETAIL_MAX_LENGHT = 4000;
 
-   @Schema(description = "Detail information for the error occurred", implementation = String.class, minLength = 0, maxLength = 400)
-   private String errorDetail;
+    @Schema(description = "Name of the exception occurred", implementation = String.class, minLength = ZERO, maxLength = EXCEPTION_NAME_MAX_LENGHT)
+    private String exceptionName;
 
-   @Schema(description = "Datetime when error occurred", implementation = Instant.class)
-   private Instant exceptionDate;
+    @Schema(description = "Detail information for the error occurred", implementation = String.class, minLength = ZERO, maxLength = ERROR_DETAIL_MAX_LENGHT)
+    private String errorDetail;
 
-   /**
-    * Builder class
-    */
-   @JsonPOJOBuilder(withPrefix = "with")
-   public static class JobExceptionBuilder {
-   }
+    @Schema(description = "Datetime when error occurred", implementation = Instant.class)
+    private Instant exceptionDate;
+
+    /**
+     * Builder class
+     */
+    @JsonPOJOBuilder(withPrefix = "with")
+    public static class JobExceptionBuilder {
+    }
 
 }

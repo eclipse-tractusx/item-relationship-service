@@ -10,14 +10,10 @@
 package net.catenax.irs.component;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
@@ -34,8 +30,10 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @ExcludeFromCodeCoverageGeneratedReport
 public class GlobalAssetIdentification {
 
+    private static final int GLOBAL_ASSET_ID_MIN_LENGTH = 45;
+
     @Valid
-    @Schema(description = "Global unique C-X identifier", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0", minLength = 45, maxLength = 45)
+    @Schema(description = "Global unique C-X identifier", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0", minLength = GLOBAL_ASSET_ID_MIN_LENGTH, maxLength = GLOBAL_ASSET_ID_MIN_LENGTH)
     private String globalAssetId;
 
     /**
