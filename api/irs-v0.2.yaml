@@ -12,7 +12,7 @@ paths:
       description: "Registers and starts a AAS crawler job for given {globalAssetId}"
       operationId: getBomLifecycleByGlobalAssetId
       parameters:
-      - description: Readable ID of manufacturer including plant.
+      - description: globalAssetId of Item from which the tree building process.
         example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
         in: path
         name: globalAssetId

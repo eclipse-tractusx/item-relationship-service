@@ -11,6 +11,7 @@ package net.catenax.irs.requests;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +39,7 @@ import net.catenax.irs.controllers.ApiErrorsConstants;
 @RequiredArgsConstructor
 @SuppressWarnings({ "PMD.AbstractClassWithoutAbstractMethod", "PMD.DataClass" })
 @ExcludeFromCodeCoverageGeneratedReport
-public abstract class IrsPartsTreeRequestBase {
+public abstract class IrsPartsTreeRequestBase implements Serializable {
 
     private static final long MIN_TREE_DEPTH = 1;
     private static final long MAX_TREE_DEPTH = 100;
