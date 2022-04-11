@@ -9,9 +9,14 @@
 //
 package net.catenax.irs.connector.job;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import lombok.Builder;
 import lombok.Value;
-import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.enums.JobState;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
@@ -22,25 +27,16 @@ import org.eclipse.dataspaceconnector.spi.transfer.response.ResponseStatus;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.UUID.randomUUID;
-
 /**
  * Orchestrator service for recursive {@link MultiTransferJob}s that potentially
  * comprise multiple transfers.
  */
-@SuppressWarnings({
-    "PMD.GuardLogStatement", // Monitor doesn't offer guard statements
-    "PMD.AvoidCatchingGenericException"}) // Handle RuntimeException from callbacks
+@SuppressWarnings({ "PMD.GuardLogStatement", // Monitor doesn't offer guard statements
+        "PMD.AvoidCatchingGenericException"
+}) // Handle RuntimeException from callbacks
 public class JobOrchestrator {
 
-    private static final int TTL_CLEANUP_COMPLETED_JOBS_HOURS  = 1;
+    private static final int TTL_CLEANUP_COMPLETED_JOBS_HOURS = 1;
     private static final int TTL_CLEANUP_COMPLETED_JOBS_SECONDS = TTL_CLEANUP_COMPLETED_JOBS_HOURS * 3600;
     private static final int TTL_CLEANUP_FAILED_JOBS_HOURS = 24;
     private static final int TTL_CLEANUP_FAILED_JOBS_SECONDS = TTL_CLEANUP_FAILED_JOBS_HOURS * 3600 * 24;
@@ -75,11 +71,8 @@ public class JobOrchestrator {
      * @param transferProcessObservable Transfer process observable.
      * @param monitor                   Logger.
      */
-    public JobOrchestrator(
-            final TransferProcessManager processManager,
-            final JobStore jobStore,
-            final RecursiveJobHandler handler,
-            final TransferProcessObservable transferProcessObservable,
+    public JobOrchestrator(final TransferProcessManager processManager, final JobStore jobStore,
+            final RecursiveJobHandler handler, final TransferProcessObservable transferProcessObservable,
             final Monitor monitor) {
         this.processManager = processManager;
         this.jobStore = jobStore;
@@ -91,13 +84,13 @@ public class JobOrchestrator {
 
     /**
      * Start a job.
-     * @param job job attached to the request
+     *
+     * @param job     job attached to the request
      * @param jobData additional data for the job to managed by the {@link JobStore}.
      * @return response.
      */
     public JobInitiateResponse startJob(final Job job, final Map<String, String> jobData) {
-        final var multiJob = MultiTransferJob.builder()
-                .job(job).jobData(jobData).build();
+        final var multiJob = MultiTransferJob.builder().job(job).jobData(jobData).build();
 
         jobStore.create(multiJob);
 
@@ -106,7 +99,10 @@ public class JobOrchestrator {
             requests = handler.initiate(multiJob);
         } catch (RuntimeException e) {
             markJobInError(multiJob, e, "Handler method failed");
-            return JobInitiateResponse.builder().jobId(multiJob.getJob().getJobId()).status(ResponseStatus.FATAL_ERROR).build();
+            return JobInitiateResponse.builder()
+                                      .jobId(multiJob.getJob().getJobId())
+                                      .status(ResponseStatus.FATAL_ERROR)
+                                      .build();
         }
 
         long transferCount;
@@ -124,8 +120,6 @@ public class JobOrchestrator {
         return JobInitiateResponse.builder().jobId(multiJob.getJob().getJobId()).status(ResponseStatus.OK).build();
     }
 
-
-
     /**
      * Callback invoked when a transfer has completed.
      *
@@ -140,7 +134,9 @@ public class JobOrchestrator {
         final var job = jobEntry.get();
 
         if (job.getJob().getJobState() != JobState.IN_PROGRESS) {
-            monitor.info("Ignoring transfer complete event for job " + job.getJob().getJobId() + " in state " + job.getJob().getJobState());
+            monitor.info(
+                    "Ignoring transfer complete event for job " + job.getJob().getJobId() + " in state " + job.getJob()
+                                                                                                              .getJobState());
             return;
         }
 
@@ -166,13 +162,15 @@ public class JobOrchestrator {
 
     public List<MultiTransferJob> findAndCleanupCompletedJobs() {
         final Instant currentDateMinusSeconds = Instant.now().minusSeconds(TTL_CLEANUP_COMPLETED_JOBS_SECONDS);
-        final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED, currentDateMinusSeconds);
+        final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
+                currentDateMinusSeconds);
         return deleteJobs(completedJobs);
     }
 
     public List<MultiTransferJob> findAndCleanupFailedJobs() {
         final Instant currentDateMinusSeconds = Instant.now().minusSeconds(TTL_CLEANUP_FAILED_JOBS_SECONDS);
-        final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR, currentDateMinusSeconds);
+        final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR,
+                currentDateMinusSeconds);
         return deleteJobs(failedJobs);
     }
 
@@ -204,13 +202,13 @@ public class JobOrchestrator {
         jobStore.markJobInError(job.getJob().getJobId(), message);
     }
 
-    private long startTransfers(final MultiTransferJob job, final Stream<DataRequest> dataRequests) /* throws JobException */ {
-        return dataRequests
-                .map(r -> startTransfer(job, r))
-                .collect(Collectors.counting());
+    private long startTransfers(final MultiTransferJob job,
+            final Stream<DataRequest> dataRequests) /* throws JobException */ {
+        return dataRequests.map(r -> startTransfer(job, r)).collect(Collectors.counting());
     }
 
-    private TransferInitiateResponse startTransfer(final MultiTransferJob job, final DataRequest dataRequest)  /* throws JobException */ {
+    private TransferInitiateResponse startTransfer(final MultiTransferJob job,
+            final DataRequest dataRequest)  /* throws JobException */ {
         final var response = processManager.initiateConsumerRequest(dataRequest);
 
         if (response.getStatus() != ResponseStatus.OK) {
