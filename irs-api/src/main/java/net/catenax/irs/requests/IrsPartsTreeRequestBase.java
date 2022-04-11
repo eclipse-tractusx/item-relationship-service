@@ -47,7 +47,7 @@ public abstract class IrsPartsTreeRequestBase implements Serializable {
     @NotBlank(message = ApiErrorsConstants.INVALID_ARGUMENTS)
     @ValueOfEnum(enumClass = BomLifecycle.class, message = ApiErrorsConstants.ITEM_VIEW_MUST_MATCH_ENUM)
     @Parameter(
-            description = "Unique identifier of a single, unique (sub)component/part/batch,  given by its globalAssetId/ digital twin id.",
+            description = "BoM Lifecycle of the result tree",
             in = QUERY, example = "asBuilt", schema = @Schema(implementation = BomLifecycle.class))
     protected final String bomLifecycle;
 

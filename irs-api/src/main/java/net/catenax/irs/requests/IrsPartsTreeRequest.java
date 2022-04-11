@@ -39,7 +39,7 @@ public class IrsPartsTreeRequest extends IrsPartsTreeRequestBase {
             message = ApiErrorsConstants.NOT_BLANK)
     @NotBlank
     @Size(min = IrsApiConstants.JOB_ID_SIZE, max = IrsApiConstants.JOB_ID_SIZE)
-    @Parameter(description = "globalAssetId of Item from which the tree building process.", in = PATH,
+    @Parameter(description = "globalAssetId of Item from which the tree building process starts.", in = PATH,
             required = true, example = IrsApiExamplesUtils.GLOBAL_ASSET_ID_EXAMPLE, schema = @Schema(implementation = String.class))
     private String globalAssetId;
 
