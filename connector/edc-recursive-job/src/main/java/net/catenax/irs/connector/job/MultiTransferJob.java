@@ -12,13 +12,11 @@ package net.catenax.irs.connector.job;
 import static java.lang.String.format;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import lombok.Builder;
@@ -96,8 +94,8 @@ public class MultiTransferJob {
          * Transition the job to the {@link JobState#COMPLETED} state.
          */
         /* package */ MultiTransferJobBuilder transitionComplete() {
-            return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL)
-                    .job(job.toBuilder().jobFinished(Instant.now()).build());
+            return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL).job(
+                    job.toBuilder().jobFinished(Instant.now()).build());
         }
 
         /**
@@ -112,10 +110,10 @@ public class MultiTransferJob {
             return this;
         }
 
-
         private MultiTransferJobBuilder transition(final JobState end, final JobState... starts) {
             if (Arrays.stream(starts).noneMatch(s -> s == job.getJobState())) {
-                throw new IllegalStateException(format("Cannot transition from state %s to %s", job.getJobState(), end));
+                throw new IllegalStateException(
+                        format("Cannot transition from state %s to %s", job.getJobState(), end));
             }
 
             this.job.setJobState(end);

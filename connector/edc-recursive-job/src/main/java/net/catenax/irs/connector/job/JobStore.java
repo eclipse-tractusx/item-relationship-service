@@ -9,14 +9,13 @@
 //
 package net.catenax.irs.connector.job;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+
 import net.catenax.irs.component.enums.JobState;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 import org.jetbrains.annotations.Nullable;
-
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Manages storage of {@link MultiTransferJob} state.
