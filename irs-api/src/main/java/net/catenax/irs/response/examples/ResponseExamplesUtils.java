@@ -12,7 +12,7 @@ package net.catenax.irs.response.examples;
 /**
  * Response example for irs api
  */
-public class ResponseExamples {
+public class ResponseExamplesUtils {
     public static final String JOB_HANLDE_EXAMPLE = "{\"jobId\": \"6c311d29-5753-46d4-b32c-19b918ea93b0\"}";
 
     public static final String ERROR_RESPONSE  = "{\"errors\": [\"TimeoutException\", \"ParsingException\"],\"message\": \"Some errors occured\",\"statusCode\": \"500\"}";

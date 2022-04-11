@@ -36,7 +36,8 @@ enum LifecycleContextCharacteristic {
      * vehicle the serial numbers & batch numbers are documented (German: Verbaudokumentation)
      * This leads to one BOM per build car*/
     ASBUILT("AsBuilt");
-    // ASMAINTAINED("AsMaintained"), // BoM AsMaintained describes the BoM after purchase by a customer and updates through maintenace.
+    // ASMAINTAINED("AsMaintained"), // BoM AsMaintained describes the BoM after purchase by a
+    // customer and updates through maintenace.
     //ASRECYCLED("AsRecycled"); // BoM AsRecycled describes the BoM after the recycling of the product.
 
     /**

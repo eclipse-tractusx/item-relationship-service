@@ -40,7 +40,7 @@ paths:
         required: false
         schema:
           type: array
-          default: SerialPartTypization
+          default: [SerialPartTypization]
           items:
             type: string
             enum:
@@ -234,6 +234,7 @@ paths:
         required: true
         schema:
           type: string
+          default: running
           enum:
           - unsaved
           - initial
@@ -242,7 +243,6 @@ paths:
           - complete
           - canceled
           - failed
-        default: running
       responses:
         "200":
           content:

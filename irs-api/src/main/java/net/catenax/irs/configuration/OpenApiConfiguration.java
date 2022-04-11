@@ -46,6 +46,7 @@ import org.springframework.http.HttpStatus;
 public class OpenApiConfiguration {
 
     private static final String EXAMPLE_INSTANT = "2022-02-03T14:48:54.709Z";
+    public static final int DEFAULT_DEPTH = 4;
 
     /**
      * IRS configuration settings.
@@ -112,7 +113,7 @@ public class OpenApiConfiguration {
                                                                    .bomLifecycle(BomLifecycle.AS_BUILT)
                                                                    .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION,
                                                                            AspectType.CONTACT))
-                                                                   .depth(4)
+                                                                   .depth(DEFAULT_DEPTH)
                                                                    .direction(Direction.DOWNWARD)
                                                                    .build())
                                      .jobException(new JobException("IrsTimeoutException",
@@ -126,7 +127,7 @@ public class OpenApiConfiguration {
         try {
             return new URL(urlString);
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Cannot create URL " + urlString);
+            throw new IllegalArgumentException("Cannot create URL " + urlString, e);
         }
     }
 
