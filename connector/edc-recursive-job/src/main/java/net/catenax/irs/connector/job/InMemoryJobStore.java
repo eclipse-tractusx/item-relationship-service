@@ -9,13 +9,10 @@
 //
 package net.catenax.irs.connector.job;
 
-import lombok.RequiredArgsConstructor;
-import org.eclipse.dataspaceconnector.spi.EdcException;
-import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
-import org.jetbrains.annotations.Nullable;
-
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +23,13 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+
+import lombok.RequiredArgsConstructor;
+import net.catenax.irs.component.enums.JobState;
+import org.eclipse.dataspaceconnector.spi.EdcException;
+import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
+import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Manages storage of {@link MultiTransferJob} state in memory with no persistence.
@@ -65,11 +69,11 @@ public class InMemoryJobStore implements JobStore {
      * {@inheritDoc}
      */
     @Override
-    public List<MultiTransferJob> findByStateAndCompletionDateOlderThan(final JobState jobState, final LocalDateTime localDateTime) {
+    public List<MultiTransferJob> findByStateAndCompletionDateOlderThan(final JobState jobState, final Instant dateTime) {
         return readLock(() -> jobsById.values()
                                       .stream()
                                       .filter(hasState(jobState))
-                                      .filter(isCompletionDateBefore(localDateTime))
+                                      .filter(isCompletionDateBefore(dateTime))
                                       .collect(Collectors.toList()));
     }
 
@@ -80,7 +84,7 @@ public class InMemoryJobStore implements JobStore {
     public void create(final MultiTransferJob job) {
         writeLock(() -> {
             final var newJob = job.toBuilder().transitionInitial().build();
-            jobsById.put(job.getJobId(), newJob);
+            jobsById.put(job.getJob().getJobId(), newJob);
             return null;
         });
     }
@@ -139,7 +143,7 @@ public class InMemoryJobStore implements JobStore {
             if (job == null) {
                 monitor.warning("Job not found: " + jobId);
             } else {
-                jobsById.put(job.getJobId(), action.apply(job));
+                jobsById.put(job.getJob().getJobId(), action.apply(job));
             }
             return null;
         });
@@ -195,11 +199,13 @@ public class InMemoryJobStore implements JobStore {
         }
     }
 
-    private Predicate<MultiTransferJob> isCompletionDateBefore(final LocalDateTime localDateTime) {
-        return job -> job.getCompletionDate().isPresent() && job.getCompletionDate().get().isBefore(localDateTime);
+    private Predicate<MultiTransferJob> isCompletionDateBefore(final Instant dateTime) {
+        return job -> Optional.ofNullable(job.getJob().getJobFinished()).isPresent() && job.getJob().getJobFinished()
+                                                                                   .isBefore(dateTime);
     }
 
     private Predicate<MultiTransferJob> hasState(final JobState jobState) {
-        return job -> job.getState().equals(jobState);
+        return job -> job.getJob().getJobState().equals(jobState);
     }
+
 }

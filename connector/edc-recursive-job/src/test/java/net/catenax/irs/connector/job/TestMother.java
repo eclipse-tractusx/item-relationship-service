@@ -1,6 +1,8 @@
 package net.catenax.irs.connector.job;
 
 import com.github.javafaker.Faker;
+import net.catenax.irs.component.Job;
+import net.catenax.irs.component.enums.JobState;
 import org.eclipse.dataspaceconnector.spi.transfer.TransferInitiateResponse;
 import org.eclipse.dataspaceconnector.spi.transfer.response.ResponseStatus;
 import org.eclipse.dataspaceconnector.spi.types.domain.metadata.DataEntry;
@@ -8,6 +10,7 @@ import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataAddress;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
@@ -23,20 +26,30 @@ class TestMother {
 
     Faker faker = new Faker();
 
+    Job fakeJob(JobState state) {
+        return Job.builder()
+                .jobId(faker.lorem().characters())
+                .jobState(state)
+                .createdOn(Instant.now())
+                .owner(faker.lorem().characters())
+                .lastModifiedOn(Instant.now())
+                .requestUrl(faker.lorem().characters())
+                .build();
+    }
+
     MultiTransferJob job() {
         return job(faker.options().option(JobState.class));
     }
 
     MultiTransferJob job(JobState jobState) {
         return MultiTransferJob.builder()
-                .jobId(faker.lorem().characters())
+                .job(fakeJob(jobState))
                 .jobData(Map.of(
                         faker.lorem().characters(),
                         faker.lorem().characters(),
                         faker.lorem().characters(),
                         faker.lorem().characters()
                 ))
-                .state(jobState)
                 .build();
     }
 

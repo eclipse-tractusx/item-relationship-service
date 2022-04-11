@@ -23,6 +23,8 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.enums.JobState;
@@ -30,7 +32,8 @@ import net.catenax.irs.component.enums.JobState;
 /**
  * A job to retrieve item relationship data.
  */
-@Value
+@Getter
+@Setter
 @Builder(toBuilder = true)
 @JsonDeserialize(builder = Job.JobBuilder.class)
 @AllArgsConstructor

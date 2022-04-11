@@ -11,6 +11,9 @@ package net.catenax.irs.connector.job;
 
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.component.GlobalAssetIdentification;
+import net.catenax.irs.component.Job;
+import net.catenax.irs.component.enums.JobState;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.transfer.TransferInitiateResponse;
 import org.eclipse.dataspaceconnector.spi.transfer.TransferProcessManager;
@@ -19,6 +22,7 @@ import org.eclipse.dataspaceconnector.spi.transfer.response.ResponseStatus;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +41,9 @@ import static java.util.UUID.randomUUID;
 public class JobOrchestrator {
 
     private static final int TTL_CLEANUP_COMPLETED_JOBS_HOURS  = 1;
+    private static final int TTL_CLEANUP_COMPLETED_JOBS_SECONDS = TTL_CLEANUP_COMPLETED_JOBS_HOURS * 3600;
     private static final int TTL_CLEANUP_FAILED_JOBS_HOURS = 24;
+    private static final int TTL_CLEANUP_FAILED_JOBS_SECONDS = TTL_CLEANUP_FAILED_JOBS_HOURS * 3600 * 24;
 
     /**
      * Transfer process manager.
@@ -85,40 +91,37 @@ public class JobOrchestrator {
 
     /**
      * Start a job.
-     *
+     * @param job job attached to the request
      * @param jobData additional data for the job to managed by the {@link JobStore}.
      * @return response.
      */
-    public JobInitiateResponse startJob(final Map<String, String> jobData) {
-        final var job = MultiTransferJob.builder()
-                .jobId(randomUUID().toString())
-                .jobData(jobData)
-                .state(JobState.UNSAVED)
-                .build();
+    public JobInitiateResponse startJob(final Job job, final Map<String, String> jobData) {
+        final var multiJob = MultiTransferJob.builder()
+                .job(job).jobData(jobData).build();
 
-        jobStore.create(job);
+        jobStore.create(multiJob);
 
         final Stream<DataRequest> requests;
         try {
-            requests = handler.initiate(job);
+            requests = handler.initiate(multiJob);
         } catch (RuntimeException e) {
-            markJobInError(job, e, "Handler method failed");
-            return JobInitiateResponse.builder().jobId(job.getJobId()).status(ResponseStatus.FATAL_ERROR).build();
+            markJobInError(multiJob, e, "Handler method failed");
+            return JobInitiateResponse.builder().jobId(multiJob.getJob().getJobId()).status(ResponseStatus.FATAL_ERROR).build();
         }
 
         long transferCount;
         try {
-            transferCount = startTransfers(job, requests);
+            transferCount = startTransfers(multiJob, requests);
         } catch (JobException e) {
-            return JobInitiateResponse.builder().jobId(job.getJobId()).status(e.getStatus()).build();
+            return JobInitiateResponse.builder().jobId(multiJob.getJob().getJobId()).status(e.getStatus()).build();
         }
 
         // If no transfers are requested, job is already complete
         if (transferCount == 0) {
-            completeJob(job);
+            completeJob(multiJob);
         }
 
-        return JobInitiateResponse.builder().jobId(job.getJobId()).status(ResponseStatus.OK).build();
+        return JobInitiateResponse.builder().jobId(multiJob.getJob().getJobId()).status(ResponseStatus.OK).build();
     }
 
     /**
@@ -134,8 +137,8 @@ public class JobOrchestrator {
         }
         final var job = jobEntry.get();
 
-        if (job.getState() != JobState.IN_PROGRESS) {
-            monitor.info("Ignoring transfer complete event for job " + job.getJobId() + " in state " + job.getState());
+        if (job.getJob().getJobState() != JobState.IN_PROGRESS) {
+            monitor.info("Ignoring transfer complete event for job " + job.getJob().getJobId() + " in state " + job.getJob().getJobState());
             return;
         }
 
@@ -154,32 +157,30 @@ public class JobOrchestrator {
             return;
         }
 
-        jobStore.completeTransferProcess(job.getJobId(), process);
+        jobStore.completeTransferProcess(job.getJob().getJobId(), process);
 
-        callCompleteHandlerIfFinished(job.getJobId());
+        callCompleteHandlerIfFinished(job.getJob().getJobId());
     }
 
     public List<MultiTransferJob> findAndCleanupCompletedJobs() {
-        final LocalDateTime currentDateMinusHours = LocalDateTime.now().minusHours(TTL_CLEANUP_COMPLETED_JOBS_HOURS);
-        final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED, currentDateMinusHours);
-
+        final Instant currentDateMinusSeconds = Instant.now().minusSeconds(TTL_CLEANUP_COMPLETED_JOBS_SECONDS);
+        final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED, currentDateMinusSeconds);
         return deleteJobs(completedJobs);
     }
 
     public List<MultiTransferJob> findAndCleanupFailedJobs() {
-        final LocalDateTime currentDateMinusHours = LocalDateTime.now().minusHours(TTL_CLEANUP_FAILED_JOBS_HOURS);
-        final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR, currentDateMinusHours);
-
+        final Instant currentDateMinusSeconds = Instant.now().minusSeconds(TTL_CLEANUP_FAILED_JOBS_SECONDS);
+        final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR, currentDateMinusSeconds);
         return deleteJobs(failedJobs);
     }
 
     private List<MultiTransferJob> deleteJobs(final List<MultiTransferJob> jobs) {
-        return jobs.stream().map(job -> jobStore.deleteJob(job.getJobId())).collect(Collectors.toList());
+        return jobs.stream().map(job -> jobStore.deleteJob(job.getJob().getJobId())).collect(Collectors.toList());
     }
 
     private void callCompleteHandlerIfFinished(final String jobId) {
         jobStore.find(jobId).ifPresent(job -> {
-            if (job.getState() != JobState.TRANSFERS_FINISHED) {
+            if (job.getJob().getJobState() != JobState.TRANSFERS_FINISHED) {
                 return;
             }
             completeJob(job);
@@ -193,12 +194,12 @@ public class JobOrchestrator {
             markJobInError(job, e, "Handler method failed");
             return;
         }
-        jobStore.completeJob(job.getJobId());
+        jobStore.completeJob(job.getJob().getJobId());
     }
 
     private void markJobInError(final MultiTransferJob job, final Throwable exception, final String message) {
         monitor.severe(message, exception);
-        jobStore.markJobInError(job.getJobId(), message);
+        jobStore.markJobInError(job.getJob().getJobId(), message);
     }
 
     private long startTransfers(final MultiTransferJob job, final Stream<DataRequest> dataRequests) /* throws JobException */ {
@@ -214,7 +215,7 @@ public class JobOrchestrator {
             throw JobException.builder().status(response.getStatus()).build();
         }
 
-        jobStore.addTransferProcess(job.getJobId(), response.getId());
+        jobStore.addTransferProcess(job.getJob().getJobId(), response.getId());
         return response;
     }
 

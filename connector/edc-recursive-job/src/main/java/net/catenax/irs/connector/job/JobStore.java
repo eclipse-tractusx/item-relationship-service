@@ -9,9 +9,11 @@
 //
 package net.catenax.irs.connector.job;
 
+import net.catenax.irs.component.enums.JobState;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +27,7 @@ public interface JobStore {
      *
      * @param jobId the identifier of the job to retrieve.
      * @return the job if found, otherwise empty.
-     * @see MultiTransferJob#getJobId()
+     * @see MultiTransferJob#getJob()
      */
     Optional<MultiTransferJob> find(String jobId);
 
@@ -36,7 +38,7 @@ public interface JobStore {
      * @param localDateTime requested date
      * @return found jobs
      */
-    List<MultiTransferJob> findByStateAndCompletionDateOlderThan(JobState jobState, LocalDateTime localDateTime);
+    List<MultiTransferJob> findByStateAndCompletionDateOlderThan(JobState jobState, Instant dateTime);
 
     /**
      * Retrieve a job given a transfer id. Only retrieves jobs
