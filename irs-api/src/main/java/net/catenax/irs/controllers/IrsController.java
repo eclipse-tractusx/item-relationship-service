@@ -114,7 +114,7 @@ public class IrsController {
     @GetMapping("/jobs/{jobId}")
     public ResponseEntity<Jobs> getBOMForJobId(
             final @Valid @Parameter(description = "Id of the job in processing.", schema = @Schema(implementation = UUID.class), name = "jobId", example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @PathVariable @Size(min = IrsApiConstants.JOB_ID_SIZE,
-                    max = IrsApiConstants.JOB_ID_SIZE) UUID jobId, final @Parameter(required = false, description = "If true, the endpoint returns the uncompleted results of the bom tree.", schema = @Schema(implementation = Boolean.class, defaultValue = "true")) boolean returnUncompletedResultTree)  {
+                    max = IrsApiConstants.JOB_ID_SIZE) UUID jobId, final @Parameter(description = "If true, the endpoint returns the uncompleted results of the bom tree.", schema = @Schema(implementation = Boolean.class, defaultValue = "true", required = false)) boolean returnUncompletedResultTree)  {
         return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
     }
 

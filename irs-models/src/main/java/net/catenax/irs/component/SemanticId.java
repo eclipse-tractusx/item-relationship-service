@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Singular;
 import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
@@ -24,13 +25,15 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
  */
 @Value
 @Builder(toBuilder = true)
+@Schema(description = "")
 @AllArgsConstructor
 @ExcludeFromCodeCoverageGeneratedReport
 @JsonDeserialize(builder = SemanticId.SemanticIdBuilder.class)
 public class SemanticId {
 
-   @Schema(implementation = List.class)
-   private List<String> value;
+   @Schema()
+   @Singular
+   private List<String> values;
    /**
     * User to build SemanticId
     */

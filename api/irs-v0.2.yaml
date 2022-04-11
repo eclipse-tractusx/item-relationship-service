@@ -129,7 +129,7 @@ paths:
           \ bom tree."
         in: query
         name: returnUncompletedResultTree
-        required: false
+        required: true
         schema:
          type: boolean
          default: true
@@ -478,18 +478,16 @@ components:
       properties:
         errorDetail:
           type: string
-          minimum: 0
-          maximum: 4000
           description: Detail information for the error occurred
+          maxLength: 400
         exceptionDate:
           type: string
           format: date-time
           description: Datetime when error occurred
         exceptionName:
           type: string
-          minimum: 0
-          maximum: 100
           description: Name of the exception occurred
+          maxLength: 100
     JobHandle:
       type: object
       properties:
@@ -523,7 +521,7 @@ components:
     MeasurementUnit:
       type: object
       properties:
-        datatypeUri:
+        dataTypeUri:
           type: string
         lexicalValue:
           type: string
@@ -549,6 +547,10 @@ components:
           $ref: '#/components/schemas/ChildItem'
     SemanticId:
       type: object
+      values:
+        type: array
+        items:
+          type: string
     Shell:
       type: object
       description: Collections of AAS shells
@@ -557,40 +559,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Description'
+        globalAssetIds:
+          type: array
+            items:
+              $ref: '#/components/schemas/GlobalAssetIdentification'
         idShort:
           type: string
         identification:
           type: string
-        globalAssetId:
-          type: object
-          properties:
-            value:
-              type: array
-              items:
-                $ref: '#/components/schemas/GlobalAssetIdentification'
         specificAssetIds:
+          type: object
+          additionalProperties:
+            type: string
+        submodelDescriptors:
           type: array
           items:
-            $ref: '#/components/schemas/SpecificAssetId'
-        submodelDescriptors:
-          type: object
-          properties:
-            description:
-              type: array
-              items:
-                $ref: '#/components/schemas/Description'
-            idShort:
-              type: string
-            identification:
-              type: string
-            specificAssetIds:
-              type: array
-              items:
-                $ref: '#/components/schemas/SpecificAssetId'
-            endpoints:
-              type: array
-              items:
-                $ref: '#/components/schemas/Endpoint'
+            $ref: '#/components/schemas/SubmodelDescriptor'
     Shells:
       type: object
       description: Collections of AAS shells
@@ -600,6 +584,27 @@ components:
           description: Collections of AAS shells
           items:
             $ref: '#/components/schemas/Shell'
+    SubmodelDescriptor:
+      type: object
+      properties:
+        descriptions:
+          type: object
+          description: Provide descriptions to request parts
+          properties:
+            language:
+              type: string
+              description: language use to describe
+              example: en
+            text:
+              type: string
+              description: Description test
+              example: The shell for a vehicle
+        idShort:
+          type: string
+        identification:
+          type: string
+        semanticId:
+          $ref: '#/components/schemas/SemanticId'
     Summary:
       type: object
       description: List of asyncFetchedItems
@@ -694,7 +699,7 @@ components:
               type: string
             endpointProtocolVersion:
               type: string
-   SpecificAssetIds:
+    SpecificAssetIds:
       type: object
       additionalProperties:
         key:
