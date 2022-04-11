@@ -1,9 +1,9 @@
 package net.catenax.irs.connector.job;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class MultiTransferJobTest {
 
@@ -32,4 +32,6 @@ class MultiTransferJobTest {
     void getTransferProcessCreateJob() {
 
     }
+
+
 }

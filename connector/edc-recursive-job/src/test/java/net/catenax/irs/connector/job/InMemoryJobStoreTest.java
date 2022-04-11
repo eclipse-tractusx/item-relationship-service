@@ -1,5 +1,14 @@
 package net.catenax.irs.connector.job;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import com.github.javafaker.Faker;
 import jakarta.ws.rs.HttpMethod;
 import net.catenax.irs.component.GlobalAssetIdentification;
@@ -9,16 +18,6 @@ import org.eclipse.dataspaceconnector.monitor.ConsoleMonitor;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 class InMemoryJobStoreTest {
 
@@ -299,6 +298,13 @@ class InMemoryJobStoreTest {
         sut.deleteJob(job.getJob().getJobId());
         // Assert
         assertThat(sut.find(job.getJob().getJobId())).isEmpty();
+    }
+
+    @Test
+    void jobStateIsInitial() {
+        sut.create(job);
+
+        assertThat(sut.getJobState(job.getJob().getJobId())).isEqualTo(JobState.INITIAL);
     }
 
     private void refreshJob() {
