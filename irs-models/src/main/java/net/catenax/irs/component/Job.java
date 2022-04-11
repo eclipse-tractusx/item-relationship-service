@@ -14,6 +14,7 @@ import static net.catenax.irs.dtos.ValidationConstants.JOB_ID_FIELD_MAX_LENGTH;
 
 import java.net.URL;
 import java.time.Instant;
+import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -45,8 +46,8 @@ public class Job {
     @NotNull
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
     @Schema(description = "Job Id for the request Item", minLength = INPUT_FIELD_MIN_LENGTH,
-            maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = GlobalAssetIdentification.class)
-    private final GlobalAssetIdentification jobId;
+            maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class)
+    private final UUID jobId;
 
     /**
      * globalAssetId
@@ -67,16 +68,19 @@ public class Job {
     /**
      * Timestamp when the job was created
      */
+    @Schema(implementation = Instant.class)
     private Instant createdOn;
 
     /**
      * Last time job was modified
      */
+    @Schema(implementation = Instant.class)
     private Instant lastModifiedOn;
 
     /**
      * Mark the time the was completed
      */
+    @Schema(implementation = Instant.class)
     private Instant jobFinished;
 
     /**
@@ -97,8 +101,11 @@ public class Job {
     @Schema(description = "The requestor of the request")
     private String owner;
 
-    @Schema(description = "List of asyncFetchedItems")
+    @Schema(description = "List of asyncFetchedItems", implementation = Summary.class)
     private Summary summary;
+
+    @Schema(description = "The given query parameters", implementation = QueryParameter.class)
+    private QueryParameter queryParameter;
 
 
     /**

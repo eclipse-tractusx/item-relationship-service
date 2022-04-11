@@ -145,7 +145,7 @@ public class IrsController {
           @ApiResponse(responseCode = "400", description = "Bad Request",
                 content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                       schema = @Schema(implementation = ErrorResponse.class),
-                      examples = @ExampleObject(name="complete", ref = "#/components/examples/error-response"))
+                      examples = @ExampleObject(name="complete", ref = "/components/examples/error-response"))
           }),
           @ApiResponse(responseCode = "404", description = "No process found with this state",
                 content = { @Content(mediaType = APPLICATION_JSON_VALUE,

@@ -26,10 +26,10 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @ExcludeFromCodeCoverageGeneratedReport
 public class Description {
 
-    @Schema(description = "language use to describe", example = "en", implementation = String.class)
+    @Schema(description = "language used for description", example = "en", implementation = String.class, minLength = 0, maxLength = 3)
     private String language;
 
-    @Schema(description = "Description test", example = "The shell for a vehicle", implementation = String.class)
+    @Schema(description = "description text", example = "The shell for a vehicle", implementation = String.class, minLength = 0, maxLength = 4000)
     private String text;
 
     /**

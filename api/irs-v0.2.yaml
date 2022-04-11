@@ -5,7 +5,7 @@ info:
   title: IRS API
   version: "0.2"
 servers:
-- url: https://Specification/api/v0.2
+- url: https://localhost/api/v0.2
 paths:
   /irs/items/{globalAssetId}:
     post:
@@ -333,6 +333,31 @@ components:
           description: Last date and time part was modified
         quantity:
           $ref: '#/components/schemas/Quantity'
+    Description:
+      type: object
+      description: Provide descriptions to request parts
+      properties:
+        language:
+          type: string
+          description: language used for description
+          example: en
+          maxLength: 3
+        text:
+          type: string
+          description: description text
+          example: The shell for a vehicle
+          maxLength: 4000
+    EndPoint:
+      type: object
+      description: Communication endpoint
+      properties:
+        interfaceType:
+          type: string
+          description: Communication interface type
+          example: HTTP
+          default: HTTP
+        protocolInformation:
+          $ref: '#/components/schemas/ProtocolInformation'
     ErrorResponse:
       type: object
       description: Error response
@@ -446,7 +471,11 @@ components:
           type: string
           format: date-time
         jobId:
-          $ref: '#/components/schemas/GlobalAssetIdentification'
+          type: string
+          format: uuid
+          description: Job Id for the request Item
+          maxLength: 36
+          minLength: 36
         jobState:
           type: string
           enum:
@@ -463,6 +492,8 @@ components:
         owner:
           type: string
           description: The requestor of the request
+        queryParameter:
+          $ref: '#/components/schemas/QueryParameter'
         requestUrl:
           type: string
           format: url
@@ -525,6 +556,23 @@ components:
           type: string
         lexicalValue:
           type: string
+    ProtocolInformation:
+      type: object
+      description: Information to the interface used
+      properties:
+        endpointAddress:
+          type: string
+          format: uri
+          description: Uniform resource identifier of endpoint
+          example: https://catena-x.net/vehicle/basedetails/
+        endpointProtocol:
+          type: string
+          description: Protocol used to access the endpoint
+          example: HTTP or HTTPS
+        enpointProtocolVersion:
+          type: string
+          description: Protocol version
+          example: "1.0"
     Quantity:
       type: object
       description: Quantity component
@@ -534,6 +582,48 @@ components:
         quantityNumber:
           type: integer
           format: int32
+    QueryParameter:
+      type: object
+      description: 'Query parameter for current irs query '
+      properties:
+        aspects:
+          type: string
+          enum:
+          - SerialPartTypization
+          - AssemblyPartRelationship
+          - PartDimension
+          - SupplyRelationData
+          - PCFCoreData
+          - PCFTechnicalData
+          - MarketPlaceOffer
+          - MaterialAspect
+          - BatteryPass
+          - ProductDescriptionVehicle
+          - ProductDescriptionBattery
+          - ReturnRequest
+          - CertificateOfDestruction
+          - CertificateOfDismantler
+          - Address
+          - Contact
+        bomLifecycle:
+          type: string
+          description: View defining which data of the PartsTree is retrieved.
+          enum:
+          - asBuild
+          - asMaintained
+          - asPlanned
+          - asDesigned
+          - asOrdered
+          - asRecycled
+        depth:
+          type: integer
+          format: int32
+        direction:
+          type: string
+          description: Direction in which the tree shall be traversed
+          enum:
+          - upward
+          - downward
     Relationship:
       type: object
       description: Collection of relationships mapping the parent child relationship
@@ -547,10 +637,11 @@ components:
           $ref: '#/components/schemas/ChildItem'
     SemanticId:
       type: object
-      values:
-        type: array
-        items:
-          type: string
+      properties:
+        values:
+          type: array
+          items:
+            type: string
     Shell:
       type: object
       description: Collections of AAS shells
@@ -561,8 +652,8 @@ components:
             $ref: '#/components/schemas/Description'
         globalAssetIds:
           type: array
-            items:
-              $ref: '#/components/schemas/GlobalAssetIdentification'
+          items:
+            $ref: '#/components/schemas/GlobalAssetIdentification'
         idShort:
           type: string
         identification:
@@ -588,17 +679,13 @@ components:
       type: object
       properties:
         descriptions:
-          type: object
-          description: Provide descriptions to request parts
-          properties:
-            language:
-              type: string
-              description: language use to describe
-              example: en
-            text:
-              type: string
-              description: Description test
-              example: The shell for a vehicle
+          type: array
+          items:
+            $ref: '#/components/schemas/Description'
+        endpoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndPoint'
         idShort:
           type: string
         identification:
@@ -611,101 +698,6 @@ components:
       properties:
         asyncFetchedItems:
           $ref: '#/components/schemas/AsyncFetchedItems'
-    AsynFetchecItems:
-      type: object
-      description: List of asyncFetchedItems
-      items:
-        $ref: '#/components/schemas/AsyncFetchedItems'
-      queryParameter:
-        type: object
-        description: Query parameters of current request
-        properties:
-          bomLifecycle:
-            type: object
-            items:
-              $ref: '#/components/schemas/BomLifecycle'
-          aspects:
-            type: array
-            items:
-              $ref: '#/components/schemas/Aspect'
-          depth:
-            type: integer
-            description: Max depth of the returned tree, if empty max depth is returned
-            minimum: 0
-            maximum: 100
-            default: 1
-          direction:
-            type: string
-            description: Direction in which the tree shall be traversed
-            default: downward
-            enum:
-              - upward
-              - downward
-    BomLifecycle:
-      type: string
-      description: The bill of material lifecycle for an asset
-      enum:
-        - asBuilt # BoM AsBuilt describes a product as manufactured.
-        - asMaintained # BoM AsMaintained describes the BoM after purchase by a customer and updates through maintenace.
-        - asPlanned # BoM asPlanned is used to plan the manufacturing process including alternative parts.
-        - asDesigned # BoM asDesigned is generated in the design phase of a new product including alternative parts.
-        - asOrdered # BoM AsOrdered is used for manufacturing realization.
-        - asRecycled # BoM AsRecycled describes the BoM after the recycling of the product.
-      default: asBuilt
-    Description:
-      type: object
-      properties:
-        language:
-          type: string
-          minimum: 0
-          maximum: 3
-        text:
-          type: string
-          minimum: 0
-          maximum: 4000
-    Aspect:
-      type: string
-      description: Aspect models containing information of OEMs
-      enum:
-        - SerialPartTypization
-        - AssemblyPartRelationship
-        - PartDimension
-        - SupplyRelationData
-        - PCFCoreData
-        - PCFTechnicalData
-        - MarketPlaceOffer
-        - MaterialAspect
-        - BatteryPass
-        - ProducDescription.Vehicle
-        - ProducDescription.Battery
-        - ReturnRequest
-        - CertificateOfDestruction
-        - CertificateOfDismantler
-        - Address
-        - Contact
-    Endpoint:
-      type: object
-      properties:
-        interface:
-          type: string
-          default: HTTP
-        protocolInformation:
-          type: object
-          properties:
-            endpointAddress:
-              type: string
-              format: url
-            endpointProtocol:
-              type: string
-            endpointProtocolVersion:
-              type: string
-    SpecificAssetIds:
-      type: object
-      additionalProperties:
-        key:
-          type: string
-        value:
-          type: string
   examples:
     error-response:
       value:

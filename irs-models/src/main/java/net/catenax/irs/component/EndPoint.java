@@ -25,10 +25,10 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @ExcludeFromCodeCoverageGeneratedReport
 public class EndPoint {
 
-    @Schema(description = "Communication interface type", example = "Http", implementation = String.class)
+    @Schema(description = "Communication interface type", example = "HTTP", implementation = String.class)
     private String interfaceType;
 
-    @Schema(description = "Informaiton to the interface used", implementation = ProtocolInformation.class)
+    @Schema(description = "Information to the interface used", implementation = ProtocolInformation.class)
     private ProtocolInformation protocolInformation;
 
 }

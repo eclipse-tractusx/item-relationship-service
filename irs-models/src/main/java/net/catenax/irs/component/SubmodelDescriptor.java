@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Singular;
 import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
@@ -35,11 +36,17 @@ public class SubmodelDescriptor  {
    @Schema(implementation = String.class)
    private String idShort;
 
-   @Schema(implementation = Description.class)
+   @Schema()
+   @Singular
    private List<Description> descriptions;
 
    @Schema(implementation = SemanticId.class)
    private SemanticId semanticId;
+
+   @Schema()
+   @Singular
+   private List<EndPoint> endpoints;
+
    /**
     * User to build SubmodelDescriptor
     */
