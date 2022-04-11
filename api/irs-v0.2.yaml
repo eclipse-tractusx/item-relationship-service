@@ -32,7 +32,7 @@ paths:
           type: string
           description: View defining which data of the PartsTree is retrieved.
           enum:
-          - asBuild
+          - asBuilt
           - asMaintained
           - asPlanned
           - asDesigned
@@ -319,7 +319,7 @@ components:
           type: string
           description: View defining which data of the PartsTree is retrieved.
           enum:
-          - asBuild
+          - asBuilt
           - asMaintained
           - asPlanned
           - asDesigned
@@ -609,7 +609,7 @@ components:
           type: string
           description: View defining which data of the PartsTree is retrieved.
           enum:
-          - asBuild
+          - asBuilt
           - asMaintained
           - asPlanned
           - asDesigned
