@@ -117,7 +117,7 @@ public class IrsController {
                                     }),
     })
     @GetMapping("/jobs/{jobId}")
-    public ResponseEntity<Jobs> getBOMForJobId(final @Valid @Parameter(description = "Id of the job in processing.",
+    public ResponseEntity<Jobs> getBOMForJobId(final @Valid @Parameter(description = "ID of the job in processing.",
             schema = @Schema(implementation = UUID.class), name = "jobId",
             example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @PathVariable @Size(min = IrsApiConstants.JOB_ID_SIZE,
             max = IrsApiConstants.JOB_ID_SIZE) UUID jobId,
@@ -139,7 +139,7 @@ public class IrsController {
                             @ApiResponse(responseCode = "500", description = "Unexpected error.")
     })
     @PutMapping("/jobs/{jobId}/cancel")
-    public ResponseEntity<?> cancelJobForJobId(final @Valid @Parameter(description = "Id of the job in processing.",
+    public ResponseEntity<?> cancelJobForJobId(final @Valid @Parameter(description = "ID of the job in processing.",
             schema = @Schema(implementation = UUID.class), name = "jobId",
             example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @PathVariable UUID jobId) {
 
