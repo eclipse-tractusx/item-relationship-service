@@ -15,7 +15,6 @@ import java.util.Optional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
@@ -24,7 +23,6 @@ import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedRep
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.requests.IrsPartsTreeRequest;
-
 import org.springframework.stereotype.Service;
 
 /**
@@ -54,16 +52,13 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
     }
 
     @Override
-    public Job cancelJobById(final @NonNull String jobId) {
+    public Optional<Job> cancelJobById(final @NonNull String jobId) {
         final MultiTransferJob multiTransferJob = this.jobStore.deleteJob(jobId);
 
-        if (multiTransferJob != null) {
-            return Job.builder()
-                      .jobId(multiTransferJob.getJobId())
-                      .jobState(JobState.valueOf(multiTransferJob.getState().name()))
-                      .exception(multiTransferJob.getErrorDetail())
-                      .build();
-        }
-        return null;
+        return Optional.ofNullable(Job.builder()
+                                      .jobId(multiTransferJob.getJobId())
+                                      .jobState(JobState.valueOf(multiTransferJob.getState().name()))
+                                      .exception(multiTransferJob.getErrorDetail())
+                                      .build());
     }
 }

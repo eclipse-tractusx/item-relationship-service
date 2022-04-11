@@ -11,6 +11,7 @@ package net.catenax.irs.controllers;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -149,13 +150,9 @@ public class IrsController {
     })
     @PutMapping("/jobs/{jobId}/cancel")
     public ResponseEntity<?> cancelJobById(final @Valid @PathVariable String jobId) {
-        if (jobId == null || jobId.isEmpty()) {
-            return ResponseEntity.badRequest().body("Request must contain a mandatory id");
-        }
+        final Optional<Job> canceledJob = this.itemJobService.cancelJobById(jobId);
 
-        final Job canceledJob = this.itemJobService.cancelJobById(jobId);
-
-        if (canceledJob == null) {
+        if (canceledJob.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 

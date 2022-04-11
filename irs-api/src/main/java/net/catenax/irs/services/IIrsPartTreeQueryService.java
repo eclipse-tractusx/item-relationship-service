@@ -29,6 +29,6 @@ public interface IIrsPartTreeQueryService {
 
     Optional<List<Job>> getJobsByProcessingState(@NonNull String processingState);
 
-    Job cancelJobById(@NonNull String jobId);
+    Optional<Job> cancelJobById(@NonNull String jobId);
 
 }
