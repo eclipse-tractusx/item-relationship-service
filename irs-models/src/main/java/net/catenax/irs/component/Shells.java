@@ -35,7 +35,7 @@ public class Shells {
     /**
      * Shells
      */
-    @Schema(description = "Collections of AAS shells")
+    @Schema(description = "Collections of AAS shells.")
     @Singular
     private List<Shell> shells;
 

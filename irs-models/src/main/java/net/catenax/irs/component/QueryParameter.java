@@ -26,7 +26,7 @@ import net.catenax.irs.component.enums.Direction;
 /**
  * Query parameter for current irs query
  */
-@Schema(description = "Query parameter for current irs query ")
+@Schema(description = "Query parameter for current irs query.")
 @Value
 @Builder(toBuilder = true)
 @JsonDeserialize(builder = QueryParameter.QueryParameterBuilder.class)

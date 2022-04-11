@@ -19,26 +19,26 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 /**
  * Describe the state of the fetched items
  */
-@Schema(description = "State of the Item fetch")
+@Schema(description = "State of the Item fetch.")
 @Value
 @Builder
 @JsonDeserialize(builder = AsyncFetchedItems.AsyncFetchedItemsBuilder.class)
 @ExcludeFromCodeCoverageGeneratedReport
 public class AsyncFetchedItems {
 
-    @Schema(description = "No of job with the globalAssetId on the queue", implementation = Integer.class)
+    @Schema(description = "No of job with the globalAssetId on the queue.", implementation = Integer.class)
     private Integer queue;
 
-    @Schema(description = "Summary of running job with the globalAssetId", implementation = Integer.class)
+    @Schema(description = "Summary of running job with the globalAssetId.", implementation = Integer.class)
     private Integer running;
 
-    @Schema(description = "Summary of completed job with the globalAssetId", implementation = Integer.class)
+    @Schema(description = "Summary of completed job with the globalAssetId.", implementation = Integer.class)
     private Integer complete;
 
-    @Schema(description = "Summary of failed job with the globalAssetId", implementation = Integer.class)
+    @Schema(description = "Summary of failed job with the globalAssetId.", implementation = Integer.class)
     private Integer failed;
 
-    @Schema(description = "Summary of lost job with the globalAssetId", implementation = Integer.class)
+    @Schema(description = "Summary of lost job with the globalAssetId.", implementation = Integer.class)
     private Integer lost;
 
     /**

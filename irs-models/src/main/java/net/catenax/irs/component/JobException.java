@@ -34,13 +34,13 @@ public class JobException {
     public static final int ZERO = 0;
     public static final int ERROR_DETAIL_MAX_LENGHT = 4000;
 
-    @Schema(description = "Name of the exception occurred", implementation = String.class, minLength = ZERO, maxLength = EXCEPTION_NAME_MAX_LENGHT)
+    @Schema(description = "Name of the exception occurred.", implementation = String.class, minLength = ZERO, maxLength = EXCEPTION_NAME_MAX_LENGHT)
     private String exceptionName;
 
-    @Schema(description = "Detail information for the error occurred", implementation = String.class, minLength = ZERO, maxLength = ERROR_DETAIL_MAX_LENGHT)
+    @Schema(description = "Detail information for the error occurred.", implementation = String.class, minLength = ZERO, maxLength = ERROR_DETAIL_MAX_LENGHT)
     private String errorDetail;
 
-    @Schema(description = "Datetime when error occurred", implementation = Instant.class)
+    @Schema(description = "Datetime when error occurred.", implementation = Instant.class)
     private Instant exceptionDate;
 
     /**

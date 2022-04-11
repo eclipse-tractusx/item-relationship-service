@@ -18,17 +18,17 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 /**
  * Communication endpoint
  */
-@Schema(description = "Communication endpoint")
+@Schema(description = "Communication endpoint.")
 @Value
 @Builder
 @Jacksonized
 @ExcludeFromCodeCoverageGeneratedReport
 public class EndPoint {
 
-    @Schema(description = "Communication interface type", example = "HTTP", implementation = String.class)
+    @Schema(description = "Communication interface type", example = "HTTP", implementation = String.class, defaultValue = "HTTP")
     private String interfaceType;
 
-    @Schema(description = "Information to the interface used", implementation = ProtocolInformation.class)
+    @Schema(description = "Information to the interface used.", implementation = ProtocolInformation.class)
     private ProtocolInformation protocolInformation;
 
 }

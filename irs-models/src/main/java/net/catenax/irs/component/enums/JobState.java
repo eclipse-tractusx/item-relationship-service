@@ -16,13 +16,13 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
  */
 @ExcludeFromCodeCoverageGeneratedReport
 public enum JobState {
-    UNSAVED("unsaved"),
-    INITIAL("initial"),
-    IN_PROGRESS("running"),
-    TRANSFERS_FINISHED("transfered"),
-    COMPLETED("complete"),
-    CANCELED("canceled"),
-    ERROR("failed");
+    UNSAVED(JobStateConstants.UNSAVED),
+    INITIAL(JobStateConstants.INITIAL),
+    IN_PROGRESS(JobStateConstants.RUNNING),
+    TRANSFERS_FINISHED(JobStateConstants.TRANSFERRED),
+    COMPLETED(JobStateConstants.COMPLETE),
+    CANCELED(JobStateConstants.CANCELED),
+    ERROR(JobStateConstants.FAILED);
 
     private final String value;
 
@@ -46,5 +46,18 @@ public enum JobState {
     @Override
     public String toString() {
         return value;
+    }
+
+    /**
+     * Constants for job states
+     */
+    public static class JobStateConstants {
+        public static final String UNSAVED = "unsaved";
+        public static final String INITIAL = "initial";
+        public static final String RUNNING = "running";
+        public static final String TRANSFERRED = "transferred";
+        public static final String COMPLETE = "complete";
+        public static final String CANCELED = "canceled";
+        public static final String FAILED = "failed";
     }
 }

@@ -45,7 +45,7 @@ public class Job {
      */
     @NotNull
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
-    @Schema(description = "Job Id for the request Item", minLength = INPUT_FIELD_MIN_LENGTH,
+    @Schema(description = "Job ID for the requested item.", minLength = INPUT_FIELD_MIN_LENGTH,
             maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class)
     private final UUID jobId;
 
@@ -62,7 +62,7 @@ public class Job {
     @Schema()
     private JobState jobState;
 
-    @Schema(description = "Exception state for this job", implementation = JobException.class)
+    @Schema(description = "Exception state for this job.", implementation = JobException.class)
     private JobException jobException;
 
     /**
@@ -92,13 +92,13 @@ public class Job {
     /**
      * Http method, only GET is supported
      */
-    @Schema(description = "HTTP verbs used by request")
+    @Schema(description = "HTTP verbs used by request.")
     private String action;
 
     /**
      * Owner of the job
      */
-    @Schema(description = "The requestor of the request")
+    @Schema(description = "The requestor of the request.")
     private String owner;
 
     @Schema(description = "List of asyncFetchedItems", implementation = Summary.class)
