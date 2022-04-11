@@ -19,19 +19,19 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 /*** API error response. */
-@Schema(description = "Error response")
+@Schema(description = "Error response.")
 @Value
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = ErrorResponse.ErrorResponseBuilder.class)
 @SuppressWarnings("PMD.CommentRequired")
 @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "DTO, values are used by API clients.")
 public class ErrorResponse {
-    @Schema(description = "Error code")
+    @Schema(description = "Error code.")
     private HttpStatus statusCode;
 
-    @Schema(description = "Error message")
+    @Schema(description = "Error message.")
     private String message;
 
-    @Schema(description = "List of errors")
+    @Schema(description = "List of errors.")
     private List<String> errors;
 }

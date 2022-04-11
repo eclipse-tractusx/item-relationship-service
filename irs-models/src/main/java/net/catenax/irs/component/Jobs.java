@@ -33,14 +33,14 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @ExcludeFromCodeCoverageGeneratedReport
 public class Jobs {
 
-    @Schema(description = "Information and data for the Job", implementation = Job.class)
+    @Schema(description = "Information and data for the job.", implementation = Job.class)
     private Job job;
 
-    @Schema(description = "Collection of relationships mapping the parent child relationship of AssemblyPartRelationShip aspects")
+    @Schema(description = "Collection of relationships mapping the parent child relationship of AssemblyPartRelationShip aspects.")
     @Singular
     private List<Relationship> relationships;
 
-    @Schema(description = "Collections of AAS shells")
+    @Schema(description = "Collections of AAS shells.")
     private Optional<List<Shells>> shells;
 
     /**

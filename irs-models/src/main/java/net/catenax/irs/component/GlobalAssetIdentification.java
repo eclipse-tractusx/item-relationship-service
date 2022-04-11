@@ -23,7 +23,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
  */
 
 
-@Schema(description = "Represents a CatenaX id in the format urn:uuid:<uuid>")
+@Schema(description = "Represents a CatenaX id in the format urn:uuid:<uuid>.")
 @Value
 @Builder
 @JsonDeserialize(builder = GlobalAssetIdentification.GlobalAssetIdBuilder.class)
@@ -33,7 +33,7 @@ public class GlobalAssetIdentification {
     private static final int GLOBAL_ASSET_ID_MIN_LENGTH = 45;
 
     @Valid
-    @Schema(description = "Global unique C-X identifier", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0", minLength = GLOBAL_ASSET_ID_MIN_LENGTH, maxLength = GLOBAL_ASSET_ID_MIN_LENGTH)
+    @Schema(description = "Global unique C-X identifier.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0", minLength = GLOBAL_ASSET_ID_MIN_LENGTH, maxLength = GLOBAL_ASSET_ID_MIN_LENGTH)
     private String globalAssetId;
 
     /**

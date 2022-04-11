@@ -61,9 +61,10 @@ import org.springframework.http.HttpStatus;
 public class OpenApiConfiguration {
 
     private static final Instant EXAMPLE_INSTANT = Instant.parse("2022-02-03T14:48:54.709Z");
-    public static final String JOB_ID = "e5347c88-a921-11ec-b909-0242ac120002";
-    public static final String GLOBAL_ASSET_ID = "6c311d29-5753-46d4-b32c-19b918ea93b0";
-    public static final String JOB_HANDLE_ID_1 = GLOBAL_ASSET_ID;
+    private static final String JOB_ID = "e5347c88-a921-11ec-b909-0242ac120002";
+    private static final String GLOBAL_ASSET_ID = "6c311d29-5753-46d4-b32c-19b918ea93b0";
+    private static final String JOB_HANDLE_ID_1 = GLOBAL_ASSET_ID;
+    private static final int DEFAULT_DEPTH = 4;
 
     /**
      * IRS configuration settings.
@@ -160,7 +161,7 @@ public class OpenApiConfiguration {
     private QueryParameter createQueryParameter() {
         return QueryParameter.builder()
                              .bomLifecycle(BomLifecycle.AS_BUILT)
-                             .depth(4)
+                             .depth(DEFAULT_DEPTH)
                              .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION))
                              .direction(Direction.DOWNWARD)
                              .build();
@@ -322,7 +323,7 @@ public class OpenApiConfiguration {
         try {
             return new URL(urlString);
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Cannot create URL " + urlString);
+            throw new IllegalArgumentException("Cannot create URL " + urlString, e);
         }
     }
 

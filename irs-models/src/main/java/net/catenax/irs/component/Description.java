@@ -19,7 +19,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 /**
  * Provide descriptions to request parts
  */
-@Schema(description = "Provide descriptions to request parts")
+@Schema(description = "Provide descriptions to request parts.")
 @Value
 @Builder
 @JsonDeserialize(builder = Description.DescriptionBuilder.class)
@@ -27,12 +27,12 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 public class Description {
 
     public static final int LANGUAGE_MAX_LENGTH = 3;
-    public static final int DESCRIPTION_MAX_LENGTH = 3;
+    public static final int DESCRIPTION_MAX_LENGTH = 4000;
 
-    @Schema(description = "language used for description", example = "en", implementation = String.class, minLength = 0, maxLength = LANGUAGE_MAX_LENGTH)
+    @Schema(description = "Language used for description.", example = "en", implementation = String.class, minLength = 0, maxLength = LANGUAGE_MAX_LENGTH)
     private String language;
 
-    @Schema(description = "description text", example = "The shell for a vehicle", implementation = String.class, minLength = 0, maxLength = DESCRIPTION_MAX_LENGTH)
+    @Schema(description = "Description text.", example = "The shell for a vehicle", implementation = String.class, minLength = 0, maxLength = DESCRIPTION_MAX_LENGTH)
     private String text;
 
     /**

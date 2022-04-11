@@ -57,7 +57,7 @@ class IrsApplicationTests {
     @Test
     void contextLoads() {
     }
-    
+
     @Test
     void generatedOpenApiMatchesContract() throws Exception {
         assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",

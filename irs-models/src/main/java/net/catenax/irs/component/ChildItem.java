@@ -29,20 +29,20 @@ import net.catenax.irs.component.enums.BomLifecycle;
 @ExcludeFromCodeCoverageGeneratedReport
 public class ChildItem {
 
-    @Schema(description = "Quantity component", implementation = Quantity.class)
+    @Schema(description = "Quantity component.", implementation = Quantity.class)
     private Quantity quantity;
 
     @Schema(description = "Unique identifier of a single, unique (sub)component/part/batch,given by its globalAssetId/ digital twin id",
             implementation = BomLifecycle.class)
     private BomLifecycle bomLifecycle;
 
-    @Schema(description = "Datetime of assembly", implementation = Instant.class)
+    @Schema(description = "Datetime of assembly.", implementation = Instant.class)
     private Instant assembledOn;
 
-    @Schema(description = "Last date and time part was modified", implementation = Instant.class)
+    @Schema(description = "Last date and time part was modified.", implementation = Instant.class)
     private Instant lastModifiedOn;
 
-    @Schema(description = "CatenaX child Id", implementation = GlobalAssetIdentification.class)
+    @Schema(description = "CatenaX child Id.", implementation = GlobalAssetIdentification.class)
     private GlobalAssetIdentification childCatenaXId;
 
     /**
