@@ -3,10 +3,11 @@ feign:
     config:
       digitalTwinRegistry:
         url: http://stub
-      submodel:
+      SubmodelClient:
         url: http://stub
 
 blobstore:
   endpoint: http://localhost:9000
   accessKey: minioadmin
   secretKey: minioadmin
+
