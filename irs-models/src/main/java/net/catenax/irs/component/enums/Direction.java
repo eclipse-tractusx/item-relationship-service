@@ -18,7 +18,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @Schema(description = "Direction in which the tree shall be traversed")
 @ExcludeFromCodeCoverageGeneratedReport
 public enum Direction {
-    @Schema(description = "The tree is traversed in upward direction.") UPWARD("upward"),
+   //@Schema(description = "The tree is traversed in upward direction.") UPWARD("upward"),
     @Schema(description = "The tree is traversed in downward direction.")  DOWNWARD("downward");
 
     private final String value;

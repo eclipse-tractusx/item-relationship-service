@@ -80,7 +80,6 @@ paths:
           type: string
           description: Direction in which the tree shall be traversed
           enum:
-          - upward
           - downward
           default: downward
       responses:
@@ -606,7 +605,6 @@ components:
           type: string
           description: Direction in which the tree shall be traversed
           enum:
-          - upward
           - downward
     Relationship:
       type: object
