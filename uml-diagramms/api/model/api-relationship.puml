@@ -1,0 +1,43 @@
+@startuml
+
+
+interface IRelationship
+abstract class AbstractRelationship {
+-String : catenaXId
+-NodeType : nodeType
+}
+class ItemRelationship {
+-RelationshipItem : childItem (AssemblyPartRelationShip)
++getItem()
+}
+class ItemRelationshipTombstone{
+
++getItem()
+}
+
+ItemRelationshipTombstone - ProcessingException
+
+class ProcessingTombstone  {
+note
+ rename class
+note end
+    - String : exception
+    - String : cause (einheitlich benennen)
+    - url: (requested Url)
+    - int : retryCounter
+}
+
+IRelationship <|.. AbstractRelationship
+AbstractRelationship <|-- ItemRelationship
+AbstractRelationship <|-- ItemRelationshipTombstone
+AbstractRelationship -- NodeType
+
+
+enum NodeType {
+ROOT("Root Node of the tree - initial CatenaX ID")
+NODE("Node of the tree with childs- has further AssemblyPartRelationShip")
+LEAF("Leaf node of the tree - No AssemblyPartRelationShip Aspect")
+TOMBSTONE("No result or exceptional state")
+}
+
+@enduml
