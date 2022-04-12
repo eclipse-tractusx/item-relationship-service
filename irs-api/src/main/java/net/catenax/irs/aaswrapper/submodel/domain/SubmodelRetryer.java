@@ -9,7 +9,12 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import java.util.Optional;
+
+import io.github.resilience4j.retry.RetryConfig;
+import io.github.resilience4j.retry.RetryRegistry;
 import io.github.resilience4j.retry.annotation.Retry;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +24,14 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
+@Getter
 public class SubmodelRetryer {
     private final SubmodelClient client;
+    private final RetryRegistry registry;
 
-    public SubmodelRetryer(final SubmodelClient client) {
+    public SubmodelRetryer(final SubmodelClient client, final RetryRegistry registry) {
         this.client = client;
+        this.registry = registry;
     }
 
     /**
@@ -39,5 +47,19 @@ public class SubmodelRetryer {
     @Retry(name = "submodelRetryer")
     public <T> T retrySubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
         return this.client.getSubmodel(submodelEndpointAddress, submodelClass);
+    }
+
+    /**
+     * Get the configured resilience4j Retry
+     *
+     * @return the object RetryConfig
+     */
+    public Optional<RetryConfig> getRetryConfig() {
+        final RetryRegistry registry = this.getRegistry();
+
+        if (registry != null) {
+            return registry.getConfiguration("default");
+        }
+        return Optional.empty();
     }
 }
