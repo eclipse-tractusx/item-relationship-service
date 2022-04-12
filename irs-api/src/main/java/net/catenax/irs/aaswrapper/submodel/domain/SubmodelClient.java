@@ -9,9 +9,7 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -51,18 +49,6 @@ class SubmodelClientImpl implements SubmodelClient {
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
         return restTemplate.getForEntity(submodelEndpointAddress, submodelClass).getBody();
-    }
-
-}
-
-/**
- * Submodel Rest Client Stub used in local environment
- */
-class SubmodelClientImplStub implements SubmodelClient {
-
-    @Override
-    public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
-        throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception");
     }
 
 }

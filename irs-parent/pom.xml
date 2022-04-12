@@ -34,7 +34,6 @@
         <assertj-core.version>3.21.0</assertj-core.version>
         <gatling.version>3.7.1</gatling.version>
         <resilience4j.version>1.7.1</resilience4j.version>
-        <feign.version>11.8</feign.version>
 
         <!-- Plugins -->
         <tidy.version>1.1.0</tidy.version>

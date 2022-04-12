@@ -3,8 +3,6 @@ feign:
     config:
       digitalTwinRegistry:
         url: http://stub
-      SubmodelClient:
-        url: http://stub
 
 blobstore:
   endpoint: http://localhost:9000
