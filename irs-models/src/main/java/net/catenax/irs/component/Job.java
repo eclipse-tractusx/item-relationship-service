@@ -63,13 +63,19 @@ public class Job {
     private JobState jobState;
 
     @Schema(description = "Exception state for this job.", implementation = JobException.class)
-    private JobException jobException;
+    private JobException exception;
 
     /**
      * Timestamp when the job was created
      */
     @Schema(implementation = Instant.class)
     private Instant createdOn;
+
+    /**
+     * Timestamp when the job was started
+     */
+    @Schema(implementation = Instant.class)
+    private Instant startedOn;
 
     /**
      * Last time job was modified
@@ -81,7 +87,7 @@ public class Job {
      * Mark the time the was completed
      */
     @Schema(implementation = Instant.class)
-    private Instant jobFinished;
+    private Instant jobCompleted;
 
     /**
      * Url of request that resulted to this job

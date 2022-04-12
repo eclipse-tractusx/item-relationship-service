@@ -56,7 +56,7 @@ public enum JobState {
         public static final String INITIAL = "initial";
         public static final String RUNNING = "running";
         public static final String TRANSFERRED = "transferred";
-        public static final String COMPLETE = "complete";
+        public static final String COMPLETE = "completed";
         public static final String CANCELED = "canceled";
         public static final String FAILED = "failed";
     }

@@ -34,7 +34,7 @@ public class ChildItem {
 
     @Schema(description = "Unique identifier of a single, unique (sub)component/part/batch,given by its globalAssetId/ digital twin id",
             implementation = BomLifecycle.class)
-    private BomLifecycle bomLifecycle;
+    private BomLifecycle lifecycleContext;
 
     @Schema(description = "Datetime of assembly.", implementation = Instant.class)
     private Instant assembledOn;

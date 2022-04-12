@@ -28,7 +28,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @ExcludeFromCodeCoverageGeneratedReport
 public class JobHandleCollection {
 
-    private Collection<JobHandle> jobHandleCollections;
+    private Collection<JobHandle> jobs;
 
     /**
      * Builder class

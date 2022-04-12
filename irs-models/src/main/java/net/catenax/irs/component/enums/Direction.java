@@ -19,7 +19,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @ExcludeFromCodeCoverageGeneratedReport
 public enum Direction {
    //@Schema(description = "The tree is traversed in upward direction.") UPWARD("upward"),
-    @Schema(description = "The tree is traversed in downward direction.")  DOWNWARD(DirectionConstants.DOWNWARD1);
+    @Schema(description = "The tree is traversed in downward direction.")  DOWNWARD(DirectionConstants.DOWNWARD);
 
     private final String value;
 
@@ -48,7 +48,7 @@ public enum Direction {
     /**
      * Constants for directions
      */
-    public  static class DirectionConstants {
-        public static final String DOWNWARD1 = "downward";
+    public static class DirectionConstants {
+        public static final String DOWNWARD = "downward";
     }
 }

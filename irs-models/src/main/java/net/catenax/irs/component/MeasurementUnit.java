@@ -25,7 +25,7 @@ public class MeasurementUnit {
     /**
      * dataTypeURI
      */
-    private String dataTypeUri;
+    private String datatypeURI;
 
     /**
      * lexicalValue

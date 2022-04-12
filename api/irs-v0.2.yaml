@@ -29,7 +29,7 @@ paths:
         required: true
         schema:
           type: string
-          description: View defining which data of the PartsTree is retrieved.
+          description: View defining which data of the item tree is retrieved.
           enum:
           - asBuilt
       - description: AspectType information to add to the returned tree.
@@ -40,7 +40,6 @@ paths:
         required: false
         schema:
           type: array
-          default: [SerialPartTypization]
           items:
             type: string
             enum:
@@ -234,13 +233,12 @@ paths:
         required: true
         schema:
           type: string
-          default: running
           enum:
           - unsaved
           - initial
           - running
           - transferred
-          - complete
+          - completed
           - canceled
           - failed
       responses:
@@ -275,6 +273,275 @@ paths:
       tags:
       - Item Relationship Service
 components:
+  examples:
+    canceled-job-result:
+      value:
+        job:
+          createdOn: 2022-02-03T14:48:54.709Z
+          exception:
+            errorDetail: Timeout while requesting Digital Registry
+            exception: IrsTimeoutException
+            exceptionDate: 2022-02-03T14:48:54.709Z
+          globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          jobCompleted: 2022-02-03T14:48:54.709Z
+          jobId: e5347c88-a921-11ec-b909-0242ac120002
+          jobState: canceled
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
+          queryParameter:
+            aspects:
+            - SerialPartTypization
+            - Contact
+            bomLifecycle: asBuilt
+            depth: 4
+            direction: downward
+          requestUrl: https://api.server.test/api/../
+          startedOn: 2022-02-03T14:48:54.709Z
+          summary:
+            asyncFetchedItems:
+              complete: 0
+              failed: 0
+              lost: 0
+              queue: 0
+              running: 0
+        relationships: []
+    complete-job-list-processing-state:
+      value:
+        jobs:
+        - 6c311d29-5753-46d4-b32c-19b918ea93b0
+        - 46cd8fb1-34c1-4426-9c16-84b913bcfd95
+    complete-job-result:
+      value:
+        job:
+          createdOn: 2022-02-03T14:48:54.709Z
+          exception:
+            errorDetail: Timeout while requesting Digital Registry
+            exception: IrsTimeoutException
+            exceptionDate: 2022-02-03T14:48:54.709Z
+          globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          jobCompleted: 2022-02-03T14:48:54.709Z
+          jobId: e5347c88-a921-11ec-b909-0242ac120002
+          jobState: completed
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
+          queryParameter:
+            aspects:
+            - SerialPartTypization
+            - Contact
+            bomLifecycle: asBuilt
+            depth: 4
+            direction: downward
+          requestUrl: https://api.server.test/api/../
+          startedOn: 2022-02-03T14:48:54.709Z
+          summary:
+            asyncFetchedItems:
+              complete: 0
+              failed: 0
+              lost: 0
+              queue: 0
+              running: 0
+        relationships:
+        - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+          childItem:
+            assembledOn: 2022-02-03T14:48:54.709Z
+            childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+            lastModifiedOn: 2022-02-03T14:48:54.709Z
+            lifecycleContext: asBuilt
+            quantity:
+              measurementUnit:
+                datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
+                lexicalValue: piece
+              quantityNumber: 1
+        shells:
+        - descriptions:
+          - language: en
+            text: The shell for a vehicle
+          globalAssetIds:
+          - urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+          idShort: future concept x
+          identification: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+          specificAssetIds:
+            engineserialid: "12309481209312"
+          submodelDescriptors:
+          - descriptions:
+            - language: en
+              text: Provides base vehicle information
+            endpoints:
+            - interfaceType: HTTP
+              protocolInformation:
+                endpointAddress: https://catena-x.net/vehicle/basedetails/
+                endpointProtocol: HTTPS
+                enpointProtocolVersion: "1.0"
+            idShort: vehicle base details
+            identification: 4a738a24-b7d8-4989-9cd6-387772f40565
+            semanticId:
+              values:
+              - urn:bamm:com.catenax.vehicle:0.1.1
+          - descriptions:
+            - language: en
+              text: Provides base vehicle information
+            endpoints:
+            - interfaceType: HTTP
+              protocolInformation:
+                endpointAddress: https://catena-x.net/vehicle/partdetails/
+                endpointProtocol: HTTPS
+                enpointProtocolVersion: "1.0"
+            idShort: vehicle part details
+            identification: dae4d249-6d66-4818-b576-bf52f3b9ae90
+            semanticId:
+              values:
+              - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+    error-response:
+      value:
+        errors:
+        - TimeoutException
+        - ParsingException
+        message: Some errors occured
+        statusCode: 500 INTERNAL_SERVER_ERROR
+    failed-job-result:
+      value:
+        job:
+          createdOn: 2022-02-03T14:48:54.709Z
+          exception:
+            errorDetail: Timeout while requesting Digital Registry
+            exception: IrsTimeoutException
+            exceptionDate: 2022-02-03T14:48:54.709Z
+          globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          jobId: e5347c88-a921-11ec-b909-0242ac120002
+          jobState: failed
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
+          queryParameter:
+            aspects:
+            - SerialPartTypization
+            - Contact
+            bomLifecycle: asBuilt
+            depth: 4
+            direction: downward
+          requestUrl: https://api.server.test/api/../
+          startedOn: 2022-02-03T14:48:54.709Z
+          summary:
+            asyncFetchedItems:
+              complete: 0
+              failed: 0
+              lost: 0
+              queue: 0
+              running: 0
+        relationships: []
+    job-handle:
+      value: 6c311d29-5753-46d4-b32c-19b918ea93b0
+    job-result-without-uncompleted-result-tree:
+      value:
+        job:
+          createdOn: 2022-02-03T14:48:54.709Z
+          exception:
+            errorDetail: Timeout while requesting Digital Registry
+            exception: IrsTimeoutException
+            exceptionDate: 2022-02-03T14:48:54.709Z
+          globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          jobCompleted: 2022-02-03T14:48:54.709Z
+          jobId: e5347c88-a921-11ec-b909-0242ac120002
+          jobState: completed
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
+          queryParameter:
+            aspects:
+            - SerialPartTypization
+            - Contact
+            bomLifecycle: asBuilt
+            depth: 4
+            direction: downward
+          requestUrl: https://api.server.test/api/../
+          startedOn: 2022-02-03T14:48:54.709Z
+          summary:
+            asyncFetchedItems:
+              complete: 0
+              failed: 0
+              lost: 0
+              queue: 0
+              running: 0
+        relationships:
+        - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+          childItem:
+            assembledOn: 2022-02-03T14:48:54.709Z
+            childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+            lastModifiedOn: 2022-02-03T14:48:54.709Z
+            lifecycleContext: asBuilt
+            quantity:
+              measurementUnit:
+                datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
+                lexicalValue: piece
+              quantityNumber: 1
+        shells:
+        - descriptions:
+          - language: en
+            text: The shell for a vehicle
+          globalAssetIds:
+          - urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+          idShort: future concept x
+          identification: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+          specificAssetIds:
+            engineserialid: "12309481209312"
+          submodelDescriptors:
+          - descriptions:
+            - language: en
+              text: Provides base vehicle information
+            endpoints:
+            - interfaceType: HTTP
+              protocolInformation:
+                endpointAddress: https://catena-x.net/vehicle/basedetails/
+                endpointProtocol: HTTPS
+                enpointProtocolVersion: "1.0"
+            idShort: vehicle base details
+            identification: 4a738a24-b7d8-4989-9cd6-387772f40565
+            semanticId:
+              values:
+              - urn:bamm:com.catenax.vehicle:0.1.1
+          - descriptions:
+            - language: en
+              text: Provides base vehicle information
+            endpoints:
+            - interfaceType: HTTP
+              protocolInformation:
+                endpointAddress: https://catena-x.net/vehicle/partdetails/
+                endpointProtocol: HTTPS
+                enpointProtocolVersion: "1.0"
+            idShort: vehicle part details
+            identification: dae4d249-6d66-4818-b576-bf52f3b9ae90
+            semanticId:
+              values:
+              - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+    partial-job-result:
+      value:
+        job:
+          createdOn: 2022-02-03T14:48:54.709Z
+          exception:
+            errorDetail: Timeout while requesting Digital Registry
+            exception: IrsTimeoutException
+            exceptionDate: 2022-02-03T14:48:54.709Z
+          globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          jobCompleted: 2022-02-03T14:48:54.709Z
+          jobId: e5347c88-a921-11ec-b909-0242ac120002
+          jobState: running
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
+          queryParameter:
+            aspects:
+            - SerialPartTypization
+            - Contact
+            bomLifecycle: asBuilt
+            depth: 4
+            direction: downward
+          requestUrl: https://api.server.test/api/../
+          startedOn: 2022-02-03T14:48:54.709Z
+          summary:
+            asyncFetchedItems:
+              complete: 0
+              failed: 0
+              lost: 0
+              queue: 0
+              running: 0
+        relationships: []
   schemas:
     AsyncFetchedItems:
       type: object
@@ -308,17 +575,17 @@ components:
           type: string
           format: date-time
           description: Datetime of assembly.
-        bomLifecycle:
-          type: string
-          description: View defining which data of the PartsTree is retrieved.
-          enum:
-          - asBuilt
         childCatenaXId:
           $ref: '#/components/schemas/GlobalAssetIdentification'
         lastModifiedOn:
           type: string
           format: date-time
           description: Last date and time part was modified.
+        lifecycleContext:
+          type: string
+          description: View defining which data of the item tree is retrieved.
+          enum:
+          - asBuilt
         quantity:
           $ref: '#/components/schemas/Quantity'
     Description:
@@ -335,7 +602,7 @@ components:
           description: Description text.
           example: The shell for a vehicle
           maxLength: 4000
-    EndPoint:
+    Endpoint:
       type: object
       description: Communication endpoint.
       properties:
@@ -451,11 +718,11 @@ components:
         createdOn:
           type: string
           format: date-time
+        exception:
+          $ref: '#/components/schemas/JobException'
         globalAssetId:
           $ref: '#/components/schemas/GlobalAssetIdentification'
-        jobException:
-          $ref: '#/components/schemas/JobException'
-        jobFinished:
+        jobCompleted:
           type: string
           format: date-time
         jobId:
@@ -471,7 +738,7 @@ components:
           - initial
           - running
           - transferred
-          - complete
+          - completed
           - canceled
           - failed
         lastModifiedOn:
@@ -485,6 +752,9 @@ components:
         requestUrl:
           type: string
           format: url
+        startedOn:
+          type: string
+          format: date-time
         summary:
           $ref: '#/components/schemas/Summary'
       required:
@@ -499,14 +769,14 @@ components:
           type: string
           description: Detail information for the error occurred.
           maxLength: 4000
+        exception:
+          type: string
+          description: Name of the exception occurred.
+          maxLength: 100
         exceptionDate:
           type: string
           format: date-time
           description: Datetime when error occurred.
-        exceptionName:
-          type: string
-          description: Name of the exception occurred.
-          maxLength: 100
     JobHandle:
       type: object
       properties:
@@ -516,7 +786,7 @@ components:
     JobHandleCollection:
       type: object
       properties:
-        jobHandleCollections:
+        jobs:
           type: array
           items:
             $ref: '#/components/schemas/JobHandle'
@@ -536,11 +806,11 @@ components:
           type: array
           description: Collections of AAS shells.
           items:
-            $ref: '#/components/schemas/Shells'
+            $ref: '#/components/schemas/Shell'
     MeasurementUnit:
       type: object
       properties:
-        dataTypeUri:
+        datatypeURI:
           type: string
         lexicalValue:
           type: string
@@ -595,7 +865,7 @@ components:
           - Contact
         bomLifecycle:
           type: string
-          description: View defining which data of the PartsTree is retrieved.
+          description: View defining which data of the item tree is retrieved.
           enum:
           - asBuilt
         depth:
@@ -648,15 +918,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SubmodelDescriptor'
-    Shells:
-      type: object
-      description: Collections of AAS shells.
-      properties:
-        shells:
-          type: array
-          description: Collections of AAS shells.
-          items:
-            $ref: '#/components/schemas/Shell'
     SubmodelDescriptor:
       type: object
       properties:
@@ -667,7 +928,7 @@ components:
         endpoints:
           type: array
           items:
-            $ref: '#/components/schemas/EndPoint'
+            $ref: '#/components/schemas/Endpoint'
         idShort:
           type: string
         identification:
@@ -680,378 +941,3 @@ components:
       properties:
         asyncFetchedItems:
           $ref: '#/components/schemas/AsyncFetchedItems'
-  examples:
-    error-response:
-      value:
-        {
-         "errors": ["TimeoutException", "ParsingException"],
-         "message": "Some errors occured",
-         "statusCode": "500"
-        }
-    job-handle:
-      value:
-        {
-          "jobId": "6c311d29-5753-46d4-b32c-19b918ea93b0"
-        }
-    complete-job-list-processing-state:
-      value:
-        {
-          "jobs": [ "6c311d29-5753-46d4-b32c-19b918ea93b0","46cd8fb1-34c1-4426-9c16-84b913bcfd95"]
-        }
-    failed-job-result:
-      value:
-        {
-          "job": {
-            "jobId": "e5347c88-a921-11ec-b909-0242ac120002",
-            "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
-            "jobStatus": "Failed",
-            "createdOn": "2022-02-03T14:48:54.709Z",
-            "startedOn": "2022-02-03T14:48:54.709Z",
-            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-            "jobCompleted": "",
-            "requestURL": "https://api.server.test/api/../",
-            "owner": "",
-            "summary": {
-              "asyncFetchedItems": {
-                "queued": 0,
-                "running": 0,
-                "complete": 0,
-                "failed": 1,
-                "lost": 0
-              } },
-            "queryParameter": {
-              "bomLifecycle": "asBuilt",
-              "aspects" : ["SerialPartTypization", "Contact"],
-              "depth": 4,
-              "direction": "downward"
-            },
-            "exception": {
-              "exception": "IrsTimeoutException",
-              "errorDetail": "Timeout while requesting Digital Registry.",
-              "exceptionDate": "2022-02-03T14:48:54.709Z"
-            }
-          }
-        }
-    partial-job-result:
-      value:
-        {
-          "job": {
-            "jobId": "e5347c88-a921-11ec-b909-0242ac120002",
-            "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
-            "jobStatus": "InProgress",
-            "createdOn": "2022-02-03T14:48:54.709Z",
-            "startedOn": "2022-02-03T14:48:54.709Z",
-            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-            "jobCompleted": "2022-02-03T14:48:54.709Z",
-            "requestURL": "https://api.server.test/api/../",
-            "owner": "",
-            "summary": {
-              "asyncFetchedItems": {
-                "queued": 0,
-                "running": 0,
-                "complete": 0,
-                "failed": 0,
-                "lost": 0
-              } },
-            "queryParameter": {
-              "bomLifecycle": "asBuilt",
-              "aspects": "SerialPartTypization",
-              "depth": 4,
-              "direction": "downward"
-            },
-            "exception": {
-              "exception": "IrsTimeoutException",
-              "errorDetail": "Timeout while requesting Digital Registry.",
-              "exceptionDate": "2022-02-03T14:48:54.709Z"
-            }
-          }
-        }
-    job-result-without-uncompleted-result-tree:
-      value:
-        {
-          "job": {
-            "jobId": "e5347c88-a921-11ec-b909-0242ac120002",
-            "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
-            "jobStatus": "InProgress",
-            "createdOn": "2022-02-03T14:48:54.709Z",
-            "startedOn": "2022-02-03T14:48:54.709Z",
-            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-            "jobCompleted": "2022-02-03T14:48:54.709Z",
-            "requestURL": "https://api.server.test/api/../",
-            "owner": "",
-            "summary": {
-              "asyncFetchedItems": {
-                "queued": 0,
-                "running": 0,
-                "complete": 0,
-                "failed": 0,
-                "lost": 0
-              } },
-            "queryParameter": {
-              "bomLifecycle": "asBuilt",
-              "aspects" : ["SerialPartTypization", "Contact"],
-              "depth": 4,
-              "direction": "downward"
-            },
-            "exception": {
-              "exception": "IrsTimeoutException",
-              "errorDetail": "Timeout while requesting Digital Registry.",
-              "exceptionDate": "2022-02-03T14:48:54.709Z"
-            }
-          },
-          "relationships": [
-            {
-              "catenaXId": "urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
-              "childItem": {
-                "quantity": {
-                  "quantityNumber": 1,
-                  "measurementUnit": {
-                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                    "lexicalValue": "piece"
-                  }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "a45a2246-f6e1-42da-b47d-5c3b58ed62e9"
-              }
-            }
-          ],
-          "shells": [
-            {
-              "description": [
-                {
-                  "language": "en",
-                  "text": "The shell for a vehicle"
-                }
-              ],
-              "globalAssetId": {
-                "value": [
-                    "a45a2246-f6e1-42da-b47d-5c3b58ed62e9"
-                ]
-              },
-              "idShort": "future concept x",
-              "identification": "882fc530-b69b-4707-95f6-5dbc5e9baaa8",
-              "specificAssetIds": [
-                {
-                  "key": "engineserialid",
-                  "value": "12309481209312"
-                }
-              ],
-              "submodelDescriptors": [
-                {
-                  "description": [
-                    {
-                      "language": "en",
-                      "text": "Provides base vehicle information"
-                    }
-                  ],
-                  "idShort": "vehicle base details",
-                  "identification": "4a738a24-b7d8-4989-9cd6-387772f40565",
-                  "semanticId": {
-                    "value": [
-                        "urn:bamm:com.catenax.vehicle:0.1.1"
-                    ]
-                  },
-                  "endpoints": [
-                    {
-                      "interface": "HTTP",
-                      "protocolInformation": {
-                        "endpointAddress": "https://catena-x.net/vehicle/basedetails/",
-                        "endpointProtocol": "HTTPS",
-                        "endpointProtocolVersion": "1.0"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "description": [
-                    {
-                      "language": "en",
-                      "text": "Provides base vehicle information"
-                    }
-                  ],
-                  "idShort": "vehicle part details",
-                  "identification": "dae4d249-6d66-4818-b576-bf52f3b9ae90",
-                  "semanticId": {
-                    "value": [
-                        "urn:bamm:com.catenax.vehicle:0.1.1#PartDetails"
-                    ]
-                  },
-                  "endpoints": [
-                    {
-                      "interface": "HTTP",
-                      "protocolInformation": {
-                        "endpointAddress": "https://catena-x.net/vehicle/partdetails/",
-                        "endpointProtocol": "HTTPS",
-                        "endpointProtocolVersion": "1.0"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-    canceled-job-result:
-      value:
-        {
-          "job": {
-            "jobId": "e5347c88-a921-11ec-b909-0242ac120002",
-            "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
-            "jobStatus": "Canceled",
-            "createdOn": "2022-02-03T14:48:54.709Z",
-            "startedOn": "2022-02-03T14:48:54.709Z",
-            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-            "jobCompleted": "2022-02-03T14:48:54.709Z",
-            "requestURL": "https://api.server.test/api/../",
-            "owner": "",
-            "summary": {
-              "asyncFetchedItems": {
-                "queued": 0,
-                "running": 0,
-                "complete": 0,
-                "failed": 0,
-                "lost": 0
-              } },
-            "queryParameter": {
-              "bomLifecycle": "asBuilt",
-              "aspects" : ["SerialPartTypization", "Contact"],
-              "depth": 4,
-              "direction": "downward"
-            },
-            "exception": {
-              "exception": "IrsTimeoutException",
-              "errorDetail": "Timeout while requesting Digital Registry.",
-              "exceptionDate": "2022-02-03T14:48:54.709Z"
-            }
-          }
-        }
-    complete-job-result:
-      value:
-        {
-          "job": {
-            "jobId": "e5347c88-a921-11ec-b909-0242ac120002",
-            "globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
-            "jobStatus": "Completed",
-            "createdOn": "2022-02-03T14:48:54.709Z",
-            "startedOn": "2022-02-03T14:48:54.709Z",
-            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-            "jobCompleted": "2022-02-03T14:48:54.709Z",
-            "requestURL": "https://api.server.test/api/../",
-            "owner": "",
-            "summary": {
-              "asyncFetchedItems": {
-                "queued": 0,
-                "running": 0,
-                "complete": 0,
-                "failed": 0,
-                "lost": 0
-              } },
-            "queryParameter": {
-              "bomLifecycle": "asBuilt",
-              "aspects" : ["SerialPartTypization", "Contact"],
-              "depth": 4,
-              "direction": "downward"
-            },
-            "exception": {
-              "exception": "IrsTimeoutException",
-              "errorDetail": "Timeout while requesting Digital Registry.",
-              "exceptionDate": "2022-02-03T14:48:54.709Z"
-            }
-          },
-          "relationships": [
-            {
-              "catenaXId": "d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
-              "childItem": {
-                "quantity": {
-                  "quantityNumber": 1,
-                  "measurementUnit": {
-                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                    "lexicalValue": "piece"
-                  }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "a45a2246-f6e1-42da-b47d-5c3b58ed62e9"
-              }
-            }
-          ],
-          "shells": [
-            {
-              "description": [
-                {
-                  "language": "en",
-                  "text": "The shell for a vehicle"
-                }
-              ],
-              "globalAssetId": {
-                "value": [
-                    "a45a2246-f6e1-42da-b47d-5c3b58ed62e9"
-                ]
-              },
-              "idShort": "future concept x",
-              "identification": "882fc530-b69b-4707-95f6-5dbc5e9baaa8",
-              "specificAssetIds": [
-                {
-                  "key": "engineserialid",
-                  "value": "12309481209312"
-                }
-              ],
-              "submodelDescriptors": [
-                {
-                  "description": [
-                    {
-                      "language": "en",
-                      "text": "Provides base vehicle information"
-                    }
-                  ],
-                  "idShort": "vehicle base details",
-                  "identification": "4a738a24-b7d8-4989-9cd6-387772f40565",
-                  "semanticId": {
-                    "value": [
-                        "urn:bamm:com.catenax.vehicle:0.1.1"
-                    ]
-                  },
-                  "endpoints": [
-                    {
-                      "interface": "HTTP",
-                      "protocolInformation": {
-                        "endpointAddress": "https://catena-x.net/vehicle/basedetails/",
-                        "endpointProtocol": "HTTPS",
-                        "endpointProtocolVersion": "1.0"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "description": [
-                    {
-                      "language": "en",
-                      "text": "Provides base vehicle information"
-                    }
-                  ],
-                  "idShort": "vehicle part details",
-                  "identification": "dae4d249-6d66-4818-b576-bf52f3b9ae90",
-                  "semanticId": {
-                    "value": [
-                        "urn:bamm:com.catenax.vehicle:0.1.1#PartDetails"
-                    ]
-                  },
-                  "endpoints": [
-                    {
-                      "interface": "HTTP",
-                      "protocolInformation": {
-                        "endpointAddress": "https://catena-x.net/vehicle/partdetails/",
-                        "endpointProtocol": "HTTPS",
-                        "endpointProtocolVersion": "1.0"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-
