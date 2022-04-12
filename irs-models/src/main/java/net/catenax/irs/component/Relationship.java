@@ -27,8 +27,8 @@ public class Relationship {
 
     private String catenaXId;
 
-    private ChildItem childItem;
+    private Job childItem;
 
-    private ChildItem parentItem;
+    private Job parentItem;
 
 }

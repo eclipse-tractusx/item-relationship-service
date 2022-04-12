@@ -92,6 +92,10 @@ public class Job {
      */
     private String owner;
 
+    private Summary summary;
+
+    private QueryParameter queryParameter;
+
     /**
      * Builder class
      */
