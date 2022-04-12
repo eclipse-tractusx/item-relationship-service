@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.component.ChildItem;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -21,12 +22,12 @@ import java.util.List;
 @Schema(description = "Information about parts")
 @Value
 @Builder(toBuilder = true, setterPrefix = "with")
-@JsonDeserialize(builder = PartInfo.PartInfoBuilder.class)
+@JsonDeserialize(builder = ChildItemInfo.ChildItemInfoBuilder.class)
 @SuppressWarnings("PMD.CommentRequired")
-public class PartInfo {
+public class ChildItemInfo {
     @NotNull
     @Schema(description = "The part identifier.")
-    private PartId part;
+    private ChildItem childItem;
 
     @Schema(description = "Type of material, (sub)component/part or vehicle. May not be set.", example = "gearbox")
     private String partTypeName;
