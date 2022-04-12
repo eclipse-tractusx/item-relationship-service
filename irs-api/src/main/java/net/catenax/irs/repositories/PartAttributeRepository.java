@@ -10,9 +10,9 @@
 package net.catenax.irs.repositories;
 
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
-import net.catenax.irs.entities.PartAttributeEntity;
-import net.catenax.irs.entities.PartAttributeEntityKey;
-import net.catenax.irs.entities.PartIdEntityPart;
+import net.catenax.irs.entities.JobEntityPart;
+import net.catenax.irs.entities.SummaryAttributeEntity;
+import net.catenax.irs.entities.SummaryAttributeEntityKey;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
@@ -25,11 +25,11 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * JPA Repository for managing {@link PartAttributeEntity} objects.
+ * JPA Repository for managing {@link SummaryAttributeEntity} objects.
  */
-public interface PartAttributeRepository extends Repository<PartAttributeEntity, PartAttributeEntityKey> {
+public interface PartAttributeRepository extends Repository<SummaryAttributeEntity, SummaryAttributeEntityKey> {
     /**
-     * Returns all instances of the type {@link PartAttributeEntity}
+     * Returns all instances of the type {@link SummaryAttributeEntity}
      * for the given Part IDs and attribute name.
      * <p>
      * If some or all Part Ids are not found, no entities are returned for these IDs.
@@ -43,14 +43,14 @@ public interface PartAttributeRepository extends Repository<PartAttributeEntity,
      * The size can be equal or less than the number of given {@literal partIds}.
      * @see org.springframework.data.repository.CrudRepository#findAllById(Iterable)
      */
-    @Query("SELECT a FROM PartAttributeEntity a WHERE a.key.partId IN (:partIds) AND a.key.attribute = :name")
-    List<PartAttributeEntity> findAllBy(
+    @Query("SELECT a FROM SummaryAttributeEntity a WHERE a.key.asynchFetchedItems IN (:partIds) AND a.key.attribute = :name")
+    List<SummaryAttributeEntity> findAllBy(
             @Param("partIds")
-            Collection<PartIdEntityPart> partIds,
+            Collection<JobEntityPart> partIds,
             @Param("name")
             String name);
 
-    List<PartAttributeEntity> findAll(Example<PartAttributeEntity> searchFilter, Sort sortedByOneid);
+    List<SummaryAttributeEntity> findAll(Example<SummaryAttributeEntity> searchFilter, Sort sortedByOneid);
 }
 
 /**
@@ -60,13 +60,13 @@ public interface PartAttributeRepository extends Repository<PartAttributeEntity,
 @ExcludeFromCodeCoverageGeneratedReport
 class PartAttributeRepositoryStub implements PartAttributeRepository {
     @Override
-    public List<PartAttributeEntity> findAllBy(final Collection<PartIdEntityPart> partIds, final String name) {
+    public List<SummaryAttributeEntity> findAllBy(final Collection<JobEntityPart> partIds, final String name) {
         return new ArrayList<>();
     }
 
     @Override
-    public List<PartAttributeEntity> findAll(final Example<PartAttributeEntity> searchFilter,
-          final Sort sortedByOneid) {
+    public List<SummaryAttributeEntity> findAll(final Example<SummaryAttributeEntity> searchFilter,
+                                                final Sort sortedByOneid) {
         return new ArrayList<>();
     }
 }

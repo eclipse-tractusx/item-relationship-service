@@ -10,9 +10,9 @@
 package net.catenax.irs.repositories;
 
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
+import net.catenax.irs.entities.JobEntityPart;
 import net.catenax.irs.entities.PartAspectEntity;
 import net.catenax.irs.entities.PartAspectEntityKey;
-import net.catenax.irs.entities.PartIdEntityPart;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
@@ -43,7 +43,7 @@ public interface PartAspectRepository extends Repository<PartAspectEntity, PartA
     @Query("SELECT a FROM PartAspectEntity a WHERE a.key.partId IN (:partIds) AND a.key.name = :name")
     List<PartAspectEntity> findAllBy(
             @Param("partIds")
-            Collection<PartIdEntityPart> partIds,
+            Collection<JobEntityPart> partIds,
             @Param("name")
             String name);
 }
@@ -55,7 +55,7 @@ public interface PartAspectRepository extends Repository<PartAspectEntity, PartA
 @ExcludeFromCodeCoverageGeneratedReport
 class PartAspectRepositoryStub implements PartAspectRepository {
     @Override
-    public List<PartAspectEntity> findAllBy(final Collection<PartIdEntityPart> partIds, final String name) {
+    public List<PartAspectEntity> findAllBy(final Collection<JobEntityPart> partIds, final String name) {
         return new ArrayList<>();
     }
 }

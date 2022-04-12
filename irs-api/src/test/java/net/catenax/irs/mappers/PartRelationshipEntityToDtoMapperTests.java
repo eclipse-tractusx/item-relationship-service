@@ -17,28 +17,28 @@ class PartRelationshipEntityToDtoMapperTests {
     EntitiesMother generate = new EntitiesMother();
     DtoMother generateDto = new DtoMother();
     @Mock
-    PartIdEntityPartToDtoMapper idMapper;
+    ChildItemEntityPartToDtoMapper idMapper;
     @InjectMocks
     PartRelationshipEntityToDtoMapper sut;
 
     @Test
     void toPartRelationshipsWithInfos() {
         // Arrange
-        var parent = generate.partId();
-        var child = generate.partId();
-        var parentDto = generateDto.partId();
-        var childDto = generateDto.partId();
+        var parent = generate.job();
+        var child = generate.job();
+        var parentDto = generateDto.job();
+        var childDto = generateDto.job();
 
         var input = generate.partRelationship(parent, child);
 
-        when(idMapper.toPartId(parent)).thenReturn(parentDto);
-        when(idMapper.toPartId(child)).thenReturn(childDto);
+        when(idMapper.toJob(parent)).thenReturn(parentDto);
+        when(idMapper.toJob(child)).thenReturn(childDto);
 
         // Act
-        var output = sut.toPartRelationship(input);
+        var output = sut.toRelationship(input);
 
         // Assert
-        assertThat(output.getParent()).isEqualTo(parentDto);
-        assertThat(output.getChild()).isEqualTo(childDto);
+        assertThat(output.getParentItem()).isEqualTo(parentDto);
+        assertThat(output.getChildItem()).isEqualTo(childDto);
     }
 }

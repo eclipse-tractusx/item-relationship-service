@@ -9,17 +9,14 @@
 //
 package net.catenax.irs.testing;
 
-import net.catenax.irs.dtos.Aspect;
-import net.catenax.irs.dtos.PartId;
-import net.catenax.irs.dtos.PartInfo;
-import net.catenax.irs.dtos.PartRelationship;
-import net.catenax.irs.dtos.PartRelationshipsWithInfos;
+import net.catenax.irs.component.*;
+import net.catenax.irs.component.enums.AspectType;
+import net.catenax.irs.component.enums.BomLifecycle;
+import net.catenax.irs.component.enums.Direction;
+import net.catenax.irs.dtos.*;
 
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
-
-import static java.util.Collections.emptyList;
 
 /**
  * Base object mother class to create DTOs for testing.
@@ -33,28 +30,60 @@ public class BaseDtoMother {
      * Generate a {@link PartRelationshipsWithInfos} containing provided data.
      *
      * @param relationships list of {@link PartRelationship}.
-     * @param partInfos     list of {@link PartInfo}.
+     * @param job     list of {@link ChildItemInfo}.
      * @return a {@link PartRelationshipsWithInfos} containing
      * the provided {@code relationships} and {@code partInfos}.
      */
-    public PartRelationshipsWithInfos partRelationshipsWithInfos(final List<PartRelationship> relationships, final List<PartInfo> partInfos) {
-        return PartRelationshipsWithInfos.builder()
-                .withRelationships(relationships)
-                .withPartInfos(partInfos)
+    public Jobs jobs(final List<Relationship> relationships, final Job job) {
+        return Jobs.builder()
+                .relationships(relationships)
+                .job(job)
                 .build();
     }
 
     /**
      * Generate a {@link PartRelationship} linking two parts.
      *
-     * @param parentId parent in the relationship.
-     * @param childId  child in the relationship.
-     * @return a {@link PartRelationship} linking {@code parentId} to {@code childId}.
+     * @param childItem  child in the relationship.
+     * @param parentItem  child in the relationship.
+     * @return a {@link PartRelationship} linking {@code parentId} to {@code childItem}.
      */
-    public PartRelationship partRelationship(final PartId parentId, final PartId childId) {
-        return PartRelationship.builder()
-                .withParent(parentId)
-                .withChild(childId)
+    public Relationship relationship(final Job childItem, final Job parentItem) {
+        return Relationship.builder()
+                .childItem(childItem)
+                .parentItem(parentItem)
+                .build();
+    }
+
+    /**
+     * Generate a {@link PartId} from oneId and objectId.
+     *
+     * @param jobId one id of the manufacturer.
+     * @param action part serial number.
+     * <p>
+     * Example: {@code PartId(oneIDManufacturer=Stiedemann Inc, objectId=ypiu9wzwuka1ov03)}.
+     *
+     * @return a {@link PartId} with random identifiers.
+     */
+    public Job job(final String jobId, final String action) {
+        return Job.builder()
+                .jobId(jobId)
+                .action(action)
+                .build();
+    }
+
+    public Summary summary(final AsyncFetchedItems asyncFetchedItems) {
+        return Summary.builder()
+                .asyncFetchedItems(asyncFetchedItems)
+                .build();
+    }
+
+    public QueryParameter queryParameter(final BomLifecycle bomLifecycle, final Collection<AspectType> aspect, final Integer depth, final Direction direction) {
+        return QueryParameter.builder()
+                .bomLifecycle(bomLifecycle)
+                .aspect(aspect)
+                .depth(depth)
+                .direction(direction)
                 .build();
     }
 
@@ -72,6 +101,16 @@ public class BaseDtoMother {
         return PartId.builder()
                 .withOneIDManufacturer(oneId)
                 .withObjectIDManufacturer(objectId)
+                .build();
+    }
+
+    public AsyncFetchedItems asynchFetchedItems(final Integer queue, final Integer running, final Integer complete, final Integer failed, final Integer lost) {
+        return AsyncFetchedItems.builder()
+                .queue(queue)
+                .running(running)
+                .complete(complete)
+                .failed(failed)
+                .lost(lost)
                 .build();
     }
 
@@ -93,18 +132,20 @@ public class BaseDtoMother {
     }
 
     /**
-     * Generate a {@link PartInfo} containing provided data.
+     * Generate a {@link ChildItemInfo} containing provided data.
      *
-     * @param partId       part identifier.
-     * @param partTypeName part type name.
-     * @param aspectOrNull optional aspect to be included in the result. May be {@literal null}.
-     * @return a {@link PartInfo} containing the provided {@code partId} and optionally {@code aspect}.
+     * @param job       part identifier.
+     * @param summary part type name.
+     * @param queryParameter optional aspect to be included in the result. May be {@literal null}.
+     * @return a {@link Job}.
      */
-    public PartInfo partInfo(final PartId partId, final String partTypeName, final Aspect aspectOrNull) {
-        return PartInfo.builder()
-                .withPart(partId)
-                .withPartTypeName(partTypeName)
-                .withAspects(Optional.ofNullable(aspectOrNull).map(Collections::singletonList).orElse(emptyList()))
+    public Job job(final Job job, final Summary summary, final QueryParameter queryParameter) {
+        return Job.builder()
+                .jobId(job.getJobId())
+                .globalAssetId(job.getGlobalAssetId())
+                .jobState(job.getJobState())
+                .summary(summary)
+                .queryParameter(queryParameter)
                 .build();
     }
 }

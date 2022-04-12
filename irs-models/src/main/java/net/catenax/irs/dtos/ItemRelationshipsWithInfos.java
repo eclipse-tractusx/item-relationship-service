@@ -28,5 +28,5 @@ public class ItemRelationshipsWithInfos {
     private List<IrsPartRelationship> relationships;
 
     @Schema(description = "List of part infos")
-    private List<PartInfo> partInfos;
+    private List<ChildItemInfo> partInfos;
 }

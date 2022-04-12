@@ -1,9 +1,9 @@
 package net.catenax.irs.requests;
 
 import com.github.javafaker.Faker;
+import net.catenax.irs.component.Job;
 import net.catenax.irs.dtos.ItemsTreeView;
 import net.catenax.irs.entities.EntitiesMother;
-import net.catenax.irs.entities.PartIdEntityPart;
 
 import static net.catenax.irs.dtos.ValidationConstants.VIN_FIELD_LENGTH;
 
@@ -22,16 +22,16 @@ public class RequestMother {
                 .build();
     }
 
-    public PartsTreeByObjectIdRequest byObjectId(PartIdEntityPart partId) {
+    public PartsTreeByObjectIdRequest byObjectId(Job partId) {
         return PartsTreeByObjectIdRequest.builder()
-                .oneIDManufacturer(partId.getOneIDManufacturer())
-                .objectIDManufacturer(partId.getObjectIDManufacturer())
+                .oneIDManufacturer(partId.getJobId())
+                .objectIDManufacturer(partId.getOwner())
                 .view(faker.options().option(ItemsTreeView.class).name())
                 .build();
     }
 
     public PartsTreeByObjectIdRequest byObjectId() {
-        return byObjectId(generate.partId());
+        return byObjectId(generate.job());
     }
 
     public PartsTreeByVinRequest byVin() {

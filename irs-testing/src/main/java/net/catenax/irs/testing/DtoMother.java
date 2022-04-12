@@ -10,13 +10,15 @@
 package net.catenax.irs.testing;
 
 import com.github.javafaker.Faker;
-import net.catenax.irs.dtos.Aspect;
+import net.catenax.irs.component.*;
+import net.catenax.irs.component.enums.AspectType;
+import net.catenax.irs.component.enums.BomLifecycle;
+import net.catenax.irs.component.enums.Direction;
+import net.catenax.irs.dtos.ChildItemInfo;
 import net.catenax.irs.dtos.PartId;
-import net.catenax.irs.dtos.PartInfo;
 import net.catenax.irs.dtos.PartRelationship;
-import net.catenax.irs.dtos.PartRelationshipsWithInfos;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Object Mother to generate fake DTO data for testing.
@@ -36,21 +38,12 @@ public class DtoMother {
     private final transient BaseDtoMother base = new BaseDtoMother();
 
     /**
-     * Generate a {@link PartRelationshipsWithInfos} containing random data.
-     *
-     * @return a {@link PartRelationshipsWithInfos} containing random dta.
-     */
-    public PartRelationshipsWithInfos partRelationshipsWithInfos() {
-        return base.partRelationshipsWithInfos(List.of(partRelationship()), List.of(partInfo()));
-    }
-
-    /**
      * Generate a {@link PartRelationship} linking two random parts.
      *
      * @return a {@link PartRelationship} linking two random parts.
      */
-    public PartRelationship partRelationship() {
-        return base.partRelationship(partId(), partId());
+    public Relationship relationship() {
+        return base.relationship(job(), job());
     }
 
     /**
@@ -68,36 +61,31 @@ public class DtoMother {
     }
 
     /**
-     * Generate a {@link Aspect}
-     * with random values for {@link Aspect#getName()}
-     * and {@link Aspect#getUrl()}.
-     * <p>
-     * Example: {@code Aspect(name=nihil, url=https://www.lincoln-smith.co)}.
+     * Generate a {@link ChildItemInfo} containing provided data.
      *
-     * @return a {@link Aspect} with random data.
+     * @param job       part identifier.
+     * @param summary part type name.
+     * @param queryParameter optional aspect to be included in the result. May be {@literal null}.
+     * @return a {@link Job}.
      */
-    public Aspect partAspect() {
-        return base.partAspect(faker.lorem().word(), "https://" + faker.internet().url());
+    public Job job(final Job job, final Summary summary, final QueryParameter queryParameter) {
+        return base.job(job, summary, queryParameter);
+    }
+
+    public Summary summary(final AsyncFetchedItems asyncFetchedItems) {
+        return base.summary(asyncFetchedItems);
+    }
+
+    public QueryParameter queryParameter(final BomLifecycle bomLifecycle, final Collection<AspectType> aspects, final Integer depth, final Direction direction) {
+        return base.queryParameter(bomLifecycle, aspects, depth, direction);
     }
 
     /**
-     * Generate a {@link PartInfo} containing provided data.
+     * Generate a {@link ChildItemInfo} containing random data.
      *
-     * @param partId       part identifier.
-     * @param partTypeName part type name.
-     * @param aspectOrNull optional aspect to be included in the result. May be {@literal null}.
-     * @return a {@link PartInfo} containing the provided {@code partId} and optionally {@code aspect}.
+     * @return a {@link ChildItemInfo} containing random data.
      */
-    public PartInfo partInfo(final PartId partId, final String partTypeName, final Aspect aspectOrNull) {
-        return base.partInfo(partId, partTypeName, aspectOrNull);
-    }
-
-    /**
-     * Generate a {@link PartInfo} containing random data.
-     *
-     * @return a {@link PartInfo} containing random data.
-     */
-    public PartInfo partInfo() {
-        return partInfo(partId(), faker.commerce().productName(), partAspect());
+    public Job job() {
+        return job();
     }
 }

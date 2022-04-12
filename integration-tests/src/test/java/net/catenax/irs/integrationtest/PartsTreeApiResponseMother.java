@@ -9,16 +9,20 @@
 //
 package net.catenax.irs.integrationtest;
 
+import net.catenax.irs.component.*;
+import net.catenax.irs.component.enums.AspectType;
+import net.catenax.irs.component.enums.BomLifecycle;
+import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.controllers.ApiErrorsConstants;
-import net.catenax.irs.dtos.Aspect;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.dtos.PartId;
-import net.catenax.irs.dtos.PartInfo;
 import net.catenax.irs.dtos.PartRelationship;
-import net.catenax.irs.dtos.PartRelationshipsWithInfos;
 import net.catenax.irs.testing.BaseDtoMother;
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -42,150 +46,140 @@ public class PartsTreeApiResponseMother {
     private static final String BMW_ONE_ID = "BMW MUC";
     private static final String OBJECT_ID_GEARBOX = "I88HJHS45";
     private static final String OBJECT_ID_GEARWHEEL = "THYSFGG";
-    private static final String OBJECT_ID_GEARWHEELPIN_1 = "PLFVTZL";
-    private static final String OBJECT_ID_GEARWHEELPIN_2 = "CHOQAST";
     private static final String OBJECT_ID_BEARING = "D47055319";
-    private static final String GEARWHEELPIN = "gearwheelpin";
-    private static final String GEARWHEEL = "gearwheel";
-    private static final String GEARBOX = "gearbox";
-    private static final String VEHICLE = "Vehicle";
-    private static final String BEARING = "bearing";
     private static final String VIN = "YS3DD78N4X7055320";
     private static final String ASPECT_CE = "CE";
+    private static final Integer GEARBOX_QUEUE = 1;
+    private static final Integer GEARBOX_RUNNING = 2;
+    private static final Integer GEARBOX_COMPLETE = 3;
+    private static final Integer GEARBOX_FAILED = 4;
+    private static final Integer GEARBOX_LOST = 5;
+    private static final BomLifecycle GEARBOX_BOMLIFECYCLE = BomLifecycle.AS_PLANNED;
+    private static final Collection<AspectType> GEARBOX_ASPECT = new ArrayList<AspectType>(Arrays.asList(AspectType.values()));
+    private static final Integer GEARBOX_DEPTH = 6;
+    private static final Direction GEARBOX_DIRECTION = Direction.UPWARD;
 
-    private final PartId vehiclePartId = vehiclePartId();
-    private final PartId bearingPartId = bearingPartId();
-    private final PartId gearboxPartId = gearboxPartId();
-    private final PartId gearwheelPartId = gearwheelPartId();
-    private final PartId gearwheelpinPartId1 = gearwheelpinPartId1();
-    private final PartId gearwheelpinPartId2 = gearwheelpinPartId2();
+    private final Job gearboxJob = gearboxPartId();
+    private final Job vehicleJob = vehicleJob();
+    private final Job bearingJob = bearingJob();
+    private final Summary gearboxSummary = gearboxSummary();
+    private final QueryParameter gearboxQueryParameter = gearboxQueryParameter();
+    private final AsyncFetchedItems gearboxAsynchFetchedItems = gearboxAsynchFetchedItems();
+    private final Job gearwheelJob = gearwheelJob();
+    private final Summary gearwheelSummary = gearwheelSummary();
+    private final AsyncFetchedItems gearwheelAsynchFetchedItems = gearwheelAsynchFetchedItems();
+    private final Job gearwheelpinJob1 = gearwheelpinJob1();
+    private final Summary gearwheelpinSummary1 = gearwheelpinSummary1();
+    private final AsyncFetchedItems gearwheelpinAsynchFetchedItems1 = gearwheelpinAsynchFetchedItems1();
+    private final Job gearwheelpinJob2 = gearwheelpinJob2();
+    private final Summary gearwheelpinSummary2 = gearwheelpinSummary2();
+    private final AsyncFetchedItems gearwheelpinAsynchFetchedItems2 = gearwheelpinAsynchFetchedItems2();
 
-    private final List<PartRelationship> gearboxDirectChildren = List.of(partRelationship(gearboxPartId, gearwheelPartId));
 
-    private final List<PartRelationship> gearboxPartsTree = List.of(
-            partRelationship(gearboxPartId, gearwheelPartId),
-            partRelationship(gearwheelPartId, gearwheelpinPartId1),
-            partRelationship(gearwheelpinPartId1, gearwheelpinPartId2));
+    private final List<Relationship> gearboxDirectChildren = List.of(relationship(gearboxJob, gearwheelJob));
 
-    private final List<PartRelationship> vehicleDirectChildren = List.of(
-            partRelationship(vehiclePartId, gearboxPartId),
-            partRelationship(vehiclePartId, bearingPartId)
+    private final List<Relationship> gearboxPartsTree = List.of(
+            relationship(gearboxJob, gearwheelJob),
+            relationship(gearwheelJob, gearwheelpinJob1),
+            relationship(gearwheelpinJob1, gearwheelpinJob2));
+
+    private final List<Relationship> vehicleDirectChildren = List.of(
+            relationship(vehicleJob, gearboxJob),
+            relationship(vehicleJob, bearingJob)
     );
-    private final List<PartRelationship> vehiclePartsTree = Stream.concat(
+    private final List<Relationship> vehiclePartsTree = Stream.concat(
                     vehicleDirectChildren.stream(), gearboxPartsTree.stream())
             .collect(Collectors.toList());
 
     /**
-     * Generate a {@link PartRelationshipsWithInfos} containing fixed part tree of gearbox without aspects.
+     * Generate a {@link Jobs} containing fixed part tree of gearbox without aspects.
      *
-     * @return a {@link PartRelationshipsWithInfos} containing fixed part tree of gearbox without aspects.
+     * @return a {@link Jobs} containing fixed part tree of gearbox without aspects.
      */
-    public PartRelationshipsWithInfos sampleGearboxPartTree() {
+    public Jobs sampleGearboxPartTree() {
 
-        return partRelationshipsWithInfos(
+        return jobs(
                 gearboxPartsTree,
-                List.of(partInfo(gearboxPartId, GEARBOX),
-                        partInfo(gearwheelPartId, GEARWHEEL),
-                        partInfo(gearwheelpinPartId1, GEARWHEELPIN),
-                        partInfo(gearwheelpinPartId2, GEARWHEELPIN)));
+                job(gearboxJob, gearboxSummary));
     }
 
     /**
-     * Generate a {@link PartRelationshipsWithInfos} containing fixed part tree of gearbox with aspects.
+     * Generate a {@link Jobs} containing fixed part tree of gearbox with aspects.
      *
-     * @return a {@link PartRelationshipsWithInfos} containing fixed part tree of gearbox with aspects.
+     * @return a {@link Jobs} containing fixed part tree of gearbox with aspects.
      */
-    public PartRelationshipsWithInfos sampleGearboxPartTreeWithAspects() {
-        return partRelationshipsWithInfos(
+    public Jobs sampleGearboxPartTreeWithAspects() {
+        return jobs(
                 gearboxPartsTree,
-                List.of(partInfo(gearboxPartId, GEARBOX, bmwCEAspect()),
-                        partInfo(gearwheelPartId, GEARWHEEL, boschCEAspect()),
-                        partInfo(gearwheelpinPartId1, GEARWHEELPIN, boschCEAspect()),
-                        partInfo(gearwheelpinPartId2, GEARWHEELPIN, boschCEAspect())));
+                job(gearboxJob, gearboxSummary, gearboxQueryParameter));
     }
 
     /**
-     * Generate a {@link PartRelationshipsWithInfos} containing fixed data of gearbox direct children without aspects.
+     * Generate a {@link Jobs} containing fixed data of gearbox direct children without aspects.
      *
-     * @return a {@link PartRelationshipsWithInfos} containing fixed data of gearbox direct children without aspects.
+     * @return a {@link Jobs} containing fixed data of gearbox direct children without aspects.
      */
-    public PartRelationshipsWithInfos sampleGearboxDirectChildren() {
-        return partRelationshipsWithInfos(
+    public Jobs sampleGearboxDirectChildren() {
+        return jobs(
                 gearboxDirectChildren,
-                List.of(partInfo(gearboxPartId, GEARBOX),
-                        partInfo(gearwheelPartId, GEARWHEEL)));
+                job(gearboxJob, gearboxSummary));
     }
 
     /**
-     * Generate a {@link PartRelationshipsWithInfos} containing fixed part tree of vehicle without aspects.
+     * Generate a {@link Jobs} containing fixed part tree of vehicle without aspects.
      *
-     * @return a {@link PartRelationshipsWithInfos} containing fixed part tree of vehicle without aspects.
+     * @return a {@link Jobs} containing fixed part tree of vehicle without aspects.
      */
-    public PartRelationshipsWithInfos sampleVinPartTree() {
+    public Jobs sampleVinPartTree() {
 
-        return partRelationshipsWithInfos(
+        return jobs(
                 vehiclePartsTree,
-                List.of(partInfo(vehiclePartId, VEHICLE),
-                        partInfo(bearingPartId, BEARING),
-                        partInfo(gearboxPartId, GEARBOX),
-                        partInfo(gearwheelPartId, GEARWHEEL),
-                        partInfo(gearwheelpinPartId1, GEARWHEELPIN),
-                        partInfo(gearwheelpinPartId2, GEARWHEELPIN)));
+                job(gearboxJob, gearboxSummary));
     }
 
     /**
-     * Generate a {@link PartRelationshipsWithInfos} containing fixed part tree of vehicle with aspects.
+     * Generate a {@link Jobs} containing fixed part tree of vehicle with aspects.
      *
-     * @return a {@link PartRelationshipsWithInfos} containing fixed part tree of vehicle with aspects.
+     * @return a {@link Jobs} containing fixed part tree of vehicle with aspects.
      */
-    public PartRelationshipsWithInfos sampleVinPartTreeWithAspects() {
-        return partRelationshipsWithInfos(
+    public Jobs sampleVinPartTreeWithAspects() {
+        return jobs(
                 vehiclePartsTree,
-                List.of(partInfo(vehiclePartId, VEHICLE, bmwCEAspect()),
-                        partInfo(bearingPartId, BEARING, schaefflerCEAspect()),
-                        partInfo(gearboxPartId, GEARBOX, bmwCEAspect()),
-                        partInfo(gearwheelPartId, GEARWHEEL, boschCEAspect()),
-                        partInfo(gearwheelpinPartId1, GEARWHEELPIN, boschCEAspect()),
-                        partInfo(gearwheelpinPartId2, GEARWHEELPIN, boschCEAspect())));
+                job(gearboxJob, gearboxSummary, gearboxQueryParameter));
     }
 
     /**
-     * Generate a {@link PartRelationshipsWithInfos} containing fixed data of vehicle direct children without aspects.
+     * Generate a {@link Jobs} containing fixed data of vehicle direct children without aspects.
      *
-     * @return a {@link PartRelationshipsWithInfos} containing fixed data of vehicle direct children without aspects.
+     * @return a {@link Jobs} containing fixed data of vehicle direct children without aspects.
      */
-    public PartRelationshipsWithInfos sampleVinDirectChildren() {
-        return partRelationshipsWithInfos(
+    public Jobs sampleVinDirectChildren() {
+        return jobs(
                 vehicleDirectChildren,
-                List.of(partInfo(vehiclePartId, VEHICLE),
-                        partInfo(bearingPartId, BEARING),
-                        partInfo(gearboxPartId, GEARBOX)));
+                job(gearboxJob, gearboxSummary));
     }
 
     /**
-     * Generate a {@link PartRelationshipsWithInfos} containing fixed data of vehicle children and grandchildren without aspects.
+     * Generate a {@link Jobs} containing fixed data of vehicle children and grandchildren without aspects.
      *
-     * @return a {@link PartRelationshipsWithInfos} containing fixed data of vehicle children and grandchildren without aspects.
+     * @return a {@link Jobs} containing fixed data of vehicle children and grandchildren without aspects.
      */
-    public PartRelationshipsWithInfos sampleVinGrandChildren() {
-        return partRelationshipsWithInfos(
+    public Jobs sampleVinGrandChildren() {
+        return jobs(
                 Stream.concat(vehicleDirectChildren.stream(), gearboxDirectChildren.stream()).collect(Collectors.toList()),
-                List.of(partInfo(vehiclePartId, VEHICLE),
-                        partInfo(bearingPartId, BEARING),
-                        partInfo(gearboxPartId, GEARBOX),
-                        partInfo(gearwheelPartId, GEARWHEEL)));
+                job(gearboxJob, gearboxSummary));
     }
 
     /**
-     * Generate a {@link PartRelationshipsWithInfos} containing fixed part tree of gearbox
+     * Generate a {@link Jobs} containing fixed part tree of gearbox
      * with no children with part info.
      *
      * @return Guaranteed to never return {@literal null}.
      */
-    public PartRelationshipsWithInfos sampleLeafNodeGearboxPartTreeWithTypeName() {
-        return partRelationshipsWithInfos(
+    public Jobs sampleLeafNodeGearboxPartTreeWithTypeName() {
+        return jobs(
                 List.of(),
-                List.of(partInfo(gearwheelpinPartId2, GEARWHEELPIN)));
+                job(gearwheelpinJob2, gearwheelpinSummary2));
     }
 
     /**
@@ -224,59 +218,83 @@ public class PartsTreeApiResponseMother {
                 .withErrors(errors).build();
     }
 
-    private PartRelationshipsWithInfos partRelationshipsWithInfos(List<PartRelationship> relationships, List<PartInfo> infos) {
-        return base.partRelationshipsWithInfos(relationships, infos);
+    private Jobs jobs(List<Relationship> relationships, Job job) {
+        return base.jobs(relationships, job);
     }
 
-    private PartRelationship partRelationship(PartId parent, PartId child) {
-        return base.partRelationship(parent, child);
+    private Relationship relationship(Job child, Job parent) {
+        return base.relationship(child, parent);
     }
 
-    private PartId vehiclePartId() {
-        return base.partId(BMW_ONE_ID, VIN);
+    private Job gearboxPartId() {
+        return base.job(ZF_ONE_ID, OBJECT_ID_GEARBOX);
     }
 
-    private PartId bearingPartId() {
-        return base.partId(SCHAEFFLER_ONE_ID, OBJECT_ID_BEARING);
+    private Job vehicleJob() {
+        return base.job(BMW_ONE_ID, VIN);
     }
 
-    private PartId gearboxPartId() {
-        return base.partId(ZF_ONE_ID, OBJECT_ID_GEARBOX);
+    private Job bearingJob() {
+        return base.job(SCHAEFFLER_ONE_ID, OBJECT_ID_BEARING);
     }
 
-    private PartId gearwheelPartId() {
-        return base.partId(BOSCH_ONE_ID, OBJECT_ID_GEARWHEEL);
+    private Summary gearboxSummary() {
+        return base.summary(gearboxAsynchFetchedItems);
     }
 
-    protected PartId gearwheelpinPartId1() {
-        return base.partId(BOSCH_ONE_ID, OBJECT_ID_GEARWHEELPIN_1);
+    private QueryParameter gearboxQueryParameter() {
+        return base.queryParameter(GEARBOX_BOMLIFECYCLE, GEARBOX_ASPECT, GEARBOX_DEPTH, GEARBOX_DIRECTION);
     }
 
-    protected PartId gearwheelpinPartId2() {
-        return base.partId(BOSCH_ONE_ID, OBJECT_ID_GEARWHEELPIN_2);
+    private AsyncFetchedItems gearboxAsynchFetchedItems() {
+        return base.asynchFetchedItems(GEARBOX_QUEUE, GEARBOX_RUNNING, GEARBOX_COMPLETE, GEARBOX_FAILED, GEARBOX_LOST);
+    }
+
+    private Job gearwheelJob() {
+        return base.job(BOSCH_ONE_ID, OBJECT_ID_GEARWHEEL);
+    }
+
+    private Summary gearwheelSummary() {
+        return base.summary(gearwheelAsynchFetchedItems);
+    }
+
+    private AsyncFetchedItems gearwheelAsynchFetchedItems() {
+        return base.asynchFetchedItems(GEARBOX_QUEUE, GEARBOX_RUNNING, GEARBOX_COMPLETE, GEARBOX_FAILED, GEARBOX_LOST);
+    }
+
+    private Job gearwheelpinJob1() {
+        return base.job(BOSCH_ONE_ID, OBJECT_ID_GEARWHEEL);
+    }
+
+    private Summary gearwheelpinSummary1() {
+        return base.summary(gearwheelpinAsynchFetchedItems1);
+    }
+
+    private AsyncFetchedItems gearwheelpinAsynchFetchedItems1() {
+        return base.asynchFetchedItems(GEARBOX_QUEUE, GEARBOX_RUNNING, GEARBOX_COMPLETE, GEARBOX_FAILED, GEARBOX_LOST);
+    }
+
+    private Job gearwheelpinJob2() {
+        return base.job(BOSCH_ONE_ID, OBJECT_ID_GEARWHEEL);
+    }
+
+    private Summary gearwheelpinSummary2() {
+        return base.summary(gearwheelpinAsynchFetchedItems2);
+    }
+
+    private AsyncFetchedItems gearwheelpinAsynchFetchedItems2() {
+        return base.asynchFetchedItems(GEARBOX_QUEUE, GEARBOX_RUNNING, GEARBOX_COMPLETE, GEARBOX_FAILED, GEARBOX_LOST);
     }
 
     private String ceAspectUrl(String name) {
         return "http://aspect-" + name + "/" + ASPECT_CE + "/1234";
     }
 
-    private Aspect bmwCEAspect() {
-        return base.partAspect(ASPECT_CE, ceAspectUrl("BMW"));
+    private Job job(final Job job, final Summary summary, final QueryParameter queryParameter) {
+        return base.job(job, summary, queryParameter);
     }
 
-    private Aspect boschCEAspect() {
-        return base.partAspect(ASPECT_CE, ceAspectUrl(BOSCH_ONE_ID));
-    }
-
-    private Aspect schaefflerCEAspect() {
-        return base.partAspect(ASPECT_CE, ceAspectUrl(SCHAEFFLER_ONE_ID));
-    }
-
-    private PartInfo partInfo(final PartId partId, final String partTypeName, final Aspect aspectOrNull) {
-        return base.partInfo(partId, partTypeName, aspectOrNull);
-    }
-
-    private PartInfo partInfo(final PartId partId, final String partTypeName) {
-        return base.partInfo(partId, partTypeName, null);
+    private Job job(final Job job, final Summary summary) {
+        return base.job(job, summary, null);
     }
 }

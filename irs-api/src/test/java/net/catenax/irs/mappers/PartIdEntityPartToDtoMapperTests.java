@@ -8,13 +8,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PartIdEntityPartToDtoMapperTests {
 
     EntitiesMother generate = new EntitiesMother();
-    PartIdEntityPartToDtoMapper sut = new PartIdEntityPartToDtoMapper();
+    ChildItemEntityPartToDtoMapper sut = new ChildItemEntityPartToDtoMapper();
 
     @Test
     void toPartId() {
-        var input = generate.partId();
-        var output = sut.toPartId(input);
-        assertThat(output.getOneIDManufacturer()).isEqualTo(input.getOneIDManufacturer());
-        assertThat(output.getObjectIDManufacturer()).isEqualTo(input.getObjectIDManufacturer());
+        var input = generate.job();
+        var output = sut.toJob(input);
+        assertThat(output.getJobId()).isEqualTo(input.getJobId());
+        assertThat(output.getOwner()).isEqualTo(input.getOwner());
     }
 }

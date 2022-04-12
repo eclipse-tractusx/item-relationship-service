@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.catenax.irs.component.AsyncFetchedItems;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
@@ -21,21 +22,21 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * JPA entity part representing the primary key of the {@link PartAttributeEntity}.
+ * JPA entity part representing the primary key of the {@link SummaryAttributeEntity}.
  */
 @Embeddable
 @Data // safe on this class as it is not an @Entity, and it has no JPA relationships
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PartAttributeEntityKey implements Serializable {
+public class SummaryAttributeEntityKey implements Serializable {
     /**
      * Part identifier.
      */
     @Embedded
     @NotNull
     @Valid
-    private PartIdEntityPart partId;
+    private AsyncFetchedItems asynchFetchedItems;
 
     /**
      * Item name.

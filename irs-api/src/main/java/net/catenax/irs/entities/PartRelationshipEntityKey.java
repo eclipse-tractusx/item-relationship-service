@@ -13,11 +13,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.catenax.irs.component.Job;
 import net.catenax.irs.dtos.ItemLifecycleStage;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
@@ -41,13 +39,9 @@ public class PartRelationshipEntityKey implements Serializable {
      * Part identifier of the parent in the relationship.
      */
     @Embedded
-    @AttributeOverrides({
-        @AttributeOverride(name = "oneIDManufacturer", column = @Column(name = "parentOneIDManufacturer")),
-        @AttributeOverride(name = "objectIDManufacturer", column = @Column(name = "parentObjectIDManufacturer")),
-    })
     @NotNull
     @Valid
-    private PartIdEntityPart parentId;
+    private Job parentId;
 
     /**
      * Part identifier of the child in the relationship.
@@ -55,7 +49,7 @@ public class PartRelationshipEntityKey implements Serializable {
     @Embedded
     @NotNull
     @Valid
-    private PartIdEntityPart childId;
+    private Job childId;
 
     /**
      * Instant at which part relationship came into effect.

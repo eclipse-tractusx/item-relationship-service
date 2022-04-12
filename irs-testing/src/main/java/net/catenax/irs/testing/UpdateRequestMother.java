@@ -10,16 +10,12 @@
 package net.catenax.irs.testing;
 
 import com.github.javafaker.Faker;
-import net.catenax.irs.dtos.PartAttribute;
-import net.catenax.irs.dtos.ItemLifecycleStage;
-import net.catenax.irs.component.events.PartAspectsUpdateRequest;
-import net.catenax.irs.component.events.PartAttributeUpdateRequest;
 import net.catenax.irs.component.events.PartRelationshipUpdate;
 import net.catenax.irs.component.events.PartRelationshipsUpdateRequest;
+import net.catenax.irs.dtos.ItemLifecycleStage;
 
 import java.util.Arrays;
 
-import static java.util.Collections.singletonList;
 import static java.util.concurrent.TimeUnit.DAYS;
 
 /**
@@ -37,7 +33,7 @@ public class UpdateRequestMother {
     /**
      * Object Mother to generate core DTO data for testing.
      */
-    private final transient DtoMother generate = new DtoMother();
+    //private final transient DtoMother generate = new DtoMother();
 
     /**
      * Generate a {@link PartRelationshipsUpdateRequest} containing a single relationship update
@@ -69,37 +65,9 @@ public class UpdateRequestMother {
      */
     public PartRelationshipUpdate partRelationshipUpdate() {
         return PartRelationshipUpdate.builder()
-                .withRelationship(generate.partRelationship())
+                //.withRelationship(generate.relationship())
                 .withRemove(false)
                 .withStage(faker.options().option(ItemLifecycleStage.class))
-                .withEffectTime(faker.date().past(100, DAYS).toInstant())
-                .build();
-    }
-
-    /**
-     * Generate a {@link PartAspectsUpdateRequest} containing random data.
-     *
-     * @return never returns {@literal null}.
-     */
-    public PartAspectsUpdateRequest partAspectUpdate() {
-        return PartAspectsUpdateRequest.builder()
-                .withPart(generate.partId())
-                .withAspects(singletonList(generate.partAspect()))
-                .withRemove(false)
-                .withEffectTime(faker.date().past(100, DAYS).toInstant())
-                .build();
-    }
-
-    /**
-     * Generate a {@link PartAttributeUpdateRequest} containing random data.
-     *
-     * @return never returns {@literal null}.
-     */
-    public PartAttributeUpdateRequest partAttributeUpdate() {
-        return PartAttributeUpdateRequest.builder()
-                .withPart(generate.partId())
-                .withName(faker.options().option(PartAttribute.class).name())
-                .withValue(faker.commerce().productName())
                 .withEffectTime(faker.date().past(100, DAYS).toInstant())
                 .build();
     }

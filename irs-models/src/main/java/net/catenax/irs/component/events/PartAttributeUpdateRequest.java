@@ -17,7 +17,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.annotations.ValueOfEnum;
 import net.catenax.irs.dtos.PartAttribute;
 import net.catenax.irs.dtos.PartId;
-import net.catenax.irs.dtos.PartInfo;
+import net.catenax.irs.dtos.ChildItemInfo;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -29,7 +29,7 @@ import java.time.Instant;
 import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MAX_LENGTH;
 import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
 
-/*** Request for updates to {@link PartInfo}s. */
+/*** Request for updates to {@link ChildItemInfo}s. */
 @Schema(description = PartAttributeUpdateRequest.DESCRIPTION)
 @Value
 @Builder(toBuilder = true, setterPrefix = "with")

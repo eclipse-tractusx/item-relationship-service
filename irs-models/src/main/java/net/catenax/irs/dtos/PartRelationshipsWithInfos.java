@@ -34,5 +34,5 @@ public class PartRelationshipsWithInfos {
      * partInfos
      */
     @Schema(description = "List of part infos")
-    private List<PartInfo> partInfos;
+    private List<ChildItemInfo> partInfos;
 }

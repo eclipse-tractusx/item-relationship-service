@@ -35,7 +35,7 @@ public class PartAspectEntityKey implements Serializable {
     @Embedded
     @NotNull
     @Valid
-    private PartIdEntityPart partId;
+    private JobEntityPart partId;
 
     /**
      * Item name.

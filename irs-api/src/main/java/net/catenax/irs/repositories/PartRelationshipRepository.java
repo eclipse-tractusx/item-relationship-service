@@ -10,7 +10,7 @@
 package net.catenax.irs.repositories;
 
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
-import net.catenax.irs.entities.PartIdEntityPart;
+import net.catenax.irs.entities.JobEntityPart;
 import net.catenax.irs.entities.PartRelationshipEntity;
 import net.catenax.irs.entities.PartRelationshipEntityKey;
 import org.springframework.data.jpa.repository.Query;
@@ -32,9 +32,9 @@ public interface PartRelationshipRepository extends Repository<PartRelationshipE
      * Note that this method does not validate its parameters, and validation
      * must be performed by the caller.
      *
-     * @param oneIDManufacturer    see {@link PartIdEntityPart#getOneIDManufacturer()}.
+     * @param oneIDManufacturer    see {@link JobEntityPart#getChildCatenaXId()}.
      *                             Must not be {@literal null} or blank.
-     * @param objectIDManufacturer see {@link PartIdEntityPart#getObjectIDManufacturer()}.
+     * @param objectIDManufacturer see {@link JobEntityPart#getLifecycleContext()}.
      *                             Must not be {@literal null} or blank.
      * @param maxDepth             maximum depth to traverse the tree.
      *                             Must be strictly positive.

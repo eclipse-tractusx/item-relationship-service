@@ -10,9 +10,10 @@
 package net.catenax.irs.mappers;
 
 import lombok.RequiredArgsConstructor;
-import net.catenax.irs.dtos.PartId;
+import net.catenax.irs.component.Job;
+import net.catenax.irs.component.Relationship;
 import net.catenax.irs.dtos.PartRelationship;
-import net.catenax.irs.entities.PartIdEntityPart;
+import net.catenax.irs.entities.JobEntityPart;
 import net.catenax.irs.entities.PartRelationshipEntity;
 import org.springframework.stereotype.Component;
 
@@ -23,20 +24,20 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PartRelationshipEntityToDtoMapper {
     /**
-     * Mapper from {@link PartIdEntityPart} entity to {@link PartId} DTO.
+     * Mapper from {@link JobEntityPart} entity to {@link Job} DTO.
      */
-    private final PartIdEntityPartToDtoMapper idMapper;
+    private final ChildItemEntityPartToDtoMapper idMapper;
 
     /**
-     * Map a {@link PartIdEntityPart} entity into a {@link PartId} DTO.
+     * Map a {@link JobEntityPart} entity into a {@link Job} DTO.
      *
      * @param source entity to map. Must not be {@literal null}.
      * @return DTO containing data from the entity. Guaranteed to be not {@literal null}.
      */
-    public PartRelationship toPartRelationship(final PartRelationshipEntity source) {
-        return PartRelationship.builder()
-                .withParent(idMapper.toPartId(source.getKey().getParentId()))
-                .withChild(idMapper.toPartId(source.getKey().getChildId()))
+    public Relationship toRelationship(final PartRelationshipEntity source) {
+        return Relationship.builder()
+                .parentItem(idMapper.toJob(source.getKey().getParentId()))
+                .childItem(idMapper.toJob(source.getKey().getChildId()))
                 .build();
     }
 }

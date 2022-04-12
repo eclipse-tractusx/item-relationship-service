@@ -1,9 +1,14 @@
 package net.catenax.irs.entities;
 
 import com.github.javafaker.Faker;
-import net.catenax.irs.configuration.IrsConfiguration;
+import net.catenax.irs.component.AsyncFetchedItems;
+import net.catenax.irs.component.Job;
+import net.catenax.irs.component.enums.AspectType;
+import net.catenax.irs.component.enums.BomLifecycle;
+import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.dtos.ItemLifecycleStage;
 
+import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -32,7 +37,7 @@ public class EntitiesMother {
      * @param childId  child in the relationship.
      * @return a {@link PartRelationshipEntity} linking {@code parentId} to {@code childId}.
      */
-    public PartRelationshipEntity partRelationship(PartIdEntityPart parentId, PartIdEntityPart childId) {
+    public PartRelationshipEntity partRelationship(Job parentId, Job childId) {
         return PartRelationshipEntity.builder()
                 .key(partRelationshipKey(parentId, childId))
                 .uploadDateTime(now())
@@ -41,7 +46,7 @@ public class EntitiesMother {
     }
 
     public PartRelationshipEntity partRelationship() {
-        return partRelationship(partId(), partId());
+        return partRelationship(job(), job());
     }
 
     /**
@@ -52,7 +57,7 @@ public class EntitiesMother {
      * @param childId  child in the relationship.
      * @return a {@link PartRelationshipEntityKey} linking {@code parentId} to {@code childId}.
      */
-    public PartRelationshipEntityKey partRelationshipKey(PartIdEntityPart parentId, PartIdEntityPart childId) {
+    public PartRelationshipEntityKey partRelationshipKey(Job parentId, Job childId) {
         return PartRelationshipEntityKey.builder()
                 .childId(childId)
                 .parentId(parentId)
@@ -63,46 +68,39 @@ public class EntitiesMother {
     }
 
     /**
-     * Generate a {@link PartIdEntityPart} linking two parts,
-     * with random values for {@link PartIdEntityPart#getOneIDManufacturer()}
-     * and {@link PartIdEntityPart#getObjectIDManufacturer()}.
+     * Generate a {@link JobEntityPart} linking two parts,
+     * with random values for {@link JobEntityPart}
+     * and {@link JobEntityPart}.
      * <p>
-     * Example: {@code PartIdEntityPart(oneIDManufacturer=Stiedemann Inc, objectIDManufacturer=ypiu9wzwuka1ov03)}.
+     * Example: {@code JobEntityPart(oneIDManufacturer=Stiedemann Inc, objectIDManufacturer=ypiu9wzwuka1ov03)}.
      *
-     * @return a {@link PartIdEntityPart} with random identifiers.
+     * @return a {@link JobEntityPart} with random identifiers.
      */
-    public PartIdEntityPart partId() {
-        return PartIdEntityPart.builder()
-                .oneIDManufacturer(UUID.randomUUID().toString())
-                .objectIDManufacturer(UUID.randomUUID().toString())
+    public Job job() {
+        return Job.builder()
+                .jobId(UUID.randomUUID().toString())
+                .owner(UUID.randomUUID().toString())
                 .build();
     }
 
-    public PartAspectEntity partAspect(PartIdEntityPart id) {
-        return PartAspectEntity.builder()
-                .key(partAspectEntityKey(id, faker.lorem().word()))
-                .url(faker.internet().url())
+    public AsyncFetchedItems asyncFetchedItems() {
+      return AsyncFetchedItems.builder()
+              .running(1)
+              .build();
+    }
+
+    public SummaryAttributeEntity summary(AsyncFetchedItems asyncFetchedItems) {
+        return SummaryAttributeEntity.builder()
+                .asyncFetchedItems(asyncFetchedItems)
                 .build();
     }
 
-    public PartAttributeEntity partTypeNameAttribute(PartIdEntityPart id) {
-        return PartAttributeEntity.builder()
-                .key(partAttributeEntityKey(id, IrsConfiguration.PART_TYPE_NAME_ATTRIBUTE))
-                .value(faker.commerce().productName())
-                .build();
-    }
-
-    private PartAttributeEntityKey partAttributeEntityKey(PartIdEntityPart id, String attribute) {
-        return PartAttributeEntityKey.builder()
-                .partId(id)
-                .attribute(attribute)
-                .build();
-    }
-
-    private PartAspectEntityKey partAspectEntityKey(PartIdEntityPart id, String name) {
-        return PartAspectEntityKey.builder()
-                .partId(id)
-                .name(name)
+    public QueryParameterEntityPart queryParameter(BomLifecycle bomLifecycle, Collection<AspectType> aspects, Integer depth, Direction direction) {
+        return QueryParameterEntityPart.builder()
+                .bomLifecycle(bomLifecycle)
+                .aspects(aspects)
+                .depth(depth)
+                .direction(direction)
                 .build();
     }
 }

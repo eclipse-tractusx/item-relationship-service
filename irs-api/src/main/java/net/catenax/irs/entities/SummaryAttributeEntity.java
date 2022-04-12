@@ -9,12 +9,8 @@
 //
 package net.catenax.irs.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import net.catenax.irs.component.AsyncFetchedItems;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -22,20 +18,19 @@ import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.Instant;
 
 /**
  * JPA entity part representing an attribute key-value pair attached to a part identifier.
  */
 @Entity
-@Table(name = "part_attribute")
+@Table(name = "summary_attribute")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString // safe on this entity as it has no relationships
-public class PartAttributeEntity implements Serializable {
+public class SummaryAttributeEntity implements Serializable {
 
     /**
      * The entity primary key, which itself contains the part identifier
@@ -44,24 +39,12 @@ public class PartAttributeEntity implements Serializable {
     @EmbeddedId
     @NotNull
     @Valid
-    private PartAttributeEntityKey key;
+    private SummaryAttributeEntityKey key;
 
     /**
      * The attribute value.
      */
     @NotNull
-    private String value;
-
-    /**
-     * Instant at which part attribute came into effect.
-     */
-    @NotNull
-    private Instant effectTime;
-
-    /**
-     * The time at which the data was uploaded.
-     */
-    @NotNull
-    private Instant lastModifiedTime;
+    private AsyncFetchedItems asyncFetchedItems;
 
 }
