@@ -11,18 +11,17 @@ package net.catenax.irs.mappers;
 
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.component.Job;
-import net.catenax.irs.dtos.PartId;
 import net.catenax.irs.entities.JobEntityPart;
 import org.springframework.stereotype.Component;
 
 /**
- * Mapper from {@link JobEntityPart} entity to {@link PartId} DTO.
+ * Mapper from {@link JobEntityPart} entity to {@link Job} DTO.
  */
 @Component
 @RequiredArgsConstructor
 public class ChildItemEntityPartToDtoMapper {
     /**
-     * Map a {@link JobEntityPart} entity into a {@link PartId} DTO.
+     * Map a {@link JobEntityPart} entity into a {@link Job} DTO.
      *
      * @param source entity to map. Must not be {@literal null}.
      * @return DTO containing data from the entity. Guaranteed to be not {@literal null}.

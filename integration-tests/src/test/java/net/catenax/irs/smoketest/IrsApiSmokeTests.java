@@ -9,7 +9,7 @@
 //
 package net.catenax.irs.smoketest;
 
-import net.catenax.irs.dtos.PartRelationshipsWithInfos;
+import net.catenax.irs.component.Jobs;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -39,10 +39,10 @@ public class IrsApiSmokeTests extends SmokeTestsBase {
             .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK.value())
-                .extract().as(PartRelationshipsWithInfos.class);
+                .extract().as(Jobs.class);
 
         assertThat(response.getRelationships()).isNotEmpty();
-        assertThat(response.getPartInfos()).isNotEmpty();
+        assertThat(response.getJob()).isNotNull();
     }
 
 }

@@ -15,12 +15,11 @@ import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.controllers.ApiErrorsConstants;
 import net.catenax.irs.dtos.ErrorResponse;
-import net.catenax.irs.dtos.PartId;
-import net.catenax.irs.dtos.PartRelationship;
 import net.catenax.irs.testing.BaseDtoMother;
 import org.springframework.http.HttpStatus;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

@@ -14,9 +14,6 @@ import net.catenax.irs.component.*;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
-import net.catenax.irs.dtos.ChildItemInfo;
-import net.catenax.irs.dtos.PartId;
-import net.catenax.irs.dtos.PartRelationship;
 
 /**
  * Object Mother to generate fake DTO data for testing.
@@ -36,30 +33,16 @@ public class DtoMother {
     private final transient BaseDtoMother base = new BaseDtoMother();
 
     /**
-     * Generate a {@link PartRelationship} linking two random parts.
+     * Generate a {@link } linking two random parts.
      *
-     * @return a {@link PartRelationship} linking two random parts.
+     * @return a {@link } linking two random parts.
      */
     public Relationship relationship() {
         return base.relationship(job(), job());
     }
 
     /**
-     * Generate a {@link PartId}
-     * with random values for {@link PartId#getOneIDManufacturer()}
-     * and {@link PartId#getObjectIDManufacturer()}.
-     * <p>
-     * Example: {@code PartId(oneIDManufacturer=Stiedemann Inc, objectIDManufacturer=ypiu9wzwuka1ov03)}.
-     *
-     * @return a {@link PartId} with random identifiers.
-     */
-    @SuppressWarnings("checkstyle:MagicNumber")
-    public PartId partId() {
-        return base.partId(faker.company().name(), faker.lorem().characters(10, 20));
-    }
-
-    /**
-     * Generate a {@link ChildItemInfo} containing provided data.
+     * Generate a {@link Job} containing provided data.
      *
      * @param job       part identifier.
      * @param summary part type name.
@@ -79,9 +62,9 @@ public class DtoMother {
     }
 
     /**
-     * Generate a {@link ChildItemInfo} containing random data.
+     * Generate a {@link Job} containing random data.
      *
-     * @return a {@link ChildItemInfo} containing random data.
+     * @return a {@link Job} containing random data.
      */
     public Job job() {
         return job();

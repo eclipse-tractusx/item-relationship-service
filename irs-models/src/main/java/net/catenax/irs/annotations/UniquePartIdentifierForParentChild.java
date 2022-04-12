@@ -9,10 +9,6 @@
 //
 package net.catenax.irs.annotations;
 
-import net.catenax.irs.dtos.PartRelationship;
-import net.catenax.irs.validators.UniquePartIdentifierForParentChildValidator;
-
-import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -22,12 +18,11 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Custom annotation to validate {@link PartRelationship} input.
+ * Custom annotation to validate {@link } input.
  */
 @Target({TYPE})
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = UniquePartIdentifierForParentChildValidator.class)
 @ExcludeFromCodeCoverageGeneratedReport
 public @interface UniquePartIdentifierForParentChild {
     /***

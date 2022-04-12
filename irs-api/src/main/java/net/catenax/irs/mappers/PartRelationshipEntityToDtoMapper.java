@@ -12,13 +12,12 @@ package net.catenax.irs.mappers;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.Relationship;
-import net.catenax.irs.dtos.PartRelationship;
 import net.catenax.irs.entities.JobEntityPart;
 import net.catenax.irs.entities.PartRelationshipEntity;
 import org.springframework.stereotype.Component;
 
 /**
- * Mapper from {@link PartRelationshipEntity} entity to {@link PartRelationship} DTO.
+ * Mapper from {@link PartRelationshipEntity} entity to {@link } DTO.
  */
 @Component
 @RequiredArgsConstructor

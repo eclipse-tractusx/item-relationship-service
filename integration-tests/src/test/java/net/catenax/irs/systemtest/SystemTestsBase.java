@@ -5,7 +5,6 @@ import io.gatling.core.config.GatlingPropertiesBuilder;
 import io.gatling.javaapi.core.Simulation;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
-import net.catenax.irs.testing.UpdateRequestMother;
 import org.junit.jupiter.api.Disabled;
 
 @Disabled
@@ -22,8 +21,6 @@ public class SystemTestsBase {
     protected static final String ASPECT = "aspect";
     protected static final String ASPECT_MATERIAL = "MATERIAL";
     protected static final String DEPTH = "depth";
-
-    protected UpdateRequestMother generate = new UpdateRequestMother();
 
     protected RequestSpecification getRequestSpecification() {
         var specificationBuilder = new RequestSpecBuilder();

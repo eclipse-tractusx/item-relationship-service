@@ -12,10 +12,6 @@ package net.catenax.irs.mappers;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.Jobs;
-import net.catenax.irs.dtos.ChildItemInfo;
-import net.catenax.irs.dtos.PartId;
-import net.catenax.irs.dtos.PartRelationship;
-import net.catenax.irs.dtos.PartRelationshipsWithInfos;
 import net.catenax.irs.entities.*;
 import org.springframework.stereotype.Component;
 
@@ -25,31 +21,31 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Mapper from entities to {@link PartRelationshipsWithInfos} DTO.
+ * Mapper from entities to {@link } DTO.
  */
 @Component
 @RequiredArgsConstructor
 public class PartRelationshipEntityListToDtoMapper {
     /**
-     * Mapper from {@link PartRelationshipEntity} entity to {@link PartRelationship} DTO.
+     * Mapper from {@link PartRelationshipEntity} entity to {@link } DTO.
      */
     private final PartRelationshipEntityToDtoMapper relationshipMapper;
     /**
-     * Mapper from {@link JobEntityPart} entity to {@link PartId} DTO.
+     * Mapper from {@link JobEntityPart} entity to {@link Job} DTO.
      */
     private final ChildItemEntityPartToDtoMapper idMapper;
 
     /**
-     * Map entities into a {@link PartRelationshipsWithInfos} DTO.
+     * Map entities into a {@link } DTO.
      *
      * @param source     collection of {@link PartRelationshipEntity}
-     *                   to be mapped into {@link PartRelationshipsWithInfos#getRelationships()}.
+     *                   to be mapped into {@link }.
      * @param jobs collection of {@link JobEntityPart}
-     *                   to be mapped into {@link PartRelationshipsWithInfos#getPartInfos()}.
+     *                   to be mapped into {@link }.
      * @param summary collection of {@link SummaryAttributeEntity}
-     *                   to be mapped into {@link ChildItemInfo#getPartTypeName()}.
+     *                   to be mapped into {@link }.
      * @param queryParameter    collection of {@link PartAspectEntity}
-     *                   to be mapped into {@link ChildItemInfo#getAspects()}.
+     *                   to be mapped into {@link }.
      * @return DTO containing data from the entities. Guaranteed to be not {@literal null}.
      */
     public Jobs toPartRelationshipsWithInfos(final Collection<PartRelationshipEntity> source, final Collection<Job> jobs, final SummaryAttributeEntity summary, final QueryParameterEntityPart queryParameter) {

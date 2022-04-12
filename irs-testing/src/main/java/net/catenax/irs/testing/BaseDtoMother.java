@@ -13,7 +13,6 @@ import net.catenax.irs.component.*;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
-import net.catenax.irs.dtos.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,11 +26,11 @@ import java.util.UUID;
 public class BaseDtoMother {
 
     /**
-     * Generate a {@link PartRelationshipsWithInfos} containing provided data.
+     * Generate a {@link Jobs} containing provided data.
      *
-     * @param relationships list of {@link PartRelationship}.
-     * @param job     list of {@link ChildItemInfo}.
-     * @return a {@link PartRelationshipsWithInfos} containing
+     * @param relationships list of {@link Relationship}.
+     * @param job     list of {@link Job}.
+     * @return a {@link Jobs} containing
      * the provided {@code relationships} and {@code partInfos}.
      */
     public Jobs jobs(final List<Relationship> relationships, final Job job) {
@@ -42,11 +41,11 @@ public class BaseDtoMother {
     }
 
     /**
-     * Generate a {@link PartRelationship} linking two parts.
+     * Generate a {@link Relationship} linking two parts.
      *
      * @param childItem  child in the relationship.
      * @param parentItem  child in the relationship.
-     * @return a {@link PartRelationship} linking {@code parentId} to {@code childItem}.
+     * @return a {@link Relationship} linking {@code parentId} to {@code childItem}.
      */
     public Relationship relationship(final Job childItem, final Job parentItem) {
         return Relationship.builder()
@@ -56,12 +55,12 @@ public class BaseDtoMother {
     }
 
     /**
-     * Generate a {@link PartId} from oneId and objectId.
+     * Generate a {@link Job} from oneId and objectId.
      *
      * @param jobId one id of the manufacturer.
      * @param action part serial number.
      * <p>
-     * Example: {@code PartId(oneIDManufacturer=Stiedemann Inc, objectId=ypiu9wzwuka1ov03)}.
+     * Example: {@code Job(oneIDManufacturer=Stiedemann Inc, objectId=ypiu9wzwuka1ov03)}.
      *
      * @return a {@link Job} with random identifiers.
      */
@@ -87,23 +86,6 @@ public class BaseDtoMother {
                 .build();
     }
 
-    /**
-     * Generate a {@link PartId} from oneId and objectId.
-     *
-     * @param oneId one id of the manufacturer.
-     * @param objectId part serial number.
-     * <p>
-     * Example: {@code PartId(oneIDManufacturer=Stiedemann Inc, objectId=ypiu9wzwuka1ov03)}.
-     *
-     * @return a {@link PartId} with random identifiers.
-     */
-    public PartId partId(final String oneId, final String objectId) {
-        return PartId.builder()
-                .withOneIDManufacturer(oneId)
-                .withObjectIDManufacturer(objectId)
-                .build();
-    }
-
     public AsyncFetchedItems asynchFetchedItems(final Integer queue, final Integer running, final Integer complete, final Integer failed, final Integer lost) {
         return AsyncFetchedItems.builder()
                 .queue(queue)
@@ -115,24 +97,7 @@ public class BaseDtoMother {
     }
 
     /**
-     * Generate a {@link Aspect} from aspect name and url.
-     *
-     * @param aspectName name of the aspect.
-     * @param url url location of the aspect.
-     *
-     * Example: {@code Aspect(name=nihil, url=www.lincoln-smith.co)}.
-     *
-     * @return a {@link Aspect} with random data.
-     */
-    public Aspect partAspect(final String aspectName, final String url) {
-        return Aspect.builder()
-                .withName(aspectName)
-                .withUrl(url)
-                .build();
-    }
-
-    /**
-     * Generate a {@link ChildItemInfo} containing provided data.
+     * Generate a {@link Job} containing provided data.
      *
      * @param job       part identifier.
      * @param summary part type name.
