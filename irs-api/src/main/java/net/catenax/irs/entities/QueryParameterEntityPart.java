@@ -7,17 +7,20 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-
 package net.catenax.irs.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.catenax.irs.component.enums.AspectType;
+import net.catenax.irs.component.enums.BomLifecycle;
+import net.catenax.irs.component.enums.Direction;
 
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * JPA embeddable entity part representing a part identifier.
@@ -27,13 +30,13 @@ import java.io.Serializable;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class PartIdEntityPart implements Serializable {
+public class QueryParameterEntityPart implements Serializable {
 
     /**
      * Readable ID of manufacturer including plant.
      */
     @NotEmpty
-    private String oneIDManufacturer;
+    private BomLifecycle bomLifecycle;
 
     /**
      * Unique identifier of a single, unique physical (sub)component/part/batch,
@@ -41,5 +44,11 @@ public class PartIdEntityPart implements Serializable {
      * For a vehicle, the Vehicle Identification Number (VIN).
      */
     @NotEmpty
-    private String objectIDManufacturer;
+    private Collection<AspectType> aspects;
+
+    @NotEmpty
+    private Integer depth;
+
+    @NotEmpty
+    private Direction direction;
 }
