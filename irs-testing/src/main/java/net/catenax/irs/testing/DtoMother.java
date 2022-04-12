@@ -18,8 +18,6 @@ import net.catenax.irs.dtos.ChildItemInfo;
 import net.catenax.irs.dtos.PartId;
 import net.catenax.irs.dtos.PartRelationship;
 
-import java.util.Collection;
-
 /**
  * Object Mother to generate fake DTO data for testing.
  *
@@ -76,7 +74,7 @@ public class DtoMother {
         return base.summary(asyncFetchedItems);
     }
 
-    public QueryParameter queryParameter(final BomLifecycle bomLifecycle, final Collection<AspectType> aspects, final Integer depth, final Direction direction) {
+    public QueryParameter queryParameter(final BomLifecycle bomLifecycle, final AspectType aspects, final Integer depth, final Direction direction) {
         return base.queryParameter(bomLifecycle, aspects, depth, direction);
     }
 

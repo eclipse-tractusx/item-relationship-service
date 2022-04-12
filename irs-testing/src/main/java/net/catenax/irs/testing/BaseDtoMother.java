@@ -15,8 +15,8 @@ import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.dtos.*;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Base object mother class to create DTOs for testing.
@@ -63,9 +63,9 @@ public class BaseDtoMother {
      * <p>
      * Example: {@code PartId(oneIDManufacturer=Stiedemann Inc, objectId=ypiu9wzwuka1ov03)}.
      *
-     * @return a {@link PartId} with random identifiers.
+     * @return a {@link Job} with random identifiers.
      */
-    public Job job(final String jobId, final String action) {
+    public Job job(final UUID jobId, final String action) {
         return Job.builder()
                 .jobId(jobId)
                 .action(action)
@@ -78,7 +78,7 @@ public class BaseDtoMother {
                 .build();
     }
 
-    public QueryParameter queryParameter(final BomLifecycle bomLifecycle, final Collection<AspectType> aspect, final Integer depth, final Direction direction) {
+    public QueryParameter queryParameter(final BomLifecycle bomLifecycle, final AspectType aspect, final Integer depth, final Direction direction) {
         return QueryParameter.builder()
                 .bomLifecycle(bomLifecycle)
                 .aspect(aspect)

@@ -9,34 +9,31 @@
 //
 package net.catenax.irs.component;
 
+import java.util.Collection;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
- * Summary
+ * contains a collection of JobHandle
  */
+@ApiModel(description = "Collection of job handle")
 @Value
 @Builder
-@JsonDeserialize(builder = Summary.SummaryBuilder.class)
+@JsonDeserialize(builder = JobHandleCollection.JobHandleCollectionBuilder.class)
 @ExcludeFromCodeCoverageGeneratedReport
-public class Summary {
+public class JobHandleCollection {
 
-    /**
-     * asyncFetchedItems
-     */
-    @Schema(description = "Summary of the fetched jobs",
-            implementation = AsyncFetchedItems.class)
-    private AsyncFetchedItems asyncFetchedItems;
+    private Collection<JobHandle> jobHandleCollections;
 
     /**
      * Builder class
      */
     @JsonPOJOBuilder(withPrefix = "with")
-    public static class SummaryBuilder {
+    public static class JobHandleCollectionBuilder {
     }
-
 }

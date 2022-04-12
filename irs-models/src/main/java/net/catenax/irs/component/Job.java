@@ -12,7 +12,9 @@ package net.catenax.irs.component;
 import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
 import static net.catenax.irs.dtos.ValidationConstants.JOB_ID_FIELD_MAX_LENGTH;
 
+import java.net.URL;
 import java.time.Instant;
+import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -43,9 +45,9 @@ public class Job {
      */
     @NotNull
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
-    @Schema(description = "Job Id for the request Item", minLength = INPUT_FIELD_MIN_LENGTH,
-            maxLength = JOB_ID_FIELD_MAX_LENGTH)
-    private final String jobId;
+    @Schema(description = "Job ID for the requested item.", minLength = INPUT_FIELD_MIN_LENGTH,
+            maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class)
+    private final UUID jobId;
 
     /**
      * globalAssetId
@@ -60,41 +62,51 @@ public class Job {
     @Schema()
     private JobState jobState;
 
-    private String exception;
+    @Schema(description = "Exception state for this job.", implementation = JobException.class)
+    private JobException jobException;
 
     /**
      * Timestamp when the job was created
      */
+    @Schema(implementation = Instant.class)
     private Instant createdOn;
 
     /**
      * Last time job was modified
      */
+    @Schema(implementation = Instant.class)
     private Instant lastModifiedOn;
 
     /**
      * Mark the time the was completed
      */
+    @Schema(implementation = Instant.class)
     private Instant jobFinished;
 
     /**
      * Url of request that resulted to this job
      */
-    private String requestUrl;
+    @Schema(implementation = URL.class)
+    private URL requestUrl;
 
     /**
      * Http method, only GET is supported
      */
+    @Schema(description = "HTTP verbs used by request.")
     private String action;
 
     /**
      * Owner of the job
      */
+    @Schema(description = "The requestor of the request.")
     private String owner;
 
+    @Schema(description = "List of asyncFetchedItems", implementation = Summary.class)
     private Summary summary;
 
+    @Schema(description = "The given query parameters", implementation = QueryParameter.class)
     private QueryParameter queryParameter;
+
 
     /**
      * Builder class

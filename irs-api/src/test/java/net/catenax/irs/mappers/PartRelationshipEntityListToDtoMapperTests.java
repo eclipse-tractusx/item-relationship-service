@@ -44,7 +44,7 @@ class PartRelationshipEntityListToDtoMapperTests {
     Job gearwheel1 = generate.job();
     AsyncFetchedItems asyncFetchedItems = generate.asyncFetchedItems();
     SummaryAttributeEntity summaryEntityPart = generate.summary(asyncFetchedItems);
-    QueryParameterEntityPart queryParameterEntityPart = generate.queryParameter(BomLifecycle.AS_PLANNED, new ArrayList<AspectType>(Arrays.asList(AspectType.values())), 2, Direction.UPWARD);
+    QueryParameterEntityPart queryParameterEntityPart = generate.queryParameter(BomLifecycle.AS_BUILT, new ArrayList<AspectType>(Arrays.asList(AspectType.values())), 2, Direction.DOWNWARD);
     PartRelationshipEntity car1_gearbox1 = generate.partRelationship(car1, gearbox1);
     PartRelationshipEntity gearbox1_gearwheel1 = generate.partRelationship(gearbox1, gearwheel1);
     List<PartRelationshipEntity> relations = List.of(car1_gearbox1, gearbox1_gearwheel1);
@@ -52,7 +52,7 @@ class PartRelationshipEntityListToDtoMapperTests {
     List<Relationship> relationsDto = relations.stream().map(s -> generateDto.relationship()).collect(Collectors.toList());
     List<Job> jobsDto = jobEntityParts.stream().map(s -> generateDto.job()).collect(Collectors.toList());
     Summary summaryDto = generateDto.summary(asyncFetchedItems);
-    QueryParameter queryParameterDto = generateDto.queryParameter(BomLifecycle.AS_PLANNED, new ArrayList<AspectType>(Arrays.asList(AspectType.values())), 2, Direction.UPWARD);
+    QueryParameter queryParameterDto = generateDto.queryParameter(BomLifecycle.AS_BUILT, AspectType.MATERIAL_ASPECT, 2, Direction.DOWNWARD);
 
     @Test
     void toPartRelationshipsWithInfos() {

@@ -9,60 +9,50 @@
 //
 package net.catenax.irs.component;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Singular;
 import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 
-import javax.validation.constraints.NotNull;
-import java.util.Collection;
-
 /**
- * A query parameter to retrieve job data.
+ * Query parameter for current irs query
  */
+@Schema(description = "Query parameter for current irs query.")
 @Value
 @Builder(toBuilder = true)
 @JsonDeserialize(builder = QueryParameter.QueryParameterBuilder.class)
 @AllArgsConstructor
-@SuppressWarnings("PMD.ShortClassName")
 @ExcludeFromCodeCoverageGeneratedReport
 public class QueryParameter {
 
-    /**
-     * jobId
-     */
-    @NotNull
-    @Schema(description = "Bom lifecycle for query parameter", implementation = BomLifecycle.class)
-    private final BomLifecycle bomLifecycle;
+    @Schema(implementation = BomLifecycle.class)
+    private BomLifecycle bomLifecycle;
+
+    @Schema(implementation = AspectType.class)
+    @Singular
+    private List<AspectType> aspects;
+
+    @Schema(implementation = Integer.class)
+    private Integer depth;
+
+    @Schema(implementation = Direction.class)
+    private Direction direction;
+
 
     /**
-     * globalAssetId
+     * Builder for QueryParameter class
      */
-    @NotNull
-    @Schema(description = "Aspect type for query parameter", implementation = AspectType.class)
-    private final Collection<AspectType> aspect;
-
-    @NotNull
-    @Schema()
-    private final Number depth;
-
-    @NotNull
-    @Schema(description = "Direction query parameter", implementation = Direction.class)
-    private final Direction direction;
-
-    /**
-     * Builder class
-     */
+    @Schema(description = "Builder to to build query parameters")
     @JsonPOJOBuilder(withPrefix = "with")
     public static class QueryParameterBuilder {
     }
-
-
 }
-

@@ -16,10 +16,10 @@ import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 
-import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -28,9 +28,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.IrsApplication;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
-import net.catenax.irs.component.IrsPartRelationshipsWithInfos;
 import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.JobHandleCollection;
 import net.catenax.irs.component.Jobs;
+import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.requests.IrsPartsTreeRequest;
 import net.catenax.irs.services.IrsPartsTreeQueryService;
@@ -54,38 +55,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @ExcludeFromCodeCoverageGeneratedReport
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals",
-                    "PMD.ExcessiveImports"})
+                    "PMD.ExcessiveImports"
+})
 public class IrsController {
 
     private final IrsPartsTreeQueryService itemJobService;
 
-    @Operation(operationId = "getBomLifecycleByGlobalAssetId", summary = "Registers and starts a AAS crawler job for given {globalAssetId}",
-            tags = { "Item Relationship Service" })
+    @Operation(operationId = "getBomLifecycleByGlobalAssetId",
+            summary = "Registers and starts a AAS crawler job for given {globalAssetId}.",
+            tags = { "Item Relationship Service" },
+            description = "Registers and starts a AAS crawler job for given {globalAssetId}.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
-            description = "ivecycle tree representation with the starting point of the given jobId",
-            content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = JobHandle.class))
+            description = "Job id response for successful job registration.",
+            content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = JobHandle.class),
+                    examples = { @ExampleObject(name = "complete", ref = "#/components/examples/job-handle") })
             }),
-        @ApiResponse(responseCode = "201",
-                description = "job details for given jobId - job is in running state",
-                content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = Jobs.class))
-                }),
-        @ApiResponse(responseCode = "206",
-                description = "uncompleted livecycle tree representation with the starting point of the given jobId",
-                content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = Jobs.class))
-                }),
-        @ApiResponse(responseCode = "404",
-                description = "processing of job was canceled",
-                content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = ErrorResponse.class))
-                }),
-        @ApiResponse(responseCode = "417",
-                description = "Processing of job failed",
-                content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                        schema = @Schema(implementation = ErrorResponse.class))
-                }),
-
+                            @ApiResponse(responseCode = "400", description = "Processing of job failed.",
+                                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = ErrorResponse.class),
+                                            examples = @ExampleObject(name = "complete",
+                                                    ref = "#/components/examples/error-response"))
+                                    }),
     })
     @PostMapping("/items/{globalAssetId}")
     public JobHandle getBomLifecycleByGlobalAssetId(final @Valid @ParameterObject IrsPartsTreeRequest request) {
@@ -95,53 +85,51 @@ public class IrsController {
     @Operation(operationId = "getBOMForJobId", summary = "Get a BOM partial or complete for a given jobId.",
             tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
-            description = "livecycle tree representation with the starting point of the given globalAssetId",
-            content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = IrsPartRelationshipsWithInfos.class))
+            description = "Complete job result with bom tree, livecycle tree representation with the starting point of the given jobId.",
+            content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Jobs.class),
+                    examples = @ExampleObject(name = "complete", ref = "#/components/examples/complete-job-result"))
             }),
+                            @ApiResponse(responseCode = "201",
+                                    description = "Job details for given jobId - job is in running state and has not completed.",
+                                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = Jobs.class),
+                                            examples = @ExampleObject(name = "complete",
+                                                    ref = "#/components/examples/job-result-without-uncompleted-result-tree"))
+                                    }),
                             @ApiResponse(responseCode = "206",
-                                    description = "uncompleted livecycle tree representation with the starting point of the given globalAssetId",
+                                    description = "Uncompleted livecycle tree representation with the starting point of the given jobId.",
                                     content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = IrsPartRelationshipsWithInfos.class))
+                                            schema = @Schema(implementation = Jobs.class),
+                                            examples = @ExampleObject(name = "complete",
+                                                    ref = "#/components/examples/partial-job-result"))
                                     }),
-                            @ApiResponse(responseCode = "404", description = "processing of job was canceled",
+                            @ApiResponse(responseCode = "404", description = "Processing of job was canceled.",
                                     content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = ErrorResponse.class))
+                                            schema = @Schema(implementation = Jobs.class),
+                                            examples = @ExampleObject(name = "complete",
+                                                    ref = "#/components/examples/canceled-job-result"))
                                     }),
-                            @ApiResponse(responseCode = "417", description = "Processing of job failed",
+                            @ApiResponse(responseCode = "417", description = "Processing of job failed.",
                                     content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = ErrorResponse.class))
+                                            schema = @Schema(implementation = Jobs.class),
+                                            examples = @ExampleObject(name = "complete",
+                                                    ref = "#/components/examples/failed-job-result"))
                                     }),
     })
     @GetMapping("/jobs/{jobId}")
-    public ResponseEntity<Jobs> getBOMForJobId(
-            final @Valid @Parameter(description = "Id of the job in processing.") @PathVariable @Size(min = IrsApiConstants.JOB_ID_SIZE,
-                    max = IrsApiConstants.JOB_ID_SIZE) @ApiParam(name = "jobId", example = "6c311d29-5753-46d4-b32c-19b918ea93b0") UUID jobId) {
-        return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
-    }
-
-    @Operation(operationId = "getJobsByProcessingState",
-            summary = " List of jobs (globalAssetIds) for a certain processing state",
-            tags = { "Item Relationship Service" })
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "list of jobs with processing state",
-            content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Jobs.class)) }),
-                            @ApiResponse(responseCode = "404", description = "No process found with this state",
-                                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = ErrorResponse.class))
-                                    }),
-                            @ApiResponse(responseCode = "400", description = "Bad request",
-                                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = ErrorResponse.class))
-                                    }),
-    })
-    @GetMapping("/jobs/{processingState}")
-    public ResponseEntity<Jobs> getJobsByProcessingState(final @Valid @PathVariable String processingState) {
+    public ResponseEntity<Jobs> getBOMForJobId(final @Valid @Parameter(description = "ID of the job in processing.",
+            schema = @Schema(implementation = UUID.class), name = "jobId",
+            example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @PathVariable @Size(min = IrsApiConstants.JOB_ID_SIZE,
+            max = IrsApiConstants.JOB_ID_SIZE) UUID jobId,
+            final @Parameter(description = "If true, the endpoint returns the current state of the fetched bom tree.")
+            @Schema(implementation = Boolean.class, defaultValue = "true",
+                    required = false) boolean returnUncompletedResultTree) {
         return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
     }
 
     @Operation(operationId = "cancelJobForJobId", summary = "Cancel job execution for a given jobId.",
             tags = { "Item Relationship Service" })
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with {jobId} was canceled"),
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with {jobId} was canceled."),
                             @ApiResponse(responseCode = "400",
                                     description = "Bad request. JobId must be a string in UUID format."),
                             @ApiResponse(responseCode = "401",
@@ -151,9 +139,40 @@ public class IrsController {
                             @ApiResponse(responseCode = "500", description = "Unexpected error.")
     })
     @PutMapping("/jobs/{jobId}/cancel")
-    public ResponseEntity<?> cancelJobForJobId(final @Valid @PathVariable String jobId) {
+    public ResponseEntity<?> cancelJobForJobId(final @Valid @Parameter(description = "ID of the job in processing.",
+            schema = @Schema(implementation = UUID.class), name = "jobId",
+            example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @PathVariable UUID jobId) {
 
         return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
     }
 
+    @Operation(operationId = "getJobsByProcessingState",
+            summary = "List of jobs (globalAssetIds) for a certain processing state.",
+            tags = { "Item Relationship Service" })
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "List of jobs with given processingState.",
+            content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = JobHandleCollection.class),
+                    examples = @ExampleObject(name = "complete",
+                            ref = "#/components/examples/complete-job-list-processing-state"))
+            }),
+                            @ApiResponse(responseCode = "400", description = "Bad Request.",
+                                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = ErrorResponse.class),
+                                            examples = @ExampleObject(name = "complete",
+                                                    ref = "#/components/examples/error-response"))
+                                    }),
+                            @ApiResponse(responseCode = "404", description = "No process found with this state.",
+                                    content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = ErrorResponse.class),
+                                            examples = @ExampleObject(name = "complete",
+                                                    ref = "#/components/examples/error-response"))
+                                    }),
+
+    })
+    @GetMapping("/jobs/{processingState}")
+    public ResponseEntity<Jobs> getJobsByProcessingState(
+            final @Valid @Parameter(description = "List of jobs (globalAssetIds) for a certain processing state.", schema = @Schema(implementation = JobState.class, defaultValue = JobState.JobStateConstants.RUNNING))
+            @PathVariable JobState processingState) {
+        return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
+    }
 }

@@ -24,7 +24,7 @@ public class RequestMother {
 
     public PartsTreeByObjectIdRequest byObjectId(Job partId) {
         return PartsTreeByObjectIdRequest.builder()
-                .oneIDManufacturer(partId.getJobId())
+                .oneIDManufacturer(partId.getJobId().toString())
                 .objectIDManufacturer(partId.getOwner())
                 .view(faker.options().option(ItemsTreeView.class).name())
                 .build();

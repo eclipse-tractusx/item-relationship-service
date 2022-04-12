@@ -10,7 +10,6 @@
 package net.catenax.irs.component;
 
 import java.util.List;
-import java.util.Map;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -22,15 +21,14 @@ import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
- * An AAS shell.
+ * SubmodelDescriptor description
  */
 @Value
 @Builder(toBuilder = true)
-@Schema(description = "")
 @AllArgsConstructor
 @ExcludeFromCodeCoverageGeneratedReport
-@JsonDeserialize(builder = Shell.ShellBuilder.class)
-public class Shell {
+@JsonDeserialize(builder = SubmodelDescriptor.SubmodelDescriptorBuilder.class)
+public class SubmodelDescriptor  {
 
     @Schema(implementation = String.class)
     private String identification;
@@ -40,25 +38,20 @@ public class Shell {
 
     @Schema()
     @Singular
-    private Map<String, String> specificAssetIds;
-
-    @Schema()
-    @Singular
     private List<Description> descriptions;
 
-    @Schema()
-    @Singular
-    private List<GlobalAssetIdentification> globalAssetIds;
+    @Schema(implementation = SemanticId.class)
+    private SemanticId semanticId;
 
     @Schema()
     @Singular
-    private List<SubmodelDescriptor> submodelDescriptors;
+    private List<EndPoint> endpoints;
 
     /**
-     * User to build Shell
-     */
-    @Schema(description = "User to build shell items")
+     * User to build SubmodelDescriptor
+    */
+    @Schema(description = "User to build async fetched items")
     @JsonPOJOBuilder(withPrefix = "with")
-    public static class ShellBuilder {
+    public static class SubmodelDescriptorBuilder {
     }
 }

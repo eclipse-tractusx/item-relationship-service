@@ -78,7 +78,7 @@ public class EntitiesMother {
      */
     public Job job() {
         return Job.builder()
-                .jobId(UUID.randomUUID().toString())
+                .jobId(UUID.randomUUID())
                 .owner(UUID.randomUUID().toString())
                 .build();
     }

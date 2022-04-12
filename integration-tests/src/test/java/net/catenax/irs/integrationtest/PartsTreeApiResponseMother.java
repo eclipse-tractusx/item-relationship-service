@@ -20,10 +20,7 @@ import net.catenax.irs.dtos.PartRelationship;
 import net.catenax.irs.testing.BaseDtoMother;
 import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,10 +37,10 @@ public class PartsTreeApiResponseMother {
      */
     private final BaseDtoMother base = new BaseDtoMother();
 
-    private static final String BOSCH_ONE_ID = "BOSCH";
-    private static final String ZF_ONE_ID = "ZF";
-    private static final String SCHAEFFLER_ONE_ID = "SCHAEFFLER";
-    private static final String BMW_ONE_ID = "BMW MUC";
+    private static final UUID BOSCH_ONE_ID = new UUID(10L, 20L);
+    private static final UUID ZF_ONE_ID = new UUID(10L, 20L);
+    private static final UUID SCHAEFFLER_ONE_ID = new UUID(10L, 20L);
+    private static final UUID BMW_ONE_ID = new UUID(10L, 20L);
     private static final String OBJECT_ID_GEARBOX = "I88HJHS45";
     private static final String OBJECT_ID_GEARWHEEL = "THYSFGG";
     private static final String OBJECT_ID_BEARING = "D47055319";
@@ -54,10 +51,10 @@ public class PartsTreeApiResponseMother {
     private static final Integer GEARBOX_COMPLETE = 3;
     private static final Integer GEARBOX_FAILED = 4;
     private static final Integer GEARBOX_LOST = 5;
-    private static final BomLifecycle GEARBOX_BOMLIFECYCLE = BomLifecycle.AS_PLANNED;
-    private static final Collection<AspectType> GEARBOX_ASPECT = new ArrayList<AspectType>(Arrays.asList(AspectType.values()));
+    private static final BomLifecycle GEARBOX_BOMLIFECYCLE = BomLifecycle.AS_BUILT;
+    private static final AspectType GEARBOX_ASPECT = AspectType.MATERIAL_ASPECT;
     private static final Integer GEARBOX_DEPTH = 6;
-    private static final Direction GEARBOX_DIRECTION = Direction.UPWARD;
+    private static final Direction GEARBOX_DIRECTION = Direction.DOWNWARD;
 
     private final Job gearboxJob = gearboxPartId();
     private final Job vehicleJob = vehicleJob();

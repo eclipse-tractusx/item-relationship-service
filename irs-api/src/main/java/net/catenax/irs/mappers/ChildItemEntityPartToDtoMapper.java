@@ -32,7 +32,7 @@ public class ChildItemEntityPartToDtoMapper {
                 .jobId(source.getJobId())
                 .globalAssetId(source.getGlobalAssetId())
                 .jobState(source.getJobState())
-                .exception(source.getException())
+                .jobException(source.getJobException())
                 .createdOn(source.getCreatedOn())
                 .lastModifiedOn(source.getLastModifiedOn())
                 .jobFinished(source.getJobFinished())
