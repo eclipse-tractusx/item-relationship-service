@@ -189,6 +189,8 @@ paths:
         schema:
           type: string
           format: uuid
+          maxLength: 36
+          minLength: 36
       responses:
         "200":
           content:
