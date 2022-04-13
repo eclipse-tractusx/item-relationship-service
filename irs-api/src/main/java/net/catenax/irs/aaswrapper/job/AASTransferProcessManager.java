@@ -11,12 +11,16 @@ package net.catenax.irs.aaswrapper.job;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.aaswrapper.Aspect;
+import net.catenax.irs.aaswrapper.ItemRelationshipAspect;
+import net.catenax.irs.aaswrapper.ItemRelationshipAspectTombstone;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.connector.job.ResponseStatus;
@@ -76,7 +80,9 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             aasSubmodelEndpoints.stream()
                                 .map(SubmodelEndpoint::getAddress)
-                                .map(submodelFacade::getSubmodel)
+                                .map(endpointAddress -> getAssemblyPartRelationshipDTO(endpointAddress, itemId))
+                                .filter(Optional::isPresent)
+                                .map(Optional::get)
                                 .forEach(submodel -> processEndpoint(aasTransferProcess, itemContainer, submodel));
 
             try {
@@ -87,6 +93,19 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             }
             transferProcessCompleted.accept(aasTransferProcess);
         };
+    }
+
+    private Optional<AssemblyPartRelationshipDTO> getAssemblyPartRelationshipDTO(final String address,
+            final String itemId) {
+        final Aspect submodel = submodelFacade.getSubmodel(address, itemId);
+        if (submodel instanceof ItemRelationshipAspect) {
+            return Optional.of(((ItemRelationshipAspect) submodel).getAssemblyPartRelationship());
+        } else if (submodel instanceof ItemRelationshipAspectTombstone) {
+            final ItemRelationshipAspectTombstone tombstone = (ItemRelationshipAspectTombstone) submodel;
+            log.info("Storing tombstone {} (Not yet implemented)", tombstone);
+            // TODO (jhartmann) store tombstone
+        }
+        return Optional.empty();
     }
 
     private void processEndpoint(final AASTransferProcess aasTransferProcess, final ItemContainer itemContainer,

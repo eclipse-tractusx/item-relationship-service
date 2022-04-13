@@ -9,7 +9,11 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.aaswrapper.Aspect;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -20,21 +24,23 @@ interface SubmodelClient {
     /**
      * @return Returns the Submodel
      */
-    <T> T getSubmodel(String submodelEndpointAddress, Class<T> submodelClass);
+    Aspect getSubmodel(String submodelEndpointAddress, String catenaXId, Class<? extends Aspect> submodelClass)
+            throws SubmodelClientException;
 
 }
 
 /**
- * Digital Twin Registry Rest Client Stub used in local environment
+ * Submodel Client Stub used in local environment
  */
 @Service
 class SubmodelClientLocalStub implements SubmodelClient {
 
     @Override
-    public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
+    public Aspect getSubmodel(final String submodelEndpointAddress, final String catenaXId,
+            final Class<? extends Aspect> submodelClass) {
         final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
 
-        return (T) submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(submodelEndpointAddress);
+        return submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(catenaXId);
     }
 
 }
@@ -42,13 +48,30 @@ class SubmodelClientLocalStub implements SubmodelClient {
 /**
  * Submodel Rest Client Implementation
  */
+@Slf4j
 class SubmodelClientImpl implements SubmodelClient {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
+
+    /* package */ SubmodelClientImpl(final RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Override
-    public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
-        return restTemplate.getForEntity(submodelEndpointAddress, submodelClass).getBody();
+    public Aspect getSubmodel(final String submodelEndpointAddress, final String catenaXId,
+            final Class<? extends Aspect> submodelClass) throws SubmodelClientException {
+        try {
+            final ResponseEntity<? extends Aspect> responseEntity = restTemplate.getForEntity(submodelEndpointAddress,
+                    submodelClass);
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
+                return responseEntity.getBody();
+            } else {
+                throw new SubmodelClientException(responseEntity.getStatusCode().toString());
+            }
+        } catch (RestClientException e) {
+            log.error("RestClientException: ", e);
+            throw new SubmodelClientException("Request not successful: " + e.getMessage(), e);
+        }
     }
 
 }

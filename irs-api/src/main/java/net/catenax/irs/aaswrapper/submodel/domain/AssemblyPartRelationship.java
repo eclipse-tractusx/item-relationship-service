@@ -12,12 +12,13 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 import java.util.Set;
 
 import lombok.Data;
+import net.catenax.irs.aaswrapper.Aspect;
 
 /**
  * AssemblyPartRelationship
  */
 @Data
-class AssemblyPartRelationship {
+class AssemblyPartRelationship implements Aspect {
 
     /**
      * catenaXId
@@ -28,4 +29,9 @@ class AssemblyPartRelationship {
      * childParts
      */
     private Set<ChildData> childParts;
+
+    @Override
+    public Aspect getAspect() {
+        return null;
+    }
 }
