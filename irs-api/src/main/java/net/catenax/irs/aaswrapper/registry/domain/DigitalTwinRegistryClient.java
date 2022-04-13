@@ -11,7 +11,6 @@ package net.catenax.irs.aaswrapper.registry.domain;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -42,7 +41,6 @@ interface DigitalTwinRegistryClient {
  * Digital Twin Registry Rest Client Stub used in local environment
  */
 @Service
-@ExcludeFromCodeCoverageGeneratedReport
 class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
 
     @Override

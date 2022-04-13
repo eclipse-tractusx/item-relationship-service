@@ -33,5 +33,6 @@ class Quantity {
     @Data
     /* package */ static class MeasurementUnit {
         private String lexicalValue;
+        private String datatypeURI;
     }
 }
