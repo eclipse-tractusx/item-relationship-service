@@ -28,10 +28,12 @@ import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.ItemContainer;
 import net.catenax.irs.aaswrapper.job.ItemDataRequest;
 import net.catenax.irs.component.ChildItem;
+import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.Relationship;
+import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.connector.job.JobInitiateResponse;
@@ -99,8 +101,10 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
         final Optional<MultiTransferJob> multiTransferJob = jobStore.find(jobId.toString());
         if (multiTransferJob.isPresent()) {
             final MultiTransferJob job = multiTransferJob.get();
-            final Job.JobBuilder builder = Job.builder().jobId(job.getJobId()).jobState(convert(job.getState()));
-            job.getCompletionDate().ifPresent(date -> builder.jobFinished(date.toInstant(ZoneOffset.UTC)));
+            final Job.JobBuilder builder = Job.builder()
+                                              .jobId(UUID.fromString(job.getJobId()))
+                                              .jobState(convert(job.getState()));
+            job.getCompletionDate().ifPresent(date -> builder.jobCompleted(date.toInstant(ZoneOffset.UTC)));
             final Job jobToReturn = builder.build();
 
             final var relationships = new ArrayList<Relationship>();
@@ -127,10 +131,16 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
         return dto.getChildParts()
                   .stream()
                   .map(child -> Relationship.builder()
-                                            .catenaXId(dto.getCatenaXId())
+                                            .catenaXId(GlobalAssetIdentification.builder()
+                                                                                .globalAssetId(dto.getCatenaXId())
+                                                                                .build())
                                             .childItem(ChildItem.builder()
-                                                                .childCatenaXId(child.getChildCatenaXId())
-                                                                .lifecycleContext(child.getLifecycleContext())
+                                                                .childCatenaXId(GlobalAssetIdentification.builder()
+                                                                                                         .globalAssetId(
+                                                                                                                 child.getChildCatenaXId())
+                                                                                                         .build())
+                                                                .lifecycleContext(
+                                                                        BomLifecycle.value(child.getLifecycleContext()))
                                                                 .build())
                                             .build());
     }
