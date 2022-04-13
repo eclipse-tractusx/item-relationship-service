@@ -43,7 +43,7 @@ public class IrsPartRelationshipsWithInfos {
     /**
      * shells
      */
-    private List<Shells> shells;
+    private List<Shell> shells;
 
     /**
      * Builder class
