@@ -10,7 +10,6 @@
 package net.catenax.irs.component;
 
 import java.util.List;
-import java.util.Map;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -22,43 +21,24 @@ import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
- * An AAS shell.
+ * SemanticId
  */
 @Value
 @Builder(toBuilder = true)
 @Schema(description = "")
 @AllArgsConstructor
 @ExcludeFromCodeCoverageGeneratedReport
-@JsonDeserialize(builder = Shell.ShellBuilder.class)
-public class Shell {
-
-    @Schema(implementation = String.class)
-    private String identification;
-
-    @Schema(implementation = String.class)
-    private String idShort;
+@JsonDeserialize(builder = SemanticId.SemanticIdBuilder.class)
+public class SemanticId {
 
     @Schema()
     @Singular
-    private Map<String, String> specificAssetIds;
-
-    @Schema()
-    @Singular
-    private List<Description> descriptions;
-
-    @Schema()
-    @Singular
-    private List<GlobalAssetIdentification> globalAssetIds;
-
-    @Schema()
-    @Singular
-    private List<SubmodelDescriptor> submodelDescriptors;
-
+    private List<String> values;
     /**
-     * User to build Shell
+     * User to build SemanticId
      */
-    @Schema(description = "User to build shell items")
+    @Schema(description = "User to build async fetched items")
     @JsonPOJOBuilder(withPrefix = "with")
-    public static class ShellBuilder {
+    public static class SemanticIdBuilder {
     }
 }

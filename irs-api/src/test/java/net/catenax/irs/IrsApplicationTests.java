@@ -19,7 +19,6 @@ import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.persistence.BlobPersistence;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,7 +31,9 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = {"local","test"})
+@ActiveProfiles(profiles = { "local",
+                             "test"
+})
 class IrsApplicationTests {
 
     @LocalServerPort
@@ -54,13 +55,12 @@ class IrsApplicationTests {
     void contextLoads() {
     }
 
-
-    @Disabled
     @Test
     void generatedOpenApiMatchesContract() throws Exception {
-        assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
-                String.class)).isEqualToNormalizingNewlines(
-                Files.readString(new File("../api/irs-v0.2.yaml").toPath(), UTF_8));
+        final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
+                String.class);
+        final String fixedYaml = Files.readString(new File("../api/irs-v0.2.yaml").toPath(), UTF_8);
+        assertThat(generatedYaml).isEqualToNormalizingNewlines(fixedYaml);
     }
 
     @Test

@@ -11,26 +11,29 @@ package net.catenax.irs.component;
 
 import java.util.Collection;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
- * Collections of AAS shells
+ * contains a collection of JobHandle
  */
+@ApiModel(description = "Collection of job handle")
 @Value
-@Jacksonized
-@Builder(toBuilder = true)
+@Builder
+@JsonDeserialize(builder = JobHandleCollection.JobHandleCollectionBuilder.class)
 @ExcludeFromCodeCoverageGeneratedReport
-@SuppressWarnings("PMD.AvoidFieldNameMatchingTypeName")
-public class Shells {
+public class JobHandleCollection {
 
+    private Collection<JobHandle> jobs;
 
-    @Schema(description = "Collections of AAS shells")
     /**
-     * Shells
+     * Builder class
      */
-    private Collection<Shell> shells;
+    @JsonPOJOBuilder(withPrefix = "with")
+    public static class JobHandleCollectionBuilder {
+    }
 }

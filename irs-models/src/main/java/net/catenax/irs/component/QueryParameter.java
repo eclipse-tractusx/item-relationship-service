@@ -10,7 +10,6 @@
 package net.catenax.irs.component;
 
 import java.util.List;
-import java.util.Map;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -20,45 +19,40 @@ import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
+import net.catenax.irs.component.enums.AspectType;
+import net.catenax.irs.component.enums.BomLifecycle;
+import net.catenax.irs.component.enums.Direction;
 
 /**
- * An AAS shell.
+ * Query parameter for current irs query
  */
+@Schema(description = "Query parameter for current irs query.")
 @Value
 @Builder(toBuilder = true)
-@Schema(description = "")
+@JsonDeserialize(builder = QueryParameter.QueryParameterBuilder.class)
 @AllArgsConstructor
 @ExcludeFromCodeCoverageGeneratedReport
-@JsonDeserialize(builder = Shell.ShellBuilder.class)
-public class Shell {
+public class QueryParameter {
 
-    @Schema(implementation = String.class)
-    private String identification;
+    @Schema(implementation = BomLifecycle.class)
+    private BomLifecycle bomLifecycle;
 
-    @Schema(implementation = String.class)
-    private String idShort;
-
-    @Schema()
+    @Schema(implementation = AspectType.class)
     @Singular
-    private Map<String, String> specificAssetIds;
+    private List<AspectType> aspects;
 
-    @Schema()
-    @Singular
-    private List<Description> descriptions;
+    @Schema(implementation = Integer.class)
+    private Integer depth;
 
-    @Schema()
-    @Singular
-    private List<GlobalAssetIdentification> globalAssetIds;
+    @Schema(implementation = Direction.class)
+    private Direction direction;
 
-    @Schema()
-    @Singular
-    private List<SubmodelDescriptor> submodelDescriptors;
 
     /**
-     * User to build Shell
+     * Builder for QueryParameter class
      */
-    @Schema(description = "User to build shell items")
+    @Schema(description = "Builder to to build query parameters")
     @JsonPOJOBuilder(withPrefix = "with")
-    public static class ShellBuilder {
+    public static class QueryParameterBuilder {
     }
 }
