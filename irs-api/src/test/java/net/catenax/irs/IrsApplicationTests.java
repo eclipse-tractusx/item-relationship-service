@@ -1,7 +1,6 @@
 package net.catenax.irs;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler.DESTINATION_PATH_KEY;
 import static net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler.ROOT_ITEM_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -66,10 +65,9 @@ class IrsApplicationTests {
 
     @Test
     void shouldStoreBlobResultWhenRunningJob() throws Exception {
-        final var targetBlobId = "targetBlobId";
 
         final JobInitiateResponse response = jobOrchestrator.startJob(
-                Map.of(ROOT_ITEM_ID_KEY, "rootitemid", DESTINATION_PATH_KEY, targetBlobId));
+                Map.of(ROOT_ITEM_ID_KEY, "rootitemid"));
 
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.OK);
 
@@ -81,7 +79,7 @@ class IrsApplicationTests {
                                        .map(state -> state == JobState.COMPLETED)
                                        .orElse(false));
 
-        assertThat(inMemoryBlobStore.getBlob(targetBlobId)).isNotEmpty();
+        assertThat(inMemoryBlobStore.getBlob(response.getJobId())).isNotEmpty();
     }
 
     @TestConfiguration

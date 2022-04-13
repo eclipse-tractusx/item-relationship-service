@@ -52,7 +52,7 @@ public class JobConfiguration {
     @Profile("!test")
     @Bean
     public BlobPersistence blobStore(final BlobstoreConfiguration config) throws BlobPersistenceException {
-        return new MinioBlobPersistence(config.getEndpoint(), config.getAccessKey(), config.getAccessKey(),
+        return new MinioBlobPersistence(config.getEndpoint(), config.getAccessKey(), config.getSecretKey(),
                 config.getBucketName());
     }
 
