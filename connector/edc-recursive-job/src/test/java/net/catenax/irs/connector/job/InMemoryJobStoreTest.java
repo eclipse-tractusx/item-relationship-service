@@ -1,5 +1,11 @@
 package net.catenax.irs.connector.job;
 
+<<<<<<< HEAD
+=======
+import com.github.javafaker.Faker;
+import org.junit.jupiter.api.Test;
+
+>>>>>>> 040c1a75e4e29f85dad02f4607d2e21498b33315
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -21,10 +27,14 @@ import org.junit.jupiter.api.Test;
 
 class InMemoryJobStoreTest {
 
+<<<<<<< HEAD
     final int TTL_IN_HOUR_SECONDS = 3600;
 
     Monitor monitor = new ConsoleMonitor();
     InMemoryJobStore sut = new InMemoryJobStore(monitor);
+=======
+    InMemoryJobStore sut = new InMemoryJobStore();
+>>>>>>> 040c1a75e4e29f85dad02f4607d2e21498b33315
     Faker faker = new Faker();
     TestMother generate = new TestMother();
     MultiTransferJob job = generate.job(JobState.UNSAVED);

@@ -9,7 +9,11 @@
 //
 package net.catenax.irs.connector.job;
 
+<<<<<<< HEAD
 import java.time.Instant;
+=======
+import java.time.LocalDateTime;
+>>>>>>> 040c1a75e4e29f85dad02f4607d2e21498b33315
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,27 +26,29 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+<<<<<<< HEAD
 import net.catenax.irs.component.enums.JobState;
 import org.eclipse.dataspaceconnector.spi.EdcException;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
+=======
+import lombok.extern.slf4j.Slf4j;
+>>>>>>> 040c1a75e4e29f85dad02f4607d2e21498b33315
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Manages storage of {@link MultiTransferJob} state in memory with no persistence.
  */
+@Slf4j
 @RequiredArgsConstructor
-@SuppressWarnings({"PMD.GuardLogStatement", "PMD.TooManyMethods"}) // Monitor doesn't offer guard statements
+@SuppressWarnings("PMD.TooManyMethods")
 public class InMemoryJobStore implements JobStore {
 
     /**
      * The timeout in milliseconds to try to acquire locks.
      */
     private static final int TIMEOUT = 30_000;
-    /**
-     * Logger.
-     */
-    private final Monitor monitor;
+
     /**
      * A lock to synchronize access to the collection of stored jobs.
      */
@@ -91,13 +97,7 @@ public class InMemoryJobStore implements JobStore {
      */
     @Override
     public void addTransferProcess(final String jobId, final String processId) {
-        modifyJob(jobId, (job) -> {
-            final var newJob = job.toBuilder()
-                    .transferProcessId(processId)
-                    .transitionInProgress()
-                    .build();
-            return newJob;
-        });
+        modifyJob(jobId, job -> job.toBuilder().transferProcessId(processId).transitionInProgress().build());
     }
 
     /**
@@ -105,12 +105,15 @@ public class InMemoryJobStore implements JobStore {
      */
     @Override
     public void completeTransferProcess(final String jobId, final TransferProcess process) {
-        modifyJob(jobId, (job) -> {
-            final var remainingTransfers = job.getTransferProcessIds().stream().filter(id -> !id.equals(process.getId())).collect(Collectors.toList());
+        modifyJob(jobId, job -> {
+            final var remainingTransfers = job.getTransferProcessIds()
+                                              .stream()
+                                              .filter(id -> !id.equals(process.getId()))
+                                              .collect(Collectors.toList());
             final var newJob = job.toBuilder()
-                    .clearTransferProcessIds()
-                    .transferProcessIds(remainingTransfers)
-                    .completedTransfer(process);
+                                  .clearTransferProcessIds()
+                                  .transferProcessIds(remainingTransfers)
+                                  .completedTransfer(process);
             if (remainingTransfers.isEmpty()) {
                 newJob.transitionTransfersFinished();
             }
@@ -138,7 +141,7 @@ public class InMemoryJobStore implements JobStore {
         writeLock(() -> {
             final var job = jobsById.get(jobId);
             if (job == null) {
-                monitor.warning("Job not found: " + jobId);
+                log.warn("Job not found: {}", jobId);
             } else {
                 jobsById.put(job.getJob().getJobId(), action.apply(job));
             }
@@ -151,9 +154,7 @@ public class InMemoryJobStore implements JobStore {
      */
     @Override
     public Optional<MultiTransferJob> findByProcessId(final String processId) {
-        return jobsById.values().stream()
-                .filter(j -> j.getTransferProcessIds().contains(processId))
-                .findFirst();
+        return jobsById.values().stream().filter(j -> j.getTransferProcessIds().contains(processId)).findFirst();
     }
 
     /**
@@ -178,7 +179,7 @@ public class InMemoryJobStore implements JobStore {
     private <T> T readLock(final Supplier<T> work) {
         try {
             if (!lock.readLock().tryLock(TIMEOUT, TimeUnit.MILLISECONDS)) {
-                throw new EdcException("Timeout acquiring read lock");
+                throw new JobException("Timeout acquiring read lock");
             }
             try {
                 return work.get();
@@ -187,14 +188,14 @@ public class InMemoryJobStore implements JobStore {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new EdcException(e);
+            throw new JobException(e);
         }
     }
 
     private <T> T writeLock(final Supplier<T> work) {
         try {
             if (!lock.writeLock().tryLock(TIMEOUT, TimeUnit.MILLISECONDS)) {
-                throw new EdcException("Timeout acquiring write lock");
+                throw new JobException("Timeout acquiring write lock");
             }
             try {
                 return work.get();
@@ -203,7 +204,7 @@ public class InMemoryJobStore implements JobStore {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new EdcException(e);
+            throw new JobException(e);
         }
     }
 

@@ -12,11 +12,11 @@
 
     <modules>
         <module>irs-testing</module>
+        <module>connector</module>
         <module>irs-api</module>
         <module>irs-common</module>
         <module>irs-models</module>
         <module>irs-client</module>
         <module>integration-tests</module>
-        <module>connector</module>
     </modules>
 </project>

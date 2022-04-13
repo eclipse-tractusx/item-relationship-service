@@ -15,11 +15,11 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 /**
  * Direction indicator
  */
-@Schema(description = "Direction in which the tree shall be traversed")
+@Schema(description = "Direction in which the tree shall be traversed.")
 @ExcludeFromCodeCoverageGeneratedReport
 public enum Direction {
-    @Schema(description = "The tree is traversed in upward direction.") UPWARD("upward"),
-    @Schema(description = "The tree is traversed in downward direction.") DOWNWARD("downward");
+    //@Schema(description = "The tree is traversed in upward direction.") UPWARD("upward"),
+    @Schema(description = "The tree is traversed in downward direction.") DOWNWARD(DirectionConstants.DOWNWARD);
 
     private final String value;
 
@@ -43,5 +43,12 @@ public enum Direction {
     @Override
     public String toString() {
         return value;
+    }
+
+    /**
+     * Constants for directions
+     */
+    public static class DirectionConstants {
+        public static final String DOWNWARD = "downward";
     }
 }

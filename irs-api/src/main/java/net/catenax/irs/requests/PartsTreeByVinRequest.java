@@ -9,23 +9,22 @@
 //
 package net.catenax.irs.requests;
 
-import io.swagger.v3.oas.annotations.Parameter;
-import lombok.Builder;
-import lombok.Value;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
-import net.catenax.irs.controllers.IrsController;
+import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
+import static net.catenax.irs.dtos.ValidationConstants.VIN_FIELD_LENGTH;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
-import static net.catenax.irs.dtos.ValidationConstants.VIN_FIELD_LENGTH;
+import io.swagger.v3.oas.annotations.Parameter;
+import lombok.Builder;
+import lombok.Value;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
- * Parameter object for {@link IrsController#getPartsTree(PartsTreeByVinRequest)} REST operation.
+ * Parameter object for  REST operation.
  */
 @Value
-@SuppressWarnings({"PMD.CommentRequired"})
+@SuppressWarnings({ "PMD.CommentRequired" })
 @ExcludeFromCodeCoverageGeneratedReport
 public class PartsTreeByVinRequest extends PartsTreeRequestBase {
     @NotBlank

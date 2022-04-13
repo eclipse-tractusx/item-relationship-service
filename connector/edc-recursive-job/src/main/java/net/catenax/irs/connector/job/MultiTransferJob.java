@@ -24,8 +24,8 @@ import lombok.Getter;
 import lombok.Singular;
 import lombok.ToString;
 import net.catenax.irs.component.Job;
+import net.catenax.irs.component.JobException;
 import net.catenax.irs.component.enums.JobState;
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -95,18 +95,16 @@ public class MultiTransferJob {
          */
         /* package */ MultiTransferJobBuilder transitionComplete() {
             return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL).job(
-                    job.toBuilder().jobFinished(Instant.now()).build());
+                    job.toBuilder().jobCompleted((Instant.now())).build());
         }
 
         /**
          * Transition the job to the {@link JobState#ERROR} state.
          */
         /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail) {
-            this.job.setJobState(JobState.ERROR);
-            this.job.setJobFinished(Instant.now());
-            this.job.setException(errorDetail);
-            this.job.setJobFinished(Instant.now());
-            this.job.setException(errorDetail);
+            this.job.toBuilder().jobState(JobState.ERROR);
+            this.job.toBuilder().jobCompleted(Instant.now());
+            this.job.toBuilder().exception(JobException.builder().errorDetail(errorDetail).build());
             return this;
         }
 
