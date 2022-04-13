@@ -60,4 +60,5 @@ public enum JobState {
         public static final String CANCELED = "canceled";
         public static final String FAILED = "failed";
     }
+    
 }

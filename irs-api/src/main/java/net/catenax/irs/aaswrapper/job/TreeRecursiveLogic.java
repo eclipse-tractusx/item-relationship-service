@@ -54,7 +54,7 @@ public class TreeRecursiveLogic {
      *                           blobs with partial parts trees.
      * @param targetBlobName     Storage blob name to store overall parts tree.
      */
-    /* package */ void assemblePartialPartTreeBlobs(final List<TransferProcess> completedTransfers,
+    /* package */ void assemblePartialItemGraphBlobs(final List<TransferProcess> completedTransfers,
             final String targetBlobName) {
         final var partialTrees = completedTransfers.stream()
                                                    .map(this::downloadPartialPartsTree)

@@ -7,14 +7,66 @@ info:
 servers:
 - url: http://irs.int.demo.catena-x.net
 paths:
-  /irs/items/{globalAssetId}:
+  /irs/jobs:
+    get:
+      operationId: getJobsByJobState
+      parameters:
+      - description: List of jobs (globalAssetIds) for a certain processing state.
+        example: running
+        explode: false
+        in: query
+        name: processingStates
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - unsaved
+            - initial
+            - running
+            - transferred
+            - completed
+            - canceled
+            - failed
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/complete-job-list-processing-state'
+              schema:
+                $ref: '#/components/schemas/JobHandleCollection'
+          description: List of jobs with given processingState.
+        "400":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/error-response'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Bad Request.
+        "404":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/error-response'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: No process found with this state.
+      summary: List of jobs (globalAssetIds) for a certain processing state.
+      tags:
+      - Item Relationship Service
     post:
       description: "Registers and starts a AAS crawler job for given {globalAssetId}."
-      operationId: getBomLifecycleByGlobalAssetId
+      operationId: initiateJobForGlobalAssetId
       parameters:
       - description: globalAssetId of Item from which the tree building process starts.
         example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-        in: path
+        in: query
         name: globalAssetId
         required: true
         schema:
@@ -103,58 +155,9 @@ paths:
       summary: "Registers and starts a AAS crawler job for given {globalAssetId}."
       tags:
       - Item Relationship Service
-  /irs/jobs:
-    get:
-      operationId: getJobsByProcessingState
-      parameters:
-      - description: List of jobs (globalAssetIds) for a certain processing state.
-        in: query
-        name: processingState
-        required: true
-        schema:
-          type: string
-          enum:
-          - unsaved
-          - initial
-          - running
-          - transferred
-          - completed
-          - canceled
-          - failed
-      responses:
-        "200":
-          content:
-            application/json:
-              examples:
-                complete:
-                  $ref: '#/components/examples/complete-job-list-processing-state'
-              schema:
-                $ref: '#/components/schemas/JobHandleCollection'
-          description: List of jobs with given processingState.
-        "400":
-          content:
-            application/json:
-              examples:
-                complete:
-                  $ref: '#/components/examples/error-response'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: Bad Request.
-        "404":
-          content:
-            application/json:
-              examples:
-                complete:
-                  $ref: '#/components/examples/error-response'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: No process found with this state.
-      summary: List of jobs (globalAssetIds) for a certain processing state.
-      tags:
-      - Item Relationship Service
   /irs/jobs/{jobId}:
     get:
-      operationId: getBOMForJobId
+      operationId: getJobForJobId
       parameters:
       - description: ID of the job in processing.
         example: 6c311d29-5753-46d4-b32c-19b918ea93b0
@@ -169,7 +172,7 @@ paths:
       - description: "If true, the endpoint returns the current state of the fetched\
           \ bom tree."
         in: query
-        name: returnUncompletedResultTree
+        name: returnUncompletedJob
         required: true
         schema:
           type: boolean
@@ -226,7 +229,6 @@ paths:
       summary: Get a BOM partial or complete for a given jobId.
       tags:
       - Item Relationship Service
-  /irs/jobs/{jobId}/cancel:
     put:
       operationId: cancelJobForJobId
       parameters:

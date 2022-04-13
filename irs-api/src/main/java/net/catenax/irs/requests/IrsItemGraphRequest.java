@@ -10,7 +10,7 @@
 
 package net.catenax.irs.requests;
 
-import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
+import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 
 import java.util.List;
 
@@ -33,13 +33,13 @@ import net.catenax.irs.controllers.IrsApiExamplesUtils;
  */
 @Value
 @ExcludeFromCodeCoverageGeneratedReport
-public class IrsPartsTreeRequest extends IrsPartsTreeRequestBase {
+public class IrsItemGraphRequest extends IrsPartsTreeRequestBase {
 
     @Pattern(regexp = IrsApiConstants.GLOBAL_ASSET_ID_REGEX,
             message = ApiErrorsConstants.NOT_BLANK)
     @NotBlank
     @Size(min = IrsApiConstants.GLOBAL_ASSET_ID_SIZE, max = IrsApiConstants.GLOBAL_ASSET_ID_SIZE)
-    @Parameter(description = "globalAssetId of Item from which the tree building process starts.", in = PATH,
+    @Parameter(description = "globalAssetId of Item from which the tree building process starts.", in = QUERY,
             required = true, example = IrsApiExamplesUtils.GLOBAL_ASSET_ID_EXAMPLE, schema = @Schema(implementation = String.class))
     private String globalAssetId;
 
@@ -51,7 +51,7 @@ public class IrsPartsTreeRequest extends IrsPartsTreeRequestBase {
      * @param direction         see {@link #getDirection()}
      */
     @Builder(toBuilder = true)
-    public IrsPartsTreeRequest(final String globalAssetId, final String bomLifecycle, final List<AspectType> aspects,
+    public IrsItemGraphRequest(final String globalAssetId, final String bomLifecycle, final List<AspectType> aspects,
             final Integer depth, final String direction) {
         super(bomLifecycle, aspects, depth, direction);
         this.globalAssetId = globalAssetId;

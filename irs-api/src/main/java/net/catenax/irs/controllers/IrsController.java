@@ -31,10 +31,10 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.JobHandleCollection;
 import net.catenax.irs.component.Jobs;
-import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.dtos.ErrorResponse;
-import net.catenax.irs.requests.IrsPartsTreeRequest;
-import net.catenax.irs.services.IrsPartsTreeQueryService;
+import net.catenax.irs.requests.IrsItemGraphRequest;
+import net.catenax.irs.requests.JobsByJobStateRequest;
+import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +43,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -60,9 +59,9 @@ import org.springframework.web.bind.annotation.RestController;
 })
 public class IrsController {
 
-    private final IrsPartsTreeQueryService itemJobService;
+    private final IrsItemGraphQueryService itemJobService;
 
-    @Operation(operationId = "getBomLifecycleByGlobalAssetId",
+    @Operation(operationId = "initiateJobForGlobalAssetId",
                summary = "Registers and starts a AAS crawler job for given {globalAssetId}.",
                tags = { "Item Relationship Service" },
                description = "Registers and starts a AAS crawler job for given {globalAssetId}.")
@@ -81,12 +80,12 @@ public class IrsController {
                                                                                         ref = "#/components/examples/error-response"))
                                          }),
     })
-    @PostMapping("/items/{globalAssetId}")
-    public JobHandle getBomLifecycleByGlobalAssetId(final @Valid @ParameterObject IrsPartsTreeRequest request) {
+    @PostMapping("/jobs")
+    public JobHandle initiateJobForGlobalAssetId(final @Valid @ParameterObject IrsItemGraphRequest request) {
         return itemJobService.registerItemJob(request);
     }
 
-    @Operation(operationId = "getBOMForJobId", summary = "Get a BOM partial or complete for a given jobId.",
+    @Operation(operationId = "getJobForJobId", summary = "Get a BOM partial or complete for a given jobId.",
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Complete job result with bom tree, livecycle tree representation with the starting point of the given jobId.",
@@ -123,14 +122,14 @@ public class IrsController {
                                          }),
     })
     @GetMapping("/jobs/{jobId}")
-    public Jobs getBOMForJobId(final @Valid @Parameter(description = "ID of the job in processing.",
+    public Jobs getJobById(final @Valid @Parameter(description = "ID of the job in processing.",
                                                        schema = @Schema(implementation = UUID.class), name = "jobId",
                                                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @PathVariable @Size(
             min = IrsApiConstants.JOB_ID_SIZE, max = IrsApiConstants.JOB_ID_SIZE) UUID jobId, final @Parameter(
             description = "If true, the endpoint returns the current state of the fetched bom tree.") @Schema(
             implementation = Boolean.class, defaultValue = "true",
-            required = false) boolean returnUncompletedResultTree) {
-        return itemJobService.getBOMForJobId(jobId);
+            required = false) boolean returnUncompletedJob) {
+        return itemJobService.getJobForJobId(jobId);
     }
 
     @Operation(operationId = "cancelJobForJobId", summary = "Cancel job execution for a given jobId.",
@@ -144,7 +143,7 @@ public class IrsController {
                                          description = "A job with the specified jobId was not found."),
                             @ApiResponse(responseCode = "500", description = "Unexpected error.")
     })
-    @PutMapping("/jobs/{jobId}/cancel")
+    @PutMapping("/jobs/{jobId}")
     public ResponseEntity<?> cancelJobForJobId(final @Valid @Parameter(description = "ID of the job in processing.",
                                                                        schema = @Schema(implementation = UUID.class),
                                                                        name = "jobId",
@@ -154,7 +153,7 @@ public class IrsController {
         return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
     }
 
-    @Operation(operationId = "getJobsByProcessingState",
+    @Operation(operationId = "getJobsByJobState",
                summary = "List of jobs (globalAssetIds) for a certain processing state.",
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "List of jobs with given processingState.",
@@ -178,10 +177,7 @@ public class IrsController {
 
     })
     @GetMapping("/jobs")
-    public ResponseEntity<Jobs> getJobsByProcessingState(
-            final @Valid @Parameter(description = "List of jobs (globalAssetIds) for a certain processing state.",
-                                    schema = @Schema(implementation = JobState.class,
-                                                     defaultValue = JobState.JobStateConstants.RUNNING)) @RequestParam JobState processingState) {
+    public ResponseEntity<Jobs> getJobsByJobState(final @Valid @ParameterObject JobsByJobStateRequest request) {
         return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
     }
 }

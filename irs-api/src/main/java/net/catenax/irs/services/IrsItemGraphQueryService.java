@@ -46,7 +46,7 @@ import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
-import net.catenax.irs.requests.IrsPartsTreeRequest;
+import net.catenax.irs.requests.IrsItemGraphRequest;
 import net.catenax.irs.util.JsonUtil;
 import org.springframework.stereotype.Service;
 
@@ -58,7 +58,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @ExcludeFromCodeCoverageGeneratedReport
 @SuppressWarnings("PMD.ExcessiveImports")
-public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
+public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final JobOrchestrator<ItemDataRequest, AASTransferProcess> orchestrator;
 
@@ -67,7 +67,7 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
     private final BlobPersistence blobStore;
 
     @Override
-    public JobHandle registerItemJob(final @NonNull IrsPartsTreeRequest request) {
+    public JobHandle registerItemJob(final @NonNull IrsItemGraphRequest request) {
         final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
         final var params = Map.of(AASRecursiveJobHandler.ROOT_ITEM_ID_KEY, uuid);
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
@@ -87,17 +87,17 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
     }
 
     @Override
-    public Optional<List<Job>> getJobsByProcessingState(final @NonNull String processingState) {
+    public Optional<List<Job>> getJobsByJobState(final @NonNull String processingState) {
         return Optional.empty();
     }
 
     @Override
-    public Job cancelJobById(final @NonNull String jobId) {
+    public Job cancelJobByJobId(final @NonNull String jobId) {
         return null;
     }
 
     @Override
-    public Jobs getBOMForJobId(final UUID jobId) {
+    public Jobs getJobForJobId(final UUID jobId) {
         final Optional<MultiTransferJob> multiTransferJob = jobStore.find(jobId.toString());
         if (multiTransferJob.isPresent()) {
             final MultiTransferJob job = multiTransferJob.get();
