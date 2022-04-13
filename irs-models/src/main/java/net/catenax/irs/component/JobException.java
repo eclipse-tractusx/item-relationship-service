@@ -31,13 +31,12 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 public class JobException {
 
     public static final int EXCEPTION_NAME_MAX_LENGTH = 100;
-    public static final int ZERO = 0;
     public static final int ERROR_DETAIL_MAX_LENGTH = 4000;
 
-    @Schema(description = "Name of the exception occurred.", implementation = String.class, minLength = ZERO, maxLength = EXCEPTION_NAME_MAX_LENGTH)
+    @Schema(description = "Name of the exception occurred.", implementation = String.class, maxLength = EXCEPTION_NAME_MAX_LENGTH)
     private String exception;
 
-    @Schema(description = "Detail information for the error occurred.", implementation = String.class, minLength = ZERO, maxLength = ERROR_DETAIL_MAX_LENGTH)
+    @Schema(description = "Detail information for the error occurred.", implementation = String.class, maxLength = ERROR_DETAIL_MAX_LENGTH)
     private String errorDetail;
 
     @Schema(description = "Datetime when error occurred.", implementation = Instant.class)

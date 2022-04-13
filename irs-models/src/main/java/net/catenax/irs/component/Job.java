@@ -104,13 +104,13 @@ public class Job {
     /**
      * Owner of the job
      */
-    @Schema(description = "The requestor of the request.")
+    @Schema(description = "The requester of the request.")
     private String owner;
 
-    @Schema(description = "List of asyncFetchedItems", implementation = Summary.class)
+    @Schema(description = "Summary of the job", implementation = Summary.class)
     private Summary summary;
 
-    @Schema(description = "The given query parameters", implementation = QueryParameter.class)
+    @Schema(description = "The passed query parameters", implementation = QueryParameter.class)
     private QueryParameter queryParameter;
 
 

@@ -133,7 +133,7 @@ public class OpenApiExamples {
     private Summary createSummary() {
         return Summary.builder()
                       .asyncFetchedItems(
-                              AsyncFetchedItems.builder().complete(0).failed(0).running(0).lost(0).queue(0).build())
+                              AsyncFetchedItems.builder().complete(0).failed(0).running(0).queue(0).build())
                       .build();
     }
 

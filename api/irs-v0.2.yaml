@@ -115,8 +115,8 @@ paths:
         schema:
           type: string
           format: uuid
-          maxLength: 45
-          minLength: 45
+          maxLength: 36
+          minLength: 36
       - description: "If true, the endpoint returns the current state of the fetched\
           \ bom tree."
         in: query
@@ -301,7 +301,6 @@ components:
             asyncFetchedItems:
               complete: 0
               failed: 0
-              lost: 0
               queue: 0
               running: 0
         relationships: []
@@ -337,7 +336,6 @@ components:
             asyncFetchedItems:
               complete: 0
               failed: 0
-              lost: 0
               queue: 0
               running: 0
         relationships:
@@ -424,7 +422,6 @@ components:
             asyncFetchedItems:
               complete: 0
               failed: 0
-              lost: 0
               queue: 0
               running: 0
         relationships: []
@@ -457,7 +454,6 @@ components:
             asyncFetchedItems:
               complete: 0
               failed: 0
-              lost: 0
               queue: 0
               running: 0
         relationships:
@@ -538,7 +534,6 @@ components:
             asyncFetchedItems:
               complete: 0
               failed: 0
-              lost: 0
               queue: 0
               running: 0
         relationships: []
@@ -555,10 +550,6 @@ components:
           type: integer
           format: int32
           description: Summary of failed job with the globalAssetId.
-        lost:
-          type: integer
-          format: int32
-          description: Summary of lost job with the globalAssetId.
         queue:
           type: integer
           format: int32
@@ -746,7 +737,7 @@ components:
           format: date-time
         owner:
           type: string
-          description: The requestor of the request.
+          description: The requester of the request.
         queryParameter:
           $ref: '#/components/schemas/QueryParameter'
         requestUrl:
@@ -937,7 +928,7 @@ components:
           $ref: '#/components/schemas/SemanticId'
     Summary:
       type: object
-      description: List of asyncFetchedItems
+      description: Summary of the job
       properties:
         asyncFetchedItems:
           $ref: '#/components/schemas/AsyncFetchedItems'
