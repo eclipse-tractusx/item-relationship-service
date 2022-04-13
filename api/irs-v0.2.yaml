@@ -21,7 +21,7 @@ paths:
           type: string
           maxLength: 45
           minLength: 45
-          pattern: "urn:uuid:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
       - description: BoM Lifecycle of the result tree.
         example: asBuilt
         in: query
@@ -101,6 +101,55 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Processing of job failed.
       summary: "Registers and starts a AAS crawler job for given {globalAssetId}."
+      tags:
+      - Item Relationship Service
+  /irs/jobs:
+    get:
+      operationId: getJobsByProcessingState
+      parameters:
+      - description: List of jobs (globalAssetIds) for a certain processing state.
+        in: query
+        name: processingState
+        required: true
+        schema:
+          type: string
+          enum:
+          - unsaved
+          - initial
+          - running
+          - transferred
+          - completed
+          - canceled
+          - failed
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/complete-job-list-processing-state'
+              schema:
+                $ref: '#/components/schemas/JobHandleCollection'
+          description: List of jobs with given processingState.
+        "400":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/error-response'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Bad Request.
+        "404":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/error-response'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: No process found with this state.
+      summary: List of jobs (globalAssetIds) for a certain processing state.
       tags:
       - Item Relationship Service
   /irs/jobs/{jobId}:
@@ -223,55 +272,6 @@ paths:
                 type: object
           description: Unexpected error.
       summary: Cancel job execution for a given jobId.
-      tags:
-      - Item Relationship Service
-  /irs/jobs/{processingState}:
-    get:
-      operationId: getJobsByProcessingState
-      parameters:
-      - description: List of jobs (globalAssetIds) for a certain processing state.
-        in: path
-        name: processingState
-        required: true
-        schema:
-          type: string
-          enum:
-          - unsaved
-          - initial
-          - running
-          - transferred
-          - completed
-          - canceled
-          - failed
-      responses:
-        "200":
-          content:
-            application/json:
-              examples:
-                complete:
-                  $ref: '#/components/examples/complete-job-list-processing-state'
-              schema:
-                $ref: '#/components/schemas/JobHandleCollection'
-          description: List of jobs with given processingState.
-        "400":
-          content:
-            application/json:
-              examples:
-                complete:
-                  $ref: '#/components/examples/error-response'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: Bad Request.
-        "404":
-          content:
-            application/json:
-              examples:
-                complete:
-                  $ref: '#/components/examples/error-response'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: No process found with this state.
-      summary: List of jobs (globalAssetIds) for a certain processing state.
       tags:
       - Item Relationship Service
 components:
