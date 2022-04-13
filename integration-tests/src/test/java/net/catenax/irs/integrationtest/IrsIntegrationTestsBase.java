@@ -15,7 +15,6 @@ import com.github.javafaker.Faker;
 import io.restassured.RestAssured;
 import net.catenax.irs.IrsApplication;
 import net.catenax.irs.configuration.IrsConfiguration;
-import net.catenax.irs.entities.PartIdEntityPart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,20 +31,6 @@ public class IrsIntegrationTestsBase {
      * IRS Query path.
      */
     protected static final String PATH = "/api/v0.1/parts/{oneIDManufacturer}/{objectIDManufacturer}/partsTree";
-
-    /**
-     * IRS Path parameter name for specifying the part One Id.
-     *
-     * @see PartIdEntityPart#getOneIDManufacturer()
-     */
-    protected static final String ONE_ID_MANUFACTURER = "oneIDManufacturer";
-
-    /**
-     * IRS Path parameter name for specifying the part Object Id.
-     *
-     * @see PartIdEntityPart#getObjectIDManufacturer()
-     */
-    protected static final String OBJECT_ID_MANUFACTURER = "objectIDManufacturer";
 
     /**
      * IRS Query parameter name for selecting the query view.

@@ -68,8 +68,9 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId);
 
             final String itemId = dataRequest.getItemId();
-
+            log.info("Calling Digital Twin Registry with itemId {}", itemId);
             final List<SubmodelEndpoint> aasSubmodelEndpoints = registryFacade.getAASSubmodelEndpoints(itemId);
+            log.info("Retrieved {} SubmodelEndpoints for itemId {}", aasSubmodelEndpoints.size(), itemId);
 
             final ItemContainer itemContainer = new ItemContainer();
 
@@ -90,7 +91,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     private void processEndpoint(final AASTransferProcess aasTransferProcess, final ItemContainer itemContainer,
             final AssemblyPartRelationshipDTO relationship) {
-
+        log.info("Processing AssemblyPartRelationship with {} children", relationship.getChildParts().size());
         final List<String> childIds = relationship.getChildParts()
                                                   .stream()
                                                   .map(ChildDataDTO::getChildCatenaXId)

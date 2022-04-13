@@ -1,0 +1,75 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+interface IAasShell {
++getShell()
++getNodeType()
++isNodeType(NodeType)
+}
+abstract class AbstractAasShell {
+- String : idShort
+- String : identification
+- NodeType : nodeType
+}
+
+class Shell {
+- List<Description> : description
+- GlobalAssetId : globalAssetId
+- Map<String,String> : specificAssetIds
+- List<SubmodelDescriptors> : submodelDescriptors
++getShell()
+}
+class ShellTombstone{
+- ProcessingError : processingError
++getShell()
+}
+
+
+interface IItemRelationshipAspect {
++getItemRelationshipAspect()
+}
+abstract class AbstractItemRelationshipAspect {
+- String : catenaXId
+- NodeType : nodeType
+}
+class ItemRelationshipAspect {
+-RelationshipItem : childItem (AssemblyPartRelationShip)
++getItemRelationshipAspect()
+}
+class ItemRelationshipAspectTombstone{
+- ProcessingError : processingError
++getItemRelationshipAspect()
+}
+
+ItemRelationshipAspectTombstone -- ProcessingError
+ShellTombstone -- ProcessingError
+
+class ProcessingError  {
+    - Class : exception
+    - String : errorDetail
+    - URL: endpoint
+    - int : retryCounter
+    - Instant : lastModifiedOn
+}
+
+IItemRelationshipAspect <|.. AbstractItemRelationshipAspect
+AbstractItemRelationshipAspect <|-- ItemRelationshipAspect
+AbstractItemRelationshipAspect <|-- ItemRelationshipAspectTombstone
+AbstractItemRelationshipAspect -- NodeType
+
+
+IAasShell <|.. AbstractAasShell
+AbstractAasShell <|-- Shell
+AbstractAasShell <|-- ShellTombstone
+AbstractAasShell -- NodeType
+
+
+enum NodeType {
+ROOT("Root Node of the tree - the initial C-X ID")
+NODE("Node of the tree with childs - further AssemblyPartRelationShip aspects")
+LEAF("Leaf node of the tree - No further AssemblyPartRelationShip aspects")
+TOMBSTONE("Exceptional state - transient exception")
+}
+
+@enduml
