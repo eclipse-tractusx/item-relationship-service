@@ -26,7 +26,6 @@ import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobException;
 import net.catenax.irs.component.JobHandle;
-import net.catenax.irs.component.JobHandleCollection;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.MeasurementUnit;
 import net.catenax.irs.component.ProtocolInformation;

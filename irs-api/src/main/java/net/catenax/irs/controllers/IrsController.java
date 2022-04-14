@@ -143,10 +143,10 @@ public class IrsController {
     }
 
     @Operation(operationId = "getJobsByJobState",
-            summary = "List of jobs (globalAssetIds) for a certain processing state.",
+            summary = "List of jobs for a certain processing state.",
             tags = { "Item Relationship Service" })
     @ApiResponses(
-            value = { @ApiResponse(responseCode = "200", description = "List of job ids with given processingState.",
+            value = { @ApiResponse(responseCode = "200", description = "List of job ids for requested processingState.",
                     content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                             array = @ArraySchema(schema = @Schema(implementation = UUID.class)),
                             examples = @ExampleObject(name = "complete",

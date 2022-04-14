@@ -14,7 +14,7 @@
         <module>irs-testing</module>
         <module>connector</module>
         <module>irs-client</module>
-		<module>irs-api</module>
+        <module>irs-api</module>
         <module>irs-common</module>
         <module>irs-models</module>
         <module>integration-tests</module>

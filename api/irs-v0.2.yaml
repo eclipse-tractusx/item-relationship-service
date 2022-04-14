@@ -12,7 +12,6 @@ paths:
       operationId: getJobsByJobState
       parameters:
       - description: Requested processing states.
-        example: running
         explode: false
         in: query
         name: processingStates
@@ -22,13 +21,13 @@ paths:
           items:
             type: string
             enum:
-            - unsaved
-            - initial
-            - running
-            - transferred
-            - completed
-            - canceled
-            - failed
+            - UNSAVED
+            - INITIAL
+            - IN_PROGRESS
+            - TRANSFERS_FINISHED
+            - COMPLETED
+            - CANCELED
+            - ERROR
       responses:
         "200":
           content:
@@ -41,7 +40,7 @@ paths:
                 items:
                   type: string
                   format: uuid
-          description: List of job ids with given processingState.
+          description: List of job ids for requested processingState.
         "400":
           content:
             application/json:
@@ -60,7 +59,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: No process found with this state.
-      summary: List of jobs (globalAssetIds) for a certain processing state.
+      summary: List of jobs for a certain processing state.
       tags:
       - Item Relationship Service
     post:
@@ -209,7 +208,7 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobCompleted: 2022-02-03T14:48:54.709Z
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: canceled
+          jobState: CANCELED
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           queryParameter:
@@ -230,9 +229,7 @@ components:
         relationships: []
     complete-job-list-processing-state:
       value:
-        jobs:
-        - jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
-        - jobId: 46cd8fb1-34c1-4426-9c16-84b913bcfd95
+      - 6c311d29-5753-46d4-b32c-19b918ea93b0
     complete-job-result:
       value:
         job:
@@ -244,7 +241,7 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobCompleted: 2022-02-03T14:48:54.709Z
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: completed
+          jobState: COMPLETED
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           queryParameter:
@@ -330,7 +327,7 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: failed
+          jobState: ERROR
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           queryParameter:
@@ -363,7 +360,7 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobCompleted: 2022-02-03T14:48:54.709Z
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: completed
+          jobState: COMPLETED
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           queryParameter:
@@ -443,7 +440,7 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobCompleted: 2022-02-03T14:48:54.709Z
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: running
+          jobState: IN_PROGRESS
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           queryParameter:
@@ -650,13 +647,13 @@ components:
         jobState:
           type: string
           enum:
-          - unsaved
-          - initial
-          - running
-          - transferred
-          - completed
-          - canceled
-          - failed
+          - UNSAVED
+          - INITIAL
+          - IN_PROGRESS
+          - TRANSFERS_FINISHED
+          - COMPLETED
+          - CANCELED
+          - ERROR
         lastModifiedOn:
           type: string
           format: date-time
