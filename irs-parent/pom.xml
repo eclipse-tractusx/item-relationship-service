@@ -25,14 +25,14 @@
         <!-- Dependencies -->
         <springboot.version>2.6.6</springboot.version>
         <springcloud-feign.version>3.1.1</springcloud-feign.version>
-        <springdoc.version>1.5.10</springdoc.version>
+        <springdoc.version>1.6.7</springdoc.version>
         <micrometer.version>1.7.3</micrometer.version>
         <junit.version>5.7.2</junit.version>
         <javafaker.version>1.0.2</javafaker.version>
-        <json-unit-assertj.version>2.33.0</json-unit-assertj.version>
+        <json-unit-assertj.version>2.34.0</json-unit-assertj.version>
         <mockito-junit-jupiter.version>3.12.4</mockito-junit-jupiter.version>
         <assertj-core.version>3.21.0</assertj-core.version>
-        <gatling.version>3.7.1</gatling.version>
+        <gatling.version>3.7.6</gatling.version>
 
         <!-- Plugins -->
         <tidy.version>1.1.0</tidy.version>
