@@ -141,7 +141,7 @@ paths:
       tags:
       - Item Relationship Service
     put:
-      operationId: cancelJobForJobId
+      operationId: cancelJobById
       parameters:
       - description: ID of the job.
         example: 6c311d29-5753-46d4-b32c-19b918ea93b0

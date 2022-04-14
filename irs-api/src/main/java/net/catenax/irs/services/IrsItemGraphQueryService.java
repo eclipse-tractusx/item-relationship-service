@@ -30,6 +30,7 @@ import net.catenax.irs.aaswrapper.job.ItemDataRequest;
 import net.catenax.irs.component.ChildItem;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
+import net.catenax.irs.component.JobException;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.Relationship;
@@ -92,8 +93,29 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     @Override
-    public Job cancelJobByJobId(final @NonNull String jobId) {
-        return null;
+    public Optional<Job> cancelJobById(final @NonNull UUID jobId) {
+        final String idAsString = String.valueOf(jobId);
+
+        this.jobStore.completeJob(String.valueOf(idAsString));
+
+        final MultiTransferJob multiTransferJob = this.jobStore.find(idAsString).orElse(null);
+
+        if (multiTransferJob != null) {
+            final JobException jobException = JobException.builder()
+                                                          .errorDetail(multiTransferJob.getErrorDetail())
+                                                          .build();
+
+            final UUID uuid = UUID.fromString(multiTransferJob.getJobId());
+
+            final JobState jobState = JobState.valueOf(multiTransferJob.getState().name());
+
+            return Optional.ofNullable(Job.builder()
+                                          .jobId(uuid)
+                                          .jobState(jobState)
+                                          .exception(jobException)
+                                          .build());
+        }
+        return Optional.empty();
     }
 
     @Override

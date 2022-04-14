@@ -13,6 +13,7 @@ import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -31,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.IrsApplication;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
+import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
@@ -118,7 +120,7 @@ public class IrsController {
         return itemJobService.getJobForJobId(jobId);
     }
 
-    @Operation(operationId = "cancelJobForJobId", summary = "Cancel job execution for a given jobId.",
+    @Operation(operationId = "cancelJobById", summary = "Cancel job execution for a given jobId.",
             tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with {jobId} was canceled."),
                             @ApiResponse(responseCode = "404", description = "A job with the specified jobId was not found.",
@@ -129,12 +131,18 @@ public class IrsController {
                                     }),
     })
     @PutMapping("/jobs/{jobId}")
-    public ResponseEntity<?> cancelJobForJobId(
+    public ResponseEntity<?> cancelJobById(
             @Parameter(description = "ID of the job.", schema = @Schema(implementation = UUID.class), name = "jobId",
                     example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsApiConstants.JOB_ID_SIZE,
                     max = IrsApiConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID jobId) {
 
-        return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
+        final Optional<Job> canceledJob = this.itemJobService.cancelJobById(jobId);
+
+        if (canceledJob.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return new ResponseEntity<>(canceledJob, HttpStatus.OK);
     }
 
     @Operation(operationId = "getJobsByJobState",
