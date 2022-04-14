@@ -18,7 +18,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 public enum JobState {
     UNSAVED,
     INITIAL,
-    IN_PROGRESS,
+    RUNNING,
     TRANSFERS_FINISHED,
     COMPLETED,
     CANCELED,

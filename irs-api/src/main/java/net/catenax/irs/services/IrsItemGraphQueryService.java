@@ -42,6 +42,7 @@ import net.catenax.irs.connector.job.JobOrchestrator;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
+import net.catenax.irs.controllers.IrsApiConstants;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
@@ -67,7 +68,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
-        final String uuid = request.getGlobalAssetId().toString();
+        final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
         final var params = Map.of(AASRecursiveJobHandler.ROOT_ITEM_ID_KEY, uuid);
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
 
@@ -149,7 +150,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             case COMPLETED:
                 return JobState.COMPLETED;
             case IN_PROGRESS:
-                return JobState.IN_PROGRESS;
+                return JobState.RUNNING;
             case ERROR:
                 return JobState.ERROR;
             case INITIAL:

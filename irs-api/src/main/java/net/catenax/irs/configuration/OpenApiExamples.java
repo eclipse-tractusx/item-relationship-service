@@ -103,7 +103,7 @@ public class OpenApiExamples {
                              .job(Job.builder()
                                      .jobId(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
-                                     .jobState(JobState.IN_PROGRESS)
+                                     .jobState(JobState.RUNNING)
                                      .owner("")
                                      .createdOn(EXAMPLE_INSTANT)
                                      .startedOn(EXAMPLE_INSTANT)

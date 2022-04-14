@@ -11,10 +11,10 @@ paths:
     get:
       operationId: getJobsByJobState
       parameters:
-      - description: Requested processing states.
+      - description: Requested job states.
         explode: false
         in: query
-        name: processingStates
+        name: jobStates
         required: false
         schema:
           type: array
@@ -23,7 +23,7 @@ paths:
             enum:
             - UNSAVED
             - INITIAL
-            - IN_PROGRESS
+            - RUNNING
             - TRANSFERS_FINISHED
             - COMPLETED
             - CANCELED
@@ -40,16 +40,7 @@ paths:
                 items:
                   type: string
                   format: uuid
-          description: List of job ids for requested processingState.
-        "400":
-          content:
-            application/json:
-              examples:
-                complete:
-                  $ref: '#/components/examples/error-response'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: Bad Request.
+          description: List of job ids for requested job states.
         "404":
           content:
             application/json:
@@ -59,11 +50,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: No process found with this state.
-      summary: List of jobs for a certain processing state.
+      summary: List of jobs for a certain job states.
       tags:
       - Item Relationship Service
     post:
-      description: "Registers and starts a AAS crawler job for given {globalAssetId}."
+      description: "Registers and starts a item relationship crawler job for given\
+        \ {globalAssetId}."
       operationId: initiateJobForGlobalAssetId
       requestBody:
         content:
@@ -90,7 +82,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Processing of job failed.
-      summary: "Registers and starts a AAS crawler job for given {globalAssetId}."
+      summary: "Registers and starts a item relationship crawler job for given {globalAssetId}."
       tags:
       - Item Relationship Service
   /irs/jobs/{jobId}:
@@ -124,7 +116,7 @@ paths:
                   $ref: '#/components/examples/complete-job-result'
               schema:
                 $ref: '#/components/schemas/Jobs'
-          description: "Complete job result with bom tree, livecycle tree representation\
+          description: "Completed job result with the root node, lifecycle tree representation\
             \ with the starting point of the given jobId."
         "206":
           content:
@@ -134,17 +126,17 @@ paths:
                   $ref: '#/components/examples/partial-job-result'
               schema:
                 $ref: '#/components/schemas/Jobs'
-          description: Uncompleted livecycle tree representation with the starting
+          description: Uncompleted lifecycle tree representation with the starting
             point of the given jobId.
         "404":
           content:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/canceled-job-result'
+                  $ref: '#/components/examples/error-response'
               schema:
-                $ref: '#/components/schemas/Jobs'
-          description: Processing of job was canceled.
+                $ref: '#/components/schemas/ErrorResponse'
+          description: A job with the specified jobId was not found.
       summary: Get a BOM partial or complete for a given jobId.
       tags:
       - Item Relationship Service
@@ -168,30 +160,15 @@ paths:
               schema:
                 type: object
           description: "Job with {jobId} was canceled."
-        "400":
-          content:
-            '*/*':
-              schema:
-                type: object
-          description: Bad request. JobId must be a string in UUID format.
-        "401":
-          content:
-            '*/*':
-              schema:
-                type: object
-          description: Authorization information is missing or invalid.
         "404":
           content:
-            '*/*':
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/error-response'
               schema:
-                type: object
+                $ref: '#/components/schemas/ErrorResponse'
           description: A job with the specified jobId was not found.
-        "500":
-          content:
-            '*/*':
-              schema:
-                type: object
-          description: Unexpected error.
       summary: Cancel job execution for a given jobId.
       tags:
       - Item Relationship Service
@@ -440,7 +417,7 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobCompleted: 2022-02-03T14:48:54.709Z
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: IN_PROGRESS
+          jobState: RUNNING
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           queryParameter:
@@ -649,7 +626,7 @@ components:
           enum:
           - UNSAVED
           - INITIAL
-          - IN_PROGRESS
+          - RUNNING
           - TRANSFERS_FINISHED
           - COMPLETED
           - CANCELED
@@ -829,9 +806,10 @@ components:
           type: string
           description: GlobalAssetId of Item from which the tree building process
             starts.
-          example: 6c311d29-5753-46d4-b32c-19b918ea93b0
-          maxLength: 36
-          minLength: 36
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          maxLength: 45
+          minLength: 45
+          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
       required:
       - globalAssetId
     Relationship:

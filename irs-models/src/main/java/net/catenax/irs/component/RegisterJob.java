@@ -18,9 +18,11 @@ import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 import java.util.List;
-import java.util.UUID;
 
 /**
  * as
@@ -28,18 +30,22 @@ import java.util.UUID;
 @Schema(description = "Register job request.")
 @Data
 @NoArgsConstructor
-@SuppressWarnings("PMD.ShortClassName")
 @ExcludeFromCodeCoverageGeneratedReport
 public class RegisterJob {
 
     private static final String MIN_TREE_DEPTH = "1";
     private static final String MAX_TREE_DEPTH = "100";
     private static final String DEFAULT_DEPTH = "1";
+    private static final String GLOBAL_ASSET_ID_REGEX = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
     private static final int UUID_SIZE = 36;
+    private static final int URN_PREFIX_SIZE = 9;
+    private static final int GLOBAL_ASSET_ID_SIZE = URN_PREFIX_SIZE + UUID_SIZE;
 
-    @NotNull
-    @Schema(description = "GlobalAssetId of Item from which the tree building process starts.", example = "6c311d29-5753-46d4-b32c-19b918ea93b0", implementation = String.class, minLength = UUID_SIZE, maxLength = UUID_SIZE)
-    private UUID globalAssetId;
+    @Pattern(regexp = GLOBAL_ASSET_ID_REGEX)
+    @NotBlank
+    @Size(min = GLOBAL_ASSET_ID_SIZE, max = GLOBAL_ASSET_ID_SIZE)
+    @Schema(description = "GlobalAssetId of Item from which the tree building process starts.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0", implementation = String.class, minLength = GLOBAL_ASSET_ID_SIZE, maxLength = GLOBAL_ASSET_ID_SIZE)
+    private String globalAssetId;
 
     @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)
     private BomLifecycle bomLifecycle;
