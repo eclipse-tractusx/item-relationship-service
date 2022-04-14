@@ -9,9 +9,17 @@
 //
 package net.catenax.irs.aaswrapper.job;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +29,7 @@ import net.catenax.irs.connector.job.TransferProcess;
  * Transfer Process for AAS Objects
  */
 @Getter
+@JsonDeserialize(using = AASTransferProcess.AASTransferProcessDeserializer.class)
 @RequiredArgsConstructor
 public class AASTransferProcess implements TransferProcess {
 
@@ -36,5 +45,20 @@ public class AASTransferProcess implements TransferProcess {
     @Override
     public String getId() {
         return transferProcessId;
+    }
+
+    /**
+     * Deserializer for AASTransferProcess
+     */
+    static class AASTransferProcessDeserializer extends JsonDeserializer<AASTransferProcess> {
+
+        @Override
+        public AASTransferProcess deserialize(final JsonParser jsonParser,
+                final DeserializationContext deserializationContext) throws IOException, JacksonException {
+            final ObjectCodec codec = jsonParser.getCodec();
+            final JsonNode treeNode = codec.readTree(jsonParser);
+            final String id = treeNode.get("id").textValue();
+            return new AASTransferProcess(id);
+        }
     }
 }
