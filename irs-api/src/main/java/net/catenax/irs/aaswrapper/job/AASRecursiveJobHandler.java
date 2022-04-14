@@ -9,7 +9,7 @@
 //
 package net.catenax.irs.aaswrapper.job;
 
-import static net.catenax.irs.constants.IRSCommonConstant.ROOT_ITEM_ID_KEY;
+import static net.catenax.irs.dtos.IRSCommonConstant.ROOT_ITEM_ID_KEY;
 
 import java.util.stream.Stream;
 
