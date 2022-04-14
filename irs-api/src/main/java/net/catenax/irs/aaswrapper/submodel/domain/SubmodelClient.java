@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -42,6 +43,8 @@ class SubmodelClientLocalStub implements SubmodelClient {
 /**
  * Submodel Rest Client Implementation
  */
+@Service
+@Primary
 class SubmodelClientImpl implements SubmodelClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
