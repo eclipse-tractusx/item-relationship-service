@@ -17,14 +17,14 @@ import lombok.NonNull;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
-import net.catenax.irs.requests.IrsItemGraphRequest;
+import net.catenax.irs.component.RegisterJob;
 
 /**
  * IrsPartTreeQueryService interface
  */
 public interface IIrsItemGraphQueryService {
 
-    JobHandle registerItemJob(@NonNull IrsItemGraphRequest request);
+    JobHandle registerItemJob(@NonNull RegisterJob request);
 
     Jobs jobLifecycle(@NonNull String jobId);
 

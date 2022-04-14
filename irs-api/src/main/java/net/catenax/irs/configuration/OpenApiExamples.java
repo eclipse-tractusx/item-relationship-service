@@ -74,10 +74,7 @@ public class OpenApiExamples {
     }
 
     private Example createJobListProcessingState() {
-        return toExample(JobHandleCollection.builder()
-                                            .jobs(List.of(createJobHandle(JOB_HANDLE_ID_1),
-                                                    createJobHandle("46cd8fb1-34c1-4426-9c16-84b913bcfd95")))
-                                            .build());
+        return toExample(List.of(UUID.fromString(JOB_HANDLE_ID_1)));
     }
 
     private JobHandle createJobHandle(final String name) {
