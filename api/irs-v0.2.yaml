@@ -7,82 +7,64 @@ info:
 servers:
 - url: http://irs.int.demo.catena-x.net
 paths:
-  /irs/items/{globalAssetId}:
-    post:
-      description: "Registers and starts a AAS crawler job for given {globalAssetId}."
-      operationId: getBomLifecycleByGlobalAssetId
+  /irs/jobs:
+    get:
+      operationId: getJobsByJobState
       parameters:
-      - description: globalAssetId of Item from which the tree building process starts.
-        example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-        in: path
-        name: globalAssetId
-        required: true
-        schema:
-          type: string
-          maxLength: 45
-          minLength: 45
-          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-      - description: BoM Lifecycle of the result tree.
-        example: asBuilt
-        in: query
-        name: bomLifecycle
-        required: true
-        schema:
-          type: string
-          description: View defining which data of the item tree is retrieved.
-          enum:
-          - asBuilt
-      - description: AspectType information to add to the returned tree.
-        example: SerialPartTypization
+      - description: Requested job states.
         explode: false
         in: query
-        name: aspects
+        name: jobStates
         required: false
         schema:
           type: array
           items:
             type: string
             enum:
-            - SerialPartTypization
-            - AssemblyPartRelationship
-            - PartDimension
-            - SupplyRelationData
-            - PCFCoreData
-            - PCFTechnicalData
-            - MarketPlaceOffer
-            - MaterialAspect
-            - BatteryPass
-            - ProductDescriptionVehicle
-            - ProductDescriptionBattery
-            - ReturnRequest
-            - CertificateOfDestruction
-            - CertificateOfDismantler
-            - Address
-            - Contact
-      - description: "Max depth of the returned tree, if empty max depth is returned."
-        example: 1
-        in: query
-        name: depth
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 1
-          maximum: 100
-          minimum: 1
-      - description: Direction in which the tree shall be traversed.
-        example: downward
-        in: query
-        name: direction
-        required: false
-        schema:
-          type: string
-          default: downward
-          description: Direction in which the tree shall be traversed.
-          enum:
-          - downward
+            - UNSAVED
+            - INITIAL
+            - RUNNING
+            - TRANSFERS_FINISHED
+            - COMPLETED
+            - CANCELED
+            - ERROR
       responses:
         "200":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/complete-job-list-processing-state'
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+          description: List of job ids for requested job states.
+        "404":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/error-response'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: No process found with this state.
+      summary: List of jobs for a certain job states.
+      tags:
+      - Item Relationship Service
+    post:
+      description: "Registers and starts a item relationship crawler job for given\
+        \ {globalAssetId}."
+      operationId: initiateJobForGlobalAssetId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterJob'
+        required: true
+      responses:
+        "201":
           content:
             application/json:
               examples:
@@ -100,63 +82,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Processing of job failed.
-      summary: "Registers and starts a AAS crawler job for given {globalAssetId}."
-      tags:
-      - Item Relationship Service
-  /irs/jobs:
-    get:
-      operationId: getJobsByProcessingState
-      parameters:
-      - description: List of jobs (globalAssetIds) for a certain processing state.
-        in: query
-        name: processingState
-        required: true
-        schema:
-          type: string
-          enum:
-          - unsaved
-          - initial
-          - running
-          - transferred
-          - completed
-          - canceled
-          - failed
-      responses:
-        "200":
-          content:
-            application/json:
-              examples:
-                complete:
-                  $ref: '#/components/examples/complete-job-list-processing-state'
-              schema:
-                $ref: '#/components/schemas/JobHandleCollection'
-          description: List of jobs with given processingState.
-        "400":
-          content:
-            application/json:
-              examples:
-                complete:
-                  $ref: '#/components/examples/error-response'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: Bad Request.
-        "404":
-          content:
-            application/json:
-              examples:
-                complete:
-                  $ref: '#/components/examples/error-response'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: No process found with this state.
-      summary: List of jobs (globalAssetIds) for a certain processing state.
+      summary: "Registers and starts a item relationship crawler job for given {globalAssetId}."
       tags:
       - Item Relationship Service
   /irs/jobs/{jobId}:
     get:
-      operationId: getBOMForJobId
+      operationId: getJobForJobId
       parameters:
-      - description: ID of the job in processing.
+      - description: ID of the job.
         example: 6c311d29-5753-46d4-b32c-19b918ea93b0
         in: path
         name: jobId
@@ -169,8 +102,8 @@ paths:
       - description: "If true, the endpoint returns the current state of the fetched\
           \ bom tree."
         in: query
-        name: returnUncompletedResultTree
-        required: true
+        name: returnUncompletedJob
+        required: false
         schema:
           type: boolean
           default: true
@@ -183,18 +116,8 @@ paths:
                   $ref: '#/components/examples/complete-job-result'
               schema:
                 $ref: '#/components/schemas/Jobs'
-          description: "Complete job result with bom tree, livecycle tree representation\
+          description: "Completed job result with the root node, lifecycle tree representation\
             \ with the starting point of the given jobId."
-        "201":
-          content:
-            application/json:
-              examples:
-                complete:
-                  $ref: '#/components/examples/job-result-without-uncompleted-result-tree'
-              schema:
-                $ref: '#/components/schemas/Jobs'
-          description: Job details for given jobId - job is in running state and has
-            not completed.
         "206":
           content:
             application/json:
@@ -203,34 +126,24 @@ paths:
                   $ref: '#/components/examples/partial-job-result'
               schema:
                 $ref: '#/components/schemas/Jobs'
-          description: Uncompleted livecycle tree representation with the starting
+          description: Uncompleted lifecycle tree representation with the starting
             point of the given jobId.
         "404":
           content:
             application/json:
               examples:
                 complete:
-                  $ref: '#/components/examples/canceled-job-result'
+                  $ref: '#/components/examples/error-response'
               schema:
-                $ref: '#/components/schemas/Jobs'
-          description: Processing of job was canceled.
-        "417":
-          content:
-            application/json:
-              examples:
-                complete:
-                  $ref: '#/components/examples/failed-job-result'
-              schema:
-                $ref: '#/components/schemas/Jobs'
-          description: Processing of job failed.
+                $ref: '#/components/schemas/ErrorResponse'
+          description: A job with the specified jobId was not found.
       summary: Get a BOM partial or complete for a given jobId.
       tags:
       - Item Relationship Service
-  /irs/jobs/{jobId}/cancel:
     put:
       operationId: cancelJobForJobId
       parameters:
-      - description: ID of the job in processing.
+      - description: ID of the job.
         example: 6c311d29-5753-46d4-b32c-19b918ea93b0
         in: path
         name: jobId
@@ -247,30 +160,15 @@ paths:
               schema:
                 type: object
           description: "Job with {jobId} was canceled."
-        "400":
-          content:
-            '*/*':
-              schema:
-                type: object
-          description: Bad request. JobId must be a string in UUID format.
-        "401":
-          content:
-            '*/*':
-              schema:
-                type: object
-          description: Authorization information is missing or invalid.
         "404":
           content:
-            '*/*':
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/error-response'
               schema:
-                type: object
+                $ref: '#/components/schemas/ErrorResponse'
           description: A job with the specified jobId was not found.
-        "500":
-          content:
-            '*/*':
-              schema:
-                type: object
-          description: Unexpected error.
       summary: Cancel job execution for a given jobId.
       tags:
       - Item Relationship Service
@@ -287,7 +185,7 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobCompleted: 2022-02-03T14:48:54.709Z
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: canceled
+          jobState: CANCELED
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           queryParameter:
@@ -308,9 +206,7 @@ components:
         relationships: []
     complete-job-list-processing-state:
       value:
-        jobs:
-        - 6c311d29-5753-46d4-b32c-19b918ea93b0
-        - 46cd8fb1-34c1-4426-9c16-84b913bcfd95
+      - 6c311d29-5753-46d4-b32c-19b918ea93b0
     complete-job-result:
       value:
         job:
@@ -322,7 +218,7 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobCompleted: 2022-02-03T14:48:54.709Z
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: completed
+          jobState: COMPLETED
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           queryParameter:
@@ -408,7 +304,7 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: failed
+          jobState: ERROR
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           queryParameter:
@@ -428,7 +324,8 @@ components:
               running: 0
         relationships: []
     job-handle:
-      value: 6c311d29-5753-46d4-b32c-19b918ea93b0
+      value:
+        jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
     job-result-without-uncompleted-result-tree:
       value:
         job:
@@ -440,7 +337,7 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobCompleted: 2022-02-03T14:48:54.709Z
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: completed
+          jobState: COMPLETED
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           queryParameter:
@@ -520,7 +417,7 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobCompleted: 2022-02-03T14:48:54.709Z
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: running
+          jobState: RUNNING
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           queryParameter:
@@ -727,13 +624,13 @@ components:
         jobState:
           type: string
           enum:
-          - unsaved
-          - initial
-          - running
-          - transferred
-          - completed
-          - canceled
-          - failed
+          - UNSAVED
+          - INITIAL
+          - RUNNING
+          - TRANSFERS_FINISHED
+          - COMPLETED
+          - CANCELED
+          - ERROR
         lastModifiedOn:
           type: string
           format: date-time
@@ -776,13 +673,6 @@ components:
         jobId:
           type: string
           format: uuid
-    JobHandleCollection:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/JobHandle'
     Jobs:
       type: object
       description: Container for a job its relationship and shells.
@@ -869,6 +759,59 @@ components:
           description: Direction in which the tree shall be traversed.
           enum:
           - downward
+    RegisterJob:
+      type: object
+      description: Register job request.
+      properties:
+        aspects:
+          type: array
+          items:
+            type: string
+            enum:
+            - SerialPartTypization
+            - AssemblyPartRelationship
+            - PartDimension
+            - SupplyRelationData
+            - PCFCoreData
+            - PCFTechnicalData
+            - MarketPlaceOffer
+            - MaterialAspect
+            - BatteryPass
+            - ProductDescriptionVehicle
+            - ProductDescriptionBattery
+            - ReturnRequest
+            - CertificateOfDestruction
+            - CertificateOfDismantler
+            - Address
+            - Contact
+        bomLifecycle:
+          type: string
+          description: View defining which data of the item tree is retrieved.
+          enum:
+          - asBuilt
+        depth:
+          type: integer
+          format: int32
+          default: 1
+          description: "Max depth of the returned tree, if empty max depth is returned."
+          maximum: 100
+          minimum: 1
+        direction:
+          type: string
+          default: downward
+          description: Direction in which the tree shall be traversed.
+          enum:
+          - downward
+        globalAssetId:
+          type: string
+          description: GlobalAssetId of Item from which the tree building process
+            starts.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          maxLength: 45
+          minLength: 45
+          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      required:
+      - globalAssetId
     Relationship:
       type: object
       description: Collection of relationships mapping the parent child relationship
