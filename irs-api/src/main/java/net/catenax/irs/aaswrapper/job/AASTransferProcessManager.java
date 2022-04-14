@@ -11,16 +11,15 @@ package net.catenax.irs.aaswrapper.job;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.aaswrapper.Aspect;
-import net.catenax.irs.aaswrapper.ItemRelationshipAspect;
-import net.catenax.irs.aaswrapper.ItemRelationshipAspectTombstone;
+import net.catenax.irs.aaswrapper.registry.domain.AasShellSubmodelDescriptor;
+import net.catenax.irs.aaswrapper.registry.domain.AbstractAasShell;
+import net.catenax.irs.aaswrapper.submodel.domain.ItemRelationshipAspect;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.connector.job.ResponseStatus;
@@ -28,7 +27,6 @@ import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.connector.job.TransferProcessManager;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
-import net.catenax.irs.dto.SubmodelEndpoint;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
@@ -73,17 +71,20 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             final String itemId = dataRequest.getItemId();
             log.info("Calling Digital Twin Registry with itemId {}", itemId);
-            final List<SubmodelEndpoint> aasSubmodelEndpoints = registryFacade.getAASSubmodelEndpoints(itemId);
-            log.info("Retrieved {} SubmodelEndpoints for itemId {}", aasSubmodelEndpoints.size(), itemId);
+            final List<AbstractAasShell> aasShellSubmodelEndpoint = registryFacade.getAASSubmodelEndpoint(itemId);
+            log.info("Retrieved {} SubmodelEndpoints for itemId {}", aasShellSubmodelEndpoint.size(), itemId);
 
             final ItemContainer itemContainer = new ItemContainer();
 
-            aasSubmodelEndpoints.stream()
-                                .map(SubmodelEndpoint::getAddress)
-                                .map(endpointAddress -> getAssemblyPartRelationshipDTO(endpointAddress, itemId))
-                                .filter(Optional::isPresent)
-                                .map(Optional::get)
-                                .forEach(submodel -> processEndpoint(aasTransferProcess, itemContainer, submodel));
+            aasShellSubmodelEndpoint.stream()
+                                    .filter(AasShellSubmodelDescriptor.class::isInstance)
+                                    .map(AasShellSubmodelDescriptor.class::cast)
+                                    .map(AasShellSubmodelDescriptor::getSubmodelEndpointAddress)
+                                    .map(endpointAddress -> submodelFacade.getAssemblyPartRelationshipSubmodel(
+                                            endpointAddress, itemId))
+                                    .filter(ItemRelationshipAspect.class::isInstance)
+                                    .map(abstractItemRelationshipAspect -> ((ItemRelationshipAspect) abstractItemRelationshipAspect).getAssemblyPartRelationship())
+                                    .forEach(submodel -> processEndpoint(aasTransferProcess, itemContainer, submodel));
 
             try {
                 final JsonUtil jsonUtil = new JsonUtil();
@@ -93,19 +94,6 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             }
             transferProcessCompleted.accept(aasTransferProcess);
         };
-    }
-
-    private Optional<AssemblyPartRelationshipDTO> getAssemblyPartRelationshipDTO(final String address,
-            final String itemId) {
-        final Aspect submodel = submodelFacade.getSubmodel(address, itemId);
-        if (submodel instanceof ItemRelationshipAspect) {
-            return Optional.of(((ItemRelationshipAspect) submodel).getAssemblyPartRelationship());
-        } else if (submodel instanceof ItemRelationshipAspectTombstone) {
-            final ItemRelationshipAspectTombstone tombstone = (ItemRelationshipAspectTombstone) submodel;
-            log.info("Storing tombstone {} (Not yet implemented)", tombstone);
-            // TODO (jhartmann) store tombstone
-        }
-        return Optional.empty();
     }
 
     private void processEndpoint(final AASTransferProcess aasTransferProcess, final ItemContainer itemContainer,

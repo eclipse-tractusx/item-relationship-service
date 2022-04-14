@@ -18,10 +18,6 @@ import java.io.File;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import net.catenax.irs.aaswrapper.Aspect;
-import net.catenax.irs.aaswrapper.ItemRelationshipAspectTombstone;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -88,13 +84,13 @@ class SubmodelClientImplTest {
         doReturn(notFoundResponse).when(restTemplate).getForEntity(url, AssemblyPartRelationship.class);
         final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
-        final Aspect submodelResponse = submodelFacade.getSubmodel(url, catenaXId);
+        final Aspect submodelResponse = submodelFacade.getAssemblyPartRelationshipSubmodel(url, catenaXId);
         assertThat(submodelResponse).isInstanceOf(ItemRelationshipAspectTombstone.class);
         final ItemRelationshipAspectTombstone responseTombStone = (ItemRelationshipAspectTombstone) submodelResponse;
 
         assertThat(responseTombStone).isNotNull();
         assertThat(responseTombStone.getProcessingError().getErrorDetail()).isEqualTo("404 NOT_FOUND");
-        assertThat(responseTombStone.getProcessingError().getEndpointURL()).isEqualTo(url);
+        assertThat(responseTombStone.getEndpointURL()).isEqualTo(url);
         assertThat(responseTombStone.getCatenaXId()).isEqualTo(catenaXId);
     }
 }

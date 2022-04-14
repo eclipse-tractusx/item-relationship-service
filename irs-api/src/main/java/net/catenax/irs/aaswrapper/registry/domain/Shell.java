@@ -7,7 +7,9 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper;
+package net.catenax.irs.aaswrapper.registry.domain;
+
+import net.catenax.irs.dto.NodeType;
 
 /**
  * Shell Interface

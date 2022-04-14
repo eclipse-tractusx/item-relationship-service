@@ -45,12 +45,12 @@ class AssetAdministrationShellTestdataCreator {
         endpoint.setProtocolInformation(protocolInformation);
 
         final Reference reference = new Reference();
-        reference.setValue(List.of("urn:bamm:com.catenax.assembly_part_relationtship:1.0.0"));
+        reference.setValue(List.of("urn:bamm:com.catenax.assembly_part_relationship:1.0.0"));
 
         final SubmodelDescriptor submodelDescriptor = new SubmodelDescriptor();
         submodelDescriptor.setIdentification(catenaXId);
         submodelDescriptor.setIdShort("assemblyPartRelationship");
-        submodelDescriptor.setEndpoint(endpoint);
+        submodelDescriptor.setEndpoints(List.of(endpoint));
         submodelDescriptor.setSemanticId(reference);
 
         return submodelDescriptor;
