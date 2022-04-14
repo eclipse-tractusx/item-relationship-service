@@ -1,7 +1,7 @@
 package net.catenax.irs;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static net.catenax.irs.dtos.IRSCommonConstant.ROOT_ITEM_ID_KEY;
+import static net.catenax.irs.dtos.IrsCommonConstant.ROOT_ITEM_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;

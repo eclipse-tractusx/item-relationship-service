@@ -6,7 +6,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
  * Common constant used in IRS
  */
 @ExcludeFromCodeCoverageGeneratedReport
-public final class IRSCommonConstant {
+public final class IrsCommonConstant {
     /**
      * Job Data key for root item ID
      */
