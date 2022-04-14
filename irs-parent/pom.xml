@@ -29,7 +29,7 @@
         <micrometer.version>1.7.3</micrometer.version>
         <junit.version>5.7.2</junit.version>
         <javafaker.version>1.0.2</javafaker.version>
-        <json-unit-assertj.version>2.33.0</json-unit-assertj.version>
+        <json-unit-assertj.version>2.34.0</json-unit-assertj.version>
         <mockito-junit-jupiter.version>3.12.4</mockito-junit-jupiter.version>
         <assertj-core.version>3.21.0</assertj-core.version>
         <gatling.version>3.7.1</gatling.version>
