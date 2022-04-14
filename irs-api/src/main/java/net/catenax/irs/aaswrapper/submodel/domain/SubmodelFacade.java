@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import io.github.resilience4j.retry.annotation.Retry;
+import lombok.RequiredArgsConstructor;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
 import org.springframework.stereotype.Service;
@@ -21,13 +22,10 @@ import org.springframework.stereotype.Service;
  * Public API Facade for submodel domain
  */
 @Service
+@RequiredArgsConstructor
 public class SubmodelFacade {
 
     private final SubmodelClient submodelClient;
-
-    public SubmodelFacade(final SubmodelClient submodelClient) {
-        this.submodelClient = submodelClient;
-    }
 
     /**
      * @param submodelEndpointAddress The URL to the submodel endpoint
@@ -35,8 +33,7 @@ public class SubmodelFacade {
      */
     @Retry(name = "submodelRetryer")
     public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress) {
-        final AssemblyPartRelationship submodel = submodelClient.getSubmodel(submodelEndpointAddress,
-                                                                             AssemblyPartRelationship.class);
+        final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress, AssemblyPartRelationship.class);
 
         final Set<ChildDataDTO> childParts = new HashSet<>();
         submodel.getChildParts()
