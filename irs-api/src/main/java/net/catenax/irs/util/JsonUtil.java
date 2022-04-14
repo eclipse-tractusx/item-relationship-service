@@ -12,9 +12,13 @@ package net.catenax.irs.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.aaswrapper.job.AASTransferProcess;
+import net.catenax.irs.connector.job.TransferProcess;
 import net.catenax.irs.exceptions.JsonParseException;
 
 /**
@@ -30,7 +34,12 @@ public class JsonUtil {
      */
     private static final ObjectMapper MAPPER = new ObjectMapper();
     static {
+        final SimpleModule simpleModule = new SimpleModule().addAbstractTypeMapping(TransferProcess.class,
+                AASTransferProcess.class);
+
+        MAPPER.registerModule(simpleModule);
         MAPPER.registerModule(new Jdk8Module());
+        MAPPER.registerModule(new JavaTimeModule());
     }
 
     /**

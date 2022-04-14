@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
@@ -31,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @ToString
 @Builder(toBuilder = true)
+@JsonDeserialize(builder = MultiTransferJob.MultiTransferJobBuilder.class)
 public class MultiTransferJob {
 
     /**
@@ -71,13 +74,14 @@ public class MultiTransferJob {
     @Getter
     private Optional<LocalDateTime> completionDate;
 
-    /* package */ Collection<String> getTransferProcessIds() {
+    public Collection<String> getTransferProcessIds() {
         return Collections.unmodifiableSet(this.transferProcessIds);
     }
 
     /**
      * Builder for {@link MultiTransferJob}.
      */
+    @JsonPOJOBuilder(withPrefix = "")
     public static class MultiTransferJobBuilder {
         /**
          * Transition the job to the {@link JobState#INITIAL} state.
