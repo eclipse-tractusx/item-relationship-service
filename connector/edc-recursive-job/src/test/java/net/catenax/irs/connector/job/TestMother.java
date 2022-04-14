@@ -8,6 +8,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.github.javafaker.Faker;
+import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.enums.JobState;
 
@@ -24,6 +25,8 @@ class TestMother {
     Job fakeJob(JobState state) {
         return Job.builder()
                   .jobId(UUID.randomUUID())
+                  .globalAssetId(
+                          GlobalAssetIdentification.builder().globalAssetId(UUID.randomUUID().toString()).build())
                   .jobState(state)
                   .createdOn(Instant.now())
                   .owner(faker.lorem().characters())

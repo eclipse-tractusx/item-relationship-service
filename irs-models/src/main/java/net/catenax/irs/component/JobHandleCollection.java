@@ -36,4 +36,5 @@ public class JobHandleCollection {
     @JsonPOJOBuilder(withPrefix = "with")
     public static class JobHandleCollectionBuilder {
     }
+
 }

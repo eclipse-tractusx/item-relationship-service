@@ -102,9 +102,9 @@ public class MultiTransferJob {
          * Transition the job to the {@link JobState#ERROR} state.
          */
         /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail) {
-            this.job.toBuilder().jobState(JobState.ERROR);
-            this.job.toBuilder().jobCompleted(Instant.now());
-            this.job.toBuilder().exception(JobException.builder().errorDetail(errorDetail).build());
+            this.job.setJobState(JobState.ERROR);
+            this.job.setJobCompleted(Instant.now());
+            this.job.setException(JobException.builder().errorDetail(errorDetail).exceptionDate(Instant.now()).build());
             return this;
         }
 

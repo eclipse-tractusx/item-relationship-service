@@ -9,18 +9,11 @@
 //
 package net.catenax.irs.connector.job;
 
-<<<<<<< HEAD
 import java.time.Instant;
-=======
-import org.jetbrains.annotations.Nullable;
-
-import java.time.LocalDateTime;
->>>>>>> 040c1a75e4e29f85dad02f4607d2e21498b33315
 import java.util.List;
 import java.util.Optional;
 
 import net.catenax.irs.component.enums.JobState;
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 import org.jetbrains.annotations.Nullable;
 
 /**

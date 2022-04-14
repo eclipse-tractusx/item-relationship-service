@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.enums.JobState;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Orchestrator service for recursive {@link MultiTransferJob}s that potentially
@@ -73,12 +74,11 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     /**
      * Start a job.
      *
-     * @param job     job attached to the request
      * @param jobData additional data for the job to managed by the {@link JobStore}.
      * @return response.
      */
     public JobInitiateResponse startJob(final Map<String, String> jobData) {
-        Job job = createJob(UUID.fromString(jobData.get(ROOT_ITEM_ID_KEY)));
+        Job job = createJob(jobData.get(ROOT_ITEM_ID_KEY));
         final var multiJob = MultiTransferJob.builder().job(job).jobData(jobData).build();
         jobStore.create(multiJob);
 
@@ -230,10 +230,11 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     /**
      * @return
      */
-    private Job createJob(UUID jobId) {
+    private Job createJob(String globalAssetId) {
+        globalAssetId = StringUtils.isEmpty(globalAssetId) ? UUID.randomUUID().toString() : globalAssetId;
         return Job.builder()
                   .jobId(UUID.randomUUID())
-                  .globalAssetId(GlobalAssetIdentification.builder().globalAssetId(jobId.toString()).build())
+                  .globalAssetId(GlobalAssetIdentification.builder().globalAssetId(globalAssetId).build())
                   .createdOn(Instant.now())
                   .lastModifiedOn(Instant.now())
                   .jobState(JobState.UNSAVED)
