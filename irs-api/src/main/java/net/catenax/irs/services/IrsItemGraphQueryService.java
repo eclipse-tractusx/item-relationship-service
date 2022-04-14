@@ -33,6 +33,7 @@ import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.Relationship;
+import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
@@ -46,7 +47,6 @@ import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
-import net.catenax.irs.requests.IrsPartsTreeRequest;
 import net.catenax.irs.util.JsonUtil;
 import org.springframework.stereotype.Service;
 
@@ -58,7 +58,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @ExcludeFromCodeCoverageGeneratedReport
 @SuppressWarnings("PMD.ExcessiveImports")
-public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
+public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final JobOrchestrator<ItemDataRequest, AASTransferProcess> orchestrator;
 
@@ -67,7 +67,7 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
     private final BlobPersistence blobStore;
 
     @Override
-    public JobHandle registerItemJob(final @NonNull IrsPartsTreeRequest request) {
+    public JobHandle registerItemJob(final @NonNull RegisterJob request) {
         final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
         final var params = Map.of(AASRecursiveJobHandler.ROOT_ITEM_ID_KEY, uuid);
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
@@ -87,23 +87,23 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
     }
 
     @Override
-    public Optional<List<Job>> getJobsByProcessingState(final @NonNull String processingState) {
+    public Optional<List<Job>> getJobsByJobState(final @NonNull String processingState) {
         return Optional.empty();
     }
 
     @Override
-    public Job cancelJobById(final @NonNull String jobId) {
+    public Job cancelJobByJobId(final @NonNull String jobId) {
         return null;
     }
 
     @Override
-    public Jobs getBOMForJobId(final UUID jobId) {
+    public Jobs getJobForJobId(final UUID jobId) {
         final Optional<MultiTransferJob> multiTransferJob = jobStore.find(jobId.toString());
         if (multiTransferJob.isPresent()) {
             final MultiTransferJob job = multiTransferJob.get();
             final Job.JobBuilder builder = Job.builder()
-                                              .jobId(UUID.fromString(job.getJobId()))
-                                              .jobState(convert(job.getState()));
+                    .jobId(UUID.fromString(job.getJobId()))
+                    .jobState(convert(job.getState()));
             job.getCompletionDate().ifPresent(date -> builder.jobCompleted(date.toInstant(ZoneOffset.UTC)));
             final Job jobToReturn = builder.build();
 
@@ -129,20 +129,20 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
 
     private Stream<Relationship> convert(final AssemblyPartRelationshipDTO dto) {
         return dto.getChildParts()
-                  .stream()
-                  .map(child -> Relationship.builder()
-                                            .catenaXId(GlobalAssetIdentification.builder()
-                                                                                .globalAssetId(dto.getCatenaXId())
-                                                                                .build())
-                                            .childItem(ChildItem.builder()
-                                                                .childCatenaXId(GlobalAssetIdentification.builder()
-                                                                                                         .globalAssetId(
-                                                                                                                 child.getChildCatenaXId())
-                                                                                                         .build())
-                                                                .lifecycleContext(
-                                                                        BomLifecycle.value(child.getLifecycleContext()))
-                                                                .build())
-                                            .build());
+                .stream()
+                .map(child -> Relationship.builder()
+                        .catenaXId(GlobalAssetIdentification.builder()
+                                .globalAssetId(dto.getCatenaXId())
+                                .build())
+                        .childItem(ChildItem.builder()
+                                .childCatenaXId(GlobalAssetIdentification.builder()
+                                        .globalAssetId(
+                                                child.getChildCatenaXId())
+                                        .build())
+                                .lifecycleContext(
+                                        BomLifecycle.fromLifecycleContextCharacteristic(child.getLifecycleContext()))
+                                .build())
+                        .build());
     }
 
     private JobState convert(final net.catenax.irs.connector.job.JobState state) {
@@ -150,7 +150,7 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
             case COMPLETED:
                 return JobState.COMPLETED;
             case IN_PROGRESS:
-                return JobState.IN_PROGRESS;
+                return JobState.RUNNING;
             case ERROR:
                 return JobState.ERROR;
             case INITIAL:

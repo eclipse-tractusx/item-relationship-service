@@ -37,7 +37,7 @@ loop poll until response is  "200"
      opt job.hasCompleted()
             APIConsumer <-- WebService : "200" + payload(job details + document)
      else job.isRunning()
-           alt ?returnUncompletedResultTree=true
+           alt ?returnUncompletedJob=true
              APIConsumer <-- WebService : "206" + payload(job details + document)
            else
              APIConsumer <-- WebService : "200" + payload(job details)
@@ -45,13 +45,13 @@ loop poll until response is  "200"
      else job.hasCancled()
              APIConsumer <-- WebService : "404" + payload(job details)
      else job.hasFailed()
-        alt ?returnUncompletedResultTree=true
+        alt ?returnUncompletedJob=true
             APIConsumer <-- WebService : "417" + payload(job details + document)
         else
             APIConsumer <-- WebService : "417"  + payload(job details)
         end alt
       else  unexpected exception
-        alt ?returnUncompletedResultTree=true
+        alt ?returnUncompletedJob=true
             APIConsumer <-- WebService : "500" + payload(job details + document)
         else
            APIConsumer <-- WebService : "500" + payload(job details)
