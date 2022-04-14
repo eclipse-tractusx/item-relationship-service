@@ -58,7 +58,7 @@ public class ItemRelationshipServiceApiTest {
      *          if the Api call fails
      */
     @Test
-    public void getBOMForJobIdTest() throws ApiException {
+    public void getJobForJobIdTest() throws ApiException {
         UUID jobId = null;
         Boolean returnUncompletedResultTree = null;
         api.getBOMForJobId(jobId, returnUncompletedResultTree);

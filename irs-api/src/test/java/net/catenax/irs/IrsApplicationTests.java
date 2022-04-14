@@ -1,12 +1,8 @@
 package net.catenax.irs;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler.DESTINATION_PATH_KEY;
 import static net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler.ROOT_ITEM_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -23,7 +19,6 @@ import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.persistence.BlobPersistence;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,7 +31,9 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = {"local","test"})
+@ActiveProfiles(profiles = { "local",
+                             "test"
+})
 class IrsApplicationTests {
 
     @LocalServerPort
@@ -58,19 +55,19 @@ class IrsApplicationTests {
     void contextLoads() {
     }
 
-    
+    @Test
     void generatedOpenApiMatchesContract() throws Exception {
-        assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
-                String.class)).isEqualToNormalizingNewlines(
-                Files.readString(new File("../api/irs-v0.2.yaml").toPath(), UTF_8));
+        final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
+                String.class);
+        final String fixedYaml = Files.readString(new File("../api/irs-v0.2.yaml").toPath(), UTF_8);
+        assertThat(generatedYaml).isEqualToNormalizingNewlines(fixedYaml);
     }
 
     @Test
     void shouldStoreBlobResultWhenRunningJob() throws Exception {
-        final var targetBlobId = "targetBlobId";
 
         final JobInitiateResponse response = jobOrchestrator.startJob(
-                Map.of(ROOT_ITEM_ID_KEY, "rootitemid", DESTINATION_PATH_KEY, targetBlobId));
+                Map.of(ROOT_ITEM_ID_KEY, "rootitemid"));
 
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.OK);
 
@@ -82,7 +79,7 @@ class IrsApplicationTests {
                                        .map(state -> state == JobState.COMPLETED)
                                        .orElse(false));
 
-        assertThat(inMemoryBlobStore.getBlob(targetBlobId)).isNotEmpty();
+        assertThat(inMemoryBlobStore.getBlob(response.getJobId())).isNotEmpty();
     }
 
     @TestConfiguration

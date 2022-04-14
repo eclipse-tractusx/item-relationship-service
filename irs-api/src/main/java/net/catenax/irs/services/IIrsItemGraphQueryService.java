@@ -11,24 +11,26 @@ package net.catenax.irs.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import lombok.NonNull;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
-import net.catenax.irs.requests.IrsPartsTreeRequest;
+import net.catenax.irs.component.RegisterJob;
 
 /**
  * IrsPartTreeQueryService interface
  */
-public interface IIrsPartTreeQueryService {
+public interface IIrsItemGraphQueryService {
 
-    JobHandle registerItemJob(@NonNull IrsPartsTreeRequest request);
+    JobHandle registerItemJob(@NonNull RegisterJob request);
 
     Jobs jobLifecycle(@NonNull String jobId);
 
-    Optional<List<Job>> getJobsByProcessingState(@NonNull String processingState);
+    Optional<List<Job>> getJobsByJobState(@NonNull String processingState);
 
-    Optional<Job> cancelJobById(@NonNull String jobId);
+    Job cancelJobByJobId(@NonNull String jobId);
 
+    Jobs getJobForJobId(UUID jobId);
 }

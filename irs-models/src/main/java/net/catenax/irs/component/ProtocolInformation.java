@@ -24,14 +24,14 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @ExcludeFromCodeCoverageGeneratedReport
 public class ProtocolInformation {
 
-    @Schema(description = "Uniform resource identifier of endpoint",
+    @Schema(description = "Uniform resource identifier of endpoint.",
             example = "https://catena-x.net/vehicle/basedetails/", implementation = java.net.URI.class)
     private String endpointAddress;
 
-    @Schema(description = "Protocol used to access the endpoint", example = "http or https",
-            implementation = java.net.URI.class)
+    @Schema(description = "Protocol used to access the endpoint.", example = "HTTP or HTTPS",
+            implementation = String.class)
     private String endpointProtocol;
 
-    @Schema(description = "Protocol version", example = "1.0", implementation = String.class)
+    @Schema(description = "Protocol version.", example = "1.0", implementation = String.class)
     private String enpointProtocolVersion;
 }

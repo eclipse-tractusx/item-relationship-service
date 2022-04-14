@@ -48,7 +48,7 @@ springdoc:
   writer-with-order-by-keys: true
 
 irs:
-  apiUrl: https://localhost/api/v0.2
+  apiUrl: http://irs.int.demo.catena-x.net
   partsTreeMaxDepth: 100
 
 feign:
@@ -62,7 +62,7 @@ feign:
         url: http://localhost:4242
 
 blobstore:
-  endpoint:
-  accessKey:
-  secretKey:
+  endpoint: "${MINIO_URL}"
+  accessKey: "${MINIO_ACCESS_KEY}"
+  secretKey: "${MINIO_SECRET_KEY}"
   bucketName: irsbucket

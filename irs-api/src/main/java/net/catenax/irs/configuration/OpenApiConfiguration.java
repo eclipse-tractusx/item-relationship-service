@@ -9,11 +9,13 @@
 //
 package net.catenax.irs.configuration;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.IrsApplication;
+import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,6 +25,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @RequiredArgsConstructor
 public class OpenApiConfiguration {
+
     /**
      * IRS configuration settings.
      */
@@ -35,14 +38,24 @@ public class OpenApiConfiguration {
      */
     @Bean
     public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-            .addServersItem(new Server()
-                .url(irsConfiguration.getApiUrl().toString())
-            )
-            .info(new Info()
-                .title("IRS API")
-                .version(IrsApplication.API_VERSION)
-                .description("API to retrieve parts tree information. See <a href=\"https://confluence.catena-x.net/display/CXM/PRS+Environments+and+Test+Data\">this page</a> for more information on test data available in this environment.")
-            );
+        return new OpenAPI().addServersItem(new Server().url(irsConfiguration.getApiUrl().toString()))
+                            .info(new Info().title("IRS API")
+                                            .version(IrsApplication.API_VERSION)
+                                            .description(
+                                                    "API to retrieve parts tree information. See <a href=\"https://confluence.catena-x.net/display/CXM/PRS+Environments+and+Test+Data\">this page</a> for more information on test data available in this environment."));
     }
+
+    /**
+     * Generates example values in Swagger
+     *
+     * @return the customiser
+     */
+    @Bean
+    public OpenApiCustomiser customiser() {
+        return openApi -> {
+            final Components components = openApi.getComponents();
+            new OpenApiExamples().createExamples(components);
+        };
+    }
+
 }

@@ -18,8 +18,20 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 public enum JobState {
     UNSAVED,
     INITIAL,
-    IN_PROGRESS,
+    RUNNING,
     TRANSFERS_FINISHED,
     COMPLETED,
-    ERROR
+    CANCELED,
+    ERROR;
+
+    /**
+     * of as a substitute/alias for valueOf handling the default value
+     *
+     * @param value see {@link #value}
+     * @return the corresponding JobState
+     */
+    public static JobState value(final String value) {
+        return JobState.valueOf(value);
+    }
+
 }

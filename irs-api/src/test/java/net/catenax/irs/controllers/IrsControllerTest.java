@@ -40,17 +40,17 @@ class IrsControllerTest {
     }
 
     @Test
-    void getBomLifecycleByGlobalAssetId() {
+    void initiateJobForGlobalAssetId() {
         assertTrue(true);
     }
 
     @Test
-    void getBOMForJobId() {
+    void getJobById() {
         assertTrue(true);
     }
 
     @Test
-    void getJobsByProcessingState() {
+    void getJobsByJobState() {
         assertTrue(true);
     }
 
