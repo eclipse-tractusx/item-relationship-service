@@ -12,7 +12,6 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 import java.util.Set;
 
 import lombok.Data;
-import net.catenax.irs.aaswrapper.Aspect;
 
 /**
  * AssemblyPartRelationship

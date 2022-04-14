@@ -7,12 +7,13 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper;
+package net.catenax.irs.aaswrapper.registry.domain;
 
 import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
+import net.catenax.irs.dto.NodeType;
 import net.catenax.irs.component.Description;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.dto.SubmodelEndpoint;

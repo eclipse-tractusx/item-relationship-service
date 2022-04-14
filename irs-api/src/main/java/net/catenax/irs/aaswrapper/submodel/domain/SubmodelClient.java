@@ -10,7 +10,6 @@
 package net.catenax.irs.aaswrapper.submodel.domain;
 
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.aaswrapper.Aspect;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;

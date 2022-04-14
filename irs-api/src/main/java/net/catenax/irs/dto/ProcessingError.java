@@ -7,9 +7,10 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper;
+package net.catenax.irs.dto;
 
 import java.time.Instant;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,9 +23,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class ProcessingError {
-    private final Exception exception;
+    private final Optional<Exception> exception;
     private final String errorDetail;
-    private final String endpointURL;
     private final int retryCounter;
     private final Instant lastAttempt;
 

@@ -18,10 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.catenax.irs.aaswrapper.Aspect;
-import net.catenax.irs.aaswrapper.ItemRelationshipAspect;
-import net.catenax.irs.aaswrapper.ItemRelationshipAspectTombstone;
-import net.catenax.irs.aaswrapper.ProcessingError;
+import net.catenax.irs.dto.ProcessingError;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +46,7 @@ class SubmodelFacadeTest {
     void shouldReturnAssemblyPartRelationshipWithChildDataWhenRequestingWithCatenaXId() {
         final String endpointUrl = "test.test";
         final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-        final Aspect submodelResponse = submodelFacade.getSubmodel(endpointUrl, catenaXId);
+        final Aspect submodelResponse = submodelFacade.getAssemblyPartRelationshipSubmodel(endpointUrl, catenaXId);
         assertThat(submodelResponse).isInstanceOf(ItemRelationshipAspect.class);
         final AssemblyPartRelationshipDTO submodel = ((ItemRelationshipAspect) submodelResponse).getAssemblyPartRelationship();
         assertThat(submodel.getCatenaXId()).isEqualTo(catenaXId);
@@ -78,7 +75,7 @@ class SubmodelFacadeTest {
         final String endpointUrl = "test.test";
         doReturn(okResponse).when(restTemplate).getForEntity(endpointUrl, AssemblyPartRelationship.class);
 
-        final Aspect submodelResponse = submodelFacade.getSubmodel(endpointUrl, catenaXId);
+        final Aspect submodelResponse = submodelFacade.getAssemblyPartRelationshipSubmodel(endpointUrl, catenaXId);
         assertThat(submodelResponse).isInstanceOf(ItemRelationshipAspect.class);
         final AssemblyPartRelationshipDTO submodel = ((ItemRelationshipAspect) submodelResponse).getAssemblyPartRelationship();
         assertThat(submodel.getCatenaXId()).isEqualTo(catenaXId);
@@ -97,12 +94,12 @@ class SubmodelFacadeTest {
         final String endpointUrl = "test.test";
         doReturn(notFoundResponse).when(restTemplate).getForEntity(endpointUrl, AssemblyPartRelationship.class);
 
-        final Aspect submodelResponse = submodelFacade.getSubmodel(endpointUrl, catenaXId);
+        final Aspect submodelResponse = submodelFacade.getAssemblyPartRelationshipSubmodel(endpointUrl, catenaXId);
         assertThat(submodelResponse).isInstanceOf(ItemRelationshipAspectTombstone.class);
         final ItemRelationshipAspectTombstone tombstone = (ItemRelationshipAspectTombstone) submodelResponse;
         final ProcessingError processingError = tombstone.getProcessingError();
         assertThat(tombstone.getCatenaXId()).isEqualTo(catenaXId);
+        assertThat(tombstone.getEndpointURL()).isEqualTo(endpointUrl);
         assertThat(processingError.getErrorDetail()).isEqualTo(HttpStatus.NOT_FOUND.toString());
-        assertThat(processingError.getEndpointURL()).isEqualTo(endpointUrl);
     }
 }
