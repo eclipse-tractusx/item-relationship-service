@@ -10,7 +10,6 @@
 package net.catenax.irs.services;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import lombok.NonNull;
