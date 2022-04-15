@@ -73,6 +73,17 @@ public class InMemoryJobStore implements JobStore {
      * {@inheritDoc}
      */
     @Override
+    public List<MultiTransferJob> findByStates(final List<JobState> jobStates) {
+        return readLock(() -> jobsById.values()
+                                      .stream()
+                                      .filter(hasState(jobStates))
+                                      .collect(Collectors.toList()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void create(final MultiTransferJob job) {
         writeLock(() -> {
             final var newJob = job.toBuilder().transitionInitial().build();
@@ -192,5 +203,9 @@ public class InMemoryJobStore implements JobStore {
 
     private Predicate<MultiTransferJob> hasState(final JobState jobState) {
         return job -> job.getState().equals(jobState);
+    }
+
+    private Predicate<MultiTransferJob> hasState(final List<JobState> jobStates) {
+        return job -> jobStates.contains(job.getState());
     }
 }

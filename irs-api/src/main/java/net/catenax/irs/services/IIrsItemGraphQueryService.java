@@ -18,6 +18,7 @@ import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
+import net.catenax.irs.component.enums.JobState;
 
 /**
  * IrsPartTreeQueryService interface
@@ -28,7 +29,7 @@ public interface IIrsItemGraphQueryService {
 
     Jobs jobLifecycle(@NonNull String jobId);
 
-    Optional<List<Job>> getJobsByJobState(@NonNull String processingState);
+    List<UUID> getJobsByJobState(@NonNull List<JobState> jobStates);
 
     Job cancelJobByJobId(@NonNull String jobId);
 
