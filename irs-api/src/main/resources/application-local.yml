@@ -8,3 +8,4 @@ blobstore:
   endpoint: http://localhost:9000
   accessKey: minioadmin
   secretKey: minioadmin
+
