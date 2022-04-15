@@ -9,7 +9,7 @@
 //
 package net.catenax.irs.connector.job;
 
-import static net.catenax.irs.dtos.IrsCommonConstant.ROOT_ITEM_ID_KEY;
+import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 
 import java.time.Instant;
 import java.util.List;

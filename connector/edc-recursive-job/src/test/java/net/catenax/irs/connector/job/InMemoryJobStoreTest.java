@@ -24,7 +24,7 @@ class InMemoryJobStoreTest {
     TestMother generate = new TestMother();
     MultiTransferJob job = generate.job(JobState.UNSAVED);
     MultiTransferJob job2 = generate.job(JobState.UNSAVED);
-    MultiTransferJob originalJob = job.toBuilder().job(createJob()).build();
+    MultiTransferJob originalJob = job.toBuilder().build();
     String otherJobId = faker.lorem().characters();
     TransferProcess process1 = generate.transfer();
     TransferProcess process2 = generate.transfer();
