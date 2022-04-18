@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @ToString
 @Builder(toBuilder = true)
+@SuppressWarnings({ "PMD.UselessParentheses" })
 public class MultiTransferJob {
 
     /**

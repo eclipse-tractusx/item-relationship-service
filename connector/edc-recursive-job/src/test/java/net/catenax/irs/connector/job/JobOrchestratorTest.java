@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 import com.github.javafaker.Faker;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
+import net.catenax.irs.component.JobException;
 import net.catenax.irs.component.enums.JobState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -254,7 +255,7 @@ class JobOrchestratorTest {
         doAnswer(i -> byCompletingJob()).when(jobStore)
                                         .completeTransferProcess(job.getJob().getJobId().toString(), transfer);
         doAnswer(i -> {
-            throw new RuntimeException();
+            throw JobException.builder().build();
         }).when(handler).complete(any());
 
         // Act

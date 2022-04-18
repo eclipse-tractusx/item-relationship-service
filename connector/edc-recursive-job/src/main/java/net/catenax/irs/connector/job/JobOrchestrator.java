@@ -30,7 +30,8 @@ import org.apache.commons.lang3.StringUtils;
  * Orchestrator service for recursive {@link MultiTransferJob}s that potentially
  * comprise multiple transfers.
  */
-@SuppressWarnings("PMD.AvoidCatchingGenericException") // Handle RuntimeException from callbacks
+@SuppressWarnings({ "PMD.AvoidCatchingGenericException", "PMD.TooManyMethods" })
+// Handle RuntimeException from callbacks
 @Slf4j
 public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
@@ -78,7 +79,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      * @return response.
      */
     public JobInitiateResponse startJob(final Map<String, String> jobData) {
-        Job job = createJob(jobData.get(ROOT_ITEM_ID_KEY));
+        final Job job = createJob(jobData.get(ROOT_ITEM_ID_KEY));
         final var multiJob = MultiTransferJob.builder().job(job).jobData(jobData).build();
         jobStore.create(multiJob);
 
@@ -128,8 +129,8 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         final var job = jobEntry.get();
 
         if (job.getJob().getJobState() != JobState.IN_PROGRESS) {
-            log.info("Ignoring transfer complete event for job " + job.getJob().getJobId() + " in state " + job.getJob()
-                                                                                                               .getJobState());
+            log.info("Ignoring transfer complete event for job {} in state {} ", job.getJob().getJobId(),
+                    job.getJob().getJobState());
             return;
         }
 
@@ -230,11 +231,11 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     /**
      * @return
      */
-    private Job createJob(String globalAssetId) {
-        globalAssetId = StringUtils.isEmpty(globalAssetId) ? UUID.randomUUID().toString() : globalAssetId;
+    private Job createJob(final String globalAssetId) {
+        final var assetId = StringUtils.isEmpty(globalAssetId) ? UUID.randomUUID().toString() : globalAssetId;
         return Job.builder()
                   .jobId(UUID.randomUUID())
-                  .globalAssetId(GlobalAssetIdentification.builder().globalAssetId(globalAssetId).build())
+                  .globalAssetId(GlobalAssetIdentification.builder().globalAssetId(assetId).build())
                   .createdOn(Instant.now())
                   .lastModifiedOn(Instant.now())
                   .jobState(JobState.UNSAVED)

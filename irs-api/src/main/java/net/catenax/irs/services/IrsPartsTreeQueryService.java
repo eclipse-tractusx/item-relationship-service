@@ -147,18 +147,18 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
 
     private JobState convert(final JobState state) {
         switch (state) {
-        case COMPLETED:
-            return JobState.COMPLETED;
-        case IN_PROGRESS:
-            return JobState.IN_PROGRESS;
-        case ERROR:
-            return JobState.ERROR;
-        case INITIAL:
-            return JobState.INITIAL;
-        case TRANSFERS_FINISHED:
-            return JobState.TRANSFERS_FINISHED;
-        default:
-            throw new IllegalArgumentException("Cannot convert JobState of type " + state);
+            case COMPLETED:
+                return JobState.COMPLETED;
+            case IN_PROGRESS:
+                return JobState.IN_PROGRESS;
+            case ERROR:
+                return JobState.ERROR;
+            case INITIAL:
+                return JobState.INITIAL;
+            case TRANSFERS_FINISHED:
+                return JobState.TRANSFERS_FINISHED;
+            default:
+                throw new IllegalArgumentException("Cannot convert JobState of type " + state);
         }
     }
 }

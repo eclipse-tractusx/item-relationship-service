@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.component.JobException;
 import net.catenax.irs.component.enums.JobState;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @Slf4j
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({ "PMD.TooManyMethods", "PMD.PreserveStackTrace" })
 public class InMemoryJobStore implements JobStore {
 
     /**
@@ -172,7 +173,10 @@ public class InMemoryJobStore implements JobStore {
     private <T> T readLock(final Supplier<T> work) {
         try {
             if (!lock.readLock().tryLock(TIMEOUT, TimeUnit.MILLISECONDS)) {
-                throw new RuntimeException("Timeout acquiring read lock");
+                throw JobException.builder()
+                                  .errorDetail("Timeout acquiring read lock")
+                                  .exceptionDate(Instant.now())
+                                  .build();
             }
             try {
                 return work.get();
@@ -181,14 +185,17 @@ public class InMemoryJobStore implements JobStore {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
+            throw JobException.builder().exception(e.getMessage()).exceptionDate(Instant.now()).build();
         }
     }
 
     private <T> T writeLock(final Supplier<T> work) {
         try {
             if (!lock.writeLock().tryLock(TIMEOUT, TimeUnit.MILLISECONDS)) {
-                throw new RuntimeException("Timeout acquiring write lock");
+                throw JobException.builder()
+                                  .errorDetail("Timeout acquiring read lock")
+                                  .exceptionDate(Instant.now())
+                                  .build();
             }
             try {
                 return work.get();
@@ -197,7 +204,7 @@ public class InMemoryJobStore implements JobStore {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
+            throw JobException.builder().exception(e.getMessage()).exceptionDate(Instant.now()).build();
         }
     }
 
