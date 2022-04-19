@@ -188,13 +188,13 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     private TransferInitiateResponse startTransfer(final MultiTransferJob job,
             final T dataRequest)  /* throws JobException */ {
-        final var response = processManager.initiateRequest(dataRequest, this::transferProcessCompleted);
+        final var response = processManager.initiateRequest(dataRequest,
+                transferId -> jobStore.addTransferProcess(job.getJobId(), transferId), this::transferProcessCompleted);
 
         if (response.getStatus() != ResponseStatus.OK) {
             throw JobException.builder().status(response.getStatus()).build();
         }
 
-        jobStore.addTransferProcess(job.getJobId(), response.getTransferId());
         return response;
     }
 
