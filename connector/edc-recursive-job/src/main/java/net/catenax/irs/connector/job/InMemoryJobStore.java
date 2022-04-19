@@ -79,7 +79,7 @@ public class InMemoryJobStore implements JobStore {
     public void create(final MultiTransferJob job) {
         writeLock(() -> {
             final var newJob = job.toBuilder().transitionInitial().build();
-            jobsById.put(job.getJob().getJobId(), newJob);
+            jobsById.put(job.getJob().getJobId().toString(), newJob);
             return null;
         });
     }
@@ -135,7 +135,7 @@ public class InMemoryJobStore implements JobStore {
             if (job == null) {
                 log.warn("Job not found: {}", jobId);
             } else {
-                jobsById.put(job.getJob().getJobId(), action.apply(job));
+                jobsById.put(job.getJob().getJobId().toString(), action.apply(job));
             }
             return null;
         });
@@ -164,7 +164,7 @@ public class InMemoryJobStore implements JobStore {
     public JobState getJobState(final String jobId) {
         return jobsById.values()
                        .stream()
-                       .filter(j -> j.getJob().getJobId().equals(jobId))
+                       .filter(j -> j.getJob().getJobId().toString().equals(jobId))
                        .map(j -> j.getJob().getJobState())
                        .findFirst()
                        .get();

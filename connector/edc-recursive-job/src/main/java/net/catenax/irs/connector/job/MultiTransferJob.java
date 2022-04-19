@@ -21,11 +21,12 @@ import java.util.Set;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Singular;
 import lombok.ToString;
 import net.catenax.irs.component.Job;
+import net.catenax.irs.component.JobException;
 import net.catenax.irs.component.enums.JobState;
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -33,11 +34,13 @@ import org.jetbrains.annotations.Nullable;
  */
 @ToString
 @Builder(toBuilder = true)
+@SuppressWarnings({ "PMD.UselessParentheses" })
 public class MultiTransferJob {
 
     /**
      * The attached job.
      */
+    @NonNull
     @Getter
     private Job job;
 
@@ -95,7 +98,7 @@ public class MultiTransferJob {
          */
         /* package */ MultiTransferJobBuilder transitionComplete() {
             return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL).job(
-                    job.toBuilder().jobFinished(Instant.now()).build());
+                    job.toBuilder().jobCompleted((Instant.now())).build());
         }
 
         /**
@@ -104,9 +107,8 @@ public class MultiTransferJob {
         /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail) {
             this.job.toBuilder()
                     .jobState(JobState.ERROR)
-                    .jobFinished(Instant.now())
-                    .exception(errorDetail)
-                    .jobFinished(Instant.now())
+                    .jobCompleted(Instant.now())
+                    .exception(JobException.builder().errorDetail(errorDetail).exceptionDate(Instant.now()).build())
                     .build();
             return this;
         }

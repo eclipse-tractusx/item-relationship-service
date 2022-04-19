@@ -205,7 +205,6 @@
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                     <failOnViolation>true</failOnViolation>
-                    <skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>

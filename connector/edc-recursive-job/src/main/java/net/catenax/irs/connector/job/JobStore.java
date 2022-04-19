@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 import net.catenax.irs.component.enums.JobState;
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferProcess;
 import org.jetbrains.annotations.Nullable;
 
 /**

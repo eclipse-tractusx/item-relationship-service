@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
+import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.controllers.ApiErrorsConstants;
 import net.catenax.irs.controllers.IrsApiConstants;
 import net.catenax.irs.controllers.IrsApiExamplesUtils;
@@ -34,23 +35,23 @@ import net.catenax.irs.controllers.IrsApiExamplesUtils;
 @ExcludeFromCodeCoverageGeneratedReport
 public class IrsPartsTreeRequest extends IrsPartsTreeRequestBase {
 
-    @Pattern(regexp = IrsApiConstants.GLOBAL_ASSET_ID_REGEX,
-            message = ApiErrorsConstants.NOT_BLANK)
+    @Pattern(regexp = IrsApiConstants.GLOBAL_ASSET_ID_REGEX, message = ApiErrorsConstants.NOT_BLANK)
     @NotBlank
-    @Size(min = IrsApiConstants.JOB_ID_SIZE, max = IrsApiConstants.JOB_ID_SIZE)
-    @Parameter(description = "Readable ID of manufacturer including plant.", in = PATH,
-            required = true, example = IrsApiExamplesUtils.GLOBAL_ASSET_ID_EXAMPLE, schema = @Schema(implementation = String.class))
+    @Size(min = IrsApiConstants.GLOBAL_ASSET_ID_SIZE, max = IrsApiConstants.GLOBAL_ASSET_ID_SIZE)
+    @Parameter(description = "globalAssetId of Item from which the tree building process starts.", in = PATH,
+            required = true, example = IrsApiExamplesUtils.GLOBAL_ASSET_ID_EXAMPLE,
+            schema = @Schema(implementation = String.class))
     private String globalAssetId;
 
     /**
      * @param globalAssetId see {@link #getGlobalAssetId()}
      * @param bomLifecycle  see {@link #getBomLifecycle()}
-     * @param aspects        see {@link #getAspects()}
+     * @param aspects       see {@link #getAspects()}
      * @param depth         see {@link #getDepth()}
-     * @param direction         see {@link #getDirection()}
+     * @param direction     see {@link #getDirection()}
      */
     @Builder(toBuilder = true)
-    public IrsPartsTreeRequest(final String globalAssetId, final String bomLifecycle, final List<String> aspects,
+    public IrsPartsTreeRequest(final String globalAssetId, final String bomLifecycle, final List<AspectType> aspects,
             final Integer depth, final String direction) {
         super(bomLifecycle, aspects, depth, direction);
         this.globalAssetId = globalAssetId;
