@@ -59,7 +59,7 @@ class IrsApplicationTests {
     void generatedOpenApiMatchesContract() throws Exception {
         final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
                 String.class);
-        final String fixedYaml = Files.readString(new File("../api/irs-v0.2.yaml").toPath(), UTF_8);
+        final String fixedYaml = Files.readString(new File("../api/irs-v1.0.yaml").toPath(), UTF_8);
         assertThat(generatedYaml).isEqualToNormalizingNewlines(fixedYaml);
     }
 
