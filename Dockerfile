@@ -1,5 +1,5 @@
 # Dependencies
-FROM maven:3-jdk-11 AS maven
+FROM maven:3-jdk-14 AS maven
 ARG BUILD_TARGET=irs-api
 ARG IRS_EDC_PKG_USERNAME
 ARG IRS_EDC_PKG_PASSWORD
@@ -27,7 +27,7 @@ COPY irs-testing irs-testing
 RUN --mount=type=cache,target=/root/.m2 mvn -B -s settings.xml clean package -pl :$BUILD_TARGET -am -DskipTests
 
 # Download Application Insights agent
-FROM maven:3-jdk-11 AS wget
+FROM maven:3-jdk-14 AS wget
 
 # Java app insight agent version: https://docs.microsoft.com/en-us/azure/azure-monitor/app/java-in-process-agent
 # See https://confluence.catena-x.net/display/CXM/PRS+Observability
