@@ -3,7 +3,7 @@
 version: 2
 updates:
 
-  # Maintain dependencies for MAven
+  # Maintain dependencies for Maven
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
@@ -14,3 +14,12 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+
+  # Enable version updates for Docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+      
+
