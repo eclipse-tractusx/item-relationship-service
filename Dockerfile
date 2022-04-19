@@ -17,7 +17,6 @@ COPY connector/edc-recursive-job connector/edc-recursive-job
 COPY connector/irs-connector-parent connector/irs-connector-parent
 COPY integration-tests integration-tests
 COPY irs-api irs-api
-COPY irs-client irs-client
 COPY irs-common irs-common
 COPY irs-models irs-models
 COPY irs-parent irs-parent
