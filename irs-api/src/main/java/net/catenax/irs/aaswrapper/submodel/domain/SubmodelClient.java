@@ -10,6 +10,7 @@
 package net.catenax.irs.aaswrapper.submodel.domain;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -31,6 +32,7 @@ interface SubmodelClient {
 /**
  * Submodel Client Stub used in local environment
  */
+@Profile("local")
 @Service
 class SubmodelClientLocalStub implements SubmodelClient {
 
@@ -47,6 +49,7 @@ class SubmodelClientLocalStub implements SubmodelClient {
 /**
  * Submodel Rest Client Implementation
  */
+@Profile("!local")
 @Slf4j
 class SubmodelClientImpl implements SubmodelClient {
 

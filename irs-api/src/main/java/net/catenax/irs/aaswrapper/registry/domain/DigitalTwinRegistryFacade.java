@@ -82,6 +82,6 @@ public class DigitalTwinRegistryFacade {
     private boolean isAssemblyPartRelationship(final SubmodelDescriptor submodelDescriptor) {
         final String assemblyPartRelationshipIdentifier = "urn:bamm:com.catenax.assembly_part_relationship:1.0.0";
         return assemblyPartRelationshipIdentifier.equals(
-                submodelDescriptor.getSemanticId().getValue().stream().findFirst().orElse(""));
+                submodelDescriptor.getSemanticId().getValue().stream().findFirst().orElse(null));
     }
 }

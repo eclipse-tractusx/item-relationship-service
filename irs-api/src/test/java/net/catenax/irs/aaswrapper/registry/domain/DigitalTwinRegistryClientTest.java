@@ -24,7 +24,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @Disabled
-@ExtendWith(MockitoExtension.class)
 @ActiveProfiles(profiles = { "local",
                              "prod"
 })
