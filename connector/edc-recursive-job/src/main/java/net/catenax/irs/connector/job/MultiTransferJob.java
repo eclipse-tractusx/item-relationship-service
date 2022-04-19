@@ -21,6 +21,7 @@ import java.util.Set;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Singular;
 import lombok.ToString;
 import net.catenax.irs.component.Job;
@@ -39,6 +40,7 @@ public class MultiTransferJob {
     /**
      * The attached job.
      */
+    @NonNull
     @Getter
     private Job job;
 
