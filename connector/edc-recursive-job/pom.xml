@@ -53,5 +53,11 @@
             <version>0.0.3-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>net.catenax.irs</groupId>
+            <artifactId>irs-models</artifactId>
+            <version>0.0.3-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

@@ -18,7 +18,6 @@ import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.persistence.BlobPersistence;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -60,8 +59,8 @@ class IrsApplicationTests {
                 String.class);
         final String fixedYaml = Files.readString(new File("../api/irs-v0.2.yaml").toPath(), UTF_8);
         // assertThat(generatedYaml).isEqualToNormalizingNewlines(fixedYaml);
-        Assertions.assertTrue(generatedYaml.contains("3.0.1"));
-        Assertions.assertTrue(fixedYaml.contains("3.0.2"));
+        assertThat(generatedYaml).contains("openapi: 3.0.1");
+        assertThat(fixedYaml).contains("openapi: 3.0.1");
     }
 
     @Test
