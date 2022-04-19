@@ -35,13 +35,13 @@ class SubmodelRetryerTest {
     private SubmodelClient client;
 
     @Test
-    void shouldRetryExecutionOfGetSubmodelMaxAttemptTimes() {
-        given(this.client.getSubmodel(anyString(), any()))
+    void shouldRetryExecutionOfGetSubmodelMaxAttemptTimes() throws SubmodelClientException {
+        given(this.client.getSubmodel(anyString(), anyString(), any()))
                 .willThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception"));
 
-        assertThrows(HttpServerErrorException.class, () -> facade.getSubmodel("TEST"));
+        assertThrows(HttpServerErrorException.class, () -> facade.getAssemblyPartRelationshipSubmodel("TEST", "testCatenaXId"));
 
-        verify(this.client, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getSubmodel(anyString(), any());
+        verify(this.client, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getSubmodel(anyString(), anyString(), any());
     }
 
     @TestConfiguration
