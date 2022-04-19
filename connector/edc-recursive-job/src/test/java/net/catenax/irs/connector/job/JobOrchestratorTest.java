@@ -358,6 +358,6 @@ class JobOrchestratorTest {
     }
 
     private void callTransferProcessCompletedViaCallback() {
-        sut.transferProcessCompleted(transfer, job.getJobId());
+        sut.transferProcessCompleted(transfer);
     }
 }
