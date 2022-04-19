@@ -44,7 +44,7 @@ class DigitalTwinRegistryFacadeTest {
     }
 
     @Test
-    void shouldReturnTombstoneWhenCallingFacadeWithFeignClientLocally() {
+    void shouldReturnTombstoneWhenClientThrowsFeignException() {
         final String catenaXId = "test";
         final Request request = Request.create(Request.HttpMethod.GET, "url", Map.of(), new byte[0],
                 Charset.defaultCharset(), new RequestTemplate());
@@ -61,7 +61,7 @@ class DigitalTwinRegistryFacadeTest {
     }
 
     @Test
-    void shouldReturnTombstoneWhenFeignClientReturnsEmptyDescriptor() {
+    void shouldReturnTombstoneWhenClientReturnsEmptyDescriptor() {
         final String catenaXId = "test";
         final AssetAdministrationShellDescriptor shellDescriptor = new AssetAdministrationShellDescriptor();
         shellDescriptor.setSubmodelDescriptors(List.of());
