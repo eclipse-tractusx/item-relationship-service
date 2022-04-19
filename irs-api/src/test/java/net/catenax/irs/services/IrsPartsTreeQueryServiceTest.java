@@ -61,7 +61,7 @@ class IrsPartsTreeQueryServiceTest {
         assertFalse(jobStore.find(String.valueOf(jobId)).isEmpty());
 
         final JobState state = jobStore.find(String.valueOf(jobId)).get().getState();
-        assertEquals(state, JobState.COMPLETED);
+        assertEquals(state, JobState.CANCELED);
     }
 
     @TestConfiguration

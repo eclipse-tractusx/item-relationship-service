@@ -13,7 +13,6 @@ import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -136,11 +135,7 @@ public class IrsController {
                     example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsApiConstants.JOB_ID_SIZE,
                     max = IrsApiConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID jobId) {
 
-        final Optional<Job> canceledJob = this.itemJobService.cancelJobById(jobId);
-
-        if (canceledJob.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        final Job canceledJob = this.itemJobService.cancelJobById(jobId);
 
         return new ResponseEntity<>(canceledJob, HttpStatus.OK);
     }

@@ -126,18 +126,6 @@ public class InMemoryJobStore implements JobStore {
         modifyJob(jobId, job -> job.toBuilder().transitionError(errorDetail).build());
     }
 
-    private void modifyJob(final String jobId, final UnaryOperator<MultiTransferJob> action) {
-        writeLock(() -> {
-            final var job = jobsById.get(jobId);
-            if (job == null) {
-                log.warn("Job not found: {}", jobId);
-            } else {
-                jobsById.put(job.getJobId(), action.apply(job));
-            }
-            return null;
-        });
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -152,6 +140,30 @@ public class InMemoryJobStore implements JobStore {
     @Override
     public MultiTransferJob deleteJob(final String jobId) {
         return writeLock(() -> jobsById.remove(jobId));
+    }
+
+    /**
+     * Cancel a job by its id
+     *
+     * @param jobId the job identifier.
+     */
+    @Override
+    public MultiTransferJob cancelJob(final String jobId) {
+        this.modifyJob(jobId, job -> job.toBuilder().transitionCancel().build());
+
+        return this.jobsById.get(jobId);
+    }
+
+    private void modifyJob(final String jobId, final UnaryOperator<MultiTransferJob> action) {
+        writeLock(() -> {
+            final var job = jobsById.get(jobId);
+            if (job == null) {
+                log.warn("Job not found: {}", jobId);
+            } else {
+                jobsById.put(job.getJobId(), action.apply(job));
+            }
+            return null;
+        });
     }
 
     private <T> T readLock(final Supplier<T> work) {

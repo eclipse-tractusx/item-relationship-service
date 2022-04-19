@@ -30,7 +30,7 @@ public interface IIrsItemGraphQueryService {
 
     Optional<List<Job>> getJobsByJobState(@NonNull String processingState);
 
-    Optional<Job> cancelJobById(@NonNull UUID jobId);
+    Job cancelJobById(@NonNull UUID jobId);
 
     Jobs getJobForJobId(UUID jobId);
 }

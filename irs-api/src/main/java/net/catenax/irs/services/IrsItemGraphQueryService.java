@@ -30,11 +30,10 @@ import net.catenax.irs.aaswrapper.job.ItemDataRequest;
 import net.catenax.irs.component.ChildItem;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
-import net.catenax.irs.component.JobException;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
-import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.RegisterJob;
+import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
@@ -93,29 +92,17 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     @Override
-    public Optional<Job> cancelJobById(final @NonNull UUID jobId) {
+    public Job cancelJobById(final @NonNull UUID jobId) {
         final String idAsString = String.valueOf(jobId);
+        final Optional<MultiTransferJob> multiTransferJob = this.jobStore.find(idAsString);
 
-        this.jobStore.completeJob(String.valueOf(idAsString));
+        if (multiTransferJob.isPresent()) {
+            final MultiTransferJob canceled = this.jobStore.cancelJob(idAsString);
 
-        final MultiTransferJob multiTransferJob = this.jobStore.find(idAsString).orElse(null);
-
-        if (multiTransferJob != null) {
-            final JobException jobException = JobException.builder()
-                                                          .errorDetail(multiTransferJob.getErrorDetail())
-                                                          .build();
-
-            final UUID uuid = UUID.fromString(multiTransferJob.getJobId());
-
-            final JobState jobState = JobState.valueOf(multiTransferJob.getState().name());
-
-            return Optional.ofNullable(Job.builder()
-                                          .jobId(uuid)
-                                          .jobState(jobState)
-                                          .exception(jobException)
-                                          .build());
+            return Job.builder().jobId(jobId).jobState(JobState.valueOf(canceled.getState().name())).build();
+        } else {
+            throw new EntityNotFoundException("No job exists with id " + jobId);
         }
-        return Optional.empty();
     }
 
     @Override
@@ -124,8 +111,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         if (multiTransferJob.isPresent()) {
             final MultiTransferJob job = multiTransferJob.get();
             final Job.JobBuilder builder = Job.builder()
-                    .jobId(UUID.fromString(job.getJobId()))
-                    .jobState(convert(job.getState()));
+                                              .jobId(UUID.fromString(job.getJobId()))
+                                              .jobState(convert(job.getState()));
             job.getCompletionDate().ifPresent(date -> builder.jobCompleted(date.toInstant(ZoneOffset.UTC)));
             final Job jobToReturn = builder.build();
 
@@ -133,7 +120,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             try {
                 final byte[] blob = blobStore.getBlob(job.getJobId());
                 final ItemContainer itemContainer = new JsonUtil().fromString(new String(blob, StandardCharsets.UTF_8),
-                        ItemContainer.class);
+                                                                              ItemContainer.class);
                 final List<AssemblyPartRelationshipDTO> assemblyPartRelationships = itemContainer.getAssemblyPartRelationships();
                 relationships.addAll(convert(assemblyPartRelationships));
             } catch (BlobPersistenceException e) {
@@ -151,20 +138,21 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private Stream<Relationship> convert(final AssemblyPartRelationshipDTO dto) {
         return dto.getChildParts()
-                .stream()
-                .map(child -> Relationship.builder()
-                        .catenaXId(GlobalAssetIdentification.builder()
-                                .globalAssetId(dto.getCatenaXId())
-                                .build())
-                        .childItem(ChildItem.builder()
-                                .childCatenaXId(GlobalAssetIdentification.builder()
-                                        .globalAssetId(
-                                                child.getChildCatenaXId())
-                                        .build())
-                                .lifecycleContext(
-                                        BomLifecycle.fromLifecycleContextCharacteristic(child.getLifecycleContext()))
-                                .build())
-                        .build());
+                  .stream()
+                  .map(child -> Relationship.builder()
+                                            .catenaXId(GlobalAssetIdentification.builder()
+                                                                                .globalAssetId(dto.getCatenaXId())
+                                                                                .build())
+                                            .childItem(ChildItem.builder()
+                                                                .childCatenaXId(GlobalAssetIdentification.builder()
+                                                                                                         .globalAssetId(
+                                                                                                                 child.getChildCatenaXId())
+                                                                                                         .build())
+                                                                .lifecycleContext(
+                                                                        BomLifecycle.fromLifecycleContextCharacteristic(
+                                                                                child.getLifecycleContext()))
+                                                                .build())
+                                            .build());
     }
 
     private JobState convert(final net.catenax.irs.connector.job.JobState state) {
