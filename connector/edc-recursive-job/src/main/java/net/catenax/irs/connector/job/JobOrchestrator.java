@@ -14,6 +14,7 @@ import static java.util.UUID.randomUUID;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -155,7 +156,10 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     private List<MultiTransferJob> deleteJobs(final List<MultiTransferJob> jobs) {
-        return jobs.stream().map(job -> jobStore.deleteJob(job.getJobId())).collect(Collectors.toList());
+        return jobs.stream()
+                   .map(job -> jobStore.deleteJob(job.getJobId()))
+                   .flatMap(Optional::stream)
+                   .collect(Collectors.toList());
     }
 
     private void callCompleteHandlerIfFinished(final String jobId) {

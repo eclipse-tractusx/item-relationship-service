@@ -11,6 +11,7 @@
 package net.catenax.irs.persistence;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Interface for storing data blobs.
@@ -19,7 +20,7 @@ public interface BlobPersistence {
 
     void putBlob(String targetBlobName, byte[] blob) throws BlobPersistenceException;
 
-    byte[] getBlob(String sourceBlobName) throws BlobPersistenceException;
+    Optional<byte[]> getBlob(String sourceBlobName) throws BlobPersistenceException;
 
     Collection<byte[]> findBlobByPrefix(String prefix) throws BlobPersistenceException;
 

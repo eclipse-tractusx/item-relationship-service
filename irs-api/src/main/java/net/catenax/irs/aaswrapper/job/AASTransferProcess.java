@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -50,15 +49,15 @@ public class AASTransferProcess implements TransferProcess {
     /**
      * Deserializer for AASTransferProcess
      */
-    static class AASTransferProcessDeserializer extends JsonDeserializer<AASTransferProcess> {
+    public static class AASTransferProcessDeserializer extends JsonDeserializer<AASTransferProcess> {
 
         @Override
         public AASTransferProcess deserialize(final JsonParser jsonParser,
-                final DeserializationContext deserializationContext) throws IOException, JacksonException {
+                final DeserializationContext deserializationContext) throws IOException {
             final ObjectCodec codec = jsonParser.getCodec();
             final JsonNode treeNode = codec.readTree(jsonParser);
-            final String id = treeNode.get("id").textValue();
-            return new AASTransferProcess(id);
+            final String idValue = treeNode.get("id").textValue();
+            return new AASTransferProcess(idValue);
         }
     }
 }

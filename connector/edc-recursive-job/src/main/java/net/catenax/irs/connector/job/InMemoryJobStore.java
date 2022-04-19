@@ -148,10 +148,11 @@ public class InMemoryJobStore implements JobStore {
 
     /**
      * {@inheritDoc}
+     * @return
      */
     @Override
-    public MultiTransferJob deleteJob(final String jobId) {
-        return writeLock(() -> jobsById.remove(jobId));
+    public Optional<MultiTransferJob> deleteJob(final String jobId) {
+        return writeLock(() -> Optional.ofNullable(jobsById.remove(jobId)));
     }
 
     private <T> T readLock(final Supplier<T> work) {

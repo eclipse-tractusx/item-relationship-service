@@ -91,7 +91,7 @@ public interface JobStore {
      * Delete a job by its identifier.
      *
      * @param jobId the job identifier.
-     * @return deleted job
+     * @return deleted job (if it existed)
      */
-    MultiTransferJob deleteJob(String jobId);
+    Optional<MultiTransferJob> deleteJob(String jobId);
 }

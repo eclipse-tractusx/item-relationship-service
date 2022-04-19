@@ -3,11 +3,11 @@ package net.catenax.irs;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
 import net.catenax.irs.persistence.BlobPersistence;
-import net.catenax.irs.persistence.BlobPersistenceException;
 
 @Value
 public class InMemoryBlobStore implements BlobPersistence {
@@ -20,8 +20,8 @@ public class InMemoryBlobStore implements BlobPersistence {
     }
 
     @Override
-    public byte[] getBlob(final String sourceBlobName) {
-        return store.get(sourceBlobName);
+    public Optional<byte[]> getBlob(final String sourceBlobName) {
+        return Optional.ofNullable(store.get(sourceBlobName));
     }
 
     @Override

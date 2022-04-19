@@ -35,6 +35,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@SuppressWarnings("PMD.TooManyMethods")
 public class PersistentJobStore implements JobStore {
 
     /**
@@ -59,11 +60,8 @@ public class PersistentJobStore implements JobStore {
     public Optional<MultiTransferJob> find(final String jobId) {
         return readLock(() -> {
             try {
-                final byte[] blob = blobStore.getBlob(toBlobId(jobId));
-                if (blob == null) {
-                    return Optional.empty();
-                }
-                return Optional.of(toJob(blob));
+                final Optional<byte[]> blob = blobStore.getBlob(toBlobId(jobId));
+                return blob.map(this::toJob);
             } catch (BlobPersistenceException e) {
                 log.error("Error while trying to get job from blobstore", e);
                 return Optional.empty();
@@ -123,7 +121,6 @@ public class PersistentJobStore implements JobStore {
 
     private byte[] toBlob(final MultiTransferJob job) {
         final String jobString = this.json.asString(job);
-        log.info(jobString);
         return jobString.getBytes(StandardCharsets.UTF_8);
     }
 
@@ -168,13 +165,13 @@ public class PersistentJobStore implements JobStore {
 
     private void modifyJob(final String jobId, final UnaryOperator<MultiTransferJob> action) {
         writeLock(() -> {
-            final byte[] jobBlob;
+            final Optional<byte[]> jobBlob;
             try {
                 jobBlob = blobStore.getBlob(toBlobId(jobId));
-                if (jobBlob == null) {
+                if (jobBlob.isEmpty()) {
                     log.warn("Job not found: {}", jobId);
                 } else {
-                    final MultiTransferJob job = toJob(jobBlob);
+                    final MultiTransferJob job = toJob(jobBlob.get());
                     blobStore.putBlob(toBlobId(job.getJobId()), toBlob(action.apply(job)));
                 }
             } catch (BlobPersistenceException e) {
@@ -189,12 +186,12 @@ public class PersistentJobStore implements JobStore {
     }
 
     @Override
-    public MultiTransferJob deleteJob(final String jobId) {
+    public Optional<MultiTransferJob> deleteJob(final String jobId) {
         return writeLock(() -> {
             try {
-                final byte[] blob = blobStore.getBlob(toBlobId(jobId));
+                final Optional<byte[]> blob = blobStore.getBlob(toBlobId(jobId));
                 blobStore.delete(toBlobId(jobId));
-                return toJob(blob);
+                return blob.map(this::toJob);
             } catch (BlobPersistenceException e) {
                 throw new JobException(e);
             }

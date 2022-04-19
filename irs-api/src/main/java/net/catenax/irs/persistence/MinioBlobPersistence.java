@@ -16,6 +16,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -50,6 +51,7 @@ import org.jetbrains.annotations.NotNull;
  * BlobPersistence implementation using the min.io library
  */
 @Slf4j
+@SuppressWarnings("PMD.ExcessiveImports")
 public class MinioBlobPersistence implements BlobPersistence {
 
     private static final Integer EXPIRE_AFTER_DAYS = 7;
@@ -111,27 +113,31 @@ public class MinioBlobPersistence implements BlobPersistence {
     }
 
     @Override
-    public byte[] getBlob(final String sourceBlobName) throws BlobPersistenceException {
+    public Optional<byte[]> getBlob(final String sourceBlobName) throws BlobPersistenceException {
         final GetObjectResponse response;
         try {
             response = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(sourceBlobName).build());
         } catch (ErrorResponseException e) {
-            if (e.errorResponse().code().equals("NoSuchKey")) {
-                return null;
+            if ("NoSuchKey".equals(e.errorResponse().code())) {
+                return Optional.empty();
             }
-            throw new BlobPersistenceException("Encountered error while trying to load blob", e);
+            throw createLoadFailedException(e);
         } catch (ServerException | InsufficientDataException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
-            throw new BlobPersistenceException("Encountered error while trying to load blob", e);
+            throw createLoadFailedException(e);
         }
         try (response) {
-            return response.readAllBytes();
+            return Optional.ofNullable(response.readAllBytes());
         } catch (IOException e) {
-            throw new BlobPersistenceException("Encountered error while trying to load blob", e);
+            throw createLoadFailedException(e);
         }
     }
 
+    private BlobPersistenceException createLoadFailedException(final Throwable cause) {
+        return new BlobPersistenceException("Encountered error while trying to load blob", cause);
+    }
+
     @Override
-    public Collection<byte[]> findBlobByPrefix(String prefix) throws BlobPersistenceException {
+    public Collection<byte[]> findBlobByPrefix(final String prefix) {
         final Iterable<Result<Item>> results = minioClient.listObjects(
                 ListObjectsArgs.builder().prefix(prefix).bucket(bucketName).build());
 
@@ -148,7 +154,7 @@ public class MinioBlobPersistence implements BlobPersistence {
             minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(sourceBlobName).build());
             return true;
         } catch (ErrorResponseException e) {
-            if (e.errorResponse().code().equals("NoSuchKey")) {
+            if ("NoSuchKey".equals(e.errorResponse().code())) {
                 return false;
             } else {
                 throw new BlobPersistenceException("Encountered error while trying to delete blob", e);
@@ -158,20 +164,20 @@ public class MinioBlobPersistence implements BlobPersistence {
         }
     }
 
-    private Stream<byte[]> getBlobIfPresent(String sourceBlobName) {
+    private Stream<byte[]> getBlobIfPresent(final String sourceBlobName) {
         try {
-            return Stream.of(getBlob(sourceBlobName));
+            return getBlob(sourceBlobName).stream();
         } catch (BlobPersistenceException e) {
             log.error("Cannot find content for blob id {}", sourceBlobName);
             return Stream.empty();
         }
     }
 
-    private Stream<Item> getItem(Result<Item> result) {
+    private Stream<Item> getItem(final Result<Item> result) {
         try {
             return Stream.of(result.get());
         } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
-            log.error("Encountered error while trying to load blob", e);
+            log.error("Encountered error while trying to retrieve result content", e);
             return Stream.empty();
         }
     }
