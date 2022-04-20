@@ -5,13 +5,13 @@
 
     <parent>
         <groupId>net.catenax.irs</groupId>
-        <artifactId>irs-connector-parent</artifactId>
+        <artifactId>irs-parent</artifactId>
         <version>${revision}</version>
-        <relativePath>../irs-connector-parent</relativePath>
+        <relativePath>../irs-parent</relativePath>
     </parent>
 
     <groupId>net.catenax.irs</groupId>
-    <artifactId>edc-recursive-job</artifactId>
+    <artifactId>irs-recursive-job</artifactId>
 
     <name>Recursive Job Module</name>
     <description>Module for recursive job management</description>

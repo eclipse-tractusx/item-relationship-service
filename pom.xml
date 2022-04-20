@@ -12,7 +12,7 @@
 
     <modules>
         <module>irs-testing</module>
-        <module>connector</module>
+        <module>irs-recursive-job</module>
         <module>irs-api</module>
         <module>irs-common</module>
         <module>irs-models</module>

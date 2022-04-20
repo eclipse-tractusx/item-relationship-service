@@ -17,23 +17,22 @@ The two following subsections provide instructions for running either only the i
 
 ### Docker-compose full stack
 
-* (Optional) Copy the file `.env.example` to `.env` and provide your Application Insights connection string.
-
 * Run `docker-compose --profile irs up`
 
 ### Docker-compose debug profile
 
-* (Optional) Copy the file `.env.example` to `.env` and provide your Application Insights connection string.
 * Run `docker-compose --profile debug up`
 * This will start additional containers:
   * [Prometheus](https://prometheus.io/docs/introduction/overview/), a server to collect and query metrics. Prometheus is available at http://localhost:9091/.
 
 ## Work with sample data
 
-* Retrieve one sample preloaded BOM:
+* Retrieve sample BOM:
 
 ```bash
-curl -X GET "http://localhost:8080/api/v0.1/vins/BMWOVCDI21L5DYEUU/partsTree?view=AS_BUILT"
+curl -X 'POST' 'http://localhost:8080/irs/items/8a61c8db-561e-4db0-84ec-a693fc5ffdf6?bomLifecycle=asBuilt&aspects=SerialPartTypization&direction=downward' -H 'accept: application/json'
+  
+curl -X 'GET'  'http://localhost:8080/irs/jobs/<jobID from first call>' -H 'accept: application/json'
 ```
 
 ## Swagger UI
@@ -44,19 +43,16 @@ curl -X GET "http://localhost:8080/api/v0.1/vins/BMWOVCDI21L5DYEUU/partsTree?vie
 - API docs: http://localhost:8080/api/api-docs
 - API docs in yaml:  http://localhost:8080/api/api-docs.yaml
 
-## Terraform
-
-See [Terraform deployment](terraform).
-
 ## Deploy to DEV
 
-The new version of the application is deployed to DEV on merge to main through the `IRS Deploy` workflow.
-The workflow builds a new image, pushes it to ACR and deploys it to Kubernetes. If you make changes to Terraform, these changes will be applied as the workflow runs `terraform apply`.
-If you want to make sure the IRS deployment will work well with your changes, you can run the `IRS Deploy` workflow manually on your branch. Note that other PRs merged to main will cause Terraform to potentially roll back those changes.
+The latest version on main is automatically picked up by ArgoCD and deployed to the DEV environment.
+See https://catenax-ng.github.io/.
+
+http://irs.int.demo.catena-x.net/api/swagger-ui/index.html?configUrl=/api/api-docs/swagger-config
 
 ## Deploy to INT
 
-A deployment to the INT environment can be triggered manually with the `IRS Deploy` workflow as well by overriding the default target environment parameter to "int". INT environment deployments should be coordinated with the consumers of the IRS systems.
+Not available yet.
 
 ## Smoke tests
 

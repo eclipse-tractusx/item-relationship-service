@@ -7,15 +7,14 @@ services:
       target: irs-api
       args:
         BUILD_TARGET: irs-api
-    profiles:
-      - irs
     container_name: irs
     ports:
       - "8080:8080"
       - "4004:4004"
     environment:
-      APPLICATIONINSIGHTS_CONNECTION_STRING: "${APPLICATIONINSIGHTS_CONNECTION_STRING}"
-      APPLICATIONINSIGHTS_ROLE_NAME: IRS
+      MINIO_URL: "http://minio:9000"
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
 
   prometheus:
     image: prom/prometheus:v2.30.3
