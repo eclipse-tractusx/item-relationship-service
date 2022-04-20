@@ -1,5 +1,10 @@
 # Item Relationship Service
 
+
+| __Build Status__ | [![build](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/CI-main.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/CI-main.yml) [![CodeQL](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml) |
+| __JaCoCo Test Coverage__ | [![coverage](https://img.shields.io/badge/jacoco)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/jacoco.yml) [![branches coverage](https://img.shields.io/badge/jacoco)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/jacoco.yml)  |
+| __License__ | [![GitHub](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/catenax-ng/product-item-relationship-service/blob/main/LICENSE) |
+
 ## How to run
 
 The two following subsections provide instructions for running either only the infrastructure on docker-compose and the application in the IDE, or for running the full stack (including the application) in docker-compose.
