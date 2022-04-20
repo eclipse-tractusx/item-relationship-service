@@ -131,6 +131,12 @@ public abstract class BaseJobStore implements JobStore {
         return writeLock(() -> remove(jobId));
     }
 
+    @Override
+    public Optional<MultiTransferJob> cancelJob(final String jobId) {
+        modifyJob(jobId, job -> job.toBuilder().transitionCancel().build());
+        return get(jobId);
+    }
+
     private void modifyJob(final String jobId, final UnaryOperator<MultiTransferJob> action) {
         writeLock(() -> {
             final var job = get(jobId);

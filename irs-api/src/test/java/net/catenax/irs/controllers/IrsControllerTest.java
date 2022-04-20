@@ -3,14 +3,19 @@ package net.catenax.irs.controllers;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 import java.util.UUID;
 
+import net.catenax.irs.component.Job;
+import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,22 +53,24 @@ class IrsControllerTest {
     }
 
     @Test
-    void cancelJobById() {
+    void cancelJobById() throws Exception {
         final var jobId = UUID.randomUUID();
         final var canceledJob = Job.builder().jobId(jobId).jobState(JobState.CANCELED).build();
-        given(this.service.cancelJobById(jobId)).willReturn(canceledJob);
+        given(irsItemGraphQueryService.cancelJobById(jobId)).willReturn(canceledJob);
 
-        final ResponseEntity<?> entity = this.controller.cancelJobById(jobId);
-
-        assertNotNull(entity);
-        assertEquals(entity.getStatusCode(), HttpStatus.OK);
+        this.mockMvc.perform(put("/irs/jobs/{jobId}", jobId))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(containsString(jobId.toString())));
     }
 
     @Test
-    void cancelJobById_throwEntityNotFoundException() {
-        given(this.service.cancelJobById(jobId)).willThrow(
+    void cancelJobById_throwEntityNotFoundException() throws Exception {
+        final var jobId = UUID.randomUUID();
+        given(irsItemGraphQueryService.cancelJobById(jobId)).willThrow(
                 new EntityNotFoundException("No job exists with id " + jobId));
 
-        assertThrows(EntityNotFoundException.class, () -> this.controller.cancelJobById(jobId));
+        this.mockMvc.perform(put("/irs/jobs/{jobId}", jobId))
+                    .andExpect(status().isNotFound());
+
     }
 }

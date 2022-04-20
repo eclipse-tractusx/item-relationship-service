@@ -18,6 +18,7 @@ import java.util.Optional;
 /**
  * Manages storage of {@link MultiTransferJob} state.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public interface JobStore {
     /**
      * Retrieve a job by its identifier.

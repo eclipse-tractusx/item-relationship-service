@@ -100,17 +100,13 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final Optional<MultiTransferJob> multiTransferJob = this.jobStore.find(idAsString);
 
         if (multiTransferJob.isPresent()) {
-            final MultiTransferJob canceled = this.jobStore.cancelJob(idAsString);
-            if (canceled == null) {
-                throw new EntityNotFoundException("No job exists with id " + jobId);
-            }
+            final Optional<MultiTransferJob> canceled = this.jobStore.cancelJob(idAsString);
+            final MultiTransferJob job = canceled.orElseThrow(
+                    () -> new EntityNotFoundException("No job exists with id " + jobId));
             // Replace with JobState from net.catenax.irs.component.enums, once Dapo's
             // feature branch 312 has been merged
-            // return Job.builder().jobId(jobId).jobState(canceled.getState()).build();)
-            final String stateAfterCanceling = canceled.getState().name();
-            final JobState jobState = JobState.valueOf(stateAfterCanceling);
-
-            return Job.builder().jobId(jobId).jobState(jobState).build();
+            // return Job.builder().jobId(jobId).jobState(job.getState()).build();)
+            return Job.builder().jobId(jobId).jobState(convert(job.getState())).build();
         } else {
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
@@ -180,6 +176,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 return JobState.INITIAL;
             case TRANSFERS_FINISHED:
                 return JobState.TRANSFERS_FINISHED;
+            case CANCELED:
+                return JobState.CANCELED;
             default:
                 throw new IllegalArgumentException("Cannot convert JobState of type " + state);
         }
@@ -197,6 +195,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 return net.catenax.irs.connector.job.JobState.INITIAL;
             case TRANSFERS_FINISHED:
                 return net.catenax.irs.connector.job.JobState.TRANSFERS_FINISHED;
+            case CANCELED:
+                return net.catenax.irs.connector.job.JobState.CANCELED;
             default:
                 throw new IllegalArgumentException("Cannot convert JobState of type " + state);
         }
