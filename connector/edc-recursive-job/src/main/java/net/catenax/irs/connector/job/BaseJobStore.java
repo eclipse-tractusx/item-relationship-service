@@ -118,6 +118,15 @@ public abstract class BaseJobStore implements JobStore {
     }
 
     @Override
+    public List<MultiTransferJob> findByStates(final List<JobState> jobStates) {
+        return readLock(() -> getAll().stream().filter(hasState(jobStates)).collect(Collectors.toList()));
+    }
+
+    private Predicate<MultiTransferJob> hasState(final List<JobState> jobStates) {
+        return job -> jobStates.contains(job.getState());
+    }
+
+    @Override
     public Optional<MultiTransferJob> deleteJob(final String jobId) {
         return writeLock(() -> remove(jobId));
     }
