@@ -13,5 +13,4 @@ package net.catenax.irs.aaswrapper.submodel.domain;
  * Aspect Model Interface
  */
 public interface Aspect {
-    Aspect getAspect();
 }

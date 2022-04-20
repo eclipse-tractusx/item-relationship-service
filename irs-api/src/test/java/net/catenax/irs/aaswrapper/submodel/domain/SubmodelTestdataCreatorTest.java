@@ -11,6 +11,7 @@
 package net.catenax.irs.aaswrapper.submodel.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 import java.util.Set;
@@ -61,5 +62,17 @@ class SubmodelTestdataCreatorTest {
         assertThat(childParts).hasSize(3);
         final List<String> childIDs = List.of("abc", "def", "ghi");
         childParts.forEach(childData -> assertThat(childIDs).contains(childData.getChildCatenaXId()));
+    }
+
+    @Test
+    void shouldReturnError5TimesWhenCallingTestId() throws SubmodelClientException {
+        final String catenaXId = "c35ee875-5443-4a2d-bc14-fdacd64b9446";
+        final SubmodelClientLocalStub client = new SubmodelClientLocalStub();
+
+        for (int i = 0; i < 5; i++) {
+            assertThatExceptionOfType(SubmodelClientException.class).isThrownBy(
+                    () -> client.getSubmodel(catenaXId, catenaXId, AssemblyPartRelationship.class));
+        }
+        assertThat(client.getSubmodel(catenaXId, catenaXId, AssemblyPartRelationship.class)).isNotNull();
     }
 }

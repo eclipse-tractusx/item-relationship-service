@@ -10,8 +10,8 @@
 package net.catenax.irs.aaswrapper.submodel.domain;
 
 import lombok.Getter;
-import net.catenax.irs.dto.NodeType;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
+import net.catenax.irs.dto.NodeType;
 
 /**
  * Item Relationship Aspect Model

@@ -10,22 +10,33 @@
 package net.catenax.irs.dto;
 
 import java.time.Instant;
-import java.util.Optional;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.Builder;
+import lombok.Data;
 
 /**
  * Processing Error Data Class
  */
-@Getter
-@AllArgsConstructor
-@ToString
+@Data
+@Builder(toBuilder = true, setterPrefix = "with")
+@JsonDeserialize(builder = ProcessingError.ProcessingErrorBuilder.class)
 public class ProcessingError {
-    private final Optional<Exception> exception;
+    private final String exception;
     private final String errorDetail;
-    private final int retryCounter;
     private final Instant lastAttempt;
+    private int retryCounter;
 
+    public void incrementRetryCounter() {
+        retryCounter += 1;
+    }
+
+    /**
+     * Builder class
+     */
+    @JsonPOJOBuilder()
+    public static class ProcessingErrorBuilder {
+
+    }
 }

@@ -11,7 +11,6 @@ package net.catenax.irs.aaswrapper.registry.domain;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import feign.FeignException;
@@ -53,18 +52,23 @@ public class DigitalTwinRegistryFacade {
             if (result.isEmpty()) {
                 result = List.of(
                         getResponseTombStoneForResponse(aasIdentifier, "No AssemblyPartRelationship Descriptor found",
-                                Optional.empty(), 1));
+                                "Unknown"));
             }
         } catch (FeignException e) {
-            result = List.of(getResponseTombStoneForResponse(aasIdentifier, e.getMessage(), Optional.of(e), 1));
+            result = List.of(
+                    getResponseTombStoneForResponse(aasIdentifier, e.getMessage(), e.getClass().getSimpleName()));
         }
         return result;
     }
 
     private AbstractAasShell getResponseTombStoneForResponse(final String catenaXId, final String errorDetail,
-            final Optional<Exception> exception, final int retryCounter) {
-        final ProcessingError processingError = new ProcessingError(exception, errorDetail, retryCounter,
-                Instant.now());
+            final String exception) {
+        final ProcessingError processingError = ProcessingError.builder()
+                                                               .withException(exception)
+                                                               .withErrorDetail(errorDetail)
+                                                               .withLastAttempt(Instant.now())
+                                                               .withRetryCounter(0)
+                                                               .build();
         final String idShort = "";
         return new AasShellTombstone(idShort, catenaXId, processingError);
     }

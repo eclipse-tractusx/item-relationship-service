@@ -11,6 +11,7 @@ package net.catenax.irs.aaswrapper.job;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
@@ -19,8 +20,10 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.registry.domain.AasShellSubmodelDescriptor;
 import net.catenax.irs.aaswrapper.registry.domain.AbstractAasShell;
-import net.catenax.irs.aaswrapper.submodel.domain.ItemRelationshipAspect;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
+import net.catenax.irs.aaswrapper.submodel.domain.AbstractItemRelationshipAspect;
+import net.catenax.irs.aaswrapper.submodel.domain.ItemRelationshipAspect;
+import net.catenax.irs.aaswrapper.submodel.domain.ItemRelationshipAspectTombstone;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
@@ -39,6 +42,7 @@ import net.catenax.irs.util.JsonUtil;
 @SuppressWarnings("PMD.DoNotUseThreads") // We want to use threads at the moment ;-)
 public class AASTransferProcessManager implements TransferProcessManager<ItemDataRequest, AASTransferProcess> {
 
+    private static final int MAX_RETRIES = 5;
     private final DigitalTwinRegistryFacade registryFacade;
 
     private final SubmodelFacade submodelFacade;
@@ -82,9 +86,8 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
                                     .map(AasShellSubmodelDescriptor::getSubmodelEndpointAddress)
                                     .map(endpointAddress -> submodelFacade.getAssemblyPartRelationshipSubmodel(
                                             endpointAddress, itemId))
-                                    .filter(ItemRelationshipAspect.class::isInstance)
-                                    .map(abstractItemRelationshipAspect -> ((ItemRelationshipAspect) abstractItemRelationshipAspect).getAssemblyPartRelationship())
-                                    .forEach(submodel -> processEndpoint(aasTransferProcess, itemContainer, submodel));
+                                    .forEach(abstractItemRelationshipAspect -> processEndpointWithFaultTolerance(
+                                            aasTransferProcess, itemContainer, abstractItemRelationshipAspect));
 
             try {
                 final JsonUtil jsonUtil = new JsonUtil();
@@ -94,6 +97,48 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             }
             transferProcessCompleted.accept(aasTransferProcess);
         };
+    }
+
+    private void processEndpointWithFaultTolerance(final AASTransferProcess aasTransferProcess,
+            final ItemContainer itemContainer, final AbstractItemRelationshipAspect relationship) {
+        if (relationship instanceof ItemRelationshipAspect) {
+            processEndpoint(aasTransferProcess, itemContainer,
+                    ((ItemRelationshipAspect) relationship).getAssemblyPartRelationship());
+        } else {
+            log.info("Processing AbstractItemRelationshipAspect for type {}", relationship.getNodeType());
+            processTombstone(aasTransferProcess, itemContainer, relationship);
+        }
+    }
+
+    private void processTombstone(final AASTransferProcess aasTransferProcess, final ItemContainer itemContainer,
+            final AbstractItemRelationshipAspect relationship) {
+        log.info("Processing AbstractItemRelationshipAspect for type {}", relationship.getNodeType());
+        log.info("Transfer Process: {}", aasTransferProcess.getIdsToProcess());
+        final ItemRelationshipAspectTombstone tombstone;
+        final Optional<ItemRelationshipAspectTombstone> first = itemContainer.getItemRelationshipAspectTombstones()
+                                                                             .stream()
+                                                                             .filter(itemRelationshipAspectTombstone -> itemRelationshipAspectTombstone.getCatenaXId()
+                                                                                                                                                       .equals(relationship.getCatenaXId()))
+                                                                             .findFirst();
+        log.info("Item Container before: {}", itemContainer);
+        if (first.isPresent()) {
+            tombstone = first.get();
+            tombstone.getProcessingError().incrementRetryCounter();
+        } else {
+            tombstone = (ItemRelationshipAspectTombstone) relationship;
+        }
+        log.info("Item Container before adding {}: {}", tombstone, itemContainer);
+
+        final int retryCounter = tombstone.getProcessingError().getRetryCounter();
+
+        if (retryCounter < MAX_RETRIES) {
+            log.info("Adding Tombstone to container. Number of tries: {}", retryCounter);
+
+            aasTransferProcess.addIdsToProcess(List.of(relationship.getCatenaXId()));
+            itemContainer.addItemRelationshipAspectTombstone(tombstone);
+        } else {
+            log.info("Too many retries: {}", retryCounter);
+        }
     }
 
     private void processEndpoint(final AASTransferProcess aasTransferProcess, final ItemContainer itemContainer,

@@ -1,6 +1,7 @@
 package net.catenax.irs.aaswrapper.registry.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
 import java.nio.charset.Charset;
@@ -10,6 +11,7 @@ import java.util.Map;
 import feign.FeignException;
 import feign.Request;
 import feign.RequestTemplate;
+import net.catenax.irs.aaswrapper.submodel.domain.SubmodelClientException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,8 +58,7 @@ class DigitalTwinRegistryFacadeTest {
         assertThat(abstractAasShell.getIdentification()).isEqualTo(catenaXId);
         assertThat(abstractAasShell).isInstanceOf(AasShellTombstone.class);
         final AasShellTombstone tombstone = (AasShellTombstone) abstractAasShell;
-        assertThat(tombstone.getProcessingError().getException()).isPresent();
-        assertThat(tombstone.getProcessingError().getException().get()).isInstanceOf(FeignException.class);
+        assertThat(tombstone.getProcessingError().getException()).isEqualTo("NotFound");
     }
 
     @Test
@@ -72,7 +73,20 @@ class DigitalTwinRegistryFacadeTest {
         assertThat(abstractAasShell.getIdentification()).isEqualTo(catenaXId);
         assertThat(abstractAasShell).isInstanceOf(AasShellTombstone.class);
         final AasShellTombstone tombstone = (AasShellTombstone) abstractAasShell;
-        assertThat(tombstone.getProcessingError().getException()).isEmpty();
-        assertThat(tombstone.getProcessingError().getErrorDetail()).isEqualTo("No AssemblyPartRelationship Descriptor found");
+        assertThat(tombstone.getProcessingError().getException()).isEqualTo("Unknown");
+        assertThat(tombstone.getProcessingError().getErrorDetail()).isEqualTo(
+                "No AssemblyPartRelationship Descriptor found");
+    }
+
+    @Test
+    void shouldReturnError5TimesWhenCallingTestId() {
+        final String catenaXId = "9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d";
+        final DigitalTwinRegistryClientLocalStub client = new DigitalTwinRegistryClientLocalStub();
+
+        for (int i = 0; i < 5; i++) {
+            assertThatExceptionOfType(FeignException.NotFound.class).isThrownBy(
+                    () -> client.getAssetAdministrationShellDescriptor(catenaXId));
+        }
+        assertThat(client.getAssetAdministrationShellDescriptor(catenaXId)).isNotNull();
     }
 }

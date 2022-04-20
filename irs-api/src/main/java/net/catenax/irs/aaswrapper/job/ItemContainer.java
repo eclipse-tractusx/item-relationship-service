@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 import lombok.Getter;
+import net.catenax.irs.aaswrapper.submodel.domain.ItemRelationshipAspectTombstone;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 
 /**
@@ -24,11 +25,17 @@ public class ItemContainer {
 
     private final List<AssemblyPartRelationshipDTO> assemblyPartRelationships = new ArrayList<>();
 
+    private final List<ItemRelationshipAspectTombstone> itemRelationshipAspectTombstones = new ArrayList<>();
+
     public void add(final AssemblyPartRelationshipDTO relationship) {
         assemblyPartRelationships.add(relationship);
     }
 
     public void addAll(final Collection<AssemblyPartRelationshipDTO> relationships) {
         assemblyPartRelationships.addAll(relationships);
+    }
+
+    public void addItemRelationshipAspectTombstone(final ItemRelationshipAspectTombstone tombstone) {
+        itemRelationshipAspectTombstones.add(tombstone);
     }
 }

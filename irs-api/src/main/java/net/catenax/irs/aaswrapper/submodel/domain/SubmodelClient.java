@@ -9,6 +9,8 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
@@ -35,12 +37,15 @@ interface SubmodelClient {
 @Profile("local")
 @Service
 class SubmodelClientLocalStub implements SubmodelClient {
-
+    public static final int RETRIES = 5;
+    private final AtomicInteger count = new AtomicInteger(0);
     @Override
     public Aspect getSubmodel(final String submodelEndpointAddress, final String catenaXId,
-            final Class<? extends Aspect> submodelClass) {
+            final Class<? extends Aspect> submodelClass) throws SubmodelClientException {
+        if ("c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(catenaXId) && count.getAndIncrement() < RETRIES) {
+            throw new SubmodelClientException("Dummy Exception");
+        }
         final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
-
         return submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(catenaXId);
     }
 

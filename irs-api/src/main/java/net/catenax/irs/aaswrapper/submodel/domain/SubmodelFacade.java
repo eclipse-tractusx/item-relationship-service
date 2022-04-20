@@ -11,15 +11,14 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 
 import java.time.Instant;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
-import net.catenax.irs.dto.NodeType;
-import net.catenax.irs.dto.ProcessingError;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
+import net.catenax.irs.dto.NodeType;
+import net.catenax.irs.dto.ProcessingError;
 import org.springframework.stereotype.Service;
 
 /**
@@ -64,21 +63,24 @@ public class SubmodelFacade {
                 result = new ItemRelationshipAspect(catenaXId, nodeType, relationshipDTO);
             } else {
                 result = getResponseTombStoneForResponse(catenaXId, submodelEndpointAddress,
-                        "The returned Aspect Model did not match the provided class.", Optional.empty(), 1);
+                        "The returned Aspect Model did not match the provided class.", "Unknown");
             }
         } catch (SubmodelClientException e) {
-            result = getResponseTombStoneForResponse(catenaXId, submodelEndpointAddress, e.getMessage(), Optional.of(e),
-                    1);
+            result = getResponseTombStoneForResponse(catenaXId, submodelEndpointAddress, e.getMessage(),
+                    e.getClass().getSimpleName());
         }
         return result;
 
     }
 
     private AbstractItemRelationshipAspect getResponseTombStoneForResponse(final String catenaXId,
-            final String endpointUrl, final String errorDetail, final Optional<Exception> exception,
-            final int retryCounter) {
-        final ProcessingError processingError = new ProcessingError(exception, errorDetail, retryCounter,
-                Instant.now());
+            final String endpointUrl, final String errorDetail, final String exception) {
+        final ProcessingError processingError = ProcessingError.builder()
+                                                               .withException(exception)
+                                                               .withErrorDetail(errorDetail)
+                                                               .withLastAttempt(Instant.now())
+                                                               .withRetryCounter(0)
+                                                               .build();
         return new ItemRelationshipAspectTombstone(catenaXId, processingError, endpointUrl);
     }
 

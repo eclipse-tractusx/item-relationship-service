@@ -10,6 +10,7 @@
 package net.catenax.irs.aaswrapper.registry.domain;
 
 import lombok.Getter;
+import lombok.ToString;
 import net.catenax.irs.dto.NodeType;
 import net.catenax.irs.dto.ProcessingError;
 
@@ -17,6 +18,7 @@ import net.catenax.irs.dto.ProcessingError;
  * Asset Administration Shell Response Tombstone
  */
 @Getter
+@ToString
 public class AasShellTombstone extends AbstractAasShell {
     private final ProcessingError processingError;
 

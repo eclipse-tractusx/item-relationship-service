@@ -28,9 +28,4 @@ class AssemblyPartRelationship implements Aspect {
      * childParts
      */
     private Set<ChildData> childParts;
-
-    @Override
-    public Aspect getAspect() {
-        return null;
-    }
 }
