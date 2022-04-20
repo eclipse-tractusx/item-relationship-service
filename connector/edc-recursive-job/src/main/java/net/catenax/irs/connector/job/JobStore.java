@@ -66,9 +66,9 @@ public interface JobStore {
      * Mark transfer process completed for the job.
      *
      * @param jobId     the job identifier.
-     * @param processId identifier of the transfer process to mark completed.
+     * @param process   transfer process to mark completed.
      */
-    void completeTransferProcess(String jobId, TransferProcess processId);
+    void completeTransferProcess(String jobId, TransferProcess process);
 
     /**
      * Mark job as completed.
