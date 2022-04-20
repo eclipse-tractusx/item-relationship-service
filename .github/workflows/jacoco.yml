@@ -29,12 +29,6 @@ jobs:
           generate-branches-badge: true
           jacoco-csv-file: >
             irs-api/target/site/jacoco/jacoco.csv
-            irs-client/target/site/jacoco/jacoco.csv
-            irs-common/target/site/jacoco/jacoco.csv
-            irs-models/target/site/jacoco/jacoco.csv
-            irs-parent/target/site/jacoco/jacoco.csv
-            irs-parent-sprint-boot/target/site/jacoco/jacoco.csv
-            irs-testing/target/site/jacoco/jacoco.csv
 
       - name: Log coverage percentage
         run: |
