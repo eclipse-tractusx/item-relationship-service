@@ -155,11 +155,11 @@ public class IrsController {
                               }),
             })
     @GetMapping("/jobs")
-    public ResponseEntity<List<UUID>> getJobsByJobState(
+    public List<UUID> getJobsByJobState(
             final @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
                     explode = Explode.FALSE, array = @ArraySchema(
                     schema = @Schema(implementation = JobState.class))) @RequestParam(
                     value = "jobStates", required = false) List<JobState> jobStates) {
-        return new ResponseEntity<>(List.of(UUID.randomUUID()), HttpStatus.OK);
+        return itemJobService.getJobsByJobState(jobStates);
     }
 }

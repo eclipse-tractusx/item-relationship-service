@@ -38,6 +38,13 @@ public interface JobStore {
     List<MultiTransferJob> findByStateAndCompletionDateOlderThan(JobState jobState, LocalDateTime localDateTime);
 
     /**
+     * Retrieve jobs with requested states
+     * @param jobStates requested job states
+     * @return found jobs
+     */
+    List<MultiTransferJob> findByStates(List<JobState> jobStates);
+
+    /**
      * Retrieve a job given a transfer id. Only retrieves jobs
      * for which the transfer has not been completed
      * with {@link #completeTransferProcess(String, TransferProcess)}.
