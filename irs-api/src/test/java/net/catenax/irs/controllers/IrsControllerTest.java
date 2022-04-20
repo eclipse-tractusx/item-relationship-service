@@ -1,47 +1,31 @@
 package net.catenax.irs.controllers;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
 import java.util.UUID;
 
-import net.catenax.irs.TestConfig;
-import net.catenax.irs.component.Job;
-import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.services.IrsItemGraphQueryService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.BDDMockito.given;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = { "test" })
-@Import(TestConfig.class)
+@WebMvcTest(IrsController.class)
 class IrsControllerTest {
 
-    private final UUID jobId = UUID.randomUUID();
-
     @Autowired
-    private IrsController controller;
+    private MockMvc mockMvc;
 
     @MockBean
-    private IrsItemGraphQueryService service;
-
-    private Job canceledJob;
-
-    @BeforeEach
-    void setUp() {
-        this.canceledJob = Job.builder().jobId(jobId).jobState(JobState.CANCELED).build();
-    }
+    private IrsItemGraphQueryService irsItemGraphQueryService;
 
     @Test
     void initiateJobForGlobalAssetId() {
@@ -54,25 +38,17 @@ class IrsControllerTest {
     }
 
     @Test
-    void getJobsByJobState() {
+    void getJobsByJobState() throws Exception {
+        final UUID returnedJob = UUID.randomUUID();
+        when(irsItemGraphQueryService.getJobsByJobState(any())).thenReturn(List.of(returnedJob));
+
+        this.mockMvc.perform(get("/irs/jobs"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(containsString(returnedJob.toString())));
+    }
+
+    @Test
+    void cancelJobForJobId() {
         assertTrue(true);
-    }
-
-    @Test
-    void cancelJobById() {
-        given(this.service.cancelJobById(jobId)).willReturn(canceledJob);
-
-        final ResponseEntity<?> entity = this.controller.cancelJobById(jobId);
-
-        assertNotNull(entity);
-        assertEquals(entity.getStatusCode(), HttpStatus.OK);
-    }
-
-    @Test
-    void cancelJobById_throwEntityNotFoundException() {
-        given(this.service.cancelJobById(jobId)).willThrow(
-                new EntityNotFoundException("No job exists with id " + jobId));
-
-        assertThrows(EntityNotFoundException.class, () -> this.controller.cancelJobById(jobId));
     }
 }
