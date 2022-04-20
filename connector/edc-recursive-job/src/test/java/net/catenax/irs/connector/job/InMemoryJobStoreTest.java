@@ -288,6 +288,31 @@ class InMemoryJobStoreTest {
         assertThat(sut.find(job.getJobId())).isEmpty();
     }
 
+    @Test
+    void shouldFindJobsByCompletedJobState() {
+        // Arrange
+        sut.create(job);
+        sut.completeJob(job.getJobId());
+        sut.create(job2);
+        // Act
+        final List<MultiTransferJob> foundJobs = sut.findByStates(List.of(JobState.COMPLETED));
+        // Assert
+        assertThat(foundJobs.size()).isEqualTo(1);
+        assertThat(foundJobs.get(0).getJobId()).isEqualTo(job.getJobId());
+    }
+
+    @Test
+    void shouldFindJobsByErrorJobState() {
+        // Arrange
+        sut.create(job);
+        sut.markJobInError(job.getJobId(), "errorDetail");
+        // Act
+        final List<MultiTransferJob> foundJobs = sut.findByStates(List.of(JobState.ERROR));
+        // Assert
+        assertThat(foundJobs.size()).isEqualTo(1);
+        assertThat(foundJobs.get(0).getJobId()).isEqualTo(job.getJobId());
+    }
+
     private void refreshJob() {
         job = sut.find(job.getJobId()).get();
     }
