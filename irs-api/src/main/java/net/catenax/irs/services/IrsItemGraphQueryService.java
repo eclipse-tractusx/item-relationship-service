@@ -32,8 +32,8 @@ import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
-import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.RegisterJob;
+import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
@@ -105,15 +105,17 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         if (multiTransferJob.isPresent()) {
             final MultiTransferJob job = multiTransferJob.get();
             final Job.JobBuilder builder = Job.builder()
-                    .jobId(UUID.fromString(job.getJobId()))
-                    .jobState(convert(job.getState()));
+                                              .jobId(UUID.fromString(job.getJobId()))
+                                              .jobState(convert(job.getState()));
             job.getCompletionDate().ifPresent(date -> builder.jobCompleted(date.toInstant(ZoneOffset.UTC)));
             final Job jobToReturn = builder.build();
 
             final var relationships = new ArrayList<Relationship>();
             try {
-                final byte[] blob = blobStore.getBlob(job.getJobId());
-                final ItemContainer itemContainer = new JsonUtil().fromString(new String(blob, StandardCharsets.UTF_8),
+                final Optional<byte[]> blob = blobStore.getBlob(job.getJobId());
+                final byte[] bytes = blob.orElseThrow(
+                        () -> new EntityNotFoundException("Could not find stored data for job with id " + jobId));
+                final ItemContainer itemContainer = new JsonUtil().fromString(new String(bytes, StandardCharsets.UTF_8),
                         ItemContainer.class);
                 final List<AssemblyPartRelationshipDTO> assemblyPartRelationships = itemContainer.getAssemblyPartRelationships();
                 relationships.addAll(convert(assemblyPartRelationships));
@@ -132,20 +134,21 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private Stream<Relationship> convert(final AssemblyPartRelationshipDTO dto) {
         return dto.getChildParts()
-                .stream()
-                .map(child -> Relationship.builder()
-                        .catenaXId(GlobalAssetIdentification.builder()
-                                .globalAssetId(dto.getCatenaXId())
-                                .build())
-                        .childItem(ChildItem.builder()
-                                .childCatenaXId(GlobalAssetIdentification.builder()
-                                        .globalAssetId(
-                                                child.getChildCatenaXId())
-                                        .build())
-                                .lifecycleContext(
-                                        BomLifecycle.fromLifecycleContextCharacteristic(child.getLifecycleContext()))
-                                .build())
-                        .build());
+                  .stream()
+                  .map(child -> Relationship.builder()
+                                            .catenaXId(GlobalAssetIdentification.builder()
+                                                                                .globalAssetId(dto.getCatenaXId())
+                                                                                .build())
+                                            .childItem(ChildItem.builder()
+                                                                .childCatenaXId(GlobalAssetIdentification.builder()
+                                                                                                         .globalAssetId(
+                                                                                                                 child.getChildCatenaXId())
+                                                                                                         .build())
+                                                                .lifecycleContext(
+                                                                        BomLifecycle.fromLifecycleContextCharacteristic(
+                                                                                child.getLifecycleContext()))
+                                                                .build())
+                                            .build());
     }
 
     private JobState convert(final net.catenax.irs.connector.job.JobState state) {
