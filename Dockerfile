@@ -32,7 +32,7 @@ ARG jmxPrometheusAgentVersion="0.16.1"
 ARG jmxPrometheusAgentURL="https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/${jmxPrometheusAgentVersion}/jmx_prometheus_javaagent-${jmxPrometheusAgentVersion}.jar"
 
 # Download jmx exporter agent (for non-spring boot applications)
-RUN curl -o -s jmx-prometheus-agent.jar $jmxPrometheusAgentURL
+RUN curl --silent -o jmx-prometheus-agent.jar $jmxPrometheusAgentURL
 
 # Copy the jar and build image
 FROM eclipse-temurin:17-jre AS irs-api
