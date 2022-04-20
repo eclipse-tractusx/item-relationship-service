@@ -85,7 +85,7 @@
         </dependency>
         <dependency>
             <groupId>net.catenax.irs</groupId>
-            <artifactId>edc-recursive-job</artifactId>
+            <artifactId>irs-recursive-job</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
