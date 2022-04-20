@@ -29,6 +29,4 @@ jobs:
       - name: Build with Maven
         run: |
           mvn --batch-mode --update-snapshots -s settings.xml verify
-        env:
-          IRS_EDC_PKG_USERNAME: ${{ secrets.IRS_EDC_PKG_USERNAME }}
-          IRS_EDC_PKG_PASSWORD: ${{ secrets.IRS_EDC_PKG_PASSWORD }}
+
