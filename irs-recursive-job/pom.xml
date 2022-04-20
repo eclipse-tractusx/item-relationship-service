@@ -13,7 +13,7 @@
     <groupId>net.catenax.irs</groupId>
     <artifactId>irs-recursive-job</artifactId>
 
-    <name>Recursive Job Module</name>
+    <name>IRS Recursive Job Module</name>
     <description>Module for recursive job management</description>
 
     <dependencies>
@@ -46,6 +46,12 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.13.1</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.catenax.irs</groupId>
+            <artifactId>irs-testing</artifactId>
+            <version>${revision}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
