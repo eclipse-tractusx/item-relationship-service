@@ -38,6 +38,13 @@ public interface JobStore {
     List<MultiTransferJob> findByStateAndCompletionDateOlderThan(JobState jobState, LocalDateTime localDateTime);
 
     /**
+     * Retrieve jobs with requested states
+     * @param jobStates requested job states
+     * @return found jobs
+     */
+    List<MultiTransferJob> findByStates(List<JobState> jobStates);
+
+    /**
      * Retrieve a job given a transfer id. Only retrieves jobs
      * for which the transfer has not been completed
      * with {@link #completeTransferProcess(String, TransferProcess)}.
@@ -66,9 +73,9 @@ public interface JobStore {
      * Mark transfer process completed for the job.
      *
      * @param jobId     the job identifier.
-     * @param processId identifier of the transfer process to mark completed.
+     * @param process   transfer process to mark completed.
      */
-    void completeTransferProcess(String jobId, TransferProcess processId);
+    void completeTransferProcess(String jobId, TransferProcess process);
 
     /**
      * Mark job as completed.
@@ -91,15 +98,16 @@ public interface JobStore {
      * Delete a job by its identifier.
      *
      * @param jobId the job identifier.
-     * @return deleted job
+     * @return deleted job (if it existed)
      */
-    MultiTransferJob deleteJob(String jobId);
+    Optional<MultiTransferJob> deleteJob(String jobId);
+
 
     /**
      * Set the jobStatus to canceled.
      *
      * @param jobId the job identifier.
-     * @return canceled MultiTransferJob
+     * @return canceled MultiTransferJob (if it existed)
      */
-    MultiTransferJob cancelJob(String jobId);
+    Optional<MultiTransferJob> cancelJob(String jobId);
 }

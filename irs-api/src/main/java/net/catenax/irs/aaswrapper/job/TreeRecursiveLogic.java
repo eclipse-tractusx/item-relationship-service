@@ -76,7 +76,7 @@ public class TreeRecursiveLogic {
     private byte[] downloadPartialPartsTree(final TransferProcess transfer) {
         log.info("Downloading partial parts tree from blob at {}", transfer.getId());
         try {
-            return blobStoreApi.getBlob(transfer.getId());
+            return blobStoreApi.getBlob(transfer.getId()).orElse(new byte[0]);
         } catch (BlobPersistenceException e) {
             log.error("Could not load blob", e);
             return new byte[0];

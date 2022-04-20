@@ -87,8 +87,11 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     @Override
-    public Optional<List<Job>> getJobsByJobState(final @NonNull String processingState) {
-        return Optional.empty();
+    public List<UUID> getJobsByJobState(final @NonNull List<JobState> jobStates) {
+        final List<MultiTransferJob> jobs = jobStore.findByStates(
+                jobStates.stream().map(this::convert).collect(Collectors.toList()));
+
+        return jobs.stream().map(MultiTransferJob::getJobId).map(UUID::fromString).collect(Collectors.toList());
     }
 
     @Override
@@ -126,9 +129,11 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
             final var relationships = new ArrayList<Relationship>();
             try {
-                final byte[] blob = blobStore.getBlob(job.getJobId());
-                final ItemContainer itemContainer = new JsonUtil().fromString(new String(blob, StandardCharsets.UTF_8),
-                                                                              ItemContainer.class);
+                final Optional<byte[]> blob = blobStore.getBlob(job.getJobId());
+                final byte[] bytes = blob.orElseThrow(
+                        () -> new EntityNotFoundException("Could not find stored data for job with id " + jobId));
+                final ItemContainer itemContainer = new JsonUtil().fromString(new String(bytes, StandardCharsets.UTF_8),
+                        ItemContainer.class);
                 final List<AssemblyPartRelationshipDTO> assemblyPartRelationships = itemContainer.getAssemblyPartRelationships();
                 relationships.addAll(convert(assemblyPartRelationships));
             } catch (BlobPersistenceException e) {
@@ -175,6 +180,23 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 return JobState.INITIAL;
             case TRANSFERS_FINISHED:
                 return JobState.TRANSFERS_FINISHED;
+            default:
+                throw new IllegalArgumentException("Cannot convert JobState of type " + state);
+        }
+    }
+
+    private net.catenax.irs.connector.job.JobState convert(final JobState state) {
+        switch (state) {
+            case COMPLETED:
+                return net.catenax.irs.connector.job.JobState.COMPLETED;
+            case RUNNING:
+                return net.catenax.irs.connector.job.JobState.IN_PROGRESS;
+            case ERROR:
+                return net.catenax.irs.connector.job.JobState.ERROR;
+            case INITIAL:
+                return net.catenax.irs.connector.job.JobState.INITIAL;
+            case TRANSFERS_FINISHED:
+                return net.catenax.irs.connector.job.JobState.TRANSFERS_FINISHED;
             default:
                 throw new IllegalArgumentException("Cannot convert JobState of type " + state);
         }
