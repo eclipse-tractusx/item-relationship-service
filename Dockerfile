@@ -10,9 +10,6 @@ COPY .mvn .mvn
 COPY settings.xml .
 COPY pom.xml .
 
-COPY connector/pom.xml connector/pom.xml
-COPY connector/edc-recursive-job connector/edc-recursive-job
-COPY connector/irs-connector-parent connector/irs-connector-parent
 COPY integration-tests integration-tests
 COPY irs-api irs-api
 COPY irs-common irs-common
