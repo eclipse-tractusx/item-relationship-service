@@ -30,7 +30,19 @@ The two following subsections provide instructions for running either only the i
 * Retrieve sample BOM:
 
 ```bash
-curl -X 'POST' 'http://localhost:8080/irs/items/8a61c8db-561e-4db0-84ec-a693fc5ffdf6?bomLifecycle=asBuilt&aspects=SerialPartTypization&direction=downward' -H 'accept: application/json'
+curl -X 'POST' \
+  'http://localhost:8080/irs/jobs' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "aspects": [
+    "SerialPartTypization"
+  ],
+  "bomLifecycle": "asBuilt",
+  "depth": 1,
+  "direction": "downward",
+  "globalAssetId": "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6"
+}'
   
 curl -X 'GET'  'http://localhost:8080/irs/jobs/<jobID from first call>' -H 'accept: application/json'
 ```
