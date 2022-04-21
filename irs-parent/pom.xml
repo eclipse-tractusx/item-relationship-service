@@ -17,6 +17,7 @@
 
     <properties>
         <sonar.organization>catenax-ng</sonar.organization>
+        <sonar.skip>false</sonar.skip>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <pmd.ruleset.location>../ci/pmd-rules.xml</pmd.ruleset.location>
         <java.version>11</java.version>

@@ -6,7 +6,9 @@
     <artifactId>item-relationship-service-connector-root</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
-
+    <properties>
+        <sonar.skip>false</sonar.skip>
+    </properties>
     <name>IRS Connector Root</name>
     <description>Root module containing connector modules.</description>
 

@@ -12,7 +12,7 @@
     <properties>
         <sonar.skip>true</sonar.skip>
     </properties>
-    
+
     <modules>
         <module>irs-testing</module>
         <module>connector</module>
