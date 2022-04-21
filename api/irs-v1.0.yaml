@@ -158,7 +158,7 @@ paths:
           content:
             '*/*':
               schema:
-                type: object
+                $ref: '#/components/schemas/Job'
           description: "Job with {jobId} was canceled."
         "404":
           content:
