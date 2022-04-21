@@ -9,7 +9,10 @@
 
     <name>IRS Root</name>
     <description>Root module containing other modules.</description>
-
+    <properties>
+        <sonar.skip>true</sonar.skip>
+    </properties>
+    
     <modules>
         <module>irs-testing</module>
         <module>connector</module>
