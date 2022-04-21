@@ -12,6 +12,7 @@ package net.catenax.irs.aaswrapper.job;
 import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.RecursiveJobHandler;
 
@@ -25,6 +26,11 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
      */
     public static final String ROOT_ITEM_ID_KEY = "root.item.id.key";
 
+    /**
+     * Expected depth of the tree
+     */
+    public static final String DEPTH_ID_KEY = "depth.id.key";
+
     private final TreeRecursiveLogic logic;
 
     public AASRecursiveJobHandler(final TreeRecursiveLogic logic) {
@@ -35,15 +41,27 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
     public Stream<ItemDataRequest> initiate(final MultiTransferJob job) {
         log.info("Initiating request for job {}", job.getJobId());
         final var partId = job.getJobData().get(ROOT_ITEM_ID_KEY);
-        final var dataRequest = new ItemDataRequest(partId);
+        final var dataRequest = ItemDataRequest.rootNode(partId);
         return Stream.of(dataRequest);
     }
 
     @Override
     public Stream<ItemDataRequest> recurse(final MultiTransferJob job, final AASTransferProcess transferProcess) {
         log.info("Starting recursive request for job {}", job.getJobId());
-        return transferProcess.getIdsToProcess().stream().map(ItemDataRequest::new);
+
+        final Integer expectedDepth = getExpectedTreeDepth(job);
+        final Integer currentDepth = transferProcess.getDepth();
+
+        if (expectedDepthOfTreeIsNotReached(expectedDepth, currentDepth)) {
+            return transferProcess.getIdsToProcess()
+                                  .stream()
+                                  .map(itemId -> ItemDataRequest.nextDepthNode(itemId, currentDepth));
+        }
+
+        return Stream.empty();
     }
+
+
 
     @Override
     public void complete(final MultiTransferJob job) {
@@ -51,5 +69,15 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
         final var completedTransfers = job.getCompletedTransfers();
         final var targetBlobName = job.getJobId();
         logic.assemblePartialItemGraphBlobs(completedTransfers, targetBlobName);
+    }
+
+    private Integer getExpectedTreeDepth(final MultiTransferJob job) {
+        return job.getJobData().containsKey(AASRecursiveJobHandler.DEPTH_ID_KEY) ? Integer.parseInt(job.getJobData().get(AASRecursiveJobHandler.DEPTH_ID_KEY))
+                : Integer.parseInt(RegisterJob.MAX_TREE_DEPTH);
+    }
+
+    private boolean expectedDepthOfTreeIsNotReached(final Integer expectedDepth, final Integer currentDepth) {
+        log.info("Expected tree depth is {}, current depth is {}", expectedDepth, currentDepth);
+        return currentDepth < expectedDepth;
     }
 }

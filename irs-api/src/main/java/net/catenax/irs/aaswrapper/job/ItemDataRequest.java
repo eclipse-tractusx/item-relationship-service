@@ -18,7 +18,14 @@ import net.catenax.irs.connector.job.DataRequest;
 @Value
 public class ItemDataRequest implements DataRequest {
 
-
     private final String itemId;
+    private final Integer depth;
 
+    public static ItemDataRequest rootNode(final String itemId) {
+        return new ItemDataRequest(itemId, 0);
+    }
+
+    public static ItemDataRequest nextDepthNode(final String itemId, final Integer currentDepth) {
+        return new ItemDataRequest(itemId, currentDepth + 1);
+    }
 }

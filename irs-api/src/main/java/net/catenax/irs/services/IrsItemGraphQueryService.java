@@ -69,7 +69,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
         final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
-        final var params = Map.of(AASRecursiveJobHandler.ROOT_ITEM_ID_KEY, uuid);
+        final var params = Map.of(AASRecursiveJobHandler.ROOT_ITEM_ID_KEY, uuid, AASRecursiveJobHandler.DEPTH_ID_KEY, String.valueOf(request.getDepth()));
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {

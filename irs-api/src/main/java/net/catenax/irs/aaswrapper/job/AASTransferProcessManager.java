@@ -66,7 +66,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             final Consumer<AASTransferProcess> transferProcessCompleted, final String processId) {
         return () -> {
             transferProcessStarted.accept(processId);
-            final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId);
+            final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId, dataRequest.getDepth());
 
             final String itemId = dataRequest.getItemId();
             log.info("Calling Digital Twin Registry with itemId {}", itemId);

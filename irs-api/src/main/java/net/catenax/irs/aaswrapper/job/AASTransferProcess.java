@@ -37,6 +37,8 @@ public class AASTransferProcess implements TransferProcess {
 
     private final List<String> idsToProcess = new ArrayList<>();
 
+    private final Integer depth;
+
     public void addIdsToProcess(final List<String> childIds) {
         idsToProcess.addAll(childIds);
     }
@@ -57,7 +59,7 @@ public class AASTransferProcess implements TransferProcess {
             final ObjectCodec codec = jsonParser.getCodec();
             final JsonNode treeNode = codec.readTree(jsonParser);
             final String idValue = treeNode.get("id").textValue();
-            return new AASTransferProcess(idValue);
+            return new AASTransferProcess(idValue, null);
         }
     }
 }
