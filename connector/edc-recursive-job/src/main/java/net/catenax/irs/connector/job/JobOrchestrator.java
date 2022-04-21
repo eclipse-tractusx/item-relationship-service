@@ -11,9 +11,12 @@ package net.catenax.irs.connector.job;
 
 import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,8 +26,13 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
+import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.Jobs;
+import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.enums.JobState;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Orchestrator service for recursive {@link MultiTransferJob}s that potentially
@@ -65,7 +73,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      * @param handler        Recursive job handler.
      */
     public JobOrchestrator(final TransferProcessManager<T, P> processManager, final JobStore jobStore,
-            final RecursiveJobHandler<T, P> handler) {
+        final RecursiveJobHandler<T, P> handler) {
 
         this.processManager = processManager;
         this.jobStore = jobStore;
@@ -75,12 +83,13 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     /**
      * Start a job.
      *
+     * @param job     a nullable job, the actual
      * @param jobData additional data for the job to managed by the {@link JobStore}.
      * @return response.
      */
-    public JobInitiateResponse startJob(final Map<String, String> jobData) {
-        final Job job = createJob(jobData.get(ROOT_ITEM_ID_KEY));
-        final var multiJob = MultiTransferJob.builder().job(job).jobData(jobData).build();
+    public JobInitiateResponse startJob(@Nullable Job job, final Map<String, String> jobData) {
+        final Job newJob = job != null ? job : createJob(jobData.get(ROOT_ITEM_ID_KEY));
+        final var multiJob = MultiTransferJob.builder().job(newJob).jobData(jobData).build();
         jobStore.create(multiJob);
 
         final Stream<T> requests;
@@ -116,6 +125,14 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     /**
+     * @param jobHandle
+     * @return the cancelled job object or null if job does to exist
+     */
+    public Job cancelJob(JobHandle jobHandle) {
+        return cancelMultiTranferJob(jobHandle.getJobId().toString());
+    }
+
+    /**
      * Callback invoked when a transfer has completed.
      *
      * @param process the process that has completed
@@ -130,7 +147,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
         if (job.getJob().getJobState() != JobState.IN_PROGRESS) {
             log.info("Ignoring transfer complete event for job {} in state {} ", job.getJob().getJobId(),
-                    job.getJob().getJobState());
+                job.getJob().getJobState());
             return;
         }
 
@@ -157,7 +174,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     public List<MultiTransferJob> findAndCleanupCompletedJobs() {
         final Instant currentDateMinusSeconds = Instant.now().minusSeconds(TTL_CLEANUP_COMPLETED_JOBS_SECONDS);
         final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
-                currentDateMinusSeconds);
+            currentDateMinusSeconds);
 
         return deleteJobs(completedJobs);
     }
@@ -165,8 +182,35 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     public List<MultiTransferJob> findAndCleanupFailedJobs() {
         final Instant currentDateMinusSeconds = Instant.now().minusSeconds(TTL_CLEANUP_FAILED_JOBS_SECONDS);
         final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR,
-                currentDateMinusSeconds);
+            currentDateMinusSeconds);
         return deleteJobs(failedJobs);
+    }
+
+    public Jobs getBOMForJobId(final UUID jobId, @Autowired BlobPersistence blobStore) throws BlobPersistenceException {
+        final Optional<MultiTransferJob> multiTransferJob = jobStore.find(jobId.toString());
+        if (multiTransferJob.isPresent()) {
+            final MultiTransferJob job = multiTransferJob.get();
+            final Job.JobBuilder builder = Job.builder()
+                                              .jobId(UUID.fromString(job.getJob().getJobId().toString()))
+                                              .jobState(job.getJob().getJobState());
+
+            Optional.of(job.getJob().getJobCompleted()).ifPresent(date -> builder.jobCompleted(date));
+            final Job jobToReturn = builder.build();
+
+            final var relationships = new ArrayList<Relationship>();
+            try {
+                final byte[] blob = blobStore.getBlob(job.getJob().getJobId().toString());
+                final ItemContainer itemContainer = new JsonUtil().fromString(new String(blob, StandardCharsets.UTF_8),
+                    ItemContainer.class);
+                final List<AssemblyPartRelationshipDTO> assemblyPartRelationships = itemContainer.getAssemblyPartRelationships();
+                relationships.addAll(convert(assemblyPartRelationships));
+            } catch (BlobPersistenceException e) {
+                log.error("Unable to read blob", e);
+            }
+            return Jobs.builder().job(jobToReturn).relationships(relationships).build();
+        } else {
+            throw new EntityNotFoundException("No job exists with id " + jobId);
+        }
     }
 
     private List<MultiTransferJob> deleteJobs(final List<MultiTransferJob> jobs) {
@@ -205,7 +249,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     private TransferInitiateResponse startTransfer(final MultiTransferJob job,
-            final T dataRequest)  /* throws JobException */ {
+        final T dataRequest)  /* throws JobException */ {
         final var response = processManager.initiateRequest(dataRequest, this::transferProcessCompleted);
 
         if (response.getStatus() != ResponseStatus.OK) {
@@ -214,6 +258,14 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
         jobStore.addTransferProcess(job.getJob().getJobId().toString(), response.getTransferId());
         return response;
+    }
+
+    private Job cancelMultiTranferJob(String jobId) {
+        Optional<MultiTransferJob> optJob = jobStore.find(jobId);
+        optJob.ifPresent(job -> {
+            job.getJob().setJobState(JobState.CANCELED);
+        });
+        return optJob.get().getJob();
     }
 
     /**

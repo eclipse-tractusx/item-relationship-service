@@ -70,7 +70,7 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
     public JobHandle registerItemJob(final @NonNull IrsPartsTreeRequest request) {
         final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
         final var params = Map.of(ROOT_ITEM_ID_KEY, uuid);
-        final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
+        final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(null, params);
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
             final String jobId = jobInitiateResponse.getJobId();
@@ -111,7 +111,7 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
             try {
                 final byte[] blob = blobStore.getBlob(job.getJob().getJobId().toString());
                 final ItemContainer itemContainer = new JsonUtil().fromString(new String(blob, StandardCharsets.UTF_8),
-                        ItemContainer.class);
+                    ItemContainer.class);
                 final List<AssemblyPartRelationshipDTO> assemblyPartRelationships = itemContainer.getAssemblyPartRelationships();
                 relationships.addAll(convert(assemblyPartRelationships));
             } catch (BlobPersistenceException e) {
@@ -137,10 +137,10 @@ public class IrsPartsTreeQueryService implements IIrsPartTreeQueryService {
                                             .childItem(ChildItem.builder()
                                                                 .childCatenaXId(GlobalAssetIdentification.builder()
                                                                                                          .globalAssetId(
-                                                                                                                 child.getChildCatenaXId())
+                                                                                                             child.getChildCatenaXId())
                                                                                                          .build())
                                                                 .lifecycleContext(
-                                                                        BomLifecycle.value(child.getLifecycleContext()))
+                                                                    BomLifecycle.value(child.getLifecycleContext()))
                                                                 .build())
                                             .build());
     }

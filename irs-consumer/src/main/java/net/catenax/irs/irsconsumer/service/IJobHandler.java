@@ -11,21 +11,22 @@ package net.catenax.irs.irsconsumer.service;
 
 import lombok.NonNull;
 import net.catenax.irs.component.GlobalAssetIdentification;
-import net.catenax.irs.component.Job;
+import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.connector.job.JobInitiateResponse;
 
 /**
  * Interface for JobHandler
  */
 public interface IJobHandler {
 
-    Job createJob(@NonNull GlobalAssetIdentification globalAssetId);
+    JobInitiateResponse createJob(@NonNull GlobalAssetIdentification globalAssetId);
 
-    void cancelJob(@NonNull String JobId);
+    void cancelJob(@NonNull JobHandle jobHandle);
 
-    JobState interruptJob(@NonNull String JobId);
+    JobState interruptJob(@NonNull JobHandle jobHandle);
 
-    Jobs getResult(@NonNull String JobId);
+    Jobs getResult(@NonNull JobHandle jobHandle);
 
 }

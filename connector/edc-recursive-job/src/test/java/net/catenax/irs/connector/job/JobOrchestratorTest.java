@@ -117,7 +117,7 @@ class JobOrchestratorTest {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.empty());
 
-        var response = sut.startJob(job.getJobData());
+        var response = sut.startJob(null, job.getJobData());
         var newJob = getStartedJob();
 
         // Assert
@@ -139,7 +139,7 @@ class JobOrchestratorTest {
         when(processManager.initiateRequest(eq(dataRequest), any())).thenReturn(okResponse);
 
         // Act
-        var response = sut.startJob(job.getJobData());
+        var response = sut.startJob(null, job.getJobData());
 
         // Assert
         var newJob = getStartedJob();
@@ -157,7 +157,7 @@ class JobOrchestratorTest {
         when(processManager.initiateRequest(eq(dataRequest), any())).thenReturn(generate.response(status));
 
         // Act
-        var response = sut.startJob(job.getJobData());
+        var response = sut.startJob(null, job.getJobData());
 
         // Assert
         verify(processManager).initiateRequest(eq(dataRequest), any());
@@ -179,7 +179,7 @@ class JobOrchestratorTest {
         when(handler.initiate(any(MultiTransferJob.class))).thenThrow(new RuntimeException());
 
         // Act
-        var response = sut.startJob(job.getJobData());
+        var response = sut.startJob(null, job.getJobData());
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
@@ -336,7 +336,7 @@ class JobOrchestratorTest {
     }
 
     private MultiTransferJob startJob() {
-        sut.startJob(job.getJobData());
+        sut.startJob(null, job.getJobData());
         return getStartedJob();
     }
 

@@ -19,7 +19,6 @@
         <module>irs-models</module>
         <module>irs-client</module>
         <module>irs-consumer</module>
-        <module>connector</module>
         <module>integration-tests</module>
 
     </modules>

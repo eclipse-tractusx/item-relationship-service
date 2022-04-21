@@ -56,7 +56,7 @@ class IrsApplicationTests {
     @Test
     void generatedOpenApiMatchesContract() throws Exception {
         final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
-                String.class);
+            String.class);
         final String fixedYaml = Files.readString(new File("../api/irs-v0.2.yaml").toPath(), UTF_8);
         // assertThat(generatedYaml).isEqualToNormalizingNewlines(fixedYaml);
         assertThat(generatedYaml).contains("openapi: 3.0.1");
@@ -66,7 +66,7 @@ class IrsApplicationTests {
     @Test
     void shouldStoreBlobResultWhenRunningJob() throws Exception {
 
-        final JobInitiateResponse response = jobOrchestrator.startJob(Map.of(ROOT_ITEM_ID_KEY, "rootitemid"));
+        final JobInitiateResponse response = jobOrchestrator.startJob(null, Map.of(ROOT_ITEM_ID_KEY, "rootitemid"));
 
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.OK);
 

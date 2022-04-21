@@ -39,7 +39,7 @@
         <dependency>
             <groupId>net.catenax.irs</groupId>
             <artifactId>irs-common</artifactId>
-            <version>${revsision}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>io.swagger</groupId>
