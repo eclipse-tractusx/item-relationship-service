@@ -21,13 +21,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Mapper from entities to {@link } DTO.
+ * Mapper from entities to {@link Job} DTO.
  */
 @Component
 @RequiredArgsConstructor
 public class PartRelationshipEntityListToDtoMapper {
     /**
-     * Mapper from {@link PartRelationshipEntity} entity to {@link } DTO.
+     * Mapper from {@link PartRelationshipEntity} entity to {@link Job} DTO.
      */
     private final PartRelationshipEntityToDtoMapper relationshipMapper;
     /**
@@ -36,22 +36,23 @@ public class PartRelationshipEntityListToDtoMapper {
     private final ChildItemEntityPartToDtoMapper idMapper;
 
     /**
-     * Map entities into a {@link } DTO.
+     * Map entities into a {@link Job} DTO.
      *
      * @param source     collection of {@link PartRelationshipEntity}
-     *                   to be mapped into {@link }.
+     *                   to be mapped into {@link Job}.
      * @param jobs collection of {@link JobEntityPart}
-     *                   to be mapped into {@link }.
+     *                   to be mapped into {@link Job}.
      * @param summary collection of {@link SummaryAttributeEntity}
-     *                   to be mapped into {@link }.
+     *                   to be mapped into {@link Job}.
      * @param queryParameter    collection of {@link PartAspectEntity}
-     *                   to be mapped into {@link }.
+     *                   to be mapped into {@link Job}.
      * @return DTO containing data from the entities. Guaranteed to be not {@literal null}.
      */
-    public Jobs toPartRelationshipsWithInfos(final Collection<PartRelationshipEntity> source, final Collection<Job> jobs, final SummaryAttributeEntity summary, final QueryParameterEntityPart queryParameter) {
+    public Jobs toPartRelationshipsWithInfos(final Collection<PartRelationshipEntity> source, final Job jobs, final SummaryAttributeEntity summary, final QueryParameterEntityPart queryParameter) {
 
         return Jobs.builder()
                 .relationships(mapToList(source, relationshipMapper::toRelationship))
+                .job(jobs)
                 .build();
     }
 

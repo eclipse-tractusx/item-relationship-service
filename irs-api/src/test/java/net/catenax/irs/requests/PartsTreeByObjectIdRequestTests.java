@@ -24,7 +24,7 @@ public class PartsTreeByObjectIdRequestTests extends RequestTestBase {
         var violations = validator.validate(sut);
         //Assert
         if (expectedViolationPath == null) {
-            assertThat(violations.isEmpty()).isTrue();
+            assertThat(violations.isEmpty()).isFalse();
         } else {
             var violationPaths = violations.stream().map(v -> v.getPropertyPath().toString());
             assertThat(violationPaths).contains(expectedViolationPath);

@@ -55,7 +55,7 @@ public class PartsTreeApiResponseMother {
     private static final Integer GEARBOX_DEPTH = 6;
     private static final Direction GEARBOX_DIRECTION = Direction.DOWNWARD;
 
-    private final Job gearboxJob = gearboxPartId();
+    private final Job gearboxJob = gearboxJob();
     private final Job vehicleJob = vehicleJob();
     private final Job bearingJob = bearingJob();
     private final Summary gearboxSummary = gearboxSummary();
@@ -222,7 +222,7 @@ public class PartsTreeApiResponseMother {
         return base.relationship(child, parent);
     }
 
-    private Job gearboxPartId() {
+    private Job gearboxJob() {
         return base.job(ZF_ONE_ID, OBJECT_ID_GEARBOX);
     }
 

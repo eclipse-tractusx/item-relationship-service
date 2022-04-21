@@ -18,7 +18,7 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Custom annotation to validate {@link } input.
+ * Custom annotation to validate input.
  */
 @Target({TYPE})
 @Retention(RUNTIME)

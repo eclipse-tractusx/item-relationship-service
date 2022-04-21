@@ -17,7 +17,7 @@ import net.catenax.irs.entities.PartRelationshipEntity;
 import org.springframework.stereotype.Component;
 
 /**
- * Mapper from {@link PartRelationshipEntity} entity to {@link } DTO.
+ * Mapper from {@link PartRelationshipEntity} entity to {@link Job} DTO.
  */
 @Component
 @RequiredArgsConstructor

@@ -3,12 +3,15 @@ package net.catenax.irs.entities;
 import com.github.javafaker.Faker;
 import net.catenax.irs.component.AsyncFetchedItems;
 import net.catenax.irs.component.Job;
+import net.catenax.irs.component.QueryParameter;
+import net.catenax.irs.component.Summary;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.dtos.ItemLifecycleStage;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -78,8 +81,14 @@ public class EntitiesMother {
      */
     public Job job() {
         return Job.builder()
-                .jobId(UUID.randomUUID())
-                .owner(UUID.randomUUID().toString())
+                .jobId(UUID.fromString("22425e7f-596c-478f-83d4-70f008184cc7"))
+                .queryParameter(new QueryParameter(BomLifecycle.AS_BUILT, List.of(AspectType.MATERIAL_ASPECT), 6, Direction.DOWNWARD))
+                .summary(Summary.builder().asyncFetchedItems(AsyncFetchedItems.builder().queue(1)
+                        .running(2)
+                        .complete(3)
+                        .failed(4)
+                        .lost(5)
+                        .build()).build())
                 .build();
     }
 
