@@ -18,5 +18,6 @@ public enum JobState {
     IN_PROGRESS,
     TRANSFERS_FINISHED,
     COMPLETED,
+    CANCELED,
     ERROR
 }
