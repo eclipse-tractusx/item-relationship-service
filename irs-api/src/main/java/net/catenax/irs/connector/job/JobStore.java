@@ -104,7 +104,21 @@ public interface JobStore {
      * @return deleted job (if it existed)
      */
     Optional<MultiTransferJob> deleteJob(String jobId);
-    
+
+    /**
+     * Cancel the job with identifier
+     *
+     * @param jobId
+     * @return cancel job (if it existed)
+     */
     Optional<MultiTransferJob> cancelJob(String jobId);
+
+    /**
+     * Get and return the current job state
+     *
+     * @param jobId the job identifier
+     * @return job state
+     */
+    JobState getJobState(String jobId);
 
 }

@@ -321,25 +321,25 @@ class InMemoryJobStoreTest {
     void shouldFindJobsByCompletedJobState() {
         // Arrange
         sut.create(job);
-        sut.completeJob(job.getJobId());
+        sut.completeJob(job.getJob().getJobId().toString());
         sut.create(job2);
         // Act
         final List<MultiTransferJob> foundJobs = sut.findByStates(List.of(JobState.COMPLETED));
         // Assert
         assertThat(foundJobs.size()).isEqualTo(1);
-        assertThat(foundJobs.get(0).getJobId()).isEqualTo(job.getJobId());
+        assertThat(foundJobs.get(0).getJob().getJobId().toString()).isEqualTo(job.getJob().getJobId().toString());
     }
 
     @Test
     void shouldFindJobsByErrorJobState() {
         // Arrange
         sut.create(job);
-        sut.markJobInError(job.getJobId(), "errorDetail");
+        sut.markJobInError(job.getJob().getJobId().toString(), "errorDetail");
         // Act
         final List<MultiTransferJob> foundJobs = sut.findByStates(List.of(JobState.ERROR));
         // Assert
         assertThat(foundJobs.size()).isEqualTo(1);
-        assertThat(foundJobs.get(0).getJobId()).isEqualTo(job.getJobId());
+        assertThat(foundJobs.get(0).getJob().getJobId().toString()).isEqualTo(job.getJob().getJobId().toString());
     }
 
     private void refreshJob() {

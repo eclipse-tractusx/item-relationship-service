@@ -17,6 +17,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.component.enums.JobState;
 
 /**
  * Manages storage of {@link MultiTransferJob} state in memory with no persistence.
@@ -63,6 +64,19 @@ public class InMemoryJobStore extends BaseJobStore {
 
     protected Optional<MultiTransferJob> remove(final String jobId) {
         return Optional.ofNullable(jobsById.remove(jobId));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JobState getJobState(final String jobId) {
+        return jobsById.values()
+                       .stream()
+                       .filter(j -> j.getJob().getJobId().toString().equals(jobId))
+                       .map(j -> j.getJob().getJobState())
+                       .findFirst()
+                       .get();
     }
 
 }

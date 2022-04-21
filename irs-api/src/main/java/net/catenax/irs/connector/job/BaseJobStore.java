@@ -141,6 +141,14 @@ public abstract class BaseJobStore implements JobStore {
         return this.get(jobId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JobState getJobState(final String jobId) {
+        return JobState.INITIAL;
+    }
+
     private void modifyJob(final String jobId, final UnaryOperator<MultiTransferJob> action) {
         writeLock(() -> {
             final var job = get(jobId);
