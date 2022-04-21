@@ -19,7 +19,6 @@ import net.catenax.irs.aaswrapper.job.ItemTreesAssembler;
 import net.catenax.irs.aaswrapper.job.TreeRecursiveLogic;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
-import net.catenax.irs.connector.job.InMemoryJobStore;
 import net.catenax.irs.connector.job.JobOrchestrator;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.persistence.BlobPersistence;
@@ -56,8 +55,4 @@ public class JobConfiguration {
                 config.getBucketName());
     }
 
-    @Bean
-    public JobStore inMemoryJobStore() {
-        return new InMemoryJobStore();
-    }
 }

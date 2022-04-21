@@ -66,3 +66,20 @@ blobstore:
   accessKey: "${MINIO_ACCESS_KEY}"
   secretKey: "${MINIO_SECRET_KEY}"
   bucketName: irsbucket
+
+resilience4j.retry:
+  configs:
+    default:
+      maxAttempts: 3
+      waitDuration: 100
+      retryExceptions:
+        - org.springframework.web.client.HttpServerErrorException
+        - java.util.concurrent.TimeoutException
+        - java.io.IOException
+      ignoreExceptions:
+        - net.catenax.irs.exceptions.MaxDepthTooLargeException
+      retryOnException:
+        - net.catenax.irs.exceptions.AspectNotSupportedException
+  instances:
+    submodelRetryer:
+      baseConfig: default
