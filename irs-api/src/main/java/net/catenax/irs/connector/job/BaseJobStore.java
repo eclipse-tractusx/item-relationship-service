@@ -69,8 +69,8 @@ public abstract class BaseJobStore implements JobStore {
     }
 
     private Predicate<MultiTransferJob> isCompletionDateBefore(final Instant localDateTime) {
-        return job -> Optional.of(job.getJob().getJobCompleted()).isPresent() &&
-                          Optional.of(job.getJob().getJobCompleted()).get().isBefore(localDateTime);
+        return job -> Optional.of(job.getJob().getJobCompleted()).isPresent()
+                          && Optional.of(job.getJob().getJobCompleted()).get().isBefore(localDateTime);
     }
 
     @Override
