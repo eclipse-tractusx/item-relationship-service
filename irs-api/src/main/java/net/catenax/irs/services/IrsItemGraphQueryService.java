@@ -97,16 +97,15 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     @Override
     public Job cancelJobById(final @NonNull UUID jobId) {
         final String idAsString = String.valueOf(jobId);
-        final Optional<MultiTransferJob> multiTransferJob = this.jobStore.find(idAsString);
 
-        if (multiTransferJob.isPresent()) {
-            final Optional<MultiTransferJob> canceled = this.jobStore.cancelJob(idAsString);
-            final MultiTransferJob job = canceled.orElseThrow(
-                    () -> new EntityNotFoundException("No job exists with id " + jobId));
-            // Replace with JobState from net.catenax.irs.component.enums, once Dapo's
-            // feature branch 312 has been merged
-            // return Job.builder().jobId(jobId).jobState(job.getState()).build();)
-            return Job.builder().jobId(jobId).jobState(convert(job.getState())).build();
+        final Optional<MultiTransferJob> canceled = this.jobStore.cancelJob(idAsString);
+        if (canceled.isPresent()) {
+            final MultiTransferJob job = canceled.get();
+
+            return Job.builder()
+                      .jobId(jobId)
+                      .jobState(convert(job.getState()))
+                      .build();
         } else {
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
@@ -195,8 +194,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 return net.catenax.irs.connector.job.JobState.INITIAL;
             case TRANSFERS_FINISHED:
                 return net.catenax.irs.connector.job.JobState.TRANSFERS_FINISHED;
-            case CANCELED:
-                return net.catenax.irs.connector.job.JobState.CANCELED;
             default:
                 throw new IllegalArgumentException("Cannot convert JobState of type " + state);
         }

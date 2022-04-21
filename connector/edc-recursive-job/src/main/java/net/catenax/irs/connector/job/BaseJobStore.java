@@ -134,7 +134,8 @@ public abstract class BaseJobStore implements JobStore {
     @Override
     public Optional<MultiTransferJob> cancelJob(final String jobId) {
         modifyJob(jobId, job -> job.toBuilder().transitionCancel().build());
-        return get(jobId);
+
+        return this.get(jobId);
     }
 
     private void modifyJob(final String jobId, final UnaryOperator<MultiTransferJob> action) {

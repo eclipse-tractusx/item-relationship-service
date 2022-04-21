@@ -25,10 +25,10 @@ class IrsItemGraphQueryServiceTest {
     private final UUID jobId = UUID.randomUUID();
 
     @Autowired
-    JobStore jobStore;
+    private JobStore jobStore;
 
     @Autowired
-    IrsItemGraphQueryService service;
+    private IrsItemGraphQueryService service;
 
     @Test
     void registerItemJob() {

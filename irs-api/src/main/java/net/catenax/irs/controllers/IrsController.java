@@ -130,14 +130,12 @@ public class IrsController {
                                     }),
     })
     @PutMapping("/jobs/{jobId}")
-    public ResponseEntity<?> cancelJobById(
+    public Job cancelJobById(
             @Parameter(description = "ID of the job.", schema = @Schema(implementation = UUID.class), name = "jobId",
-                    example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsApiConstants.JOB_ID_SIZE,
-                    max = IrsApiConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID jobId) {
+                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsApiConstants.JOB_ID_SIZE,
+                                                                               max = IrsApiConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID jobId) {
 
-        final Job canceledJob = this.itemJobService.cancelJobById(jobId);
-
-        return new ResponseEntity<>(canceledJob, HttpStatus.OK);
+        return this.itemJobService.cancelJobById(jobId);
     }
 
     @Operation(operationId = "getJobsByJobState",
