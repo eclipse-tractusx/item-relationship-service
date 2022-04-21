@@ -16,6 +16,8 @@
     <description>Parent module for IRS modules.</description>
 
     <properties>
+        <sonar.organization>catenax-ng</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <pmd.ruleset.location>../ci/pmd-rules.xml</pmd.ruleset.location>
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
