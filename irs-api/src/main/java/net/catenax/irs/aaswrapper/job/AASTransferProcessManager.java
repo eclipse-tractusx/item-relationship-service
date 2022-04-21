@@ -40,6 +40,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
     private final DigitalTwinRegistryFacade registryFacade;
 
     private final SubmodelFacade submodelFacade;
+
     private final ExecutorService executor;
 
     private final BlobPersistence blobStore;

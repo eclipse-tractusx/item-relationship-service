@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.aaswrapper.job;
 
+import java.util.Map;
 import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +50,7 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
     public Stream<ItemDataRequest> recurse(final MultiTransferJob job, final AASTransferProcess transferProcess) {
         log.info("Starting recursive request for job {}", job.getJobId());
 
-        final Integer expectedDepth = getExpectedTreeDepth(job);
+        final Integer expectedDepth = getExpectedTreeDepth(job.getJobData());
         final Integer currentDepth = transferProcess.getDepth();
 
         if (expectedDepthOfTreeIsNotReached(expectedDepth, currentDepth)) {
@@ -71,8 +72,8 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
         logic.assemblePartialItemGraphBlobs(completedTransfers, targetBlobName);
     }
 
-    private Integer getExpectedTreeDepth(final MultiTransferJob job) {
-        return job.getJobData().containsKey(AASRecursiveJobHandler.DEPTH_ID_KEY) ? Integer.parseInt(job.getJobData().get(AASRecursiveJobHandler.DEPTH_ID_KEY))
+    private Integer getExpectedTreeDepth(final Map<String, String> jobData) {
+        return jobData.containsKey(AASRecursiveJobHandler.DEPTH_ID_KEY) ? Integer.parseInt(jobData.get(AASRecursiveJobHandler.DEPTH_ID_KEY))
                 : Integer.parseInt(RegisterJob.MAX_TREE_DEPTH);
     }
 
