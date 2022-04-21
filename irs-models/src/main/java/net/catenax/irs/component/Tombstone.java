@@ -7,16 +7,10 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain;
-
-import net.catenax.irs.dto.NodeType;
+package net.catenax.irs.component;
 
 /**
- * Shell Interface
+ * Tombstone Interface for usage in Jobs
  */
-public interface Shell {
-
-    NodeType getNodeType();
-
-    boolean isNodeType(NodeType nodeType);
+public interface Tombstone {
 }

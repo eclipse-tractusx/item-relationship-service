@@ -79,7 +79,6 @@ public class SubmodelFacade {
                                                                .withException(exception)
                                                                .withErrorDetail(errorDetail)
                                                                .withLastAttempt(Instant.now())
-                                                               .withRetryCounter(0)
                                                                .build();
         return new ItemRelationshipAspectTombstone(catenaXId, processingError, endpointUrl);
     }

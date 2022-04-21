@@ -37,9 +37,4 @@ public class AasShell extends AbstractAasShell {
         this.specificAssetIds = specificAssetIds;
         this.submodelEndpoints = submodelEndpoints;
     }
-
-    @Override
-    public Shell getShell() {
-        return this;
-    }
 }

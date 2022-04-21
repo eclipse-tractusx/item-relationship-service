@@ -11,7 +11,6 @@ import java.util.Map;
 import feign.FeignException;
 import feign.Request;
 import feign.RequestTemplate;
-import net.catenax.irs.aaswrapper.submodel.domain.SubmodelClientException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -79,14 +78,11 @@ class DigitalTwinRegistryFacadeTest {
     }
 
     @Test
-    void shouldReturnError5TimesWhenCallingTestId() {
+    void shouldThrowErrorWhenCallingTestId() {
         final String catenaXId = "9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d";
         final DigitalTwinRegistryClientLocalStub client = new DigitalTwinRegistryClientLocalStub();
 
-        for (int i = 0; i < 5; i++) {
-            assertThatExceptionOfType(FeignException.NotFound.class).isThrownBy(
-                    () -> client.getAssetAdministrationShellDescriptor(catenaXId));
-        }
-        assertThat(client.getAssetAdministrationShellDescriptor(catenaXId)).isNotNull();
+        assertThatExceptionOfType(FeignException.NotFound.class).isThrownBy(
+                () -> client.getAssetAdministrationShellDescriptor(catenaXId));
     }
 }

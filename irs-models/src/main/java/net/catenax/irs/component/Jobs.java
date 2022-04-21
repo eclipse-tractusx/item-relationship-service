@@ -42,6 +42,9 @@ public class Jobs {
     @Schema(description = "Collections of AAS shells.")
     private List<Shell> shells;
 
+    @Schema(description = "Collections of Tombstones.")
+    private List<Tombstone> tombstones;
+
     /**
      * Builder class
      */

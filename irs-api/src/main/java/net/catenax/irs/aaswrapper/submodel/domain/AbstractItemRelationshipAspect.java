@@ -10,18 +10,24 @@
 package net.catenax.irs.aaswrapper.submodel.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.ToString;
 import net.catenax.irs.dto.NodeType;
 
 /**
  * Abstract Item Relationship Aspect Model
  */
-@Getter
 @AllArgsConstructor
 @ToString
 public abstract class AbstractItemRelationshipAspect implements Aspect {
 
     private final String catenaXId;
     private final NodeType nodeType;
+
+    public String getCatenaXId() {
+        return catenaXId;
+    }
+
+    public NodeType getNodeType() {
+        return nodeType;
+    }
 }

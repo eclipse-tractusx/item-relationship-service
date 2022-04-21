@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 import lombok.Getter;
+import net.catenax.irs.aaswrapper.registry.domain.AasShellTombstone;
 import net.catenax.irs.aaswrapper.submodel.domain.ItemRelationshipAspectTombstone;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 
@@ -27,15 +28,29 @@ public class ItemContainer {
 
     private final List<ItemRelationshipAspectTombstone> itemRelationshipAspectTombstones = new ArrayList<>();
 
-    public void add(final AssemblyPartRelationshipDTO relationship) {
+    private final List<AasShellTombstone> aasShellTombstones = new ArrayList<>();
+
+    public void addRelationship(final AssemblyPartRelationshipDTO relationship) {
         assemblyPartRelationships.add(relationship);
     }
 
-    public void addAll(final Collection<AssemblyPartRelationshipDTO> relationships) {
+    public void addAllRelationships(final Collection<AssemblyPartRelationshipDTO> relationships) {
         assemblyPartRelationships.addAll(relationships);
     }
 
-    public void addItemRelationshipAspectTombstone(final ItemRelationshipAspectTombstone tombstone) {
+    public void addAspectTombstone(final ItemRelationshipAspectTombstone tombstone) {
         itemRelationshipAspectTombstones.add(tombstone);
+    }
+
+    public void addAllAspectTombstones(final Collection<ItemRelationshipAspectTombstone> tombstones) {
+        this.itemRelationshipAspectTombstones.addAll(tombstones);
+    }
+
+    public void addShellTombstone(final AasShellTombstone tombstone) {
+        aasShellTombstones.add(tombstone);
+    }
+
+    public void addAllShellTombstones(final Collection<AasShellTombstone> tombstones) {
+        this.aasShellTombstones.addAll(tombstones);
     }
 }

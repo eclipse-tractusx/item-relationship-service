@@ -67,7 +67,6 @@ public class DigitalTwinRegistryFacade {
                                                                .withException(exception)
                                                                .withErrorDetail(errorDetail)
                                                                .withLastAttempt(Instant.now())
-                                                               .withRetryCounter(0)
                                                                .build();
         final String idShort = "";
         return new AasShellTombstone(idShort, catenaXId, processingError);

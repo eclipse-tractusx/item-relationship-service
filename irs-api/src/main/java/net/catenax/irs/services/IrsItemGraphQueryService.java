@@ -34,6 +34,7 @@ import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.Relationship;
+import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
@@ -111,6 +112,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             final Job jobToReturn = builder.build();
 
             final var relationships = new ArrayList<Relationship>();
+            final var tombstones = new ArrayList<Tombstone>();
             try {
                 final Optional<byte[]> blob = blobStore.getBlob(job.getJobId());
                 final byte[] bytes = blob.orElseThrow(
@@ -119,10 +121,12 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                         ItemContainer.class);
                 final List<AssemblyPartRelationshipDTO> assemblyPartRelationships = itemContainer.getAssemblyPartRelationships();
                 relationships.addAll(convert(assemblyPartRelationships));
+                tombstones.addAll(itemContainer.getItemRelationshipAspectTombstones());
+                tombstones.addAll(itemContainer.getAasShellTombstones());
             } catch (BlobPersistenceException e) {
                 log.error("Unable to read blob", e);
             }
-            return Jobs.builder().job(jobToReturn).relationships(relationships).build();
+            return Jobs.builder().job(jobToReturn).relationships(relationships).tombstones(tombstones).build();
         } else {
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }

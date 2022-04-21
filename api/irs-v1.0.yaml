@@ -690,6 +690,11 @@ components:
           description: Collections of AAS shells.
           items:
             $ref: '#/components/schemas/Shell'
+        tombstones:
+          type: array
+          description: Collections of Tombstones.
+          items:
+            $ref: '#/components/schemas/Tombstone'
     MeasurementUnit:
       type: object
       properties:
@@ -877,3 +882,6 @@ components:
       properties:
         asyncFetchedItems:
           $ref: '#/components/schemas/AsyncFetchedItems'
+    Tombstone:
+      type: object
+      description: Collections of Tombstones.

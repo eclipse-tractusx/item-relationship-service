@@ -13,7 +13,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.nio.charset.Charset;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import feign.FeignException;
 import feign.Request;
@@ -48,11 +47,9 @@ interface DigitalTwinRegistryClient {
  */
 @Service
 class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
-    public static final int RETRIES = 5;
-    private final AtomicInteger count = new AtomicInteger(0);
     @Override
     public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
-        if ("9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d".equals(aasIdentifier) && count.getAndIncrement() < RETRIES) {
+        if ("9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d".equals(aasIdentifier)) {
             final Request request = Request.create(Request.HttpMethod.GET, "url", Map.of(), new byte[0],
                     Charset.defaultCharset(), new RequestTemplate());
             throw new FeignException.NotFound("Not found", request, new byte[0], Map.of());

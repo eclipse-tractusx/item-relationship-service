@@ -14,23 +14,18 @@ import java.time.Instant;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
 /**
  * Processing Error Data Class
  */
-@Data
+@Value
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = ProcessingError.ProcessingErrorBuilder.class)
 public class ProcessingError {
     private final String exception;
     private final String errorDetail;
     private final Instant lastAttempt;
-    private int retryCounter;
-
-    public void incrementRetryCounter() {
-        retryCounter += 1;
-    }
 
     /**
      * Builder class

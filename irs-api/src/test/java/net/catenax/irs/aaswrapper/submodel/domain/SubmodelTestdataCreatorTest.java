@@ -65,14 +65,11 @@ class SubmodelTestdataCreatorTest {
     }
 
     @Test
-    void shouldReturnError5TimesWhenCallingTestId() throws SubmodelClientException {
+    void shouldThrowErrorWhenCallingTestId() {
         final String catenaXId = "c35ee875-5443-4a2d-bc14-fdacd64b9446";
         final SubmodelClientLocalStub client = new SubmodelClientLocalStub();
 
-        for (int i = 0; i < 5; i++) {
-            assertThatExceptionOfType(SubmodelClientException.class).isThrownBy(
-                    () -> client.getSubmodel(catenaXId, catenaXId, AssemblyPartRelationship.class));
-        }
-        assertThat(client.getSubmodel(catenaXId, catenaXId, AssemblyPartRelationship.class)).isNotNull();
+        assertThatExceptionOfType(SubmodelClientException.class).isThrownBy(
+                () -> client.getSubmodel(catenaXId, catenaXId, AssemblyPartRelationship.class));
     }
 }

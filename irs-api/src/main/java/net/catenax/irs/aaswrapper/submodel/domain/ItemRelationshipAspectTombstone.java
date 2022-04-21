@@ -9,10 +9,11 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.dto.NodeType;
 import net.catenax.irs.dto.ProcessingError;
 
@@ -22,10 +23,11 @@ import net.catenax.irs.dto.ProcessingError;
 @Getter
 @ToString
 @JsonDeserialize(builder = ItemRelationshipAspectTombstone.ItemRelationshipAspectTombstoneBuilder.class)
-public class ItemRelationshipAspectTombstone extends AbstractItemRelationshipAspect {
+public class ItemRelationshipAspectTombstone extends AbstractItemRelationshipAspect implements Tombstone {
     private final ProcessingError processingError;
     private final String endpointURL;
 
+    @Builder(setterPrefix = "with")
     public ItemRelationshipAspectTombstone(final String catenaXId, final ProcessingError processingError,
             final String endpointURL) {
         super(catenaXId, NodeType.TOMBSTONE);
@@ -33,32 +35,11 @@ public class ItemRelationshipAspectTombstone extends AbstractItemRelationshipAsp
         this.endpointURL = endpointURL;
     }
 
-    /**
-     * Custom ItemRelationshipAspectTombstoneBuilder including the catenaXId
-     */
-    @JsonIgnoreProperties(value = "nodeType")
-    public static class ItemRelationshipAspectTombstoneBuilder {
-        String catenaXId;
-        String endpointURL;
-        ProcessingError processingError;
-
-        public ItemRelationshipAspectTombstoneBuilder withCatenaXId(String catenaXId) {
-            this.catenaXId = catenaXId;
-            return this;
-        }
-
-        public ItemRelationshipAspectTombstoneBuilder withEndpointURL(String endpointURL) {
-            this.endpointURL = endpointURL;
-            return this;
-        }
-
-        public ItemRelationshipAspectTombstoneBuilder withProcessingError(ProcessingError processingError) {
-            this.processingError = processingError;
-            return this;
-        }
-
-        public ItemRelationshipAspectTombstone build() {
-            return new ItemRelationshipAspectTombstone(catenaXId, processingError, endpointURL);
-        }
+    @Builder(setterPrefix = "with")
+    private ItemRelationshipAspectTombstone(final String catenaXId, final ProcessingError processingError,
+            final String endpointURL, final NodeType nodeType) {
+        super(catenaXId, nodeType);
+        this.processingError = processingError;
+        this.endpointURL = endpointURL;
     }
 }

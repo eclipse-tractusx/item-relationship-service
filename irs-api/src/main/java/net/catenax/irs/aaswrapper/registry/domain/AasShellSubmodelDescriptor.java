@@ -27,9 +27,4 @@ public class AasShellSubmodelDescriptor extends AbstractAasShell {
         this.submodelType = submodelType;
         this.submodelEndpointAddress = submodelEndpointAddress;
     }
-
-    @Override
-    public Shell getShell() {
-        return null;
-    }
 }
