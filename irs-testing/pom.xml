@@ -8,9 +8,7 @@
         <version>${revision}</version>
         <relativePath>../irs-parent-spring-boot</relativePath>
     </parent>
-    <properties>
-        <sonar.skip>false</sonar.skip>
-    </properties>
+
     <artifactId>irs-testing</artifactId>
 
     <name>IRS Testing Utilities</name>
