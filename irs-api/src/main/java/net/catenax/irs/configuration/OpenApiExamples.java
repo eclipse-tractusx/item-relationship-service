@@ -177,6 +177,7 @@ public class OpenApiExamples {
                                                                                   .withException(
                                                                                           "SubmodelClientException")
                                                                                   .withLastAttempt(EXAMPLE_INSTANT)
+                                                                                  .withRetryCounter(0)
                                                                                   .build())
                                               .build();
     }

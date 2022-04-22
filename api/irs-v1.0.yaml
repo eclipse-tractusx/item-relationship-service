@@ -295,6 +295,7 @@ components:
             errorDetail: Details to reason of Failure
             exception: SubmodelClientException
             lastAttempt: 2022-02-03T14:48:54.709Z
+            retryCounter: 0
     error-response:
       value:
         errors:
@@ -422,6 +423,7 @@ components:
             errorDetail: Details to reason of Failure
             exception: SubmodelClientException
             lastAttempt: 2022-02-03T14:48:54.709Z
+            retryCounter: 0
     partial-job-result:
       value:
         job:

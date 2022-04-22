@@ -26,6 +26,7 @@ public class ProcessingError {
     private final String exception;
     private final String errorDetail;
     private final Instant lastAttempt;
+    private int retryCounter;
 
     /**
      * Builder class
