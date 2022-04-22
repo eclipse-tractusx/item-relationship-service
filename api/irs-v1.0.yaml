@@ -287,6 +287,14 @@ components:
             semanticId:
               values:
               - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+        tombstones:
+        - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          endpointURL: https://catena-x.net/vehicle/partdetails/
+          nodeType: TOMBSTONE
+          processingError:
+            errorDetail: Details to reason of Failure
+            exception: SubmodelClientException
+            lastAttempt: 2022-02-03T14:48:54.709Z
     error-response:
       value:
         errors:
@@ -406,6 +414,14 @@ components:
             semanticId:
               values:
               - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+        tombstones:
+        - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          endpointURL: https://catena-x.net/vehicle/partdetails/
+          nodeType: TOMBSTONE
+          processingError:
+            errorDetail: Details to reason of Failure
+            exception: SubmodelClientException
+            lastAttempt: 2022-02-03T14:48:54.709Z
     partial-job-result:
       value:
         job:

@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
+import net.catenax.irs.aaswrapper.submodel.domain.ItemRelationshipAspectTombstone;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.AsyncFetchedItems;
 import net.catenax.irs.component.ChildItem;
@@ -36,10 +37,12 @@ import net.catenax.irs.component.SemanticId;
 import net.catenax.irs.component.Shell;
 import net.catenax.irs.component.SubmodelDescriptor;
 import net.catenax.irs.component.Summary;
+import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.dto.ProcessingError;
 import net.catenax.irs.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
 
@@ -160,7 +163,22 @@ public class OpenApiExamples {
                                      .build())
                              .relationships(List.of(createRelationship()))
                              .shells(List.of(createShell()))
+                             .tombstones(List.of(createTombstone()))
                              .build());
+    }
+
+    private Tombstone createTombstone() {
+        return ItemRelationshipAspectTombstone.builder()
+                                              .withCatenaXId(createGAID(GLOBAL_ASSET_ID).getGlobalAssetId())
+                                              .withEndpointURL("https://catena-x.net/vehicle/partdetails/")
+                                              .withProcessingError(ProcessingError.builder()
+                                                                                  .withErrorDetail(
+                                                                                          "Details to reason of Failure")
+                                                                                  .withException(
+                                                                                          "SubmodelClientException")
+                                                                                  .withLastAttempt(EXAMPLE_INSTANT)
+                                                                                  .build())
+                                              .build();
     }
 
     private Shell createShell() {
