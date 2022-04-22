@@ -1,5 +1,10 @@
 package net.catenax.irs.services;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.UUID;
 
 import net.catenax.irs.TestConfig;
@@ -12,13 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = { "test" })
+@ActiveProfiles(profiles = { "test",
+                             "local"
+})
 @Import(TestConfig.class)
 class IrsItemGraphQueryServiceTest {
 
@@ -60,6 +62,6 @@ class IrsItemGraphQueryServiceTest {
         assertFalse(jobStore.find(idAsString).isEmpty());
 
         final JobState state = jobStore.find(idAsString).get().getState();
-        assertEquals(state, JobState.CANCELED);
+        assertEquals(JobState.CANCELED, state);
     }
 }
