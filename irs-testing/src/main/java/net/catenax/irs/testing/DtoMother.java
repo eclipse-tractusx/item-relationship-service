@@ -106,7 +106,6 @@ public class DtoMother {
                 .running(running)
                 .complete(complete)
                 .failed(failed)
-                .lost(lost)
                 .build();
     }
 

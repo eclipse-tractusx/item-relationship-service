@@ -92,7 +92,6 @@ public class BaseDtoMother {
                 .running(running)
                 .complete(complete)
                 .failed(failed)
-                .lost(lost)
                 .build();
     }
 

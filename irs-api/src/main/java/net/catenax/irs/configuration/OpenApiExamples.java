@@ -9,39 +9,22 @@
 //
 package net.catenax.irs.configuration;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
-import net.catenax.irs.component.AsyncFetchedItems;
-import net.catenax.irs.component.ChildItem;
-import net.catenax.irs.component.Description;
-import net.catenax.irs.component.Endpoint;
-import net.catenax.irs.component.GlobalAssetIdentification;
-import net.catenax.irs.component.Job;
-import net.catenax.irs.component.JobException;
-import net.catenax.irs.component.JobHandle;
-import net.catenax.irs.component.Jobs;
-import net.catenax.irs.component.MeasurementUnit;
-import net.catenax.irs.component.ProtocolInformation;
-import net.catenax.irs.component.Quantity;
-import net.catenax.irs.component.QueryParameter;
-import net.catenax.irs.component.Relationship;
-import net.catenax.irs.component.SemanticId;
-import net.catenax.irs.component.Shell;
-import net.catenax.irs.component.SubmodelDescriptor;
-import net.catenax.irs.component.Summary;
+import net.catenax.irs.component.*;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Provides example objects for the OpenAPI documentation
@@ -178,13 +161,13 @@ public class OpenApiExamples {
     private Relationship createRelationship() {
         return Relationship.builder()
                            .catenaXId(createGAID("d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447"))
-                           .childItem(ChildItem.builder()
-                                               .quantity(createQuantity())
-                                               .childCatenaXId(createGAID("a45a2246-f6e1-42da-b47d-5c3b58ed62e9"))
-                                               .lastModifiedOn(EXAMPLE_INSTANT)
-                                               .assembledOn(EXAMPLE_INSTANT)
-                                               .lifecycleContext(BomLifecycle.AS_BUILT)
-                                               .build())
+                           .childItem(Job.builder()
+                                                .action("action")
+                                                .globalAssetId(createGAID("a45a2246-f6e1-42da-b47d-5c3b58ed62e9"))
+                                                .lastModifiedOn(EXAMPLE_INSTANT)
+                                                .createdOn(EXAMPLE_INSTANT)
+                                                .owner("owner")
+                                                .build())
                            .build();
     }
 
