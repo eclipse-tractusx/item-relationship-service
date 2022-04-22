@@ -16,7 +16,6 @@
         <module>irs-api</module>
         <module>irs-common</module>
         <module>irs-models</module>
-        <module>irs-client</module>
         <module>integration-tests</module>
     </modules>
 </project>

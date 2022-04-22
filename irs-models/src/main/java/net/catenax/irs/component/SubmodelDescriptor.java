@@ -45,7 +45,7 @@ public class SubmodelDescriptor  {
 
     @Schema()
     @Singular
-    private List<EndPoint> endpoints;
+    private List<Endpoint> endpoints;
 
     /**
      * User to build SubmodelDescriptor

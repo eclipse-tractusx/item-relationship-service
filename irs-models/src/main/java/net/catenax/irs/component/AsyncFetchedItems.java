@@ -38,9 +38,6 @@ public class AsyncFetchedItems {
     @Schema(description = "Summary of failed job with the globalAssetId.", implementation = Integer.class)
     private Integer failed;
 
-    @Schema(description = "Summary of lost job with the globalAssetId.", implementation = Integer.class)
-    private Integer lost;
-
     /**
      * User to build async fetched items
      */

@@ -23,16 +23,17 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependencies -->
-        <springboot.version>2.6.4</springboot.version>
+        <springboot.version>2.6.6</springboot.version>
         <springcloud-feign.version>3.1.1</springcloud-feign.version>
-        <springdoc.version>1.5.10</springdoc.version>
+        <springdoc.version>1.6.7</springdoc.version>
         <micrometer.version>1.7.3</micrometer.version>
         <junit.version>5.7.2</junit.version>
         <javafaker.version>1.0.2</javafaker.version>
-        <json-unit-assertj.version>2.28.0</json-unit-assertj.version>
+        <json-unit-assertj.version>2.34.0</json-unit-assertj.version>
         <mockito-junit-jupiter.version>3.12.4</mockito-junit-jupiter.version>
         <assertj-core.version>3.21.0</assertj-core.version>
-        <gatling.version>3.7.1</gatling.version>
+        <gatling.version>3.7.6</gatling.version>
+        <resilience4j.version>1.7.1</resilience4j.version>
 
         <!-- Plugins -->
         <tidy.version>1.1.0</tidy.version>
@@ -41,7 +42,7 @@
         <findsecbugs-plugin.version>1.11.0</findsecbugs-plugin.version>
         <checkstyle-plugin.version>3.1.2</checkstyle-plugin.version>
         <checkstyle.version>8.45.1</checkstyle.version>
-        <jacoco.version>0.8.7</jacoco.version>
+        <jacoco.version>0.8.8</jacoco.version>
         <pmd-plugin.version>3.14.0</pmd-plugin.version>
 
         <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>

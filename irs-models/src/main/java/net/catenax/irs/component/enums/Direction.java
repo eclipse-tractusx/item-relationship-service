@@ -9,8 +9,11 @@
 //
 package net.catenax.irs.component.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
+
+import java.util.stream.Stream;
 
 /**
  * Direction indicator
@@ -19,7 +22,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @ExcludeFromCodeCoverageGeneratedReport
 public enum Direction {
    //@Schema(description = "The tree is traversed in upward direction.") UPWARD("upward"),
-    @Schema(description = "The tree is traversed in downward direction.")  DOWNWARD(DirectionConstants.DOWNWARD1);
+    @Schema(description = "The tree is traversed in downward direction.")  DOWNWARD(DirectionConstants.DOWNWARD);
 
     private final String value;
 
@@ -37,6 +40,11 @@ public enum Direction {
         return Direction.valueOf(value);
     }
 
+    @JsonCreator
+    public static Direction fromValue(final String value) {
+        return Stream.of(Direction.values()).filter(direction -> direction.value.equals(value)).findFirst().orElseThrow();
+    }
+
     /**
      * @return convert Direction to string value
      */
@@ -48,7 +56,7 @@ public enum Direction {
     /**
      * Constants for directions
      */
-    public  static class DirectionConstants {
-        public static final String DOWNWARD1 = "downward";
+    public static class DirectionConstants {
+        public static final String DOWNWARD = "downward";
     }
 }

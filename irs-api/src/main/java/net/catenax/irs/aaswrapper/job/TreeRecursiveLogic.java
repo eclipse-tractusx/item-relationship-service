@@ -54,14 +54,16 @@ public class TreeRecursiveLogic {
      *                           blobs with partial parts trees.
      * @param targetBlobName     Storage blob name to store overall parts tree.
      */
-    /* package */ void assemblePartialPartTreeBlobs(final List<TransferProcess> completedTransfers,
+    /* package */ void assemblePartialItemGraphBlobs(final List<TransferProcess> completedTransfers,
             final String targetBlobName) {
         final var partialTrees = completedTransfers.stream()
                                                    .map(this::downloadPartialPartsTree)
                                                    .map(payload -> jsonUtil.fromString(new String(payload),
                                                            ItemContainer.class));
         final var assembledTree = assembler.retrievePartsTrees(partialTrees);
-        final var blob = jsonUtil.asString(assembledTree).getBytes(StandardCharsets.UTF_8);
+        final String json = jsonUtil.asString(assembledTree);
+        log.info("Storing assembled tree: {}", json);
+        final var blob = json.getBytes(StandardCharsets.UTF_8);
 
         log.info("Uploading assembled parts tree to {}", targetBlobName);
         try {
@@ -74,7 +76,7 @@ public class TreeRecursiveLogic {
     private byte[] downloadPartialPartsTree(final TransferProcess transfer) {
         log.info("Downloading partial parts tree from blob at {}", transfer.getId());
         try {
-            return blobStoreApi.getBlob(transfer.getId());
+            return blobStoreApi.getBlob(transfer.getId()).orElse(new byte[0]);
         } catch (BlobPersistenceException e) {
             log.error("Could not load blob", e);
             return new byte[0];

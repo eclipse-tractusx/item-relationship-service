@@ -63,13 +63,19 @@ public class Job {
     private JobState jobState;
 
     @Schema(description = "Exception state for this job.", implementation = JobException.class)
-    private JobException jobException;
+    private JobException exception;
 
     /**
      * Timestamp when the job was created
      */
     @Schema(implementation = Instant.class)
     private Instant createdOn;
+
+    /**
+     * Timestamp when the job was started
+     */
+    @Schema(implementation = Instant.class)
+    private Instant startedOn;
 
     /**
      * Last time job was modified
@@ -81,7 +87,7 @@ public class Job {
      * Mark the time the was completed
      */
     @Schema(implementation = Instant.class)
-    private Instant jobFinished;
+    private Instant jobCompleted;
 
     /**
      * Url of request that resulted to this job
@@ -98,13 +104,13 @@ public class Job {
     /**
      * Owner of the job
      */
-    @Schema(description = "The requestor of the request.")
+    @Schema(description = "The requester of the request.")
     private String owner;
 
-    @Schema(description = "List of asyncFetchedItems", implementation = Summary.class)
+    @Schema(description = "Summary of the job", implementation = Summary.class)
     private Summary summary;
 
-    @Schema(description = "The given query parameters", implementation = QueryParameter.class)
+    @Schema(description = "The passed query parameters", implementation = QueryParameter.class)
     private QueryParameter queryParameter;
 
 

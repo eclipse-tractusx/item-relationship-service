@@ -10,7 +10,6 @@
 package net.catenax.irs.component;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -41,7 +40,7 @@ public class Jobs {
     private List<Relationship> relationships;
 
     @Schema(description = "Collections of AAS shells.")
-    private Optional<List<Shells>> shells;
+    private List<Shell> shells;
 
     /**
      * Builder class

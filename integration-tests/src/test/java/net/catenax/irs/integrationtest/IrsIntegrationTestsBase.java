@@ -15,7 +15,6 @@ import com.github.javafaker.Faker;
 import io.restassured.RestAssured;
 import net.catenax.irs.IrsApplication;
 import net.catenax.irs.configuration.IrsConfiguration;
-import net.catenax.irs.entities.JobEntityPart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +35,14 @@ public class IrsIntegrationTestsBase {
     /**
      * IRS Path parameter name for specifying the part One Id.
      *
-     * @see JobEntityPart#getChildCatenaXId()
+     * @see PartIdEntityPart#getOneIDManufacturer()
      */
     protected static final String ONE_ID_MANUFACTURER = "oneIDManufacturer";
 
     /**
      * IRS Path parameter name for specifying the part Object Id.
      *
-     * @see JobEntityPart#getLifecycleContext()
+     * @see PartIdEntityPart#getObjectIDManufacturer()
      */
     protected static final String OBJECT_ID_MANUFACTURER = "objectIDManufacturer";
 

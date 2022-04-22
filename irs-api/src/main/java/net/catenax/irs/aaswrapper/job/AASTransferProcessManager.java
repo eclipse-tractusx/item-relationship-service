@@ -54,22 +54,24 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     @Override
     public TransferInitiateResponse initiateRequest(final ItemDataRequest dataRequest,
-            final Consumer<AASTransferProcess> completionCallback) {
+            final Consumer<String> transferProcessStarted, final Consumer<AASTransferProcess> completionCallback) {
         final String processId = UUID.randomUUID().toString();
 
-        executor.submit(getRunnable(dataRequest, completionCallback, processId));
+        executor.submit(getRunnable(dataRequest, transferProcessStarted, completionCallback, processId));
 
         return new TransferInitiateResponse(processId, ResponseStatus.OK);
     }
 
-    private Runnable getRunnable(final ItemDataRequest dataRequest,
+    private Runnable getRunnable(final ItemDataRequest dataRequest, final Consumer<String> transferProcessStarted,
             final Consumer<AASTransferProcess> transferProcessCompleted, final String processId) {
         return () -> {
+            transferProcessStarted.accept(processId);
             final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId);
 
             final String itemId = dataRequest.getItemId();
-
+            log.info("Calling Digital Twin Registry with itemId {}", itemId);
             final List<SubmodelEndpoint> aasSubmodelEndpoints = registryFacade.getAASSubmodelEndpoints(itemId);
+            log.info("Retrieved {} SubmodelEndpoints for itemId {}", aasSubmodelEndpoints.size(), itemId);
 
             final ItemContainer itemContainer = new ItemContainer();
 
@@ -90,7 +92,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     private void processEndpoint(final AASTransferProcess aasTransferProcess, final ItemContainer itemContainer,
             final AssemblyPartRelationshipDTO relationship) {
-
+        log.info("Processing AssemblyPartRelationship with {} children", relationship.getChildParts().size());
         final List<String> childIds = relationship.getChildParts()
                                                   .stream()
                                                   .map(ChildDataDTO::getChildCatenaXId)

@@ -1,0 +1,879 @@
+openapi: 3.0.1
+info:
+  description: API to retrieve parts tree information. See <a href="https://confluence.catena-x.net/display/CXM/PRS+Environments+and+Test+Data">this
+    page</a> for more information on test data available in this environment.
+  title: IRS API
+  version: "1.0"
+servers:
+- url: http://irs.int.demo.catena-x.net
+paths:
+  /irs/jobs:
+    get:
+      operationId: getJobsByJobState
+      parameters:
+      - description: Requested job states.
+        explode: false
+        in: query
+        name: jobStates
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - UNSAVED
+            - INITIAL
+            - RUNNING
+            - TRANSFERS_FINISHED
+            - COMPLETED
+            - CANCELED
+            - ERROR
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/complete-job-list-processing-state'
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+          description: List of job ids for requested job states.
+        "404":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/error-response'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: No process found with this state.
+      summary: List of jobs for a certain job states.
+      tags:
+      - Item Relationship Service
+    post:
+      description: "Registers and starts a item relationship crawler job for given\
+        \ {globalAssetId}."
+      operationId: initiateJobForGlobalAssetId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterJob'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/job-handle'
+              schema:
+                $ref: '#/components/schemas/JobHandle'
+          description: Job id response for successful job registration.
+        "400":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/error-response'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Processing of job failed.
+      summary: "Registers and starts a item relationship crawler job for given {globalAssetId}."
+      tags:
+      - Item Relationship Service
+  /irs/jobs/{jobId}:
+    get:
+      operationId: getJobForJobId
+      parameters:
+      - description: ID of the job.
+        example: 6c311d29-5753-46d4-b32c-19b918ea93b0
+        in: path
+        name: jobId
+        required: true
+        schema:
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+      - description: "If true, the endpoint returns the current state of the fetched\
+          \ bom tree."
+        in: query
+        name: returnUncompletedJob
+        required: false
+        schema:
+          type: boolean
+          default: true
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/complete-job-result'
+              schema:
+                $ref: '#/components/schemas/Jobs'
+          description: "Completed job result with the root node, lifecycle tree representation\
+            \ with the starting point of the given jobId."
+        "206":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/partial-job-result'
+              schema:
+                $ref: '#/components/schemas/Jobs'
+          description: Uncompleted lifecycle tree representation with the starting
+            point of the given jobId.
+        "404":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/error-response'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: A job with the specified jobId was not found.
+      summary: Get a BOM partial or complete for a given jobId.
+      tags:
+      - Item Relationship Service
+    put:
+      operationId: cancelJobById
+      parameters:
+      - description: ID of the job.
+        example: 6c311d29-5753-46d4-b32c-19b918ea93b0
+        in: path
+        name: jobId
+        required: true
+        schema:
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Job'
+          description: "Job with {jobId} was canceled."
+        "404":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/error-response'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: A job with the specified jobId was not found.
+      summary: Cancel job execution for a given jobId.
+      tags:
+      - Item Relationship Service
+components:
+  examples:
+    canceled-job-result:
+      value:
+        job:
+          createdOn: 2022-02-03T14:48:54.709Z
+          exception:
+            errorDetail: Timeout while requesting Digital Registry
+            exception: IrsTimeoutException
+            exceptionDate: 2022-02-03T14:48:54.709Z
+          globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          jobCompleted: 2022-02-03T14:48:54.709Z
+          jobId: e5347c88-a921-11ec-b909-0242ac120002
+          jobState: CANCELED
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
+          queryParameter:
+            aspects:
+            - SerialPartTypization
+            - Contact
+            bomLifecycle: asBuilt
+            depth: 4
+            direction: downward
+          requestUrl: https://api.server.test/api/../
+          startedOn: 2022-02-03T14:48:54.709Z
+          summary:
+            asyncFetchedItems:
+              complete: 0
+              failed: 0
+              queue: 0
+              running: 0
+        relationships: []
+    complete-job-list-processing-state:
+      value:
+      - 6c311d29-5753-46d4-b32c-19b918ea93b0
+    complete-job-result:
+      value:
+        job:
+          createdOn: 2022-02-03T14:48:54.709Z
+          exception:
+            errorDetail: Timeout while requesting Digital Registry
+            exception: IrsTimeoutException
+            exceptionDate: 2022-02-03T14:48:54.709Z
+          globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          jobCompleted: 2022-02-03T14:48:54.709Z
+          jobId: e5347c88-a921-11ec-b909-0242ac120002
+          jobState: COMPLETED
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
+          queryParameter:
+            aspects:
+            - SerialPartTypization
+            - Contact
+            bomLifecycle: asBuilt
+            depth: 4
+            direction: downward
+          requestUrl: https://api.server.test/api/../
+          startedOn: 2022-02-03T14:48:54.709Z
+          summary:
+            asyncFetchedItems:
+              complete: 0
+              failed: 0
+              queue: 0
+              running: 0
+        relationships:
+        - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+          childItem:
+            assembledOn: 2022-02-03T14:48:54.709Z
+            childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+            lastModifiedOn: 2022-02-03T14:48:54.709Z
+            lifecycleContext: asBuilt
+            quantity:
+              measurementUnit:
+                datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
+                lexicalValue: piece
+              quantityNumber: 1
+        shells:
+        - descriptions:
+          - language: en
+            text: The shell for a vehicle
+          globalAssetIds:
+          - urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+          idShort: future concept x
+          identification: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+          specificAssetIds:
+            engineserialid: "12309481209312"
+          submodelDescriptors:
+          - descriptions:
+            - language: en
+              text: Provides base vehicle information
+            endpoints:
+            - interfaceType: HTTP
+              protocolInformation:
+                endpointAddress: https://catena-x.net/vehicle/basedetails/
+                endpointProtocol: HTTPS
+                enpointProtocolVersion: "1.0"
+            idShort: vehicle base details
+            identification: 4a738a24-b7d8-4989-9cd6-387772f40565
+            semanticId:
+              values:
+              - urn:bamm:com.catenax.vehicle:0.1.1
+          - descriptions:
+            - language: en
+              text: Provides base vehicle information
+            endpoints:
+            - interfaceType: HTTP
+              protocolInformation:
+                endpointAddress: https://catena-x.net/vehicle/partdetails/
+                endpointProtocol: HTTPS
+                enpointProtocolVersion: "1.0"
+            idShort: vehicle part details
+            identification: dae4d249-6d66-4818-b576-bf52f3b9ae90
+            semanticId:
+              values:
+              - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+    error-response:
+      value:
+        errors:
+        - TimeoutException
+        - ParsingException
+        message: Some errors occured
+        statusCode: 500 INTERNAL_SERVER_ERROR
+    failed-job-result:
+      value:
+        job:
+          createdOn: 2022-02-03T14:48:54.709Z
+          exception:
+            errorDetail: Timeout while requesting Digital Registry
+            exception: IrsTimeoutException
+            exceptionDate: 2022-02-03T14:48:54.709Z
+          globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          jobId: e5347c88-a921-11ec-b909-0242ac120002
+          jobState: ERROR
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
+          queryParameter:
+            aspects:
+            - SerialPartTypization
+            - Contact
+            bomLifecycle: asBuilt
+            depth: 4
+            direction: downward
+          requestUrl: https://api.server.test/api/../
+          startedOn: 2022-02-03T14:48:54.709Z
+          summary:
+            asyncFetchedItems:
+              complete: 0
+              failed: 0
+              queue: 0
+              running: 0
+        relationships: []
+    job-handle:
+      value:
+        jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
+    job-result-without-uncompleted-result-tree:
+      value:
+        job:
+          createdOn: 2022-02-03T14:48:54.709Z
+          exception:
+            errorDetail: Timeout while requesting Digital Registry
+            exception: IrsTimeoutException
+            exceptionDate: 2022-02-03T14:48:54.709Z
+          globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          jobCompleted: 2022-02-03T14:48:54.709Z
+          jobId: e5347c88-a921-11ec-b909-0242ac120002
+          jobState: COMPLETED
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
+          queryParameter:
+            aspects:
+            - SerialPartTypization
+            - Contact
+            bomLifecycle: asBuilt
+            depth: 4
+            direction: downward
+          requestUrl: https://api.server.test/api/../
+          startedOn: 2022-02-03T14:48:54.709Z
+          summary:
+            asyncFetchedItems:
+              complete: 0
+              failed: 0
+              queue: 0
+              running: 0
+        relationships:
+        - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+          childItem:
+            assembledOn: 2022-02-03T14:48:54.709Z
+            childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+            lastModifiedOn: 2022-02-03T14:48:54.709Z
+            lifecycleContext: asBuilt
+            quantity:
+              measurementUnit:
+                datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
+                lexicalValue: piece
+              quantityNumber: 1
+        shells:
+        - descriptions:
+          - language: en
+            text: The shell for a vehicle
+          globalAssetIds:
+          - urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+          idShort: future concept x
+          identification: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+          specificAssetIds:
+            engineserialid: "12309481209312"
+          submodelDescriptors:
+          - descriptions:
+            - language: en
+              text: Provides base vehicle information
+            endpoints:
+            - interfaceType: HTTP
+              protocolInformation:
+                endpointAddress: https://catena-x.net/vehicle/basedetails/
+                endpointProtocol: HTTPS
+                enpointProtocolVersion: "1.0"
+            idShort: vehicle base details
+            identification: 4a738a24-b7d8-4989-9cd6-387772f40565
+            semanticId:
+              values:
+              - urn:bamm:com.catenax.vehicle:0.1.1
+          - descriptions:
+            - language: en
+              text: Provides base vehicle information
+            endpoints:
+            - interfaceType: HTTP
+              protocolInformation:
+                endpointAddress: https://catena-x.net/vehicle/partdetails/
+                endpointProtocol: HTTPS
+                enpointProtocolVersion: "1.0"
+            idShort: vehicle part details
+            identification: dae4d249-6d66-4818-b576-bf52f3b9ae90
+            semanticId:
+              values:
+              - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+    partial-job-result:
+      value:
+        job:
+          createdOn: 2022-02-03T14:48:54.709Z
+          exception:
+            errorDetail: Timeout while requesting Digital Registry
+            exception: IrsTimeoutException
+            exceptionDate: 2022-02-03T14:48:54.709Z
+          globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          jobCompleted: 2022-02-03T14:48:54.709Z
+          jobId: e5347c88-a921-11ec-b909-0242ac120002
+          jobState: RUNNING
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
+          queryParameter:
+            aspects:
+            - SerialPartTypization
+            - Contact
+            bomLifecycle: asBuilt
+            depth: 4
+            direction: downward
+          requestUrl: https://api.server.test/api/../
+          startedOn: 2022-02-03T14:48:54.709Z
+          summary:
+            asyncFetchedItems:
+              complete: 0
+              failed: 0
+              queue: 0
+              running: 0
+        relationships: []
+  schemas:
+    AsyncFetchedItems:
+      type: object
+      description: State of the Item fetch.
+      properties:
+        complete:
+          type: integer
+          format: int32
+          description: Summary of completed job with the globalAssetId.
+        failed:
+          type: integer
+          format: int32
+          description: Summary of failed job with the globalAssetId.
+        queue:
+          type: integer
+          format: int32
+          description: No of job with the globalAssetId on the queue.
+        running:
+          type: integer
+          format: int32
+          description: Summary of running job with the globalAssetId.
+    ChildItem:
+      type: object
+      description: 'Describe child item of a global asset '
+      properties:
+        assembledOn:
+          type: string
+          format: date-time
+          description: Datetime of assembly.
+        childCatenaXId:
+          $ref: '#/components/schemas/GlobalAssetIdentification'
+        lastModifiedOn:
+          type: string
+          format: date-time
+          description: Last date and time part was modified.
+        lifecycleContext:
+          type: string
+          description: View defining which data of the item tree is retrieved.
+          enum:
+          - asBuilt
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+    Description:
+      type: object
+      description: Provide descriptions to request parts.
+      properties:
+        language:
+          type: string
+          description: Language used for description.
+          example: en
+          maxLength: 3
+        text:
+          type: string
+          description: Description text.
+          example: The shell for a vehicle
+          maxLength: 4000
+    Endpoint:
+      type: object
+      description: Communication endpoint.
+      properties:
+        interfaceType:
+          type: string
+          default: HTTP
+          description: Communication interface type.
+          example: HTTP
+        protocolInformation:
+          $ref: '#/components/schemas/ProtocolInformation'
+    ErrorResponse:
+      type: object
+      description: Error response.
+      properties:
+        errors:
+          type: array
+          description: List of errors.
+          items:
+            type: string
+            description: List of errors.
+        message:
+          type: string
+          description: Error message.
+        statusCode:
+          type: string
+          description: Error code.
+          enum:
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
+    GlobalAssetIdentification:
+      type: object
+      description: Represents a CatenaX id in the format urn:uuid:<uuid>.
+      properties:
+        globalAssetId:
+          type: string
+          description: Global unique C-X identifier.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          maxLength: 45
+          minLength: 45
+    Job:
+      type: object
+      description: Information and data for the job.
+      properties:
+        action:
+          type: string
+          description: HTTP verbs used by request.
+        createdOn:
+          type: string
+          format: date-time
+        exception:
+          $ref: '#/components/schemas/JobException'
+        globalAssetId:
+          $ref: '#/components/schemas/GlobalAssetIdentification'
+        jobCompleted:
+          type: string
+          format: date-time
+        jobId:
+          type: string
+          format: uuid
+          description: Job ID for the requested item.
+          maxLength: 36
+          minLength: 36
+        jobState:
+          type: string
+          enum:
+          - UNSAVED
+          - INITIAL
+          - RUNNING
+          - TRANSFERS_FINISHED
+          - COMPLETED
+          - CANCELED
+          - ERROR
+        lastModifiedOn:
+          type: string
+          format: date-time
+        owner:
+          type: string
+          description: The requester of the request.
+        queryParameter:
+          $ref: '#/components/schemas/QueryParameter'
+        requestUrl:
+          type: string
+          format: url
+        startedOn:
+          type: string
+          format: date-time
+        summary:
+          $ref: '#/components/schemas/Summary'
+      required:
+      - globalAssetId
+      - jobId
+      - jobState
+    JobException:
+      type: object
+      description: Exception state for this job.
+      properties:
+        errorDetail:
+          type: string
+          description: Detail information for the error occurred.
+          maxLength: 4000
+        exception:
+          type: string
+          description: Name of the exception occurred.
+          maxLength: 100
+        exceptionDate:
+          type: string
+          format: date-time
+          description: Datetime when error occurred.
+    JobHandle:
+      type: object
+      properties:
+        jobId:
+          type: string
+          format: uuid
+    Jobs:
+      type: object
+      description: Container for a job its relationship and shells.
+      properties:
+        job:
+          $ref: '#/components/schemas/Job'
+        relationships:
+          type: array
+          description: Collection of relationships mapping the parent child relationship
+            of AssemblyPartRelationShip aspects.
+          items:
+            $ref: '#/components/schemas/Relationship'
+        shells:
+          type: array
+          description: Collections of AAS shells.
+          items:
+            $ref: '#/components/schemas/Shell'
+    MeasurementUnit:
+      type: object
+      properties:
+        datatypeURI:
+          type: string
+        lexicalValue:
+          type: string
+    ProtocolInformation:
+      type: object
+      description: Information to the interface used.
+      properties:
+        endpointAddress:
+          type: string
+          format: uri
+          description: Uniform resource identifier of endpoint.
+          example: https://catena-x.net/vehicle/basedetails/
+        endpointProtocol:
+          type: string
+          description: Protocol used to access the endpoint.
+          example: HTTP or HTTPS
+        enpointProtocolVersion:
+          type: string
+          description: Protocol version.
+          example: "1.0"
+    Quantity:
+      type: object
+      description: Quantity component.
+      properties:
+        measurementUnit:
+          $ref: '#/components/schemas/MeasurementUnit'
+        quantityNumber:
+          type: integer
+          format: int32
+    QueryParameter:
+      type: object
+      description: Query parameter for current irs query.
+      properties:
+        aspects:
+          type: string
+          enum:
+          - SerialPartTypization
+          - AssemblyPartRelationship
+          - PartDimension
+          - SupplyRelationData
+          - PCFCoreData
+          - PCFTechnicalData
+          - MarketPlaceOffer
+          - MaterialAspect
+          - BatteryPass
+          - ProductDescriptionVehicle
+          - ProductDescriptionBattery
+          - ReturnRequest
+          - CertificateOfDestruction
+          - CertificateOfDismantler
+          - Address
+          - Contact
+        bomLifecycle:
+          type: string
+          description: View defining which data of the item tree is retrieved.
+          enum:
+          - asBuilt
+        depth:
+          type: integer
+          format: int32
+        direction:
+          type: string
+          description: Direction in which the tree shall be traversed.
+          enum:
+          - downward
+    RegisterJob:
+      type: object
+      description: Register job request.
+      properties:
+        aspects:
+          type: array
+          items:
+            type: string
+            enum:
+            - SerialPartTypization
+            - AssemblyPartRelationship
+            - PartDimension
+            - SupplyRelationData
+            - PCFCoreData
+            - PCFTechnicalData
+            - MarketPlaceOffer
+            - MaterialAspect
+            - BatteryPass
+            - ProductDescriptionVehicle
+            - ProductDescriptionBattery
+            - ReturnRequest
+            - CertificateOfDestruction
+            - CertificateOfDismantler
+            - Address
+            - Contact
+        bomLifecycle:
+          type: string
+          description: View defining which data of the item tree is retrieved.
+          enum:
+          - asBuilt
+        depth:
+          type: integer
+          format: int32
+          default: 1
+          description: "Max depth of the returned tree, if empty max depth is returned."
+          maximum: 100
+          minimum: 1
+        direction:
+          type: string
+          default: downward
+          description: Direction in which the tree shall be traversed.
+          enum:
+          - downward
+        globalAssetId:
+          type: string
+          description: GlobalAssetId of Item from which the tree building process
+            starts.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          maxLength: 45
+          minLength: 45
+          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      required:
+      - globalAssetId
+    Relationship:
+      type: object
+      description: Collection of relationships mapping the parent child relationship
+        of AssemblyPartRelationShip aspects.
+      properties:
+        catenaXId:
+          $ref: '#/components/schemas/GlobalAssetIdentification'
+        childItem:
+          $ref: '#/components/schemas/ChildItem'
+        parentItem:
+          $ref: '#/components/schemas/ChildItem'
+    SemanticId:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            type: string
+    Shell:
+      type: object
+      description: Collections of AAS shells.
+      properties:
+        descriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Description'
+        globalAssetIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/GlobalAssetIdentification'
+        idShort:
+          type: string
+        identification:
+          type: string
+        specificAssetIds:
+          type: object
+          additionalProperties:
+            type: string
+        submodelDescriptors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubmodelDescriptor'
+    SubmodelDescriptor:
+      type: object
+      properties:
+        descriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Description'
+        endpoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/Endpoint'
+        idShort:
+          type: string
+        identification:
+          type: string
+        semanticId:
+          $ref: '#/components/schemas/SemanticId'
+    Summary:
+      type: object
+      description: Summary of the job
+      properties:
+        asyncFetchedItems:
+          $ref: '#/components/schemas/AsyncFetchedItems'
