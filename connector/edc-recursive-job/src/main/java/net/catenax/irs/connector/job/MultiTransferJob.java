@@ -122,6 +122,12 @@ public class MultiTransferJob {
             return this;
         }
 
+        /**
+         * Transition the job to the {@link JobState#CANCELED} state.
+         */
+        /* package */ MultiTransferJobBuilder transitionCancel() {
+            return transition(JobState.CANCELED, JobState.UNSAVED, JobState.INITIAL, JobState.IN_PROGRESS);
+        }
 
         private MultiTransferJobBuilder transition(final JobState end, final JobState... starts) {
             if (Arrays.stream(starts).noneMatch(s -> s == state)) {

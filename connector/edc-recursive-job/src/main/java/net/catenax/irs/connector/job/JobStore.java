@@ -18,6 +18,7 @@ import java.util.Optional;
 /**
  * Manages storage of {@link MultiTransferJob} state.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public interface JobStore {
     /**
      * Retrieve a job by its identifier.
@@ -101,4 +102,12 @@ public interface JobStore {
      * @return deleted job (if it existed)
      */
     Optional<MultiTransferJob> deleteJob(String jobId);
+
+    /**
+     * Set the job status to canceled.
+     *
+     * @param jobId the job identifier.
+     * @return canceled MultiTransferJob
+     */
+    Optional<MultiTransferJob> cancelJob(String jobId);
 }
