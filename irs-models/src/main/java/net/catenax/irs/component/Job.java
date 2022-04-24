@@ -41,7 +41,7 @@ import net.catenax.irs.component.enums.JobState;
 @JsonDeserialize(builder = Job.JobBuilder.class)
 @NoArgsConstructor
 @AllArgsConstructor
-@SuppressWarnings("PMD.ShortClassName")
+@SuppressWarnings({ "PMD.ShortClassName", "PMD.MethodArgumentCouldBeFinal" })
 @ExcludeFromCodeCoverageGeneratedReport
 public class Job {
 

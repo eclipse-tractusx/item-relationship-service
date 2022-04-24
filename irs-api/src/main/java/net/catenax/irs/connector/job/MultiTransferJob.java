@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @ToString
 @Builder(toBuilder = true)
-@SuppressWarnings({ "PMD.UselessParentheses" })
+@SuppressWarnings({ "PMD.UselessParentheses", "PMD.MethodArgumentCouldBeFinal", "PMD.TooManyMethods" })
 @JsonDeserialize(builder = MultiTransferJob.MultiTransferJobBuilder.class)
 public class MultiTransferJob {
 

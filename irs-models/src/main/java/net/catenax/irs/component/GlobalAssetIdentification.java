@@ -66,7 +66,7 @@ public class GlobalAssetIdentification {
         }
 
         public GlobalAssetIdBuilder globalAssetId(String globalAssetId) {
-            this.instance.globalAssetId = globalAssetId;
+            instance.globalAssetId = globalAssetId;
             return this;
         }
 
