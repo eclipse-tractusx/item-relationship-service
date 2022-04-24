@@ -54,27 +54,24 @@ public class GlobalAssetIdentification {
      */
     @JsonPOJOBuilder(withPrefix = "")
     public static final class GlobalAssetIdBuilder {
-        private final GlobalAssetIdentification globalAssetId;
+        private final GlobalAssetIdentification instance;
 
         private GlobalAssetIdBuilder() {
-            globalAssetId = new GlobalAssetIdentification();
+            instance = new GlobalAssetIdentification();
         }
 
         @JsonCreator
-        public static GlobalAssetIdBuilder instance() {
+        public static GlobalAssetIdBuilder getInstance() {
             return new GlobalAssetIdBuilder();
         }
 
         public GlobalAssetIdBuilder globalAssetId(String globalAssetId) {
-            this.globalAssetId.globalAssetId = globalAssetId;
+            this.instance.globalAssetId = globalAssetId;
             return this;
         }
 
         public GlobalAssetIdentification build() {
-            /*if (StringUtils.isEmpty(globalAssetId.globalAssetId)) {
-                throw new IllegalArgumentException("Global Asset identifier cannot be null");
-            }*/
-            return globalAssetId;
+            return instance;
         }
     }
 

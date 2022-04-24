@@ -241,9 +241,6 @@ public class Job {
         }
 
         public Job build() {
-            /*if (job.jobId == null || job.globalAssetId == null) {
-                throw new IllegalArgumentException("Job identifier and globalAsset Id cannot be null");
-            }*/
             return job;
         }
 

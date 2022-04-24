@@ -23,12 +23,10 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Disabled
 @Testcontainers
 class PersistentJobStoreTest {
     private static final String ACCESS_KEY = "accessKey";
