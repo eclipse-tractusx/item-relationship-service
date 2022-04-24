@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import net.catenax.irs.TestConfig;
 import net.catenax.irs.component.Job;
-import net.catenax.irs.component.JobException;
+import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
@@ -55,12 +55,12 @@ class IrsItemGraphQueryServiceTest {
                                                                   .job(Job.builder()
                                                                           .jobId(UUID.fromString(idAsString))
                                                                           .jobState(JobState.UNSAVED)
-                                                                          .exception(JobException.builder()
-                                                                                                 .errorDetail(
-                                                                                                     "Job should be canceled")
-                                                                                                 .exceptionDate(
-                                                                                                     Instant.now())
-                                                                                                 .build())
+                                                                          .exception(JobErrorDetails.builder()
+                                                                                                    .errorDetail(
+                                                                                                        "Job should be canceled")
+                                                                                                    .exceptionDate(
+                                                                                                        Instant.now())
+                                                                                                    .build())
                                                                           .build())
                                                                   .build();
 

@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.component.JobException;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
@@ -81,11 +80,7 @@ public class PersistentJobStore extends BaseJobStore {
             blobStore.delete(toBlobId(jobId));
             return blob.map(this::toJob);
         } catch (BlobPersistenceException e) {
-            throw JobException.builder()
-                              .exception(e.getMessage())
-                              .exceptionDate(Instant.now())
-                              .errorDetail(e.getMessage())
-                              .build();
+            throw new JobException("Blob persistence error", e.getMessage());
         }
     }
 

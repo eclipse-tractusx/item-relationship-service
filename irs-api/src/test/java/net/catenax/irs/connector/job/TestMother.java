@@ -1,5 +1,7 @@
 package net.catenax.irs.connector.job;
 
+import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
+
 import java.net.URL;
 import java.time.Instant;
 import java.util.Map;
@@ -26,7 +28,7 @@ class TestMother {
         return Job.builder()
                   .jobId(UUID.randomUUID())
                   .globalAssetId(
-                          GlobalAssetIdentification.builder().globalAssetId(UUID.randomUUID().toString()).build())
+                      GlobalAssetIdentification.builder().globalAssetId(UUID.randomUUID().toString()).build())
                   .jobState(state)
                   .createdOn(Instant.now())
                   .owner(faker.lorem().characters())
@@ -42,8 +44,8 @@ class TestMother {
     MultiTransferJob job(JobState jobState) {
         return MultiTransferJob.builder()
                                .job(fakeJob(jobState))
-                               .jobData(Map.of(faker.lorem().characters(), faker.lorem().characters(),
-                                       faker.lorem().characters(), faker.lorem().characters()))
+                               .jobData(Map.of(ROOT_ITEM_ID_KEY, faker.lorem().characters(),
+                                   faker.lorem().characters(), faker.lorem().characters()))
                                .build();
     }
 

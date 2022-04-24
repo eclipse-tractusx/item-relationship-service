@@ -19,8 +19,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import lombok.Builder;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
@@ -101,7 +99,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         } catch (JobException e) {
             return JobInitiateResponse.builder()
                                       .jobId(multiJob.getJob().getJobId().toString())
-                                      .status(e.getStatus())
+                                      .status(convertMessage(e.getJobErrorDetails().getException()))
                                       .build();
         }
 
@@ -202,18 +200,18 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         jobStore.markJobInError(job.getJob().getJobId().toString(), message);
     }
 
-    private long startTransfers(final MultiTransferJob job, final Stream<T> dataRequests) /* throws JobException */ {
+    private long startTransfers(final MultiTransferJob job, final Stream<T> dataRequests) /* throws JobErrorDetails */ {
         return dataRequests.map(r -> startTransfer(job, r)).collect(Collectors.counting());
     }
 
     private TransferInitiateResponse startTransfer(final MultiTransferJob job,
-        final T dataRequest)  /* throws JobException */ {
+        final T dataRequest)  /* throws JobErrorDetails */ {
         final var response = processManager.initiateRequest(dataRequest,
             transferId -> jobStore.addTransferProcess(job.getJob().getJobId().toString(), transferId),
             this::transferProcessCompleted);
 
         if (response.getStatus() != ResponseStatus.OK) {
-            throw JobException.builder().status(response.getStatus()).build();
+            throw new JobException(response.getStatus().toString());
         }
 
         jobStore.addTransferProcess(job.getJob().getJobId().toString(), response.getTransferId());
@@ -223,14 +221,14 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     /**
      * Exception used to stop creating additional transfers if one transfer creation fails.
      */
-    @Value
+    /*@Value
     @Builder
     private static class JobException extends RuntimeException {
-        /**
-         * The status of the transfer in error.
-         */
+        *//**
+     * The status of the transfer in error.
+     *//*
         private final ResponseStatus status;
-    }
+    }*/
 
     /**
      * @return
@@ -244,6 +242,10 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                   .lastModifiedOn(Instant.now())
                   .jobState(JobState.UNSAVED)
                   .build();
+    }
+
+    private ResponseStatus convertMessage(String message) {
+        return ResponseStatus.valueOf(message);
     }
 
 }

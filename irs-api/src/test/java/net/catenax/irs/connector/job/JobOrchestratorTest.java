@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 import com.github.javafaker.Faker;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
-import net.catenax.irs.component.JobException;
 import net.catenax.irs.component.enums.JobState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -257,7 +256,7 @@ class JobOrchestratorTest {
         doAnswer(i -> byCompletingJob()).when(jobStore)
                                         .completeTransferProcess(job.getJob().getJobId().toString(), transfer);
         doAnswer(i -> {
-            throw JobException.builder().build();
+            throw new JobException();
         }).when(handler).complete(any());
 
         // Act
@@ -284,7 +283,7 @@ class JobOrchestratorTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = JobState.class, names = "IN_PROGRESS", mode = EXCLUDE)
+    @EnumSource(value = JobState.class, names = "RUNNING", mode = EXCLUDE)
     void transferProcessCompleted_WhenJobNotInProgress_Ignore(JobState state) {
         // Arrange
         job = job.toBuilder().job(generate.fakeJob(state)).build();

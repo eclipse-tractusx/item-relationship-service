@@ -21,7 +21,6 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.component.JobException;
 import net.catenax.irs.component.enums.JobState;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,6 +81,7 @@ public abstract class BaseJobStore implements JobStore {
     public void create(final MultiTransferJob job) {
         writeLock(() -> {
             final var newJob = job.toBuilder().transitionInitial().build();
+            log.info("Add the job into jobstore here {}", newJob);
             put(job.getJob().getJobId().toString(), newJob);
             return null;
         });
@@ -165,11 +165,7 @@ public abstract class BaseJobStore implements JobStore {
     private <T> T readLock(final Supplier<T> work) {
         try {
             if (!lock.readLock().tryLock(TIMEOUT, TimeUnit.MILLISECONDS)) {
-                throw JobException.builder()
-                                  .errorDetail("Timeout acquiring read lock")
-                                  .exceptionDate(Instant.now())
-                                  .build();
-
+                throw new JobException("Timeout acquiring read lock");
             }
             try {
                 return work.get();
@@ -178,20 +174,14 @@ public abstract class BaseJobStore implements JobStore {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw JobException.builder()
-                              .errorDetail(e.getMessage())
-                              .exceptionDate(Instant.now())
-                              .build();
+            throw new JobException("Job Interrupted", e.getMessage());
         }
     }
 
     private <T> T writeLock(final Supplier<T> work) {
         try {
             if (!lock.writeLock().tryLock(TIMEOUT, TimeUnit.MILLISECONDS)) {
-                throw JobException.builder()
-                                  .errorDetail("Timeout acquiring read lock")
-                                  .exceptionDate(Instant.now())
-                                  .build();
+                throw new JobException("Timeout acquiring read lock");
             }
             try {
                 return work.get();
@@ -200,11 +190,7 @@ public abstract class BaseJobStore implements JobStore {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw JobException.builder()
-                              .exception(e.getMessage())
-                              .errorDetail(e.getMessage())
-                              .exceptionDate(Instant.now())
-                              .build();
+            throw new JobException("Job Interrupted", e.getMessage());
         }
     }
 }

@@ -27,7 +27,7 @@ import lombok.NonNull;
 import lombok.Singular;
 import lombok.ToString;
 import net.catenax.irs.component.Job;
-import net.catenax.irs.component.JobException;
+import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
 import org.jetbrains.annotations.Nullable;
 
@@ -111,7 +111,8 @@ public class MultiTransferJob {
         /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail) {
             this.job.setJobState(JobState.ERROR);
             this.job.setJobCompleted(Instant.now());
-            this.job.setException(JobException.builder().errorDetail(errorDetail).exceptionDate(Instant.now()).build());
+            this.job.setException(
+                JobErrorDetails.builder().errorDetail(errorDetail).exceptionDate(Instant.now()).build());
             return this;
         }
 
