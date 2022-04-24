@@ -31,7 +31,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @JsonDeserialize(builder = JobErrorDetails.JobErrorDetailsBuilder.class)
 @NoArgsConstructor
 @AllArgsConstructor
-@SuppressWarnings("PMD.ShortClassName")
+@SuppressWarnings({ "PMD.ShortClassName", "PMD.MethodArgumentCouldBeFinal" })
 @ExcludeFromCodeCoverageGeneratedReport
 public class JobErrorDetails {
 

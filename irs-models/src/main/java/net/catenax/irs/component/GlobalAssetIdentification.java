@@ -34,6 +34,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @AllArgsConstructor
 @JsonSerialize(using = ToStringSerializer.class)
 @JsonDeserialize(builder = GlobalAssetIdentification.GlobalAssetIdBuilder.class)
+@SuppressWarnings({ "PMD.SingletonClassReturningNewInstance", "PMD.MethodArgumentCouldBeFinal" })
 @ExcludeFromCodeCoverageGeneratedReport
 public class GlobalAssetIdentification {
 
