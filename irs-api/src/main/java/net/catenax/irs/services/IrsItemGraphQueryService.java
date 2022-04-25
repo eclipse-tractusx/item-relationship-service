@@ -102,10 +102,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         if (canceled.isPresent()) {
             final MultiTransferJob job = canceled.get();
 
-            return Job.builder()
-                      .jobId(jobId)
-                      .jobState(convert(job.getState()))
-                      .build();
+            return Job.builder().jobId(jobId).jobState(convert(job.getState())).build();
         } else {
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
@@ -198,4 +195,5 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 throw new IllegalArgumentException("Cannot convert JobState of type " + state);
         }
     }
+
 }
