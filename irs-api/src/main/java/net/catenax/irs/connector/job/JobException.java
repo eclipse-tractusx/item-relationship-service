@@ -32,7 +32,7 @@ public class JobException extends RuntimeException {
                                          .build();
     }
 
-    public JobException(String message) {
+    public JobException(final String message) {
         super(message);
         jobErrorDetails = JobErrorDetails.builder()
                                          .exception(message)
@@ -41,10 +41,10 @@ public class JobException extends RuntimeException {
                                          .build();
     }
 
-    public JobException(String message, String exception) {
-        super(message);
+    public JobException(final String message, final Throwable cause) {
+        super(message, cause);
         jobErrorDetails = JobErrorDetails.builder()
-                                         .exception(exception)
+                                         .exception(cause.getMessage())
                                          .errorDetail(message)
                                          .exceptionDate(Instant.now())
                                          .build();

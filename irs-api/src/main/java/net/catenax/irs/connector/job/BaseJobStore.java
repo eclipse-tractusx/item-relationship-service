@@ -174,7 +174,7 @@ public abstract class BaseJobStore implements JobStore {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new JobException("Job Interrupted", e.getMessage());
+            throw new JobException("Job Interrupted", e);
         }
     }
 
@@ -190,7 +190,7 @@ public abstract class BaseJobStore implements JobStore {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new JobException("Job Interrupted", e.getMessage());
+            throw new JobException("Job Interrupted", e);
         }
     }
 }

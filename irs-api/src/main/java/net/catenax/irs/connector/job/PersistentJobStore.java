@@ -77,7 +77,7 @@ public class PersistentJobStore extends BaseJobStore {
             blobStore.delete(toBlobId(jobId));
             return blob.map(this::toJob);
         } catch (BlobPersistenceException e) {
-            throw new JobException("Blob persistence error", e.getMessage());
+            throw new JobException("Blob persistence error", e);
         }
     }
 
