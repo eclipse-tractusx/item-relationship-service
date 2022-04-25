@@ -33,9 +33,8 @@ import java.util.List;
 @ExcludeFromCodeCoverageGeneratedReport
 public class RegisterJob {
 
-    public static final String MAX_TREE_DEPTH = "100";
-
     private static final String MIN_TREE_DEPTH = "1";
+    private static final String MAX_TREE_DEPTH = "100";
     private static final String GLOBAL_ASSET_ID_REGEX = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
     private static final int UUID_SIZE = 36;
     private static final int URN_PREFIX_SIZE = 9;

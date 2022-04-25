@@ -73,8 +73,7 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
     }
 
     private Integer getExpectedTreeDepth(final Map<String, String> jobData) {
-        return jobData.containsKey(AASRecursiveJobHandler.DEPTH_ID_KEY) ? Integer.parseInt(jobData.get(AASRecursiveJobHandler.DEPTH_ID_KEY))
-                : Integer.parseInt(RegisterJob.MAX_TREE_DEPTH);
+        return Integer.parseInt(jobData.get(AASRecursiveJobHandler.DEPTH_ID_KEY));
     }
 
     private boolean expectedDepthOfTreeIsNotReached(final Integer expectedDepth, final Integer currentDepth) {
