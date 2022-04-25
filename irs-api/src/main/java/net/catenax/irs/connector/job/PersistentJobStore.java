@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
@@ -78,6 +79,23 @@ public class PersistentJobStore extends BaseJobStore {
             return blob.map(this::toJob);
         } catch (BlobPersistenceException e) {
             throw new JobException("Blob persistence error", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JobState getJobState(final String jobId) {
+        try {
+            return blobStore.getBlob(toBlobId(jobId)).map(this::toJob)
+                            .stream()
+                            .filter(j -> j.getJob().getJobId().toString().equals(jobId))
+                            .map(j -> j.getJob().getJobState())
+                            .findFirst()
+                            .get();
+        } catch (BlobPersistenceException e) {
+            throw new JobException("The is no job with provided Jod Identifier");
         }
     }
 

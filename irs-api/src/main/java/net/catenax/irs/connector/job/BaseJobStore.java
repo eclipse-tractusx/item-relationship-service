@@ -49,6 +49,8 @@ public abstract class BaseJobStore implements JobStore {
 
     protected abstract Optional<MultiTransferJob> remove(String jobId);
 
+    protected abstract JobState getJobState(final String jobId);
+
     @Override
     public Optional<MultiTransferJob> find(final String jobId) {
         return readLock(() -> get(jobId));
@@ -141,14 +143,6 @@ public abstract class BaseJobStore implements JobStore {
         return this.get(jobId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JobState getJobState(final String jobId) {
-        return JobState.INITIAL;
-    }
-
     private void modifyJob(final String jobId, final UnaryOperator<MultiTransferJob> action) {
         writeLock(() -> {
             final var job = get(jobId);
@@ -181,7 +175,7 @@ public abstract class BaseJobStore implements JobStore {
     private <T> T writeLock(final Supplier<T> work) {
         try {
             if (!lock.writeLock().tryLock(TIMEOUT, TimeUnit.MILLISECONDS)) {
-                throw new JobException("Timeout acquiring read lock");
+                throw new JobException("Timeout acquiring write lock");
             }
             try {
                 return work.get();

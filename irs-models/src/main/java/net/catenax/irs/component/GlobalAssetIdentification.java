@@ -53,7 +53,7 @@ public class GlobalAssetIdentification {
     /**
      * Builder for GlobalAssetIdBuilder class
      */
-    @JsonPOJOBuilder(withPrefix = "")
+    @JsonPOJOBuilder(withPrefix = "with")
     public static final class GlobalAssetIdBuilder {
         private final GlobalAssetIdentification instance;
 

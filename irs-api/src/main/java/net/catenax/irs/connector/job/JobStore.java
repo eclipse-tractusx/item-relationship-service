@@ -113,12 +113,4 @@ public interface JobStore {
      */
     Optional<MultiTransferJob> cancelJob(String jobId);
 
-    /**
-     * Get and return the current job state
-     *
-     * @param jobId the job identifier
-     * @return job state
-     */
-    JobState getJobState(String jobId);
-
 }

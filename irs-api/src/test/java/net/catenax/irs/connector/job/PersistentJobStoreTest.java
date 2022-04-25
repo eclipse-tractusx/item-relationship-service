@@ -443,4 +443,11 @@ class PersistentJobStoreTest {
         // Assert
         assertThat(sut.find(job.getJob().getJobId().toString())).isEmpty();
     }
+
+    @Test
+    void jobStateIsInProgress() {
+        sut.create(job);
+        sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
+        assertThat(sut.getJobState(job.getJob().getJobId().toString())).isEqualTo(JobState.RUNNING);
+    }
 }

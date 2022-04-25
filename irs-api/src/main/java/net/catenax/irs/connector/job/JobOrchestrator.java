@@ -219,25 +219,17 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     /**
-     * Exception used to stop creating additional transfers if one transfer creation fails.
-     */
-    /*@Value
-    @Builder
-    private static class JobException extends RuntimeException {
-        *//**
-     * The status of the transfer in error.
-     *//*
-        private final ResponseStatus status;
-    }*/
-
-    /**
      * @return
      */
     private Job createJob(final String globalAssetId) {
-        final var assetId = StringUtils.isEmpty(globalAssetId) ? UUID.randomUUID().toString() : globalAssetId;
+
+        if (StringUtils.isEmpty(globalAssetId)) {
+            throw new JobException("GlobalAsset Identifier cannot be null or empty string");
+        }
+
         return Job.builder()
                   .jobId(UUID.randomUUID())
-                  .globalAssetId(GlobalAssetIdentification.builder().globalAssetId(assetId).build())
+                  .globalAssetId(GlobalAssetIdentification.builder().globalAssetId(globalAssetId).build())
                   .createdOn(Instant.now())
                   .lastModifiedOn(Instant.now())
                   .jobState(JobState.UNSAVED)
