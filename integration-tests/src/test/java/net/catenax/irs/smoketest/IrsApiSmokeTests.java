@@ -9,13 +9,15 @@
 //
 package net.catenax.irs.smoketest;
 
-import net.catenax.irs.dtos.PartRelationshipsWithInfos;
+import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.Jobs;
+import net.catenax.irs.component.RegisterJob;
+import net.catenax.irs.component.enums.JobState;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;
-import static net.catenax.irs.dtos.ItemsTreeView.AS_BUILT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -23,26 +25,38 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @see <a href="https://confluence.catena-x.net/display/ARTI/MTPDC+Testing">MTPDC Testing</a>
  */
 @Tag("SmokeTests")
-public class IrsApiSmokeTests extends SmokeTestsBase {
+class IrsApiSmokeTests extends SmokeTestsBase {
 
     @Test
-    public void getPartsTreeByVin_success() {
+    void shouldCreateAndCompleteJob() {
 
-        var response =
+        var responsePost =
             given()
                 .spec(getRequestSpecification())
                 .baseUri(irsApiUri)
-                .pathParam(VIN, SAMPLE_VIN)
-                .queryParam(VIEW, AS_BUILT)
+                .body(new RegisterJob())
             .when()
-                .get(PATH_BY_VIN)
+                .post(PATH_CREATE_JOB)
             .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK.value())
-                .extract().as(PartRelationshipsWithInfos.class);
+                .extract().as(JobHandle.class);
 
-        assertThat(response.getRelationships()).isNotEmpty();
-        assertThat(response.getPartInfos()).isNotEmpty();
+        assertThat(responsePost.getJobId()).isNotNull();
+
+        var responseGet =
+            given()
+                .spec(getRequestSpecification())
+                .baseUri(irsApiUri)
+                .pathParam("jobId", responsePost.getJobId())
+            .when()
+                .get(PATH_GET_JOB)
+            .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(Jobs.class);
+
+        assertThat(responseGet.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
     }
 
 }
