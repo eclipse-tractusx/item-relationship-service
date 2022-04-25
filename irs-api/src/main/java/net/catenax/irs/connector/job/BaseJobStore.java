@@ -49,7 +49,7 @@ public abstract class BaseJobStore implements JobStore {
 
     protected abstract Optional<MultiTransferJob> remove(String jobId);
 
-    protected abstract JobState getJobState(final String jobId);
+    protected abstract JobState getJobState(String jobId);
 
     @Override
     public Optional<MultiTransferJob> find(final String jobId) {
