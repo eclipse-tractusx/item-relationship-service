@@ -54,8 +54,16 @@ public class RegisterJob {
     private List<AspectType> aspects;
 
     @Schema(implementation = Integer.class, minimum = MIN_TREE_DEPTH, maximum = MAX_TREE_DEPTH, description = "Max depth of the returned tree, if empty max depth is returned.")
-    private int depth;
+    private Integer depth;
 
     @Schema(implementation = Direction.class, defaultValue = Direction.DirectionConstants.DOWNWARD)
     private Direction direction;
+
+    /**
+     * Returns requested depth if provided, otherwise MAX_TREE_DEPTH value
+     * @return depth
+     */
+    public Integer getDepth() {
+        return depth == null ? Integer.valueOf(MAX_TREE_DEPTH) : depth;
+    }
 }

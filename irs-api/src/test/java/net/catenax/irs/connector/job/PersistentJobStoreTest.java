@@ -5,9 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +15,7 @@ import com.github.javafaker.Faker;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.persistence.MinioBlobPersistence;
 import net.catenax.irs.testing.containers.MinioContainer;
+import net.catenax.irs.util.TestMother;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
