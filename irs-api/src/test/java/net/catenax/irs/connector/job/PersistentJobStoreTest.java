@@ -352,7 +352,7 @@ class PersistentJobStoreTest {
     @Test
     void shouldThrowExceptionWhenFindJobByIllegalId() {
         // Arrange
-        final var illegalId = faker.lorem().characters(5000);
+        final var illegalId = UUID.randomUUID().toString();
 
         // Act
         final Optional<MultiTransferJob> job = sut.find(illegalId);
