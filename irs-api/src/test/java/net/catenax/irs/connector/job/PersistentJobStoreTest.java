@@ -413,7 +413,7 @@ class PersistentJobStoreTest {
         sut.completeJob(jobId);
         final Optional<MultiTransferJob> multiTransferJob = sut.find(jobId);
 
-        // assert
+        // assertec
         assertThat(multiTransferJob).isPresent();
 
         final MultiTransferJob storedJob = multiTransferJob.get();
