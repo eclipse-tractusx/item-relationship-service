@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Disabled;
 @Disabled
 public class SystemTestsBase {
 
-    protected static final String PATH_BY_VIN = "/api/v0.1/vins/{vin}/partsTree";
+    protected static final String PATH_CREATE_JOB = "/irs/jobs";
+    protected static final String PATH_GET_JOB = "/irs/jobs/{jobId}";
     protected static final String SAMPLE_VIN = "YS3DD78N4X7055320";
     protected static final String VIN = "vin";
     protected static final String VIEW = "view";
