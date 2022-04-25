@@ -7,13 +7,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.net.URL;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 import com.github.javafaker.Faker;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
+import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 
@@ -363,4 +366,71 @@ class InMemoryJobStoreTest {
             return null;
         }
     }
+
+    @Test
+    void shouldStoreAndLoadJob() {
+        // arrange
+        final var jobId = UUID.randomUUID().toString();
+        final MultiTransferJob job = createJob(jobId);
+
+        // act
+        sut.create(job);
+        final Optional<MultiTransferJob> multiTransferJob = sut.find(jobId);
+
+        // assert
+        assertThat(multiTransferJob).isPresent();
+
+        final MultiTransferJob storedJob = multiTransferJob.get();
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(storedJob.getJob().getJobId().toString()).isEqualTo(job.getJob().getJobId().toString());
+            softly.assertThat(storedJob.getJob().getJobState()).isEqualTo(JobState.INITIAL);
+            softly.assertThat(storedJob.getJob().getException().getErrorDetail())
+                  .isEqualTo(job.getJob().getException().getErrorDetail());
+            softly.assertThat(storedJob.getJob().getJobCompleted()).isEqualTo(job.getJob().getJobCompleted());
+            softly.assertThat(storedJob.getJobData()).isEqualTo(job.getJobData());
+            softly.assertThat(storedJob.getCompletedTransfers()).isEqualTo(job.getCompletedTransfers());
+        });
+
+    }
+
+    private MultiTransferJob createJob(final String jobId) {
+        return MultiTransferJob.builder()
+                               .job(Job.builder()
+                                       .jobId(UUID.fromString(jobId))
+                                       .jobState(JobState.UNSAVED)
+                                       .jobCompleted(Instant.now())
+                                       .exception(JobErrorDetails.builder()
+                                                                 .exception("SomeError")
+                                                                 .exceptionDate(Instant.now())
+                                                                 .build())
+                                       .build())
+                               .jobData(Map.of("dataKey", "dataValue"))
+                               .build();
+    }
+
+    @Test
+    void shouldTransitionJobToComplete() {
+        // arrange
+        final var jobId = UUID.randomUUID().toString();
+        final MultiTransferJob job = createJob(jobId);
+
+        // act
+        sut.create(job);
+        sut.completeJob(jobId);
+        final Optional<MultiTransferJob> multiTransferJob = sut.find(jobId);
+
+        // assert
+        assertThat(multiTransferJob).isPresent();
+
+        final MultiTransferJob storedJob = multiTransferJob.get();
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(storedJob.getJob().getJobId().toString()).isEqualTo(job.getJob().getJobId().toString());
+            softly.assertThat(storedJob.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
+            softly.assertThat(storedJob.getJob().getException().getErrorDetail())
+                  .isEqualTo(job.getJob().getException().getErrorDetail());
+            softly.assertThat(storedJob.getJobData()).isEqualTo(job.getJobData());
+            softly.assertThat(storedJob.getCompletedTransfers()).isEqualTo(job.getCompletedTransfers());
+        });
+    }
+
 }

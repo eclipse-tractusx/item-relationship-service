@@ -344,7 +344,7 @@ class PersistentJobStoreTest {
     @Test
     void shouldThrowExceptionWhenDeleteJobByIllegalId() {
         // Arrange
-        final var illegalId = faker.lorem().characters(5000);
+        final var illegalId = UUID.randomUUID().toString();
 
         // Act+Assert
         assertThatExceptionOfType(JobException.class).isThrownBy(() -> sut.deleteJob(illegalId));
@@ -365,7 +365,7 @@ class PersistentJobStoreTest {
     @Test
     void shouldStoreAndLoadJob() {
         // arrange
-        final var jobId = faker.lorem().characters(36);
+        final var jobId = UUID.randomUUID().toString();
         final MultiTransferJob job = createJob(jobId);
 
         // act
@@ -406,7 +406,7 @@ class PersistentJobStoreTest {
     @Test
     void shouldTransitionJobToComplete() {
         // arrange
-        final var jobId = faker.lorem().characters(36);
+        final var jobId = UUID.randomUUID().toString();
         final MultiTransferJob job = createJob(jobId);
 
         // act
@@ -420,10 +420,9 @@ class PersistentJobStoreTest {
         final MultiTransferJob storedJob = multiTransferJob.get();
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(storedJob.getJob().getJobId().toString()).isEqualTo(job.getJob().getJobId().toString());
-            softly.assertThat(storedJob.getJob().getJobState()).isEqualTo(JobState.INITIAL);
+            softly.assertThat(storedJob.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
             softly.assertThat(storedJob.getJob().getException().getErrorDetail())
                   .isEqualTo(job.getJob().getException().getErrorDetail());
-            softly.assertThat(storedJob.getJob().getJobCompleted()).isEqualTo(job.getJob().getJobCompleted());
             softly.assertThat(storedJob.getJobData()).isEqualTo(job.getJobData());
             softly.assertThat(storedJob.getCompletedTransfers()).isEqualTo(job.getCompletedTransfers());
         });
