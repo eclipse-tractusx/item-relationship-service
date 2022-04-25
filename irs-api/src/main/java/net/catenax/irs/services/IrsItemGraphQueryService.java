@@ -10,7 +10,6 @@
 package net.catenax.irs.services;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,12 +27,14 @@ import net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.ItemContainer;
 import net.catenax.irs.aaswrapper.job.ItemDataRequest;
+import net.catenax.irs.component.ChildItem;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.Relationship;
+import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.connector.job.JobInitiateResponse;
@@ -64,8 +65,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     private final JobStore jobStore;
 
     private final BlobPersistence blobStore;
-
-    private static final Instant EXAMPLE_INSTANT = Instant.parse("2022-02-03T14:48:54.709Z");
 
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
@@ -103,10 +102,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         if (canceled.isPresent()) {
             final MultiTransferJob job = canceled.get();
 
-            return Job.builder()
-                      .jobId(jobId)
-                      .jobState(convert(job.getState()))
-                      .build();
+            return Job.builder().jobId(jobId).jobState(convert(job.getState())).build();
         } else {
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
@@ -152,14 +148,16 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                                             .catenaXId(GlobalAssetIdentification.builder()
                                                                                 .globalAssetId(dto.getCatenaXId())
                                                                                 .build())
-                          .childItem(Job.builder()
-                                  .action("action")
-                                  .globalAssetId(createGAID("a45a2246-f6e1-42da-b47d-5c3b58ed62e9"))
-                                  .lastModifiedOn(EXAMPLE_INSTANT)
-                                  .createdOn(EXAMPLE_INSTANT)
-                                  .owner("owner")
-                                  .build())
-                          .build());
+                                            .childItem(ChildItem.builder()
+                                                                .childCatenaXId(GlobalAssetIdentification.builder()
+                                                                                                         .globalAssetId(
+                                                                                                                 child.getChildCatenaXId())
+                                                                                                         .build())
+                                                                .lifecycleContext(
+                                                                        BomLifecycle.fromLifecycleContextCharacteristic(
+                                                                                child.getLifecycleContext()))
+                                                                .build())
+                                            .build());
     }
 
     private JobState convert(final net.catenax.irs.connector.job.JobState state) {
@@ -196,11 +194,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             default:
                 throw new IllegalArgumentException("Cannot convert JobState of type " + state);
         }
-    }
-
-    private GlobalAssetIdentification createGAID(final String globalAssetId) {
-        final String prefixedId = globalAssetId.startsWith("urn:uuid:") ? globalAssetId : "urn:uuid:" + globalAssetId;
-        return GlobalAssetIdentification.builder().globalAssetId(prefixedId).build();
     }
 
 }

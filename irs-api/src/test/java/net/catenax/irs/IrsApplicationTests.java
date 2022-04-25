@@ -19,7 +19,6 @@ import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.persistence.BlobPersistence;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -56,7 +55,6 @@ class IrsApplicationTests {
     void contextLoads() {
     }
 
-    @Disabled
     @Test
     void generatedOpenApiMatchesContract() throws Exception {
         final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",

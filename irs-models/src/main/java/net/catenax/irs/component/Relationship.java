@@ -29,8 +29,8 @@ public class Relationship {
     @Schema(implementation = GlobalAssetIdentification.class)
     private GlobalAssetIdentification catenaXId;
 
-    private Job childItem;
+    private ChildItem childItem;
 
-    private Job parentItem;
+    private ChildItem parentItem;
 
 }

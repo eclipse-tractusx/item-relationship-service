@@ -172,11 +172,6 @@
                             <goal>check</goal>
                         </goals>
                         <configuration>
-                            <excludes>
-                                <exclude>net/catenax/irs/response/examples/**</exclude>
-                                <exclude>net/catenax/irs/configuration/**</exclude>
-                                <exclude>net/catenax/irs/**</exclude>
-                            </excludes>
                             <rules>
                                 <rule>
                                     <element>PACKAGE</element>

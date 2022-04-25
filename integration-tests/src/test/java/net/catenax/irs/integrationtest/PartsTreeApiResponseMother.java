@@ -9,7 +9,18 @@
 //
 package net.catenax.irs.integrationtest;
 
-import net.catenax.irs.component.*;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import net.catenax.irs.component.AsyncFetchedItems;
+import net.catenax.irs.component.ChildItem;
+import net.catenax.irs.component.Job;
+import net.catenax.irs.component.Jobs;
+import net.catenax.irs.component.QueryParameter;
+import net.catenax.irs.component.Relationship;
+import net.catenax.irs.component.Summary;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
@@ -17,11 +28,6 @@ import net.catenax.irs.controllers.ApiErrorsConstants;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.testing.BaseDtoMother;
 import org.springframework.http.HttpStatus;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Object Mother to generate data for integration tests.
@@ -49,43 +55,42 @@ public class PartsTreeApiResponseMother {
     private static final Integer GEARBOX_RUNNING = 2;
     private static final Integer GEARBOX_COMPLETE = 3;
     private static final Integer GEARBOX_FAILED = 4;
-    private static final Integer GEARBOX_LOST = 5;
     private static final BomLifecycle GEARBOX_BOMLIFECYCLE = BomLifecycle.AS_BUILT;
     private static final AspectType GEARBOX_ASPECT = AspectType.MATERIAL_ASPECT;
     private static final Integer GEARBOX_DEPTH = 6;
     private static final Direction GEARBOX_DIRECTION = Direction.DOWNWARD;
 
     private final Job gearboxJob = gearboxJob();
+    private final ChildItem gearboxItem = gearboxChildItem();
     private final Job vehicleJob = vehicleJob();
+    private final ChildItem vehicleItem = gearboxChildItem();
     private final Job bearingJob = bearingJob();
+    private final ChildItem bearingItem = gearboxChildItem();
     private final Summary gearboxSummary = gearboxSummary();
     private final QueryParameter gearboxQueryParameter = gearboxQueryParameter();
     private final AsyncFetchedItems gearboxAsynchFetchedItems = gearboxAsynchFetchedItems();
     private final Job gearwheelJob = gearwheelJob();
+    private final ChildItem gearwheelItem = gearboxChildItem();
     private final Summary gearwheelSummary = gearwheelSummary();
     private final AsyncFetchedItems gearwheelAsynchFetchedItems = gearwheelAsynchFetchedItems();
     private final Job gearwheelpinJob1 = gearwheelpinJob1();
+    private final ChildItem gearwheelpinItem1 = gearboxChildItem();
     private final Summary gearwheelpinSummary1 = gearwheelpinSummary1();
     private final AsyncFetchedItems gearwheelpinAsynchFetchedItems1 = gearwheelpinAsynchFetchedItems1();
     private final Job gearwheelpinJob2 = gearwheelpinJob2();
+    private final ChildItem gearwheelpinItem2 = gearboxChildItem();
     private final Summary gearwheelpinSummary2 = gearwheelpinSummary2();
     private final AsyncFetchedItems gearwheelpinAsynchFetchedItems2 = gearwheelpinAsynchFetchedItems2();
 
+    private final List<Relationship> gearboxDirectChildren = List.of(relationship(gearboxItem, gearwheelItem));
 
-    private final List<Relationship> gearboxDirectChildren = List.of(relationship(gearboxJob, gearwheelJob));
+    private final List<Relationship> gearboxPartsTree = List.of(relationship(gearboxItem, gearwheelItem),
+            relationship(gearwheelItem, gearwheelpinItem1), relationship(gearwheelpinItem1, gearwheelpinItem2));
 
-    private final List<Relationship> gearboxPartsTree = List.of(
-            relationship(gearboxJob, gearwheelJob),
-            relationship(gearwheelJob, gearwheelpinJob1),
-            relationship(gearwheelpinJob1, gearwheelpinJob2));
-
-    private final List<Relationship> vehicleDirectChildren = List.of(
-            relationship(vehicleJob, gearboxJob),
-            relationship(vehicleJob, bearingJob)
-    );
-    private final List<Relationship> vehiclePartsTree = Stream.concat(
-                    vehicleDirectChildren.stream(), gearboxPartsTree.stream())
-            .collect(Collectors.toList());
+    private final List<Relationship> vehicleDirectChildren = List.of(relationship(vehicleItem, gearboxItem),
+            relationship(vehicleItem, bearingItem));
+    private final List<Relationship> vehiclePartsTree = Stream.concat(vehicleDirectChildren.stream(),
+            gearboxPartsTree.stream()).collect(Collectors.toList());
 
     /**
      * Generate a {@link Jobs} containing fixed part tree of gearbox without aspects.
@@ -94,9 +99,7 @@ public class PartsTreeApiResponseMother {
      */
     public Jobs sampleGearboxPartTree() {
 
-        return jobs(
-                gearboxPartsTree,
-                job(gearboxJob, gearboxSummary));
+        return jobs(gearboxPartsTree, job(gearboxJob, gearboxSummary));
     }
 
     /**
@@ -105,9 +108,7 @@ public class PartsTreeApiResponseMother {
      * @return a {@link Jobs} containing fixed part tree of gearbox with aspects.
      */
     public Jobs sampleGearboxPartTreeWithAspects() {
-        return jobs(
-                gearboxPartsTree,
-                job(gearboxJob, gearboxSummary, gearboxQueryParameter));
+        return jobs(gearboxPartsTree, job(gearboxJob, gearboxSummary, gearboxQueryParameter));
     }
 
     /**
@@ -116,9 +117,7 @@ public class PartsTreeApiResponseMother {
      * @return a {@link Jobs} containing fixed data of gearbox direct children without aspects.
      */
     public Jobs sampleGearboxDirectChildren() {
-        return jobs(
-                gearboxDirectChildren,
-                job(gearboxJob, gearboxSummary));
+        return jobs(gearboxDirectChildren, job(gearboxJob, gearboxSummary));
     }
 
     /**
@@ -128,9 +127,7 @@ public class PartsTreeApiResponseMother {
      */
     public Jobs sampleVinPartTree() {
 
-        return jobs(
-                vehiclePartsTree,
-                job(gearboxJob, gearboxSummary));
+        return jobs(vehiclePartsTree, job(gearboxJob, gearboxSummary));
     }
 
     /**
@@ -139,9 +136,7 @@ public class PartsTreeApiResponseMother {
      * @return a {@link Jobs} containing fixed part tree of vehicle with aspects.
      */
     public Jobs sampleVinPartTreeWithAspects() {
-        return jobs(
-                vehiclePartsTree,
-                job(gearboxJob, gearboxSummary, gearboxQueryParameter));
+        return jobs(vehiclePartsTree, job(gearboxJob, gearboxSummary, gearboxQueryParameter));
     }
 
     /**
@@ -150,9 +145,7 @@ public class PartsTreeApiResponseMother {
      * @return a {@link Jobs} containing fixed data of vehicle direct children without aspects.
      */
     public Jobs sampleVinDirectChildren() {
-        return jobs(
-                vehicleDirectChildren,
-                job(gearboxJob, gearboxSummary));
+        return jobs(vehicleDirectChildren, job(gearboxJob, gearboxSummary));
     }
 
     /**
@@ -161,9 +154,8 @@ public class PartsTreeApiResponseMother {
      * @return a {@link Jobs} containing fixed data of vehicle children and grandchildren without aspects.
      */
     public Jobs sampleVinGrandChildren() {
-        return jobs(
-                Stream.concat(vehicleDirectChildren.stream(), gearboxDirectChildren.stream()).collect(Collectors.toList()),
-                job(gearboxJob, gearboxSummary));
+        return jobs(Stream.concat(vehicleDirectChildren.stream(), gearboxDirectChildren.stream())
+                          .collect(Collectors.toList()), job(gearboxJob, gearboxSummary));
     }
 
     /**
@@ -173,57 +165,65 @@ public class PartsTreeApiResponseMother {
      * @return Guaranteed to never return {@literal null}.
      */
     public Jobs sampleLeafNodeGearboxPartTreeWithTypeName() {
-        return jobs(
-                List.of(),
-                job(gearwheelpinJob2, gearwheelpinSummary2));
+        return jobs(List.of(), job(gearwheelpinJob2, gearwheelpinSummary2));
     }
 
     /**
      * Generates error response for entity not found scenario.
+     *
      * @param errors List of errors.
      * @return An {@link ErrorResponse} object containing list of supplied errors.
      */
     public ErrorResponse entityNotFound(List<String> errors) {
         return ErrorResponse.builder()
-                .withStatusCode(HttpStatus.NOT_FOUND)
-                .withMessage(HttpStatus.NOT_FOUND.getReasonPhrase())
-                .withErrors(errors).build();
+                            .withStatusCode(HttpStatus.NOT_FOUND)
+                            .withMessage(HttpStatus.NOT_FOUND.getReasonPhrase())
+                            .withErrors(errors)
+                            .build();
     }
 
     /**
      * Generates error response for invalid max depth provided scenario.
+     *
      * @param errors List of errors.
      * @return An {@link ErrorResponse} object containing list of supplied errors.
      */
     public ErrorResponse invalidMaxDepth(List<String> errors) {
         return ErrorResponse.builder()
-                .withStatusCode(HttpStatus.BAD_REQUEST)
-                .withMessage(ApiErrorsConstants.INVALID_DEPTH)
-                .withErrors(errors).build();
+                            .withStatusCode(HttpStatus.BAD_REQUEST)
+                            .withMessage(ApiErrorsConstants.INVALID_DEPTH)
+                            .withErrors(errors)
+                            .build();
     }
 
     /**
      * Generates error response for invalid arguments provided scenario.
+     *
      * @param errors List of errors.
      * @return An {@link ErrorResponse} object containing list of supplied errors.
      */
     public ErrorResponse invalidArgument(List<String> errors) {
         return ErrorResponse.builder()
-                .withStatusCode(HttpStatus.BAD_REQUEST)
-                .withMessage(ApiErrorsConstants.INVALID_ARGUMENTS)
-                .withErrors(errors).build();
+                            .withStatusCode(HttpStatus.BAD_REQUEST)
+                            .withMessage(ApiErrorsConstants.INVALID_ARGUMENTS)
+                            .withErrors(errors)
+                            .build();
     }
 
     private Jobs jobs(List<Relationship> relationships, Job job) {
         return base.jobs(relationships, job);
     }
 
-    private Relationship relationship(Job child, Job parent) {
+    private Relationship relationship(ChildItem child, ChildItem parent) {
         return base.relationship(child, parent);
     }
 
     private Job gearboxJob() {
         return base.job(ZF_ONE_ID, OBJECT_ID_GEARBOX);
+    }
+
+    private ChildItem gearboxChildItem() {
+        return base.childItem(OBJECT_ID_GEARBOX, 1);
     }
 
     private Job vehicleJob() {
@@ -243,7 +243,7 @@ public class PartsTreeApiResponseMother {
     }
 
     private AsyncFetchedItems gearboxAsynchFetchedItems() {
-        return base.asynchFetchedItems(GEARBOX_QUEUE, GEARBOX_RUNNING, GEARBOX_COMPLETE, GEARBOX_FAILED, GEARBOX_LOST);
+        return base.asynchFetchedItems(GEARBOX_QUEUE, GEARBOX_RUNNING, GEARBOX_COMPLETE, GEARBOX_FAILED);
     }
 
     private Job gearwheelJob() {
@@ -255,7 +255,7 @@ public class PartsTreeApiResponseMother {
     }
 
     private AsyncFetchedItems gearwheelAsynchFetchedItems() {
-        return base.asynchFetchedItems(GEARBOX_QUEUE, GEARBOX_RUNNING, GEARBOX_COMPLETE, GEARBOX_FAILED, GEARBOX_LOST);
+        return base.asynchFetchedItems(GEARBOX_QUEUE, GEARBOX_RUNNING, GEARBOX_COMPLETE, GEARBOX_FAILED);
     }
 
     private Job gearwheelpinJob1() {
@@ -267,7 +267,7 @@ public class PartsTreeApiResponseMother {
     }
 
     private AsyncFetchedItems gearwheelpinAsynchFetchedItems1() {
-        return base.asynchFetchedItems(GEARBOX_QUEUE, GEARBOX_RUNNING, GEARBOX_COMPLETE, GEARBOX_FAILED, GEARBOX_LOST);
+        return base.asynchFetchedItems(GEARBOX_QUEUE, GEARBOX_RUNNING, GEARBOX_COMPLETE, GEARBOX_FAILED);
     }
 
     private Job gearwheelpinJob2() {
@@ -279,7 +279,7 @@ public class PartsTreeApiResponseMother {
     }
 
     private AsyncFetchedItems gearwheelpinAsynchFetchedItems2() {
-        return base.asynchFetchedItems(GEARBOX_QUEUE, GEARBOX_RUNNING, GEARBOX_COMPLETE, GEARBOX_FAILED, GEARBOX_LOST);
+        return base.asynchFetchedItems(GEARBOX_QUEUE, GEARBOX_RUNNING, GEARBOX_COMPLETE, GEARBOX_FAILED);
     }
 
     private String ceAspectUrl(String name) {
