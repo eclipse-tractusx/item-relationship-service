@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.RecursiveJobHandler;
 
