@@ -244,7 +244,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                   .build();
     }
 
-    private ResponseStatus convertMessage(String message) {
+    private ResponseStatus convertMessage(final String message) {
         return ResponseStatus.valueOf(message);
     }
 

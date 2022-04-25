@@ -343,7 +343,7 @@ class PersistentJobStoreTest {
     @Test
     void shouldThrowExceptionWhenDeleteJobByIllegalId() {
         // Arrange
-        final var illegalId = UUID.randomUUID().toString();
+        final var illegalId = faker.lorem().characters(5000);
 
         // Act+Assert
         assertThatExceptionOfType(JobException.class).isThrownBy(() -> sut.deleteJob(illegalId));
@@ -352,7 +352,7 @@ class PersistentJobStoreTest {
     @Test
     void shouldThrowExceptionWhenFindJobByIllegalId() {
         // Arrange
-        final var illegalId = UUID.randomUUID().toString();
+        final var illegalId = faker.lorem().characters(5000);
 
         // Act
         final Optional<MultiTransferJob> job = sut.find(illegalId);

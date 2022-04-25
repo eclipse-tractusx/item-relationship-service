@@ -46,7 +46,9 @@ import org.springframework.http.HttpStatus;
 /**
  * Provides example objects for the OpenAPI documentation
  */
-@SuppressWarnings({ "PMD.ExcessiveImports", "PMD.TooManyMethods" })
+@SuppressWarnings({ "PMD.ExcessiveImports",
+                    "PMD.TooManyMethods"
+})
 @ExcludeFromCodeCoverageGeneratedReport
 public class OpenApiExamples {
     private static final Instant EXAMPLE_INSTANT = Instant.parse("2022-02-03T14:48:54.709Z");
@@ -128,8 +130,7 @@ public class OpenApiExamples {
 
     private Summary createSummary() {
         return Summary.builder()
-                      .asyncFetchedItems(
-                          AsyncFetchedItems.builder().complete(0).failed(0).running(0).queue(0).build())
+                      .asyncFetchedItems(AsyncFetchedItems.builder().complete(0).failed(0).running(0).queue(0).build())
                       .build();
     }
 
