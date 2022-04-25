@@ -3,6 +3,9 @@ package net.catenax.irs.services;
 import static net.catenax.irs.util.TestMother.registerJobWithDepth;
 import static net.catenax.irs.util.TestMother.registerJobWithoutDepth;
 import static org.awaitility.Awaitility.await;
+import static org.awaitility.Awaitility.given;
+//import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,6 +21,7 @@ import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.connector.job.JobState;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
+import net.catenax.irs.exceptions.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,10 +51,10 @@ class IrsItemGraphQueryServiceTest {
         final JobHandle registeredJob = service.registerItemJob(registerJob);
 
         // then
-        await()
-            .atMost(10, TimeUnit.SECONDS)
-            .pollDelay(Duration.ofSeconds(2))
-            .until(() -> expectedTreeSizeReached(registeredJob.getJobId(), expectedRelationshipsSizeFullTree));
+        given().ignoreException(EntityNotFoundException.class)
+           .await()
+           .atMost(10, TimeUnit.SECONDS)
+           .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFullTree));
     }
 
     @Test
@@ -63,10 +67,10 @@ class IrsItemGraphQueryServiceTest {
         final JobHandle registeredJob = service.registerItemJob(registerJob);
 
         // then
-        await()
+        given().ignoreException(EntityNotFoundException.class)
+            .await()
             .atMost(10, TimeUnit.SECONDS)
-            .pollDelay(Duration.ofSeconds(2))
-            .until(() -> expectedTreeSizeReached(registeredJob.getJobId(), expectedRelationshipsSizeFirstDepth));
+            .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFirstDepth));
     }
 
     @Test
@@ -97,8 +101,8 @@ class IrsItemGraphQueryServiceTest {
         assertEquals(state, JobState.CANCELED);
     }
 
-    private Boolean expectedTreeSizeReached(final UUID jobId, final int treeSize) {
-        return service.getJobForJobId(jobId).getRelationships().size() == treeSize;
+    private int getRelationshipsSize(final UUID jobId) {
+        return service.getJobForJobId(jobId).getRelationships().size();
     }
 
 }
