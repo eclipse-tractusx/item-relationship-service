@@ -3,7 +3,6 @@ package net.catenax.irs.connector.job;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 
 import java.time.Instant;
@@ -436,7 +435,7 @@ class PersistentJobStoreTest {
     void shouldThrowExceptionWhenCreatingJob() throws BlobPersistenceException {
         // Arrange
         final var ex = new BlobPersistenceException("test", new RuntimeException());
-        doThrow(ex).when(blobStoreSpy).putBlob(anyString(), any());
+        doThrow(ex).when(blobStoreSpy).putBlob(any(), any());
 
         // Act
         sut.create(job);
