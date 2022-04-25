@@ -31,6 +31,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class PersistentJobStoreTest {
     private static final String ACCESS_KEY = "accessKey";
     private static final String SECRET_KEY = "secretKey";
+    final int TTL_IN_HOUR_SECONDS = 3600;
 
     private static final MinioContainer minioContainer = new MinioContainer(
         new MinioContainer.CredentialsProvider(ACCESS_KEY, SECRET_KEY)).withReuse(true);
@@ -97,14 +98,7 @@ class PersistentJobStoreTest {
         assertThat(sut.find(job.getJob().getJobId().toString())).isPresent()
                                                                 .get()
                                                                 .usingRecursiveComparison()
-                                                                .isEqualTo(originalJob.toBuilder()
-                                                                                      .job(Job.builder()
-                                                                                              .jobCompleted(
-                                                                                                  Instant.now())
-                                                                                              .jobState(
-                                                                                                  JobState.INITIAL)
-                                                                                              .build())
-                                                                                      .build());
+                                                                .isEqualTo(originalJob);
         assertThat(sut.find(otherJobId)).isEmpty();
     }
 
@@ -213,7 +207,7 @@ class PersistentJobStoreTest {
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
         assertThat(Optional.of(job.getJob().getJobCompleted()).isPresent());
-        assertThat(job2.getJob().getJobState()).isEqualTo(JobState.UNSAVED);
+        assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
     }
 
     @Test
@@ -264,7 +258,7 @@ class PersistentJobStoreTest {
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
-        assertThat(job2.getJob().getJobState()).isEqualTo(JobState.UNSAVED);
+        assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
         assertThat(job.getJob().getException().getErrorDetail()).isEqualTo(errorDetail);
         assertThat(Optional.of(job.getJob().getJobCompleted()).isPresent());
     }
@@ -299,7 +293,7 @@ class PersistentJobStoreTest {
     @Test
     void shouldFindCompletedJobsOlderThanFiveHours() {
         // Arrange
-        final Instant nowPlusFiveHours = Instant.now().plusSeconds(3600 * 5);
+        final Instant nowPlusFiveHours = Instant.now().plusSeconds(TTL_IN_HOUR_SECONDS * 5);
         sut.create(job);
         sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
         sut.completeTransferProcess(job.getJob().getJobId().toString(), process1);

@@ -10,16 +10,13 @@
 package net.catenax.irs.connector.job;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
@@ -97,14 +94,4 @@ public class PersistentJobStore extends BaseJobStore {
         return JOB_PREFIX + jobId;
     }
 
-    @Override
-    public List<MultiTransferJob> findByStateAndCompletionDateOlderThan(final JobState jobState,
-        final Instant dateTime) {
-        return null;
-    }
-
-    @Override
-    public List<MultiTransferJob> findByStates(final List<JobState> jobStates) {
-        return null;
-    }
 }

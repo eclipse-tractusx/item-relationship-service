@@ -62,13 +62,7 @@ class InMemoryJobStoreTest {
         assertThat(sut.find(job.getJob().getJobId().toString())).isPresent()
                                                                 .get()
                                                                 .usingRecursiveComparison()
-                                                                .isEqualTo(originalJob.toBuilder()
-                                                                                      .job(job.getJob()
-                                                                                              .toBuilder()
-                                                                                              .jobState(
-                                                                                                  JobState.INITIAL)
-                                                                                              .build())
-                                                                                      .build());
+                                                                .isEqualTo(originalJob);
         assertThat(sut.find(otherJobId)).isEmpty();
     }
 
