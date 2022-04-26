@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.connector.job.TransferProcess;
@@ -30,6 +31,7 @@ import net.catenax.irs.connector.job.TransferProcess;
 @Getter
 @JsonDeserialize(using = AASTransferProcess.AASTransferProcessDeserializer.class)
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class AASTransferProcess implements TransferProcess {
 
     @Getter(AccessLevel.NONE)
@@ -37,7 +39,7 @@ public class AASTransferProcess implements TransferProcess {
 
     private final List<String> idsToProcess = new ArrayList<>();
 
-    private final Integer depth;
+    private Integer depth;
 
     public void addIdsToProcess(final List<String> childIds) {
         idsToProcess.addAll(childIds);
@@ -59,7 +61,8 @@ public class AASTransferProcess implements TransferProcess {
             final ObjectCodec codec = jsonParser.getCodec();
             final JsonNode treeNode = codec.readTree(jsonParser);
             final String idValue = treeNode.get("id").textValue();
-            return new AASTransferProcess(idValue, null);
+
+            return new AASTransferProcess(idValue);
         }
     }
 }
