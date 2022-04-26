@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.aaswrapper.registry.domain.AasShellTombstone;
+import net.catenax.irs.aaswrapper.registry.domain.AasTombstone;
 import net.catenax.irs.aaswrapper.submodel.domain.ItemRelationshipAspectTombstone;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 
@@ -36,7 +36,7 @@ public class ItemTreesAssembler {
         final var relationships = new LinkedHashSet<AssemblyPartRelationshipDTO>();
         final var numberOfPartialTrees = new AtomicInteger();
         final LinkedHashSet<ItemRelationshipAspectTombstone> aspectTombstones = new LinkedHashSet<>();
-        final LinkedHashSet<AasShellTombstone> shellTombstones = new LinkedHashSet<>();
+        final LinkedHashSet<AasTombstone> shellTombstones = new LinkedHashSet<>();
 
         partialTrees.forEachOrdered(partialTree -> {
             relationships.addAll(partialTree.getAssemblyPartRelationships());
@@ -47,10 +47,10 @@ public class ItemTreesAssembler {
 
         log.info("Assembled item tree from {} partial trees", numberOfPartialTrees);
 
-        final var result = new ItemContainer();
-        result.addAllRelationships(relationships);
-        result.addAllAspectTombstones(aspectTombstones);
-        result.addAllShellTombstones(shellTombstones);
-        return result;
+        return ItemContainer.builder()
+                            .assemblyPartRelationships(relationships)
+                            .itemRelationshipAspectTombstones(aspectTombstones)
+                            .aasShellTombstones(shellTombstones)
+                            .build();
     }
 }

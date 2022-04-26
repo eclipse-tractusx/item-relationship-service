@@ -35,13 +35,13 @@ public class DigitalTwinRegistryFacade {
      * @param aasIdentifier The Asset Administration Shell's unique id
      * @return list of submodel addresses
      */
-    public List<AbstractAasShell> getAASSubmodelEndpoint(final String aasIdentifier) {
-        List<AbstractAasShell> result;
+    public List<AbstractAAS> getAASSubmodelEndpoint(final String aasIdentifier) {
+        List<AbstractAAS> result;
         try {
             final List<SubmodelDescriptor> submodelDescriptors = getSubmodelDescriptors(aasIdentifier);
             result = submodelDescriptors.stream()
                                         .filter(this::isAssemblyPartRelationship)
-                                        .map(submodelDescriptor -> new AasShellSubmodelDescriptor(
+                                        .map(submodelDescriptor -> new AasSubmodelDescriptor(
                                                 submodelDescriptor.getIdShort(), submodelDescriptor.getIdentification(),
                                                 NodeType.NODE, SubmodelType.ASSEMBLY_PART_RELATIONSHIP,
                                                 submodelDescriptor.getEndpoints()
@@ -61,7 +61,7 @@ public class DigitalTwinRegistryFacade {
         return result;
     }
 
-    private AbstractAasShell getResponseTombStoneForResponse(final String catenaXId, final String errorDetail,
+    private AbstractAAS getResponseTombStoneForResponse(final String catenaXId, final String errorDetail,
             final String exception) {
         final ProcessingError processingError = ProcessingError.builder()
                                                                .withException(exception)
@@ -70,7 +70,7 @@ public class DigitalTwinRegistryFacade {
                                                                .withRetryCounter(0)
                                                                .build();
         final String idShort = "";
-        return new AasShellTombstone(idShort, catenaXId, processingError);
+        return new AasTombstone(idShort, catenaXId, processingError);
     }
 
     private List<SubmodelDescriptor> getSubmodelDescriptors(final String aasIdentifier) {

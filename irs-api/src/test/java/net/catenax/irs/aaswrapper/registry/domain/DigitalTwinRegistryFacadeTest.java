@@ -36,12 +36,12 @@ class DigitalTwinRegistryFacadeTest {
     @Test
     void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() {
         final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-        final List<AbstractAasShell> shellEndpoints = digitalTwinRegistryFacade.getAASSubmodelEndpoint(catenaXId);
+        final List<AbstractAAS> shellEndpoints = digitalTwinRegistryFacade.getAASSubmodelEndpoint(catenaXId);
         assertThat(shellEndpoints).isNotNull().hasSize(1);
-        final AbstractAasShell shell = shellEndpoints.get(0);
-        assertThat(shell).isInstanceOf(AasShellSubmodelDescriptor.class);
-        final AasShellSubmodelDescriptor aasShellSubmodelDescriptor = (AasShellSubmodelDescriptor) shell;
-        assertThat(aasShellSubmodelDescriptor.getSubmodelEndpointAddress()).isEqualTo(catenaXId);
+        final AbstractAAS shell = shellEndpoints.get(0);
+        assertThat(shell).isInstanceOf(AasSubmodelDescriptor.class);
+        final AasSubmodelDescriptor aasSubmodelDescriptor = (AasSubmodelDescriptor) shell;
+        assertThat(aasSubmodelDescriptor.getSubmodelEndpointAddress()).isEqualTo(catenaXId);
     }
 
     @Test
@@ -51,12 +51,12 @@ class DigitalTwinRegistryFacadeTest {
                 Charset.defaultCharset(), new RequestTemplate());
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenThrow(
                 new FeignException.NotFound("not found", request, new byte[0], Map.of()));
-        final List<AbstractAasShell> shell = dtRegistryFacadeWithMock.getAASSubmodelEndpoint(catenaXId);
+        final List<AbstractAAS> shell = dtRegistryFacadeWithMock.getAASSubmodelEndpoint(catenaXId);
         assertThat(shell).hasSize(1);
-        final AbstractAasShell abstractAasShell = shell.get(0);
-        assertThat(abstractAasShell.getIdentification()).isEqualTo(catenaXId);
-        assertThat(abstractAasShell).isInstanceOf(AasShellTombstone.class);
-        final AasShellTombstone tombstone = (AasShellTombstone) abstractAasShell;
+        final AbstractAAS abstractAAS = shell.get(0);
+        assertThat(abstractAAS.getIdentification()).isEqualTo(catenaXId);
+        assertThat(abstractAAS).isInstanceOf(AasTombstone.class);
+        final AasTombstone tombstone = (AasTombstone) abstractAAS;
         assertThat(tombstone.getProcessingError().getException()).isEqualTo("NotFound");
     }
 
@@ -66,12 +66,12 @@ class DigitalTwinRegistryFacadeTest {
         final AssetAdministrationShellDescriptor shellDescriptor = new AssetAdministrationShellDescriptor();
         shellDescriptor.setSubmodelDescriptors(List.of());
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenReturn(shellDescriptor);
-        final List<AbstractAasShell> shell = dtRegistryFacadeWithMock.getAASSubmodelEndpoint(catenaXId);
+        final List<AbstractAAS> shell = dtRegistryFacadeWithMock.getAASSubmodelEndpoint(catenaXId);
         assertThat(shell).hasSize(1);
-        final AbstractAasShell abstractAasShell = shell.get(0);
-        assertThat(abstractAasShell.getIdentification()).isEqualTo(catenaXId);
-        assertThat(abstractAasShell).isInstanceOf(AasShellTombstone.class);
-        final AasShellTombstone tombstone = (AasShellTombstone) abstractAasShell;
+        final AbstractAAS abstractAAS = shell.get(0);
+        assertThat(abstractAAS.getIdentification()).isEqualTo(catenaXId);
+        assertThat(abstractAAS).isInstanceOf(AasTombstone.class);
+        final AasTombstone tombstone = (AasTombstone) abstractAAS;
         assertThat(tombstone.getProcessingError().getException()).isEqualTo("Unknown");
         assertThat(tombstone.getProcessingError().getErrorDetail()).isEqualTo(
                 "No AssemblyPartRelationship Descriptor found");

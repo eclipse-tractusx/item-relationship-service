@@ -22,17 +22,17 @@ import net.catenax.irs.dto.ProcessingError;
  */
 @Getter
 @ToString
-@JsonDeserialize(builder = AasShellTombstone.AasShellTombstoneBuilder.class)
-public class AasShellTombstone extends AbstractAasShell implements Tombstone {
+@JsonDeserialize(builder = AasTombstone.AasTombstoneBuilder.class)
+public class AasTombstone extends AbstractAAS implements Tombstone {
     private final ProcessingError processingError;
 
     @Builder(setterPrefix = "with")
-    public AasShellTombstone(final String idShort, final String identification, final ProcessingError processingError) {
+    public AasTombstone(final String idShort, final String identification, final ProcessingError processingError) {
         super(idShort, identification, NodeType.TOMBSTONE);
         this.processingError = processingError;
     }
     @Builder(setterPrefix = "with")
-    public AasShellTombstone(final String idShort, final String identification, final ProcessingError processingError, final NodeType nodeType) {
+    public AasTombstone(final String idShort, final String identification, final ProcessingError processingError, final NodeType nodeType) {
         super(idShort, identification, nodeType);
         this.processingError = processingError;
     }

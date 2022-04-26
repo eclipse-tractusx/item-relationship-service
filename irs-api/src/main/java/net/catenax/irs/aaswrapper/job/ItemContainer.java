@@ -9,12 +9,13 @@
 //
 package net.catenax.irs.aaswrapper.job;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import lombok.Builder;
 import lombok.Getter;
-import net.catenax.irs.aaswrapper.registry.domain.AasShellTombstone;
+import lombok.Singular;
+import lombok.extern.jackson.Jacksonized;
+import net.catenax.irs.aaswrapper.registry.domain.AasTombstone;
 import net.catenax.irs.aaswrapper.submodel.domain.ItemRelationshipAspectTombstone;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 
@@ -22,35 +23,16 @@ import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
  * Container class to store item data
  */
 @Getter
+@Builder
+@Jacksonized
 public class ItemContainer {
 
-    private final List<AssemblyPartRelationshipDTO> assemblyPartRelationships = new ArrayList<>();
+    @Singular
+    private List<AssemblyPartRelationshipDTO> assemblyPartRelationships;
 
-    private final List<ItemRelationshipAspectTombstone> itemRelationshipAspectTombstones = new ArrayList<>();
+    @Singular
+    private List<ItemRelationshipAspectTombstone> itemRelationshipAspectTombstones;
 
-    private final List<AasShellTombstone> aasShellTombstones = new ArrayList<>();
-
-    public void addRelationship(final AssemblyPartRelationshipDTO relationship) {
-        assemblyPartRelationships.add(relationship);
-    }
-
-    public void addAllRelationships(final Collection<AssemblyPartRelationshipDTO> relationships) {
-        assemblyPartRelationships.addAll(relationships);
-    }
-
-    public void addAspectTombstone(final ItemRelationshipAspectTombstone tombstone) {
-        itemRelationshipAspectTombstones.add(tombstone);
-    }
-
-    public void addAllAspectTombstones(final Collection<ItemRelationshipAspectTombstone> tombstones) {
-        this.itemRelationshipAspectTombstones.addAll(tombstones);
-    }
-
-    public void addShellTombstone(final AasShellTombstone tombstone) {
-        aasShellTombstones.add(tombstone);
-    }
-
-    public void addAllShellTombstones(final Collection<AasShellTombstone> tombstones) {
-        this.aasShellTombstones.addAll(tombstones);
-    }
+    @Singular
+    private List<AasTombstone> aasShellTombstones;
 }

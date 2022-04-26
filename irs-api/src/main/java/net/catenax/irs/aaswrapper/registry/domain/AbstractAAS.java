@@ -16,13 +16,13 @@ import net.catenax.irs.dto.NodeType;
  * Abstract Asset Administration Shell
  */
 @Getter
-public abstract class AbstractAasShell implements Shell {
+public abstract class AbstractAAS implements Shell {
 
     private final String idShort;
     private final String identification;
     private final NodeType nodeType;
 
-    protected AbstractAasShell(final String idShort, final String identification, final NodeType nodeType) {
+    protected AbstractAAS(final String idShort, final String identification, final NodeType nodeType) {
         this.idShort = idShort;
         this.identification = identification;
         this.nodeType = nodeType;

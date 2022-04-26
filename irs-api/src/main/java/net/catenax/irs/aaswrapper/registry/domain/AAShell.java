@@ -22,13 +22,13 @@ import net.catenax.irs.dto.SubmodelEndpoint;
  * Asset Administration Shell Response Class
  */
 @Getter
-public class AasShell extends AbstractAasShell {
+public class AAShell extends AbstractAAS {
     private final List<Description> descriptions;
     private final GlobalAssetIdentification globalAssetIdentification;
     private final Map<String, String> specificAssetIds;
     private final List<SubmodelEndpoint> submodelEndpoints;
 
-    public AasShell(final String idShort, final String identification, final NodeType nodeType,
+    public AAShell(final String idShort, final String identification, final NodeType nodeType,
             final List<Description> descriptions, final GlobalAssetIdentification globalAssetIdentification,
             final Map<String, String> specificAssetIds, final List<SubmodelEndpoint> submodelEndpoints) {
         super(idShort, identification, nodeType);

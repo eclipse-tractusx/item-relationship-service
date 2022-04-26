@@ -17,9 +17,9 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.aaswrapper.registry.domain.AasShellSubmodelDescriptor;
-import net.catenax.irs.aaswrapper.registry.domain.AasShellTombstone;
-import net.catenax.irs.aaswrapper.registry.domain.AbstractAasShell;
+import net.catenax.irs.aaswrapper.registry.domain.AasSubmodelDescriptor;
+import net.catenax.irs.aaswrapper.registry.domain.AasTombstone;
+import net.catenax.irs.aaswrapper.registry.domain.AbstractAAS;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.AbstractItemRelationshipAspect;
 import net.catenax.irs.aaswrapper.submodel.domain.ItemRelationshipAspect;
@@ -75,27 +75,27 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             final String itemId = dataRequest.getItemId();
             log.info("Calling Digital Twin Registry with itemId {}", itemId);
-            final List<AbstractAasShell> aasShellSubmodelEndpoint = registryFacade.getAASSubmodelEndpoint(itemId);
+            final List<AbstractAAS> aasShellSubmodelEndpoint = registryFacade.getAASSubmodelEndpoint(itemId);
             log.info("Retrieved {} SubmodelEndpoints for itemId {}", aasShellSubmodelEndpoint.size(), itemId);
 
-            final ItemContainer itemContainer = new ItemContainer();
+            final ItemContainer.ItemContainerBuilder itemContainer = ItemContainer.builder();
 
             aasShellSubmodelEndpoint.stream()
-                                    .filter(AasShellTombstone.class::isInstance)
-                                    .map(AasShellTombstone.class::cast)
-                                    .forEach(itemContainer::addShellTombstone);
+                                    .filter(AasTombstone.class::isInstance)
+                                    .map(AasTombstone.class::cast)
+                                    .forEach(itemContainer::aasShellTombstone);
 
             aasShellSubmodelEndpoint.stream()
-                                    .filter(AasShellSubmodelDescriptor.class::isInstance)
-                                    .map(AasShellSubmodelDescriptor.class::cast)
-                                    .map(AasShellSubmodelDescriptor::getSubmodelEndpointAddress)
+                                    .filter(AasSubmodelDescriptor.class::isInstance)
+                                    .map(AasSubmodelDescriptor.class::cast)
+                                    .map(AasSubmodelDescriptor::getSubmodelEndpointAddress)
                                     .map(endpointAddress -> submodelFacade.getAssemblyPartRelationshipSubmodel(
                                             endpointAddress, itemId))
                                     .forEach(abstractItemRelationshipAspect -> processEndpointWithFaultTolerance(
                                             aasTransferProcess, itemContainer, abstractItemRelationshipAspect));
             try {
                 final JsonUtil jsonUtil = new JsonUtil();
-                blobStore.putBlob(processId, jsonUtil.asString(itemContainer).getBytes(StandardCharsets.UTF_8));
+                blobStore.putBlob(processId, jsonUtil.asString(itemContainer.build()).getBytes(StandardCharsets.UTF_8));
             } catch (BlobPersistenceException e) {
                 log.error("Unable to store AAS result", e);
             }
@@ -104,7 +104,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
     }
 
     private void processEndpointWithFaultTolerance(final AASTransferProcess aasTransferProcess,
-            final ItemContainer itemContainer, final AbstractItemRelationshipAspect relationship) {
+            final ItemContainer.ItemContainerBuilder itemContainer, final AbstractItemRelationshipAspect relationship) {
         if (relationship instanceof ItemRelationshipAspect) {
             processEndpoint(aasTransferProcess, itemContainer,
                     ((ItemRelationshipAspect) relationship).getAssemblyPartRelationship());
@@ -113,15 +113,15 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
         }
     }
 
-    private void processTombstone(final ItemContainer itemContainer,
+    private void processTombstone(final ItemContainer.ItemContainerBuilder itemContainer,
             final AbstractItemRelationshipAspect relationship) {
         log.info("Processing AbstractItemRelationshipAspect for type {}", relationship.getNodeType());
         final ItemRelationshipAspectTombstone tombstone = (ItemRelationshipAspectTombstone) relationship;
-        itemContainer.addAspectTombstone(tombstone);
+        itemContainer.itemRelationshipAspectTombstone(tombstone);
     }
 
-    private void processEndpoint(final AASTransferProcess aasTransferProcess, final ItemContainer itemContainer,
-            final AssemblyPartRelationshipDTO relationship) {
+    private void processEndpoint(final AASTransferProcess aasTransferProcess,
+            final ItemContainer.ItemContainerBuilder itemContainer, final AssemblyPartRelationshipDTO relationship) {
         log.info("Processing AssemblyPartRelationship with {} children", relationship.getChildParts().size());
         final List<String> childIds = relationship.getChildParts()
                                                   .stream()
@@ -129,6 +129,6 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
                                                   .collect(Collectors.toList());
         aasTransferProcess.addIdsToProcess(childIds);
         // TODO (jkreutzfeld) what do we actually need to store here?
-        itemContainer.addRelationship(relationship);
+        itemContainer.assemblyPartRelationship(relationship);
     }
 }

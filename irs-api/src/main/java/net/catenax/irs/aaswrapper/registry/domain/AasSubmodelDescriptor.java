@@ -17,11 +17,11 @@ import net.catenax.irs.dto.SubmodelType;
  * Asset Administration Shell Submodel Descriptor
  */
 @Getter
-public class AasShellSubmodelDescriptor extends AbstractAasShell {
+public class AasSubmodelDescriptor extends AbstractAAS {
     private final SubmodelType submodelType;
     private final String submodelEndpointAddress;
 
-    public AasShellSubmodelDescriptor(final String idShort, final String identification, final NodeType nodeType,
+    public AasSubmodelDescriptor(final String idShort, final String identification, final NodeType nodeType,
             final SubmodelType submodelType, final String submodelEndpointAddress) {
         super(idShort, identification, nodeType);
         this.submodelType = submodelType;

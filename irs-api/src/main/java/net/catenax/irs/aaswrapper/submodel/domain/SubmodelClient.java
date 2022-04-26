@@ -9,8 +9,8 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -32,7 +32,6 @@ interface SubmodelClient {
 /**
  * Submodel Client Stub used in local environment
  */
-@Profile("local")
 @Service
 class SubmodelClientLocalStub implements SubmodelClient {
     @Override
@@ -50,15 +49,11 @@ class SubmodelClientLocalStub implements SubmodelClient {
 /**
  * Submodel Rest Client Implementation
  */
-@Profile("!local")
 @Slf4j
+@RequiredArgsConstructor
 class SubmodelClientImpl implements SubmodelClient {
 
     private final RestTemplate restTemplate;
-
-    /* package */ SubmodelClientImpl(final RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
 
     @Override
     public Aspect getSubmodel(final String submodelEndpointAddress, final String catenaXId,
