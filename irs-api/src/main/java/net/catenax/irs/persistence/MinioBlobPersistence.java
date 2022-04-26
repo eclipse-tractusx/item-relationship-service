@@ -130,6 +130,7 @@ public class MinioBlobPersistence implements BlobPersistence {
         } catch (IOException e) {
             throw createLoadFailedException(e);
         }
+
     }
 
     private BlobPersistenceException createLoadFailedException(final Throwable cause) {
