@@ -9,13 +9,13 @@
 //
 package net.catenax.irs.aaswrapper.job;
 
-import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
-
-import java.util.stream.Stream;
-
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.RecursiveJobHandler;
+
+import java.util.stream.Stream;
+
+import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 
 /**
  * Recursive job handler for AAS data
@@ -47,7 +47,7 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
     public void complete(final MultiTransferJob job) {
         log.info("Completed retrieval for Job {}", job.getJob().getJobId().toString());
         final var completedTransfers = job.getCompletedTransfers();
-        final var targetBlobName = job.getJob().getJobId().toString();
-        logic.assemblePartialPartTreeBlobs(completedTransfers, targetBlobName);
+        final var targetBlobName = job.getJob().getJobId();
+        logic.assemblePartialItemGraphBlobs(completedTransfers, targetBlobName.toString());
     }
 }

@@ -18,14 +18,12 @@ import javax.validation.constraints.Size;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Builder;
 import lombok.Value;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Parameter object for  REST operation.
  */
 @Value
-@SuppressWarnings({ "PMD.CommentRequired" })
-@ExcludeFromCodeCoverageGeneratedReport
+@SuppressWarnings({"PMD.CommentRequired"})
 public class PartsTreeByVinRequest extends PartsTreeRequestBase {
     @NotBlank
     @Size(min = VIN_FIELD_LENGTH, max = VIN_FIELD_LENGTH)

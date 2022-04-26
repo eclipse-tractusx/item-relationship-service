@@ -57,10 +57,15 @@ class IrsApplicationTests {
     void generatedOpenApiMatchesContract() throws Exception {
         final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
             String.class);
+<<<<<<< HEAD
         final String fixedYaml = Files.readString(new File("../api/irs-v0.2.yaml").toPath(), UTF_8);
         // assertThat(generatedYaml).isEqualToNormalizingNewlines(fixedYaml);
         assertThat(generatedYaml).contains("openapi: 3.0.1");
         assertThat(fixedYaml).contains("openapi: 3.0.1");
+=======
+        final String fixedYaml = Files.readString(new File("../api/irs-v1.0.yaml").toPath(), UTF_8);
+        assertThat(generatedYaml).isEqualToNormalizingNewlines(fixedYaml);
+>>>>>>> feature/TRI-312-Refactor-current-job-store-mode
     }
 
     @Test
@@ -71,7 +76,7 @@ class IrsApplicationTests {
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.OK);
 
         Awaitility.await()
-                  .atMost(5, TimeUnit.SECONDS)
+                  .atMost(10, TimeUnit.SECONDS)
                   .pollInterval(100, TimeUnit.MILLISECONDS)
                   .until(() -> jobStore.find(response.getJobId())
                                        .map(s -> s.getJob().getJobState())

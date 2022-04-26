@@ -19,7 +19,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * An AAS shell.
@@ -28,7 +27,6 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @Builder(toBuilder = true)
 @Schema(description = "")
 @AllArgsConstructor
-@ExcludeFromCodeCoverageGeneratedReport
 @JsonDeserialize(builder = Shell.ShellBuilder.class)
 public class Shell {
 

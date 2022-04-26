@@ -24,18 +24,17 @@ import net.catenax.irs.validators.ValueOfEnumValidator;
 /**
  * Custom annotation to validate input for enum.
  */
-@Target({ FIELD })
+@Target({FIELD})
 @Retention(RUNTIME)
 @Documented
 @Constraint(validatedBy = ValueOfEnumValidator.class)
 @SuppressWarnings("checkstyle:MissingJavadocMethod")
-@ExcludeFromCodeCoverageGeneratedReport
 public @interface ValueOfEnum {
     Class<? extends Enum<?>> enumClass();
 
     String message() default "must be any of enum {enumClass}";
 
-    Class<?>[] groups() default { };
+    Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default { };
+    Class<? extends Payload>[] payload() default {};
 }

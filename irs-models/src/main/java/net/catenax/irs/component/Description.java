@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Provide descriptions to request parts
@@ -23,7 +22,6 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @Value
 @Builder
 @JsonDeserialize(builder = Description.DescriptionBuilder.class)
-@ExcludeFromCodeCoverageGeneratedReport
 public class Description {
 
     public static final int LANGUAGE_MAX_LENGTH = 3;

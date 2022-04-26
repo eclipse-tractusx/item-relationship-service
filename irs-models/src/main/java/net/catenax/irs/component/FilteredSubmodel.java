@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Use to filter submodel to specific child items
@@ -25,7 +24,6 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @Value
 @Builder
 @JsonDeserialize(builder = FilteredSubmodel.FilteredSubmodelBuilder.class)
-@ExcludeFromCodeCoverageGeneratedReport
 public class FilteredSubmodel {
 
     private String catenaXId;

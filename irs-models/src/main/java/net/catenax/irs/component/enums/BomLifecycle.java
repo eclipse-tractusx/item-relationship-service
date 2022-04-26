@@ -9,29 +9,32 @@
 //
 package net.catenax.irs.component.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.dtos.ItemLifecycleStage;
+
+import java.util.stream.Stream;
 
 /***
  * API type for the view of the items tree to be returned by a query.
  *
  * @see ItemLifecycleStage
  */
-@ExcludeFromCodeCoverageGeneratedReport
 @Schema(description = "View defining which data of the item tree is retrieved.")
 public enum BomLifecycle {
-    @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") AS_BUILT("asBuilt");
+    @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") AS_BUILT("asBuilt", "AsBuilt");
     //@Schema(description = "The view of the PartsTree ... lifecycle.") AS_MAINTAINED("asMaintained"),
     //@Schema(description = "TThe view of the PartsTree ... lifecycle.") AS_PLANNED("asPlanned"),
     //@Schema(description = "TThe view of the PartsTree ... lifecycle.") AS_DESIGNED("asDesigned"),
     //@Schema(description = "The view of the PartsTree ... lifecycle.") AS_ORDERED("asOrdered"),
-    // @Schema(description = "The view of the PartsTree ... lifecycle.") AS_RECYCLED("asRecycled");
+    //@Schema(description = "The view of the PartsTree ... lifecycle.") AS_RECYCLED("asRecycled");
 
     private final String value;
+    private final String lifecycleContextCharacteristicValue;
 
-    BomLifecycle(final String value) {
+    BomLifecycle(final String value, final String lifecycleContextCharacteristicValue) {
         this.value = value;
+        this.lifecycleContextCharacteristicValue = lifecycleContextCharacteristicValue;
     }
 
     /**
@@ -42,6 +45,15 @@ public enum BomLifecycle {
      */
     public static BomLifecycle value(final String value) {
         return BomLifecycle.valueOf(value);
+    }
+
+    @JsonCreator
+    public static BomLifecycle fromValue(final String value) {
+        return Stream.of(BomLifecycle.values()).filter(bomLifecycle -> bomLifecycle.value.equals(value)).findFirst().orElseThrow();
+    }
+
+    public static BomLifecycle fromLifecycleContextCharacteristic(final String value) {
+        return Stream.of(BomLifecycle.values()).filter(bomLifecycle -> bomLifecycle.lifecycleContextCharacteristicValue.equals(value)).findFirst().orElseThrow();
     }
 
     /**

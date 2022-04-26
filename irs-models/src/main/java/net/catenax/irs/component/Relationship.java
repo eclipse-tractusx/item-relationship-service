@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Relationship
@@ -23,7 +22,6 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @Jacksonized
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@ExcludeFromCodeCoverageGeneratedReport
 public class Relationship {
 
     @Schema(implementation = GlobalAssetIdentification.class)

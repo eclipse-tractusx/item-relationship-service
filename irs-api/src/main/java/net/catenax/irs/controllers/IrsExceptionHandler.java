@@ -10,7 +10,6 @@
 package net.catenax.irs.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.exceptions.MaxDepthTooLargeException;
@@ -28,12 +27,12 @@ import java.util.stream.Collectors;
  * API Exception Handler.
  */
 @Slf4j
-@ExcludeFromCodeCoverageGeneratedReport
 @ControllerAdvice
 public class IrsExceptionHandler {
 
     /**
      * Handler for max depth too large exception
+     *
      * @param exception see {@link MaxDepthTooLargeException}
      * @return see {@link ErrorResponse}
      */
@@ -51,6 +50,7 @@ public class IrsExceptionHandler {
 
     /**
      * Handler for entity not found exception
+     *
      * @param exception see {@link EntityNotFoundException}
      * @return see {@link ErrorResponse}
      */
@@ -68,6 +68,7 @@ public class IrsExceptionHandler {
 
     /**
      * Handler for spring BindException
+     *
      * @param exception see {@link BindException}
      * @return see {@link ErrorResponse}
      */
@@ -90,6 +91,7 @@ public class IrsExceptionHandler {
 
     /**
      * Catcher for all unhandled exceptions
+     *
      * @param exception see {@link Exception}
      * @return see {@link ErrorResponse}
      */

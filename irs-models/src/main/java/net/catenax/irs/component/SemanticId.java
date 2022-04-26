@@ -18,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * SemanticId
@@ -27,13 +26,13 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @Builder(toBuilder = true)
 @Schema(description = "")
 @AllArgsConstructor
-@ExcludeFromCodeCoverageGeneratedReport
 @JsonDeserialize(builder = SemanticId.SemanticIdBuilder.class)
 public class SemanticId {
 
     @Schema()
     @Singular
     private List<String> values;
+
     /**
      * User to build SemanticId
      */

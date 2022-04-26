@@ -9,13 +9,11 @@
 //
 package net.catenax.irs.exceptions;
 
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.controllers.ApiErrorsConstants;
 
 /**
  * Exception to indicate an unsupported aspect.
  */
-@ExcludeFromCodeCoverageGeneratedReport
 public class AspectNotSupportedException extends RuntimeException {
 
     public AspectNotSupportedException() {
