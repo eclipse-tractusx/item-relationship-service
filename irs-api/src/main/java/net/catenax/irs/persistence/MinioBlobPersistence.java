@@ -51,7 +51,7 @@ import java.util.stream.StreamSupport;
  * BlobPersistence implementation using the min.io library
  */
 @Slf4j
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.PreserveStackTrace"})
 public class MinioBlobPersistence implements BlobPersistence {
 
     private static final Integer EXPIRE_AFTER_DAYS = 7;
