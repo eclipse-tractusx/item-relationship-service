@@ -10,6 +10,12 @@
 
 package net.catenax.irs.persistence;
 
+import io.minio.*;
+import io.minio.errors.*;
+import io.minio.messages.*;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -20,32 +26,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
-import io.minio.BucketExistsArgs;
-import io.minio.GetObjectArgs;
-import io.minio.GetObjectResponse;
-import io.minio.ListObjectsArgs;
-import io.minio.MakeBucketArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
-import io.minio.RemoveObjectArgs;
-import io.minio.Result;
-import io.minio.SetBucketLifecycleArgs;
-import io.minio.errors.ErrorResponseException;
-import io.minio.errors.InsufficientDataException;
-import io.minio.errors.InternalException;
-import io.minio.errors.InvalidResponseException;
-import io.minio.errors.ServerException;
-import io.minio.errors.XmlParserException;
-import io.minio.messages.Expiration;
-import io.minio.messages.Item;
-import io.minio.messages.LifecycleConfiguration;
-import io.minio.messages.LifecycleRule;
-import io.minio.messages.ResponseDate;
-import io.minio.messages.RuleFilter;
-import io.minio.messages.Status;
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * BlobPersistence implementation using the min.io library
@@ -59,7 +39,7 @@ public class MinioBlobPersistence implements BlobPersistence {
     private final String bucketName;
 
     public MinioBlobPersistence(final String endpoint, final String accessKey, final String secretKey,
-            final String bucketName) throws BlobPersistenceException {
+                                final String bucketName) throws BlobPersistenceException {
         this(bucketName, createClient(endpoint, accessKey, secretKey));
     }
 
@@ -103,10 +83,10 @@ public class MinioBlobPersistence implements BlobPersistence {
         try {
             final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(blob);
             minioClient.putObject(PutObjectArgs.builder()
-                                               .bucket(bucketName)
-                                               .object(targetBlobName)
-                                               .stream(byteArrayInputStream, byteArrayInputStream.available(), -1)
-                                               .build());
+                    .bucket(bucketName)
+                    .object(targetBlobName)
+                    .stream(byteArrayInputStream, byteArrayInputStream.available(), -1)
+                    .build());
         } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
             throw new BlobPersistenceException("Encountered error while trying to store blob", e);
         }
@@ -117,17 +97,13 @@ public class MinioBlobPersistence implements BlobPersistence {
         final GetObjectResponse response;
         try {
             response = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(sourceBlobName).build());
+            return Optional.ofNullable(response.readAllBytes());
         } catch (ErrorResponseException e) {
             if ("NoSuchKey".equals(e.errorResponse().code())) {
                 return Optional.empty();
             }
             throw createLoadFailedException(e);
         } catch (ServerException | InsufficientDataException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
-            throw createLoadFailedException(e);
-        }
-        try (response) {
-            return Optional.ofNullable(response.readAllBytes());
-        } catch (IOException e) {
             throw createLoadFailedException(e);
         }
     }
@@ -142,10 +118,10 @@ public class MinioBlobPersistence implements BlobPersistence {
                 ListObjectsArgs.builder().prefix(prefix).bucket(bucketName).build());
 
         return StreamSupport.stream(results.spliterator(), false)
-                            .flatMap(this::getItem)
-                            .map(Item::objectName)
-                            .flatMap(this::getBlobIfPresent)
-                            .collect(Collectors.toList());
+                .flatMap(this::getItem)
+                .map(Item::objectName)
+                .flatMap(this::getBlobIfPresent)
+                .collect(Collectors.toList());
     }
 
     @Override
