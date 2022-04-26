@@ -13,10 +13,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import feign.FeignException;
 import lombok.RequiredArgsConstructor;
-import net.catenax.irs.dto.NodeType;
 import net.catenax.irs.dto.ProcessingError;
+import net.catenax.irs.dto.SubmodelEndpoint;
 import net.catenax.irs.dto.SubmodelType;
 import org.springframework.stereotype.Service;
 
@@ -35,30 +34,20 @@ public class DigitalTwinRegistryFacade {
      * @param aasIdentifier The Asset Administration Shell's unique id
      * @return list of submodel addresses
      */
-    public List<AbstractAAS> getAASSubmodelEndpoint(final String aasIdentifier) {
-        List<AbstractAAS> result;
-        try {
-            final List<SubmodelDescriptor> submodelDescriptors = getSubmodelDescriptors(aasIdentifier);
-            result = submodelDescriptors.stream()
-                                        .filter(this::isAssemblyPartRelationship)
-                                        .map(submodelDescriptor -> new AasSubmodelDescriptor(
-                                                submodelDescriptor.getIdShort(), submodelDescriptor.getIdentification(),
-                                                NodeType.NODE, SubmodelType.ASSEMBLY_PART_RELATIONSHIP,
-                                                submodelDescriptor.getEndpoints()
-                                                                  .get(0)
-                                                                  .getProtocolInformation()
-                                                                  .getEndpointAddress()))
-                                        .collect(Collectors.toList());
-            if (result.isEmpty()) {
-                result = List.of(
-                        getResponseTombStoneForResponse(aasIdentifier, "No AssemblyPartRelationship Descriptor found",
-                                "Unknown"));
-            }
-        } catch (FeignException e) {
-            result = List.of(
-                    getResponseTombStoneForResponse(aasIdentifier, e.getMessage(), e.getClass().getSimpleName()));
-        }
-        return result;
+    public List<SubmodelEndpoint> getAASSubmodelEndpoints(final String aasIdentifier) {
+        final List<SubmodelDescriptor> submodelDescriptors = digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(
+                aasIdentifier).getSubmodelDescriptors();
+
+        return submodelDescriptors.stream()
+                                  .filter(this::isAssemblyPartRelationship)
+                                  .map(submodelDescriptor ->
+                                          new SubmodelEndpoint(
+                                                  submodelDescriptor.getEndpoints()
+                                                                    .get(0)
+                                                                    .getProtocolInformation()
+                                                                    .getEndpointAddress(),
+                                                  SubmodelType.ASSEMBLY_PART_RELATIONSHIP))
+                                  .collect(Collectors.toList());
     }
 
     private AbstractAAS getResponseTombStoneForResponse(final String catenaXId, final String errorDetail,

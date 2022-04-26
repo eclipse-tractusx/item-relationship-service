@@ -11,9 +11,7 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -24,24 +22,21 @@ interface SubmodelClient {
     /**
      * @return Returns the Submodel
      */
-    Aspect getSubmodel(String submodelEndpointAddress, String catenaXId, Class<? extends Aspect> submodelClass)
-            throws SubmodelClientException;
+    <T> T getSubmodel(String submodelEndpointAddress, Class<T> submodelClass);
 
 }
 
 /**
- * Submodel Client Stub used in local environment
+ * Digital Twin Registry Rest Client Stub used in local environment
  */
 @Service
 class SubmodelClientLocalStub implements SubmodelClient {
+
     @Override
-    public Aspect getSubmodel(final String submodelEndpointAddress, final String catenaXId,
-            final Class<? extends Aspect> submodelClass) throws SubmodelClientException {
-        if ("c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(catenaXId)) {
-            throw new SubmodelClientException("Dummy Exception");
-        }
+    public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
         final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
-        return submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(catenaXId);
+
+        return (T) submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(submodelEndpointAddress);
     }
 
 }
@@ -56,20 +51,8 @@ class SubmodelClientImpl implements SubmodelClient {
     private final RestTemplate restTemplate;
 
     @Override
-    public Aspect getSubmodel(final String submodelEndpointAddress, final String catenaXId,
-            final Class<? extends Aspect> submodelClass) throws SubmodelClientException {
-        try {
-            final ResponseEntity<? extends Aspect> responseEntity = restTemplate.getForEntity(submodelEndpointAddress,
-                    submodelClass);
-            if (responseEntity.getStatusCode().is2xxSuccessful()) {
-                return responseEntity.getBody();
-            } else {
-                throw new SubmodelClientException(responseEntity.getStatusCode().toString());
-            }
-        } catch (RestClientException e) {
-            log.error("RestClientException: ", e);
-            throw new SubmodelClientException("Request not successful: " + e.getMessage(), e);
-        }
+    public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
+        return restTemplate.getForEntity(submodelEndpointAddress, submodelClass).getBody();
     }
 
 }

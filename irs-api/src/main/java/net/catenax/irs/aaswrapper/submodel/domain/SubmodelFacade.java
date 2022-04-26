@@ -17,7 +17,6 @@ import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
-import net.catenax.irs.dto.NodeType;
 import net.catenax.irs.dto.ProcessingError;
 import org.springframework.stereotype.Service;
 
@@ -32,45 +31,24 @@ public class SubmodelFacade {
 
     /**
      * @param submodelEndpointAddress The URL to the submodel endpoint
-     * @param catenaXId               The catenaXId shell of the descriptor
      * @return The Aspect Model for the given submodel
      */
     @Retry(name = "submodelRetryer")
-    public AbstractItemRelationshipAspect getAssemblyPartRelationshipSubmodel(final String submodelEndpointAddress,
-            final String catenaXId) {
-        AbstractItemRelationshipAspect result;
-        try {
-            final Aspect submodelResponse = submodelClient.getSubmodel(submodelEndpointAddress, catenaXId,
-                    AssemblyPartRelationship.class);
-            if (submodelResponse instanceof AssemblyPartRelationship) {
-                final AssemblyPartRelationship submodel = (AssemblyPartRelationship) submodelResponse;
-                final Set<ChildDataDTO> childParts = new HashSet<>();
-                submodel.getChildParts()
-                        .forEach(childData -> childParts.add(ChildDataDTO.builder()
-                                                                         .withChildCatenaXId(
-                                                                                 childData.getChildCatenaXId())
-                                                                         .withLifecycleContext(
-                                                                                 childData.getLifecycleContext()
-                                                                                          .getValue())
-                                                                         .build()));
-                final AssemblyPartRelationshipDTO relationshipDTO = AssemblyPartRelationshipDTO.builder()
-                                                                                               .withCatenaXId(
-                                                                                                       submodel.getCatenaXId())
-                                                                                               .withChildParts(
-                                                                                                       childParts)
-                                                                                               .build();
-                final NodeType nodeType = relationshipDTO.getChildParts().isEmpty() ? NodeType.LEAF : NodeType.NODE;
-                result = new ItemRelationshipAspect(catenaXId, nodeType, relationshipDTO);
-            } else {
-                result = getResponseTombStoneForResponse(catenaXId, submodelEndpointAddress,
-                        "The returned Aspect Model did not match the provided class.", "Unknown");
-            }
-        } catch (SubmodelClientException e) {
-            result = getResponseTombStoneForResponse(catenaXId, submodelEndpointAddress, e.getMessage(),
-                    e.getClass().getSimpleName());
-        }
-        return result;
+    public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress) {
+        final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress, AssemblyPartRelationship.class);
 
+        final Set<ChildDataDTO> childParts = new HashSet<>();
+        submodel.getChildParts()
+                .forEach(childData -> childParts.add(ChildDataDTO.builder()
+                                                                 .withChildCatenaXId(childData.getChildCatenaXId())
+                                                                 .withLifecycleContext(
+                                                                         childData.getLifecycleContext().getValue())
+                                                                 .build()));
+
+        return AssemblyPartRelationshipDTO.builder()
+                                          .withCatenaXId(submodel.getCatenaXId())
+                                          .withChildParts(childParts)
+                                          .build();
     }
 
     private AbstractItemRelationshipAspect getResponseTombStoneForResponse(final String catenaXId,
