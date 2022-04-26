@@ -89,12 +89,9 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     @Override
     public List<UUID> getJobsByJobState(final @NonNull List<JobState> jobStates) {
-        final List<MultiTransferJob> jobs = jobStore.findByStates(
-            jobStates.stream().map(this::convert).collect(Collectors.toList()));
+        final List<MultiTransferJob> jobs = jobStore.findByStates(jobStates);
 
-        return jobs.stream()
-                   .map(x -> x.getJob().getJobId())
-                   .collect(Collectors.toList());
+        return jobs.stream().map(x -> x.getJob().getJobId()).collect(Collectors.toList());
     }
 
     @Override
@@ -105,10 +102,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         if (canceled.isPresent()) {
             final MultiTransferJob job = canceled.get();
 
-            return Job.builder()
-                      .jobId(jobId)
-                      .jobState(convert(job.getJob().getJobState()))
-                      .build();
+            return job.getJob();
         } else {
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
@@ -118,26 +112,21 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     public Jobs getJobForJobId(final UUID jobId) {
         final Optional<MultiTransferJob> multiTransferJob = jobStore.find(jobId.toString());
         if (multiTransferJob.isPresent()) {
-            final MultiTransferJob job = multiTransferJob.get();
-            final Job.JobBuilder builder = Job.builder()
-                                              .jobId(UUID.fromString(job.getJob().getJobId().toString()))
-                                              .jobState(convert(job.getJob().getJobState()));
-            Optional.of(job.getJob().getJobCompleted()).ifPresent(date -> builder.jobCompleted(date));
-            final Job jobToReturn = builder.build();
+            final MultiTransferJob multiJob = multiTransferJob.get();
 
             final var relationships = new ArrayList<Relationship>();
             try {
-                final Optional<byte[]> blob = blobStore.getBlob(job.getJob().getJobId().toString());
+                final Optional<byte[]> blob = blobStore.getBlob(multiJob.getJob().getJobId().toString());
                 final byte[] bytes = blob.orElseThrow(
-                    () -> new EntityNotFoundException("Could not find stored data for job with id " + jobId));
+                        () -> new EntityNotFoundException("Could not find stored data for multiJob with id " + jobId));
                 final ItemContainer itemContainer = new JsonUtil().fromString(new String(bytes, StandardCharsets.UTF_8),
-                    ItemContainer.class);
+                        ItemContainer.class);
                 final List<AssemblyPartRelationshipDTO> assemblyPartRelationships = itemContainer.getAssemblyPartRelationships();
                 relationships.addAll(convert(assemblyPartRelationships));
             } catch (BlobPersistenceException e) {
                 log.error("Unable to read blob", e);
             }
-            return Jobs.builder().job(jobToReturn).relationships(relationships).build();
+            return Jobs.builder().job(multiJob.getJob()).relationships(relationships).build();
         } else {
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
@@ -157,32 +146,12 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                                             .childItem(ChildItem.builder()
                                                                 .childCatenaXId(GlobalAssetIdentification.builder()
                                                                                                          .globalAssetId(
-                                                                                                             child.getChildCatenaXId())
+                                                                                                                 child.getChildCatenaXId())
                                                                                                          .build())
                                                                 .lifecycleContext(
-                                                                    BomLifecycle.fromLifecycleContextCharacteristic(
-                                                                        child.getLifecycleContext()))
+                                                                        BomLifecycle.fromLifecycleContextCharacteristic(
+                                                                                child.getLifecycleContext()))
                                                                 .build())
                                             .build());
     }
-
-    private JobState convert(final JobState state) {
-        switch (state) {
-            case COMPLETED:
-                return JobState.COMPLETED;
-            case RUNNING:
-                return JobState.RUNNING;
-            case ERROR:
-                return JobState.ERROR;
-            case INITIAL:
-                return JobState.INITIAL;
-            case TRANSFERS_FINISHED:
-                return JobState.TRANSFERS_FINISHED;
-            case CANCELED:
-                return JobState.CANCELED;
-            default:
-                throw new IllegalArgumentException("Cannot convert JobState of type " + state);
-        }
-    }
-
 }

@@ -206,7 +206,7 @@ class PersistentJobStoreTest {
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
-        assertThat(Optional.of(job.getJob().getJobCompleted()).isPresent());
+        assertThat(Optional.of(job.getJob().getJobCompleted())).isPresent();
         assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
     }
 
@@ -221,7 +221,7 @@ class PersistentJobStoreTest {
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
-        assertThat(Optional.of(job.getJob().getJobCompleted()).isPresent());
+        assertThat(Optional.of(job.getJob().getJobCompleted())).isPresent();
     }
 
     @Test
@@ -260,7 +260,7 @@ class PersistentJobStoreTest {
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
         assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
         assertThat(job.getJob().getException().getErrorDetail()).isEqualTo(errorDetail);
-        assertThat(Optional.of(job.getJob().getJobCompleted()).isPresent());
+        assertThat(Optional.of(job.getJob().getJobCompleted())).isPresent();
     }
 
     @Test
@@ -449,6 +449,8 @@ class PersistentJobStoreTest {
     void jobStateIsInProgress() {
         sut.create(job);
         sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
-        assertThat(sut.getJobState(job.getJob().getJobId().toString())).isEqualTo(JobState.RUNNING);
+        final Optional<MultiTransferJob> multiTransferJob = sut.get(job.getJob().getJobId().toString());
+        assertThat(multiTransferJob).isPresent();
+        assertThat(multiTransferJob.get().getJob().getJobState()).isEqualTo(JobState.RUNNING);
     }
 }

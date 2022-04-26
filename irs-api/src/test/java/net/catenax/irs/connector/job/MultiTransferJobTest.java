@@ -29,10 +29,5 @@ class MultiTransferJobTest {
                                 faker.lorem().word()));
     }
 
-    @Test
-    void getTransferProcessCreateJob() {
-
-    }
-
 
 }

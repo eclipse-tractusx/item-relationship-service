@@ -304,15 +304,18 @@ class InMemoryJobStoreTest {
     @Test
     void jobStateIsInitial() {
         sut.create(job);
-
-        assertThat(sut.getJobState(job.getJob().getJobId().toString())).isEqualTo(JobState.INITIAL);
+        final Optional<MultiTransferJob> multiTransferJob = sut.get(job.getJob().getJobId().toString());
+        assertThat(multiTransferJob).isPresent();
+        assertThat(multiTransferJob.get().getJob().getJobState()).isEqualTo(JobState.INITIAL);
     }
 
     @Test
     void jobStateIsInProgress() {
         sut.create(job);
         sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
-        assertThat(sut.getJobState(job.getJob().getJobId().toString())).isEqualTo(JobState.RUNNING);
+        final Optional<MultiTransferJob> multiTransferJob = sut.get(job.getJob().getJobId().toString());
+        assertThat(multiTransferJob).isPresent();
+        assertThat(multiTransferJob.get().getJob().getJobState()).isEqualTo(JobState.RUNNING);
     }
 
     @Test

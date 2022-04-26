@@ -36,7 +36,6 @@ import org.jetbrains.annotations.Nullable;
  */
 @ToString
 @Builder(toBuilder = true)
-@SuppressWarnings({ "PMD.UselessParentheses", "PMD.MethodArgumentCouldBeFinal", "PMD.TooManyMethods" })
 @JsonDeserialize(builder = MultiTransferJob.MultiTransferJobBuilder.class)
 public class MultiTransferJob {
 
@@ -102,7 +101,7 @@ public class MultiTransferJob {
          */
         /* package */ MultiTransferJobBuilder transitionComplete() {
             return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL).job(
-                job.toBuilder().jobCompleted((Instant.now())).build());
+                job.toBuilder().jobCompleted(Instant.now()).build());
         }
 
         /**

@@ -12,6 +12,7 @@ package net.catenax.irs.connector.job;
 import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,10 +36,8 @@ import org.apache.commons.lang3.StringUtils;
 public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     private static final int TTL_CLEANUP_COMPLETED_JOBS_HOURS = 1;
-    private static final int TTL_CLEANUP_COMPLETED_JOBS_SECONDS = TTL_CLEANUP_COMPLETED_JOBS_HOURS * 3600;
 
     private static final int TTL_CLEANUP_FAILED_JOBS_HOURS = 24;
-    private static final int TTL_CLEANUP_FAILED_JOBS_SECONDS = TTL_CLEANUP_FAILED_JOBS_HOURS * 3600 * 24;
 
     /**
      * Transfer process manager.
@@ -154,7 +153,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     public List<MultiTransferJob> findAndCleanupCompletedJobs() {
-        final Instant currentDateMinusSeconds = Instant.now().minusSeconds(TTL_CLEANUP_COMPLETED_JOBS_SECONDS);
+        final Instant currentDateMinusSeconds = Instant.now().minus(TTL_CLEANUP_COMPLETED_JOBS_HOURS, ChronoUnit.HOURS);
         final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
             currentDateMinusSeconds);
 
@@ -162,7 +161,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     public List<MultiTransferJob> findAndCleanupFailedJobs() {
-        final Instant currentDateMinusSeconds = Instant.now().minusSeconds(TTL_CLEANUP_FAILED_JOBS_SECONDS);
+        final Instant currentDateMinusSeconds = Instant.now().minus(TTL_CLEANUP_FAILED_JOBS_HOURS, ChronoUnit.HOURS);
         final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR,
             currentDateMinusSeconds);
         return deleteJobs(failedJobs);
@@ -218,9 +217,6 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         return response;
     }
 
-    /**
-     * @return
-     */
     private Job createJob(final String globalAssetId) {
 
         if (StringUtils.isEmpty(globalAssetId)) {
