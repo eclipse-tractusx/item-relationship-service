@@ -117,13 +117,17 @@ public class MinioBlobPersistence implements BlobPersistence {
         final GetObjectResponse response;
         try {
             response = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(sourceBlobName).build());
-            return Optional.ofNullable(response.readAllBytes());
         } catch (ErrorResponseException e) {
             if ("NoSuchKey".equals(e.errorResponse().code())) {
                 return Optional.empty();
             }
             throw createLoadFailedException(e);
         } catch (ServerException | InsufficientDataException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
+            throw createLoadFailedException(e);
+        }
+        try (response) {
+            return Optional.ofNullable(response.readAllBytes());
+        } catch (IOException e) {
             throw createLoadFailedException(e);
         }
     }
