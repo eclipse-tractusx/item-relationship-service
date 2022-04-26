@@ -58,7 +58,7 @@ public class Shell {
      * User to build Shell
      */
     @Schema(description = "User to build shell items")
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class ShellBuilder {
     }
 }

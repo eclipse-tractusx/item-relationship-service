@@ -38,7 +38,7 @@ public class Description {
     /**
      * Builder for Description class
      */
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class DescriptionBuilder {
     }
 }

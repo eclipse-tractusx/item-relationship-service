@@ -35,7 +35,7 @@ public class Summary {
     /**
      * Builder class
      */
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class SummaryBuilder {
     }
 

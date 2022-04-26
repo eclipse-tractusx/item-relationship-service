@@ -9,7 +9,7 @@
 //
 package net.catenax.irs.connector.job;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +21,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.component.enums.JobState;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -55,19 +56,22 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public List<MultiTransferJob> findByStateAndCompletionDateOlderThan(final JobState jobState,
-            final LocalDateTime localDateTime) {
+            final Instant dateTime) {
         return readLock(() -> getAll().stream()
                                       .filter(hasState(jobState))
-                                      .filter(isCompletionDateBefore(localDateTime))
+                                      .filter(isCompletionDateBefore(dateTime))
                                       .collect(Collectors.toList()));
     }
 
     private Predicate<MultiTransferJob> hasState(final JobState jobState) {
-        return job -> job.getState().equals(jobState);
+        return job -> job.getJob().getJobState().equals(jobState);
     }
 
-    private Predicate<MultiTransferJob> isCompletionDateBefore(final LocalDateTime localDateTime) {
-        return job -> job.getCompletionDate().isPresent() && job.getCompletionDate().get().isBefore(localDateTime);
+    private Predicate<MultiTransferJob> isCompletionDateBefore(final Instant localDateTime) {
+        return job -> {
+            final Instant completed = job.getJob().getJobCompleted();
+            return completed != null && completed.isBefore(localDateTime);
+        };
     }
 
     @Override
@@ -79,7 +83,8 @@ public abstract class BaseJobStore implements JobStore {
     public void create(final MultiTransferJob job) {
         writeLock(() -> {
             final var newJob = job.toBuilder().transitionInitial().build();
-            put(job.getJobId(), newJob);
+            log.info("Add the job into jobstore here {}", newJob);
+            put(job.getJob().getJobId().toString(), newJob);
             return null;
         });
     }
@@ -123,7 +128,7 @@ public abstract class BaseJobStore implements JobStore {
     }
 
     private Predicate<MultiTransferJob> hasState(final List<JobState> jobStates) {
-        return job -> jobStates.contains(job.getState());
+        return job -> jobStates.contains(job.getJob().getJobState());
     }
 
     @Override
@@ -145,7 +150,7 @@ public abstract class BaseJobStore implements JobStore {
                 log.warn("Job not found: {}", jobId);
             } else {
                 final MultiTransferJob multiTransferJob = job.get();
-                put(multiTransferJob.getJobId(), action.apply(multiTransferJob));
+                put(multiTransferJob.getJob().getJobId().toString(), action.apply(multiTransferJob));
             }
             return null;
         });
@@ -163,7 +168,7 @@ public abstract class BaseJobStore implements JobStore {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new JobException(e);
+            throw new JobException("Job Interrupted", e);
         }
     }
 
@@ -179,7 +184,7 @@ public abstract class BaseJobStore implements JobStore {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new JobException(e);
+            throw new JobException("Job Interrupted", e);
         }
     }
 }

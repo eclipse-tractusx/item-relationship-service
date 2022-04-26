@@ -7,20 +7,23 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.exceptions;
+package net.catenax.irs.dtos;
 
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
- * General entity not found exception.
+ * Common constant used in IRS
  */
 @ExcludeFromCodeCoverageGeneratedReport
-public class EntityNotFoundException extends RuntimeException {
+public class IrsCommonConstants {
     /**
-     * Generate a new instance of a {@link EntityNotFoundException}
-     * @param message Exception message.
+     * Job Data key for root item ID
      */
-    public EntityNotFoundException(final String message) {
-        super(message);
-    }
+    public static final String ROOT_ITEM_ID_KEY = "root.item.id.key";
+
+    /**
+     * Expected depth of the tree
+     */
+    public static final String DEPTH_ID_KEY = "depth.id.key";
+
 }

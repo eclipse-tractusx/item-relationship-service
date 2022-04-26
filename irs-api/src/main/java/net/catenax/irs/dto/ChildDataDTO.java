@@ -36,7 +36,7 @@ public class ChildDataDTO {
     /**
      * Builder class
      */
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class ChildDataDTOBuilder {
 
     }
