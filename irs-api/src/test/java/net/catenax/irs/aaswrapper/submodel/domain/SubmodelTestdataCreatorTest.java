@@ -70,6 +70,6 @@ class SubmodelTestdataCreatorTest {
         final SubmodelClientLocalStub client = new SubmodelClientLocalStub();
 
         assertThatExceptionOfType(SubmodelClientException.class).isThrownBy(
-                () -> client.getSubmodel(catenaXId, catenaXId, AssemblyPartRelationship.class));
+                () -> client.getSubmodel(catenaXId, AssemblyPartRelationship.class));
     }
 }
