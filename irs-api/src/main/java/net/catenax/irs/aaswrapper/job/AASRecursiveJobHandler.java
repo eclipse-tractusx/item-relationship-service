@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.aaswrapper.job;
 
+import static net.catenax.irs.dtos.IrsCommonConstants.DEPTH_ID_KEY;
 import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 
 import java.util.Map;
@@ -23,11 +24,6 @@ import net.catenax.irs.connector.job.RecursiveJobHandler;
  */
 @Slf4j
 public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataRequest, AASTransferProcess> {
-
-    /**
-     * Expected depth of the tree
-     */
-    public static final String DEPTH_ID_KEY = "depth.id.key";
 
     private final TreeRecursiveLogic logic;
 
@@ -70,7 +66,7 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
     }
 
     private Integer getExpectedTreeDepth(final Map<String, String> jobData) {
-        return Integer.parseInt(jobData.get(AASRecursiveJobHandler.DEPTH_ID_KEY));
+        return Integer.parseInt(jobData.get(DEPTH_ID_KEY));
     }
 
     private boolean expectedDepthOfTreeIsNotReached(final Integer expectedDepth, final Integer currentDepth) {

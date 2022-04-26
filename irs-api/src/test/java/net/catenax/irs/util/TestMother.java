@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 import com.github.javafaker.Faker;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.connector.job.DataRequest;
-import net.catenax.irs.connector.job.JobState;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
@@ -31,7 +30,7 @@ public class TestMother {
 
     Faker faker = new Faker();
 
-    Job fakeJob(JobState state) {
+    public Job fakeJob(JobState state) {
         return Job.builder()
                   .jobId(UUID.randomUUID())
                   .globalAssetId(

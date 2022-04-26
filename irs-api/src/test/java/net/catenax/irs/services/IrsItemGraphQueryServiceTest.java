@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 import net.catenax.irs.TestConfig;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.RegisterJob;
-import net.catenax.irs.connector.job.JobState;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;

@@ -20,4 +20,10 @@ public class IrsCommonConstants {
      * Job Data key for root item ID
      */
     public static final String ROOT_ITEM_ID_KEY = "root.item.id.key";
+
+    /**
+     * Expected depth of the tree
+     */
+    public static final String DEPTH_ID_KEY = "depth.id.key";
+
 }

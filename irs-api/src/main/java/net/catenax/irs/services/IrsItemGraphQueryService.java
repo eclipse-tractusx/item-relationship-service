@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.services;
 
+import static net.catenax.irs.dtos.IrsCommonConstants.DEPTH_ID_KEY;
 import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 
 import java.nio.charset.StandardCharsets;
@@ -69,7 +70,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
         final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
-        final var params = Map.of(ROOT_ITEM_ID_KEY, uuid, AASRecursiveJobHandler.DEPTH_ID_KEY, String.valueOf(request.getDepth()));
+        final var params = Map.of(ROOT_ITEM_ID_KEY, uuid, DEPTH_ID_KEY, String.valueOf(request.getDepth()));
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
