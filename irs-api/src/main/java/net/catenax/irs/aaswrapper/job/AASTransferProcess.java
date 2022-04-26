@@ -9,31 +9,26 @@
 //
 package net.catenax.irs.aaswrapper.job;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.ObjectCodec;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import net.catenax.irs.connector.job.TransferProcess;
 
 /**
  * Transfer Process for AAS Objects
  */
 @Getter
-@JsonDeserialize(using = AASTransferProcess.AASTransferProcessDeserializer.class)
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class AASTransferProcess implements TransferProcess {
 
-    @Getter(AccessLevel.NONE)
-    private final String transferProcessId;
+    @SuppressWarnings("PMD.ShortVariable")
+    private String id;
+
+    private Integer depth;
 
     private final List<String> idsToProcess = new ArrayList<>();
 
@@ -41,23 +36,4 @@ public class AASTransferProcess implements TransferProcess {
         idsToProcess.addAll(childIds);
     }
 
-    @Override
-    public String getId() {
-        return transferProcessId;
-    }
-
-    /**
-     * Deserializer for AASTransferProcess
-     */
-    public static class AASTransferProcessDeserializer extends JsonDeserializer<AASTransferProcess> {
-
-        @Override
-        public AASTransferProcess deserialize(final JsonParser jsonParser,
-                final DeserializationContext deserializationContext) throws IOException {
-            final ObjectCodec codec = jsonParser.getCodec();
-            final JsonNode treeNode = codec.readTree(jsonParser);
-            final String idValue = treeNode.get("id").textValue();
-            return new AASTransferProcess(idValue);
-        }
-    }
 }
