@@ -42,7 +42,7 @@ public class AsyncFetchedItems {
      * User to build async fetched items
      */
     @Schema(description = "User to build async fetched items")
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class AsyncFetchedItemsBuilder {
     }
 }

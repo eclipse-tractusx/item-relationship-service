@@ -101,17 +101,21 @@ public class MultiTransferJob {
          */
         /* package */ MultiTransferJobBuilder transitionComplete() {
             return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL).job(
-                job.toBuilder().jobCompleted(Instant.now()).build());
+                    job.toBuilder().jobCompleted(Instant.now()).build());
         }
 
         /**
          * Transition the job to the {@link JobState#ERROR} state.
          */
         /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail) {
-            this.job.setJobState(JobState.ERROR);
-            this.job.setJobCompleted(Instant.now());
-            this.job.setException(
-                JobErrorDetails.builder().errorDetail(errorDetail).exceptionDate(Instant.now()).build());
+            this.job = this.job.toBuilder()
+                               .jobState(JobState.ERROR)
+                               .jobCompleted(Instant.now())
+                               .exception(JobErrorDetails.builder()
+                                                         .errorDetail(errorDetail)
+                                                         .exceptionDate(Instant.now())
+                                                         .build())
+                               .build();
             return this;
         }
 
@@ -125,10 +129,10 @@ public class MultiTransferJob {
         private MultiTransferJobBuilder transition(final JobState end, final JobState... starts) {
             if (Arrays.stream(starts).noneMatch(s -> s == job.getJobState())) {
                 throw new IllegalStateException(
-                    format("Cannot transition from state %s to %s", job.getJobState(), end));
+                        format("Cannot transition from state %s to %s", job.getJobState(), end));
             }
 
-            this.job.setJobState(end);
+            job = job.toBuilder().jobState(end).build();
             return this;
         }
     }

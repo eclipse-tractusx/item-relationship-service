@@ -49,7 +49,7 @@ public class ChildItem {
      * Builder for ChildItem class
      */
     @Schema(description = "Builder to to build child items")
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class ChildItemBuilder {
     }
 }

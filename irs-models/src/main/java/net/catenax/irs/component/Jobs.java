@@ -45,7 +45,7 @@ public class Jobs {
     /**
      * Builder class
      */
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class JobsBuilder {
     }
 

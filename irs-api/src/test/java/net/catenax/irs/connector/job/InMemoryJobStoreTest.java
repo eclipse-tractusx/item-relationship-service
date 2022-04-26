@@ -62,11 +62,12 @@ class InMemoryJobStoreTest {
 
     @Test
     void create_and_find() {
+
         sut.create(job);
         assertThat(sut.find(job.getJob().getJobId().toString())).isPresent()
                                                                 .get()
                                                                 .usingRecursiveComparison()
-                                                                .isEqualTo(originalJob);
+                                                                .isEqualTo(originalJob.toBuilder().transitionInitial().build());
         assertThat(sut.find(otherJobId)).isEmpty();
     }
 
@@ -173,6 +174,7 @@ class InMemoryJobStoreTest {
         sut.completeJob(job.getJob().getJobId().toString());
         // Assert
         refreshJob();
+        refreshJob2();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
         assertTrue(Optional.ofNullable(job.getJob().getJobCompleted()).isPresent());
         assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
@@ -225,6 +227,7 @@ class InMemoryJobStoreTest {
         sut.markJobInError(job.getJob().getJobId().toString(), errorDetail);
         // Assert
         refreshJob();
+        refreshJob2();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
         assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
         assertThat(job.getJob().getException().getErrorDetail()).isEqualTo(errorDetail);
@@ -345,6 +348,10 @@ class InMemoryJobStoreTest {
 
     private void refreshJob() {
         job = sut.find(job.getJob().getJobId().toString()).get();
+    }
+
+    private void refreshJob2() {
+        job2 = sut.find(job2.getJob().getJobId().toString()).get();
     }
 
     private Job createJob() {
