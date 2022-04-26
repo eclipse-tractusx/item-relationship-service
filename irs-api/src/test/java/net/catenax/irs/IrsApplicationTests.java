@@ -30,7 +30,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = { "local", "test"
+@ActiveProfiles(profiles = { "local",
+                             "test"
 })
 class IrsApplicationTests {
 
@@ -56,22 +57,15 @@ class IrsApplicationTests {
     @Test
     void generatedOpenApiMatchesContract() throws Exception {
         final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
-            String.class);
-<<<<<<< HEAD
-        final String fixedYaml = Files.readString(new File("../api/irs-v0.2.yaml").toPath(), UTF_8);
-        // assertThat(generatedYaml).isEqualToNormalizingNewlines(fixedYaml);
-        assertThat(generatedYaml).contains("openapi: 3.0.1");
-        assertThat(fixedYaml).contains("openapi: 3.0.1");
-=======
+                String.class);
         final String fixedYaml = Files.readString(new File("../api/irs-v1.0.yaml").toPath(), UTF_8);
         assertThat(generatedYaml).isEqualToNormalizingNewlines(fixedYaml);
->>>>>>> feature/TRI-312-Refactor-current-job-store-mode
     }
 
     @Test
     void shouldStoreBlobResultWhenRunningJob() throws Exception {
 
-        final JobInitiateResponse response = jobOrchestrator.startJob(null, Map.of(ROOT_ITEM_ID_KEY, "rootitemid"));
+        final JobInitiateResponse response = jobOrchestrator.startJob(Map.of(ROOT_ITEM_ID_KEY, "rootitemid"));
 
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.OK);
 

@@ -9,6 +9,13 @@
 //
 package net.catenax.irs.controllers;
 
+import java.time.Instant;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.Executors;
+
+import javax.validation.constraints.NotNull;
+
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler;
@@ -32,12 +39,6 @@ import net.catenax.irs.util.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
-import java.time.Instant;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.Executors;
-
 /**
  * Service use to create Job, manipulate job state and get job result
  */
@@ -52,9 +53,8 @@ public class JobHandler implements IJobHandler {
 
     @Override
     public JobInitiateResponse createJob(@NonNull final GlobalAssetIdentification globalAssetId) {
-        Job job = this.createJob(globalAssetId.getGlobalAssetId());
         Map<String, String> jobData = Map.of("ROOT_ITEM_ID_KEY", globalAssetId.getGlobalAssetId());
-        return orchestrator.startJob(job, jobData);
+        return orchestrator.startJob(jobData);
     }
 
     /**
@@ -62,7 +62,7 @@ public class JobHandler implements IJobHandler {
      */
     @Override
     public void cancelJob(@NonNull final JobHandle jobHandle) {
-        orchestrator.cancelJob(jobHandle);
+        // orchestrator.cancelJob(jobHandle);
     }
 
     @Override
@@ -78,12 +78,12 @@ public class JobHandler implements IJobHandler {
     private Job createJob(final @NotNull String globalAssetId) {
         final var assetId = StringUtils.isEmpty(globalAssetId) ? UUID.randomUUID().toString() : globalAssetId;
         return Job.builder()
-                .jobId(UUID.randomUUID())
-                .globalAssetId(GlobalAssetIdentification.builder().globalAssetId(assetId).build())
-                .createdOn(Instant.now())
-                .lastModifiedOn(Instant.now())
-                .jobState(JobState.UNSAVED)
-                .build();
+                  .jobId(UUID.randomUUID())
+                  .globalAssetId(GlobalAssetIdentification.builder().globalAssetId(assetId).build())
+                  .createdOn(Instant.now())
+                  .lastModifiedOn(Instant.now())
+                  .jobState(JobState.UNSAVED)
+                  .build();
     }
 
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
