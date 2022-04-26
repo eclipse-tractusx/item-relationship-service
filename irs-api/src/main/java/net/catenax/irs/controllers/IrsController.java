@@ -156,10 +156,10 @@ public class IrsController {
             })
     @GetMapping("/jobs")
     public List<UUID> getJobsByJobState(
-            final @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
+             @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
                     explode = Explode.FALSE, array = @ArraySchema(
                     schema = @Schema(implementation = JobState.class))) @RequestParam(
-                    value = "jobStates", required = false) List<JobState> jobStates) {
+                    value = "jobStates", required = false, defaultValue = "") final List<JobState> jobStates) {
         return itemJobService.getJobsByJobState(jobStates);
     }
 }
