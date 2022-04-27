@@ -20,7 +20,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
  * Summary
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = Summary.SummaryBuilder.class)
 @ExcludeFromCodeCoverageGeneratedReport
 public class Summary {

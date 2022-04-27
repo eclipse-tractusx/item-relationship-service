@@ -17,7 +17,7 @@ import lombok.Value;
  * Response for initiated transfers
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 public class TransferInitiateResponse {
 
