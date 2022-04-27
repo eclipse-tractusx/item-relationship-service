@@ -9,18 +9,18 @@
 //
 package net.catenax.irs.connector.job;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
 import org.springframework.stereotype.Service;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Stores Job data using persistent blob storage.
@@ -64,7 +64,7 @@ public class PersistentJobStore extends BaseJobStore {
     protected void put(final String jobId, final MultiTransferJob job) {
         final byte[] blob = toBlob(job);
         try {
-            blobStore.putBlob(toBlobId(job.getJobId()), blob);
+            blobStore.putBlob(toBlobId(jobId), blob);
         } catch (BlobPersistenceException e) {
             log.error("Cannot create job in BlobStore", e);
         }
@@ -77,7 +77,7 @@ public class PersistentJobStore extends BaseJobStore {
             blobStore.delete(toBlobId(jobId));
             return blob.map(this::toJob);
         } catch (BlobPersistenceException e) {
-            throw new JobException(e);
+            throw new JobException("Blob persistence error", e);
         }
     }
 
@@ -93,4 +93,5 @@ public class PersistentJobStore extends BaseJobStore {
     private String toBlobId(final String jobId) {
         return JOB_PREFIX + jobId;
     }
+
 }

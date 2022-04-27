@@ -1,5 +1,9 @@
 package net.catenax.irs.util;
 
+import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
+
+import java.net.URL;
+import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
@@ -8,11 +12,13 @@ import java.util.stream.Stream;
 import com.github.javafaker.Faker;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.connector.job.DataRequest;
-import net.catenax.irs.connector.job.JobState;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.connector.job.TransferProcess;
+import net.catenax.irs.component.GlobalAssetIdentification;
+import net.catenax.irs.component.Job;
+import net.catenax.irs.component.enums.JobState;
 
 /**
  * Base object mother class to create objects for testing.
@@ -24,21 +30,29 @@ public class TestMother {
 
     Faker faker = new Faker();
 
+    public Job fakeJob(JobState state) {
+        return Job.builder()
+                  .jobId(UUID.randomUUID())
+                  .globalAssetId(
+                          GlobalAssetIdentification.builder().globalAssetId(UUID.randomUUID().toString()).build())
+                  .jobState(state)
+                  .createdOn(Instant.now())
+                  .owner(faker.lorem().characters())
+                  .lastModifiedOn(Instant.now())
+                  .requestUrl(fakeURL())
+                  .build();
+    }
+
     public MultiTransferJob job() {
         return job(faker.options().option(JobState.class));
     }
 
     public MultiTransferJob job(JobState jobState) {
         return MultiTransferJob.builder()
-                .jobId(faker.lorem().characters(36))
-                .jobData(Map.of(
-                        faker.lorem().characters(),
-                        faker.lorem().characters(),
-                        faker.lorem().characters(),
-                        faker.lorem().characters()
-                ))
-                .state(jobState)
-                .build();
+                               .job(fakeJob(jobState))
+                               .jobData(Map.of(ROOT_ITEM_ID_KEY, faker.lorem().characters(),
+                                   faker.lorem().characters(), faker.lorem().characters()))
+                               .build();
     }
 
     public DataRequest dataRequest() {
@@ -64,6 +78,14 @@ public class TestMother {
 
     public Stream<DataRequest> dataRequests(int count) {
         return IntStream.range(0, count).mapToObj(i -> dataRequest());
+    }
+
+    private URL fakeURL() {
+        try {
+            return new URL("http://localhost:8888/fake/url");
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public static RegisterJob registerJobWithoutDepth() {

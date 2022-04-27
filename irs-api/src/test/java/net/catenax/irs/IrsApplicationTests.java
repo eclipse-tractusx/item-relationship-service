@@ -1,8 +1,8 @@
 package net.catenax.irs;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler.DEPTH_ID_KEY;
-import static net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler.ROOT_ITEM_ID_KEY;
+import static net.catenax.irs.dtos.IrsCommonConstants.DEPTH_ID_KEY;
+import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
@@ -12,11 +12,10 @@ import java.util.concurrent.TimeUnit;
 
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.ItemDataRequest;
+import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobInitiateResponse;
 import net.catenax.irs.connector.job.JobOrchestrator;
-import net.catenax.irs.connector.job.JobState;
 import net.catenax.irs.connector.job.JobStore;
-import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.persistence.BlobPersistence;
 import org.awaitility.Awaitility;
@@ -32,8 +31,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = { "local",
-                             "test"
+@ActiveProfiles(profiles = { "local", "test"
 })
 class IrsApplicationTests {
 
@@ -59,7 +57,7 @@ class IrsApplicationTests {
     @Test
     void generatedOpenApiMatchesContract() throws Exception {
         final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
-                String.class);
+            String.class);
         final String fixedYaml = Files.readString(new File("../api/irs-v1.0.yaml").toPath(), UTF_8);
         assertThat(generatedYaml).isEqualToNormalizingNewlines(fixedYaml);
     }
@@ -75,7 +73,7 @@ class IrsApplicationTests {
                   .atMost(10, TimeUnit.SECONDS)
                   .pollInterval(100, TimeUnit.MILLISECONDS)
                   .until(() -> jobStore.find(response.getJobId())
-                                       .map(MultiTransferJob::getState)
+                                       .map(s -> s.getJob().getJobState())
                                        .map(state -> state == JobState.COMPLETED)
                                        .orElse(false));
 

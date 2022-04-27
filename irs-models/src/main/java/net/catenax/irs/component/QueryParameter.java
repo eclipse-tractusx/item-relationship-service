@@ -52,7 +52,7 @@ public class QueryParameter {
      * Builder for QueryParameter class
      */
     @Schema(description = "Builder to to build query parameters")
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class QueryParameterBuilder {
     }
 }

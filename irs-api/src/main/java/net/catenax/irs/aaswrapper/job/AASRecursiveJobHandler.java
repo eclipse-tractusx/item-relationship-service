@@ -9,6 +9,9 @@
 //
 package net.catenax.irs.aaswrapper.job;
 
+import static net.catenax.irs.dtos.IrsCommonConstants.DEPTH_ID_KEY;
+import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
+
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -21,15 +24,6 @@ import net.catenax.irs.connector.job.RecursiveJobHandler;
  */
 @Slf4j
 public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataRequest, AASTransferProcess> {
-    /**
-     * Job Data key for root item ID
-     */
-    public static final String ROOT_ITEM_ID_KEY = "root.item.id.key";
-
-    /**
-     * Expected depth of the tree
-     */
-    public static final String DEPTH_ID_KEY = "depth.id.key";
 
     private final TreeRecursiveLogic logic;
 
@@ -39,7 +33,7 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
 
     @Override
     public Stream<ItemDataRequest> initiate(final MultiTransferJob job) {
-        log.info("Initiating request for job {}", job.getJobId());
+        log.info("Initiating request for job {}", job.getJob().getJobId().toString());
         final var partId = job.getJobData().get(ROOT_ITEM_ID_KEY);
         final var dataRequest = ItemDataRequest.rootNode(partId);
         return Stream.of(dataRequest);
@@ -47,7 +41,7 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
 
     @Override
     public Stream<ItemDataRequest> recurse(final MultiTransferJob job, final AASTransferProcess transferProcess) {
-        log.info("Starting recursive request for job {}", job.getJobId());
+        log.info("Starting recursive request for job {}", job.getJob().getJobId().toString());
 
         final Integer expectedDepth = getExpectedTreeDepth(job.getJobData());
         final Integer currentDepth = transferProcess.getDepth();
@@ -65,14 +59,14 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
 
     @Override
     public void complete(final MultiTransferJob job) {
-        log.info("Completed retrieval for Job {}", job.getJobId());
+        log.info("Completed retrieval for Job {}", job.getJob().getJobId().toString());
         final var completedTransfers = job.getCompletedTransfers();
-        final var targetBlobName = job.getJobId();
-        logic.assemblePartialItemGraphBlobs(completedTransfers, targetBlobName);
+        final var targetBlobName = job.getJob().getJobId();
+        logic.assemblePartialItemGraphBlobs(completedTransfers, targetBlobName.toString());
     }
 
     private Integer getExpectedTreeDepth(final Map<String, String> jobData) {
-        return Integer.parseInt(jobData.get(AASRecursiveJobHandler.DEPTH_ID_KEY));
+        return Integer.parseInt(jobData.get(DEPTH_ID_KEY));
     }
 
     private boolean expectedDepthOfTreeIsNotReached(final Integer expectedDepth, final Integer currentDepth) {

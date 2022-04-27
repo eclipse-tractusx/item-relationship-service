@@ -609,7 +609,7 @@ components:
           type: string
           format: date-time
         exception:
-          $ref: '#/components/schemas/JobException'
+          $ref: '#/components/schemas/JobErrorDetails'
         globalAssetId:
           $ref: '#/components/schemas/GlobalAssetIdentification'
         jobCompleted:
@@ -651,7 +651,7 @@ components:
       - globalAssetId
       - jobId
       - jobState
-    JobException:
+    JobErrorDetails:
       type: object
       description: Exception state for this job.
       properties:
