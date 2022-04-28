@@ -42,7 +42,7 @@ public class Jobs {
     @Schema(description = "Collections of AAS shells.")
     private List<Shell> shells;
 
-    @Schema(description = "Collections of Tombstones.")
+    @Schema(description = "Collection of not resolvable Endpoints as Tombstones. Including cause of error and endpoint URL.")
     @Singular
     private List<Tombstone> tombstones;
 

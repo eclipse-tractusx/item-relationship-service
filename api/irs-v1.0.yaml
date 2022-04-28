@@ -711,7 +711,8 @@ components:
             $ref: '#/components/schemas/Shell'
         tombstones:
           type: array
-          description: Collections of Tombstones.
+          description: Collection of not resolvable Endpoints as Tombstones. Including
+            cause of error and endpoint URL.
           items:
             $ref: '#/components/schemas/Tombstone'
     MeasurementUnit:
@@ -915,7 +916,8 @@ components:
           $ref: '#/components/schemas/AsyncFetchedItems'
     Tombstone:
       type: object
-      description: Collections of Tombstones.
+      description: Collection of not resolvable Endpoints as Tombstones. Including
+        cause of error and endpoint URL.
       properties:
         catenaXId:
           type: string

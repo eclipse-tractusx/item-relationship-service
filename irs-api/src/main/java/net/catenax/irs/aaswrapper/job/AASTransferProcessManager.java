@@ -32,7 +32,6 @@ import net.catenax.irs.dto.SubmodelEndpoint;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestClientException;
 
 /**
@@ -50,9 +49,6 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
     private final ExecutorService executor;
 
     private final BlobPersistence blobStore;
-
-    @Value("${feign.client.config.digitalTwinRegistry.url}")
-    private String digitalTwinRegistryUrl;
 
     public AASTransferProcessManager(final DigitalTwinRegistryFacade registryFacade,
             final SubmodelFacade submodelFacade, final ExecutorService executor, final BlobPersistence blobStore) {
@@ -93,15 +89,15 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
                     try {
                         final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address);
                         processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
-                    } catch (RestClientException exception) {
+                    } catch (RestClientException e) {
                         log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                                 address);
-                        itemContainerBuilder.tombstone(createTombstone(itemId, address, exception));
+                        itemContainerBuilder.tombstone(createTombstone(itemId, address, e));
                     }
                 });
-            } catch (FeignException ex) {
+            } catch (FeignException e) {
                 log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-                itemContainerBuilder.tombstone(createTombstone(itemId, digitalTwinRegistryUrl, ex));
+                itemContainerBuilder.tombstone(createTombstone(itemId, null, e));
             }
             storeItemContainer(processId, itemContainerBuilder.build());
 
