@@ -70,23 +70,25 @@ public class JobHandler implements IJobHandler {
     /**
      * @param jobId
      */
-    @Async("AsyncJobExecutor")
+    @Async("asyncJobExecutor")
     @Override
     public CompletableFuture<Optional<MultiTransferJob>> cancelJob(@NonNull final String jobId) {
         return CompletableFuture.completedFuture(orchestrator.cancelJob(jobId));
     }
 
-    @Async("AsyncJobExecutor")
+    @Async("asyncJobExecutor")
     @Override
     public CompletableFuture<JobState> interruptJob(@NonNull final JobHandle jobHandle) {
         return null;
     }
 
+    @Async("asyncJobExecutor")
     @Override
     public CompletableFuture<Jobs> getResult(@NonNull final JobHandle jobHandle) {
         return null;
     }
 
+    @Async("asyncJobExecutor")
     @Override
     public CompletableFuture<Jobs> getJobForJobId(final UUID jobId) {
         return null;

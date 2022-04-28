@@ -24,16 +24,16 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @EnableAsync
 public class AsynJobConfiguration {
 
-    @Value("async.joborchestrator.poolSize")
-    int poolSize;
+    @Value("${async.joborchestrator.poolSize}")
+    Integer poolSize;
 
-    @Value("async.joborchestrator.maxPoolSize")
-    int maxPoolSize;
+    @Value("${async.joborchestrator.maxPoolSize}")
+    Integer maxPoolSize;
 
-    @Value("async.joborchestrator.capacity")
-    int capacity;
+    @Value("${async.joborchestrator.capacity}")
+    Integer capacity;
 
-    @Bean(name = "asyncExecutor")
+    @Bean(name = "asyncJobExecutor")
     public Executor asyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(poolSize);
