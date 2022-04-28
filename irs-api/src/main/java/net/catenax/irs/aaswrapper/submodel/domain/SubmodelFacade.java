@@ -33,20 +33,18 @@ public class SubmodelFacade {
      */
     @Retry(name = "submodelRetryer")
     public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress) {
-        final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress, AssemblyPartRelationship.class);
+        final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
+                AssemblyPartRelationship.class);
 
         final Set<ChildDataDTO> childParts = new HashSet<>();
         submodel.getChildParts()
                 .forEach(childData -> childParts.add(ChildDataDTO.builder()
-                                                                 .withChildCatenaXId(childData.getChildCatenaXId())
-                                                                 .withLifecycleContext(
+                                                                 .childCatenaXId(childData.getChildCatenaXId())
+                                                                 .lifecycleContext(
                                                                          childData.getLifecycleContext().getValue())
                                                                  .build()));
 
-        return AssemblyPartRelationshipDTO.builder()
-                                          .catenaXId(submodel.getCatenaXId())
-                                          .childParts(childParts)
-                                          .build();
+        return AssemblyPartRelationshipDTO.builder().catenaXId(submodel.getCatenaXId()).childParts(childParts).build();
     }
 
 }

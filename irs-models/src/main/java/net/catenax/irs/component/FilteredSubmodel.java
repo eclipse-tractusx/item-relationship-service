@@ -23,7 +23,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
  */
 @Schema(description = "Use to filter submodel to specific child items")
 @Value
-@Builder
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = FilteredSubmodel.FilteredSubmodelBuilder.class)
 @ExcludeFromCodeCoverageGeneratedReport
 public class FilteredSubmodel {

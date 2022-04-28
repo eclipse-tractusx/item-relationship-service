@@ -19,7 +19,7 @@ import java.util.Map;
  * Represents the result of a {@link JobOrchestrator#startJob(Map)} operation.
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class JobInitiateResponse {
     /**
      * Job identifier.

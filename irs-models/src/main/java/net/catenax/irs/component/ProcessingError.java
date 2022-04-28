@@ -7,37 +7,31 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-//
+package net.catenax.irs.component;
 
-package net.catenax.irs.dto;
+import java.time.Instant;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
 /**
- * ChildDataDTO model used for internal application use
+ * Processing Error Data Class
  */
-@Data
-@Builder(toBuilder = true)
-@JsonDeserialize(builder = ChildDataDTO.ChildDataDTOBuilder.class)
-public class ChildDataDTO {
-    /**
-     * lifecycleContext
-     */
-    private String lifecycleContext;
-
-    /**
-     * childCatenaXId
-     */
-    private String childCatenaXId;
+@Value
+@Builder(toBuilder = true, setterPrefix = "with")
+@JsonDeserialize(builder = ProcessingError.ProcessingErrorBuilder.class)
+public class ProcessingError {
+    private final String errorDetail;
+    private final Instant lastAttempt;
+    private int retryCounter;
 
     /**
      * Builder class
      */
-    @JsonPOJOBuilder(withPrefix = "")
-    public static class ChildDataDTOBuilder {
+    @JsonPOJOBuilder()
+    public static class ProcessingErrorBuilder {
 
     }
 }

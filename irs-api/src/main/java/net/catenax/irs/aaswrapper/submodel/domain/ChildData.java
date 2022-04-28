@@ -22,7 +22,7 @@ class ChildData {
     /**
      * createdOn
      */
-    private LocalDateTime createdOn;
+    private LocalDateTime assembledOn;
 
     /**
      * quantity
