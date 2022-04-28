@@ -38,9 +38,12 @@ class DigitalTwinRegistryFacadeTest {
     @Test
     void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() {
         final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+
         final List<SubmodelEndpoint> shellEndpoints = digitalTwinRegistryFacade.getAASSubmodelEndpoints(catenaXId);
+
         assertThat(shellEndpoints).isNotNull().hasSize(1);
         final SubmodelEndpoint endpoint = shellEndpoints.get(0);
+
         assertThat(endpoint.getAddress()).isEqualTo(catenaXId);
         assertThat(endpoint.getSubmodelType()).isEqualTo(SubmodelType.ASSEMBLY_PART_RELATIONSHIP);
     }
@@ -50,8 +53,10 @@ class DigitalTwinRegistryFacadeTest {
         final String catenaXId = "test";
         final Request request = Request.create(Request.HttpMethod.GET, "url", Map.of(), new byte[0],
                 Charset.defaultCharset(), new RequestTemplate());
+
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenThrow(
                 new FeignException.NotFound("not found", request, new byte[0], Map.of()));
+
         assertThatExceptionOfType(FeignException.class).isThrownBy(
                 () -> dtRegistryFacadeWithMock.getAASSubmodelEndpoints(catenaXId));
     }
@@ -61,7 +66,9 @@ class DigitalTwinRegistryFacadeTest {
         final String catenaXId = "test";
         final AssetAdministrationShellDescriptor shellDescriptor = new AssetAdministrationShellDescriptor();
         shellDescriptor.setSubmodelDescriptors(List.of());
+
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenReturn(shellDescriptor);
+
         final List<SubmodelEndpoint> submodelEndpoints = dtRegistryFacadeWithMock.getAASSubmodelEndpoints(catenaXId);
         assertThat(submodelEndpoints).isEmpty();
     }

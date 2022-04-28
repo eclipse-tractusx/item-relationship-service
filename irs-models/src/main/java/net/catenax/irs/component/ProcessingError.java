@@ -23,7 +23,6 @@ import lombok.Value;
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = ProcessingError.ProcessingErrorBuilder.class)
 public class ProcessingError {
-    private final String exception;
     private final String errorDetail;
     private final Instant lastAttempt;
     private int retryCounter;

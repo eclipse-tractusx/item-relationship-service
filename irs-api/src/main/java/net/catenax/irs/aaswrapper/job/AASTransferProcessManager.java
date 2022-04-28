@@ -118,7 +118,6 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
         final ProcessingError processingError = ProcessingError.builder()
                                                                .withRetryCounter(0)
                                                                .withLastAttempt(Instant.now())
-                                                               .withException(exception.getClass().getCanonicalName())
                                                                .withErrorDetail(exception.getMessage())
                                                                .build();
         return Tombstone.builder().endpointURL(address).catenaXId(itemId).processingError(processingError).build();

@@ -293,7 +293,6 @@ components:
           endpointURL: https://catena-x.net/vehicle/partdetails/
           processingError:
             errorDetail: Details to reason of Failure
-            exception: SubmodelClientException
             lastAttempt: 2022-02-03T14:48:54.709Z
             retryCounter: 0
     error-response:
@@ -421,7 +420,6 @@ components:
           endpointURL: https://catena-x.net/vehicle/partdetails/
           processingError:
             errorDetail: Details to reason of Failure
-            exception: SubmodelClientException
             lastAttempt: 2022-02-03T14:48:54.709Z
             retryCounter: 0
     partial-job-result:
@@ -726,8 +724,6 @@ components:
       type: object
       properties:
         errorDetail:
-          type: string
-        exception:
           type: string
         lastAttempt:
           type: string

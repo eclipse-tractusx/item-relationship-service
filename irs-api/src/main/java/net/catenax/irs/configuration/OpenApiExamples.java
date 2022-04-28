@@ -173,7 +173,6 @@ public class OpenApiExamples {
                         .endpointURL("https://catena-x.net/vehicle/partdetails/")
                         .processingError(ProcessingError.builder()
                                                         .withErrorDetail("Details to reason of Failure")
-                                                        .withException("SubmodelClientException")
                                                         .withLastAttempt(EXAMPLE_INSTANT)
                                                         .withRetryCounter(0)
                                                         .build())

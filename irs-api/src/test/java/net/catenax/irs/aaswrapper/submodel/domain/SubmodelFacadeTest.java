@@ -56,9 +56,12 @@ class SubmodelFacadeTest {
     void shouldReturnAssemblyPartRelationshipWithChildDataWhenRequestingWithCatenaXId() {
         final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
         final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getSubmodel(catenaXId);
+
         assertThat(submodelResponse.getCatenaXId()).isEqualTo(catenaXId);
+
         final Set<ChildDataDTO> childParts = submodelResponse.getChildParts();
         assertThat(childParts).hasSize(3);
+
         final List<String> childIds = childParts.stream()
                                                 .map(ChildDataDTO::getChildCatenaXId)
                                                 .collect(Collectors.toList());
