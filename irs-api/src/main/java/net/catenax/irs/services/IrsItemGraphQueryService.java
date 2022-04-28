@@ -119,7 +119,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             final var relationships = new ArrayList<Relationship>();
 
             if (jobIsCompleted(multiJob)) {
-                relationships.addAll(retrieveJobResultRelationships(multiJob));
+                relationships.addAll(retrieveJobResultRelationships(multiJob.getJob().getJobId()));
             } else if (includePartialResults) {
                 relationships.addAll(retrievePartialResults(multiJob));
             }
@@ -154,10 +154,9 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         return itemContainer.getAssemblyPartRelationships();
     }
 
-    private Collection<Relationship> retrieveJobResultRelationships(final MultiTransferJob multiJob) {
+    private Collection<Relationship> retrieveJobResultRelationships(final UUID jobId) {
         try {
-            final String jobId = multiJob.getJob().getJobId().toString();
-            final Optional<byte[]> blob = blobStore.getBlob(jobId);
+            final Optional<byte[]> blob = blobStore.getBlob(jobId.toString());
             final byte[] bytes = blob.orElseThrow(
                     () -> new EntityNotFoundException("Could not find stored data for multiJob with id " + jobId));
             return toRelationships(bytes);
