@@ -11,21 +11,15 @@ package net.catenax.irs.controllers;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CompletableFuture;
 
 import javax.validation.constraints.NotNull;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler;
-import net.catenax.irs.aaswrapper.job.AASTransferProcess;
-import net.catenax.irs.aaswrapper.job.AASTransferProcessManager;
-import net.catenax.irs.aaswrapper.job.ItemDataRequest;
-import net.catenax.irs.aaswrapper.job.ItemTreesAssembler;
-import net.catenax.irs.aaswrapper.job.TreeRecursiveLogic;
-import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
-import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
+import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
@@ -33,15 +27,17 @@ import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobInitiateResponse;
 import net.catenax.irs.connector.job.JobOrchestrator;
-import net.catenax.irs.connector.job.JobStore;
-import net.catenax.irs.persistence.BlobPersistence;
-import net.catenax.irs.util.JsonUtil;
+import net.catenax.irs.connector.job.MultiTransferJob;
+import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 /**
  * Service use to create Job, manipulate job state and get job result
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class JobHandler implements IJobHandler {
@@ -51,51 +47,62 @@ public class JobHandler implements IJobHandler {
      */
     JobOrchestrator orchestrator;
 
+    /**
+     * Use to retrieve jobs from Digital Twins and the Blob Store
+     *
+     * @param orchestrator
+     * @param queryService
+     */
+
+    @Autowired
+    public JobHandler(JobOrchestrator orchestrator, IrsItemGraphQueryService queryService) {
+        this.orchestrator = orchestrator;
+    }
+
+    @Async("AsyncJobExecutor")
     @Override
-    public JobInitiateResponse createJob(@NonNull final GlobalAssetIdentification globalAssetId) {
+    public CompletableFuture<JobInitiateResponse> createJob(@NonNull final GlobalAssetIdentification globalAssetId) {
         Map<String, String> jobData = Map.of("ROOT_ITEM_ID_KEY", globalAssetId.getGlobalAssetId());
-        return orchestrator.startJob(jobData);
+        JobInitiateResponse response = orchestrator.startJob(jobData);
+        return CompletableFuture.completedFuture(response);
     }
 
     /**
-     * @param jobHandle
+     * @param jobId
      */
+    @Async("AsyncJobExecutor")
     @Override
-    public void cancelJob(@NonNull final JobHandle jobHandle) {
-        // orchestrator.cancelJob(jobHandle);
+    public CompletableFuture<Optional<MultiTransferJob>> cancelJob(@NonNull final String jobId) {
+        return CompletableFuture.completedFuture(orchestrator.cancelJob(jobId));
     }
 
+    @Async("AsyncJobExecutor")
     @Override
-    public JobState interruptJob(@NonNull final JobHandle jobHandle) {
+    public CompletableFuture<JobState> interruptJob(@NonNull final JobHandle jobHandle) {
         return null;
     }
 
     @Override
-    public Jobs getResult(@NonNull final JobHandle jobHandle) {
+    public CompletableFuture<Jobs> getResult(@NonNull final JobHandle jobHandle) {
         return null;
     }
 
-    private Job createJob(final @NotNull String globalAssetId) {
+    @Override
+    public CompletableFuture<Jobs> getJobForJobId(final UUID jobId) {
+        return null;
+    }
+
+    private CompletableFuture<Job> createJob(final @NotNull String globalAssetId) {
         final var assetId = StringUtils.isEmpty(globalAssetId) ? UUID.randomUUID().toString() : globalAssetId;
-        return Job.builder()
-                  .jobId(UUID.randomUUID())
-                  .globalAssetId(GlobalAssetIdentification.builder().globalAssetId(assetId).build())
-                  .createdOn(Instant.now())
-                  .lastModifiedOn(Instant.now())
-                  .jobState(JobState.UNSAVED)
-                  .build();
-    }
+        Job job = Job.builder()
+                     .jobId(UUID.randomUUID())
+                     .globalAssetId(GlobalAssetIdentification.builder().globalAssetId(assetId).build())
+                     .createdOn(Instant.now())
+                     .lastModifiedOn(Instant.now())
+                     .jobState(JobState.UNSAVED)
+                     .build();
 
-    public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
-            final DigitalTwinRegistryFacade registryFacade, final SubmodelFacade submodelFacade,
-            final BlobPersistence blobStore, final JobStore jobStore) {
-
-        final var manager = new AASTransferProcessManager(registryFacade, submodelFacade,
-                Executors.newCachedThreadPool(), blobStore);
-        final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
-        final var handler = new AASRecursiveJobHandler(logic);
-
-        return new JobOrchestrator<>(manager, jobStore, handler);
+        return CompletableFuture.completedFuture(job);
     }
 
 }

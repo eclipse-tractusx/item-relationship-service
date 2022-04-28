@@ -9,24 +9,31 @@
 //
 package net.catenax.irs.controllers;
 
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+
 import lombok.NonNull;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobInitiateResponse;
+import net.catenax.irs.connector.job.MultiTransferJob;
 
 /**
  * Interface for JobHandler
  */
 public interface IJobHandler {
 
-    JobInitiateResponse createJob(@NonNull GlobalAssetIdentification globalAssetId);
+    CompletableFuture<JobInitiateResponse> createJob(@NonNull GlobalAssetIdentification globalAssetId);
 
-    void cancelJob(@NonNull JobHandle jobHandle);
+    CompletableFuture<Optional<MultiTransferJob>> cancelJob(@NonNull String jobIdS);
 
-    JobState interruptJob(@NonNull JobHandle jobHandle);
+    CompletableFuture<JobState> interruptJob(@NonNull JobHandle jobHandle);
 
-    Jobs getResult(@NonNull JobHandle jobHandle);
+    CompletableFuture<Jobs> getResult(@NonNull JobHandle jobHandle);
+
+    CompletableFuture<Jobs> getJobForJobId(UUID jobId);
 
 }

@@ -1,4 +1,4 @@
-package net.catenax.irs.connector.job;
+package net.catenax.irs.util;
 
 import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 
@@ -10,6 +10,12 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.github.javafaker.Faker;
+import net.catenax.irs.component.RegisterJob;
+import net.catenax.irs.connector.job.DataRequest;
+import net.catenax.irs.connector.job.MultiTransferJob;
+import net.catenax.irs.connector.job.ResponseStatus;
+import net.catenax.irs.connector.job.TransferInitiateResponse;
+import net.catenax.irs.connector.job.TransferProcess;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.enums.JobState;
@@ -20,15 +26,15 @@ import net.catenax.irs.component.enums.JobState;
  * @see <a href="https://martinfowler.com/bliki/ObjectMother.html">
  * https://martinfowler.com/bliki/ObjectMother.html</a>
  */
-class TestMother {
+public class TestMother {
 
     Faker faker = new Faker();
 
-    Job fakeJob(JobState state) {
+    public Job fakeJob(JobState state) {
         return Job.builder()
                   .jobId(UUID.randomUUID())
                   .globalAssetId(
-                      GlobalAssetIdentification.builder().globalAssetId(UUID.randomUUID().toString()).build())
+                          GlobalAssetIdentification.builder().globalAssetId(UUID.randomUUID().toString()).build())
                   .jobState(state)
                   .createdOn(Instant.now())
                   .owner(faker.lorem().characters())
@@ -37,11 +43,11 @@ class TestMother {
                   .build();
     }
 
-    MultiTransferJob job() {
+    public MultiTransferJob job() {
         return job(faker.options().option(JobState.class));
     }
 
-    MultiTransferJob job(JobState jobState) {
+    public MultiTransferJob job(JobState jobState) {
         return MultiTransferJob.builder()
                                .job(fakeJob(jobState))
                                .jobData(Map.of(ROOT_ITEM_ID_KEY, faker.lorem().characters(),
@@ -49,20 +55,23 @@ class TestMother {
                                .build();
     }
 
-    DataRequest dataRequest() {
+    public DataRequest dataRequest() {
         return new DataRequest() {
         };
     }
 
-    TransferInitiateResponse okResponse() {
+    public TransferInitiateResponse okResponse() {
         return response(ResponseStatus.OK);
     }
 
-    TransferInitiateResponse response(ResponseStatus status) {
-        return TransferInitiateResponse.builder().transferId(UUID.randomUUID().toString()).status(status).build();
+    public TransferInitiateResponse response(ResponseStatus status) {
+        return TransferInitiateResponse.builder()
+                .transferId(UUID.randomUUID().toString())
+                .status(status)
+                .build();
     }
 
-    TransferProcess transfer() {
+    public TransferProcess transfer() {
         final String characters = faker.lorem().characters();
         return () -> characters;
     }
@@ -77,5 +86,16 @@ class TestMother {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static RegisterJob registerJobWithoutDepth() {
+        return registerJobWithDepth(null);
+    }
+
+    public static RegisterJob registerJobWithDepth(final Integer depth) {
+        final RegisterJob registerJob = new RegisterJob();
+        registerJob.setGlobalAssetId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6");
+        registerJob.setDepth(depth);
+        return registerJob;
     }
 }

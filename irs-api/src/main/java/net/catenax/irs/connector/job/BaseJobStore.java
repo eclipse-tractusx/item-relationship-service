@@ -49,8 +49,6 @@ public abstract class BaseJobStore implements JobStore {
 
     protected abstract Optional<MultiTransferJob> remove(String jobId);
 
-    protected abstract JobState getJobState(String jobId);
-
     @Override
     public Optional<MultiTransferJob> find(final String jobId) {
         return readLock(() -> get(jobId));
@@ -58,7 +56,7 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public List<MultiTransferJob> findByStateAndCompletionDateOlderThan(final JobState jobState,
-        final Instant dateTime) {
+            final Instant dateTime) {
         return readLock(() -> getAll().stream()
                                       .filter(hasState(jobState))
                                       .filter(isCompletionDateBefore(dateTime))
@@ -70,8 +68,10 @@ public abstract class BaseJobStore implements JobStore {
     }
 
     private Predicate<MultiTransferJob> isCompletionDateBefore(final Instant localDateTime) {
-        return job -> Optional.of(job.getJob().getJobCompleted()).isPresent()
-                          && Optional.of(job.getJob().getJobCompleted()).get().isBefore(localDateTime);
+        return job -> {
+            final Instant completed = job.getJob().getJobCompleted();
+            return completed != null && completed.isBefore(localDateTime);
+        };
     }
 
     @Override
@@ -87,6 +87,9 @@ public abstract class BaseJobStore implements JobStore {
             put(job.getJob().getJobId().toString(), newJob);
             return null;
         });
+
+        // final MultiTransferJob multiTransferJob = job.get();
+        //                put(multiTransferJob.getJob().getJobId().toString(), action.apply(multiTransferJob));
     }
 
     @Override

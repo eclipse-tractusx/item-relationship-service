@@ -9,6 +9,16 @@
 //
 package net.catenax.irs.connector.job;
 
+import static java.lang.String.format;
+
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
@@ -21,22 +31,11 @@ import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static java.lang.String.format;
-
 /**
  * Entity for recursive jobs that potentially comprise multiple transfers.
  */
 @ToString
 @Builder(toBuilder = true)
-@SuppressWarnings({"PMD.UselessParentheses", "PMD.MethodArgumentCouldBeFinal", "PMD.TooManyMethods"})
 @JsonDeserialize(builder = MultiTransferJob.MultiTransferJobBuilder.class)
 public class MultiTransferJob {
 
@@ -102,17 +101,21 @@ public class MultiTransferJob {
          */
         /* package */ MultiTransferJobBuilder transitionComplete() {
             return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL).job(
-                    job.toBuilder().jobCompleted((Instant.now())).build());
+                    job.toBuilder().jobCompleted(Instant.now()).build());
         }
 
         /**
          * Transition the job to the {@link JobState#ERROR} state.
          */
         /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail) {
-            this.job.setJobState(JobState.ERROR);
-            this.job.setJobCompleted(Instant.now());
-            this.job.setException(
-                    JobErrorDetails.builder().errorDetail(errorDetail).exceptionDate(Instant.now()).build());
+            this.job = this.job.toBuilder()
+                               .jobState(JobState.ERROR)
+                               .jobCompleted(Instant.now())
+                               .exception(JobErrorDetails.builder()
+                                                         .errorDetail(errorDetail)
+                                                         .exceptionDate(Instant.now())
+                                                         .build())
+                               .build();
             return this;
         }
 
@@ -129,7 +132,8 @@ public class MultiTransferJob {
                         format("Cannot transition from state %s to %s", job.getJobState(), end));
             }
 
-            this.job.setJobState(end);
+            // job = job.toBuilder().jobState(end).build();
+            job.setJobState(end);
             return this;
         }
     }
