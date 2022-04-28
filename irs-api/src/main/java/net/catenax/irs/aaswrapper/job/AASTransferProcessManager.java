@@ -89,17 +89,15 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
                 log.info("Retrieved {} SubmodelEndpoints for itemId {}", aasSubmodelEndpoints.size(), itemId);
 
-                aasSubmodelEndpoints
-                        .stream()
-                        .map(SubmodelEndpoint::getAddress)
-                        .forEach(address -> {
-                            try {
-                                final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address);
-                                processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
-                            } catch (RestClientException exception) {
-                                log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.", address);
-                                itemContainerBuilder.tombstone(createTombstone(itemId, address, exception));
-                            }
+                aasSubmodelEndpoints.stream().map(SubmodelEndpoint::getAddress).forEach(address -> {
+                    try {
+                        final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address);
+                        processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
+                    } catch (RestClientException exception) {
+                        log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
+                                address);
+                        itemContainerBuilder.tombstone(createTombstone(itemId, address, exception));
+                    }
                 });
             } catch (FeignException ex) {
                 log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
@@ -113,11 +111,8 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     private void storeItemContainer(final String processId, final ItemContainer itemContainer) {
         try {
-            log.info("storing json Blob {}", itemContainer.toString());
             final JsonUtil jsonUtil = new JsonUtil();
-            blobStore.putBlob(processId,
-                    jsonUtil.asString(itemContainer).getBytes(StandardCharsets.UTF_8));
-            log.info("stored json Blob");
+            blobStore.putBlob(processId, jsonUtil.asString(itemContainer).getBytes(StandardCharsets.UTF_8));
         } catch (BlobPersistenceException e) {
             log.error("Unable to store AAS result", e);
         }
