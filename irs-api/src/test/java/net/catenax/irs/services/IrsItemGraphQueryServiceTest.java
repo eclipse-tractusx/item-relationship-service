@@ -114,7 +114,7 @@ class IrsItemGraphQueryServiceTest {
     }
 
     private int getRelationshipsSize(final UUID jobId) {
-        return service.getJobForJobId(jobId).getRelationships().size();
+        return service.getJobForJobId(jobId, true).getRelationships().size();
     }
 
 }
