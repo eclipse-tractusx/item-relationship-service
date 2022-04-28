@@ -2,7 +2,6 @@ package net.catenax.irs;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -10,12 +9,10 @@ import java.util.concurrent.TimeUnit;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
-import net.catenax.irs.component.enums.AspectType;
-import net.catenax.irs.component.enums.BomLifecycle;
-import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.controllers.IrsController;
 import net.catenax.irs.testing.containers.MinioContainer;
+import net.catenax.irs.util.TestMother;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -71,7 +68,7 @@ class IrsFunctionalTest {
 
     @Test
     void shouldStartJobAndRetrieveResult() {
-        final RegisterJob registerJob = createParam();
+        final RegisterJob registerJob = TestMother.registerJobWithoutDepth();
 
         final JobHandle jobHandle = controller.initiateJobForGlobalAssetId(registerJob);
         final Optional<Jobs> finishedJob = Awaitility.await()
@@ -98,17 +95,6 @@ class IrsFunctionalTest {
                 return Optional.empty();
             }
         };
-    }
-
-    @NotNull
-    private RegisterJob createParam() {
-        final RegisterJob registerJob = new RegisterJob();
-        registerJob.setGlobalAssetId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6");
-        registerJob.setAspects(List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP));
-        registerJob.setDirection(Direction.DOWNWARD);
-        registerJob.setDepth(100);
-        registerJob.setBomLifecycle(BomLifecycle.AS_BUILT);
-        return registerJob;
     }
 
 }
