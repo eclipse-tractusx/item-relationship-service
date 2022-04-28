@@ -2,7 +2,6 @@ package net.catenax.irs.services;
 
 import static net.catenax.irs.util.TestMother.registerJobWithDepth;
 import static net.catenax.irs.util.TestMother.registerJobWithoutDepth;
-import static org.awaitility.Awaitility.await;
 import static org.awaitility.Awaitility.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,16 +9,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import net.catenax.irs.TestConfig;
-import net.catenax.irs.component.JobHandle;
-import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
+import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;

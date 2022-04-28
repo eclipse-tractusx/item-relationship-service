@@ -9,7 +9,10 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -32,8 +35,10 @@ class SubmodelClientLocalStub implements SubmodelClient {
 
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
+        if ("c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(submodelEndpointAddress)) {
+            throw new RestClientException("Dummy Exception");
+        }
         final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
-
         return (T) submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(submodelEndpointAddress);
     }
 
@@ -42,9 +47,11 @@ class SubmodelClientLocalStub implements SubmodelClient {
 /**
  * Submodel Rest Client Implementation
  */
+@Slf4j
+@RequiredArgsConstructor
 class SubmodelClientImpl implements SubmodelClient {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {

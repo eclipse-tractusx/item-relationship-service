@@ -29,7 +29,7 @@ public class DigitalTwinRegistryFacade {
     /**
      * Combines required data from Digital Twin Registry Service
      *
-     * @param aasIdentifier The Asset Administration Shell’s unique id
+     * @param aasIdentifier The Asset Administration Shell's unique id
      * @return list of submodel addresses
      */
     public List<SubmodelEndpoint> getAASSubmodelEndpoints(final String aasIdentifier) {
@@ -38,21 +38,23 @@ public class DigitalTwinRegistryFacade {
 
         return submodelDescriptors.stream()
                                   .filter(this::isAssemblyPartRelationship)
-                                  .map(submodelDescriptor ->
-                                        new SubmodelEndpoint(
-                                          submodelDescriptor.getEndpoint()
-                                                            .getProtocolInformation()
-                                                            .getEndpointAddress(),
-                                              SubmodelType.ASSEMBLY_PART_RELATIONSHIP))
+                                  .map(submodelDescriptor -> new SubmodelEndpoint(submodelDescriptor.getEndpoints()
+                                                                                                    .get(0)
+                                                                                                    .getProtocolInformation()
+                                                                                                    .getEndpointAddress(),
+                                          SubmodelType.ASSEMBLY_PART_RELATIONSHIP))
                                   .collect(Collectors.toList());
     }
 
     /**
      * TODO: Adjust when we will know how to distinguish assembly part relationships
+     *
      * @param submodelDescriptor the submodel descriptor
      * @return True, if AssemblyPartRelationship
      */
     private boolean isAssemblyPartRelationship(final SubmodelDescriptor submodelDescriptor) {
-        return "assemblyPartRelationship".equals(submodelDescriptor.getIdShort());
+        final String assemblyPartRelationshipIdentifier = SubmodelType.ASSEMBLY_PART_RELATIONSHIP.getValue();
+        return assemblyPartRelationshipIdentifier.equals(
+                submodelDescriptor.getSemanticId().getValue().stream().findFirst().orElse(null));
     }
 }

@@ -7,28 +7,22 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.job;
-
-import java.util.List;
+package net.catenax.irs.component;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Singular;
 import lombok.extern.jackson.Jacksonized;
-import net.catenax.irs.component.Tombstone;
-import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
+import net.catenax.irs.component.enums.NodeType;
 
 /**
- * Container class to store item data
+ * Tombstone with information about request failure
  */
 @Getter
 @Builder
 @Jacksonized
-public class ItemContainer {
-
-    @Singular
-    private List<AssemblyPartRelationshipDTO> assemblyPartRelationships;
-
-    @Singular
-    private List<Tombstone> tombstones;
+public class Tombstone {
+    private static final NodeType NODE_TYPE = NodeType.TOMBSTONE;
+    private final String catenaXId;
+    private final String endpointURL;
+    private final ProcessingError processingError;
 }

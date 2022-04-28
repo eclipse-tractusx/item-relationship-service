@@ -45,6 +45,7 @@ import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.controllers.IrsApiConstants;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
+import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
@@ -115,6 +116,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             final MultiTransferJob multiJob = multiTransferJob.get();
 
             final var relationships = new ArrayList<Relationship>();
+            final var tombstones = new ArrayList<Tombstone>();
             try {
                 final Optional<byte[]> blob = blobStore.getBlob(multiJob.getJob().getJobId().toString());
                 final byte[] bytes = blob.orElseThrow(
@@ -123,10 +125,11 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                         ItemContainer.class);
                 final List<AssemblyPartRelationshipDTO> assemblyPartRelationships = itemContainer.getAssemblyPartRelationships();
                 relationships.addAll(convert(assemblyPartRelationships));
+                tombstones.addAll(itemContainer.getTombstones());
             } catch (BlobPersistenceException e) {
                 log.error("Unable to read blob", e);
             }
-            return Jobs.builder().job(multiJob.getJob()).relationships(relationships).build();
+            return Jobs.builder().job(multiJob.getJob()).relationships(relationships).tombstones(tombstones).build();
         } else {
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
