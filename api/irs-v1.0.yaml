@@ -204,6 +204,7 @@ components:
               queue: 0
               running: 0
         relationships: []
+        tombstones: []
     complete-job-list-processing-state:
       value:
       - 6c311d29-5753-46d4-b32c-19b918ea93b0
@@ -287,6 +288,13 @@ components:
             semanticId:
               values:
               - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+        tombstones:
+        - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          endpointURL: https://catena-x.net/vehicle/partdetails/
+          processingError:
+            errorDetail: Details to reason of Failure
+            lastAttempt: 2022-02-03T14:48:54.709Z
+            retryCounter: 0
     error-response:
       value:
         errors:
@@ -323,6 +331,7 @@ components:
               queue: 0
               running: 0
         relationships: []
+        tombstones: []
     job-handle:
       value:
         jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
@@ -406,6 +415,13 @@ components:
             semanticId:
               values:
               - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+        tombstones:
+        - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          endpointURL: https://catena-x.net/vehicle/partdetails/
+          processingError:
+            errorDetail: Details to reason of Failure
+            lastAttempt: 2022-02-03T14:48:54.709Z
+            retryCounter: 0
     partial-job-result:
       value:
         job:
@@ -436,6 +452,7 @@ components:
               queue: 0
               running: 0
         relationships: []
+        tombstones: []
   schemas:
     AsyncFetchedItems:
       type: object
@@ -690,6 +707,12 @@ components:
           description: Collections of AAS shells.
           items:
             $ref: '#/components/schemas/Shell'
+        tombstones:
+          type: array
+          description: Collection of not resolvable Endpoints as Tombstones. Including
+            cause of error and endpoint URL.
+          items:
+            $ref: '#/components/schemas/Tombstone'
     MeasurementUnit:
       type: object
       properties:
@@ -697,6 +720,17 @@ components:
           type: string
         lexicalValue:
           type: string
+    ProcessingError:
+      type: object
+      properties:
+        errorDetail:
+          type: string
+        lastAttempt:
+          type: string
+          format: date-time
+        retryCounter:
+          type: integer
+          format: int32
     ProtocolInformation:
       type: object
       description: Information to the interface used.
@@ -876,3 +910,14 @@ components:
       properties:
         asyncFetchedItems:
           $ref: '#/components/schemas/AsyncFetchedItems'
+    Tombstone:
+      type: object
+      description: Collection of not resolvable Endpoints as Tombstones. Including
+        cause of error and endpoint URL.
+      properties:
+        catenaXId:
+          type: string
+        endpointURL:
+          type: string
+        processingError:
+          $ref: '#/components/schemas/ProcessingError'

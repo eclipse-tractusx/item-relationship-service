@@ -21,7 +21,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
  */
 @ApiModel(description = "The unique jobId handle of the just processed job.")
 @Value
-@Builder
+@Builder(toBuilder = true)
 @ExcludeFromCodeCoverageGeneratedReport
 public class JobHandle {
 

@@ -28,6 +28,7 @@ import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.MeasurementUnit;
+import net.catenax.irs.component.ProcessingError;
 import net.catenax.irs.component.ProtocolInformation;
 import net.catenax.irs.component.Quantity;
 import net.catenax.irs.component.QueryParameter;
@@ -36,6 +37,7 @@ import net.catenax.irs.component.SemanticId;
 import net.catenax.irs.component.Shell;
 import net.catenax.irs.component.SubmodelDescriptor;
 import net.catenax.irs.component.Summary;
+import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
@@ -161,7 +163,20 @@ public class OpenApiExamples {
                                      .build())
                              .relationships(List.of(createRelationship()))
                              .shells(List.of(createShell()))
+                             .tombstone(createTombstone())
                              .build());
+    }
+
+    private Tombstone createTombstone() {
+        return Tombstone.builder()
+                        .catenaXId(createGAID(GLOBAL_ASSET_ID).getGlobalAssetId())
+                        .endpointURL("https://catena-x.net/vehicle/partdetails/")
+                        .processingError(ProcessingError.builder()
+                                                        .withErrorDetail("Details to reason of Failure")
+                                                        .withLastAttempt(EXAMPLE_INSTANT)
+                                                        .withRetryCounter(0)
+                                                        .build())
+                        .build();
     }
 
     private Shell createShell() {

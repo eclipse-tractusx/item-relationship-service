@@ -9,9 +9,9 @@
 //
 package net.catenax.irs.util;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -28,7 +28,6 @@ import net.catenax.irs.exceptions.JsonParseException;
 @RequiredArgsConstructor
 public class JsonUtil {
 
-
     /**
      * JSON object mapper implementation.
      */
@@ -40,6 +39,7 @@ public class JsonUtil {
         MAPPER.registerModule(simpleModule);
         MAPPER.registerModule(new Jdk8Module());
         MAPPER.registerModule(new JavaTimeModule());
+        MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
     /**
