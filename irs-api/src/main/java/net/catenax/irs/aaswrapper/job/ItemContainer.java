@@ -14,9 +14,9 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
+import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
-import net.catenax.irs.aaswrapper.registry.domain.AasTombstone;
-import net.catenax.irs.aaswrapper.submodel.domain.ItemRelationshipAspectTombstone;
+import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 
 /**
@@ -25,14 +25,12 @@ import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 @Getter
 @Builder
 @Jacksonized
+@ToString
 public class ItemContainer {
 
     @Singular
     private List<AssemblyPartRelationshipDTO> assemblyPartRelationships;
 
     @Singular
-    private List<ItemRelationshipAspectTombstone> itemRelationshipAspectTombstones;
-
-    @Singular
-    private List<AasTombstone> aasShellTombstones;
+    private List<Tombstone> tombstones;
 }

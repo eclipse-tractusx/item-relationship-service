@@ -204,6 +204,7 @@ components:
               queue: 0
               running: 0
         relationships: []
+        tombstones: []
     complete-job-list-processing-state:
       value:
       - 6c311d29-5753-46d4-b32c-19b918ea93b0
@@ -290,7 +291,6 @@ components:
         tombstones:
         - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           endpointURL: https://catena-x.net/vehicle/partdetails/
-          nodeType: TOMBSTONE
           processingError:
             errorDetail: Details to reason of Failure
             exception: SubmodelClientException
@@ -332,6 +332,7 @@ components:
               queue: 0
               running: 0
         relationships: []
+        tombstones: []
     job-handle:
       value:
         jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
@@ -418,7 +419,6 @@ components:
         tombstones:
         - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           endpointURL: https://catena-x.net/vehicle/partdetails/
-          nodeType: TOMBSTONE
           processingError:
             errorDetail: Details to reason of Failure
             exception: SubmodelClientException
@@ -454,6 +454,7 @@ components:
               queue: 0
               running: 0
         relationships: []
+        tombstones: []
   schemas:
     AsyncFetchedItems:
       type: object
@@ -720,6 +721,19 @@ components:
           type: string
         lexicalValue:
           type: string
+    ProcessingError:
+      type: object
+      properties:
+        errorDetail:
+          type: string
+        exception:
+          type: string
+        lastAttempt:
+          type: string
+          format: date-time
+        retryCounter:
+          type: integer
+          format: int32
     ProtocolInformation:
       type: object
       description: Information to the interface used.
@@ -902,3 +916,10 @@ components:
     Tombstone:
       type: object
       description: Collections of Tombstones.
+      properties:
+        catenaXId:
+          type: string
+        endpointURL:
+          type: string
+        processingError:
+          $ref: '#/components/schemas/ProcessingError'

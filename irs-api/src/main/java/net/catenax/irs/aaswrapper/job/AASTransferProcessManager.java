@@ -10,6 +10,7 @@
 package net.catenax.irs.aaswrapper.job;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -20,6 +21,8 @@ import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
+import net.catenax.irs.component.ProcessingError;
+import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.connector.job.TransferProcessManager;
@@ -29,7 +32,8 @@ import net.catenax.irs.dto.SubmodelEndpoint;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.client.RestClientException;
 
 /**
  * Process manager for AAS Object transfers.
@@ -46,6 +50,9 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
     private final ExecutorService executor;
 
     private final BlobPersistence blobStore;
+
+    @Value("${feign.client.config.digitalTwinRegistry.url}")
+    private String digitalTwinRegistryUrl;
 
     public AASTransferProcessManager(final DigitalTwinRegistryFacade registryFacade,
             final SubmodelFacade submodelFacade, final ExecutorService executor, final BlobPersistence blobStore) {
@@ -73,39 +80,58 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             final String itemId = dataRequest.getItemId();
 
-            final ItemContainer.ItemContainerBuilder itemContainer = ItemContainer.builder();
+            final ItemContainer.ItemContainerBuilder itemContainerBuilder = ItemContainer.builder();
 
-
+            log.info("Calling Digital Twin Registry with itemId {}", itemId);
             try {
-                log.info("Calling Digital Twin Registry with itemId {}", itemId);
-                final List<SubmodelEndpoint> aasSubmodelEndpoints = registryFacade.getAASSubmodelEndpoints(itemId);
+                final List<SubmodelEndpoint> aasSubmodelEndpoints;
+                aasSubmodelEndpoints = registryFacade.getAASSubmodelEndpoints(itemId);
+
                 log.info("Retrieved {} SubmodelEndpoints for itemId {}", aasSubmodelEndpoints.size(), itemId);
 
-                aasSubmodelEndpoints.stream()
-                    .map(SubmodelEndpoint::getAddress)
-                    .forEach(address -> {
-                        try {
-                            final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(
-                                    address);
-                            processEndpoint(aasTransferProcess, itemContainer, submodel);
-                        } catch (HttpClientErrorException exception) {
-//                            itemContainer.addTombstoneSubmodel();
-                        }
-                    });
-
-                final JsonUtil jsonUtil = new JsonUtil();
-                blobStore.putBlob(processId, jsonUtil.asString(itemContainer.build()).getBytes(StandardCharsets.UTF_8));
-
+                aasSubmodelEndpoints
+                        .stream()
+                        .map(SubmodelEndpoint::getAddress)
+                        .forEach(address -> {
+                            try {
+                                final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address);
+                                processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
+                            } catch (RestClientException exception) {
+                                log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.", address);
+                                itemContainerBuilder.tombstone(createTombstone(itemId, address, exception));
+                            }
+                });
             } catch (FeignException ex) {
-//                itemContainer.addTombsoneDigitalTwin();
-            } catch (BlobPersistenceException e) {
-                log.error("Unable to store AAS result", e);
+                log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
+                itemContainerBuilder.tombstone(createTombstone(itemId, digitalTwinRegistryUrl, ex));
             }
+            storeItemContainer(processId, itemContainerBuilder.build());
 
             transferProcessCompleted.accept(aasTransferProcess);
         };
     }
 
+    private void storeItemContainer(final String processId, final ItemContainer itemContainer) {
+        try {
+            log.info("storing json Blob {}", itemContainer.toString());
+            final JsonUtil jsonUtil = new JsonUtil();
+            blobStore.putBlob(processId,
+                    jsonUtil.asString(itemContainer).getBytes(StandardCharsets.UTF_8));
+            log.info("stored json Blob");
+        } catch (BlobPersistenceException e) {
+            log.error("Unable to store AAS result", e);
+        }
+    }
+
+    private Tombstone createTombstone(final String itemId, final String address, final Exception exception) {
+        final ProcessingError processingError = ProcessingError.builder()
+                                                               .withRetryCounter(0)
+                                                               .withLastAttempt(Instant.now())
+                                                               .withException(exception.getClass().getCanonicalName())
+                                                               .withErrorDetail(exception.getMessage())
+                                                               .build();
+        return Tombstone.builder().endpointURL(address).catenaXId(itemId).processingError(processingError).build();
+    }
 
     private void processEndpoint(final AASTransferProcess aasTransferProcess,
             final ItemContainer.ItemContainerBuilder itemContainer, final AssemblyPartRelationshipDTO relationship) {

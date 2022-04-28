@@ -36,7 +36,6 @@ import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.Relationship;
-import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobInitiateResponse;
@@ -46,6 +45,7 @@ import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.controllers.IrsApiConstants;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
+import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
@@ -125,8 +125,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                         ItemContainer.class);
                 final List<AssemblyPartRelationshipDTO> assemblyPartRelationships = itemContainer.getAssemblyPartRelationships();
                 relationships.addAll(convert(assemblyPartRelationships));
-                tombstones.addAll(itemContainer.getItemRelationshipAspectTombstones());
-                tombstones.addAll(itemContainer.getAasShellTombstones());
+                tombstones.addAll(itemContainer.getTombstones());
             } catch (BlobPersistenceException e) {
                 log.error("Unable to read blob", e);
             }

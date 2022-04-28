@@ -43,6 +43,7 @@ public class Jobs {
     private List<Shell> shells;
 
     @Schema(description = "Collections of Tombstones.")
+    @Singular
     private List<Tombstone> tombstones;
 
     /**

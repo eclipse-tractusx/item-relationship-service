@@ -9,15 +9,15 @@
 //
 package net.catenax.irs.aaswrapper.job;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.aaswrapper.registry.domain.AasTombstone;
-import net.catenax.irs.aaswrapper.submodel.domain.ItemRelationshipAspectTombstone;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
+import net.catenax.irs.component.Tombstone;
 
 /**
  * Assembles multiple partial parts trees into one overall parts tree.
@@ -35,22 +35,16 @@ public class ItemTreesAssembler {
     /* package */ ItemContainer retrievePartsTrees(final Stream<ItemContainer> partialTrees) {
         final var relationships = new LinkedHashSet<AssemblyPartRelationshipDTO>();
         final var numberOfPartialTrees = new AtomicInteger();
-        final LinkedHashSet<ItemRelationshipAspectTombstone> aspectTombstones = new LinkedHashSet<>();
-        final LinkedHashSet<AasTombstone> shellTombstones = new LinkedHashSet<>();
+        final ArrayList<Tombstone> tombstones = new ArrayList<>();
 
         partialTrees.forEachOrdered(partialTree -> {
             relationships.addAll(partialTree.getAssemblyPartRelationships());
             numberOfPartialTrees.incrementAndGet();
-            aspectTombstones.addAll(partialTree.getItemRelationshipAspectTombstones());
-            shellTombstones.addAll(partialTree.getAasShellTombstones());
+            tombstones.addAll(partialTree.getTombstones());
         });
 
         log.info("Assembled item tree from {} partial trees", numberOfPartialTrees);
 
-        return ItemContainer.builder()
-                            .assemblyPartRelationships(relationships)
-                            .itemRelationshipAspectTombstones(aspectTombstones)
-                            .aasShellTombstones(shellTombstones)
-                            .build();
+        return ItemContainer.builder().assemblyPartRelationships(relationships).tombstones(tombstones).build();
     }
 }

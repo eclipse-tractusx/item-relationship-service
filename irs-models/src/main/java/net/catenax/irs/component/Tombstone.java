@@ -9,8 +9,20 @@
 //
 package net.catenax.irs.component;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.extern.jackson.Jacksonized;
+import net.catenax.irs.component.enums.NodeType;
+
 /**
- * Tombstone Interface for usage in Jobs
+ * Tombstone with information about request failure
  */
-public interface Tombstone {
+@Getter
+@Builder
+@Jacksonized
+public class Tombstone {
+    private static final NodeType NODE_TYPE = NodeType.TOMBSTONE;
+    private final String catenaXId;
+    private final String endpointURL;
+    private final ProcessingError processingError;
 }

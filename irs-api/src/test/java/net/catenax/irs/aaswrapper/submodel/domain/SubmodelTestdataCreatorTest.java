@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.client.RestClientException;
 
 class SubmodelTestdataCreatorTest {
     private SubmodelTestdataCreator submodelTestdataCreator;
@@ -69,7 +70,7 @@ class SubmodelTestdataCreatorTest {
         final String catenaXId = "c35ee875-5443-4a2d-bc14-fdacd64b9446";
         final SubmodelClientLocalStub client = new SubmodelClientLocalStub();
 
-        assertThatExceptionOfType(SubmodelClientException.class).isThrownBy(
+        assertThatExceptionOfType(RestClientException.class).isThrownBy(
                 () -> client.getSubmodel(catenaXId, AssemblyPartRelationship.class));
     }
 }

@@ -33,7 +33,7 @@ class SubmodelRetryerTest {
     private SubmodelClient client;
 
     @Test
-    void shouldRetryExecutionOfGetSubmodelMaxAttemptTimes() throws SubmodelClientException {
+    void shouldRetryExecutionOfGetSubmodelMaxAttemptTimes() {
         given(this.client.getSubmodel(anyString(), any()))
                 .willThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception"));
 

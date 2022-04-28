@@ -21,7 +21,8 @@ import net.catenax.irs.dto.SubmodelType;
  */
 class AssetAdministrationShellTestdataCreator {
 
-    public AssetAdministrationShellDescriptor createDummyAssetAdministrationShellDescriptorForId(final String catenaXId) {
+    public AssetAdministrationShellDescriptor createDummyAssetAdministrationShellDescriptorForId(
+            final String catenaXId) {
         final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
 
         submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId));

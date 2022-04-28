@@ -9,12 +9,10 @@
 //
 package net.catenax.irs.aaswrapper.registry.domain;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import net.catenax.irs.dto.ProcessingError;
 import net.catenax.irs.dto.SubmodelEndpoint;
 import net.catenax.irs.dto.SubmodelType;
 import org.springframework.stereotype.Service;
@@ -40,30 +38,12 @@ public class DigitalTwinRegistryFacade {
 
         return submodelDescriptors.stream()
                                   .filter(this::isAssemblyPartRelationship)
-                                  .map(submodelDescriptor ->
-                                          new SubmodelEndpoint(
-                                                  submodelDescriptor.getEndpoints()
-                                                                    .get(0)
-                                                                    .getProtocolInformation()
-                                                                    .getEndpointAddress(),
-                                                  SubmodelType.ASSEMBLY_PART_RELATIONSHIP))
+                                  .map(submodelDescriptor -> new SubmodelEndpoint(submodelDescriptor.getEndpoints()
+                                                                                                    .get(0)
+                                                                                                    .getProtocolInformation()
+                                                                                                    .getEndpointAddress(),
+                                          SubmodelType.ASSEMBLY_PART_RELATIONSHIP))
                                   .collect(Collectors.toList());
-    }
-
-    private AbstractAAS getResponseTombStoneForResponse(final String catenaXId, final String errorDetail,
-            final String exception) {
-        final ProcessingError processingError = ProcessingError.builder()
-                                                               .withException(exception)
-                                                               .withErrorDetail(errorDetail)
-                                                               .withLastAttempt(Instant.now())
-                                                               .withRetryCounter(0)
-                                                               .build();
-        final String idShort = "";
-        return new AasTombstone(idShort, catenaXId, processingError);
-    }
-
-    private List<SubmodelDescriptor> getSubmodelDescriptors(final String aasIdentifier) {
-        return digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aasIdentifier).getSubmodelDescriptors();
     }
 
     /**

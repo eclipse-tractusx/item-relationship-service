@@ -9,20 +9,18 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
-import net.catenax.irs.dto.NodeType;
+import net.catenax.irs.component.enums.NodeType;
 
 /**
  * Item Relationship Aspect Model
  */
 @Getter
-public class ItemRelationshipAspect extends AbstractItemRelationshipAspect {
+@AllArgsConstructor
+public class ItemRelationshipAspect {
+    private final String catenaXId;
+    private final NodeType nodeType;
     private final AssemblyPartRelationshipDTO assemblyPartRelationship;
-
-    public ItemRelationshipAspect(final String catenaXId, final NodeType nodeType,
-            final AssemblyPartRelationshipDTO assemblyPartRelationship) {
-        super(catenaXId, nodeType);
-        this.assemblyPartRelationship = assemblyPartRelationship;
-    }
 }

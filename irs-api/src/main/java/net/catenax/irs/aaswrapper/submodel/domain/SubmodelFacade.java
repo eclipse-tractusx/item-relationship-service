@@ -9,7 +9,6 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +16,6 @@ import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
-import net.catenax.irs.dto.ProcessingError;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,7 +33,8 @@ public class SubmodelFacade {
      */
     @Retry(name = "submodelRetryer")
     public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress) {
-        final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress, AssemblyPartRelationship.class);
+        final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
+                AssemblyPartRelationship.class);
 
         final Set<ChildDataDTO> childParts = new HashSet<>();
         submodel.getChildParts()
@@ -45,21 +44,7 @@ public class SubmodelFacade {
                                                                          childData.getLifecycleContext().getValue())
                                                                  .build()));
 
-        return AssemblyPartRelationshipDTO.builder()
-                                          .catenaXId(submodel.getCatenaXId())
-                                          .childParts(childParts)
-                                          .build();
-    }
-
-    private AbstractItemRelationshipAspect getResponseTombStoneForResponse(final String catenaXId,
-            final String endpointUrl, final String errorDetail, final String exception) {
-        final ProcessingError processingError = ProcessingError.builder()
-                                                               .withException(exception)
-                                                               .withErrorDetail(errorDetail)
-                                                               .withLastAttempt(Instant.now())
-                                                               .withRetryCounter(0)
-                                                               .build();
-        return new ItemRelationshipAspectTombstone(catenaXId, processingError, endpointUrl);
+        return AssemblyPartRelationshipDTO.builder().catenaXId(submodel.getCatenaXId()).childParts(childParts).build();
     }
 
 }
