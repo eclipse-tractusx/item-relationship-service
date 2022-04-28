@@ -20,7 +20,7 @@ import lombok.Data;
  * ChildDataDTO model used for internal application use
  */
 @Data
-@Builder(toBuilder = true, setterPrefix = "with")
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = ChildDataDTO.ChildDataDTOBuilder.class)
 public class ChildDataDTO {
     /**
