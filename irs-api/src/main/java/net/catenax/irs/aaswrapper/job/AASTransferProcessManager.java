@@ -55,16 +55,19 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     @Override
     public TransferInitiateResponse initiateRequest(final ItemDataRequest dataRequest,
-            final Consumer<String> transferProcessStarted, final Consumer<AASTransferProcess> completionCallback) {
+                                                    final Consumer<String> transferProcessStarted,
+                                                    final Consumer<AASTransferProcess> completionCallback,
+                                                    final String lifecyleContext) {
+
         final String processId = UUID.randomUUID().toString();
 
-        executor.submit(getRunnable(dataRequest, transferProcessStarted, completionCallback, processId));
+        executor.submit(getRunnable(dataRequest, transferProcessStarted, completionCallback, processId, lifecyleContext));
 
         return new TransferInitiateResponse(processId, ResponseStatus.OK);
     }
 
     private Runnable getRunnable(final ItemDataRequest dataRequest, final Consumer<String> transferProcessStarted,
-            final Consumer<AASTransferProcess> transferProcessCompleted, final String processId) {
+            final Consumer<AASTransferProcess> transferProcessCompleted, final String processId, final String lifecyleContext) {
         return () -> {
             transferProcessStarted.accept(processId);
             final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId, dataRequest.getDepth());
@@ -79,7 +82,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             aasSubmodelEndpoints.stream()
                                 .map(SubmodelEndpoint::getAddress)
                                 .map(submodelFacade::getSubmodel)
-                                .forEach(submodel -> processEndpoint(aasTransferProcess, itemContainer, submodel));
+                                .forEach(submodel -> processEndpoint(aasTransferProcess, itemContainer, submodel, lifecyleContext));
 
             try {
                 final JsonUtil jsonUtil = new JsonUtil();
@@ -92,12 +95,14 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
     }
 
     private void processEndpoint(final AASTransferProcess aasTransferProcess, final ItemContainer itemContainer,
-            final AssemblyPartRelationshipDTO relationship) {
+            final AssemblyPartRelationshipDTO relationship, final String lifecyleContext) {
         log.info("Processing AssemblyPartRelationship with {} children", relationship.getChildParts().size());
         final List<String> childIds = relationship.getChildParts()
                                                   .stream()
+                                                  .filter(child -> child.getLifecycleContext().equals(lifecyleContext))
                                                   .map(ChildDataDTO::getChildCatenaXId)
                                                   .collect(Collectors.toList());
+
         aasTransferProcess.addIdsToProcess(childIds);
         // TODO (jkreutzfeld) what do we actually need to store here?
         itemContainer.add(relationship);

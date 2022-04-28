@@ -10,6 +10,7 @@
 package net.catenax.irs.services;
 
 import static net.catenax.irs.dtos.IrsCommonConstants.DEPTH_ID_KEY;
+import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
 import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 
 import java.nio.charset.StandardCharsets;
@@ -18,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.ItemContainer;
 import net.catenax.irs.aaswrapper.job.ItemDataRequest;
+import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.ChildItem;
 import net.catenax.irs.component.GlobalAssetIdentification;
@@ -45,6 +48,7 @@ import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.controllers.IrsApiConstants;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
+import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
@@ -67,19 +71,43 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final BlobPersistence blobStore;
 
+    private final SubmodelFacade submodelFacade;
+
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
-        final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
-        final var params = Map.of(ROOT_ITEM_ID_KEY, uuid, DEPTH_ID_KEY, String.valueOf(request.getDepth()));
-        final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
+        JobHandle jobHandle = null;
 
-        if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
-            final String jobId = jobInitiateResponse.getJobId();
-            return JobHandle.builder().jobId(UUID.fromString(jobId)).build();
-        } else {
-            // TODO (jkreutzfeld) Improve with better response (proper exception for error responses?)
-            throw new IllegalArgumentException("Could not start job: " + jobInitiateResponse.getError());
+        final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
+
+        final String globalAssetId = request.getGlobalAssetId();
+        final AssemblyPartRelationshipDTO dto = this.submodelFacade.getSubmodel(globalAssetId);
+
+        final Set<ChildDataDTO> childParts = dto.getChildParts();
+        final List<BomLifecycle> bomLifecyclesFromAASWrapper = childParts.stream()
+                                                                         .map(ChildDataDTO::getLifecycleContext)
+                                                                         .map(BomLifecycle::fromLifecycleContextCharacteristic)
+                                                                         .collect(Collectors.toList());
+
+        final BomLifecycle bomLifecycleFormRequest = request.getBomLifecycle();
+        final String lifecyleContextFromRequest = bomLifecycleFormRequest.toString();
+
+        if (bomLifecyclesFromAASWrapper.contains(bomLifecycleFormRequest)) {
+            final var params = Map.of(ROOT_ITEM_ID_KEY, uuid,
+                                                      DEPTH_ID_KEY, String.valueOf(request.getDepth()),
+                                                      LIFE_CYCLE_CONTEXT, lifecyleContextFromRequest);
+
+            final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
+
+            if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
+                final String jobId = jobInitiateResponse.getJobId();
+
+                jobHandle = JobHandle.builder().jobId(UUID.fromString(jobId)).build();
+            } else {
+                // TODO (jkreutzfeld) Improve with better response (proper exception for error responses?)
+                throw new IllegalArgumentException("Could not start job: " + jobInitiateResponse.getError());
+            }
         }
+        return jobHandle;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package net.catenax.irs.util;
 
+import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
 import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 
 import java.net.URL;
@@ -51,7 +52,7 @@ public class TestMother {
         return MultiTransferJob.builder()
                                .job(fakeJob(jobState))
                                .jobData(Map.of(ROOT_ITEM_ID_KEY, faker.lorem().characters(),
-                                   faker.lorem().characters(), faker.lorem().characters()))
+                                   faker.lorem().characters(), faker.lorem().characters(), LIFE_CYCLE_CONTEXT, "AsBuilt"))
                                .build();
     }
 

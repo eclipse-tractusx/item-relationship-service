@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.connector.job;
 
+import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
 import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 
 import java.time.Instant;
@@ -203,11 +204,13 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         return dataRequests.map(r -> startTransfer(job, r)).collect(Collectors.counting());
     }
 
-    private TransferInitiateResponse startTransfer(final MultiTransferJob job,
-        final T dataRequest)  /* throws JobErrorDetails */ {
+    private TransferInitiateResponse startTransfer(final MultiTransferJob job, final T dataRequest)  /* throws JobErrorDetails */ {
+
+        final String lifecyleContext = job.getJobData().get(LIFE_CYCLE_CONTEXT);
+
         final var response = processManager.initiateRequest(dataRequest,
             transferId -> jobStore.addTransferProcess(job.getJob().getJobId().toString(), transferId),
-            this::transferProcessCompleted);
+            this::transferProcessCompleted, lifecyleContext);
 
         if (response.getStatus() != ResponseStatus.OK) {
             throw new JobException(response.getStatus().toString());
