@@ -42,6 +42,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
     private final DigitalTwinRegistryFacade registryFacade;
 
     private final SubmodelFacade submodelFacade;
+
     private final ExecutorService executor;
 
     private final BlobPersistence blobStore;
@@ -68,7 +69,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             final Consumer<AASTransferProcess> transferProcessCompleted, final String processId) {
         return () -> {
             transferProcessStarted.accept(processId);
-            final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId);
+            final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId, dataRequest.getDepth());
 
             final String itemId = dataRequest.getItemId();
 

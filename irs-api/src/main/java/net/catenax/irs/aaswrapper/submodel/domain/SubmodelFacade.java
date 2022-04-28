@@ -46,8 +46,8 @@ public class SubmodelFacade {
                                                                  .build()));
 
         return AssemblyPartRelationshipDTO.builder()
-                                          .withCatenaXId(submodel.getCatenaXId())
-                                          .withChildParts(childParts)
+                                          .catenaXId(submodel.getCatenaXId())
+                                          .childParts(childParts)
                                           .build();
     }
 

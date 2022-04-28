@@ -9,11 +9,12 @@
 //
 package net.catenax.irs.connector.job;
 
-import org.jetbrains.annotations.Nullable;
-
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+
+import net.catenax.irs.component.enums.JobState;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Manages storage of {@link MultiTransferJob} state.
@@ -25,7 +26,7 @@ public interface JobStore {
      *
      * @param jobId the identifier of the job to retrieve.
      * @return the job if found, otherwise empty.
-     * @see MultiTransferJob#getJobId()
+     * @see MultiTransferJob#getJob()
      */
     Optional<MultiTransferJob> find(String jobId);
 
@@ -33,13 +34,14 @@ public interface JobStore {
      * Retrieve jobs by state with completion date older than requested date
      *
      * @param jobState the job state
-     * @param localDateTime requested date
+     * @param dateTime requested date
      * @return found jobs
      */
-    List<MultiTransferJob> findByStateAndCompletionDateOlderThan(JobState jobState, LocalDateTime localDateTime);
+    List<MultiTransferJob> findByStateAndCompletionDateOlderThan(JobState jobState, Instant dateTime);
 
     /**
      * Retrieve jobs with requested states
+     *
      * @param jobStates requested job states
      * @return found jobs
      */
@@ -73,8 +75,8 @@ public interface JobStore {
     /**
      * Mark transfer process completed for the job.
      *
-     * @param jobId     the job identifier.
-     * @param process   transfer process to mark completed.
+     * @param jobId   the job identifier.
+     * @param process transfer process to mark completed.
      */
     void completeTransferProcess(String jobId, TransferProcess process);
 
@@ -104,10 +106,11 @@ public interface JobStore {
     Optional<MultiTransferJob> deleteJob(String jobId);
 
     /**
-     * Set the job status to canceled.
+     * Cancel the job with identifier
      *
-     * @param jobId the job identifier.
-     * @return canceled MultiTransferJob
+     * @param jobId
+     * @return cancel job (if it existed)
      */
     Optional<MultiTransferJob> cancelJob(String jobId);
+
 }

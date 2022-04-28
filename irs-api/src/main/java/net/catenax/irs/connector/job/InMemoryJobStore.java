@@ -22,6 +22,10 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RequiredArgsConstructor
+@SuppressWarnings({ "PMD.TooManyMethods",
+                    "PMD.PreserveStackTrace"
+})
+
 public class InMemoryJobStore extends BaseJobStore {
 
     /**

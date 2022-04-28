@@ -22,7 +22,7 @@ import lombok.Data;
  * AssemblyPartRelationshipDTO model used for internal application use
  */
 @Data
-@Builder(toBuilder = true, setterPrefix = "with")
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = AssemblyPartRelationshipDTO.AssemblyPartRelationshipDTOBuilder.class)
 public class AssemblyPartRelationshipDTO {
     /**
@@ -38,7 +38,7 @@ public class AssemblyPartRelationshipDTO {
     /**
      * Builder class
      */
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class AssemblyPartRelationshipDTOBuilder {
 
     }

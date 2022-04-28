@@ -9,8 +9,8 @@
 //
 package net.catenax.irs.exceptions;
 
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.configuration.IrsConfiguration;
-import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Exception thrown by the service when the {@link net.catenax.irs.component.RegisterJob#getDepth()}
@@ -20,6 +20,7 @@ import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedRep
 public class MaxDepthTooLargeException extends RuntimeException {
     /**
      * Generate a new instance of a {@link MaxDepthTooLargeException}
+     *
      * @param message Exception message.
      */
     public MaxDepthTooLargeException(final String message) {

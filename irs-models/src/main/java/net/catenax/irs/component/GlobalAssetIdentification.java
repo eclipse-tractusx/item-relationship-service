@@ -24,31 +24,31 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
  * Global unique identifier for asset
  */
 
-
 @Schema(description = "Represents a CatenaX id in the format urn:uuid:<uuid>.")
 @Value
-@Builder
+@Builder(toBuilder = true)
 @JsonSerialize(using = ToStringSerializer.class)
-@JsonDeserialize(builder = GlobalAssetIdentification.GlobalAssetIdBuilder.class)
+@JsonDeserialize(builder = GlobalAssetIdentification.GlobalAssetIdentificationBuilder.class)
 @ExcludeFromCodeCoverageGeneratedReport
 public class GlobalAssetIdentification {
 
     private static final int GLOBAL_ASSET_ID_LENGTH = 45;
 
-
     @Valid
-    @Schema(description = "Global unique C-X identifier.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0", minLength = GLOBAL_ASSET_ID_LENGTH, maxLength = GLOBAL_ASSET_ID_LENGTH)
+    @Schema(description = "Global unique C-X identifier.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+            minLength = GLOBAL_ASSET_ID_LENGTH, maxLength = GLOBAL_ASSET_ID_LENGTH)
     private String globalAssetId;
-
-    /**
-     * Builder for GlobalAssetIdBuilder class
-     */
-    @JsonPOJOBuilder(withPrefix = "with")
-    public static class GlobalAssetIdBuilder {
-    }
 
     @Override
     public String toString() {
         return globalAssetId;
     }
+
+    /**
+     * Builder for GlobalAssetIdBuilder class
+     */
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class GlobalAssetIdentificationBuilder {
+    }
+
 }

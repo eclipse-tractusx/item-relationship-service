@@ -8,7 +8,7 @@
 // additional information regarding license terms.
 //
 
-package net.catenax.irs.connector.annotations;
+package net.catenax.irs.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -22,6 +22,6 @@ import java.lang.annotation.Target;
  * the string "Generated" in its name.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ ElementType.METHOD, ElementType.TYPE })
 public @interface ExcludeFromCodeCoverageGeneratedReport {
 }

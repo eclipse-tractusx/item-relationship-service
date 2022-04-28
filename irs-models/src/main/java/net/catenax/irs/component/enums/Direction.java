@@ -21,8 +21,8 @@ import java.util.stream.Stream;
 @Schema(description = "Direction in which the tree shall be traversed.")
 @ExcludeFromCodeCoverageGeneratedReport
 public enum Direction {
-   //@Schema(description = "The tree is traversed in upward direction.") UPWARD("upward"),
-    @Schema(description = "The tree is traversed in downward direction.")  DOWNWARD(DirectionConstants.DOWNWARD);
+    //@Schema(description = "The tree is traversed in upward direction.") UPWARD("upward"),
+    @Schema(description = "The tree is traversed in downward direction.") DOWNWARD(DirectionConstants.DOWNWARD);
 
     private final String value;
 

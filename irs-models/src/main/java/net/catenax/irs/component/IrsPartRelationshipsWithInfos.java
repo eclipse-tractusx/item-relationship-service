@@ -48,7 +48,7 @@ public class IrsPartRelationshipsWithInfos {
     /**
      * Builder class
      */
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class IrsPartRelationshipsWithInfosBuilder {
     }
 

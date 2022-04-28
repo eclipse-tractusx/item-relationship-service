@@ -9,15 +9,21 @@
 //
 package net.catenax.irs.dtos;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
-/***
- * API type for the part attributes.
+/**
+ * Common constant used in IRS
  */
 @ExcludeFromCodeCoverageGeneratedReport
-@Schema(description = "Part attributes.")
-public enum PartAttribute {
-    @Schema(description = "Type of material, (sub)component/part or vehicle")
-    PART_TYPE_NAME,
+public class IrsCommonConstants {
+    /**
+     * Job Data key for root item ID
+     */
+    public static final String ROOT_ITEM_ID_KEY = "root.item.id.key";
+
+    /**
+     * Expected depth of the tree
+     */
+    public static final String DEPTH_ID_KEY = "depth.id.key";
+
 }

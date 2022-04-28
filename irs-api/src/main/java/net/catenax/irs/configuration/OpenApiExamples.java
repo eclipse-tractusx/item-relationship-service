@@ -25,7 +25,7 @@ import net.catenax.irs.component.Description;
 import net.catenax.irs.component.Endpoint;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
-import net.catenax.irs.component.JobException;
+import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.MeasurementUnit;
@@ -49,7 +49,9 @@ import org.springframework.http.HttpStatus;
 /**
  * Provides example objects for the OpenAPI documentation
  */
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods"})
+@SuppressWarnings({ "PMD.ExcessiveImports",
+                    "PMD.TooManyMethods"
+})
 @ExcludeFromCodeCoverageGeneratedReport
 public class OpenApiExamples {
     private static final Instant EXAMPLE_INSTANT = Instant.parse("2022-02-03T14:48:54.709Z");
@@ -62,10 +64,10 @@ public class OpenApiExamples {
         components.addExamples("job-handle", toExample(createJobHandle(JOB_HANDLE_ID_1)));
         components.addExamples("error-response", toExample(ErrorResponse.builder()
                                                                         .withErrors(List.of("TimeoutException",
-                                                                                "ParsingException"))
+                                                                            "ParsingException"))
                                                                         .withMessage("Some errors occured")
                                                                         .withStatusCode(
-                                                                                HttpStatus.INTERNAL_SERVER_ERROR)
+                                                                            HttpStatus.INTERNAL_SERVER_ERROR)
                                                                         .build()));
         components.addExamples("complete-job-result", createCompleteJobResult());
         components.addExamples("job-result-without-uncompleted-result-tree", createJobResultWithoutTree());
@@ -131,13 +133,12 @@ public class OpenApiExamples {
 
     private Summary createSummary() {
         return Summary.builder()
-                      .asyncFetchedItems(
-                              AsyncFetchedItems.builder().complete(0).failed(0).running(0).queue(0).build())
+                      .asyncFetchedItems(AsyncFetchedItems.builder().complete(0).failed(0).running(0).queue(0).build())
                       .build();
     }
 
-    private JobException createJobException() {
-        return new JobException("IrsTimeoutException", "Timeout while requesting Digital Registry", EXAMPLE_INSTANT);
+    private JobErrorDetails createJobException() {
+        return new JobErrorDetails("IrsTimeoutException", "Timeout while requesting Digital Registry", EXAMPLE_INSTANT);
     }
 
     private Example createJobResultWithoutTree() {
@@ -217,7 +218,7 @@ public class OpenApiExamples {
                        .quantityNumber(1)
                        .measurementUnit(MeasurementUnit.builder()
                                                        .datatypeURI(
-                                                               "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece")
+                                                           "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece")
                                                        .lexicalValue("piece")
                                                        .build())
 

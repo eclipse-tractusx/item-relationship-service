@@ -1,9 +1,10 @@
 package net.catenax.irs.connector.job;
 
-import com.github.javafaker.Faker;
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+import com.github.javafaker.Faker;
+import net.catenax.irs.util.TestMother;
+import org.junit.jupiter.api.Test;
 
 class MultiTransferJobTest {
 
@@ -27,4 +28,6 @@ class MultiTransferJobTest {
                                 faker.lorem().word(),
                                 faker.lorem().word()));
     }
+
+
 }

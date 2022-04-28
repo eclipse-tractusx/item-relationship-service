@@ -627,7 +627,7 @@ components:
           type: string
           format: date-time
         exception:
-          $ref: '#/components/schemas/JobException'
+          $ref: '#/components/schemas/JobErrorDetails'
         globalAssetId:
           $ref: '#/components/schemas/GlobalAssetIdentification'
         jobCompleted:
@@ -669,7 +669,7 @@ components:
       - globalAssetId
       - jobId
       - jobState
-    JobException:
+    JobErrorDetails:
       type: object
       description: Exception state for this job.
       properties:
@@ -815,7 +815,6 @@ components:
         depth:
           type: integer
           format: int32
-          default: 1
           description: "Max depth of the returned tree, if empty max depth is returned."
           maximum: 100
           minimum: 1
