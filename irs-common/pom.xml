@@ -18,11 +18,5 @@
 
     <dependencies>
         <!-- Should not add any library dependencies in this module, except annotations in provided scope -->
-        <dependency>
-            <groupId>com.github.spotbugs</groupId>
-            <artifactId>spotbugs-annotations</artifactId>
-            <version>${spotbugs.version}</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 </project>
