@@ -32,5 +32,5 @@ public interface IIrsItemGraphQueryService {
 
     Job cancelJobById(@NonNull UUID jobId);
 
-    Jobs getJobForJobId(UUID jobId);
+    Jobs getJobForJobId(UUID jobId, boolean includePartialResults);
 }

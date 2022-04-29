@@ -9,3 +9,9 @@ blobstore:
   accessKey: minioadmin
   secretKey: minioadmin
 
+irs:
+  job:
+    cleanup:
+      scheduler:
+        completed: 0 * * * * *
+        failed: 0 * * * * *
