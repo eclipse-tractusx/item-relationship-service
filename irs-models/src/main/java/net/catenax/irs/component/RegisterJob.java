@@ -69,6 +69,6 @@ public class RegisterJob {
      * @return depth
      */
     public Integer getDepth() {
-        return depth == null ? Integer.valueOf(MAX_TREE_DEPTH_DESC) : depth;
+        return depth == null ? MAX_TREE_DEPTH : depth;
     }
 }
