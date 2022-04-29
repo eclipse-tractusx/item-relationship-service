@@ -21,7 +21,7 @@ jobs:
         with:
           appname: 'IRS'
           createprofile: false
-          filepath: 'irs-api/target/irs-api-0.0.1-SNAPSHOT-exec.jar'
+          filepath: '/irs-api/target/irs-api-0.0.1-SNAPSHOT-exec.jar'
           vid: '${{ secrets.VERACODE_API_ID }}'
           vkey: '${{ secrets.VERACODE_API_KEY }}'
 #          createsandbox: 'true'
