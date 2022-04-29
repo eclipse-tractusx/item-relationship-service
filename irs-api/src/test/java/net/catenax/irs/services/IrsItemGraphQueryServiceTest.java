@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-import net.catenax.irs.TestConfig;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.ItemContainer;
 import net.catenax.irs.aaswrapper.job.ItemDataRequest;
@@ -27,9 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 
 @ExtendWith(MockitoExtension.class)
 class IrsItemGraphQueryServiceTest {
@@ -77,8 +73,7 @@ class IrsItemGraphQueryServiceTest {
 
     private void givenTransferResultIsStored(final AASTransferProcess transfer1) throws BlobPersistenceException {
         final AssemblyPartRelationshipDTO relationship1 = generate.assemblyPartRelationshipDTO();
-        final ItemContainer itemContainer1 = new ItemContainer();
-        itemContainer1.add(relationship1);
+        final ItemContainer itemContainer1 = ItemContainer.builder().assemblyPartRelationship(relationship1).build();
         when(blobStore.getBlob(transfer1.getId())).thenReturn(Optional.of(toBlob(itemContainer1)));
     }
 

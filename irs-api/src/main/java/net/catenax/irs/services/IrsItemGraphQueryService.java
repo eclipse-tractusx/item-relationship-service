@@ -15,7 +15,6 @@ import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,6 +36,7 @@ import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.Relationship;
+import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobInitiateResponse;
@@ -47,7 +47,6 @@ import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferProcess;
 import net.catenax.irs.controllers.IrsApiConstants;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
-import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
@@ -121,12 +120,14 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             final var tombstones = new ArrayList<Tombstone>();
 
             if (jobIsCompleted(multiJob)) {
-                relationships.addAll(retrieveJobResultRelationships(multiJob.getJob().getJobId()));
-                tombstones.addAll(itemContainer.getTombstones());
+                final var container = retrieveJobResultRelationships(multiJob.getJob().getJobId());
+                relationships.addAll(convert(container.getAssemblyPartRelationships()));
+                tombstones.addAll(container.getTombstones());
 
             } else if (includePartialResults) {
-                relationships.addAll(retrievePartialResults(multiJob));
-                tombstones.addAll(itemContainer.getTombstones());
+                final var container = retrievePartialResults(multiJob);
+                relationships.addAll(convert(container.getAssemblyPartRelationships()));
+                tombstones.addAll(container.getTombstones());
 
             }
 
@@ -136,58 +137,46 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         }
     }
 
-    private Collection<Relationship> retrievePartialResults(final MultiTransferJob multiJob) {
+    private ItemContainer retrievePartialResults(final MultiTransferJob multiJob) {
         final List<TransferProcess> completedTransfers = multiJob.getCompletedTransfers();
         final List<String> transferIds = completedTransfers.stream()
                                                            .map(TransferProcess::getId)
                                                            .collect(Collectors.toList());
 
-        final var relationships = new ArrayList<Relationship>();
+        final var relationships = new ArrayList<AssemblyPartRelationshipDTO>();
         final var tombstones = new ArrayList<Tombstone>();
 
         for (final String id : transferIds) {
             try {
                 final Optional<byte[]> blob = blobStore.getBlob(id);
-                blob.ifPresent(bytes -> relationships.addAll(toRelationships(bytes)));
-                blob.ifPresent(bytes -> tombstones.addAll(toTombstones(bytes)));
+                blob.ifPresent(bytes -> {
+                    final ItemContainer itemContainer = toItemContainer(bytes);
+                    relationships.addAll(itemContainer.getAssemblyPartRelationships());
+                    tombstones.addAll(itemContainer.getTombstones());
+                });
 
             } catch (BlobPersistenceException e) {
                 log.error("Unable to read transfer result", e);
             }
         }
-        return relationships;
+        return ItemContainer.builder().assemblyPartRelationships(relationships).tombstones(tombstones).build();
     }
 
-    private List<Tombstone> toTombstones(final byte[] blob) {
-        final ItemContainer itemContainer = new JsonUtil().fromString(
-                new String(blob, StandardCharsets.UTF_8), ItemContainer.class);
-        return itemContainer.getTombstones();
+    private ItemContainer toItemContainer(final byte[] blob) {
+        return new JsonUtil().fromString(new String(blob, StandardCharsets.UTF_8), ItemContainer.class);
     }
 
-
-    private List<AssemblyPartRelationshipDTO> toRelationshipDTOs(final byte[] blob) {
-        final ItemContainer itemContainer = new JsonUtil().fromString(
-                new String(blob, StandardCharsets.UTF_8), ItemContainer.class);
-        return itemContainer.getAssemblyPartRelationships();
-    }
-
-    private Collection<Relationship> retrieveJobResultRelationships(final UUID jobId) {
+    private ItemContainer retrieveJobResultRelationships(final UUID jobId) {
         try {
             final Optional<byte[]> blob = blobStore.getBlob(jobId.toString());
             final byte[] bytes = blob.orElseThrow(
                     () -> new EntityNotFoundException("Could not find stored data for multiJob with id " + jobId));
-            return toRelationships(bytes);
+            return toItemContainer(bytes);
         } catch (BlobPersistenceException e) {
             log.error("Unable to read blob", e);
-            return Collections.emptyList();
+            throw new EntityNotFoundException("Could not load stored data for multiJob with id " + jobId, e);
         }
     }
-
-    private Collection<Relationship> toRelationships(final byte[] bytes) {
-        final List<AssemblyPartRelationshipDTO> assemblyPartRelationships = toRelationshipDTOs(bytes);
-        return convert(assemblyPartRelationships);
-    }
-
 
     private boolean jobIsCompleted(final MultiTransferJob multiJob) {
         return multiJob.getJob().getJobState().equals(JobState.COMPLETED);

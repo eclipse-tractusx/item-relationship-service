@@ -103,10 +103,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     }
 
     private int getRelationshipsSize(final UUID jobId) {
-        System.out.println("Checking relationship size");
-        final int size = service.getJobForJobId(jobId, true).getRelationships().size();
-        System.out.println("Size is "+size);
-        return size;
+        return service.getJobForJobId(jobId, false).getRelationships().size();
     }
 
 }
