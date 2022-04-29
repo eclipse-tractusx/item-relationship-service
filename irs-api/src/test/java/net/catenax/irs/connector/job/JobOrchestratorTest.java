@@ -113,7 +113,7 @@ class JobOrchestratorTest {
         when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(AS_BUILT))).thenReturn(okResponse2);
 
         // Act
-        var newJob = startJob();
+        startJob();
 
         // Assert
         verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT));

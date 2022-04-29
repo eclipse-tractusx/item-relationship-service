@@ -91,8 +91,10 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
                 aasSubmodelEndpoints.stream().map(SubmodelEndpoint::getAddress).forEach(address -> {
                     try {
-                        final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address);
-                        processEndpoint(aasTransferProcess, itemContainerBuilder, submodel, lifecyleContext);
+                        final var submodel = submodelFacade.getSubmodel(address);
+                        final var processedSubmodel = processEndpoint(
+                                aasTransferProcess, submodel, lifecyleContext);
+                        itemContainerBuilder.assemblyPartRelationship(processedSubmodel);
                     } catch (RestClientException e) {
                         log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                                 address);
@@ -127,29 +129,26 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
         return Tombstone.builder().endpointURL(address).catenaXId(itemId).processingError(processingError).build();
     }
 
-    private void processEndpoint(final AASTransferProcess aasTransferProcess,
-                                 final ItemContainer.ItemContainerBuilder itemContainer,
+    private AssemblyPartRelationshipDTO processEndpoint(final AASTransferProcess aasTransferProcess,
                                  final AssemblyPartRelationshipDTO relationship,
-                                 final String lifecyleContext) {
+                                 final String lifecycleContext) {
 
         log.info("Processing AssemblyPartRelationship with {} children", relationship.getChildParts().size());
 
-        final List<String> childIds = filterChildrenIds(relationship, lifecyleContext);
-
+        final AssemblyPartRelationshipDTO filteredDto = filterChildren(relationship, lifecycleContext);
+        final List<String> childIds = mapToChildIds(filteredDto);
         aasTransferProcess.addIdsToProcess(childIds);
 
-        final AssemblyPartRelationshipDTO filteredDto = filterChildren(relationship, lifecyleContext);
-
         // TODO (jkreutzfeld) what do we actually need to store here?
-        itemContainer.assemblyPartRelationship(filteredDto);
+        return filteredDto;
     }
 
     private AssemblyPartRelationshipDTO filterChildren(final AssemblyPartRelationshipDTO relationship, final String lifecyleContext) {
         if (lifecyleContext != null) {
             final Set<ChildDataDTO> filteredChildren = relationship.getChildParts()
                                                                    .stream()
-                                                                   .filter(childDataDTO -> childDataDTO.getLifecycleContext()
-                                                                                                       .equals(lifecyleContext))
+                                                                   .filter(childDataDTO -> lifecyleContext
+                                                                           .equals(childDataDTO.getLifecycleContext()))
                                                                    .collect(Collectors.toSet());
 
             return AssemblyPartRelationshipDTO.builder()
@@ -160,21 +159,9 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
         return relationship;
     }
 
-    private List<String> filterChildrenIds(final AssemblyPartRelationshipDTO relationship, final String lifecyleContext) {
-        if (lifecyleContext != null) {
-            final Set<ChildDataDTO> filteredChildren = relationship.getChildParts()
-                                                                   .stream()
-                                                                   .filter(childDataDTO -> childDataDTO.getLifecycleContext().equals(lifecyleContext))
-                                                                   .collect(Collectors.toSet());
-
-            return filteredChildren.stream()
-                                   .map(ChildDataDTO::getChildCatenaXId)
-                                   .collect(Collectors.toList());
-        }
-        return relationship.getChildParts()
-                           .stream()
-                           .map(ChildDataDTO::getChildCatenaXId)
-                           .collect(Collectors.toList());
+    private List<String> mapToChildIds(final AssemblyPartRelationshipDTO relationship) {
+        return relationship.getChildParts().stream().map(ChildDataDTO::getChildCatenaXId).collect(
+                Collectors.toList());
     }
 
 }

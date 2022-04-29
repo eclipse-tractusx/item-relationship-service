@@ -9,9 +9,14 @@
 //
 package net.catenax.irs.services;
 
+import static net.catenax.irs.dtos.IrsCommonConstants.DEPTH_ID_KEY;
+import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
+import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -50,10 +55,6 @@ import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
 import org.springframework.stereotype.Service;
 
-import static net.catenax.irs.dtos.IrsCommonConstants.DEPTH_ID_KEY;
-import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
-import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
-
 /**
  * Service for retrieving parts tree.
  */
@@ -86,15 +87,17 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         }
     }
 
-    private Map buildJobParams(final @NonNull RegisterJob request) {
+    private Map<String, String> buildJobParams(final @NonNull RegisterJob request) {
         final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
         final Optional<BomLifecycle> bomLifecycleFormRequest = Optional.ofNullable(request.getBomLifecycle());
 
-        if (bomLifecycleFormRequest.isPresent()) {
-            return Map.of(ROOT_ITEM_ID_KEY, uuid, DEPTH_ID_KEY, String.valueOf(request.getDepth()), LIFE_CYCLE_CONTEXT,
-                          bomLifecycleFormRequest.toString());
-        }
-        return Map.of(ROOT_ITEM_ID_KEY, uuid, DEPTH_ID_KEY, String.valueOf(request.getDepth()));
+        final var paramMap = new HashMap<String, String>();
+
+        paramMap.put(ROOT_ITEM_ID_KEY, uuid);
+        paramMap.put(DEPTH_ID_KEY, String.valueOf(request.getDepth()));
+        bomLifecycleFormRequest.ifPresent(bomLifecycle -> paramMap.put(LIFE_CYCLE_CONTEXT, bomLifecycle.toString()));
+
+        return paramMap;
     }
 
     @Override
@@ -150,7 +153,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             }
 
             log.info("Found job with id {} in status {} with {} relationships and {} tombstones", jobId,
-                     multiJob.getJob().getJobState(), relationships.size(), tombstones.size());
+                    multiJob.getJob().getJobState(), relationships.size(), tombstones.size());
 
             return Jobs.builder().job(multiJob.getJob()).relationships(relationships).tombstones(tombstones).build();
         } else {
