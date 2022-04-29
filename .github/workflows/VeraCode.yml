@@ -21,7 +21,7 @@ jobs:
         with:
           appname: 'IRS'
           createprofile: false
-          filepath: 'irs-api/target\\/'
+          filepath: 'irs-api/target'
           vid: '${{ secrets.VERACODE_API_ID }}'
           vkey: '${{ secrets.VERACODE_API_KEY }}'
 #          createsandbox: 'true'
