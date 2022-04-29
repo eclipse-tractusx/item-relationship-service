@@ -14,26 +14,23 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import lombok.NonNull;
-import net.catenax.irs.component.GlobalAssetIdentification;
-import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.Job;
 import net.catenax.irs.component.Jobs;
-import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.connector.job.JobInitiateResponse;
-import net.catenax.irs.connector.job.MultiTransferJob;
+import net.catenax.irs.exceptions.EntityNotFoundException;
 
 /**
  * Interface for JobHandler
  */
 public interface IJobHandler {
 
-    CompletableFuture<JobInitiateResponse> createJob(@NonNull GlobalAssetIdentification globalAssetId);
+    CompletableFuture<JobInitiateResponse> registerJob(@NonNull RegisterJob request);
 
-    CompletableFuture<Optional<MultiTransferJob>> cancelJob(@NonNull String jobIdS);
+    CompletableFuture<Optional<Job>> cancelJob(@NonNull UUID jobId);
 
-    CompletableFuture<JobState> interruptJob(@NonNull JobHandle jobHandle);
+    CompletableFuture<Optional<Job>> interruptJob(@NonNull UUID jobId);
 
-    CompletableFuture<Jobs> getResult(@NonNull JobHandle jobHandle);
-
-    CompletableFuture<Jobs> getJobForJobId(UUID jobId);
+    CompletableFuture<Jobs> getJobResult(UUID jobId) throws EntityNotFoundException;
 
 }
