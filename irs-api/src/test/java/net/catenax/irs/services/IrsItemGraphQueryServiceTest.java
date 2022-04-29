@@ -10,10 +10,8 @@ import java.util.UUID;
 
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.ItemContainer;
-import net.catenax.irs.aaswrapper.job.ItemDataRequest;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.connector.job.JobOrchestrator;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
@@ -37,9 +35,6 @@ class IrsItemGraphQueryServiceTest {
 
     @Mock
     private BlobPersistence blobStore;
-
-    @Mock
-    private JobOrchestrator<ItemDataRequest, AASTransferProcess> orchestrator;
 
     @InjectMocks
     private IrsItemGraphQueryService testee;

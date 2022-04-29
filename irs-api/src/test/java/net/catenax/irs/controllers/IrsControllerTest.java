@@ -1,5 +1,6 @@
 package net.catenax.irs.controllers;
 
+import static net.catenax.irs.util.TestMother.registerJobWithDepth;
 import static net.catenax.irs.util.TestMother.registerJobWithoutDepth;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,6 +19,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.services.IrsItemGraphQueryService;
@@ -49,6 +51,17 @@ class IrsControllerTest {
                     .content(new ObjectMapper().writeValueAsString(registerJobWithoutDepth())))
                     .andExpect(status().isCreated())
                     .andExpect(content().string(containsString(returnedJob.toString())));
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenDepthValueIsTooBig() throws Exception {
+        final int tooBigDepth = 110;
+        final RegisterJob registerJob = registerJobWithDepth(tooBigDepth);
+
+        this.mockMvc.perform(post("/irs/jobs")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(new ObjectMapper().writeValueAsString(registerJob)))
+                    .andExpect(status().isBadRequest());
     }
 
     @Test

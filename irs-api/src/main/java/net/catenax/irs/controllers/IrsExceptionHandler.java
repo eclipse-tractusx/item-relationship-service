@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.exceptions.EntityNotFoundException;
-import net.catenax.irs.exceptions.MaxDepthTooLargeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -31,23 +30,6 @@ import java.util.stream.Collectors;
 @ExcludeFromCodeCoverageGeneratedReport
 @ControllerAdvice
 public class IrsExceptionHandler {
-
-    /**
-     * Handler for max depth too large exception
-     * @param exception see {@link MaxDepthTooLargeException}
-     * @return see {@link ErrorResponse}
-     */
-    @ExceptionHandler(MaxDepthTooLargeException.class)
-    public ResponseEntity<ErrorResponse> handleMaxDepthTooLarge(final MaxDepthTooLargeException exception) {
-        log.info(exception.getClass().getName(), exception);
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.builder()
-                        .withStatusCode(HttpStatus.BAD_REQUEST)
-                        .withMessage(ApiErrorsConstants.INVALID_DEPTH)
-                        .withErrors(List.of(exception.getMessage())).build());
-    }
 
     /**
      * Handler for entity not found exception

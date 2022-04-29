@@ -111,10 +111,10 @@ public class IrsController {
     public Jobs getJobById(
             @Parameter(description = "ID of the job.", schema = @Schema(implementation = UUID.class), name = "jobId",
                     example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsApiConstants.JOB_ID_SIZE,
-                    max = IrsApiConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID jobId, final @Parameter(
-            description = "If true, the endpoint returns the current state of the fetched bom tree.") @Schema(
-            implementation = Boolean.class, defaultValue = "true") @RequestParam(value = "returnUncompletedJob",
-            required = false) boolean returnUncompletedJob) {
+                    max = IrsApiConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID jobId,
+            @Parameter(description = "If true, the endpoint returns the current state of the fetched bom tree.") @Schema(
+                    implementation = Boolean.class, defaultValue = "true") @RequestParam(value = "returnUncompletedJob",
+                    required = false) final boolean returnUncompletedJob) {
         return itemJobService.getJobForJobId(jobId, returnUncompletedJob);
     }
 

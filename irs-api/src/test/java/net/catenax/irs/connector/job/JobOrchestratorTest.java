@@ -50,8 +50,6 @@ class JobOrchestratorTest {
 
     @Captor
     ArgumentCaptor<MultiTransferJob> jobCaptor;
-    @Captor
-    ArgumentCaptor<Consumer<TransferProcess>> callbackCaptor;
 
     Pattern uuid = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
 
@@ -63,9 +61,6 @@ class JobOrchestratorTest {
     TransferInitiateResponse okResponse2 = generate.okResponse();
     TransferProcess transfer = generate.transfer();
     Faker faker = new Faker();
-    GlobalAssetIdentification globalAssetId = GlobalAssetIdentification.builder()
-                                                                       .globalAssetId(faker.lorem().characters())
-                                                                       .build();
 
     @Test
     void startJob_storesJobWithDataAndState() {
@@ -105,7 +100,7 @@ class JobOrchestratorTest {
             .thenReturn(okResponse2);
 
         // Act
-        var newJob = startJob();
+        startJob();
 
         // Assert
         verify(processManager).initiateRequest(eq(dataRequest), any(), any());
@@ -357,22 +352,6 @@ class JobOrchestratorTest {
 
     private void callTransferProcessCompletedViaCallback() {
         sut.transferProcessCompleted(transfer);
-    }
-
-    private Job createJob() {
-        GlobalAssetIdentification globalAssetId = GlobalAssetIdentification.builder()
-                                                                           .globalAssetId(UUID.randomUUID().toString())
-                                                                           .build();
-
-        return Job.builder()
-                  .globalAssetId(globalAssetId)
-                  .jobId(UUID.randomUUID())
-                  .jobState(JobState.UNSAVED)
-                  .createdOn(Instant.now())
-                  .lastModifiedOn(Instant.now())
-                  .requestUrl(fakeURL())
-                  .action(HttpMethod.POST.toString())
-                  .build();
     }
 
     private URL fakeURL() {

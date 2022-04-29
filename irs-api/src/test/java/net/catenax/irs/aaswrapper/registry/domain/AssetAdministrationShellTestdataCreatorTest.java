@@ -8,16 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class AssetAdministrationShellTestdataCreatorTest {
-    private AssetAdministrationShellTestdataCreator assetAdministrationShellTestdataCreator;
 
-    @BeforeEach
-    void setUp() {
-        assetAdministrationShellTestdataCreator = new AssetAdministrationShellTestdataCreator();
-    }
+    private final AssetAdministrationShellTestdataCreator assetAdministrationShellTestdataCreator = new AssetAdministrationShellTestdataCreator();
 
     @Test
     void shouldReturnAssetAdministrationShellDescriptorWhenRequestingWithCatenaXId() {
@@ -26,15 +21,15 @@ class AssetAdministrationShellTestdataCreatorTest {
         final AssetAdministrationShellDescriptor aasDescriptor = assetAdministrationShellTestdataCreator.createDummyAssetAdministrationShellDescriptorForId(
                 catenaXId);
 
-        assertThat(aasDescriptor.getSubmodelDescriptors()).hasSize(1);
-        assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getEndpoints()).isNotNull();
-
         final String endpointAddress = aasDescriptor.getSubmodelDescriptors()
                                                     .get(0)
                                                     .getEndpoints()
                                                     .get(0)
                                                     .getProtocolInformation()
                                                     .getEndpointAddress();
+
+        assertThat(aasDescriptor.getSubmodelDescriptors()).hasSize(1);
+        assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getEndpoints()).isNotNull();
         assertThat(endpointAddress).isEqualTo(catenaXId);
     }
 
@@ -47,6 +42,7 @@ class AssetAdministrationShellTestdataCreatorTest {
 
         final AssetAdministrationShellDescriptor aasDescriptor = objectMapper.readValue(bufferedReader,
                 AssetAdministrationShellDescriptor.class);
+
         assertThat(aasDescriptor.getDescription()).isNotNull();
         assertThat(aasDescriptor.getGlobalAssetId()).isNotNull();
         assertThat(aasDescriptor.getIdShort()).isNotNull();
