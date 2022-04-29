@@ -7,6 +7,8 @@ services:
       target: irs-api
       args:
         BUILD_TARGET: irs-api
+    profiles:
+      - irs
     container_name: irs
     ports:
       - "8080:8080"
