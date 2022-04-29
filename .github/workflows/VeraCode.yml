@@ -28,5 +28,5 @@ jobs:
 #          sandboxname: 'SANDBOXNAME'
 #          scantimeout: 0
 #          exclude: '*.jar'
-          include: '*-exec.jar'
+#          include: '*-exec.jar'
 #          criticality: 'VeryHigh'
