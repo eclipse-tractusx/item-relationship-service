@@ -13,8 +13,3 @@ scrape_configs:
           - 'host.docker.internal:4004'
         labels:
           service: 'IRS-API'
-      - targets:
-          - 'consumer:4006'
-          - 'host.docker.internal:4007'
-        labels:
-          service: 'Consumer'

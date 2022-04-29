@@ -115,7 +115,7 @@ public class IrsController {
             description = "If true, the endpoint returns the current state of the fetched bom tree.") @Schema(
             implementation = Boolean.class, defaultValue = "true") @RequestParam(value = "returnUncompletedJob",
             required = false) boolean returnUncompletedJob) {
-        return itemJobService.getJobForJobId(jobId);
+        return itemJobService.getJobForJobId(jobId, returnUncompletedJob);
     }
 
     @Operation(operationId = "cancelJobById", summary = "Cancel job execution for a given jobId.",
