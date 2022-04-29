@@ -60,6 +60,8 @@ class JobOrchestratorTest {
     @Captor
     ArgumentCaptor<Consumer<TransferProcess>> callbackCaptor;
 
+    private static final String BOMLIFECYCLE = "AsBuilt";
+
     Pattern uuid = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
 
     TestMother generate = new TestMother();
@@ -107,15 +109,15 @@ class JobOrchestratorTest {
         when(handler.initiate(any(MultiTransferJob.class)))
             .thenReturn(Stream.of(dataRequest, dataRequest2));
 
-        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq("AsBuilt"))).thenReturn(okResponse);
-        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq("AsBuilt"))).thenReturn(okResponse2);
+        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(BOMLIFECYCLE))).thenReturn(okResponse);
+        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(BOMLIFECYCLE))).thenReturn(okResponse2);
 
         // Act
         var newJob = startJob();
 
         // Assert
-        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq("AsBuilt"));
-        verify(processManager).initiateRequest(eq(dataRequest2), any(), any(), eq("AsBuilt"));
+        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(BOMLIFECYCLE));
+        verify(processManager).initiateRequest(eq(dataRequest2), any(), any(), eq(BOMLIFECYCLE));
     }
 
     @Test
@@ -143,7 +145,7 @@ class JobOrchestratorTest {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class)))
             .thenReturn(Stream.of(dataRequest));
-        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq("AsBuilt")))
+        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(BOMLIFECYCLE)))
             .thenReturn(okResponse);
 
         // Act
@@ -163,15 +165,15 @@ class JobOrchestratorTest {
         // Arrange
         when(handler.initiate(any()))
             .thenReturn(Stream.of(dataRequest, dataRequest2));
-        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq("AsBuilt")))
+        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(BOMLIFECYCLE)))
             .thenReturn(generate.response(status));
 
         // Act
         var response = sut.startJob(job.getJobData());
 
         // Assert
-        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq("AsBuilt"));
-        verify(processManager, never()).initiateRequest(eq(dataRequest2), any(), any(), eq("AsBuilt"));
+        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(BOMLIFECYCLE));
+        verify(processManager, never()).initiateRequest(eq(dataRequest2), any(), any(), eq(BOMLIFECYCLE));
 
         // temporarily created job should be deleted
         verify(jobStore).create(jobCaptor.capture());
@@ -206,15 +208,15 @@ class JobOrchestratorTest {
     @Test
     void transferProcessCompleted_WhenCalledBackForCompletedTransfer_RunsNextTransfers() {
         // Arrange
-        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq("AsBuilt")))
+        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(BOMLIFECYCLE)))
             .thenReturn(okResponse);
-        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq("AsBuilt")))
+        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(BOMLIFECYCLE)))
             .thenReturn(okResponse2);
         // Act
         callCompleteAndReturnNextTransfers(Stream.of(dataRequest, dataRequest2));
 
         // Assert
-        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq("AsBuilt"));
+        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(BOMLIFECYCLE));
         verify(jobStore).completeTransferProcess(job.getJob().getJobId().toString(), transfer);
 
     }
@@ -308,15 +310,15 @@ class JobOrchestratorTest {
     @EnumSource(value = ResponseStatus.class, names = "OK", mode = EXCLUDE)
     void transferProcessCompleted_WhenNextTransferStartUnsuccessful_Abort(ResponseStatus status) {
         // Arrange
-        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq("AsBuilt")))
+        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(BOMLIFECYCLE)))
             .thenReturn(generate.response(status));
 
         // Act
         callCompleteAndReturnNextTransfers(Stream.of(dataRequest, dataRequest2));
 
         // Assert
-        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq("AsBuilt"));
-        verify(processManager, never()).initiateRequest(eq(dataRequest2), any(), any(), eq("AsBuilt"));
+        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(BOMLIFECYCLE));
+        verify(processManager, never()).initiateRequest(eq(dataRequest2), any(), any(), eq(BOMLIFECYCLE));
 
         // temporarily created job should be deleted
         verify(jobStore).markJobInError(job.getJob().getJobId().toString(), "Failed to start a transfer");

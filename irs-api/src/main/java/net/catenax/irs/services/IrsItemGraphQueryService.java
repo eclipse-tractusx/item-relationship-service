@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.ItemContainer;
 import net.catenax.irs.aaswrapper.job.ItemDataRequest;
-import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.ChildItem;
 import net.catenax.irs.component.GlobalAssetIdentification;
@@ -48,7 +46,6 @@ import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.controllers.IrsApiConstants;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
-import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
@@ -72,27 +69,16 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final BlobPersistence blobStore;
 
-    private final SubmodelFacade submodelFacade;
-
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
         JobHandle jobHandle = null;
 
         final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
 
-        final String globalAssetId = request.getGlobalAssetId();
-        final AssemblyPartRelationshipDTO dto = this.submodelFacade.getSubmodel(globalAssetId);
-
-        final Set<ChildDataDTO> childParts = dto.getChildParts();
-        final List<BomLifecycle> bomLifecyclesFromAASWrapper = childParts.stream()
-                                                                         .map(ChildDataDTO::getLifecycleContext)
-                                                                         .map(BomLifecycle::fromLifecycleContextCharacteristic)
-                                                                         .collect(Collectors.toList());
-
         final BomLifecycle bomLifecycleFormRequest = request.getBomLifecycle();
-        final String lifecyleContextFromRequest = bomLifecycleFormRequest.toString();
+        if (bomLifecycleFormRequest != null) {
+            final String lifecyleContextFromRequest = bomLifecycleFormRequest.toString();
 
-        if (bomLifecyclesFromAASWrapper.contains(bomLifecycleFormRequest)) {
             final var params = Map.of(ROOT_ITEM_ID_KEY, uuid,
                                                       DEPTH_ID_KEY, String.valueOf(request.getDepth()),
                                                       LIFE_CYCLE_CONTEXT, lifecyleContextFromRequest);
@@ -140,6 +126,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     @Override
     public Jobs getJobForJobId(final UUID jobId) {
         final Optional<MultiTransferJob> multiTransferJob = jobStore.find(jobId.toString());
+
         if (multiTransferJob.isPresent()) {
             final MultiTransferJob multiJob = multiTransferJob.get();
 

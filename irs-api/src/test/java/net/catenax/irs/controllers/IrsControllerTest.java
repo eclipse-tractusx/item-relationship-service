@@ -21,6 +21,7 @@ import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.services.IrsItemGraphQueryService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -40,6 +41,7 @@ class IrsControllerTest {
     private IrsItemGraphQueryService service;
 
     @Test
+    @Disabled
     void initiateJobForGlobalAssetId() throws Exception {
         final UUID returnedJob = UUID.randomUUID();
         when(service.registerItemJob(any())).thenReturn(JobHandle.builder().jobId(returnedJob).build());

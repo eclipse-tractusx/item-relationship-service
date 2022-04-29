@@ -12,6 +12,7 @@ package net.catenax.irs.aaswrapper.job;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
@@ -91,7 +92,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
                 aasSubmodelEndpoints.stream().map(SubmodelEndpoint::getAddress).forEach(address -> {
                     try {
                         final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address);
-                        processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
+                        processEndpoint(aasTransferProcess, itemContainerBuilder, submodel, lifecyleContext);
                     } catch (RestClientException e) {
                         log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                                 address);
@@ -127,14 +128,30 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
     }
 
     private void processEndpoint(final AASTransferProcess aasTransferProcess,
-            final ItemContainer.ItemContainerBuilder itemContainer, final AssemblyPartRelationshipDTO relationship) {
+                                 final ItemContainer.ItemContainerBuilder itemContainer,
+                                 final AssemblyPartRelationshipDTO relationship,
+                                 final String lifecyleContext) {
+
         log.info("Processing AssemblyPartRelationship with {} children", relationship.getChildParts().size());
-        final List<String> childIds = relationship.getChildParts()
-                                                  .stream()
-                                                  .map(ChildDataDTO::getChildCatenaXId)
-                                                  .collect(Collectors.toList());
+
+        final Set<ChildDataDTO> filteredChildren = relationship.getChildParts()
+                                                               .stream()
+                                                               .filter(childDataDTO -> childDataDTO.getLifecycleContext().equals(lifecyleContext))
+                                                               .collect(Collectors.toSet());
+
+        final List<String> childIds = filteredChildren.stream()
+                                                       .map(ChildDataDTO::getChildCatenaXId)
+                                                       .collect(Collectors.toList());
+
         aasTransferProcess.addIdsToProcess(childIds);
+
         // TODO (jkreutzfeld) what do we actually need to store here?
-        itemContainer.assemblyPartRelationship(relationship);
+        final AssemblyPartRelationshipDTO filteredDto = AssemblyPartRelationshipDTO.builder()
+                                                                                   .catenaXId(relationship.getCatenaXId())
+                                                                                   .childParts(filteredChildren)
+                                                                                   .build();
+
+        itemContainer.assemblyPartRelationship(filteredDto);
     }
+
 }

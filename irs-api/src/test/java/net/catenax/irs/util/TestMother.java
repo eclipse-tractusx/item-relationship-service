@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import com.github.javafaker.Faker;
 import net.catenax.irs.component.RegisterJob;
+import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.connector.job.DataRequest;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
@@ -97,6 +98,8 @@ public class TestMother {
         final RegisterJob registerJob = new RegisterJob();
         registerJob.setGlobalAssetId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6");
         registerJob.setDepth(depth);
+        registerJob.setBomLifecycle(BomLifecycle.AS_BUILT);
+
         return registerJob;
     }
 }
