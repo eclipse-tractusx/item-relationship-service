@@ -25,6 +25,7 @@ import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.enums.JobState;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.annotation.Scheduled;
 
 /**
  * Orchestrator service for recursive {@link MultiTransferJob}s that potentially
@@ -152,19 +153,25 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         callCompleteHandlerIfFinished(job.getJob().getJobId().toString());
     }
 
-    public List<MultiTransferJob> findAndCleanupCompletedJobs() {
+    @Scheduled(cron = "${irs.job.cleanup.scheduler.completed}")
+    public void findAndCleanupCompletedJobs() {
+        log.info("Running cleanup of completed jobs");
         final Instant currentDateMinusSeconds = Instant.now().minus(TTL_CLEANUP_COMPLETED_JOBS_HOURS, ChronoUnit.HOURS);
         final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
-            currentDateMinusSeconds);
+                currentDateMinusSeconds);
 
-        return deleteJobs(completedJobs);
+        final List<MultiTransferJob> multiTransferJobs = deleteJobs(completedJobs);
+        log.info("Deleted {} completed jobs", multiTransferJobs.size());
     }
 
-    public List<MultiTransferJob> findAndCleanupFailedJobs() {
+    @Scheduled(cron = "${irs.job.cleanup.scheduler.failed}")
+    public void findAndCleanupFailedJobs() {
+        log.info("Running cleanup of failed jobs");
         final Instant currentDateMinusSeconds = Instant.now().minus(TTL_CLEANUP_FAILED_JOBS_HOURS, ChronoUnit.HOURS);
         final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR,
-            currentDateMinusSeconds);
-        return deleteJobs(failedJobs);
+                currentDateMinusSeconds);
+        final List<MultiTransferJob> multiTransferJobs = deleteJobs(failedJobs);
+        log.info("Deleted {} failed jobs", multiTransferJobs.size());
     }
 
     private List<MultiTransferJob> deleteJobs(final List<MultiTransferJob> jobs) {
