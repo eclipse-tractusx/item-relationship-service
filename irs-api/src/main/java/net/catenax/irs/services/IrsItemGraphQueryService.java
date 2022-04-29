@@ -112,6 +112,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     @Override
     public Jobs getJobForJobId(final UUID jobId, final boolean includePartialResults) {
+        log.info("Retrieving job with id {} (includePartialResults: {})", jobId, includePartialResults);
+
         final Optional<MultiTransferJob> multiTransferJob = jobStore.find(jobId.toString());
         if (multiTransferJob.isPresent()) {
             final MultiTransferJob multiJob = multiTransferJob.get();
@@ -131,7 +133,10 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
             }
 
-            return Jobs.builder().job(multiJob.getJob()).relationships(relationships).build();
+            log.info("Found job with id {} in status {} with {} relationships and {} tombstones", jobId,
+                    multiJob.getJob().getJobState(), relationships.size(), tombstones.size());
+
+            return Jobs.builder().job(multiJob.getJob()).relationships(relationships).tombstones(tombstones).build();
         } else {
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
