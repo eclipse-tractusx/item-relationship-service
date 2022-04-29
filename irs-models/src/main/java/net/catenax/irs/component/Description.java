@@ -21,7 +21,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
  */
 @Schema(description = "Provide descriptions to request parts.")
 @Value
-@Builder
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = Description.DescriptionBuilder.class)
 @ExcludeFromCodeCoverageGeneratedReport
 public class Description {
@@ -38,7 +38,7 @@ public class Description {
     /**
      * Builder for Description class
      */
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class DescriptionBuilder {
     }
 }

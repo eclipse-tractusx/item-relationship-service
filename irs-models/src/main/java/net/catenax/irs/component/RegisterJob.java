@@ -25,7 +25,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
- * as
+ * Request body for registering new job
  */
 @Schema(description = "Register job request.")
 @Data
@@ -35,7 +35,6 @@ public class RegisterJob {
 
     private static final String MIN_TREE_DEPTH = "1";
     private static final String MAX_TREE_DEPTH = "100";
-    private static final String DEFAULT_DEPTH = "1";
     private static final String GLOBAL_ASSET_ID_REGEX = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
     private static final int UUID_SIZE = 36;
     private static final int URN_PREFIX_SIZE = 9;
@@ -53,9 +52,17 @@ public class RegisterJob {
     @ArraySchema(schema = @Schema(implementation = AspectType.class))
     private List<AspectType> aspects;
 
-    @Schema(implementation = Integer.class, minimum = MIN_TREE_DEPTH, maximum = MAX_TREE_DEPTH, defaultValue = DEFAULT_DEPTH, description = "Max depth of the returned tree, if empty max depth is returned.")
-    private int depth;
+    @Schema(implementation = Integer.class, minimum = MIN_TREE_DEPTH, maximum = MAX_TREE_DEPTH, description = "Max depth of the returned tree, if empty max depth is returned.")
+    private Integer depth;
 
     @Schema(implementation = Direction.class, defaultValue = Direction.DirectionConstants.DOWNWARD)
     private Direction direction;
+
+    /**
+     * Returns requested depth if provided, otherwise MAX_TREE_DEPTH value
+     * @return depth
+     */
+    public Integer getDepth() {
+        return depth == null ? Integer.valueOf(MAX_TREE_DEPTH) : depth;
+    }
 }

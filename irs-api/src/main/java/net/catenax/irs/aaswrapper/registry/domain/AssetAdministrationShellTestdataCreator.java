@@ -13,13 +13,16 @@ package net.catenax.irs.aaswrapper.registry.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.catenax.irs.dto.SubmodelType;
+
 /**
  * Class to create AssetAdministrationShell Testdata
  * As AASWrapper is not deployed, we are using this class to Stub responses
  */
 class AssetAdministrationShellTestdataCreator {
 
-    public AssetAdministrationShellDescriptor createDummyAssetAdministrationShellDescriptorForId(final String catenaXId) {
+    public AssetAdministrationShellDescriptor createDummyAssetAdministrationShellDescriptorForId(
+            final String catenaXId) {
         final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
 
         submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId));
@@ -45,12 +48,12 @@ class AssetAdministrationShellTestdataCreator {
         endpoint.setProtocolInformation(protocolInformation);
 
         final Reference reference = new Reference();
-        reference.setValue(List.of("urn:bamm:com.catenax.assembly_part_relationtship:1.0.0"));
+        reference.setValue(List.of(SubmodelType.ASSEMBLY_PART_RELATIONSHIP.getValue()));
 
         final SubmodelDescriptor submodelDescriptor = new SubmodelDescriptor();
         submodelDescriptor.setIdentification(catenaXId);
         submodelDescriptor.setIdShort("assemblyPartRelationship");
-        submodelDescriptor.setEndpoint(endpoint);
+        submodelDescriptor.setEndpoints(List.of(endpoint));
         submodelDescriptor.setSemanticId(reference);
 
         return submodelDescriptor;

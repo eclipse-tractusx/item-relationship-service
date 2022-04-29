@@ -20,7 +20,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
  */
 @Schema(description = "Communication endpoint.")
 @Value
-@Builder
+@Builder(toBuilder = true)
 @Jacksonized
 @ExcludeFromCodeCoverageGeneratedReport
 public class Endpoint {

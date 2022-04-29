@@ -20,6 +20,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -47,7 +48,7 @@ public class Job {
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
     @Schema(description = "Job ID for the requested item.", minLength = INPUT_FIELD_MIN_LENGTH,
             maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class)
-    private final UUID jobId;
+    private UUID jobId;
 
     /**
      * globalAssetId
@@ -56,14 +57,15 @@ public class Job {
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
     @Schema(description = "Part global unique Id", minLength = INPUT_FIELD_MIN_LENGTH,
             maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = GlobalAssetIdentification.class)
-    private final GlobalAssetIdentification globalAssetId;
+    @JsonUnwrapped
+    private GlobalAssetIdentification globalAssetId;
 
     @NotBlank
     @Schema()
     private JobState jobState;
 
-    @Schema(description = "Exception state for this job.", implementation = JobException.class)
-    private JobException exception;
+    @Schema(description = "Exception state for this job.", implementation = JobErrorDetails.class)
+    private JobErrorDetails exception;
 
     /**
      * Timestamp when the job was created
@@ -117,7 +119,7 @@ public class Job {
     /**
      * Builder class
      */
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class JobBuilder {
     }
 

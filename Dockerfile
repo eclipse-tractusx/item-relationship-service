@@ -10,7 +10,6 @@ COPY .mvn .mvn
 COPY settings.xml .
 COPY pom.xml .
 
-COPY irs-recursive-job irs-recursive-job
 COPY integration-tests integration-tests
 COPY irs-api irs-api
 COPY irs-common irs-common

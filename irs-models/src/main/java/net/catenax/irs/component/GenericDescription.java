@@ -23,7 +23,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
  */
 @Schema(description = "")
 @Value
-@Builder
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = GenericDescription.GenericDescriptionBuilder.class)
 @ExcludeFromCodeCoverageGeneratedReport
 public class GenericDescription {
@@ -38,7 +38,5 @@ public class GenericDescription {
 
     @Schema(description = "Description")
     private List<Description> descriptions;
-
-
 
 }

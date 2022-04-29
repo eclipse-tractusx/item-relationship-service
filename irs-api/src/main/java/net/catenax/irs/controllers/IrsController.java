@@ -31,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.IrsApplication;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
+import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
@@ -39,7 +40,6 @@ import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -118,7 +118,7 @@ public class IrsController {
         return itemJobService.getJobForJobId(jobId);
     }
 
-    @Operation(operationId = "cancelJobForJobId", summary = "Cancel job execution for a given jobId.",
+    @Operation(operationId = "cancelJobById", summary = "Cancel job execution for a given jobId.",
             tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with {jobId} was canceled."),
                             @ApiResponse(responseCode = "404", description = "A job with the specified jobId was not found.",
@@ -129,12 +129,12 @@ public class IrsController {
                                     }),
     })
     @PutMapping("/jobs/{jobId}")
-    public ResponseEntity<?> cancelJobForJobId(
+    public Job cancelJobById(
             @Parameter(description = "ID of the job.", schema = @Schema(implementation = UUID.class), name = "jobId",
-                    example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsApiConstants.JOB_ID_SIZE,
-                    max = IrsApiConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID jobId) {
+                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsApiConstants.JOB_ID_SIZE,
+                                                                               max = IrsApiConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID jobId) {
 
-        return new ResponseEntity<>(Jobs.builder().build(), HttpStatus.OK);
+        return this.itemJobService.cancelJobById(jobId);
     }
 
     @Operation(operationId = "getJobsByJobState",
@@ -156,10 +156,10 @@ public class IrsController {
             })
     @GetMapping("/jobs")
     public List<UUID> getJobsByJobState(
-            final @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
+             @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
                     explode = Explode.FALSE, array = @ArraySchema(
                     schema = @Schema(implementation = JobState.class))) @RequestParam(
-                    value = "jobStates", required = false) List<JobState> jobStates) {
+                    value = "jobStates", required = false, defaultValue = "") final List<JobState> jobStates) {
         return itemJobService.getJobsByJobState(jobStates);
     }
 }

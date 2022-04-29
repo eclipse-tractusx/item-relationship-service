@@ -9,7 +9,7 @@
 //
 package net.catenax.irs.exceptions;
 
-import net.catenax.irs.connector.annotations.ExcludeFromCodeCoverageGeneratedReport;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.controllers.ApiErrorsConstants;
 
 /**

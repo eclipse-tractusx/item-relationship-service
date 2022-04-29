@@ -2,6 +2,12 @@ package net.catenax.irs.aaswrapper.registry.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,14 +27,31 @@ class AssetAdministrationShellTestdataCreatorTest {
                 catenaXId);
 
         assertThat(aasDescriptor.getSubmodelDescriptors()).hasSize(1);
-        assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getEndpoint()).isNotNull();
+        assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getEndpoints()).isNotNull();
 
         final String endpointAddress = aasDescriptor.getSubmodelDescriptors()
                                                     .get(0)
-                                                    .getEndpoint()
+                                                    .getEndpoints()
+                                                    .get(0)
                                                     .getProtocolInformation()
                                                     .getEndpointAddress();
         assertThat(endpointAddress).isEqualTo(catenaXId);
     }
 
+    @Test
+    void shouldReturnCompleteShellDescriptorWhenProvidedWithJson() throws IOException {
+        final ObjectMapper objectMapper = new ObjectMapper();
+
+        final BufferedReader bufferedReader = Files.newBufferedReader(
+                Path.of("src/test/resources/AASShellTestdata.json"));
+
+        final AssetAdministrationShellDescriptor aasDescriptor = objectMapper.readValue(bufferedReader,
+                AssetAdministrationShellDescriptor.class);
+        assertThat(aasDescriptor.getDescription()).isNotNull();
+        assertThat(aasDescriptor.getGlobalAssetId()).isNotNull();
+        assertThat(aasDescriptor.getIdShort()).isNotNull();
+        assertThat(aasDescriptor.getIdentification()).isNotNull();
+        assertThat(aasDescriptor.getSpecificAssetIds()).isNotNull();
+        assertThat(aasDescriptor.getSubmodelDescriptors()).isNotNull();
+    }
 }
