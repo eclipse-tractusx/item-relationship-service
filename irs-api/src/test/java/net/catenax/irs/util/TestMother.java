@@ -18,9 +18,7 @@ import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.RegisterJob;
-import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.connector.job.DataRequest;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
@@ -37,12 +35,14 @@ import net.catenax.irs.dto.ChildDataDTO;
  */
 public class TestMother {
 
+    private static final String AS_BUILT = "AsBuilt";
+
     Faker faker = new Faker();
 
     public AssemblyPartRelationshipDTO assemblyPartRelationshipDTO() {
         final ChildDataDTO childPart = ChildDataDTO.builder()
                                                    .childCatenaXId(faker.lorem().characters(GLOBAL_ASSET_ID_SIZE))
-                                                   .lifecycleContext("AsBuilt")
+                                                   .lifecycleContext(AS_BUILT)
                                                    .build();
         final Set<ChildDataDTO> childParts = Set.of(childPart);
         return AssemblyPartRelationshipDTO.builder()
@@ -78,7 +78,7 @@ public class TestMother {
                                .jobData(Map.of(ROOT_ITEM_ID_KEY, faker.lorem().characters(), faker.lorem().characters(),
                                        faker.lorem().characters()))
                                .jobData(Map.of(ROOT_ITEM_ID_KEY, faker.lorem().characters(),
-                                   faker.lorem().characters(), faker.lorem().characters(), LIFE_CYCLE_CONTEXT, "AsBuilt"))
+                                   faker.lorem().characters(), faker.lorem().characters(), LIFE_CYCLE_CONTEXT, AS_BUILT))
                                .build();
     }
 
@@ -120,8 +120,6 @@ public class TestMother {
         final RegisterJob registerJob = new RegisterJob();
         registerJob.setGlobalAssetId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6");
         registerJob.setDepth(depth);
-        registerJob.setBomLifecycle(BomLifecycle.AS_BUILT);
-
         return registerJob;
     }
 }

@@ -9,10 +9,6 @@
 //
 package net.catenax.irs.services;
 
-import static net.catenax.irs.dtos.IrsCommonConstants.DEPTH_ID_KEY;
-import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
-import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
-
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,6 +50,10 @@ import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
 import org.springframework.stereotype.Service;
 
+import static net.catenax.irs.dtos.IrsCommonConstants.DEPTH_ID_KEY;
+import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
+import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
+
 /**
  * Service for retrieving parts tree.
  */
@@ -72,30 +72,29 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
-        JobHandle jobHandle = null;
+        final var params = buildJobParams(request);
 
-        final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
+        final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
 
-        final BomLifecycle bomLifecycleFormRequest = request.getBomLifecycle();
-        if (bomLifecycleFormRequest != null) {
-            final String lifecyleContextFromRequest = bomLifecycleFormRequest.toString();
+        if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
+            final String jobId = jobInitiateResponse.getJobId();
 
-            final var params = Map.of(ROOT_ITEM_ID_KEY, uuid,
-                                                      DEPTH_ID_KEY, String.valueOf(request.getDepth()),
-                                                      LIFE_CYCLE_CONTEXT, lifecyleContextFromRequest);
-
-            final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
-
-            if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
-                final String jobId = jobInitiateResponse.getJobId();
-
-                jobHandle = JobHandle.builder().jobId(UUID.fromString(jobId)).build();
-            } else {
-                // TODO (jkreutzfeld) Improve with better response (proper exception for error responses?)
-                throw new IllegalArgumentException("Could not start job: " + jobInitiateResponse.getError());
-            }
+            return JobHandle.builder().jobId(UUID.fromString(jobId)).build();
+        } else {
+            // TODO (jkreutzfeld) Improve with better response (proper exception for error responses?)
+            throw new IllegalArgumentException("Could not start job: " + jobInitiateResponse.getError());
         }
-        return jobHandle;
+    }
+
+    private Map buildJobParams(final @NonNull RegisterJob request) {
+        final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
+        final Optional<BomLifecycle> bomLifecycleFormRequest = Optional.ofNullable(request.getBomLifecycle());
+
+        if (bomLifecycleFormRequest.isPresent()) {
+            return Map.of(ROOT_ITEM_ID_KEY, uuid, DEPTH_ID_KEY, String.valueOf(request.getDepth()), LIFE_CYCLE_CONTEXT,
+                          bomLifecycleFormRequest.toString());
+        }
+        return Map.of(ROOT_ITEM_ID_KEY, uuid, DEPTH_ID_KEY, String.valueOf(request.getDepth()));
     }
 
     @Override
@@ -141,15 +140,17 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 relationships.addAll(convert(container.getAssemblyPartRelationships()));
                 tombstones.addAll(container.getTombstones());
 
-            } else if (includePartialResults) {
-                final var container = retrievePartialResults(multiJob);
-                relationships.addAll(convert(container.getAssemblyPartRelationships()));
-                tombstones.addAll(container.getTombstones());
+            } else {
+                if (includePartialResults) {
+                    final var container = retrievePartialResults(multiJob);
+                    relationships.addAll(convert(container.getAssemblyPartRelationships()));
+                    tombstones.addAll(container.getTombstones());
 
+                }
             }
 
             log.info("Found job with id {} in status {} with {} relationships and {} tombstones", jobId,
-                    multiJob.getJob().getJobState(), relationships.size(), tombstones.size());
+                     multiJob.getJob().getJobState(), relationships.size(), tombstones.size());
 
             return Jobs.builder().job(multiJob.getJob()).relationships(relationships).tombstones(tombstones).build();
         } else {
