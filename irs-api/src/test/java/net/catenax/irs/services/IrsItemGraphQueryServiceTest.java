@@ -1,6 +1,9 @@
 package net.catenax.irs.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.nio.charset.StandardCharsets;
@@ -10,13 +13,13 @@ import java.util.UUID;
 
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.ItemContainer;
-import net.catenax.irs.aaswrapper.job.ItemDataRequest;
+import net.catenax.irs.component.Job;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.connector.job.JobOrchestrator;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
+import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
@@ -30,6 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class IrsItemGraphQueryServiceTest {
 
+    private final UUID jobId = UUID.randomUUID();
     private final TestMother generate = new TestMother();
 
     @Mock
@@ -37,9 +41,6 @@ class IrsItemGraphQueryServiceTest {
 
     @Mock
     private BlobPersistence blobStore;
-
-    @Mock
-    private JobOrchestrator<ItemDataRequest, AASTransferProcess> orchestrator;
 
     @InjectMocks
     private IrsItemGraphQueryService testee;
@@ -79,6 +80,27 @@ class IrsItemGraphQueryServiceTest {
 
     private byte[] toBlob(final Object transfer) {
         return new JsonUtil().asString(transfer).getBytes(StandardCharsets.UTF_8);
+    }
+
+    @Test
+    void cancelJobById() {
+        final Job job = generate.fakeJob(JobState.CANCELED);
+
+        final MultiTransferJob multiTransferJob = MultiTransferJob.builder().job(job).build();
+
+        when(jobStore.cancelJob(jobId.toString())).thenReturn(Optional.ofNullable(multiTransferJob));
+        final Job canceledJob = testee.cancelJobById(jobId);
+
+        assertNotNull(canceledJob);
+        assertEquals(canceledJob.getJobState().name(), JobState.CANCELED.name());
+    }
+
+    @Test
+    void cancelJobById_throwEntityNotFoundException() {
+        when(jobStore.cancelJob(jobId.toString()))
+                .thenThrow(new EntityNotFoundException("No job exists with id " + jobId));
+
+        assertThrows(EntityNotFoundException.class, () -> testee.cancelJobById(jobId));
     }
 
 }

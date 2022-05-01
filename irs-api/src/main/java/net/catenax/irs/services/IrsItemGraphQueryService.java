@@ -10,11 +10,13 @@
 package net.catenax.irs.services;
 
 import static net.catenax.irs.dtos.IrsCommonConstants.DEPTH_ID_KEY;
+import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
 import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -71,17 +73,31 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
-        final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
-        final var params = Map.of(ROOT_ITEM_ID_KEY, uuid, DEPTH_ID_KEY, String.valueOf(request.getDepth()));
+        final var params = buildJobParams(request);
+
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
             final String jobId = jobInitiateResponse.getJobId();
+
             return JobHandle.builder().jobId(UUID.fromString(jobId)).build();
         } else {
             // TODO (jkreutzfeld) Improve with better response (proper exception for error responses?)
             throw new IllegalArgumentException("Could not start job: " + jobInitiateResponse.getError());
         }
+    }
+
+    private Map<String, String> buildJobParams(final @NonNull RegisterJob request) {
+        final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
+        final Optional<BomLifecycle> bomLifecycleFormRequest = Optional.ofNullable(request.getBomLifecycle());
+
+        final var paramMap = new HashMap<String, String>();
+
+        paramMap.put(ROOT_ITEM_ID_KEY, uuid);
+        paramMap.put(DEPTH_ID_KEY, String.valueOf(request.getDepth()));
+        bomLifecycleFormRequest.ifPresent(bomLifecycle -> paramMap.put(LIFE_CYCLE_CONTEXT, bomLifecycle.toString()));
+
+        return paramMap;
     }
 
     @Override
@@ -115,6 +131,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         log.info("Retrieving job with id {} (includePartialResults: {})", jobId, includePartialResults);
 
         final Optional<MultiTransferJob> multiTransferJob = jobStore.find(jobId.toString());
+
         if (multiTransferJob.isPresent()) {
             final MultiTransferJob multiJob = multiTransferJob.get();
 
@@ -126,11 +143,13 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 relationships.addAll(convert(container.getAssemblyPartRelationships()));
                 tombstones.addAll(container.getTombstones());
 
-            } else if (includePartialResults) {
-                final var container = retrievePartialResults(multiJob);
-                relationships.addAll(convert(container.getAssemblyPartRelationships()));
-                tombstones.addAll(container.getTombstones());
+            } else {
+                if (includePartialResults) {
+                    final var container = retrievePartialResults(multiJob);
+                    relationships.addAll(convert(container.getAssemblyPartRelationships()));
+                    tombstones.addAll(container.getTombstones());
 
+                }
             }
 
             log.info("Found job with id {} in status {} with {} relationships and {} tombstones", jobId,
