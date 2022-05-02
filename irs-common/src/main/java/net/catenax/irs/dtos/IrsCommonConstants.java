@@ -23,4 +23,9 @@ public class IrsCommonConstants {
      */
     public static final String DEPTH_ID_KEY = "depth.id.key";
 
+    /**
+     * Given lifecycleContext from the consumer
+     */
+    public static final String LIFE_CYCLE_CONTEXT = "lifecycleContext";
+
 }

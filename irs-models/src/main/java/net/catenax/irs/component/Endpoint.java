@@ -19,7 +19,7 @@ import lombok.extern.jackson.Jacksonized;
  */
 @Schema(description = "Communication endpoint.")
 @Value
-@Builder
+@Builder(toBuilder = true)
 @Jacksonized
 public class Endpoint {
 

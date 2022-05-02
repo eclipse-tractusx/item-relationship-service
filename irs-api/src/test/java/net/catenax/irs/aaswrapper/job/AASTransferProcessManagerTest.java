@@ -1,5 +1,6 @@
 package net.catenax.irs.aaswrapper.job;
 
+import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -38,7 +39,7 @@ public class AASTransferProcessManagerTest {
         // when
         manager.initiateRequest(itemDataRequest,
             s -> {},
-            aasTransferProcess -> {}
+            aasTransferProcess -> {}, LIFE_CYCLE_CONTEXT
         );
 
         // then
@@ -51,7 +52,7 @@ public class AASTransferProcessManagerTest {
         final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(UUID.randomUUID().toString());
 
         // when
-        final TransferInitiateResponse initiateResponse = manager.initiateRequest(itemDataRequest, s -> {}, aasTransferProcess -> {});
+        final TransferInitiateResponse initiateResponse = manager.initiateRequest(itemDataRequest, s -> {}, aasTransferProcess -> {}, LIFE_CYCLE_CONTEXT);
 
         // then
         assertThat(initiateResponse.getTransferId()).isNotBlank();

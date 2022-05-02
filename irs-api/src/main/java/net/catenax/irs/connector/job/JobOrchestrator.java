@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.connector.job;
 
+import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
 import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 
 import java.time.Instant;
@@ -25,6 +26,7 @@ import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.enums.JobState;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.annotation.Scheduled;
 
 /**
  * Orchestrator service for recursive {@link MultiTransferJob}s that potentially
@@ -158,19 +160,25 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         callCompleteHandlerIfFinished(job.getJob().getJobId().toString());
     }
 
-    public List<MultiTransferJob> findAndCleanupCompletedJobs() {
+    @Scheduled(cron = "${irs.job.cleanup.scheduler.completed}")
+    public void findAndCleanupCompletedJobs() {
+        log.info("Running cleanup of completed jobs");
         final Instant currentDateMinusSeconds = Instant.now().minus(TTL_CLEANUP_COMPLETED_JOBS_HOURS, ChronoUnit.HOURS);
         final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
                 currentDateMinusSeconds);
 
-        return deleteJobs(completedJobs);
+        final List<MultiTransferJob> multiTransferJobs = deleteJobs(completedJobs);
+        log.info("Deleted {} completed jobs", multiTransferJobs.size());
     }
 
-    public List<MultiTransferJob> findAndCleanupFailedJobs() {
+    @Scheduled(cron = "${irs.job.cleanup.scheduler.failed}")
+    public void findAndCleanupFailedJobs() {
+        log.info("Running cleanup of failed jobs");
         final Instant currentDateMinusSeconds = Instant.now().minus(TTL_CLEANUP_FAILED_JOBS_HOURS, ChronoUnit.HOURS);
         final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR,
                 currentDateMinusSeconds);
-        return deleteJobs(failedJobs);
+        final List<MultiTransferJob> multiTransferJobs = deleteJobs(failedJobs);
+        log.info("Deleted {} failed jobs", multiTransferJobs.size());
     }
 
     private List<MultiTransferJob> deleteJobs(final List<MultiTransferJob> jobs) {
@@ -211,9 +219,12 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     private TransferInitiateResponse startTransfer(final MultiTransferJob job,
             final T dataRequest)  /* throws JobErrorDetails */ {
+
+        final String lifecyleContext = job.getJobData().get(LIFE_CYCLE_CONTEXT);
+
         final var response = processManager.initiateRequest(dataRequest,
                 transferId -> jobStore.addTransferProcess(job.getJob().getJobId().toString(), transferId),
-                this::transferProcessCompleted);
+                this::transferProcessCompleted, lifecyleContext);
 
         if (response.getStatus() != ResponseStatus.OK) {
             throw new JobException(response.getStatus().toString());

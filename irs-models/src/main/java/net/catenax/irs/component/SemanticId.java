@@ -37,7 +37,7 @@ public class SemanticId {
      * User to build SemanticId
      */
     @Schema(description = "User to build async fetched items")
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class SemanticIdBuilder {
     }
 }

@@ -11,6 +11,8 @@ package net.catenax.irs.component;
 
 import java.util.List;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -31,8 +33,10 @@ import net.catenax.irs.component.enums.Direction;
 @NoArgsConstructor
 public class RegisterJob {
 
-    private static final String MIN_TREE_DEPTH = "1";
-    private static final String MAX_TREE_DEPTH = "100";
+    private static final String MIN_TREE_DEPTH_DESC = "1";
+    private static final String MAX_TREE_DEPTH_DESC = "100";
+    private static final int MIN_TREE_DEPTH = 1;
+    private static final int MAX_TREE_DEPTH = 100;
     private static final String GLOBAL_ASSET_ID_REGEX = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
     private static final int UUID_SIZE = 36;
     private static final int URN_PREFIX_SIZE = 9;
@@ -52,8 +56,11 @@ public class RegisterJob {
     @ArraySchema(schema = @Schema(implementation = AspectType.class))
     private List<AspectType> aspects;
 
-    @Schema(implementation = Integer.class, minimum = MIN_TREE_DEPTH, maximum = MAX_TREE_DEPTH,
+    @Schema(implementation = Integer.class, minimum = MIN_TREE_DEPTH_DESC, maximum = MAX_TREE_DEPTH_DESC,
             description = "Max depth of the returned tree, if empty max depth is returned.")
+    @Min(MIN_TREE_DEPTH)
+    @Max(MAX_TREE_DEPTH)
+
     private Integer depth;
 
     @Schema(implementation = Direction.class, defaultValue = Direction.DirectionConstants.DOWNWARD)
@@ -65,6 +72,6 @@ public class RegisterJob {
      * @return depth
      */
     public Integer getDepth() {
-        return depth == null ? Integer.valueOf(MAX_TREE_DEPTH) : depth;
+        return depth == null ? MAX_TREE_DEPTH : depth;
     }
 }

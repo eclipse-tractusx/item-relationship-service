@@ -10,11 +10,13 @@
 package net.catenax.irs.services;
 
 import static net.catenax.irs.dtos.IrsCommonConstants.DEPTH_ID_KEY;
+import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
 import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -36,6 +38,7 @@ import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.Relationship;
+import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobInitiateResponse;
@@ -43,6 +46,7 @@ import net.catenax.irs.connector.job.JobOrchestrator;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
+import net.catenax.irs.connector.job.TransferProcess;
 import net.catenax.irs.controllers.IrsApiConstants;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.exceptions.EntityNotFoundException;
@@ -69,17 +73,31 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
-        final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
-        final var params = Map.of(ROOT_ITEM_ID_KEY, uuid, DEPTH_ID_KEY, String.valueOf(request.getDepth()));
+        final var params = buildJobParams(request);
+
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
             final String jobId = jobInitiateResponse.getJobId();
+
             return JobHandle.builder().jobId(UUID.fromString(jobId)).build();
         } else {
             // TODO (jkreutzfeld) Improve with better response (proper exception for error responses?)
             throw new IllegalArgumentException("Could not start job: " + jobInitiateResponse.getError());
         }
+    }
+
+    private Map<String, String> buildJobParams(final @NonNull RegisterJob request) {
+        final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
+        final Optional<BomLifecycle> bomLifecycleFormRequest = Optional.ofNullable(request.getBomLifecycle());
+
+        final var paramMap = new HashMap<String, String>();
+
+        paramMap.put(ROOT_ITEM_ID_KEY, uuid);
+        paramMap.put(DEPTH_ID_KEY, String.valueOf(request.getDepth()));
+        bomLifecycleFormRequest.ifPresent(bomLifecycle -> paramMap.put(LIFE_CYCLE_CONTEXT, bomLifecycle.toString()));
+
+        return paramMap;
     }
 
     @Override
@@ -109,27 +127,83 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     @Override
-    public Jobs getJobForJobId(final UUID jobId) {
+    public Jobs getJobForJobId(final UUID jobId, final boolean includePartialResults) {
+        log.info("Retrieving job with id {} (includePartialResults: {})", jobId, includePartialResults);
+
         final Optional<MultiTransferJob> multiTransferJob = jobStore.find(jobId.toString());
+
         if (multiTransferJob.isPresent()) {
             final MultiTransferJob multiJob = multiTransferJob.get();
 
             final var relationships = new ArrayList<Relationship>();
-            try {
-                final Optional<byte[]> blob = blobStore.getBlob(multiJob.getJob().getJobId().toString());
-                final byte[] bytes = blob.orElseThrow(
-                        () -> new EntityNotFoundException("Could not find stored data for multiJob with id " + jobId));
-                final ItemContainer itemContainer = new JsonUtil().fromString(new String(bytes, StandardCharsets.UTF_8),
-                        ItemContainer.class);
-                final List<AssemblyPartRelationshipDTO> assemblyPartRelationships = itemContainer.getAssemblyPartRelationships();
-                relationships.addAll(convert(assemblyPartRelationships));
-            } catch (BlobPersistenceException e) {
-                log.error("Unable to read blob", e);
+            final var tombstones = new ArrayList<Tombstone>();
+
+            if (jobIsCompleted(multiJob)) {
+                final var container = retrieveJobResultRelationships(multiJob.getJob().getJobId());
+                relationships.addAll(convert(container.getAssemblyPartRelationships()));
+                tombstones.addAll(container.getTombstones());
+
+            } else {
+                if (includePartialResults) {
+                    final var container = retrievePartialResults(multiJob);
+                    relationships.addAll(convert(container.getAssemblyPartRelationships()));
+                    tombstones.addAll(container.getTombstones());
+
+                }
             }
-            return Jobs.builder().job(multiJob.getJob()).relationships(relationships).build();
+
+            log.info("Found job with id {} in status {} with {} relationships and {} tombstones", jobId,
+                    multiJob.getJob().getJobState(), relationships.size(), tombstones.size());
+
+            return Jobs.builder().job(multiJob.getJob()).relationships(relationships).tombstones(tombstones).build();
         } else {
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
+    }
+
+    private ItemContainer retrievePartialResults(final MultiTransferJob multiJob) {
+        final List<TransferProcess> completedTransfers = multiJob.getCompletedTransfers();
+        final List<String> transferIds = completedTransfers.stream()
+                                                           .map(TransferProcess::getId)
+                                                           .collect(Collectors.toList());
+
+        final var relationships = new ArrayList<AssemblyPartRelationshipDTO>();
+        final var tombstones = new ArrayList<Tombstone>();
+
+        for (final String id : transferIds) {
+            try {
+                final Optional<byte[]> blob = blobStore.getBlob(id);
+                blob.ifPresent(bytes -> {
+                    final ItemContainer itemContainer = toItemContainer(bytes);
+                    relationships.addAll(itemContainer.getAssemblyPartRelationships());
+                    tombstones.addAll(itemContainer.getTombstones());
+                });
+
+            } catch (BlobPersistenceException e) {
+                log.error("Unable to read transfer result", e);
+            }
+        }
+        return ItemContainer.builder().assemblyPartRelationships(relationships).tombstones(tombstones).build();
+    }
+
+    private ItemContainer toItemContainer(final byte[] blob) {
+        return new JsonUtil().fromString(new String(blob, StandardCharsets.UTF_8), ItemContainer.class);
+    }
+
+    private ItemContainer retrieveJobResultRelationships(final UUID jobId) {
+        try {
+            final Optional<byte[]> blob = blobStore.getBlob(jobId.toString());
+            final byte[] bytes = blob.orElseThrow(
+                    () -> new EntityNotFoundException("Could not find stored data for multiJob with id " + jobId));
+            return toItemContainer(bytes);
+        } catch (BlobPersistenceException e) {
+            log.error("Unable to read blob", e);
+            throw new EntityNotFoundException("Could not load stored data for multiJob with id " + jobId, e);
+        }
+    }
+
+    private boolean jobIsCompleted(final MultiTransferJob multiJob) {
+        return multiJob.getJob().getJobState().equals(JobState.COMPLETED);
     }
 
     private Collection<Relationship> convert(final Collection<AssemblyPartRelationshipDTO> assemblyPartRelationships) {

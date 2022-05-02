@@ -18,6 +18,7 @@ import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.persistence.MinioBlobPersistence;
 import net.catenax.irs.testing.containers.MinioContainer;
+import net.catenax.irs.util.JsonUtil;
 import net.catenax.irs.util.TestMother;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterAll;
@@ -34,7 +35,7 @@ class PersistentJobStoreTest {
     final int TTL_IN_HOUR_SECONDS = 3600;
 
     private static final MinioContainer minioContainer = new MinioContainer(
-        new MinioContainer.CredentialsProvider(ACCESS_KEY, SECRET_KEY)).withReuse(true);
+            new MinioContainer.CredentialsProvider(ACCESS_KEY, SECRET_KEY)).withReuse(true);
 
     PersistentJobStore sut;
     Faker faker = new Faker();
@@ -63,7 +64,7 @@ class PersistentJobStoreTest {
     @BeforeEach
     void setUp() throws BlobPersistenceException {
         final MinioBlobPersistence blobStore = new MinioBlobPersistence("http://" + minioContainer.getHostAddress(),
-            ACCESS_KEY, SECRET_KEY, "testbucket");
+                ACCESS_KEY, SECRET_KEY, "testbucket");
         blobStoreSpy = Mockito.spy(blobStore);
         sut = new PersistentJobStore(blobStoreSpy);
     }
@@ -98,7 +99,9 @@ class PersistentJobStoreTest {
         assertThat(sut.find(job.getJob().getJobId().toString())).isPresent()
                                                                 .get()
                                                                 .usingRecursiveComparison()
-                                                                .isEqualTo(originalJob);
+                                                                .isEqualTo(originalJob.toBuilder()
+                                                                                      .transitionInitial()
+                                                                                      .build());
         assertThat(sut.find(otherJobId)).isEmpty();
     }
 
@@ -114,6 +117,15 @@ class PersistentJobStoreTest {
     @Test
     void completeTransferProcess_WhenJobNotFound() {
         sut.completeTransferProcess(otherJobId, process1);
+    }
+
+    @Test
+    void shouldSerializeAndDeserializeMultiTransferJob() {
+        final JsonUtil jsonUtil = new JsonUtil();
+        final String firstSerialization = jsonUtil.asString(job);
+        final MultiTransferJob result = jsonUtil.fromString(firstSerialization, MultiTransferJob.class);
+        final String secondSerialization = jsonUtil.asString(result);
+        assertThat(firstSerialization).isEqualTo(secondSerialization);
     }
 
     @Test
@@ -147,7 +159,7 @@ class PersistentJobStoreTest {
 
         // Act
         assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
-            () -> sut.completeTransferProcess(job.getJob().getJobId().toString(), process1));
+                () -> sut.completeTransferProcess(job.getJob().getJobId().toString(), process1));
 
         // Assert
         refreshJob();
@@ -205,6 +217,7 @@ class PersistentJobStoreTest {
         sut.completeJob(job.getJob().getJobId().toString());
         // Assert
         refreshJob();
+        refreshJob2();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
         assertThat(Optional.of(job.getJob().getJobCompleted())).isPresent();
         assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
@@ -230,8 +243,8 @@ class PersistentJobStoreTest {
         sut.create(job);
         sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
         // Act
-        assertThatExceptionOfType(IllegalStateException.class)
-            .isThrownBy(() -> sut.completeJob(job.getJob().getJobId().toString()));
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
+                () -> sut.completeJob(job.getJob().getJobId().toString()));
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.RUNNING);
@@ -257,6 +270,7 @@ class PersistentJobStoreTest {
         sut.markJobInError(job.getJob().getJobId().toString(), errorDetail);
         // Assert
         refreshJob();
+        refreshJob2();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
         assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
         assertThat(job.getJob().getException().getErrorDetail()).isEqualTo(errorDetail);
@@ -300,7 +314,7 @@ class PersistentJobStoreTest {
         sut.completeJob(job.getJob().getJobId().toString());
         // Act
         final List<MultiTransferJob> completedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
-            nowPlusFiveHours);
+                nowPlusFiveHours);
         // Assert
         assertThat(completedJobs).hasSize(1);
         assertThat(completedJobs.get(0).getJob().getJobState()).isEqualTo(JobState.COMPLETED);
@@ -316,15 +330,16 @@ class PersistentJobStoreTest {
         sut.markJobInError(job.getJob().getJobId().toString(), errorDetail);
         // Act
         final List<MultiTransferJob> failedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.ERROR,
-            nowPlusFiveHours);
+                nowPlusFiveHours);
         // Assert
         assertThat(failedJobs).isNotEmpty();
         final Optional<MultiTransferJob> foundJob = failedJobs.stream()
-                                                              .filter(
-                                                                  failedJob -> failedJob.getJob().getJobId().toString()
-                                                                                        .equals(job.getJob()
-                                                                                                   .getJobId()
-                                                                                                   .toString()))
+                                                              .filter(failedJob -> failedJob.getJob()
+                                                                                            .getJobId()
+                                                                                            .toString()
+                                                                                            .equals(job.getJob()
+                                                                                                       .getJobId()
+                                                                                                       .toString()))
                                                               .findFirst();
         assertThat(foundJob).isPresent();
         assertThat(foundJob.get().getJob().getJobState()).isEqualTo(JobState.ERROR);
@@ -430,6 +445,10 @@ class PersistentJobStoreTest {
 
     private void refreshJob() {
         job = sut.find(job.getJob().getJobId().toString()).get();
+    }
+
+    private void refreshJob2() {
+        job2 = sut.find(job2.getJob().getJobId().toString()).get();
     }
 
     @Test

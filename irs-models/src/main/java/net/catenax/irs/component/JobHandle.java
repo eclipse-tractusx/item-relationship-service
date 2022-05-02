@@ -14,13 +14,15 @@ import java.util.UUID;
 import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Value;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * The unique jobId handle of the just processed job.
  */
 @ApiModel(description = "The unique jobId handle of the just processed job.")
 @Value
-@Builder
+@Builder(toBuilder = true)
+@ExcludeFromCodeCoverageGeneratedReport
 public class JobHandle {
 
     private UUID jobId;

@@ -9,6 +9,10 @@
 //
 package net.catenax.irs.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.exceptions.EntityNotFoundException;
@@ -18,10 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * API Exception Handler.
@@ -43,9 +43,9 @@ public class IrsExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.builder()
-                        .withStatusCode(HttpStatus.BAD_REQUEST)
-                        .withMessage(ApiErrorsConstants.INVALID_DEPTH)
-                        .withErrors(List.of(exception.getMessage())).build());
+                                   .withStatusCode(HttpStatus.BAD_REQUEST)
+                                   .withMessage(ApiErrorsConstants.INVALID_DEPTH)
+                                   .withErrors(List.of(exception.getMessage())).build());
     }
 
     /**
@@ -61,9 +61,9 @@ public class IrsExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ErrorResponse.builder()
-                        .withStatusCode(HttpStatus.NOT_FOUND)
-                        .withMessage(HttpStatus.NOT_FOUND.getReasonPhrase())
-                        .withErrors(List.of(exception.getMessage())).build());
+                                   .withStatusCode(HttpStatus.NOT_FOUND)
+                                   .withMessage(HttpStatus.NOT_FOUND.getReasonPhrase())
+                                   .withErrors(List.of(exception.getMessage())).build());
     }
 
     /**
@@ -77,16 +77,16 @@ public class IrsExceptionHandler {
         log.info(exception.getClass().getName(), exception);
 
         final List<String> errors = exception.getBindingResult().getFieldErrors()
-                .stream()
-                .map(e -> e.getField() + ":" + e.getDefaultMessage())
-                .collect(Collectors.toList());
+                                             .stream()
+                                             .map(e -> e.getField() + ":" + e.getDefaultMessage())
+                                             .collect(Collectors.toList());
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.builder()
-                        .withStatusCode(HttpStatus.BAD_REQUEST)
-                        .withMessage(ApiErrorsConstants.INVALID_ARGUMENTS)
-                        .withErrors(errors).build());
+                                   .withStatusCode(HttpStatus.BAD_REQUEST)
+                                   .withMessage(ApiErrorsConstants.INVALID_ARGUMENTS)
+                                   .withErrors(errors).build());
     }
 
     /**
@@ -102,8 +102,8 @@ public class IrsExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.builder()
-                        .withStatusCode(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .withMessage("Error Occurred")
-                        .withErrors(new ArrayList<>()).build());
+                                   .withStatusCode(HttpStatus.INTERNAL_SERVER_ERROR)
+                                   .withMessage("Error Occurred")
+                                   .withErrors(new ArrayList<>()).build());
     }
 }

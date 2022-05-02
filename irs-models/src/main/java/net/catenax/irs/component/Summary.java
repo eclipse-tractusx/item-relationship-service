@@ -19,7 +19,7 @@ import lombok.Value;
  * Summary
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = Summary.SummaryBuilder.class)
 public class Summary {
 
@@ -33,7 +33,7 @@ public class Summary {
     /**
      * Builder class
      */
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class SummaryBuilder {
     }
 

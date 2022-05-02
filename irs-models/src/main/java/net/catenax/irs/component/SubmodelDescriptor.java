@@ -49,7 +49,7 @@ public class SubmodelDescriptor {
      * User to build SubmodelDescriptor
      */
     @Schema(description = "User to build async fetched items")
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class SubmodelDescriptorBuilder {
     }
 }

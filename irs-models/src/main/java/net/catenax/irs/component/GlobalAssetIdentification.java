@@ -11,29 +11,26 @@ package net.catenax.irs.component;
 
 import javax.validation.Valid;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Value;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Global unique identifier for asset
  */
 
 @Schema(description = "Represents a CatenaX id in the format urn:uuid:<uuid>.")
-@Getter
+@Value
 @Builder(toBuilder = true)
-@NoArgsConstructor
-@AllArgsConstructor
 @JsonSerialize(using = ToStringSerializer.class)
-@JsonDeserialize(builder = GlobalAssetIdentification.GlobalAssetIdBuilder.class)
-@SuppressWarnings({"PMD.SingletonClassReturningNewInstance", "PMD.MethodArgumentCouldBeFinal"})
+@JsonDeserialize(builder = GlobalAssetIdentification.GlobalAssetIdentificationBuilder.class)
+@ExcludeFromCodeCoverageGeneratedReport
+
 public class GlobalAssetIdentification {
 
     private static final int GLOBAL_ASSET_ID_LENGTH = 45;
@@ -51,27 +48,8 @@ public class GlobalAssetIdentification {
     /**
      * Builder for GlobalAssetIdBuilder class
      */
-    @JsonPOJOBuilder(withPrefix = "with")
-    public static final class GlobalAssetIdBuilder {
-        private final GlobalAssetIdentification instance;
-
-        private GlobalAssetIdBuilder() {
-            instance = new GlobalAssetIdentification();
-        }
-
-        @JsonCreator
-        public static GlobalAssetIdBuilder getInstance() {
-            return new GlobalAssetIdBuilder();
-        }
-
-        public GlobalAssetIdBuilder globalAssetId(String globalAssetId) {
-            instance.globalAssetId = globalAssetId;
-            return this;
-        }
-
-        public GlobalAssetIdentification build() {
-            return instance;
-        }
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class GlobalAssetIdentificationBuilder {
     }
 
 }

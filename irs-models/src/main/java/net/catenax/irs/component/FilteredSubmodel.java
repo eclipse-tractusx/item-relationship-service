@@ -22,7 +22,7 @@ import lombok.Value;
  */
 @Schema(description = "Use to filter submodel to specific child items")
 @Value
-@Builder
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = FilteredSubmodel.FilteredSubmodelBuilder.class)
 public class FilteredSubmodel {
 
@@ -33,7 +33,7 @@ public class FilteredSubmodel {
     /**
      * Builder for FilteredSubmodel class
      */
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class FilteredSubmodelBuilder {
     }
 }

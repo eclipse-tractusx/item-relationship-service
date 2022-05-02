@@ -132,8 +132,7 @@ public class MultiTransferJob {
                         format("Cannot transition from state %s to %s", job.getJobState(), end));
             }
 
-            // job = job.toBuilder().jobState(end).build();
-            job.setJobState(end);
+            job = job.toBuilder().jobState(end).build();
             return this;
         }
     }

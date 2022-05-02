@@ -20,7 +20,7 @@ import lombok.Value;
  */
 @Schema(description = "State of the Item fetch.")
 @Value
-@Builder
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = AsyncFetchedItems.AsyncFetchedItemsBuilder.class)
 public class AsyncFetchedItems {
 
@@ -40,7 +40,7 @@ public class AsyncFetchedItems {
      * User to build async fetched items
      */
     @Schema(description = "User to build async fetched items")
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class AsyncFetchedItemsBuilder {
     }
 }

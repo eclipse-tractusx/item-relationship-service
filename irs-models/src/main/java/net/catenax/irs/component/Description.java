@@ -20,7 +20,7 @@ import lombok.Value;
  */
 @Schema(description = "Provide descriptions to request parts.")
 @Value
-@Builder
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = Description.DescriptionBuilder.class)
 public class Description {
 
@@ -36,7 +36,7 @@ public class Description {
     /**
      * Builder for Description class
      */
-    @JsonPOJOBuilder(withPrefix = "with")
+    @JsonPOJOBuilder(withPrefix = "")
     public static class DescriptionBuilder {
     }
 }

@@ -22,7 +22,7 @@ import lombok.Value;
  */
 @Schema(description = "")
 @Value
-@Builder
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = GenericDescription.GenericDescriptionBuilder.class)
 public class GenericDescription {
     @Schema(description = "Identification string")
