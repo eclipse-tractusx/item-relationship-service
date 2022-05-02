@@ -10,15 +10,15 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.github.javafaker.Faker;
+import net.catenax.irs.component.GlobalAssetIdentification;
+import net.catenax.irs.component.Job;
 import net.catenax.irs.component.RegisterJob;
+import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.DataRequest;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.connector.job.TransferProcess;
-import net.catenax.irs.component.GlobalAssetIdentification;
-import net.catenax.irs.component.Job;
-import net.catenax.irs.component.enums.JobState;
 
 /**
  * Base object mother class to create objects for testing.
@@ -51,7 +51,7 @@ public class TestMother {
         return MultiTransferJob.builder()
                                .job(fakeJob(jobState))
                                .jobData(Map.of(ROOT_ITEM_ID_KEY, faker.lorem().characters(),
-                                   faker.lorem().characters(), faker.lorem().characters()))
+                                       faker.lorem().characters(), faker.lorem().characters()))
                                .build();
     }
 
@@ -66,9 +66,9 @@ public class TestMother {
 
     public TransferInitiateResponse response(ResponseStatus status) {
         return TransferInitiateResponse.builder()
-                .transferId(UUID.randomUUID().toString())
-                .status(status)
-                .build();
+                                       .transferId(UUID.randomUUID().toString())
+                                       .status(status)
+                                       .build();
     }
 
     public TransferProcess transfer() {
@@ -98,4 +98,5 @@ public class TestMother {
         registerJob.setDepth(depth);
         return registerJob;
     }
+
 }

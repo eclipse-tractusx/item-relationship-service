@@ -82,12 +82,6 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
 
     @Async("asyncJobExecutor")
     @Override
-    public CompletableFuture<Optional<Job>> interruptJob(@NonNull final UUID jobId) {
-        return CompletableFuture.completedFuture(Optional.of(queryService.cancelJobById(jobId)));
-    }
-
-    @Async("asyncJobExecutor")
-    @Override
     public CompletableFuture<Jobs> getPartialJobResult(UUID jobId)
             throws EntityNotFoundException, InterruptedException {
         Jobs jobs = queryService.getJobForJobId(jobId);

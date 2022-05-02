@@ -29,8 +29,6 @@ public interface IAsyncJobHandlerService {
 
     CompletableFuture<Optional<Job>> cancelJob(@NonNull UUID jobId) throws InterruptedException;
 
-    CompletableFuture<Optional<Job>> interruptJob(@NonNull UUID jobId) throws InterruptedException;
-
     CompletableFuture<Jobs> getPartialJobResult(UUID jobId) throws EntityNotFoundException, InterruptedException;
 
     CompletableFuture<Jobs> getCompleteJobResult(UUID jobId) throws EntityNotFoundException, InterruptedException;
