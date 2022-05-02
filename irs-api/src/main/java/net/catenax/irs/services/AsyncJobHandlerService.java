@@ -7,7 +7,7 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.controllers;
+package net.catenax.irs.services;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -16,15 +16,17 @@ import java.util.concurrent.CompletableFuture;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
+import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.connector.job.JobException;
 import net.catenax.irs.connector.job.JobInitiateResponse;
 import net.catenax.irs.connector.job.ResponseStatus;
+import net.catenax.irs.exceptions.EntityCancelException;
 import net.catenax.irs.exceptions.EntityNotFoundException;
-import net.catenax.irs.services.IrsItemGraphQueryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -34,15 +36,17 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class JobHandler implements IJobHandler {
-
+@ExcludeFromCodeCoverageGeneratedReport
+public class AsyncJobHandlerService implements IAsyncJobHandlerService {
+    private static final int WAIT_TIME = 5000;
     private static final String EMPTY_STRING = "";
     private static final String INTERNAL_ERROR = "An internal error has occur";
+    private static final String JOB_ALREADY_CANCELLED = "Job been requested had already been cancelled";
 
     /**
      * Job registration and query object
      */
-    IrsItemGraphQueryService queryService;
+    private final IrsItemGraphQueryService queryService;
 
     /**
      * Use to retrieve jobs from Digital Twins and the Blob Store
@@ -50,14 +54,15 @@ public class JobHandler implements IJobHandler {
      * @param queryService
      */
 
-    @Autowired
-    public JobHandler(IrsItemGraphQueryService queryService) {
+    /*@Autowired
+    public AsyncJobHandlerService(IrsItemGraphQueryService queryService) {
         this.queryService = queryService;
     }
-
+*/
     @Async("AsyncJobExecutor")
     @Override
-    public CompletableFuture<JobInitiateResponse> registerJob(@NonNull final RegisterJob request) {
+    public CompletableFuture<JobInitiateResponse> registerJob(@NonNull final RegisterJob request)
+            throws InterruptedException {
 
         Optional<JobHandle> handle = Optional.ofNullable(queryService.registerItemJob(request));
 
@@ -95,9 +100,57 @@ public class JobHandler implements IJobHandler {
 
     @Async("asyncJobExecutor")
     @Override
-    public CompletableFuture<Jobs> getJobResult(final UUID jobId) throws EntityNotFoundException {
+    public CompletableFuture<Jobs> getPartialJobResult(UUID jobId)
+            throws EntityNotFoundException, InterruptedException {
         Jobs jobs = queryService.getJobForJobId(jobId);
         return CompletableFuture.completedFuture(jobs);
+    }
+
+    @Async("asyncJobExecutor")
+    @Override
+    public CompletableFuture<Jobs> getCompleteJobResult(final UUID jobId)
+            throws EntityNotFoundException {
+
+        // Check and handle job in bad states
+        JobState[] badStates = { JobState.ERROR,
+                                 JobState.CANCELED
+        };
+
+        // Check and handle job in progress state
+        JobState[] progressStates = { JobState.UNSAVED,
+                                      JobState.INITIAL,
+                                      JobState.RUNNING,
+                                      JobState.TRANSFERS_FINISHED
+        };
+
+        // TODO (Dapo): Maximum amount of time to wait when requesting complete job result
+        return CompletableFuture.supplyAsync(() -> {
+            Jobs jobs = queryService.getJobForJobId(jobId);
+            do {
+                try {
+                    for (JobState badState : badStates) {
+                        if (jobs.getJob().getJobState() == badState) {
+                            throw new EntityCancelException(JOB_ALREADY_CANCELLED);
+                        }
+                    }
+
+                    for (JobState progressState : progressStates) {
+                        if (jobs.getJob().getJobState() == progressState) {
+                            jobs = queryService.getJobForJobId(jobId);
+                            Thread.currentThread().wait(WAIT_TIME);
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    throw new JobException(e.getMessage());
+                }
+
+                // TODO (Dapo): Condition to limit the amount of time to keep trying to get a job complete state
+
+            } while (jobs.getJob().getJobState() != JobState.COMPLETED);
+
+            return jobs;
+        });
+
     }
 
 }

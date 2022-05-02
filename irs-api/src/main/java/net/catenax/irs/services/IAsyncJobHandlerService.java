@@ -7,7 +7,7 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.controllers;
+package net.catenax.irs.services;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -23,14 +23,16 @@ import net.catenax.irs.exceptions.EntityNotFoundException;
 /**
  * Interface for JobHandler
  */
-public interface IJobHandler {
+public interface IAsyncJobHandlerService {
 
-    CompletableFuture<JobInitiateResponse> registerJob(@NonNull RegisterJob request);
+    CompletableFuture<JobInitiateResponse> registerJob(@NonNull RegisterJob request) throws InterruptedException;
 
-    CompletableFuture<Optional<Job>> cancelJob(@NonNull UUID jobId);
+    CompletableFuture<Optional<Job>> cancelJob(@NonNull UUID jobId) throws InterruptedException;
 
-    CompletableFuture<Optional<Job>> interruptJob(@NonNull UUID jobId);
+    CompletableFuture<Optional<Job>> interruptJob(@NonNull UUID jobId) throws InterruptedException;
 
-    CompletableFuture<Jobs> getJobResult(UUID jobId) throws EntityNotFoundException;
+    CompletableFuture<Jobs> getPartialJobResult(UUID jobId) throws EntityNotFoundException, InterruptedException;
+
+    CompletableFuture<Jobs> getCompleteJobResult(UUID jobId) throws EntityNotFoundException, InterruptedException;
 
 }

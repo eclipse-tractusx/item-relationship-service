@@ -1,29 +1,15 @@
-//
-// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
-//
-// See the AUTHORS file(s) distributed with this work for additional
-// information regarding authorship.
-//
-// See the LICENSE file(s) distributed with this work for
-// additional information regarding license terms.
-//
-package net.catenax.irs.configuration;
+package net.catenax.irs.config;
 
 import java.util.concurrent.Executor;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-/**
- * Executor
- */
-@Configuration
-@EnableAsync
-public class AsynJobConfiguration {
-
+/* @TestConfiguration
+@EnableAsync(proxyTargetClass = true)
+@Profile("asyncTest")*/
+public class AsyncConfigTest {
     @Value("${async.joborchestrator.poolSize}")
     Integer poolSize;
 
@@ -33,15 +19,14 @@ public class AsynJobConfiguration {
     @Value("${async.joborchestrator.capacity}")
     Integer capacity;
 
-    @Bean(name = "asyncJobExecutor")
+    @Bean(name = "asyncJobExecutorTest")
     public Executor asyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(poolSize);
         executor.setMaxPoolSize(maxPoolSize);
         executor.setQueueCapacity(capacity);
-        executor.setThreadNamePrefix("AsynchJobThread-");
+        executor.setThreadNamePrefix("AsynchJobThreadTest-");
         executor.initialize();
         return executor;
     }
-
 }
