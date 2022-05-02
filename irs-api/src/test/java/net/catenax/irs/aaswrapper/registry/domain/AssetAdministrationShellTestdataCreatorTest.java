@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2022. Copyright Holder (Catena-X Consortium)
+ *
+ * See the AUTHORS file(s) distributed with this work for additional
+ * information regarding authorship.
+ *
+ * See the LICENSE file(s) distributed with this work for
+ * additional information regarding license terms.
+ *
+ */
 package net.catenax.irs.aaswrapper.registry.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;

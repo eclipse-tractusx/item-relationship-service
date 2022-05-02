@@ -16,17 +16,12 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
 
 class SubmodelTestdataCreatorTest {
-    private SubmodelTestdataCreator submodelTestdataCreator;
 
-    @BeforeEach
-    void setUp() {
-        submodelTestdataCreator = new SubmodelTestdataCreator();
-    }
+    private final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
 
     @Test
     void shouldReturnAssemblyPartRelationshipWithoutChildrenWhenRequestingWithTestId() {
