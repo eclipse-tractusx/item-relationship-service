@@ -1,6 +1,7 @@
 package net.catenax.irs.controllers;
 
 import static net.catenax.irs.util.TestMother.registerJobWithDepth;
+import static net.catenax.irs.util.TestMother.registerJobWithGlobalAssetIdAndDepth;
 import static net.catenax.irs.util.TestMother.registerJobWithoutDepth;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -102,7 +103,9 @@ class IrsControllerTest {
 
     private static Stream<RegisterJob> corruptedJobs() {
         return Stream.of(
-                registerJobWithDepth(110)
+                registerJobWithDepth(110),
+                registerJobWithGlobalAssetIdAndDepth("invalidGlobalAssetId", 0),
+                registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0)
         );
     }
 

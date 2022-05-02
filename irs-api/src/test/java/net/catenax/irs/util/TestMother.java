@@ -117,8 +117,12 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithDepth(final Integer depth) {
+        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", depth);
+    }
+
+    public static RegisterJob registerJobWithGlobalAssetIdAndDepth(final String globalAssetId, final Integer depth) {
         final RegisterJob registerJob = new RegisterJob();
-        registerJob.setGlobalAssetId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6");
+        registerJob.setGlobalAssetId(globalAssetId);
         registerJob.setDepth(depth);
         return registerJob;
     }
