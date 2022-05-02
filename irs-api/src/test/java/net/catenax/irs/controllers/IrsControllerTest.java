@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.catenax.irs.component.Job;
@@ -24,6 +25,9 @@ import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -53,11 +57,9 @@ class IrsControllerTest {
                     .andExpect(content().string(containsString(returnedJob.toString())));
     }
 
-    @Test
-    void shouldReturnBadRequestWhenDepthValueIsTooBig() throws Exception {
-        final int tooBigDepth = 110;
-        final RegisterJob registerJob = registerJobWithDepth(tooBigDepth);
-
+    @ParameterizedTest
+    @MethodSource("corruptedJobs")
+    void shouldReturnBadRequestWhenRegisterJobBodyNotValid(final RegisterJob registerJob) throws Exception {
         this.mockMvc.perform(post("/irs/jobs")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(new ObjectMapper().writeValueAsString(registerJob)))
@@ -96,6 +98,12 @@ class IrsControllerTest {
         this.mockMvc.perform(put("/irs/jobs/" + jobId))
                     .andExpect(status().isNotFound())
                     .andExpect(result -> assertTrue(result.getResolvedException() instanceof EntityNotFoundException));
+    }
+
+    private static Stream<RegisterJob> corruptedJobs() {
+        return Stream.of(
+                registerJobWithDepth(110)
+        );
     }
 
 }
