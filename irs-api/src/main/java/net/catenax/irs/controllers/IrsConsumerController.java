@@ -10,6 +10,7 @@
 package net.catenax.irs.controllers;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.services.AsyncJobHandlerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Schema(description = "Controller for asynchronous JobOrchestration")
 @RestController
+@ExcludeFromCodeCoverageGeneratedReport
 public class IrsConsumerController {
 
     private final AsyncJobHandlerService jobhandler;

@@ -48,18 +48,6 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
      */
     private final IrsItemGraphQueryService queryService;
 
-    /**
-     * Use to retrieve jobs from Digital Twins and the Blob Store
-     *
-     * @param queryService
-     */
-
-    /*@Autowired
-    public AsyncJobHandlerService(IrsItemGraphQueryService queryService) {
-        this.queryService = queryService;
-    }
-*/
-    @Async("AsyncJobExecutor")
     @Override
     public CompletableFuture<JobInitiateResponse> registerJob(@NonNull final RegisterJob request)
             throws InterruptedException {
