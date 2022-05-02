@@ -12,6 +12,7 @@ package net.catenax.irs.aaswrapper.job;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
@@ -60,16 +61,19 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     @Override
     public TransferInitiateResponse initiateRequest(final ItemDataRequest dataRequest,
-            final Consumer<String> transferProcessStarted, final Consumer<AASTransferProcess> completionCallback) {
+                                                    final Consumer<String> transferProcessStarted,
+                                                    final Consumer<AASTransferProcess> completionCallback,
+                                                    final String lifecyleContext) {
+
         final String processId = UUID.randomUUID().toString();
 
-        executor.submit(getRunnable(dataRequest, transferProcessStarted, completionCallback, processId));
+        executor.submit(getRunnable(dataRequest, transferProcessStarted, completionCallback, processId, lifecyleContext));
 
         return new TransferInitiateResponse(processId, ResponseStatus.OK);
     }
 
     private Runnable getRunnable(final ItemDataRequest dataRequest, final Consumer<String> transferProcessStarted,
-            final Consumer<AASTransferProcess> transferProcessCompleted, final String processId) {
+            final Consumer<AASTransferProcess> transferProcessCompleted, final String processId, final String lifecyleContext) {
         return () -> {
             transferProcessStarted.accept(processId);
             final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId, dataRequest.getDepth());
@@ -87,8 +91,10 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
                 aasSubmodelEndpoints.stream().map(SubmodelEndpoint::getAddress).forEach(address -> {
                     try {
-                        final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address);
-                        processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
+                        final var submodel = submodelFacade.getSubmodel(address);
+                        final var processedSubmodel = processEndpoint(
+                                aasTransferProcess, submodel, lifecyleContext);
+                        itemContainerBuilder.assemblyPartRelationship(processedSubmodel);
                     } catch (RestClientException e) {
                         log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                                 address);
@@ -123,15 +129,39 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
         return Tombstone.builder().endpointURL(address).catenaXId(itemId).processingError(processingError).build();
     }
 
-    private void processEndpoint(final AASTransferProcess aasTransferProcess,
-            final ItemContainer.ItemContainerBuilder itemContainer, final AssemblyPartRelationshipDTO relationship) {
+    private AssemblyPartRelationshipDTO processEndpoint(final AASTransferProcess aasTransferProcess,
+                                 final AssemblyPartRelationshipDTO relationship,
+                                 final String lifecycleContext) {
+
         log.info("Processing AssemblyPartRelationship with {} children", relationship.getChildParts().size());
-        final List<String> childIds = relationship.getChildParts()
-                                                  .stream()
-                                                  .map(ChildDataDTO::getChildCatenaXId)
-                                                  .collect(Collectors.toList());
+
+        final AssemblyPartRelationshipDTO filteredDto = filterChildren(relationship, lifecycleContext);
+        final List<String> childIds = mapToChildIds(filteredDto);
         aasTransferProcess.addIdsToProcess(childIds);
+
         // TODO (jkreutzfeld) what do we actually need to store here?
-        itemContainer.assemblyPartRelationship(relationship);
+        return filteredDto;
     }
+
+    private AssemblyPartRelationshipDTO filterChildren(final AssemblyPartRelationshipDTO relationship, final String lifecyleContext) {
+        if (lifecyleContext != null) {
+            final Set<ChildDataDTO> filteredChildren = relationship.getChildParts()
+                                                                   .stream()
+                                                                   .filter(childDataDTO -> lifecyleContext
+                                                                           .equals(childDataDTO.getLifecycleContext()))
+                                                                   .collect(Collectors.toSet());
+
+            return AssemblyPartRelationshipDTO.builder()
+                                              .catenaXId(relationship.getCatenaXId())
+                                              .childParts(filteredChildren)
+                                              .build();
+        }
+        return relationship;
+    }
+
+    private List<String> mapToChildIds(final AssemblyPartRelationshipDTO relationship) {
+        return relationship.getChildParts().stream().map(ChildDataDTO::getChildCatenaXId).collect(
+                Collectors.toList());
+    }
+
 }
