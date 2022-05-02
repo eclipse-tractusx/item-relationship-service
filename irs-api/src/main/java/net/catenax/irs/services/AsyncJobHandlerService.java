@@ -84,7 +84,7 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
     @Override
     public CompletableFuture<Jobs> getPartialJobResult(UUID jobId)
             throws EntityNotFoundException, InterruptedException {
-        Jobs jobs = queryService.getJobForJobId(jobId);
+        Jobs jobs = queryService.getJobForJobId(jobId, true);
         return CompletableFuture.completedFuture(jobs);
     }
 
@@ -107,7 +107,7 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
 
         // TODO (Dapo): Maximum amount of time to wait when requesting complete job result
         return CompletableFuture.supplyAsync(() -> {
-            Jobs jobs = queryService.getJobForJobId(jobId);
+            Jobs jobs = queryService.getJobForJobId(jobId, false);
             do {
                 try {
                     for (JobState badState : badStates) {
@@ -118,7 +118,7 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
 
                     for (JobState progressState : progressStates) {
                         if (jobs.getJob().getJobState() == progressState) {
-                            jobs = queryService.getJobForJobId(jobId);
+                            jobs = queryService.getJobForJobId(jobId, false);
                             Thread.currentThread().wait(WAIT_TIME);
                         }
                     }

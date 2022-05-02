@@ -11,15 +11,12 @@ package net.catenax.irs.aaswrapper.registry.domain;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-<<<<<<< HEAD
-=======
 import java.nio.charset.Charset;
 import java.util.Map;
 
 import feign.FeignException;
 import feign.Request;
 import feign.RequestTemplate;
->>>>>>> 6a6d52e82559139b8b4f103b6ef7d8adebf396ca
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -30,13 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * Digital Twin Registry Rest Client
  */
 @Profile("prod")
-<<<<<<< HEAD
-@FeignClient(
-        contextId = "digitalTwinRegistryClientContextId",
-        value = "digitalTwinRegistryClient",
-=======
 @FeignClient(contextId = "digitalTwinRegistryClientContextId", value = "digitalTwinRegistryClient",
->>>>>>> 6a6d52e82559139b8b4f103b6ef7d8adebf396ca
         url = "${feign.client.config.digitalTwinRegistry.url}",
         configuration = DigitalTwinRegistryClientConfiguration.class)
 interface DigitalTwinRegistryClient {
