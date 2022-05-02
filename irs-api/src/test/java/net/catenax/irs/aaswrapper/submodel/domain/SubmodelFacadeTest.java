@@ -8,7 +8,6 @@
  * additional information regarding license terms.
  *
  */
-
 package net.catenax.irs.aaswrapper.submodel.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;

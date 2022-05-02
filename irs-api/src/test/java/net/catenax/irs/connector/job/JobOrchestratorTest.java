@@ -1,6 +1,5 @@
 package net.catenax.irs.connector.job;
 
-import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,21 +12,12 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.net.URL;
-import java.time.Instant;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import com.github.javafaker.Faker;
-import net.catenax.irs.component.GlobalAssetIdentification;
-import net.catenax.irs.component.Job;
-import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.util.TestMother;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +27,6 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpMethod;
 
 @ExtendWith(MockitoExtension.class)
 class JobOrchestratorTest {
@@ -57,9 +46,6 @@ class JobOrchestratorTest {
     @Captor
     ArgumentCaptor<MultiTransferJob> jobCaptor;
 
-    @Captor
-    ArgumentCaptor<Consumer<TransferProcess>> callbackCaptor;
-
     private static final String AS_BUILT = "AsBuilt";
 
     Pattern uuid = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
@@ -71,10 +57,6 @@ class JobOrchestratorTest {
     TransferInitiateResponse okResponse = generate.okResponse();
     TransferInitiateResponse okResponse2 = generate.okResponse();
     TransferProcess transfer = generate.transfer();
-    Faker faker = new Faker();
-    GlobalAssetIdentification globalAssetId = GlobalAssetIdentification.builder()
-                                                                       .globalAssetId(faker.lorem().characters())
-                                                                       .build();
 
     @Test
     void startJob_storesJobWithDataAndState() {
@@ -367,27 +349,4 @@ class JobOrchestratorTest {
         sut.transferProcessCompleted(transfer);
     }
 
-    private Job createJob() {
-        GlobalAssetIdentification globalAssetId = GlobalAssetIdentification.builder()
-                                                                           .globalAssetId(UUID.randomUUID().toString())
-                                                                           .build();
-
-        return Job.builder()
-                  .globalAssetId(globalAssetId)
-                  .jobId(UUID.randomUUID())
-                  .jobState(JobState.UNSAVED)
-                  .createdOn(Instant.now())
-                  .lastModifiedOn(Instant.now())
-                  .requestUrl(fakeURL())
-                  .action(HttpMethod.POST.toString())
-                  .build();
-    }
-
-    private URL fakeURL() {
-        try {
-            return new URL("http://localhost:8888/fake/url");
-        } catch (Exception e) {
-            return null;
-        }
-    }
 }

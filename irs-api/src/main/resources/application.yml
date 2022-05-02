@@ -89,8 +89,6 @@ resilience4j.retry:
         - org.springframework.web.client.HttpServerErrorException
         - java.util.concurrent.TimeoutException
         - java.io.IOException
-      ignoreExceptions:
-        - net.catenax.irs.exceptions.MaxDepthTooLargeException
       retryOnException:
         - net.catenax.irs.exceptions.AspectNotSupportedException
   instances:
