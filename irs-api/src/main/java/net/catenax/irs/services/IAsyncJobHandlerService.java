@@ -18,19 +18,18 @@ import net.catenax.irs.component.Job;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.connector.job.JobInitiateResponse;
-import net.catenax.irs.exceptions.EntityNotFoundException;
 
 /**
  * Interface for JobHandler
  */
 public interface IAsyncJobHandlerService {
 
-    CompletableFuture<JobInitiateResponse> registerJob(@NonNull RegisterJob request) throws InterruptedException;
+    CompletableFuture<JobInitiateResponse> registerJob(@NonNull RegisterJob request);
 
     CompletableFuture<Optional<Job>> cancelJob(@NonNull UUID jobId);
 
-    CompletableFuture<Jobs> getPartialJobResult(UUID jobId) throws EntityNotFoundException;
+    CompletableFuture<Jobs> getPartialJobResult(UUID jobId);
 
-    CompletableFuture<Jobs> getCompleteJobResult(UUID jobId) throws EntityNotFoundException;
+    CompletableFuture<Jobs> getCompleteJobResult(UUID jobId);
 
 }
