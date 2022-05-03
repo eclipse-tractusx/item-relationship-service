@@ -77,7 +77,7 @@ class SubmodelFacadeTest {
         final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getSubmodel(catenaXId, filterLifecycle);
 
         assertThat(submodelResponse.getCatenaXId()).isEqualTo(catenaXId);
-        assertThat(submodelResponse.getChildParts()).hasSize(0);
+        assertThat(submodelResponse.getChildParts()).isEmpty();
     }
 
     @Test
