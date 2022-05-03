@@ -11,6 +11,7 @@ package net.catenax.irs.configuration;
 
 import java.util.concurrent.Executor;
 
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @EnableAsync(proxyTargetClass = true)
 @Profile("async")
 @SuppressWarnings("PMD.CommentDefaultAccessModifier")
+@ExcludeFromCodeCoverageGeneratedReport
 public class AsyncJobConfiguration {
 
     /**

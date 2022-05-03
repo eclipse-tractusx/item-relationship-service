@@ -107,30 +107,36 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
                                             JobState.TRANSFERS_FINISHED
         };
 
-        // TODO (Dapo): Maximum amount of time to wait when requesting complete job result
         return CompletableFuture.supplyAsync(() -> {
             Jobs jobs = queryService.getJobForJobId(jobId, false);
             do {
 
-                for (final JobState badState : badStates) {
-                    if (jobs.getJob().getJobState() == badState) {
-                        throw new EntityCancelException(JOB_ALREADY_CANCELLED);
-                    }
-                }
+                checkBadState(badStates, jobs);
 
-                for (final JobState progressState : progressStates) {
-                    if (jobs.getJob().getJobState() == progressState) {
-                        jobs = queryService.getJobForJobId(jobId, false);
-                    }
-                }
-                
-                // TODO (Dapo): Condition to limit the amount of time to keep trying to get a job complete state
+                jobs = checkJobCompleteState(jobId, progressStates, jobs);
 
             } while (jobs.getJob().getJobState() != JobState.COMPLETED);
 
             return jobs;
         });
 
+    }
+
+    private Jobs checkJobCompleteState(final UUID jobId, final JobState[] progressStates, Jobs jobs) {
+        for (final JobState progressState : progressStates) {
+            if (jobs.getJob().getJobState() == progressState) {
+                jobs = queryService.getJobForJobId(jobId, false);
+            }
+        }
+        return jobs;
+    }
+
+    private void checkBadState(final JobState[] badStates, final Jobs jobs) {
+        for (final JobState badState : badStates) {
+            if (jobs.getJob().getJobState() == badState) {
+                throw new EntityCancelException(JOB_ALREADY_CANCELLED);
+            }
+        }
     }
 
 }

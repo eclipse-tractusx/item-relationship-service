@@ -34,7 +34,7 @@ class EntityCancelExceptionTest {
     }
 
     @Test
-    public void cancelExceptionTest() {
+    void cancelExceptionTest() {
         final var ex = new EntityCancelException("test error");
         doThrow(ex).when(handler).getCompleteJobResult(any());
 

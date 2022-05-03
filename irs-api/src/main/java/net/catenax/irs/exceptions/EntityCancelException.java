@@ -10,7 +10,7 @@
 package net.catenax.irs.exceptions;
 
 /**
- * General entity not found exception.
+ * Exception depict that the entity had already been cancelled
  */
 public class EntityCancelException extends RuntimeException {
     /**
