@@ -22,7 +22,6 @@ import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.connector.job.JobException;
 import net.catenax.irs.connector.job.JobInitiateResponse;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.exceptions.EntityCancelException;
@@ -112,23 +111,19 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
         return CompletableFuture.supplyAsync(() -> {
             Jobs jobs = queryService.getJobForJobId(jobId, false);
             do {
-                try {
-                    for (final JobState badState : badStates) {
-                        if (jobs.getJob().getJobState() == badState) {
-                            throw new EntityCancelException(JOB_ALREADY_CANCELLED);
-                        }
-                    }
 
-                    for (final JobState progressState : progressStates) {
-                        if (jobs.getJob().getJobState() == progressState) {
-                            jobs = queryService.getJobForJobId(jobId, false);
-                            Thread.currentThread().wait(WAIT_TIME);
-                        }
+                for (final JobState badState : badStates) {
+                    if (jobs.getJob().getJobState() == badState) {
+                        throw new EntityCancelException(JOB_ALREADY_CANCELLED);
                     }
-                } catch (InterruptedException e) {
-                    throw new JobException(e.getMessage());
                 }
 
+                for (final JobState progressState : progressStates) {
+                    if (jobs.getJob().getJobState() == progressState) {
+                        jobs = queryService.getJobForJobId(jobId, false);
+                    }
+                }
+                
                 // TODO (Dapo): Condition to limit the amount of time to keep trying to get a job complete state
 
             } while (jobs.getJob().getJobState() != JobState.COMPLETED);
