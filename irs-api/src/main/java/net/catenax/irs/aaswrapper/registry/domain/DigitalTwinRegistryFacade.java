@@ -54,6 +54,7 @@ public class DigitalTwinRegistryFacade {
      */
     private boolean isAssemblyPartRelationship(final SubmodelDescriptor submodelDescriptor) {
         final String assemblyPartRelationshipIdentifier = SubmodelType.ASSEMBLY_PART_RELATIONSHIP.getValue();
+
         return assemblyPartRelationshipIdentifier.equals(
                 submodelDescriptor.getSemanticId().getValue().stream().findFirst().orElse(null));
     }

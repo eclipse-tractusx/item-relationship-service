@@ -26,8 +26,6 @@ public interface IIrsItemGraphQueryService {
 
     JobHandle registerItemJob(@NonNull RegisterJob request);
 
-    Jobs jobLifecycle(@NonNull String jobId);
-
     List<UUID> getJobsByJobState(@NonNull List<JobState> jobStates);
 
     Job cancelJobById(@NonNull UUID jobId);

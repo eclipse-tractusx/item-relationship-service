@@ -11,11 +11,13 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,23 +30,45 @@ public class SubmodelFacade {
     private final SubmodelClient submodelClient;
 
     /**
+     *
      * @param submodelEndpointAddress The URL to the submodel endpoint
+     * @param lifecycleContext filter value
      * @return The Aspect Model for the given submodel
      */
     @Retry(name = "submodelRetryer")
-    public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress) {
-        final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
-                AssemblyPartRelationship.class);
+    public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress, final String lifecycleContext) {
+        final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress, AssemblyPartRelationship.class);
 
+        final Set<ChildData> submodelParts = submodel.getChildParts();
+
+        if (shouldFilterByLifecycleContext(lifecycleContext)) {
+            filterSubmodelPartsByLifecycleContext(submodelParts, lifecycleContext);
+        }
+
+        return buildAssemblyPartRelationshipResponse(submodelParts, submodel.getCatenaXId());
+    }
+
+    private AssemblyPartRelationshipDTO buildAssemblyPartRelationshipResponse(final Set<ChildData> submodelParts,
+            final String catenaXId) {
         final Set<ChildDataDTO> childParts = new HashSet<>();
-        submodel.getChildParts()
-                .forEach(childData -> childParts.add(ChildDataDTO.builder()
-                                                                 .childCatenaXId(childData.getChildCatenaXId())
-                                                                 .lifecycleContext(
-                                                                         childData.getLifecycleContext().getValue())
-                                                                 .build()));
+        submodelParts.forEach(childData -> childParts.add(ChildDataDTO.builder()
+                                                                      .childCatenaXId(childData.getChildCatenaXId())
+                                                                      .lifecycleContext(childData.getLifecycleContext().getValue())
+                                                                      .build()));
 
-        return AssemblyPartRelationshipDTO.builder().catenaXId(submodel.getCatenaXId()).childParts(childParts).build();
+        return AssemblyPartRelationshipDTO.builder().catenaXId(catenaXId).childParts(childParts).build();
+    }
+
+    private void filterSubmodelPartsByLifecycleContext(final Set<ChildData> submodelParts, final String lifecycleContext) {
+        submodelParts.removeIf(isNotLifecycleContext(lifecycleContext));
+    }
+
+    private boolean shouldFilterByLifecycleContext(final String lifecycleContext) {
+        return StringUtils.isNotBlank(lifecycleContext);
+    }
+
+    private Predicate<ChildData> isNotLifecycleContext(final String lifecycleContext) {
+        return childData -> !childData.getLifecycleContext().getValue().equals(lifecycleContext);
     }
 
 }
