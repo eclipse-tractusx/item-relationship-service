@@ -91,7 +91,7 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
     @Async("asyncJobExecutor")
     @Override
     public CompletableFuture<Jobs> getCompleteJobResult(final UUID jobId)
-            throws EntityNotFoundException {
+            throws EntityNotFoundException, JobException {
 
         // Check and handle job in bad states
         JobState[] badStates = { JobState.ERROR,
