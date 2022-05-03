@@ -79,7 +79,7 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
      */
     @Async("asyncJobExecutor")
     @Override
-    public CompletableFuture<Optional<Job>> cancelJob(@NonNull final UUID jobId) {
+    public CompletableFuture<Optional<Job>> cancelJob(final UUID jobId) {
         return CompletableFuture.completedFuture(Optional.of(queryService.cancelJobById(jobId)));
     }
 

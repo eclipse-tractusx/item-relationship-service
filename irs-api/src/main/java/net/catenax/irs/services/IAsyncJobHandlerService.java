@@ -13,7 +13,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import lombok.NonNull;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
@@ -24,9 +23,9 @@ import net.catenax.irs.connector.job.JobInitiateResponse;
  */
 public interface IAsyncJobHandlerService {
 
-    CompletableFuture<JobInitiateResponse> registerJob(@NonNull RegisterJob request);
+    CompletableFuture<JobInitiateResponse> registerJob(RegisterJob request) throws InterruptedException;
 
-    CompletableFuture<Optional<Job>> cancelJob(@NonNull UUID jobId);
+    CompletableFuture<Optional<Job>> cancelJob(UUID jobId);
 
     CompletableFuture<Jobs> getPartialJobResult(UUID jobId);
 
