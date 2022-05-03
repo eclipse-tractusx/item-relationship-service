@@ -85,7 +85,7 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
 
     @Async("asyncJobExecutor")
     @Override
-    public CompletableFuture<Jobs> getPartialJobResult(UUID jobId)
+    public CompletableFuture<Jobs> getPartialJobResult(final UUID jobId)
             throws EntityNotFoundException {
         final Jobs jobs = queryService.getJobForJobId(jobId, true);
         return CompletableFuture.completedFuture(jobs);
@@ -97,15 +97,15 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
             throws EntityNotFoundException {
 
         // Check and handle job in bad states
-        JobState[] badStates = { JobState.ERROR,
-                                 JobState.CANCELED
+        final JobState[] badStates = { JobState.ERROR,
+                                       JobState.CANCELED
         };
 
         // Check and handle job in progress state
-        JobState[] progressStates = { JobState.UNSAVED,
-                                      JobState.INITIAL,
-                                      JobState.RUNNING,
-                                      JobState.TRANSFERS_FINISHED
+        final JobState[] progressStates = { JobState.UNSAVED,
+                                            JobState.INITIAL,
+                                            JobState.RUNNING,
+                                            JobState.TRANSFERS_FINISHED
         };
 
         // TODO (Dapo): Maximum amount of time to wait when requesting complete job result

@@ -87,9 +87,7 @@ public abstract class BaseJobStore implements JobStore {
             put(job.getJob().getJobId().toString(), newJob);
             return null;
         });
-
-        // final MultiTransferJob multiTransferJob = job.get();
-        //                put(multiTransferJob.getJob().getJobId().toString(), action.apply(multiTransferJob));
+        
     }
 
     @Override
