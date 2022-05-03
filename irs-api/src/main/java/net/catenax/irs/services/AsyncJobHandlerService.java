@@ -37,6 +37,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 @ExcludeFromCodeCoverageGeneratedReport
+@SuppressWarnings({ "PMD.PreserveStackTrace",
+                    "PMD.AvoidUncheckedExceptionsInSignatures"
+})
 public class AsyncJobHandlerService implements IAsyncJobHandlerService {
     private static final int WAIT_TIME = 5000;
     private static final String EMPTY_STRING = "";
@@ -52,7 +55,7 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
     public CompletableFuture<JobInitiateResponse> registerJob(@NonNull final RegisterJob request)
             throws InterruptedException {
 
-        Optional<JobHandle> handle = Optional.ofNullable(queryService.registerItemJob(request));
+        final Optional<JobHandle> handle = Optional.ofNullable(queryService.registerItemJob(request));
 
         final JobInitiateResponse response = handle.map(jh ->
                 JobInitiateResponse.builder()
@@ -83,15 +86,15 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
     @Async("asyncJobExecutor")
     @Override
     public CompletableFuture<Jobs> getPartialJobResult(UUID jobId)
-            throws EntityNotFoundException, InterruptedException {
-        Jobs jobs = queryService.getJobForJobId(jobId, true);
+            throws EntityNotFoundException {
+        final Jobs jobs = queryService.getJobForJobId(jobId, true);
         return CompletableFuture.completedFuture(jobs);
     }
 
     @Async("asyncJobExecutor")
     @Override
     public CompletableFuture<Jobs> getCompleteJobResult(final UUID jobId)
-            throws EntityNotFoundException, JobException {
+            throws EntityNotFoundException {
 
         // Check and handle job in bad states
         JobState[] badStates = { JobState.ERROR,
@@ -110,13 +113,13 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
             Jobs jobs = queryService.getJobForJobId(jobId, false);
             do {
                 try {
-                    for (JobState badState : badStates) {
+                    for (final JobState badState : badStates) {
                         if (jobs.getJob().getJobState() == badState) {
                             throw new EntityCancelException(JOB_ALREADY_CANCELLED);
                         }
                     }
 
-                    for (JobState progressState : progressStates) {
+                    for (final JobState progressState : progressStates) {
                         if (jobs.getJob().getJobState() == progressState) {
                             jobs = queryService.getJobForJobId(jobId, false);
                             Thread.currentThread().wait(WAIT_TIME);

@@ -24,20 +24,35 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 @EnableAsync(proxyTargetClass = true)
 @Profile("async")
+@SuppressWarnings("PMD.CommentDefaultAccessModifier")
 public class AsyncJobConfiguration {
 
+    /**
+     * Size of executor pool
+     */
     @Value("${async.joborchestrator.poolSize}")
     Integer poolSize;
 
+    /**
+     * Max size of executor pool
+     */
     @Value("${async.joborchestrator.maxPoolSize}")
     Integer maxPoolSize;
 
+    /**
+     * Total capacity
+     */
     @Value("${async.joborchestrator.capacity}")
     Integer capacity;
 
+    /**
+     * Method that create executor bean
+     *
+     * @return Executor
+     */
     @Bean(name = "asyncJobExecutor")
     public Executor asyncExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(poolSize);
         executor.setMaxPoolSize(maxPoolSize);
         executor.setQueueCapacity(capacity);

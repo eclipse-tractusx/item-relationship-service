@@ -27,10 +27,10 @@ public interface IAsyncJobHandlerService {
 
     CompletableFuture<JobInitiateResponse> registerJob(@NonNull RegisterJob request) throws InterruptedException;
 
-    CompletableFuture<Optional<Job>> cancelJob(@NonNull UUID jobId) throws InterruptedException;
+    CompletableFuture<Optional<Job>> cancelJob(@NonNull UUID jobId) throws EntityNotFoundException;
 
-    CompletableFuture<Jobs> getPartialJobResult(UUID jobId) throws EntityNotFoundException, InterruptedException;
+    CompletableFuture<Jobs> getPartialJobResult(UUID jobId) throws EntityNotFoundException;
 
-    CompletableFuture<Jobs> getCompleteJobResult(UUID jobId) throws EntityNotFoundException, InterruptedException;
+    CompletableFuture<Jobs> getCompleteJobResult(UUID jobId) throws EntityNotFoundException;
 
 }
