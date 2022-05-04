@@ -100,13 +100,6 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
                                        JobState.CANCELED
         };
 
-        // Check and handle job in progress state
-        final JobState[] progressStates = { JobState.UNSAVED,
-                                            JobState.INITIAL,
-                                            JobState.RUNNING,
-                                            JobState.TRANSFERS_FINISHED
-        };
-
         return CompletableFuture.supplyAsync(() -> {
             Jobs jobs = queryService.getJobForJobId(jobId, false);
             do {
