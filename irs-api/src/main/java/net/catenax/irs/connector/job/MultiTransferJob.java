@@ -18,7 +18,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
@@ -69,6 +71,17 @@ public class MultiTransferJob {
     public Collection<String> getTransferProcessIds() {
         return Collections.unmodifiableSet(this.transferProcessIds);
     }
+
+    @JsonIgnore
+    public UUID getJobId() {
+        return job.getJobId();
+    }
+
+    @JsonIgnore
+    public String getJobIdString() {
+        return getJobId().toString();
+    }
+
 
     /**
      * Builder for {@link MultiTransferJob}.
