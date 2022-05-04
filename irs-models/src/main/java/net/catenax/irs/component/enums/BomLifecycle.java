@@ -9,18 +9,22 @@
 //
 package net.catenax.irs.component.enums;
 
+import java.util.stream.Stream;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.dtos.ItemLifecycleStage;
-
-import java.util.stream.Stream;
 
 /***
  * API type for the view of the items tree to be returned by a query.
  *
  * @see ItemLifecycleStage
  */
+@ExcludeFromCodeCoverageGeneratedReport
 @Schema(description = "View defining which data of the item tree is retrieved.")
+@Getter
 public enum BomLifecycle {
     @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") AS_BUILT("asBuilt", "AsBuilt");
     //@Schema(description = "The view of the PartsTree ... lifecycle.") AS_MAINTAINED("asMaintained"),
@@ -49,11 +53,17 @@ public enum BomLifecycle {
 
     @JsonCreator
     public static BomLifecycle fromValue(final String value) {
-        return Stream.of(BomLifecycle.values()).filter(bomLifecycle -> bomLifecycle.value.equals(value)).findFirst().orElseThrow();
+        return Stream.of(BomLifecycle.values())
+                     .filter(bomLifecycle -> bomLifecycle.value.equals(value))
+                     .findFirst()
+                     .orElseThrow();
     }
 
     public static BomLifecycle fromLifecycleContextCharacteristic(final String value) {
-        return Stream.of(BomLifecycle.values()).filter(bomLifecycle -> bomLifecycle.lifecycleContextCharacteristicValue.equals(value)).findFirst().orElseThrow();
+        return Stream.of(BomLifecycle.values())
+                     .filter(bomLifecycle -> bomLifecycle.lifecycleContextCharacteristicValue.equals(value))
+                     .findFirst()
+                     .orElseThrow();
     }
 
     /**
