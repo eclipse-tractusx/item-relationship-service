@@ -113,22 +113,15 @@ public class AsyncJobHandlerService implements IAsyncJobHandlerService {
 
                 checkBadState(badStates, jobs);
 
-                jobs = checkJobCompleteState(jobId, progressStates, jobs);
+                if (jobs.getJob().getJobState() == JobState.COMPLETED) {
+                    jobs = queryService.getJobForJobId(jobId, false);
+                }
 
             } while (jobs.getJob().getJobState() != JobState.COMPLETED);
 
             return jobs;
         });
 
-    }
-
-    private Jobs checkJobCompleteState(final UUID jobId, final JobState[] progressStates, Jobs jobs) {
-        for (final JobState progressState : progressStates) {
-            if (jobs.getJob().getJobState() == progressState) {
-                jobs = queryService.getJobForJobId(jobId, false);
-            }
-        }
-        return jobs;
     }
 
     private void checkBadState(final JobState[] badStates, final Jobs jobs) {
