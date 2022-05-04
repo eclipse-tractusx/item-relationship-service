@@ -37,7 +37,7 @@ class SubmodelRetryerTest {
         given(this.client.getSubmodel(anyString(), any()))
                 .willThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception"));
 
-        assertThrows(HttpServerErrorException.class, () -> facade.getSubmodel("TEST"));
+        assertThrows(HttpServerErrorException.class, () -> facade.getSubmodel("TEST", "lifecycle"));
 
         verify(this.client, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getSubmodel(anyString(), any());
     }

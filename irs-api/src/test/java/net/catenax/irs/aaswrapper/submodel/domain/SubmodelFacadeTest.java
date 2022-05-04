@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.doReturn;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -48,13 +49,13 @@ class SubmodelFacadeTest {
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate());
         final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
-        assertThatExceptionOfType(RestClientException.class).isThrownBy(() -> submodelFacade.getSubmodel(url));
+        assertThatExceptionOfType(RestClientException.class).isThrownBy(() -> submodelFacade.getSubmodel(url, "lifecycle"));
     }
 
     @Test
     void shouldReturnAssemblyPartRelationshipWithChildDataWhenRequestingWithCatenaXId() {
         final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getSubmodel(catenaXId);
+        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getSubmodel(catenaXId, LifecycleContextCharacteristic.ASBUILT.getValue());
 
         assertThat(submodelResponse.getCatenaXId()).isEqualTo(catenaXId);
 
@@ -69,6 +70,17 @@ class SubmodelFacadeTest {
     }
 
     @Test
+    void shouldReturnFilteredAssemblyPartRelationshipWithoutChildrenWhenRequestingWithCatenaXId() {
+        final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+        final String filterLifecycle = LifecycleContextCharacteristic.ASREQUIRED.getValue();
+
+        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getSubmodel(catenaXId, filterLifecycle);
+
+        assertThat(submodelResponse.getCatenaXId()).isEqualTo(catenaXId);
+        assertThat(submodelResponse.getChildParts()).isEmpty();
+    }
+
+    @Test
     void shouldReturnAssemblyPartRelationshipDTOWhenRequestingOnRealClient() {
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(restTemplate);
         SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
@@ -76,7 +88,7 @@ class SubmodelFacadeTest {
         final AssemblyPartRelationship assemblyPartRelationship = new AssemblyPartRelationship();
         final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
         assemblyPartRelationship.setCatenaXId(catenaXId);
-        assemblyPartRelationship.setChildParts(Set.of());
+        assemblyPartRelationship.setChildParts(new HashSet<>());
 
         final ResponseEntity<AssemblyPartRelationship> okResponse = new ResponseEntity<>(assemblyPartRelationship,
                 HttpStatus.OK);
@@ -84,7 +96,7 @@ class SubmodelFacadeTest {
         final String endpointUrl = "test.test";
         doReturn(okResponse).when(restTemplate).getForEntity(endpointUrl, AssemblyPartRelationship.class);
 
-        final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(endpointUrl);
+        final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(endpointUrl, "lifecycle");
 
         assertThat(submodel.getCatenaXId()).isEqualTo(catenaXId);
         final Set<ChildDataDTO> childParts = submodel.getChildParts();
