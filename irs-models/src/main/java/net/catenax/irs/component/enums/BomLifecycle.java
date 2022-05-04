@@ -11,6 +11,7 @@ package net.catenax.irs.component.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.dtos.ItemLifecycleStage;
 
@@ -23,6 +24,7 @@ import java.util.stream.Stream;
  */
 @ExcludeFromCodeCoverageGeneratedReport
 @Schema(description = "View defining which data of the item tree is retrieved.")
+@Getter
 public enum BomLifecycle {
     @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") AS_BUILT("asBuilt", "AsBuilt");
     //@Schema(description = "The view of the PartsTree ... lifecycle.") AS_MAINTAINED("asMaintained"),
