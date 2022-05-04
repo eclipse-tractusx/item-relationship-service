@@ -1,6 +1,5 @@
 package net.catenax.irs.services;
 
-import static net.catenax.irs.util.CommonConstant.ERROR_RESPONSE;
 import static net.catenax.irs.util.TestMother.registerJobWithoutDepth;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,7 +17,6 @@ import net.catenax.irs.component.Job;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.config.AsyncConfigTest;
 import net.catenax.irs.connector.job.JobInitiateResponse;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.ResponseStatus;
@@ -35,13 +33,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-// @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-// @TestPropertySource(locations = "classpath:asynctest.yaml")
 @ActiveProfiles(profiles = { "async" })
 @EnableAsync(proxyTargetClass = true)
 @Import({ JobStore.class,
           BlobPersistence.class,
-          AsyncConfigTest.class,
           TestConfig.class,
           AsyncJobHandlerService.class,
 })
@@ -84,12 +79,6 @@ class JobHandlerTest {
                                                           .status(ResponseStatus.OK)
                                                           .error(EMPTY_STRING)
                                                           .build();
-
-        JobInitiateResponse errorResponse = JobInitiateResponse.builder()
-                                                               .jobId(JOB_ID.toString())
-                                                               .status(ResponseStatus.ERROR_RETRY)
-                                                               .error(ERROR_RESPONSE)
-                                                               .build();
 
         doAnswer((InvocationOnMock invocation) -> {
             ((Runnable) invocation.getArguments()[0]).run();
