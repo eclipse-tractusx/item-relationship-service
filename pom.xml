@@ -11,6 +11,12 @@
     <name>IRS Root</name>
     <description>Root module containing other modules.</description>
 
+    <properties>
+        <sonar.organization>catenax-ng</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    </properties>
+
+
     <modules>
         <module>irs-testing</module>
         <module>irs-api</module>
