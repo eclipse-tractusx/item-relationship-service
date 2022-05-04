@@ -13,9 +13,12 @@
 
     <properties>
         <sonar.organization>catenax-ng</sonar.organization>
+        <sonar.projectKey>catenax-ng_product-item-relationship-service</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${project.basedir}/report-aggregate/target/site/jacoco-aggregate/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
-
 
     <modules>
         <module>irs-testing</module>
@@ -23,5 +26,6 @@
         <module>irs-common</module>
         <module>irs-models</module>
         <module>integration-tests</module>
+        <module>irs-report-aggregate</module>
     </modules>
 </project>
