@@ -37,7 +37,6 @@ public class JobErrorDetails implements Serializable {
             maxLength = EXCEPTION_NAME_MAX_LENGTH)
     private String exception;
 
-
     @Schema(description = "Detail information for the error occurred.", implementation = String.class,
             maxLength = ERROR_DETAIL_MAX_LENGTH)
     private String errorDetail;
