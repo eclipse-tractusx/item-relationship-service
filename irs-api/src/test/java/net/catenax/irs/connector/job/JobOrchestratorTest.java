@@ -115,7 +115,7 @@ class JobOrchestratorTest {
 
         // Assert
         verifyNoInteractions(processManager);
-        verify(jobStore).completeJob(eq(newJob.getJobIdString()), any());
+        verify(jobStore).find(newJob.getJobIdString());
         verifyNoMoreInteractions(jobStore);
 
         assertThat(response).isEqualTo(JobInitiateResponse.builder()
@@ -207,29 +207,24 @@ class JobOrchestratorTest {
 
     @Test
     void transferProcessCompleted_WhenCalledBackForCompletedTransfer_WithoutNextTransfer() {
-        // Arrange
-        letJobStoreCallCompletionAction();
-
         // Act
         callCompleteAndReturnNextTransfers(Stream.empty());
 
         // Assert
         verify(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
+        verify(jobStore).find(job.getJobIdString());
         verifyNoInteractions(processManager);
         verifyNoMoreInteractions(jobStore);
     }
 
     @Test
     void transferProcessCompleted_WhenJobNotCompleted_DoesNotCallComplete() {
-        // Arrange
-        letJobStoreCallCompletionAction();
-
         // Act
         callCompleteAndReturnNextTransfers(Stream.empty());
 
         // Assert
         verify(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
-        verify(jobStore).completeJob(eq(job.getJobIdString()), any());
+        verify(jobStore).find(job.getJobIdString());
         verifyNoMoreInteractions(jobStore);
         verifyNoMoreInteractions(handler);
     }
@@ -271,6 +266,7 @@ class JobOrchestratorTest {
 
         // Assert
         verify(jobStore).markJobInError(job.getJobIdString(), "Handler method failed");
+        verify(jobStore).find(job.getJobIdString());
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
     }
