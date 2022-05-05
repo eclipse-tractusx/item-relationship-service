@@ -66,7 +66,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
         final String processId = UUID.randomUUID().toString();
 
-        executor.execute(getRunnable(dataRequest, transferProcessStarted, completionCallback, processId, lifecyleContext));
+        executor.submit(getRunnable(dataRequest, transferProcessStarted, completionCallback, processId, lifecyleContext));
 
         return new TransferInitiateResponse(processId, ResponseStatus.OK);
     }
