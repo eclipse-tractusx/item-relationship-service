@@ -92,6 +92,7 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public void addTransferProcess(final String jobId, final String processId) {
+        log.info("Adding transfer process {} to job {}", processId, jobId);
         modifyJob(jobId, job -> job.toBuilder().transferProcessId(processId).transitionInProgress().build());
     }
 
@@ -108,6 +109,8 @@ public abstract class BaseJobStore implements JobStore {
                                   .completedTransfer(process);
             if (remainingTransfers.isEmpty()) {
                 newJob.transitionTransfersFinished();
+            } else {
+                log.info("Job {} has {} remaining transfers, cannot finish it: {}", jobId, remainingTransfers.size(), newJob.build());
             }
             return newJob.build();
         });

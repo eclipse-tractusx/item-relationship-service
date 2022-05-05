@@ -142,7 +142,8 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         }
 
         try {
-            startTransfers(job, requests);
+            final long transfersStarted = startTransfers(job, requests);
+            log.info("Started {} new transfers", transfersStarted);
         } catch (JobException e) {
             markJobInError(job, e, "Failed to start a transfer");
             return;
