@@ -71,6 +71,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
         return new TransferInitiateResponse(processId, ResponseStatus.OK);
     }
 
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private Runnable getRunnable(final ItemDataRequest dataRequest, final Consumer<String> transferProcessStarted,
             final Consumer<AASTransferProcess> transferProcessCompleted, final String processId,
             final String lifecycleContext) {
