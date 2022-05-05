@@ -32,7 +32,9 @@ import org.springframework.scheduling.annotation.Scheduled;
  * Orchestrator service for recursive {@link MultiTransferJob}s that potentially
  * comprise multiple transfers.
  */
-@SuppressWarnings({ "PMD.AvoidCatchingGenericException", "PMD.TooManyMethods" })
+@SuppressWarnings({ "PMD.AvoidCatchingGenericException",
+                    "PMD.TooManyMethods"
+})
 // Handle RuntimeException from callbacks
 @Slf4j
 public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
@@ -65,7 +67,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      * @param handler        Recursive job handler.
      */
     public JobOrchestrator(final TransferProcessManager<T, P> processManager, final JobStore jobStore,
-        final RecursiveJobHandler<T, P> handler) {
+            final RecursiveJobHandler<T, P> handler) {
 
         this.processManager = processManager;
         this.jobStore = jobStore;
@@ -130,7 +132,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
         if (job.getJob().getJobState() != JobState.RUNNING) {
             log.info("Ignoring transfer complete event for job {} in state {} ", job.getJob().getJobId(),
-                job.getJob().getJobState());
+                    job.getJob().getJobState());
             return;
         }
 
@@ -211,13 +213,14 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         return dataRequests.map(r -> startTransfer(job, r)).collect(Collectors.counting());
     }
 
-    private TransferInitiateResponse startTransfer(final MultiTransferJob job, final T dataRequest)  /* throws JobErrorDetails */ {
+    private TransferInitiateResponse startTransfer(final MultiTransferJob job,
+            final T dataRequest)  /* throws JobErrorDetails */ {
 
         final String lifecyleContext = job.getJobData().get(LIFE_CYCLE_CONTEXT);
 
         final var response = processManager.initiateRequest(dataRequest,
-            transferId -> jobStore.addTransferProcess(job.getJob().getJobId().toString(), transferId),
-            this::transferProcessCompleted, lifecyleContext);
+                transferId -> jobStore.addTransferProcess(job.getJob().getJobId().toString(), transferId),
+                this::transferProcessCompleted, lifecyleContext);
 
         if (response.getStatus() != ResponseStatus.OK) {
             throw new JobException(response.getStatus().toString());

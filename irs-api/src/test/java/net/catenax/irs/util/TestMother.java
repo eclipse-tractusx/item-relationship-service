@@ -78,7 +78,8 @@ public class TestMother {
                                .jobData(Map.of(ROOT_ITEM_ID_KEY, faker.lorem().characters(), faker.lorem().characters(),
                                        faker.lorem().characters()))
                                .jobData(Map.of(ROOT_ITEM_ID_KEY, faker.lorem().characters(),
-                                   faker.lorem().characters(), faker.lorem().characters(), LIFE_CYCLE_CONTEXT, AS_BUILT))
+                                       faker.lorem().characters(), faker.lorem().characters(), LIFE_CYCLE_CONTEXT,
+                                       AS_BUILT))
                                .build();
     }
 
@@ -126,4 +127,5 @@ public class TestMother {
         registerJob.setDepth(depth);
         return registerJob;
     }
+
 }
