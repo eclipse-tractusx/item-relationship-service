@@ -50,9 +50,10 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         // then
         given().ignoreException(EntityNotFoundException.class)
-           .await()
-           .atMost(10, TimeUnit.SECONDS)
-           .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFullTree));
+               .await()
+               .pollInterval(500, TimeUnit.MILLISECONDS)
+               .atMost(10, TimeUnit.SECONDS)
+               .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFullTree));
     }
 
     @Test
@@ -66,9 +67,11 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         // then
         given().ignoreException(EntityNotFoundException.class)
-            .await()
-            .atMost(10, TimeUnit.SECONDS)
-            .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFirstDepth));
+               .await()
+               .pollInterval(500, TimeUnit.MILLISECONDS)
+               .atMost(10, TimeUnit.SECONDS)
+               .until(() -> getRelationshipsSize(registeredJob.getJobId()),
+                       equalTo(expectedRelationshipsSizeFirstDepth));
     }
 
     @Test
