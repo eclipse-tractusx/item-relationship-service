@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.ToString;
 import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.enums.JobState;
@@ -37,6 +38,7 @@ import net.catenax.irs.component.enums.JobState;
 @Builder(toBuilder = true)
 @JsonDeserialize(builder = Job.JobBuilder.class)
 @AllArgsConstructor
+@ToString
 @SuppressWarnings("PMD.ShortClassName")
 @ExcludeFromCodeCoverageGeneratedReport
 public class Job {
@@ -114,8 +116,7 @@ public class Job {
 
     @Schema(description = "The passed query parameters", implementation = QueryParameter.class)
     private QueryParameter queryParameter;
-
-
+    
     /**
      * Builder class
      */

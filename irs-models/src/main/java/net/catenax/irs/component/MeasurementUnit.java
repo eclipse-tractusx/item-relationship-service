@@ -12,7 +12,6 @@ package net.catenax.irs.component;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * MeasurementUnit
@@ -20,7 +19,6 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @Value
 @Jacksonized
 @Builder(toBuilder = true)
-@ExcludeFromCodeCoverageGeneratedReport
 public class MeasurementUnit {
     /**
      * dataTypeURI

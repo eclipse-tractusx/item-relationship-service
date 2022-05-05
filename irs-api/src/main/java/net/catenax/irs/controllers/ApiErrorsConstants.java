@@ -9,14 +9,13 @@
 //
 package net.catenax.irs.controllers;
 
-
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Helper class contains all Api Errors as reusable dtos.
  */
 @ExcludeFromCodeCoverageGeneratedReport
-@SuppressWarnings({"PMD.CommentRequired"})
+@SuppressWarnings({ "PMD.CommentRequired" })
 public class ApiErrorsConstants {
     public static final String INVALID_ARGUMENTS = "Invalid Arguments.";
     public static final String INVALID_DEPTH = "Invalid Depth.";

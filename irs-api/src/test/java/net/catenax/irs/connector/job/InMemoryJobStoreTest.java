@@ -116,7 +116,7 @@ class InMemoryJobStoreTest {
 
         // Act
         assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
-            () -> sut.completeTransferProcess(job.getJob().getJobId().toString(), process1));
+                () -> sut.completeTransferProcess(job.getJob().getJobId().toString(), process1));
 
         // Assert
         refreshJob();
@@ -201,7 +201,7 @@ class InMemoryJobStoreTest {
         sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
         // Act
         assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
-            () -> sut.completeJob(job.getJob().getJobId().toString()));
+                () -> sut.completeJob(job.getJob().getJobId().toString()));
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.RUNNING);
@@ -271,7 +271,7 @@ class InMemoryJobStoreTest {
         sut.completeJob(job.getJob().getJobId().toString());
         // Act
         final List<MultiTransferJob> completedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
-            nowPlusFiveHours);
+                nowPlusFiveHours);
         // Assert
         assertThat(completedJobs.size()).isEqualTo(1);
         assertThat(completedJobs.get(0).getJob().getJobState()).isEqualTo(JobState.COMPLETED);
@@ -287,7 +287,7 @@ class InMemoryJobStoreTest {
         sut.markJobInError(job.getJob().getJobId().toString(), errorDetail);
         // Act
         final List<MultiTransferJob> failedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.ERROR,
-            nowPlusFiveHours);
+                nowPlusFiveHours);
         // Assert
         assertThat(failedJobs.size()).isEqualTo(1);
         assertThat(failedJobs.get(0).getJob().getJobState()).isEqualTo(JobState.ERROR);

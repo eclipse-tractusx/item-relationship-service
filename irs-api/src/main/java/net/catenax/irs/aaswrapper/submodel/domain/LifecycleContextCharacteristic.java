@@ -12,13 +12,11 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * LifecycleContextCharacteristic
  */
 @Getter
-@ExcludeFromCodeCoverageGeneratedReport
 enum LifecycleContextCharacteristic {
     ASREQUIRED("AsRequired"),
     /**
@@ -38,6 +36,7 @@ enum LifecycleContextCharacteristic {
      * vehicle the serial numbers & batch numbers are documented (German: Verbaudokumentation)
      * This leads to one BOM per build car
      */
+
     ASBUILT("AsBuilt"),
     /**
      * BoM AsMaintained describes the BoM after purchase by a
