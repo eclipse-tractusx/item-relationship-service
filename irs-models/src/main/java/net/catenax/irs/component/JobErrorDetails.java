@@ -20,7 +20,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Exception container for job
@@ -31,8 +30,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @JsonDeserialize(builder = JobErrorDetails.JobErrorDetailsBuilder.class)
 @NoArgsConstructor
 @AllArgsConstructor
-@SuppressWarnings({ "PMD.ShortClassName", "PMD.MethodArgumentCouldBeFinal" })
-@ExcludeFromCodeCoverageGeneratedReport
+@SuppressWarnings({"PMD.ShortClassName", "PMD.MethodArgumentCouldBeFinal"})
 public class JobErrorDetails {
 
     public static final int EXCEPTION_NAME_MAX_LENGTH = 100;
@@ -52,9 +50,9 @@ public class JobErrorDetails {
     @Override
     public String toString() {
         return "JobErrorDetails{" + "exception='" + exception + '\''
-                   + ", errorDetail='" + errorDetail + '\''
-                   + ", exceptionDate=" + exceptionDate
-                   + '}';
+                + ", errorDetail='" + errorDetail + '\''
+                + ", exceptionDate=" + exceptionDate
+                + '}';
     }
 
     /**

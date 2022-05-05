@@ -9,8 +9,6 @@
 //
 package net.catenax.irs.configuration;
 
-import java.util.concurrent.Executors;
-
 import net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.AASTransferProcessManager;
@@ -28,6 +26,8 @@ import net.catenax.irs.util.JsonUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+
+import java.util.concurrent.Executors;
 
 /**
  * Spring configuration for job-related beans.

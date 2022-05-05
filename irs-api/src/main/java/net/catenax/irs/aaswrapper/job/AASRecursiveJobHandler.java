@@ -55,8 +55,6 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
         return Stream.empty();
     }
 
-
-
     @Override
     public void complete(final MultiTransferJob job) {
         log.info("Completed retrieval for Job {}", job.getJobIdString());

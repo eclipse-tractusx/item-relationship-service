@@ -92,7 +92,7 @@ class JobOrchestratorTest {
     void startJob_WithTwoDataRequests_StartsTransfers() {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class)))
-            .thenReturn(Stream.of(dataRequest, dataRequest2));
+                .thenReturn(Stream.of(dataRequest, dataRequest2));
 
         when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT))).thenReturn(okResponse);
         when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(AS_BUILT))).thenReturn(okResponse2);
@@ -128,9 +128,9 @@ class JobOrchestratorTest {
     void startJob_WithSuccessfulTransferStarts_ReturnsOk() {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class)))
-            .thenReturn(Stream.of(dataRequest));
+                .thenReturn(Stream.of(dataRequest));
         when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT)))
-            .thenReturn(okResponse);
+                .thenReturn(okResponse);
 
         // Act
         var response = sut.startJob(job.getJobData());
@@ -148,9 +148,9 @@ class JobOrchestratorTest {
     void startJob_WhenTransferStartUnsuccessful_Abort(ResponseStatus status) {
         // Arrange
         when(handler.initiate(any()))
-            .thenReturn(Stream.of(dataRequest, dataRequest2));
+                .thenReturn(Stream.of(dataRequest, dataRequest2));
         when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT)))
-            .thenReturn(generate.response(status));
+                .thenReturn(generate.response(status));
 
         // Act
         var response = sut.startJob(job.getJobData());
@@ -193,9 +193,9 @@ class JobOrchestratorTest {
     void transferProcessCompleted_WhenCalledBackForCompletedTransfer_RunsNextTransfers() {
         // Arrange
         when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT)))
-            .thenReturn(okResponse);
+                .thenReturn(okResponse);
         when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(AS_BUILT)))
-            .thenReturn(okResponse2);
+                .thenReturn(okResponse2);
         // Act
         callCompleteAndReturnNextTransfers(Stream.of(dataRequest, dataRequest2));
 
@@ -308,7 +308,7 @@ class JobOrchestratorTest {
     void transferProcessCompleted_WhenNextTransferStartUnsuccessful_Abort(ResponseStatus status) {
         // Arrange
         when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT)))
-            .thenReturn(generate.response(status));
+                .thenReturn(generate.response(status));
 
         // Act
         callCompleteAndReturnNextTransfers(Stream.of(dataRequest, dataRequest2));
