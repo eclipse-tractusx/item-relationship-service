@@ -31,7 +31,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = { "local", "test"
+@ActiveProfiles(profiles = { "local",
+                             "test"
 })
 class IrsApplicationTests {
 
@@ -57,7 +58,7 @@ class IrsApplicationTests {
     @Test
     void generatedOpenApiMatchesContract() throws Exception {
         final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
-            String.class);
+                String.class);
         final String fixedYaml = Files.readString(new File("../api/irs-v1.0.yaml").toPath(), UTF_8);
         assertThat(generatedYaml).isEqualToNormalizingNewlines(fixedYaml);
     }

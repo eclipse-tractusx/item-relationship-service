@@ -9,18 +9,18 @@
 //
 package net.catenax.irs.connector.job;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
 import org.springframework.stereotype.Service;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Stores Job data using persistent blob storage.

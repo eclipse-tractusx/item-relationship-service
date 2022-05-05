@@ -14,8 +14,5 @@
     <name>IRS Common</name>
     <description>Common code for all IRS.
     </description>
-
-    <dependencies>
-        <!-- Should not add any library dependencies in this module, except annotations in provided scope -->
-    </dependencies>
+    
 </project>

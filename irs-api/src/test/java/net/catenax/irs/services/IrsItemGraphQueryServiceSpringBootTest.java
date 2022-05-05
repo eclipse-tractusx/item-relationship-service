@@ -42,7 +42,6 @@ class IrsItemGraphQueryServiceSpringBootTest {
     private IrsItemGraphQueryService service;
 
     @Test
-    @Disabled("it is not consistent before TRI-390 not resolved")
     void registerItemJobWithoutDepthShouldBuildFullTree() {
         // given
         final RegisterJob registerJob = registerJobWithoutDepth();
@@ -59,7 +58,6 @@ class IrsItemGraphQueryServiceSpringBootTest {
     }
 
     @Test
-    @Disabled("it is not consistent before TRI-390 not resolved")
     void registerItemJobWithDepthShouldBuildTreeUntilGivenDepth() {
         // given
         final RegisterJob registerJob = registerJobWithDepth(0);

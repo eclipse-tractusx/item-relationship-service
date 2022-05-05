@@ -17,7 +17,6 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.AsyncFetchedItems;
 import net.catenax.irs.component.ChildItem;
 import net.catenax.irs.component.Description;
@@ -51,7 +50,6 @@ import org.springframework.http.HttpStatus;
 @SuppressWarnings({ "PMD.ExcessiveImports",
                     "PMD.TooManyMethods"
 })
-@ExcludeFromCodeCoverageGeneratedReport
 public class OpenApiExamples {
     private static final Instant EXAMPLE_INSTANT = Instant.parse("2022-02-03T14:48:54.709Z");
     private static final String JOB_ID = "e5347c88-a921-11ec-b909-0242ac120002";
@@ -63,10 +61,10 @@ public class OpenApiExamples {
         components.addExamples("job-handle", toExample(createJobHandle(JOB_HANDLE_ID_1)));
         components.addExamples("error-response", toExample(ErrorResponse.builder()
                                                                         .withErrors(List.of("TimeoutException",
-                                                                            "ParsingException"))
+                                                                                "ParsingException"))
                                                                         .withMessage("Some errors occured")
                                                                         .withStatusCode(
-                                                                            HttpStatus.INTERNAL_SERVER_ERROR)
+                                                                                HttpStatus.INTERNAL_SERVER_ERROR)
                                                                         .build()));
         components.addExamples("complete-job-result", createCompleteJobResult());
         components.addExamples("job-result-without-uncompleted-result-tree", createJobResultWithoutTree());
@@ -214,7 +212,7 @@ public class OpenApiExamples {
                        .quantityNumber(1)
                        .measurementUnit(MeasurementUnit.builder()
                                                        .datatypeURI(
-                                                           "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece")
+                                                               "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece")
                                                        .lexicalValue("piece")
                                                        .build())
 

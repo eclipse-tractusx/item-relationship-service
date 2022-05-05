@@ -9,13 +9,13 @@
 //
 package net.catenax.irs.component.enums;
 
+import java.util.stream.Stream;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.dtos.ItemLifecycleStage;
-
-import java.util.stream.Stream;
 
 /***
  * API type for the view of the items tree to be returned by a query.
@@ -53,11 +53,17 @@ public enum BomLifecycle {
 
     @JsonCreator
     public static BomLifecycle fromValue(final String value) {
-        return Stream.of(BomLifecycle.values()).filter(bomLifecycle -> bomLifecycle.value.equals(value)).findFirst().orElseThrow();
+        return Stream.of(BomLifecycle.values())
+                     .filter(bomLifecycle -> bomLifecycle.value.equals(value))
+                     .findFirst()
+                     .orElseThrow();
     }
 
     public static BomLifecycle fromLifecycleContextCharacteristic(final String value) {
-        return Stream.of(BomLifecycle.values()).filter(bomLifecycle -> bomLifecycle.lifecycleContextCharacteristicValue.equals(value)).findFirst().orElseThrow();
+        return Stream.of(BomLifecycle.values())
+                     .filter(bomLifecycle -> bomLifecycle.lifecycleContextCharacteristicValue.equals(value))
+                     .findFirst()
+                     .orElseThrow();
     }
 
     /**
