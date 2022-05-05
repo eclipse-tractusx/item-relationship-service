@@ -21,7 +21,6 @@ import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.exceptions.EntityNotFoundException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,7 +41,6 @@ class IrsItemGraphQueryServiceSpringBootTest {
     private IrsItemGraphQueryService service;
 
     @Test
-    @Disabled("it is not consistent before TRI-390 not resolved")
     void registerItemJobWithoutDepthShouldBuildFullTree() {
         // given
         final RegisterJob registerJob = registerJobWithoutDepth();
@@ -59,7 +57,6 @@ class IrsItemGraphQueryServiceSpringBootTest {
     }
 
     @Test
-    @Disabled("it is not consistent before TRI-390 not resolved")
     void registerItemJobWithDepthShouldBuildTreeUntilGivenDepth() {
         // given
         final RegisterJob registerJob = registerJobWithDepth(0);
