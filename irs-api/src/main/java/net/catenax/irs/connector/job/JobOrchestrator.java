@@ -117,10 +117,6 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                                   .build();
     }
 
-    public Optional<MultiTransferJob> cancelJob(final String jobId) {
-        return jobStore.cancelJob(jobId);
-    }
-
     /**
      * Callback invoked when a transfer has completed.
      *

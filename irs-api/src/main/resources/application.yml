@@ -62,7 +62,7 @@ irs:
         #          │ │ │ │ │ │          (or MON-SUN -- 0 or 7 is Sunday)
         #          │ │ │ │ │ │
         completed: 0 0 * * * *
-        failed:    0 0 * * * *
+        failed: 0 0 * * * *
 
 feign:
   client:
@@ -95,8 +95,3 @@ resilience4j.retry:
     submodelRetryer:
       baseConfig: default
 
-async:
-  joborchestrator:
-    maxPoolSize: 10
-    poolSize: 5
-    capacity: 100

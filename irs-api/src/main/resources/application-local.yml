@@ -9,12 +9,6 @@ blobstore:
   accessKey: minioadmin
   secretKey: minioadmin
 
-async:
-  joborchestrator:
-    maxPoolSize: 10
-    poolSize: 5
-    capacity: 100
-
 irs:
   job:
     cleanup:
