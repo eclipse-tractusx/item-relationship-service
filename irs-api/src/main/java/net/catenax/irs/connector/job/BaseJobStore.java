@@ -88,7 +88,6 @@ public abstract class BaseJobStore implements JobStore {
             put(job.getJobIdString(), newJob);
             return null;
         });
-        
     }
 
     @Override
@@ -117,8 +116,14 @@ public abstract class BaseJobStore implements JobStore {
     @Override
     public void completeJob(final String jobId, final Consumer<MultiTransferJob> completionAction) {
         modifyJob(jobId, job -> {
-            completionAction.accept(job);
-            return job.toBuilder().transitionComplete().build();
+            final JobState jobState = job.getJob().getJobState();
+            if (jobState == JobState.TRANSFERS_FINISHED || jobState == JobState.INITIAL) {
+                completionAction.accept(job);
+                return job.toBuilder().transitionComplete().build();
+            } else {
+                log.info("Job is in state {}, cannot complete it.", jobState);
+                return job;
+            }
         });
     }
 

@@ -65,53 +65,48 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
         final String processId = UUID.randomUUID().toString();
 
-        executor.submit(
+        executor.execute(
                 getRunnable(dataRequest, transferProcessStarted, completionCallback, processId, lifecyleContext));
 
         return new TransferInitiateResponse(processId, ResponseStatus.OK);
     }
 
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private Runnable getRunnable(final ItemDataRequest dataRequest, final Consumer<String> transferProcessStarted,
             final Consumer<AASTransferProcess> transferProcessCompleted, final String processId,
             final String lifecycleContext) {
         return () -> {
+            transferProcessStarted.accept(processId);
+            final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId, dataRequest.getDepth());
+
+            final String itemId = dataRequest.getItemId();
+
+            final ItemContainer.ItemContainerBuilder itemContainerBuilder = ItemContainer.builder();
+
+            log.info("Calling Digital Twin Registry with itemId {}", itemId);
             try {
-                transferProcessStarted.accept(processId);
-                final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId, dataRequest.getDepth());
+                final List<SubmodelEndpoint> aasSubmodelEndpoints;
+                aasSubmodelEndpoints = registryFacade.getAASSubmodelEndpoints(itemId);
 
-                final String itemId = dataRequest.getItemId();
+                log.info("Retrieved {} SubmodelEndpoints for itemId {}", aasSubmodelEndpoints.size(), itemId);
 
-                final ItemContainer.ItemContainerBuilder itemContainerBuilder = ItemContainer.builder();
-
-                log.info("Calling Digital Twin Registry with itemId {}", itemId);
-                try {
-                    final List<SubmodelEndpoint> aasSubmodelEndpoints;
-                    aasSubmodelEndpoints = registryFacade.getAASSubmodelEndpoints(itemId);
-
-                    log.info("Retrieved {} SubmodelEndpoints for itemId {}", aasSubmodelEndpoints.size(), itemId);
-
-                    aasSubmodelEndpoints.stream().map(SubmodelEndpoint::getAddress).forEach(address -> {
-                        try {
-                            final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address,
-                                    lifecycleContext);
-                            processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
-                        } catch (RestClientException e) {
-                            log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
-                                    address);
-                            itemContainerBuilder.tombstone(createTombstone(itemId, address, e));
-                        }
-                    });
-                } catch (FeignException e) {
-                    log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-                    itemContainerBuilder.tombstone(createTombstone(itemId, null, e));
-                }
-                storeItemContainer(processId, itemContainerBuilder.build());
-
-                transferProcessCompleted.accept(aasTransferProcess);
-            } catch (Exception e) {
-                log.error("Uncaught exception in transfer process thread", e);
+                aasSubmodelEndpoints.stream().map(SubmodelEndpoint::getAddress).forEach(address -> {
+                    try {
+                        final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address,
+                                lifecycleContext);
+                        processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
+                    } catch (RestClientException e) {
+                        log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
+                                address);
+                        itemContainerBuilder.tombstone(createTombstone(itemId, address, e));
+                    }
+                });
+            } catch (FeignException e) {
+                log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
+                itemContainerBuilder.tombstone(createTombstone(itemId, null, e));
             }
+            storeItemContainer(processId, itemContainerBuilder.build());
+
+            transferProcessCompleted.accept(aasTransferProcess);
         };
     }
 

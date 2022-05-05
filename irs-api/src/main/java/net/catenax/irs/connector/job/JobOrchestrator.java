@@ -182,12 +182,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     private void callCompleteHandlerIfFinished(final String jobId) {
-        jobStore.find(jobId).ifPresent(job -> {
-            final JobState jobState = job.getJob().getJobState();
-            if (jobState == JobState.TRANSFERS_FINISHED || jobState == JobState.INITIAL) {
-                jobStore.completeJob(jobId, this::completeJob);
-            }
-        });
+        jobStore.completeJob(jobId, this::completeJob);
     }
 
     private void completeJob(final MultiTransferJob job) {
