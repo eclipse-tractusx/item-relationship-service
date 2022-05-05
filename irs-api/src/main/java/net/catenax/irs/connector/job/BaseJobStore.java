@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -84,7 +85,7 @@ public abstract class BaseJobStore implements JobStore {
         writeLock(() -> {
             final var newJob = job.toBuilder().transitionInitial().build();
             log.info("Add the job into jobstore here {}", newJob);
-            put(job.getJob().getJobId().toString(), newJob);
+            put(job.getJobIdString(), newJob);
             return null;
         });
         
@@ -114,8 +115,11 @@ public abstract class BaseJobStore implements JobStore {
     }
 
     @Override
-    public void completeJob(final String jobId) {
-        modifyJob(jobId, job -> job.toBuilder().transitionComplete().build());
+    public void completeJob(final String jobId, final Consumer<MultiTransferJob> completionAction) {
+        modifyJob(jobId, job -> {
+            completionAction.accept(job);
+            return job.toBuilder().transitionComplete().build();
+        });
     }
 
     @Override
@@ -151,7 +155,7 @@ public abstract class BaseJobStore implements JobStore {
                 log.warn("Job not found: {}", jobId);
             } else {
                 final MultiTransferJob multiTransferJob = job.get();
-                put(multiTransferJob.getJob().getJobId().toString(), action.apply(multiTransferJob));
+                put(multiTransferJob.getJobIdString(), action.apply(multiTransferJob));
             }
             return null;
         });

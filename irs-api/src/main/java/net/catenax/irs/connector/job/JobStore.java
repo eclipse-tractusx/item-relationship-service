@@ -12,6 +12,7 @@ package net.catenax.irs.connector.job;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import net.catenax.irs.component.enums.JobState;
 import org.jetbrains.annotations.Nullable;
@@ -84,9 +85,10 @@ public interface JobStore {
      * Mark job as completed.
      *
      * @param jobId the job identifier.
+     * @param completionAction the action to perform before marking the job as complete
      * @see JobState#COMPLETED
      */
-    void completeJob(String jobId);
+    void completeJob(String jobId, Consumer<MultiTransferJob> completionAction);
 
     /**
      * Mark job as in error.

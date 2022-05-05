@@ -3,8 +3,10 @@ package net.catenax.irs.connector.job;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -13,6 +15,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -71,7 +74,7 @@ class JobOrchestratorTest {
 
     @Test
     void startJob_storesJobWithUuidAsIdentifier() {
-        assertThat(startJob().getJob().getJobId().toString()).matches(uuid.asPredicate());
+        assertThat(startJob().getJobIdString()).matches(uuid.asPredicate());
     }
 
     @Test
@@ -112,12 +115,11 @@ class JobOrchestratorTest {
 
         // Assert
         verifyNoInteractions(processManager);
-        verify(jobStore).completeJob(newJob.getJob().getJobId().toString());
+        verify(jobStore).completeJob(eq(newJob.getJobIdString()), any());
         verifyNoMoreInteractions(jobStore);
-        verify(handler).complete(newJob);
 
         assertThat(response).isEqualTo(JobInitiateResponse.builder()
-                                                          .jobId(newJob.getJob().getJobId().toString())
+                                                          .jobId(newJob.getJobIdString())
                                                           .status(ResponseStatus.OK)
                                                           .build());
     }
@@ -136,7 +138,7 @@ class JobOrchestratorTest {
         // Assert
         var newJob = getStartedJob();
         assertThat(response).isEqualTo(JobInitiateResponse.builder()
-                                                          .jobId(newJob.getJob().getJobId().toString())
+                                                          .jobId(newJob.getJobIdString())
                                                           .status(ResponseStatus.OK)
                                                           .build());
     }
@@ -162,7 +164,7 @@ class JobOrchestratorTest {
         verifyNoMoreInteractions(jobStore);
 
         assertThat(response).isEqualTo(JobInitiateResponse.builder()
-                                                          .jobId(jobCaptor.getValue().getJob().getJobId().toString())
+                                                          .jobId(jobCaptor.getValue().getJobIdString())
                                                           .status(status)
                                                           .build());
     }
@@ -177,12 +179,12 @@ class JobOrchestratorTest {
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
-        verify(jobStore).markJobInError(jobCaptor.getValue().getJob().getJobId().toString(), "Handler method failed");
+        verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), "Handler method failed");
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
 
         assertThat(response).isEqualTo(JobInitiateResponse.builder()
-                                                          .jobId(jobCaptor.getValue().getJob().getJobId().toString())
+                                                          .jobId(jobCaptor.getValue().getJobIdString())
                                                           .status(ResponseStatus.FATAL_ERROR)
                                                           .build());
     }
@@ -199,53 +201,67 @@ class JobOrchestratorTest {
 
         // Assert
         verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT));
-        verify(jobStore).completeTransferProcess(job.getJob().getJobId().toString(), transfer);
+        verify(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
 
     }
 
     @Test
     void transferProcessCompleted_WhenCalledBackForCompletedTransfer_WithoutNextTransfer() {
+        // Arrange
+        letJobStoreCallCompletionAction();
+
         // Act
         callCompleteAndReturnNextTransfers(Stream.empty());
 
         // Assert
-        verify(jobStore).completeTransferProcess(job.getJob().getJobId().toString(), transfer);
-        verify(jobStore).find(job.getJob().getJobId().toString());
+        verify(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
         verifyNoInteractions(processManager);
         verifyNoMoreInteractions(jobStore);
     }
 
     @Test
     void transferProcessCompleted_WhenJobNotCompleted_DoesNotCallComplete() {
+        // Arrange
+        letJobStoreCallCompletionAction();
+
         // Act
         callCompleteAndReturnNextTransfers(Stream.empty());
 
         // Assert
-        verify(jobStore).completeTransferProcess(job.getJob().getJobId().toString(), transfer);
-        verify(jobStore).find(job.getJob().getJobId().toString());
+        verify(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
+        verify(jobStore).completeJob(eq(job.getJobIdString()), any());
         verifyNoMoreInteractions(jobStore);
         verifyNoMoreInteractions(handler);
+    }
+
+    private void letJobStoreCallCompletionAction() {
+        doAnswer(i -> {
+            ((Consumer<MultiTransferJob>)i.getArgument(1)).accept(job);
+            return i;
+        }).when(jobStore).completeJob(any(), any());
     }
 
     @Test
     void transferProcessCompleted_WhenJobCompleted_CallsComplete() {
         // Arrange
+        letJobStoreCallCompletionAction();
         doAnswer(i -> byCompletingJob()).when(jobStore)
-                                        .completeTransferProcess(job.getJob().getJobId().toString(), transfer);
+                                        .completeTransferProcess(job.getJobIdString(), transfer);
 
         // Act
         callCompleteAndReturnNextTransfers(Stream.empty());
 
         // Assert
         verify(handler).complete(job);
-        verify(jobStore).completeJob(job.getJob().getJobId().toString());
+        verify(jobStore).completeJob(eq(job.getJobIdString()), any());
     }
 
     @Test
     void transferProcessCompleted_WhenHandlerCompleteThrows_StopJob() {
         // Arrange
+        letJobStoreCallCompletionAction();
         doAnswer(i -> byCompletingJob()).when(jobStore)
-                                        .completeTransferProcess(job.getJob().getJobId().toString(), transfer);
+                                        .completeTransferProcess(job.getJobIdString(), transfer);
         doAnswer(i -> {
             throw new JobException();
         }).when(handler).complete(any());
@@ -254,8 +270,7 @@ class JobOrchestratorTest {
         callCompleteAndReturnNextTransfers(Stream.empty());
 
         // Assert
-        verify(jobStore).markJobInError(job.getJob().getJobId().toString(), "Handler method failed");
-        verify(jobStore).find(job.getJob().getJobId().toString());
+        verify(jobStore).markJobInError(job.getJobIdString(), "Handler method failed");
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
     }
@@ -303,7 +318,7 @@ class JobOrchestratorTest {
         verify(processManager, never()).initiateRequest(eq(dataRequest2), any(), any(), eq(AS_BUILT));
 
         // temporarily created job should be deleted
-        verify(jobStore).markJobInError(job.getJob().getJobId().toString(), "Failed to start a transfer");
+        verify(jobStore).markJobInError(job.getJobIdString(), "Failed to start a transfer");
         verifyNoMoreInteractions(jobStore);
     }
 
@@ -317,14 +332,14 @@ class JobOrchestratorTest {
         callTransferProcessCompletedViaCallback();
 
         // Assert
-        verify(jobStore).markJobInError(job.getJob().getJobId().toString(), "Handler method failed");
+        verify(jobStore).markJobInError(job.getJobIdString(), "Handler method failed");
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
     }
 
     private Object byCompletingJob() {
         job = job.toBuilder().transitionTransfersFinished().build();
-        lenient().when(jobStore.find(job.getJob().getJobId().toString())).thenReturn(Optional.of(job));
+        lenient().when(jobStore.find(job.getJobIdString())).thenReturn(Optional.of(job));
         return null;
     }
 
@@ -340,7 +355,7 @@ class JobOrchestratorTest {
 
     private void callCompleteAndReturnNextTransfers(Stream<DataRequest> dataRequestStream) {
         when(jobStore.findByProcessId(transfer.getId())).thenReturn(Optional.of(job));
-        lenient().when(jobStore.find(job.getJob().getJobId().toString())).thenReturn(Optional.of(job));
+        lenient().when(jobStore.find(job.getJobIdString())).thenReturn(Optional.of(job));
         when(handler.recurse(job, transfer)).thenReturn(dataRequestStream);
         callTransferProcessCompletedViaCallback();
     }

@@ -33,7 +33,7 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
 
     @Override
     public Stream<ItemDataRequest> initiate(final MultiTransferJob job) {
-        log.info("Initiating request for job {}", job.getJob().getJobId().toString());
+        log.info("Initiating request for job {}", job.getJobIdString());
         final var partId = job.getJobData().get(ROOT_ITEM_ID_KEY);
         final var dataRequest = ItemDataRequest.rootNode(partId);
         return Stream.of(dataRequest);
@@ -41,7 +41,7 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
 
     @Override
     public Stream<ItemDataRequest> recurse(final MultiTransferJob job, final AASTransferProcess transferProcess) {
-        log.info("Starting recursive request for job {}", job.getJob().getJobId().toString());
+        log.info("Starting recursive request for job {}", job.getJobIdString());
 
         final Integer expectedDepth = getExpectedTreeDepth(job.getJobData());
         final Integer currentDepth = transferProcess.getDepth();
@@ -57,7 +57,7 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
 
     @Override
     public void complete(final MultiTransferJob job) {
-        log.info("Completed retrieval for Job {}", job.getJob().getJobId().toString());
+        log.info("Completed retrieval for Job {}", job.getJobIdString());
         final var completedTransfers = job.getCompletedTransfers();
         final var targetBlobName = job.getJob().getJobId();
         logic.assemblePartialItemGraphBlobs(completedTransfers, targetBlobName.toString());
