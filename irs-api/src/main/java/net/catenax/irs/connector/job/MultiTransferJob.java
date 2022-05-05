@@ -56,7 +56,6 @@ public class MultiTransferJob {
      * Arbitrary data attached to the job.
      */
     @Getter
-    @Singular("jobDatum")
     private Map<String, String> jobData;
 
     /**

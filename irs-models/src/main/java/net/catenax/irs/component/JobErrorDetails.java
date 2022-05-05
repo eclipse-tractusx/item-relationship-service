@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.component;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -33,7 +34,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @AllArgsConstructor
 @SuppressWarnings({ "PMD.ShortClassName", "PMD.MethodArgumentCouldBeFinal" })
 @ExcludeFromCodeCoverageGeneratedReport
-public class JobErrorDetails {
+public class JobErrorDetails implements Serializable {
 
     public static final int EXCEPTION_NAME_MAX_LENGTH = 100;
     public static final int ERROR_DETAIL_MAX_LENGTH = 4000;

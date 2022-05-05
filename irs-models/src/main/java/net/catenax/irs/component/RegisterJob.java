@@ -68,7 +68,7 @@ public class RegisterJob {
      * Returns requested depth if provided, otherwise MAX_TREE_DEPTH value
      * @return depth
      */
-    public Integer getDepth() {
+    public int getDepth() {
         return depth == null ? MAX_TREE_DEPTH : depth;
     }
 }

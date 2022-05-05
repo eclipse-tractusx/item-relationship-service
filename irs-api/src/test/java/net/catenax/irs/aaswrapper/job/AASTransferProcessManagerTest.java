@@ -43,7 +43,7 @@ public class AASTransferProcessManagerTest {
         );
 
         // then
-        verify(pool, times(1)).submit(any(Runnable.class));
+        verify(pool, times(1)).execute(any(Runnable.class));
     }
 
     @Test

@@ -58,7 +58,7 @@ public class TreeRecursiveLogic {
             final String targetBlobName) {
         final var partialTrees = completedTransfers.stream()
                                                    .map(this::downloadPartialPartsTree)
-                                                   .map(payload -> jsonUtil.fromString(new String(payload),
+                                                   .map(payload -> jsonUtil.fromString(new String(payload, StandardCharsets.UTF_8),
                                                            ItemContainer.class));
         final var assembledTree = assembler.retrievePartsTrees(partialTrees);
         final String json = jsonUtil.asString(assembledTree);
