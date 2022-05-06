@@ -87,7 +87,7 @@ public abstract class BaseJobStore implements JobStore {
             put(job.getJob().getJobId().toString(), newJob);
             return null;
         });
-        
+
     }
 
     @Override

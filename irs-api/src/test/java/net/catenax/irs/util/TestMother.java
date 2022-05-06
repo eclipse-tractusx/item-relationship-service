@@ -77,9 +77,8 @@ public class TestMother {
                                .job(fakeJob(jobState))
                                .jobData(Map.of(ROOT_ITEM_ID_KEY, faker.lorem().characters(), faker.lorem().characters(),
                                        faker.lorem().characters()))
-                               .jobData(Map.of(ROOT_ITEM_ID_KEY, faker.lorem().characters(),
-                                       faker.lorem().characters(), faker.lorem().characters(), LIFE_CYCLE_CONTEXT,
-                                       AS_BUILT))
+                               .jobData(Map.of(ROOT_ITEM_ID_KEY, faker.lorem().characters(), faker.lorem().characters(),
+                                       faker.lorem().characters(), LIFE_CYCLE_CONTEXT, AS_BUILT))
                                .build();
     }
 

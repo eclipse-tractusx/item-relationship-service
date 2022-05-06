@@ -32,6 +32,7 @@ public class JsonUtil {
      * JSON object mapper implementation.
      */
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
     static {
         final SimpleModule simpleModule = new SimpleModule().addAbstractTypeMapping(TransferProcess.class,
                 AASTransferProcess.class);

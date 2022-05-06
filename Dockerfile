@@ -7,7 +7,6 @@ WORKDIR /build
 COPY ci ci
 COPY api api
 COPY .mvn .mvn
-COPY settings.xml .
 COPY pom.xml .
 
 COPY integration-tests integration-tests
@@ -20,7 +19,7 @@ COPY irs-testing irs-testing
 COPY irs-report-aggregate irs-report-aggregate
 
 # the --mount option requires BuildKit.
-RUN --mount=type=cache,target=/root/.m2 mvn -B -s settings.xml clean package -pl :$BUILD_TARGET -am -DskipTests
+RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -pl :$BUILD_TARGET -am -DskipTests
 
 
 # Copy the jar and build image

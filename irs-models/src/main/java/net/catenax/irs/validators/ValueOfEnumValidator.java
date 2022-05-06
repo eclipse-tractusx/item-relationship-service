@@ -22,7 +22,9 @@ import net.catenax.irs.annotations.ValueOfEnum;
  * Generic validator for Enum values.
  * This validator was added so that we can use String data type in place of Enum for API input request object. As spring BindException details are not that user-friendly when mapping an input which is not value of the Enum.
  */
-@SuppressWarnings({"PMD.CommentSize", "PMD.BeanMembersShouldSerialize"})
+@SuppressWarnings({ "PMD.CommentSize",
+                    "PMD.BeanMembersShouldSerialize"
+})
 public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, CharSequence> {
 
     /**
@@ -33,8 +35,8 @@ public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, Ch
     @Override
     public void initialize(final ValueOfEnum annotation) {
         acceptedValues = Stream.of(annotation.enumClass().getEnumConstants())
-                .map(Enum::name)
-                .collect(Collectors.toList());
+                               .map(Enum::name)
+                               .collect(Collectors.toList());
     }
 
     @Override

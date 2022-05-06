@@ -27,10 +27,12 @@ public class Description {
     public static final int LANGUAGE_MAX_LENGTH = 3;
     public static final int DESCRIPTION_MAX_LENGTH = 4000;
 
-    @Schema(description = "Language used for description.", example = "en", implementation = String.class, minLength = 0, maxLength = LANGUAGE_MAX_LENGTH)
+    @Schema(description = "Language used for description.", example = "en", implementation = String.class,
+            minLength = 0, maxLength = LANGUAGE_MAX_LENGTH)
     private String language;
 
-    @Schema(description = "Description text.", example = "The shell for a vehicle", implementation = String.class, minLength = 0, maxLength = DESCRIPTION_MAX_LENGTH)
+    @Schema(description = "Description text.", example = "The shell for a vehicle", implementation = String.class,
+            minLength = 0, maxLength = DESCRIPTION_MAX_LENGTH)
     private String text;
 
     /**

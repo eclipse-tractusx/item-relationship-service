@@ -49,13 +49,15 @@ class SubmodelFacadeTest {
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate());
         final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
-        assertThatExceptionOfType(RestClientException.class).isThrownBy(() -> submodelFacade.getSubmodel(url, "lifecycle"));
+        assertThatExceptionOfType(RestClientException.class).isThrownBy(
+                () -> submodelFacade.getSubmodel(url, "lifecycle"));
     }
 
     @Test
     void shouldReturnAssemblyPartRelationshipWithChildDataWhenRequestingWithCatenaXId() {
         final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getSubmodel(catenaXId, LifecycleContextCharacteristic.ASBUILT.getValue());
+        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getSubmodel(catenaXId,
+                LifecycleContextCharacteristic.ASBUILT.getValue());
 
         assertThat(submodelResponse.getCatenaXId()).isEqualTo(catenaXId);
 

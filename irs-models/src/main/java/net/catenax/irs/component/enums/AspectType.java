@@ -9,9 +9,9 @@
 //
 package net.catenax.irs.component.enums;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 import java.util.stream.Stream;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  * AspectType information for a part tree
@@ -53,7 +53,10 @@ public enum AspectType {
 
     @JsonCreator
     public static AspectType fromValue(final String value) {
-        return Stream.of(AspectType.values()).filter(aspectType -> aspectType.value.equals(value)).findFirst().orElseThrow();
+        return Stream.of(AspectType.values())
+                     .filter(aspectType -> aspectType.value.equals(value))
+                     .findFirst()
+                     .orElseThrow();
     }
 
     /**

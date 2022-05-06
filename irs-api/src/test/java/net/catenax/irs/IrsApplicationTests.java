@@ -66,7 +66,8 @@ class IrsApplicationTests {
     @Test
     void shouldStoreBlobResultWhenRunningJob() throws Exception {
 
-        final JobInitiateResponse response = jobOrchestrator.startJob(Map.of(ROOT_ITEM_ID_KEY, "rootitemid", DEPTH_ID_KEY, "5"));
+        final JobInitiateResponse response = jobOrchestrator.startJob(
+                Map.of(ROOT_ITEM_ID_KEY, "rootitemid", DEPTH_ID_KEY, "5"));
 
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.OK);
 

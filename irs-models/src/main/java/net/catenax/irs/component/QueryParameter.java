@@ -45,7 +45,6 @@ public class QueryParameter {
     @Schema(implementation = Direction.class)
     private Direction direction;
 
-
     /**
      * Builder for QueryParameter class
      */
