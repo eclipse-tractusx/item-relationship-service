@@ -32,3 +32,17 @@ jobs:
         run: |
           mvn --batch-mode --update-snapshots -s settings.xml verify
 
+  build_images:
+    strategy:
+      matrix:
+        image:
+          - irs-api
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build image to make sure Dockerfile is valid
+        run: |
+          # RUN --mount=type=cache is used in the IRS Dockerfile to cache directories for maven.
+          # And the --mount option requires BuildKit.
+          DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TARGET=${{ matrix.image }} --target ${{ matrix.image }} -t ${{ matrix.image }}:latest .
