@@ -9,7 +9,6 @@
 //
 package net.catenax.irs.dtos;
 
-
 /**
  * Helper class contains dto attributes validations as reusable constants.
  */

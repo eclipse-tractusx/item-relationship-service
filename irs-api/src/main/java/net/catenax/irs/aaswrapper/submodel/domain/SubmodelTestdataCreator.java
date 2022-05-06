@@ -55,7 +55,8 @@ class SubmodelTestdataCreator {
 
     public AssemblyPartRelationship createDummyAssemblyPartRelationshipForId(final String catenaXId) {
         final List<AssemblyPartRelationship> collect = testData.stream()
-                                                               .filter(assemblyPartRelationship -> assemblyPartRelationship.getCatenaXId().equals(catenaXId))
+                                                               .filter(assemblyPartRelationship -> assemblyPartRelationship.getCatenaXId()
+                                                                                                                           .equals(catenaXId))
                                                                .collect(Collectors.toList());
         final AssemblyPartRelationship other = new AssemblyPartRelationship();
         other.setCatenaXId(catenaXId);

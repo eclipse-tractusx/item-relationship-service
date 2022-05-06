@@ -15,6 +15,7 @@ public class SmokeTestsBase extends SystemTestsBase {
     public void setUp() {
         // If no config specified, run the smoke test against localhost.
         irsApiUri = System.getProperty("baseURI", IRS_API_LOCALHOST_URI);
-        brokerProxyUri = System.getProperty("brokerProxyBaseURI", System.getProperty("baseURI", BROKER_PROXY_LOCALHOST_URI));
+        brokerProxyUri = System.getProperty("brokerProxyBaseURI",
+                System.getProperty("baseURI", BROKER_PROXY_LOCALHOST_URI));
     }
 }

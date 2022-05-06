@@ -116,7 +116,7 @@ public class Job {
 
     @Schema(description = "The passed query parameters", implementation = QueryParameter.class)
     private QueryParameter queryParameter;
-    
+
     /**
      * Builder class
      */

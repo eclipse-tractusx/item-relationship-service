@@ -30,7 +30,9 @@ import lombok.Setter;
 @JsonDeserialize(builder = JobErrorDetails.JobErrorDetailsBuilder.class)
 @NoArgsConstructor
 @AllArgsConstructor
-@SuppressWarnings({"PMD.ShortClassName", "PMD.MethodArgumentCouldBeFinal"})
+@SuppressWarnings({ "PMD.ShortClassName",
+                    "PMD.MethodArgumentCouldBeFinal"
+})
 public class JobErrorDetails {
 
     public static final int EXCEPTION_NAME_MAX_LENGTH = 100;
@@ -49,10 +51,8 @@ public class JobErrorDetails {
 
     @Override
     public String toString() {
-        return "JobErrorDetails{" + "exception='" + exception + '\''
-                + ", errorDetail='" + errorDetail + '\''
-                + ", exceptionDate=" + exceptionDate
-                + '}';
+        return "JobErrorDetails{" + "exception='" + exception + '\'' + ", errorDetail='" + errorDetail + '\''
+                + ", exceptionDate=" + exceptionDate + '}';
     }
 
     /**

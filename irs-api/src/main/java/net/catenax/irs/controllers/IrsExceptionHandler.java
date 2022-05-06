@@ -41,12 +41,12 @@ public class IrsExceptionHandler {
     public ResponseEntity<ErrorResponse> handleEntityNotFound(final EntityNotFoundException exception) {
         log.info(exception.getClass().getName(), exception);
 
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(ErrorResponse.builder()
-                                   .withStatusCode(HttpStatus.NOT_FOUND)
-                                   .withMessage(HttpStatus.NOT_FOUND.getReasonPhrase())
-                                   .withErrors(List.of(exception.getMessage())).build());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                             .body(ErrorResponse.builder()
+                                                .withStatusCode(HttpStatus.NOT_FOUND)
+                                                .withMessage(HttpStatus.NOT_FOUND.getReasonPhrase())
+                                                .withErrors(List.of(exception.getMessage()))
+                                                .build());
     }
 
     /**
@@ -59,17 +59,18 @@ public class IrsExceptionHandler {
     public ResponseEntity<ErrorResponse> handleBindException(final BindException exception) {
         log.info(exception.getClass().getName(), exception);
 
-        final List<String> errors = exception.getBindingResult().getFieldErrors()
+        final List<String> errors = exception.getBindingResult()
+                                             .getFieldErrors()
                                              .stream()
                                              .map(e -> e.getField() + ":" + e.getDefaultMessage())
                                              .collect(Collectors.toList());
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.builder()
-                                   .withStatusCode(HttpStatus.BAD_REQUEST)
-                                   .withMessage(ApiErrorsConstants.INVALID_ARGUMENTS)
-                                   .withErrors(errors).build());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(ErrorResponse.builder()
+                                                .withStatusCode(HttpStatus.BAD_REQUEST)
+                                                .withMessage(ApiErrorsConstants.INVALID_ARGUMENTS)
+                                                .withErrors(errors)
+                                                .build());
     }
 
     /**
@@ -82,11 +83,11 @@ public class IrsExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAll(final Exception exception) {
         log.error(exception.getClass().getName(), exception);
         // Exception error not used in response to prevent leak of any possible sensitive information.
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorResponse.builder()
-                                   .withStatusCode(HttpStatus.INTERNAL_SERVER_ERROR)
-                                   .withMessage("Error Occurred")
-                                   .withErrors(new ArrayList<>()).build());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                             .body(ErrorResponse.builder()
+                                                .withStatusCode(HttpStatus.INTERNAL_SERVER_ERROR)
+                                                .withMessage("Error Occurred")
+                                                .withErrors(new ArrayList<>())
+                                                .build());
     }
 }
