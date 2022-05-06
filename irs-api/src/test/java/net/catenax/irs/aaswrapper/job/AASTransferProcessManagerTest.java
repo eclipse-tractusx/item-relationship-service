@@ -20,7 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class AASTransferProcessManagerTest {
+class AASTransferProcessManagerTest {
 
     DigitalTwinRegistryFacade digitalTwinRegistryFacade = mock(DigitalTwinRegistryFacade.class);
 
@@ -43,7 +43,7 @@ public class AASTransferProcessManagerTest {
         );
 
         // then
-        verify(pool, times(1)).submit(any(Runnable.class));
+        verify(pool, times(1)).execute(any(Runnable.class));
     }
 
     @Test

@@ -97,11 +97,9 @@ class PersistentJobStoreTest {
     void create_and_find() {
         sut.create(job);
         assertThat(sut.find(job.getJobIdString())).isPresent()
-                                                                .get()
-                                                                .usingRecursiveComparison()
-                                                                .isEqualTo(originalJob.toBuilder()
-                                                                                      .transitionInitial()
-                                                                                      .build());
+                                                  .get()
+                                                  .usingRecursiveComparison()
+                                                  .isEqualTo(originalJob.toBuilder().transitionInitial().build());
         assertThat(sut.find(otherJobId)).isEmpty();
     }
 
@@ -242,9 +240,10 @@ class PersistentJobStoreTest {
         // Arrange
         sut.create(job);
         sut.addTransferProcess(job.getJobIdString(), processId1);
+
         // Act
-        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
-                () -> sut.completeJob(job.getJobIdString(), this::doNothing));
+        sut.completeJob(job.getJobIdString(), this::doNothing);
+
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.RUNNING);
