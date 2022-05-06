@@ -217,7 +217,6 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
             throw new JobException(response.getStatus().toString());
         }
 
-        jobStore.addTransferProcess(job.getJobIdString(), response.getTransferId());
         return response;
     }
 
