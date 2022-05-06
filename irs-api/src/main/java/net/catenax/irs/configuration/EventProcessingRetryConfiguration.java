@@ -26,5 +26,4 @@ public class EventProcessingRetryConfiguration {
      */
     private int maxRetries = DEFAULT_MAX_RETRIES;
 
-
 }

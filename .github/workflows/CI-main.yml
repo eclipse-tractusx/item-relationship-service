@@ -30,7 +30,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          mvn --batch-mode --update-snapshots -s settings.xml verify
+          mvn --batch-mode --update-snapshots verify
 
 
   build_images:

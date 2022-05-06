@@ -30,14 +30,15 @@ public class SubmodelFacade {
     private final SubmodelClient submodelClient;
 
     /**
-     *
      * @param submodelEndpointAddress The URL to the submodel endpoint
-     * @param lifecycleContext filter value
+     * @param lifecycleContext        filter value
      * @return The Aspect Model for the given submodel
      */
     @Retry(name = "submodelRetryer")
-    public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress, final String lifecycleContext) {
-        final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress, AssemblyPartRelationship.class);
+    public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress,
+            final String lifecycleContext) {
+        final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
+                AssemblyPartRelationship.class);
 
         final Set<ChildData> submodelParts = submodel.getChildParts();
 
@@ -53,13 +54,15 @@ public class SubmodelFacade {
         final Set<ChildDataDTO> childParts = new HashSet<>();
         submodelParts.forEach(childData -> childParts.add(ChildDataDTO.builder()
                                                                       .childCatenaXId(childData.getChildCatenaXId())
-                                                                      .lifecycleContext(childData.getLifecycleContext().getValue())
+                                                                      .lifecycleContext(childData.getLifecycleContext()
+                                                                                                 .getValue())
                                                                       .build()));
 
         return AssemblyPartRelationshipDTO.builder().catenaXId(catenaXId).childParts(childParts).build();
     }
 
-    private void filterSubmodelPartsByLifecycleContext(final Set<ChildData> submodelParts, final String lifecycleContext) {
+    private void filterSubmodelPartsByLifecycleContext(final Set<ChildData> submodelParts,
+            final String lifecycleContext) {
         submodelParts.removeIf(isNotLifecycleContext(lifecycleContext));
     }
 

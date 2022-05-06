@@ -9,10 +9,10 @@
 //
 package net.catenax.irs.component.enums;
 
+import java.util.stream.Stream;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import java.util.stream.Stream;
 
 /**
  * Direction indicator
@@ -40,7 +40,10 @@ public enum Direction {
 
     @JsonCreator
     public static Direction fromValue(final String value) {
-        return Stream.of(Direction.values()).filter(direction -> direction.value.equals(value)).findFirst().orElseThrow();
+        return Stream.of(Direction.values())
+                     .filter(direction -> direction.value.equals(value))
+                     .findFirst()
+                     .orElseThrow();
     }
 
     /**
