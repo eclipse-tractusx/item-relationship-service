@@ -34,6 +34,7 @@
         <assertj-core.version>3.21.0</assertj-core.version>
         <gatling.version>3.7.6</gatling.version>
         <resilience4j.version>1.7.1</resilience4j.version>
+        <org.apache.commons.version>4.4</org.apache.commons.version>
 
         <!-- Plugins -->
         <tidy.version>1.1.0</tidy.version>

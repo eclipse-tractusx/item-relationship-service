@@ -15,6 +15,7 @@ import com.github.javafaker.Faker;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.dto.JobDataDTO;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.persistence.MinioBlobPersistence;
 import net.catenax.irs.testing.containers.MinioContainer;
@@ -50,6 +51,7 @@ class PersistentJobStoreTest {
     String processId2 = process2.getId();
     String errorDetail = faker.lorem().sentence();
     MinioBlobPersistence blobStoreSpy;
+    JobDataDTO jobDataDTO = generate.jobDataDTO();
 
     @BeforeAll
     static void startContainer() {
@@ -414,7 +416,7 @@ class PersistentJobStoreTest {
                                                                  .exceptionDate(Instant.now())
                                                                  .build())
                                        .build())
-                               .jobData(Map.of("dataKey", "dataValue"))
+                               .jobData(jobDataDTO)
                                .build();
     }
 

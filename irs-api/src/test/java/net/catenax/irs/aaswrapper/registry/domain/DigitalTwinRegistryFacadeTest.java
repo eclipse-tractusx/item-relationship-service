@@ -11,8 +11,10 @@ import java.util.Map;
 import feign.FeignException;
 import feign.Request;
 import feign.RequestTemplate;
+import net.catenax.irs.dto.JobDataDTO;
 import net.catenax.irs.dto.SubmodelEndpoint;
 import net.catenax.irs.dto.SubmodelType;
+import net.catenax.irs.util.TestMother;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +26,10 @@ class DigitalTwinRegistryFacadeTest {
 
     private DigitalTwinRegistryFacade digitalTwinRegistryFacade;
 
+    private final TestMother generate = new TestMother();
+
+    private JobDataDTO jobDataDTO;
+
     @Mock
     private DigitalTwinRegistryClient dtRegistryClientMock;
 
@@ -33,13 +39,14 @@ class DigitalTwinRegistryFacadeTest {
     void setUp() {
         digitalTwinRegistryFacade = new DigitalTwinRegistryFacade(new DigitalTwinRegistryClientLocalStub());
         dtRegistryFacadeWithMock = new DigitalTwinRegistryFacade(dtRegistryClientMock);
+        jobDataDTO = generate.jobDataDTO();
     }
 
     @Test
     void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() {
         final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
-        final List<SubmodelEndpoint> shellEndpoints = digitalTwinRegistryFacade.getAASSubmodelEndpoints(catenaXId);
+        final List<SubmodelEndpoint> shellEndpoints = digitalTwinRegistryFacade.getAASSubmodelEndpoints(catenaXId, jobDataDTO);
 
         assertThat(shellEndpoints).isNotNull().hasSize(1);
         final SubmodelEndpoint endpoint = shellEndpoints.get(0);
@@ -58,7 +65,7 @@ class DigitalTwinRegistryFacadeTest {
                 new FeignException.NotFound("not found", request, new byte[0], Map.of()));
 
         assertThatExceptionOfType(FeignException.class).isThrownBy(
-                () -> dtRegistryFacadeWithMock.getAASSubmodelEndpoints(catenaXId));
+                () -> dtRegistryFacadeWithMock.getAASSubmodelEndpoints(catenaXId, jobDataDTO));
     }
 
     @Test
@@ -69,7 +76,7 @@ class DigitalTwinRegistryFacadeTest {
 
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenReturn(shellDescriptor);
 
-        final List<SubmodelEndpoint> submodelEndpoints = dtRegistryFacadeWithMock.getAASSubmodelEndpoints(catenaXId);
+        final List<SubmodelEndpoint> submodelEndpoints = dtRegistryFacadeWithMock.getAASSubmodelEndpoints(catenaXId, jobDataDTO);
         assertThat(submodelEndpoints).isEmpty();
     }
 

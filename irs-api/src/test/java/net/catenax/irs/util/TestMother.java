@@ -7,6 +7,9 @@ import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 
 import java.net.URL;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -18,6 +21,8 @@ import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.RegisterJob;
+import net.catenax.irs.component.enums.AspectType;
+import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.DataRequest;
 import net.catenax.irs.connector.job.MultiTransferJob;
@@ -26,6 +31,7 @@ import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.connector.job.TransferProcess;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
+import net.catenax.irs.dto.JobDataDTO;
 
 /**
  * Base object mother class to create objects for testing.
@@ -49,6 +55,25 @@ public class TestMother {
                                           .childParts(childParts)
                                           .catenaXId(faker.lorem().characters(GLOBAL_ASSET_ID_SIZE))
                                           .build();
+    }
+
+    public JobDataDTO jobDataDTO() {
+        return JobDataDTO.builder()
+                         .rootItemId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")
+                         .treeDepthId("")
+                         .bomLifecycle("AsBuilt")
+                         .aspectTypes(List.of(AspectType.SERIAL_PART_TYPIZATION.toString().toLowerCase(Locale.ROOT),
+                                              AspectType.ASSEMBLY_PART_RELATIONSHIP.toString().toLowerCase(Locale.ROOT)))
+                         .build();
+    }
+
+    public JobDataDTO jobDataFilter() {
+        return JobDataDTO.builder()
+                         .rootItemId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")
+                         .treeDepthId("")
+                         .bomLifecycle("AsRequired")
+                         .aspectTypes(List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString().toLowerCase(Locale.ROOT)))
+                         .build();
     }
 
     public AASTransferProcess aasTransferProcess() {
@@ -75,11 +100,8 @@ public class TestMother {
     public MultiTransferJob job(JobState jobState) {
         return MultiTransferJob.builder()
                                .job(fakeJob(jobState))
-                               .jobData(Map.of(ROOT_ITEM_ID_KEY, faker.lorem().characters(), faker.lorem().characters(),
-                                       faker.lorem().characters()))
-                               .jobData(Map.of(ROOT_ITEM_ID_KEY, faker.lorem().characters(),
-                                       faker.lorem().characters(), faker.lorem().characters(), LIFE_CYCLE_CONTEXT,
-                                       AS_BUILT))
+                               .jobData(jobDataDTO())
+                               .jobData(jobDataDTO())
                                .build();
     }
 
@@ -125,6 +147,8 @@ public class TestMother {
         final RegisterJob registerJob = new RegisterJob();
         registerJob.setGlobalAssetId(globalAssetId);
         registerJob.setDepth(depth);
+        registerJob.setAspects(List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP));
+
         return registerJob;
     }
 

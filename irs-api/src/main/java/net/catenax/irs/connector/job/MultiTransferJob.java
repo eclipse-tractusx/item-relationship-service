@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -29,6 +28,7 @@ import lombok.ToString;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.dto.JobDataDTO;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -56,8 +56,8 @@ public class MultiTransferJob {
      * Arbitrary data attached to the job.
      */
     @Getter
-    @Singular("jobDatum")
-    private Map<String, String> jobData;
+/*    @Singular("jobDatum")*/
+    private JobDataDTO jobData;
 
     /**
      * Collection of transfers that have completed for the job.

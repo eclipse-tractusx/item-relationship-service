@@ -9,13 +9,9 @@
 //
 package net.catenax.irs.connector.job;
 
-import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
-import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -25,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.dto.JobDataDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -77,11 +74,11 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     /**
      * Start a job.
      *
-     * @param jobData additional data for the job to managed by the {@link JobStore}.
+     * @param jobData additional data for the job to be managed by the {@link JobStore}.
      * @return response.
      */
-    public JobInitiateResponse startJob(final Map<String, String> jobData) {
-        final Job job = createJob(jobData.get(ROOT_ITEM_ID_KEY));
+    public JobInitiateResponse startJob(final JobDataDTO jobData) {
+        final Job job = createJob(jobData.getRootItemId());
         final var multiJob = MultiTransferJob.builder().job(job).jobData(jobData).build();
         jobStore.create(multiJob);
 
@@ -213,14 +210,12 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         return dataRequests.map(r -> startTransfer(job, r)).collect(Collectors.counting());
     }
 
-    private TransferInitiateResponse startTransfer(final MultiTransferJob job,
-            final T dataRequest)  /* throws JobErrorDetails */ {
-
-        final String lifecyleContext = job.getJobData().get(LIFE_CYCLE_CONTEXT);
+    private TransferInitiateResponse startTransfer(final MultiTransferJob job, final T dataRequest)  /* throws JobErrorDetails */ {
+        final JobDataDTO jobData = job.getJobData();
 
         final var response = processManager.initiateRequest(dataRequest,
                 transferId -> jobStore.addTransferProcess(job.getJob().getJobId().toString(), transferId),
-                this::transferProcessCompleted, lifecyleContext);
+                this::transferProcessCompleted, jobData);
 
         if (response.getStatus() != ResponseStatus.OK) {
             throw new JobException(response.getStatus().toString());

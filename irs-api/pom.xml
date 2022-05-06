@@ -104,6 +104,12 @@
             <artifactId>resilience4j-spring-boot2</artifactId>
             <version>${resilience4j.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${org.apache.commons.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

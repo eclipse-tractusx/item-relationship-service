@@ -15,12 +15,15 @@ import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
+import net.catenax.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class AASTransferProcessManagerTest {
+
+    private final TestMother generate = new TestMother();
 
     DigitalTwinRegistryFacade digitalTwinRegistryFacade = mock(DigitalTwinRegistryFacade.class);
 
@@ -39,7 +42,7 @@ public class AASTransferProcessManagerTest {
         // when
         manager.initiateRequest(itemDataRequest,
             s -> {},
-            aasTransferProcess -> {}, LIFE_CYCLE_CONTEXT
+            aasTransferProcess -> {}, generate.jobDataDTO()
         );
 
         // then
@@ -52,7 +55,7 @@ public class AASTransferProcessManagerTest {
         final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(UUID.randomUUID().toString());
 
         // when
-        final TransferInitiateResponse initiateResponse = manager.initiateRequest(itemDataRequest, s -> {}, aasTransferProcess -> {}, LIFE_CYCLE_CONTEXT);
+        final TransferInitiateResponse initiateResponse = manager.initiateRequest(itemDataRequest, s -> {}, aasTransferProcess -> {}, generate.jobDataDTO());
 
         // then
         assertThat(initiateResponse.getTransferId()).isNotBlank();

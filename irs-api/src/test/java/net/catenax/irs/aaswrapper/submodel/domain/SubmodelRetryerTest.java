@@ -2,6 +2,7 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import net.catenax.irs.TestConfig;
+import net.catenax.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,12 +33,14 @@ class SubmodelRetryerTest {
     @MockBean
     private SubmodelClient client;
 
+    private final TestMother generate = new TestMother();
+
     @Test
     void shouldRetryExecutionOfGetSubmodelMaxAttemptTimes() {
         given(this.client.getSubmodel(anyString(), any()))
                 .willThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception"));
 
-        assertThrows(HttpServerErrorException.class, () -> facade.getSubmodel("TEST", "lifecycle"));
+        assertThrows(HttpServerErrorException.class, () -> facade.getSubmodel("TEST", generate.jobDataDTO()));
 
         verify(this.client, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getSubmodel(anyString(), any());
     }

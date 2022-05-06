@@ -13,9 +13,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import net.catenax.irs.dto.JobDataDTO;
 import net.catenax.irs.dto.SubmodelEndpoint;
 import net.catenax.irs.dto.SubmodelType;
 import org.springframework.stereotype.Service;
+
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 /**
  * Public API Facade for digital twin registry domain
@@ -30,19 +33,21 @@ public class DigitalTwinRegistryFacade {
      * Combines required data from Digital Twin Registry Service
      *
      * @param aasIdentifier The Asset Administration Shell's unique id
+     * @param jobData       the job data parameters
+     *
      * @return list of submodel addresses
      */
-    public List<SubmodelEndpoint> getAASSubmodelEndpoints(final String aasIdentifier) {
-        final List<SubmodelDescriptor> submodelDescriptors = digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(
-                aasIdentifier).getSubmodelDescriptors();
+    public List<SubmodelEndpoint> getAASSubmodelEndpoints(final String aasIdentifier, final JobDataDTO jobData) {
+        final List<SubmodelDescriptor> submodelDescriptors =
+                digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aasIdentifier).getSubmodelDescriptors();
 
         return submodelDescriptors.stream()
-                                  .filter(this::isAssemblyPartRelationship)
+                                  .filter(submodelDescriptor -> isConsumerAspectType(submodelDescriptor, jobData))
                                   .map(submodelDescriptor -> new SubmodelEndpoint(submodelDescriptor.getEndpoints()
                                                                                                     .get(0)
                                                                                                     .getProtocolInformation()
                                                                                                     .getEndpointAddress(),
-                                          SubmodelType.ASSEMBLY_PART_RELATIONSHIP))
+                                                                                  SubmodelType.ASSEMBLY_PART_RELATIONSHIP))
                                   .collect(Collectors.toList());
     }
 
@@ -50,12 +55,21 @@ public class DigitalTwinRegistryFacade {
      * TODO: Adjust when we will know how to distinguish assembly part relationships
      *
      * @param submodelDescriptor the submodel descriptor
+     *
      * @return True, if AssemblyPartRelationship
      */
-    private boolean isAssemblyPartRelationship(final SubmodelDescriptor submodelDescriptor) {
-        final String assemblyPartRelationshipIdentifier = SubmodelType.ASSEMBLY_PART_RELATIONSHIP.getValue();
+    private boolean isConsumerAspectType(final SubmodelDescriptor submodelDescriptor, JobDataDTO jobData) {
+        final List<String> aspectTypes = jobData.getAspectTypes();
+        if (shouldFilterByAspectType(aspectTypes)) {
+            final String type = submodelDescriptor.getIdShort();
+            return aspectTypes.contains(type.toLowerCase());
+        }
 
-        return assemblyPartRelationshipIdentifier.equals(
-                submodelDescriptor.getSemanticId().getValue().stream().findFirst().orElse(null));
+        final String assemblyPartRelationshipIdentifier = SubmodelType.ASSEMBLY_PART_RELATIONSHIP.getValue();
+        return assemblyPartRelationshipIdentifier.equals(submodelDescriptor.getIdShort());
+    }
+
+    private boolean shouldFilterByAspectType(final List<String> aspectTypes) {
+        return isNotEmpty(aspectTypes);
     }
 }

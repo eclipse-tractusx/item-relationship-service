@@ -16,6 +16,7 @@ import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.dto.JobDataDTO;
 import net.catenax.irs.util.TestMother;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,7 @@ class InMemoryJobStoreTest {
     String processId1 = process1.getId();
     String processId2 = process2.getId();
     String errorDetail = faker.lorem().sentence();
+    JobDataDTO jobDataDTO = generate.jobDataDTO();
 
     @Test
     void find_WhenNotFound() {
@@ -415,7 +417,7 @@ class InMemoryJobStoreTest {
                                                                  .exceptionDate(Instant.now())
                                                                  .build())
                                        .build())
-                               .jobData(Map.of("dataKey", "dataValue"))
+                               .jobData(jobDataDTO)
                                .build();
     }
 
