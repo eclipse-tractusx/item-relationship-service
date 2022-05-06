@@ -42,7 +42,7 @@ class AASTransferProcessManagerTest {
         }, LIFE_CYCLE_CONTEXT);
 
         // then
-        verify(pool, times(1)).submit(any(Runnable.class));
+        verify(pool, times(1)).execute(any(Runnable.class));
     }
 
     @Test
