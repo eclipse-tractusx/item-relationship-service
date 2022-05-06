@@ -2,8 +2,6 @@
 FROM maven:3-openjdk-17 AS maven
 ARG BUILD_TARGET=irs-api
 
-USER 1000
-
 WORKDIR /build
 
 COPY ci ci
@@ -28,10 +26,13 @@ RUN --mount=type=cache,target=/root/.m2 mvn -B -s settings.xml clean package -pl
 # Copy the jar and build image
 FROM eclipse-temurin:18-jre AS irs-api
 
-USER 1000
+ARG UID=1000
+ARG GID=1000
 
 WORKDIR /app
 
-COPY --from=maven /build/irs-api/target/irs-api-*-exec.jar app.jar
+COPY --chown=${UID}:${GID} --from=maven /build/irs-api/target/irs-api-*-exec.jar app.jar
+
+USER ${UID}:${GID}
 
 ENTRYPOINT ["java", "-Djava.util.logging.config.file=./logging.properties", "-jar", "app.jar"]
