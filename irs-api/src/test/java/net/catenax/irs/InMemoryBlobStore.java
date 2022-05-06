@@ -1,9 +1,9 @@
 package net.catenax.irs;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import lombok.Value;
@@ -12,7 +12,7 @@ import net.catenax.irs.persistence.BlobPersistence;
 @Value
 public class InMemoryBlobStore implements BlobPersistence {
 
-    Map<String, byte[]> store = new HashMap<>();
+    Map<String, byte[]> store = new ConcurrentHashMap<>();
 
     @Override
     public void putBlob(final String targetBlobName, final byte[] blob) {

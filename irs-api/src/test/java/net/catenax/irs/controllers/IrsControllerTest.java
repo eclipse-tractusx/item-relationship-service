@@ -27,7 +27,6 @@ import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -51,9 +50,9 @@ class IrsControllerTest {
         final UUID returnedJob = UUID.randomUUID();
         when(service.registerItemJob(any())).thenReturn(JobHandle.builder().jobId(returnedJob).build());
 
-        this.mockMvc.perform(post("/irs/jobs")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(new ObjectMapper().writeValueAsString(registerJobWithoutDepth())))
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(
+                                                      new ObjectMapper().writeValueAsString(registerJobWithoutDepth())))
                     .andExpect(status().isCreated())
                     .andExpect(content().string(containsString(returnedJob.toString())));
     }
@@ -61,9 +60,8 @@ class IrsControllerTest {
     @ParameterizedTest
     @MethodSource("corruptedJobs")
     void shouldReturnBadRequestWhenRegisterJobBodyNotValid(final RegisterJob registerJob) throws Exception {
-        this.mockMvc.perform(post("/irs/jobs")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(new ObjectMapper().writeValueAsString(registerJob)))
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(new ObjectMapper().writeValueAsString(registerJob)))
                     .andExpect(status().isBadRequest());
     }
 
@@ -102,11 +100,8 @@ class IrsControllerTest {
     }
 
     private static Stream<RegisterJob> corruptedJobs() {
-        return Stream.of(
-                registerJobWithDepth(110),
-                registerJobWithGlobalAssetIdAndDepth("invalidGlobalAssetId", 0),
-                registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0)
-        );
+        return Stream.of(registerJobWithDepth(110), registerJobWithGlobalAssetIdAndDepth("invalidGlobalAssetId", 0),
+                registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0));
     }
 
 }

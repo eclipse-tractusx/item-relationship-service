@@ -22,10 +22,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class IrsApplication {
 
-    /** The IRS API version. */
+    /**
+     * The IRS API version.
+     */
     public static final String API_VERSION = "1.0";
 
-    /** The URL prefix for IRS API URLs. */
+    /**
+     * The URL prefix for IRS API URLs.
+     */
     public static final String API_PREFIX = "irs";
 
     /**

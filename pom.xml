@@ -17,6 +17,7 @@
         <module>irs-common</module>
         <module>irs-models</module>
         <module>integration-tests</module>
+        <module>irs-report-aggregate</module>
     </modules>
 
     <properties>
@@ -24,6 +25,12 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <sonar.organization>catenax-ng</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${project.basedir}/report-aggregate/target/site/jacoco-aggregate/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- Dependencies -->
         <springboot.version>2.6.6</springboot.version>
@@ -51,7 +58,6 @@
         <jar-plugin.version>3.2.0</jar-plugin.version>
         <flatten-plugin.version>1.2.2</flatten-plugin.version>
         <install-plugin.version>2.4</install-plugin.version>
-
     </properties>
 
     <dependencyManagement>

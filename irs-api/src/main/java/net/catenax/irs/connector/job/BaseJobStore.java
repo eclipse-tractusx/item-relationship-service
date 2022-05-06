@@ -9,6 +9,10 @@
 //
 package net.catenax.irs.connector.job;
 
+import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.component.enums.JobState;
+import org.jetbrains.annotations.Nullable;
+
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
@@ -20,10 +24,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
-
-import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.component.enums.JobState;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class for all JobStores, implementing the Job transition logic and handling locking.
@@ -57,11 +57,11 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public List<MultiTransferJob> findByStateAndCompletionDateOlderThan(final JobState jobState,
-            final Instant dateTime) {
+                                                                        final Instant dateTime) {
         return readLock(() -> getAll().stream()
-                                      .filter(hasState(jobState))
-                                      .filter(isCompletionDateBefore(dateTime))
-                                      .collect(Collectors.toList()));
+                .filter(hasState(jobState))
+                .filter(isCompletionDateBefore(dateTime))
+                .collect(Collectors.toList()));
     }
 
     private Predicate<MultiTransferJob> hasState(final JobState jobState) {
@@ -84,31 +84,35 @@ public abstract class BaseJobStore implements JobStore {
     public void create(final MultiTransferJob job) {
         writeLock(() -> {
             final var newJob = job.toBuilder().transitionInitial().build();
-            log.info("Add the job into jobstore here {}", newJob);
+            log.info("Adding new job into jobstore: {}", newJob);
             put(job.getJobIdString(), newJob);
             return null;
         });
-        
     }
 
     @Override
     public void addTransferProcess(final String jobId, final String processId) {
+        log.info("Adding transfer process {} to job {}", processId, jobId);
         modifyJob(jobId, job -> job.toBuilder().transferProcessId(processId).transitionInProgress().build());
     }
 
     @Override
     public void completeTransferProcess(final String jobId, final TransferProcess process) {
+        log.info("Completing transfer process {} for job {}", process.getId(), jobId);
         modifyJob(jobId, job -> {
             final var remainingTransfers = job.getTransferProcessIds()
-                                              .stream()
-                                              .filter(id -> !id.equals(process.getId()))
-                                              .collect(Collectors.toList());
+                    .stream()
+                    .filter(id -> !id.equals(process.getId()))
+                    .collect(Collectors.toList());
             final var newJob = job.toBuilder()
-                                  .clearTransferProcessIds()
-                                  .transferProcessIds(remainingTransfers)
-                                  .completedTransfer(process);
+                    .clearTransferProcessIds()
+                    .transferProcessIds(remainingTransfers)
+                    .completedTransfer(process);
             if (remainingTransfers.isEmpty()) {
+                log.info("Job {} has no remaining transfers, transitioning to TRANSFERS_FINISHED", jobId);
                 newJob.transitionTransfersFinished();
+            } else {
+                log.info("Job {} has {} remaining transfers, cannot finish it: {}", jobId, remainingTransfers.size(), newJob.build());
             }
             return newJob.build();
         });
@@ -116,9 +120,16 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public void completeJob(final String jobId, final Consumer<MultiTransferJob> completionAction) {
+        log.info("Completing job {}", jobId);
         modifyJob(jobId, job -> {
-            completionAction.accept(job);
-            return job.toBuilder().transitionComplete().build();
+            final JobState jobState = job.getJob().getJobState();
+            if (jobState == JobState.TRANSFERS_FINISHED || jobState == JobState.INITIAL) {
+                completionAction.accept(job);
+                return job.toBuilder().transitionComplete().build();
+            } else {
+                log.info("Job is in state {}, cannot complete it.", jobState);
+                return job;
+            }
         });
     }
 

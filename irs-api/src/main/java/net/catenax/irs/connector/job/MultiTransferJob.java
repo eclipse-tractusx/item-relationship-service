@@ -28,6 +28,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Singular;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
@@ -38,6 +39,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @ToString
 @Builder(toBuilder = true)
+@Slf4j
 @JsonDeserialize(builder = MultiTransferJob.MultiTransferJobBuilder.class)
 public class MultiTransferJob {
 
@@ -80,7 +82,6 @@ public class MultiTransferJob {
     public String getJobIdString() {
         return getJobId().toString();
     }
-
 
     /**
      * Builder for {@link MultiTransferJob}.
@@ -143,7 +144,7 @@ public class MultiTransferJob {
                 throw new IllegalStateException(
                         format("Cannot transition from state %s to %s", job.getJobState(), end));
             }
-
+            log.info("Transitioning job {} from {} to {}", job.getJobId().toString(), job.getJobState(), end);
             job = job.toBuilder().jobState(end).build();
             return this;
         }

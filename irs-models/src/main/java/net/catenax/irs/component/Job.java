@@ -9,17 +9,6 @@
 //
 package net.catenax.irs.component;
 
-import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
-import static net.catenax.irs.dtos.ValidationConstants.JOB_ID_FIELD_MAX_LENGTH;
-
-import java.net.URL;
-import java.time.Instant;
-import java.util.UUID;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -30,6 +19,16 @@ import lombok.ToString;
 import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.enums.JobState;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.net.URL;
+import java.time.Instant;
+import java.util.UUID;
+
+import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
+import static net.catenax.irs.dtos.ValidationConstants.JOB_ID_FIELD_MAX_LENGTH;
 
 /**
  * A job to retrieve item relationship data.
@@ -116,7 +115,7 @@ public class Job {
 
     @Schema(description = "The passed query parameters", implementation = QueryParameter.class)
     private QueryParameter queryParameter;
-    
+
     /**
      * Builder class
      */

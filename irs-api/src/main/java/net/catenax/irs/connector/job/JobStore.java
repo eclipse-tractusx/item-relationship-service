@@ -84,7 +84,7 @@ public interface JobStore {
     /**
      * Mark job as completed.
      *
-     * @param jobId the job identifier.
+     * @param jobId            the job identifier.
      * @param completionAction the action to perform before marking the job as complete
      * @see JobState#COMPLETED
      */

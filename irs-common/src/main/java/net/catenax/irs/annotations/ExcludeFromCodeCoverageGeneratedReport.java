@@ -21,6 +21,8 @@ import java.lang.annotation.Target;
  * the string "Generated" in its name.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ ElementType.METHOD,
+          ElementType.TYPE
+})
 public @interface ExcludeFromCodeCoverageGeneratedReport {
 }

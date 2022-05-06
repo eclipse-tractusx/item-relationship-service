@@ -24,7 +24,7 @@ import net.catenax.irs.validators.ValueOfEnumValidator;
 /**
  * Custom annotation to validate input for enum.
  */
-@Target({FIELD})
+@Target({ FIELD })
 @Retention(RUNTIME)
 @Documented
 @Constraint(validatedBy = ValueOfEnumValidator.class)
@@ -34,7 +34,7 @@ public @interface ValueOfEnum {
 
     String message() default "must be any of enum {enumClass}";
 
-    Class<?>[] groups() default {};
+    Class<?>[] groups() default { };
 
-    Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default { };
 }

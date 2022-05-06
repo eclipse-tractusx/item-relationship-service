@@ -142,7 +142,8 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         }
 
         try {
-            startTransfers(job, requests);
+            final long transfersStarted = startTransfers(job, requests);
+            log.info("Started {} new transfers", transfersStarted);
         } catch (JobException e) {
             markJobInError(job, e, "Failed to start a transfer");
             return;
@@ -187,9 +188,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     private void completeJob(final MultiTransferJob job) {
         try {
-            if (job.getJob().getJobState() == JobState.TRANSFERS_FINISHED) {
-                handler.complete(job);
-            }
+            handler.complete(job);
         } catch (RuntimeException e) {
             markJobInError(job, e, "Handler method failed");
         }
@@ -218,7 +217,6 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
             throw new JobException(response.getStatus().toString());
         }
 
-        jobStore.addTransferProcess(job.getJobIdString(), response.getTransferId());
         return response;
     }
 

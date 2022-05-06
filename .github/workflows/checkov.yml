@@ -2,7 +2,7 @@ name: "Checkov"
 
 on:
   push:
-    branches: [main, master]
+    branches: [ main, master ]
   # pull_request:
   # The branches below must be a subset of the branches above
   # branches: [ main, master ]
@@ -20,7 +20,7 @@ jobs:
       actions: read
       contents: read
       security-events: write
-      
+
     name: checkov-action
     steps:
       - name: Checkout repo
@@ -41,7 +41,7 @@ jobs:
           # baseline: cloudformation/.checkov.baseline # optional: Path to a generated baseline file. Will only report results not in the baseline.
 
       - name: Upload Checkov scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v2
         if: always()
         with:
           sarif_file: "results.sarif"

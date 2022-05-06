@@ -60,21 +60,21 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     @Override
     public TransferInitiateResponse initiateRequest(final ItemDataRequest dataRequest,
-                                                    final Consumer<String> transferProcessStarted,
-                                                    final Consumer<AASTransferProcess> completionCallback,
-                                                    final String lifecyleContext) {
+            final Consumer<String> preExecutionHandler, final Consumer<AASTransferProcess> completionCallback,
+            final String lifecyleContext) {
 
         final String processId = UUID.randomUUID().toString();
+        preExecutionHandler.accept(processId);
 
-        executor.submit(getRunnable(dataRequest, transferProcessStarted, completionCallback, processId, lifecyleContext));
+        executor.execute(getRunnable(dataRequest, completionCallback, processId, lifecyleContext));
 
         return new TransferInitiateResponse(processId, ResponseStatus.OK);
     }
 
-    private Runnable getRunnable(final ItemDataRequest dataRequest, final Consumer<String> transferProcessStarted,
-            final Consumer<AASTransferProcess> transferProcessCompleted, final String processId, final String lifecycleContext) {
+    private Runnable getRunnable(final ItemDataRequest dataRequest,
+            final Consumer<AASTransferProcess> transferProcessCompleted, final String processId,
+            final String lifecycleContext) {
         return () -> {
-            transferProcessStarted.accept(processId);
             final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId, dataRequest.getDepth());
 
             final String itemId = dataRequest.getItemId();
@@ -90,7 +90,8 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
                 aasSubmodelEndpoints.stream().map(SubmodelEndpoint::getAddress).forEach(address -> {
                     try {
-                        final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address, lifecycleContext);
+                        final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address,
+                                lifecycleContext);
                         processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
                     } catch (RestClientException e) {
                         log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
