@@ -9,6 +9,10 @@
 //
 package net.catenax.irs.connector.job;
 
+import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.component.enums.JobState;
+import org.jetbrains.annotations.Nullable;
+
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
@@ -20,10 +24,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
-
-import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.component.enums.JobState;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class for all JobStores, implementing the Job transition logic and handling locking.
@@ -57,11 +57,11 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public List<MultiTransferJob> findByStateAndCompletionDateOlderThan(final JobState jobState,
-            final Instant dateTime) {
+                                                                        final Instant dateTime) {
         return readLock(() -> getAll().stream()
-                                      .filter(hasState(jobState))
-                                      .filter(isCompletionDateBefore(dateTime))
-                                      .collect(Collectors.toList()));
+                .filter(hasState(jobState))
+                .filter(isCompletionDateBefore(dateTime))
+                .collect(Collectors.toList()));
     }
 
     private Predicate<MultiTransferJob> hasState(final JobState jobState) {
@@ -101,13 +101,13 @@ public abstract class BaseJobStore implements JobStore {
         log.info("Completing transfer process {} for job {}", process.getId(), jobId);
         modifyJob(jobId, job -> {
             final var remainingTransfers = job.getTransferProcessIds()
-                                              .stream()
-                                              .filter(id -> !id.equals(process.getId()))
-                                              .collect(Collectors.toList());
+                    .stream()
+                    .filter(id -> !id.equals(process.getId()))
+                    .collect(Collectors.toList());
             final var newJob = job.toBuilder()
-                                  .clearTransferProcessIds()
-                                  .transferProcessIds(remainingTransfers)
-                                  .completedTransfer(process);
+                    .clearTransferProcessIds()
+                    .transferProcessIds(remainingTransfers)
+                    .completedTransfer(process);
             if (remainingTransfers.isEmpty()) {
                 log.info("Job {} has no remaining transfers, transitioning to TRANSFERS_FINISHED", jobId);
                 newJob.transitionTransfersFinished();

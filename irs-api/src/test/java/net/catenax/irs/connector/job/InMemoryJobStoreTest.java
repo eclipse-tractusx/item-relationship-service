@@ -65,11 +65,9 @@ class InMemoryJobStoreTest {
 
         sut.create(job);
         assertThat(sut.find(job.getJobIdString())).isPresent()
-                                                                .get()
-                                                                .usingRecursiveComparison()
-                                                                .isEqualTo(originalJob.toBuilder()
-                                                                                      .transitionInitial()
-                                                                                      .build());
+                                                  .get()
+                                                  .usingRecursiveComparison()
+                                                  .isEqualTo(originalJob.toBuilder().transitionInitial().build());
         assertThat(sut.find(otherJobId)).isEmpty();
     }
 
@@ -118,7 +116,7 @@ class InMemoryJobStoreTest {
 
         // Act
         assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
-            () -> sut.completeTransferProcess(job.getJobIdString(), process1));
+                () -> sut.completeTransferProcess(job.getJobIdString(), process1));
 
         // Assert
         refreshJob();
@@ -277,7 +275,7 @@ class InMemoryJobStoreTest {
         final List<MultiTransferJob> completedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
                 nowPlusFiveHours);
         // Assert
-        assertThat(completedJobs.size()).isEqualTo(1);
+        assertThat(completedJobs).hasSize(1);
         assertThat(completedJobs.get(0).getJob().getJobState()).isEqualTo(JobState.COMPLETED);
         assertTrue(Optional.ofNullable(completedJobs.get(0).getJob().getJobCompleted()).isPresent());
     }
@@ -293,7 +291,7 @@ class InMemoryJobStoreTest {
         final List<MultiTransferJob> failedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.ERROR,
                 nowPlusFiveHours);
         // Assert
-        assertThat(failedJobs.size()).isEqualTo(1);
+        assertThat(failedJobs).hasSize(1);
         assertThat(failedJobs.get(0).getJob().getJobState()).isEqualTo(JobState.ERROR);
         assertTrue(Optional.ofNullable(failedJobs.get(0).getJob().getJobCompleted()).isPresent());
     }
@@ -334,7 +332,7 @@ class InMemoryJobStoreTest {
         // Act
         final List<MultiTransferJob> foundJobs = sut.findByStates(List.of(JobState.COMPLETED));
         // Assert
-        assertThat(foundJobs.size()).isEqualTo(1);
+        assertThat(foundJobs).hasSize(1);
         assertThat(foundJobs.get(0).getJobIdString()).isEqualTo(job.getJobIdString());
     }
 
@@ -346,7 +344,7 @@ class InMemoryJobStoreTest {
         // Act
         final List<MultiTransferJob> foundJobs = sut.findByStates(List.of(JobState.ERROR));
         // Assert
-        assertThat(foundJobs.size()).isEqualTo(1);
+        assertThat(foundJobs).hasSize(1);
         assertThat(foundJobs.get(0).getJobIdString()).isEqualTo(job.getJobIdString());
     }
 

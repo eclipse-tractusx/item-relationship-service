@@ -12,7 +12,7 @@
             <AppenderRef ref="Console"/>
         </Root>
 
-        <Logger name="net.catenax.irs" level="debug" />
+        <Logger name="net.catenax.irs" level="debug"/>
     </Loggers>
 
 </Configuration>

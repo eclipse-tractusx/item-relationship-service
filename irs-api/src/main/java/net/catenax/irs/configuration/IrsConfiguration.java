@@ -9,11 +9,11 @@
 //
 package net.catenax.irs.configuration;
 
-import java.net.URL;
-
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import java.net.URL;
 
 /**
  * IRS configuration settings. Automatically populated by Spring from application.yml
