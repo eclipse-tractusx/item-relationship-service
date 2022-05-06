@@ -17,13 +17,14 @@ COPY irs-models irs-models
 COPY irs-parent irs-parent
 COPY irs-parent-spring-boot irs-parent-spring-boot
 COPY irs-testing irs-testing
+COPY irs-report-aggregate irs-report-aggregate
 
 # the --mount option requires BuildKit.
 RUN --mount=type=cache,target=/root/.m2 mvn -B -s settings.xml clean package -pl :$BUILD_TARGET -am -DskipTests
 
 
 # Copy the jar and build image
-FROM eclipse-temurin:17-jre AS irs-api
+FROM eclipse-temurin:18-jre AS irs-api
 
 WORKDIR /app
 
