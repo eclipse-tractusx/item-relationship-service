@@ -4,9 +4,17 @@ server:
 spring:
   application:
     name: item-relationship-service
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  security:
+    oauth2:
+      client:
+        registration:
+          keylocak:
+            authorization-grant-type: client_credentials
+            client-id: ${keycloak-oauth2-client-id:}
+            client-secret: ${keycloak-oauth2-client-secret:}
+        provider:
+          keylocak:
+            token-uri: ${keycloak-oauth2-client-token-uri:https://centralidp.demo.catena-x.net/auth/realms/master/protocol/openid-connect/token}
 
 management:
   endpoints:

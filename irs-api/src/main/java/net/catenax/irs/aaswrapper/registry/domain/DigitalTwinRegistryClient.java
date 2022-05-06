@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 /**
  * Digital Twin Registry Rest Client
  */
-@Profile("prod")
+//@Profile("prod")
 @FeignClient(contextId = "digitalTwinRegistryClientContextId", value = "digitalTwinRegistryClient",
         url = "${feign.client.config.digitalTwinRegistry.url}",
         configuration = DigitalTwinRegistryClientConfiguration.class)
@@ -46,6 +46,7 @@ interface DigitalTwinRegistryClient {
  * Digital Twin Registry Rest Client Stub used in local environment
  */
 @Service
+@Profile("prod")
 class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
     @Override
     public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
