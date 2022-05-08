@@ -1,29 +1,17 @@
 package net.catenax.irs;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static net.catenax.irs.component.enums.AspectType.AspectTypesConstants.ASSEMBLY_PART_RELATIONSHIP;
-import static net.catenax.irs.dtos.IrsCommonConstants.DEPTH_ID_KEY;
-import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.File;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.ItemDataRequest;
-import net.catenax.irs.component.enums.AspectType;
-import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobInitiateResponse;
 import net.catenax.irs.connector.job.JobOrchestrator;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.dto.JobDataDTO;
-import net.catenax.irs.dto.SubmodelType;
 import net.catenax.irs.persistence.BlobPersistence;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -37,26 +25,22 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = { "local",
-                             "test"
-})
+@ActiveProfiles(profiles = { "local", "test" })
 class IrsApplicationTests {
 
-    @LocalServerPort
-    private int port;
+    @LocalServerPort private int port;
 
-    @Autowired
-    private TestRestTemplate restTemplate;
+    @Autowired private TestRestTemplate restTemplate;
 
-    @Autowired
-    private JobStore jobStore;
+    @Autowired private JobStore jobStore;
 
-    @Autowired
-    private BlobPersistence inMemoryBlobStore;
+    @Autowired private BlobPersistence inMemoryBlobStore;
 
-    @Autowired
-    private JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator;
+    @Autowired private JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator;
 
     @Test
     void contextLoads() {
@@ -65,17 +49,14 @@ class IrsApplicationTests {
     @Test
     void generatedOpenApiMatchesContract() throws Exception {
         final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
-                String.class);
+                                                                    String.class);
         final String fixedYaml = Files.readString(new File("../api/irs-v1.0.yaml").toPath(), UTF_8);
         assertThat(generatedYaml).isEqualToNormalizingNewlines(fixedYaml);
     }
 
     @Test
     void shouldStoreBlobResultWhenRunningJob() throws Exception {
-        final JobDataDTO jobDataDTO = JobDataDTO.builder()
-                                                .rootItemId("rootitemid")
-                                                .treeDepthId("5")
-                                                .build();
+        final JobDataDTO jobDataDTO = JobDataDTO.builder().rootItemId("rootitemid").treeDepthId("5").build();
 
         final JobInitiateResponse response = jobOrchestrator.startJob(jobDataDTO);
 

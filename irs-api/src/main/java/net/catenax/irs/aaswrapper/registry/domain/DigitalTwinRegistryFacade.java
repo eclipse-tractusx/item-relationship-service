@@ -35,7 +35,6 @@ public class DigitalTwinRegistryFacade {
      *
      * @param aasIdentifier The Asset Administration Shell's unique id
      * @param jobData       the job data parameters
-     *
      * @return list of submodel addresses
      */
     public List<SubmodelEndpoint> getAASSubmodelEndpoints(final String aasIdentifier, final JobDataDTO jobData) {
@@ -43,12 +42,12 @@ public class DigitalTwinRegistryFacade {
                 digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aasIdentifier).getSubmodelDescriptors();
 
         return submodelDescriptors.stream()
-                                  .filter(submodelDescriptor -> isConsumerAspectType(submodelDescriptor, jobData))
+                                  .filter(submodelDescriptor -> filterByAspectType(submodelDescriptor, jobData))
                                   .map(submodelDescriptor -> new SubmodelEndpoint(submodelDescriptor.getEndpoints()
                                                                                                     .get(0)
                                                                                                     .getProtocolInformation()
                                                                                                     .getEndpointAddress(),
-                                                                                  SubmodelType.ASSEMBLY_PART_RELATIONSHIP))
+                                                                                  convert(submodelDescriptor.getIdShort())))
                                   .collect(Collectors.toList());
     }
 
@@ -56,21 +55,45 @@ public class DigitalTwinRegistryFacade {
      * TODO: Adjust when we will know how to distinguish assembly part relationships
      *
      * @param submodelDescriptor the submodel descriptor
-     *
-     * @return True, if AssemblyPartRelationship
+     * @param jobData            the job data parameters
+     * @return True, if no filter has been selected otherwise filter the submodelDescriptor
+     * according to the given consumer aspectType
      */
-    private boolean isConsumerAspectType(final SubmodelDescriptor submodelDescriptor, final JobDataDTO jobData) {
+    private boolean filterByAspectType(final SubmodelDescriptor submodelDescriptor, final JobDataDTO jobData) {
         final List<String> aspectTypes = jobData.getAspectTypes();
+
         if (shouldFilterByAspectType(aspectTypes)) {
             final String type = submodelDescriptor.getIdShort();
             return aspectTypes.contains(type.toLowerCase(Locale.ROOT));
         }
-
-        final String assemblyPartRelationshipIdentifier = SubmodelType.ASSEMBLY_PART_RELATIONSHIP.getValue();
-        return assemblyPartRelationshipIdentifier.equals(submodelDescriptor.getIdShort());
+        return true;
     }
 
     private boolean shouldFilterByAspectType(final List<String> aspectTypes) {
         return isNotEmpty(aspectTypes);
     }
+
+    /**
+     * Convert from AspectType value into an SubmodelType enum
+     *
+     * @param aspectType the given consumer AspectType value
+     * @return the converted SubmodelType enum
+     */
+    private SubmodelType convert(final String aspectType) {
+        SubmodelType submodelType = null;
+
+        switch (aspectType) {
+            case "assemblypartrelationship":
+                submodelType = SubmodelType.ASSEMBLY_PART_RELATIONSHIP;
+                break;
+            case "serialparttypization":
+                submodelType = SubmodelType.SERIAL_PART_TYPIZATION;
+                break;
+            default:
+                submodelType = SubmodelType.ASSEMBLY_PART_RELATIONSHIP;
+                break;
+        }
+        return submodelType;
+    }
+
 }

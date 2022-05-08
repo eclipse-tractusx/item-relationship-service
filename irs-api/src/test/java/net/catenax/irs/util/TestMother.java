@@ -72,7 +72,7 @@ public class TestMother {
                          .rootItemId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")
                          .treeDepthId("")
                          .bomLifecycle("AsRequired")
-                         .aspectTypes(List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString().toLowerCase(Locale.ROOT)))
+                         .aspectTypes(List.of(AspectType.MATERIAL_ASPECT.toString().toLowerCase(Locale.ROOT)))
                          .build();
     }
 
@@ -144,7 +144,7 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<AspectType> aspectTypes) {
-        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", depth,aspectTypes);
+        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", depth, aspectTypes);
     }
 
     public static RegisterJob registerJobWithGlobalAssetIdAndDepth(final String globalAssetId, final Integer depth, final List<AspectType> aspectTypes) {

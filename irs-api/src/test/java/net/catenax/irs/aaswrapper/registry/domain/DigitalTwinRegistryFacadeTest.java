@@ -30,6 +30,8 @@ class DigitalTwinRegistryFacadeTest {
 
     private JobDataDTO jobDataDTO;
 
+    private JobDataDTO jobDataFilter;
+
     @Mock
     private DigitalTwinRegistryClient dtRegistryClientMock;
 
@@ -40,6 +42,7 @@ class DigitalTwinRegistryFacadeTest {
         digitalTwinRegistryFacade = new DigitalTwinRegistryFacade(new DigitalTwinRegistryClientLocalStub());
         dtRegistryFacadeWithMock = new DigitalTwinRegistryFacade(dtRegistryClientMock);
         jobDataDTO = generate.jobDataDTO();
+        jobDataFilter = generate.jobDataFilter();
     }
 
     @Test
@@ -87,5 +90,26 @@ class DigitalTwinRegistryFacadeTest {
 
         assertThatExceptionOfType(FeignException.NotFound.class).isThrownBy(
                 () -> client.getAssetAdministrationShellDescriptor(catenaXId));
+    }
+
+    @Test
+    void shouldReturnEmptySubmodelEndpointsWhenFilteringByNotMatchingAspectType() {
+        final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+
+        final List<SubmodelEndpoint> shellEndpoints = digitalTwinRegistryFacade.getAASSubmodelEndpoints(catenaXId, jobDataFilter);
+
+        assertThat(shellEndpoints).isEmpty();
+    }
+
+    @Test
+    void shouldReturnSubmodelEndpointsWhenFilteringByAspectType() {
+        final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+
+        final List<SubmodelEndpoint> shellEndpoints = digitalTwinRegistryFacade.getAASSubmodelEndpoints(catenaXId, jobDataDTO);
+
+        assertThat(shellEndpoints).isNotNull().hasSize(1);
+        final SubmodelEndpoint endpoint = shellEndpoints.get(0);
+
+        assertThat(endpoint.getSubmodelType()).isEqualTo(SubmodelType.ASSEMBLY_PART_RELATIONSHIP);
     }
 }
