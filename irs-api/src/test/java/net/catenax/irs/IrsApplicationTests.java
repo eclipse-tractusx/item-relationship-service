@@ -32,15 +32,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles(profiles = { "local", "test" })
 class IrsApplicationTests {
 
-    @LocalServerPort private int port;
+    @LocalServerPort
+    private int port;
 
-    @Autowired private TestRestTemplate restTemplate;
+    @Autowired
+    private TestRestTemplate restTemplate;
 
-    @Autowired private JobStore jobStore;
+    @Autowired
+    private JobStore jobStore;
 
-    @Autowired private BlobPersistence inMemoryBlobStore;
+    @Autowired
+    private BlobPersistence inMemoryBlobStore;
 
-    @Autowired private JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator;
+    @Autowired
+    private JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator;
 
     @Test
     void contextLoads() {

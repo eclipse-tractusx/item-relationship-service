@@ -97,8 +97,8 @@ class IrsItemGraphQueryServiceTest {
 
     @Test
     void cancelJobById_throwEntityNotFoundException() {
-        when(jobStore.cancelJob(jobId.toString()))
-                .thenThrow(new EntityNotFoundException("No job exists with id " + jobId));
+        when(jobStore.cancelJob(jobId.toString())).thenThrow(
+                new EntityNotFoundException("No job exists with id " + jobId));
 
         assertThrows(EntityNotFoundException.class, () -> testee.cancelJobById(jobId));
     }

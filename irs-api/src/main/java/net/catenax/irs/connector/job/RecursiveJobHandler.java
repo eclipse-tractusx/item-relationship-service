@@ -9,7 +9,6 @@
 //
 package net.catenax.irs.connector.job;
 
-
 import java.util.stream.Stream;
 
 /**

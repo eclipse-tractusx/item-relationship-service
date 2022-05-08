@@ -24,8 +24,8 @@ public interface TransferProcessManager<T extends DataRequest, P extends Transfe
     /**
      * Starts a data request asynchronously.
      *
-     * @param dataRequest the data request instruction
-     * @param transferProcessStarted callback which is executed as soon as a request is being started
+     * @param dataRequest              the data request instruction
+     * @param transferProcessStarted   callback which is executed as soon as a request is being started
      * @param transferProcessCompleted callback which is executed after the request is finished
      * @param jobData of the BomLifecycle from the RegisterJob request
      *

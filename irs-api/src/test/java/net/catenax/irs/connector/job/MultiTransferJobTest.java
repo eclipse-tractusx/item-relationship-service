@@ -20,9 +20,8 @@ class MultiTransferJobTest {
 
     @Test
     void getTransferProcessIds_Immutable() {
-        assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() ->
-                        job.getTransferProcessIds().add(faker.lorem().word()));
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(
+                () -> job.getTransferProcessIds().add(faker.lorem().word()));
     }
 
     @Test

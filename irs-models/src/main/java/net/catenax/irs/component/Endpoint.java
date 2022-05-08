@@ -23,7 +23,8 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class Endpoint {
 
-    @Schema(description = "Communication interface type.", example = "HTTP", implementation = String.class, defaultValue = "HTTP")
+    @Schema(description = "Communication interface type.", example = "HTTP", implementation = String.class,
+            defaultValue = "HTTP")
     private String interfaceType;
 
     @Schema(description = "Information to the interface used.", implementation = ProtocolInformation.class)

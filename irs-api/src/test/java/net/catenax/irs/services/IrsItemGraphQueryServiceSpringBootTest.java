@@ -41,7 +41,6 @@ class IrsItemGraphQueryServiceSpringBootTest {
     private IrsItemGraphQueryService service;
 
     @Test
-    @Disabled("it is not consistent before TRI-390 not resolved")
     void registerItemJobWithoutDepthShouldBuildFullTree() {
         // given
         final RegisterJob registerJob = registerJobWithoutDepth();
@@ -52,13 +51,12 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         // then
         given().ignoreException(EntityNotFoundException.class)
-           .await()
-           .atMost(10, TimeUnit.SECONDS)
-           .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFullTree));
+                .await()
+                .atMost(10, TimeUnit.SECONDS)
+                .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFullTree));
     }
 
     @Test
-    @Disabled("it is not consistent before TRI-390 not resolved")
     void registerItemJobWithDepthShouldBuildTreeUntilGivenDepth() {
         // given
         final RegisterJob registerJob = registerJobWithDepthAndAspect(0, null);
@@ -69,9 +67,10 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         // then
         given().ignoreException(EntityNotFoundException.class)
-            .await()
-            .atMost(10, TimeUnit.SECONDS)
-            .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFirstDepth));
+                .await()
+                .atMost(10, TimeUnit.SECONDS)
+                .until(() -> getRelationshipsSize(registeredJob.getJobId()),
+                        equalTo(expectedRelationshipsSizeFirstDepth));
     }
 
     @Test
