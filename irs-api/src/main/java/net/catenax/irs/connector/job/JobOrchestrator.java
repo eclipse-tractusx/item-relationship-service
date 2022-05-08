@@ -205,8 +205,8 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         final JobDataDTO jobData = job.getJobData();
 
         final var response = processManager.initiateRequest(dataRequest,
-                transferId -> jobStore.addTransferProcess(job.getJob().getJobId().toString(), transferId),
-                this::transferProcessCompleted, lifecyleContext);
+                transferId -> jobStore.addTransferProcess(job.getJobIdString(), transferId),
+                this::transferProcessCompleted, jobData);
 
         if (response.getStatus() != ResponseStatus.OK) {
             throw new JobException(response.getStatus().toString());

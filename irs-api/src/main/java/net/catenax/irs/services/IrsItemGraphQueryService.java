@@ -10,16 +10,11 @@
 package net.catenax.irs.services;
 
 import static java.util.Collections.emptyList;
-import static net.catenax.irs.dtos.IrsCommonConstants.DEPTH_ID_KEY;
-import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
-import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -90,20 +85,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         }
     }
 
-    private Map<String, String> buildJobParams(final @NonNull RegisterJob request) {
-        final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
-        final Optional<BomLifecycle> bomLifecycleFormRequest = Optional.ofNullable(request.getBomLifecycle());
-
-        final var paramMap = new HashMap<String, String>();
-
-        paramMap.put(ROOT_ITEM_ID_KEY, uuid);
-        paramMap.put(DEPTH_ID_KEY, String.valueOf(request.getDepth()));
-        bomLifecycleFormRequest.ifPresent(bomLifecycle -> paramMap.put(LIFE_CYCLE_CONTEXT,
-                bomLifecycle.getLifecycleContextCharacteristicValue()));
-
-        return paramMap;
-    }
-
     private JobDataDTO buildJobData(final @NonNull RegisterJob request) {
         final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
         final String depthId = String.valueOf(request.getDepth());
@@ -116,10 +97,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         final Optional<List<AspectType>> aspectTypes = Optional.ofNullable(request.getAspects());
         List<String> aspectTypeValues;
-        aspectTypeValues = aspectTypes.map(types -> types.stream()
-                                                         .map(AspectType::toString)
-                                                         .map(String::toLowerCase)
-                                                         .collect(Collectors.toList()))
+        aspectTypeValues = aspectTypes.map(
+                                              types -> types.stream().map(AspectType::toString).map(String::toLowerCase).collect(Collectors.toList()))
                                       .orElse(emptyList());
 
         return JobDataDTO.builder()

@@ -61,21 +61,22 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     @Override
     public TransferInitiateResponse initiateRequest(final ItemDataRequest dataRequest,
-                                                    final Consumer<String> transferProcessStarted,
-                                                    final Consumer<AASTransferProcess> completionCallback,
-                                                    final JobDataDTO jobData) {
+            final Consumer<String> preExecutionHandler, final Consumer<AASTransferProcess> completionCallback,
+            final JobDataDTO jobData) {
 
         final String processId = UUID.randomUUID().toString();
+        preExecutionHandler.accept(processId);
 
-        executor.submit(getRunnable(dataRequest, transferProcessStarted, completionCallback, processId, jobData));
+        executor.execute(getRunnable(dataRequest, completionCallback, processId, jobData));
 
         return new TransferInitiateResponse(processId, ResponseStatus.OK);
     }
 
-    private Runnable getRunnable(final ItemDataRequest dataRequest, final Consumer<String> transferProcessStarted,
-            final Consumer<AASTransferProcess> transferProcessCompleted, final String processId, final JobDataDTO jobData) {
+    private Runnable getRunnable(final ItemDataRequest dataRequest,
+            final Consumer<AASTransferProcess> transferProcessCompleted, final String processId,
+            final JobDataDTO jobData) {
+
         return () -> {
-            transferProcessStarted.accept(processId);
             final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId, dataRequest.getDepth());
 
             final String itemId = dataRequest.getItemId();
@@ -84,7 +85,8 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             log.info("Calling Digital Twin Registry with itemId {}", itemId);
             try {
-                final List<SubmodelEndpoint> aasSubmodelEndpoints = registryFacade.getAASSubmodelEndpoints(itemId, jobData);
+                final List<SubmodelEndpoint> aasSubmodelEndpoints =
+                        registryFacade.getAASSubmodelEndpoints(itemId, jobData);
 
                 log.info("Retrieved {} SubmodelEndpoints for itemId {}", aasSubmodelEndpoints.size(), itemId);
 
