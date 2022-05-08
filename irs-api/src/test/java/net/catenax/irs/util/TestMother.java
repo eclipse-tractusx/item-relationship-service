@@ -135,19 +135,23 @@ public class TestMother {
         }
     }
 
+    public static RegisterJob registerJobWithoutDepthAndAspect() {
+        return registerJobWithDepthAndAspect(null, null);
+    }
+
     public static RegisterJob registerJobWithoutDepth() {
-        return registerJobWithDepth(null);
+        return registerJobWithDepthAndAspect(null, List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP));
     }
 
-    public static RegisterJob registerJobWithDepth(final Integer depth) {
-        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", depth);
+    public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<AspectType> aspectTypes) {
+        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", depth,aspectTypes);
     }
 
-    public static RegisterJob registerJobWithGlobalAssetIdAndDepth(final String globalAssetId, final Integer depth) {
+    public static RegisterJob registerJobWithGlobalAssetIdAndDepth(final String globalAssetId, final Integer depth, final List<AspectType> aspectTypes) {
         final RegisterJob registerJob = new RegisterJob();
         registerJob.setGlobalAssetId(globalAssetId);
         registerJob.setDepth(depth);
-        registerJob.setAspects(List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP));
+        registerJob.setAspects(aspectTypes);
 
         return registerJob;
     }

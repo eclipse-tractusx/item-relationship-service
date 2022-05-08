@@ -1,9 +1,8 @@
 package net.catenax.irs.services;
 
-import static net.catenax.irs.util.TestMother.registerJobWithDepth;
+import static net.catenax.irs.util.TestMother.registerJobWithDepthAndAspect;
 import static net.catenax.irs.util.TestMother.registerJobWithoutDepth;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
 import static org.awaitility.Awaitility.given;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -62,7 +61,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @Disabled("it is not consistent before TRI-390 not resolved")
     void registerItemJobWithDepthShouldBuildTreeUntilGivenDepth() {
         // given
-        final RegisterJob registerJob = registerJobWithDepth(0);
+        final RegisterJob registerJob = registerJobWithDepthAndAspect(0, null);
         final int expectedRelationshipsSizeFirstDepth = 3; // stub
 
         // when

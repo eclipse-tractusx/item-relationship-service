@@ -10,6 +10,7 @@
 package net.catenax.irs.aaswrapper.registry.domain;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -58,11 +59,11 @@ public class DigitalTwinRegistryFacade {
      *
      * @return True, if AssemblyPartRelationship
      */
-    private boolean isConsumerAspectType(final SubmodelDescriptor submodelDescriptor, JobDataDTO jobData) {
+    private boolean isConsumerAspectType(final SubmodelDescriptor submodelDescriptor, final JobDataDTO jobData) {
         final List<String> aspectTypes = jobData.getAspectTypes();
         if (shouldFilterByAspectType(aspectTypes)) {
             final String type = submodelDescriptor.getIdShort();
-            return aspectTypes.contains(type.toLowerCase());
+            return aspectTypes.contains(type.toLowerCase(Locale.ROOT));
         }
 
         final String assemblyPartRelationshipIdentifier = SubmodelType.ASSEMBLY_PART_RELATIONSHIP.getValue();
