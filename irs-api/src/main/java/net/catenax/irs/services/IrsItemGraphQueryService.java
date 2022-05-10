@@ -46,7 +46,7 @@ import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferProcess;
 import net.catenax.irs.controllers.IrsApiConstants;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
-import net.catenax.irs.dto.JobDataDTO;
+import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
@@ -85,7 +85,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         }
     }
 
-    private JobDataDTO buildJobData(final @NonNull RegisterJob request) {
+    private JobParameter buildJobData(final @NonNull RegisterJob request) {
         final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
         final String depthId = String.valueOf(request.getDepth());
         final Optional<BomLifecycle> bomLifecycleFormRequest = Optional.ofNullable(request.getBomLifecycle());
@@ -101,12 +101,12 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                                               types -> types.stream().map(AspectType::toString).map(String::toLowerCase).collect(Collectors.toList()))
                                       .orElse(emptyList());
 
-        return JobDataDTO.builder()
-                         .rootItemId(uuid)
-                         .treeDepthId(depthId)
-                         .bomLifecycle(lifecycle)
-                         .aspectTypes(aspectTypeValues)
-                         .build();
+        return JobParameter.builder()
+                           .rootItemId(uuid)
+                           .treeDepthId(depthId)
+                           .bomLifecycle(lifecycle)
+                           .aspectTypes(aspectTypeValues)
+                           .build();
     }
 
     @Override

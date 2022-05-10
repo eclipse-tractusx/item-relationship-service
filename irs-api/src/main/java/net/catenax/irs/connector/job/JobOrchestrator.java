@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.dto.JobDataDTO;
+import net.catenax.irs.dto.JobParameter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -77,9 +77,9 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      * @param jobData additional data for the job to be managed by the {@link JobStore}.
      * @return response.
      */
-    public JobInitiateResponse startJob(final JobDataDTO jobData) {
+    public JobInitiateResponse startJob(final JobParameter jobData) {
         final Job job = createJob(jobData.getRootItemId());
-        final var multiJob = MultiTransferJob.builder().job(job).jobData(jobData).build();
+        final var multiJob = MultiTransferJob.builder().job(job).jobParameter(jobData).build();
         jobStore.create(multiJob);
 
         final Stream<T> requests;
@@ -201,8 +201,9 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         return dataRequests.map(r -> startTransfer(job, r)).collect(Collectors.counting());
     }
 
-    private TransferInitiateResponse startTransfer(final MultiTransferJob job, final T dataRequest)  /* throws JobErrorDetails */ {
-        final JobDataDTO jobData = job.getJobData();
+    private TransferInitiateResponse startTransfer(final MultiTransferJob job,
+            final T dataRequest)  /* throws JobErrorDetails */ {
+        final JobParameter jobData = job.getJobParameter();
 
         final var response = processManager.initiateRequest(dataRequest,
                 transferId -> jobStore.addTransferProcess(job.getJobIdString(), transferId),

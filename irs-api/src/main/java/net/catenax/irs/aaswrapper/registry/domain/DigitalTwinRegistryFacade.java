@@ -14,12 +14,10 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import net.catenax.irs.dto.JobDataDTO;
+import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.dto.SubmodelEndpoint;
 import net.catenax.irs.dto.SubmodelType;
 import org.springframework.stereotype.Service;
-
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 /**
  * Public API Facade for digital twin registry domain
@@ -37,9 +35,9 @@ public class DigitalTwinRegistryFacade {
      * @param jobData       the job data parameters
      * @return list of submodel addresses
      */
-    public List<SubmodelEndpoint> getAASSubmodelEndpoints(final String aasIdentifier, final JobDataDTO jobData) {
-        final List<SubmodelDescriptor> submodelDescriptors =
-                digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aasIdentifier).getSubmodelDescriptors();
+    public List<SubmodelEndpoint> getAASSubmodelEndpoints(final String aasIdentifier, final JobParameter jobData) {
+        final List<SubmodelDescriptor> submodelDescriptors = digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(
+                aasIdentifier).getSubmodelDescriptors();
 
         return submodelDescriptors.stream()
                                   .filter(submodelDescriptor -> filterByAspectType(submodelDescriptor, jobData))
@@ -47,7 +45,7 @@ public class DigitalTwinRegistryFacade {
                                                                                                     .get(0)
                                                                                                     .getProtocolInformation()
                                                                                                     .getEndpointAddress(),
-                                                                                  convert(submodelDescriptor.getIdShort())))
+                                          convert(submodelDescriptor.getIdShort())))
                                   .collect(Collectors.toList());
     }
 
@@ -59,7 +57,7 @@ public class DigitalTwinRegistryFacade {
      * @return True, if no filter has been selected otherwise filter the submodelDescriptor
      * according to the given consumer aspectType
      */
-    private boolean filterByAspectType(final SubmodelDescriptor submodelDescriptor, final JobDataDTO jobData) {
+    private boolean filterByAspectType(final SubmodelDescriptor submodelDescriptor, final JobParameter jobData) {
         final List<String> aspectTypes = jobData.getAspectTypes();
 
         if (shouldFilterByAspectType(aspectTypes)) {
@@ -70,7 +68,7 @@ public class DigitalTwinRegistryFacade {
     }
 
     private boolean shouldFilterByAspectType(final List<String> aspectTypes) {
-        return isNotEmpty(aspectTypes);
+        return aspectTypes != null && !aspectTypes.isEmpty();
     }
 
     /**
@@ -80,7 +78,7 @@ public class DigitalTwinRegistryFacade {
      * @return the converted SubmodelType enum
      */
     private SubmodelType convert(final String aspectType) {
-        SubmodelType submodelType = null;
+        SubmodelType submodelType;
 
         switch (aspectType) {
             case "assemblypartrelationship":
@@ -90,6 +88,7 @@ public class DigitalTwinRegistryFacade {
                 submodelType = SubmodelType.SERIAL_PART_TYPIZATION;
                 break;
             default:
+                // TODO (Saber Dridi) Extend the submodel types and improve the default case
                 submodelType = SubmodelType.ASSEMBLY_PART_RELATIONSHIP;
                 break;
         }

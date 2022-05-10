@@ -12,15 +12,14 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import net.catenax.irs.TestConfig;
-import net.catenax.irs.component.JobHandle;
-import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
+import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.exceptions.EntityNotFoundException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,9 +50,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         // then
         given().ignoreException(EntityNotFoundException.class)
-                .await()
-                .atMost(10, TimeUnit.SECONDS)
-                .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFullTree));
+               .await()
+               .atMost(10, TimeUnit.SECONDS)
+               .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFullTree));
     }
 
     @Test
@@ -67,10 +66,10 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         // then
         given().ignoreException(EntityNotFoundException.class)
-                .await()
-                .atMost(10, TimeUnit.SECONDS)
-                .until(() -> getRelationshipsSize(registeredJob.getJobId()),
-                        equalTo(expectedRelationshipsSizeFirstDepth));
+               .await()
+               .atMost(10, TimeUnit.SECONDS)
+               .until(() -> getRelationshipsSize(registeredJob.getJobId()),
+                       equalTo(expectedRelationshipsSizeFirstDepth));
     }
 
     @Test
@@ -82,9 +81,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
                                                                           .jobState(JobState.UNSAVED)
                                                                           .exception(JobErrorDetails.builder()
                                                                                                     .errorDetail(
-                                                                                                        "Job should be canceled")
+                                                                                                            "Job should be canceled")
                                                                                                     .exceptionDate(
-                                                                                                        Instant.now())
+                                                                                                            Instant.now())
                                                                                                     .build())
                                                                           .build())
                                                                   .build();

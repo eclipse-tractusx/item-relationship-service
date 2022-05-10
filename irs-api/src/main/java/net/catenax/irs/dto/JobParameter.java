@@ -18,12 +18,12 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * JobDataDTO model used for job creation
+ * JobParameter model used for job creation
  */
 @Data
 @Builder(toBuilder = true)
-@JsonDeserialize(builder = JobDataDTO.JobDataDTOBuilder.class)
-public class JobDataDTO {
+@JsonDeserialize(builder = JobParameter.JobParameterBuilder.class)
+public class JobParameter {
 
     /**
      * Job Data key for root item ID
@@ -49,7 +49,7 @@ public class JobDataDTO {
      * Builder class
      */
     @JsonPOJOBuilder(withPrefix = "")
-    public static class JobDataDTOBuilder {
+    public static class JobParameterBuilder {
     }
 
 }

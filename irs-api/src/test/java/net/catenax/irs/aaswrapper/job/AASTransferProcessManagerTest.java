@@ -1,11 +1,11 @@
 package net.catenax.irs.aaswrapper.job;
 
-import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static net.catenax.irs.util.TestMother.jobParameter;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -21,7 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class AASTransferProcessManagerTest {
+class AASTransferProcessManagerTest {
 
     private final TestMother generate = new TestMother();
 
@@ -31,8 +31,8 @@ public class AASTransferProcessManagerTest {
 
     ExecutorService pool = mock(ExecutorService.class);
 
-    final AASTransferProcessManager manager = new AASTransferProcessManager(digitalTwinRegistryFacade, submodelFacade,
-            pool, new InMemoryBlobStore());
+    final AASTransferProcessManager manager =
+            new AASTransferProcessManager(digitalTwinRegistryFacade, submodelFacade, pool, new InMemoryBlobStore());
 
     @Test
     void shouldExecuteThreadForProcessing() {
@@ -40,22 +40,23 @@ public class AASTransferProcessManagerTest {
         final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(UUID.randomUUID().toString());
 
         // when
-        manager.initiateRequest(itemDataRequest,
-            s -> {},
-            aasTransferProcess -> {}, generate.jobDataDTO()
-        );
+        manager.initiateRequest(itemDataRequest, s -> {
+        }, aasTransferProcess -> {
+        }, jobParameter());
 
         // then
         verify(pool, times(1)).execute(any(Runnable.class));
     }
 
     @Test
-    void shouldInitiateProcessingAndReturnOkStatus() throws Exception {
+    void shouldInitiateProcessingAndReturnOkStatus() {
         // given
         final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(UUID.randomUUID().toString());
 
         // when
-        final TransferInitiateResponse initiateResponse = manager.initiateRequest(itemDataRequest, s -> {}, aasTransferProcess -> {}, generate.jobDataDTO());
+        final TransferInitiateResponse initiateResponse = manager.initiateRequest(itemDataRequest, s -> {
+        }, aasTransferProcess -> {
+        }, jobParameter());
 
         // then
         assertThat(initiateResponse.getTransferId()).isNotBlank();

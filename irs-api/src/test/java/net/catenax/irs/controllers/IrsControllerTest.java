@@ -45,14 +45,20 @@ class IrsControllerTest {
     @MockBean
     private IrsItemGraphQueryService service;
 
+    private static Stream<RegisterJob> corruptedJobs() {
+        return Stream.of(registerJobWithDepthAndAspect(110, null),
+                registerJobWithGlobalAssetIdAndDepth("invalidGlobalAssetId", 0, null),
+                registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0, null));
+    }
+
     @Test
     void initiateJobForGlobalAssetId() throws Exception {
         final UUID returnedJob = UUID.randomUUID();
         when(service.registerItemJob(any())).thenReturn(JobHandle.builder().jobId(returnedJob).build());
 
-        this.mockMvc.perform(post("/irs/jobs")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(new ObjectMapper().writeValueAsString(registerJobWithoutDepthAndAspect())))
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(new ObjectMapper().writeValueAsString(
+                                                      registerJobWithoutDepthAndAspect())))
                     .andExpect(status().isCreated())
                     .andExpect(content().string(containsString(returnedJob.toString())));
     }
@@ -60,9 +66,8 @@ class IrsControllerTest {
     @ParameterizedTest
     @MethodSource("corruptedJobs")
     void shouldReturnBadRequestWhenRegisterJobBodyNotValid(final RegisterJob registerJob) throws Exception {
-        this.mockMvc.perform(post("/irs/jobs")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(new ObjectMapper().writeValueAsString(registerJob)))
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(new ObjectMapper().writeValueAsString(registerJob)))
                     .andExpect(status().isBadRequest());
     }
 
@@ -98,14 +103,6 @@ class IrsControllerTest {
         this.mockMvc.perform(put("/irs/jobs/" + jobId))
                     .andExpect(status().isNotFound())
                     .andExpect(result -> assertTrue(result.getResolvedException() instanceof EntityNotFoundException));
-    }
-
-    private static Stream<RegisterJob> corruptedJobs() {
-        return Stream.of(
-                registerJobWithDepthAndAspect(110, null),
-                registerJobWithGlobalAssetIdAndDepth("invalidGlobalAssetId", 0, null),
-                registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0, null)
-        );
     }
 
 }

@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.RecursiveJobHandler;
-import net.catenax.irs.dto.JobDataDTO;
+import net.catenax.irs.dto.JobParameter;
 
 /**
  * Recursive job handler for AAS data
@@ -30,17 +30,17 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
 
     @Override
     public Stream<ItemDataRequest> initiate(final MultiTransferJob job) {
-        log.info("Initiating request for job {}", job.getJob().getJobId().toString());
-        final var partId = job.getJobData().getRootItemId();
+        log.info("Initiating request for job {}", job.getJobIdString());
+        final var partId = job.getJobParameter().getRootItemId();
         final var dataRequest = ItemDataRequest.rootNode(partId);
         return Stream.of(dataRequest);
     }
 
     @Override
     public Stream<ItemDataRequest> recurse(final MultiTransferJob job, final AASTransferProcess transferProcess) {
-        log.info("Starting recursive request for job {}", job.getJob().getJobId().toString());
+        log.info("Starting recursive request for job {}", job.getJobIdString());
 
-        final Integer expectedDepth = getExpectedTreeDepth(job.getJobData());
+        final Integer expectedDepth = getExpectedTreeDepth(job.getJobParameter());
         final Integer currentDepth = transferProcess.getDepth();
 
         if (expectedDepthOfTreeIsNotReached(expectedDepth, currentDepth)) {
@@ -54,13 +54,13 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
 
     @Override
     public void complete(final MultiTransferJob job) {
-        log.info("Completed retrieval for Job {}", job.getJob().getJobId().toString());
+        log.info("Completed retrieval for Job {}", job.getJobIdString());
         final var completedTransfers = job.getCompletedTransfers();
         final var targetBlobName = job.getJob().getJobId();
         logic.assemblePartialItemGraphBlobs(completedTransfers, targetBlobName.toString());
     }
 
-    private Integer getExpectedTreeDepth(final JobDataDTO jobData) {
+    private Integer getExpectedTreeDepth(final JobParameter jobData) {
         return Integer.parseInt(jobData.getTreeDepthId());
     }
 

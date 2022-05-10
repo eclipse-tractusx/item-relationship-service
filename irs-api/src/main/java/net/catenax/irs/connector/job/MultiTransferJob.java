@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.dto.JobDataDTO;
+import net.catenax.irs.dto.JobParameter;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -44,24 +44,21 @@ import org.jetbrains.annotations.Nullable;
 public class MultiTransferJob {
 
     /**
+     * Collection of transfer IDs that have not yet completed for the job.
+     */
+    @Singular
+    private final Set<String> transferProcessIds;
+    /**
      * The attached job.
      */
     @NonNull
     @Getter
     private Job job;
-
-    /**
-     * Collection of transfer IDs that have not yet completed for the job.
-     */
-    @Singular
-    private final Set<String> transferProcessIds;
-
     /**
      * Arbitrary data attached to the job.
      */
     @Getter
-/*    @Singular("jobDatum")*/
-    private JobDataDTO jobData;
+    private JobParameter jobParameter;
 
     /**
      * Collection of transfers that have completed for the job.

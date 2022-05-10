@@ -1,5 +1,8 @@
 package net.catenax.irs;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.util.concurrent.TimeUnit;
@@ -11,7 +14,7 @@ import net.catenax.irs.connector.job.JobInitiateResponse;
 import net.catenax.irs.connector.job.JobOrchestrator;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.ResponseStatus;
-import net.catenax.irs.dto.JobDataDTO;
+import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.persistence.BlobPersistence;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -25,11 +28,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = { "local", "test" })
+@ActiveProfiles(profiles = { "local",
+                             "test"
+})
 class IrsApplicationTests {
 
     @LocalServerPort
@@ -53,17 +55,17 @@ class IrsApplicationTests {
 
     @Test
     void generatedOpenApiMatchesContract() throws Exception {
-        final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
-                                                                    String.class);
+        final String generatedYaml =
+                this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml", String.class);
         final String fixedYaml = Files.readString(new File("../api/irs-v1.0.yaml").toPath(), UTF_8);
         assertThat(generatedYaml).isEqualToNormalizingNewlines(fixedYaml);
     }
 
     @Test
     void shouldStoreBlobResultWhenRunningJob() throws Exception {
-        final JobDataDTO jobDataDTO = JobDataDTO.builder().rootItemId("rootitemid").treeDepthId("5").build();
+        final JobParameter jobParameter = JobParameter.builder().rootItemId("rootitemid").treeDepthId("5").build();
 
-        final JobInitiateResponse response = jobOrchestrator.startJob(jobDataDTO);
+        final JobInitiateResponse response = jobOrchestrator.startJob(jobParameter);
 
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.OK);
 

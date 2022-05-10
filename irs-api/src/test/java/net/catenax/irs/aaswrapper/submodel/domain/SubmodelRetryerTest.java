@@ -26,21 +26,17 @@ class SubmodelRetryerTest {
 
     @Autowired
     private SubmodelFacade facade;
-
     @Autowired
     private RetryRegistry retryRegistry;
-
     @MockBean
     private SubmodelClient client;
-
-    private final TestMother generate = new TestMother();
 
     @Test
     void shouldRetryExecutionOfGetSubmodelMaxAttemptTimes() {
         given(this.client.getSubmodel(anyString(), any())).willThrow(
                 new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception"));
 
-        assertThrows(HttpServerErrorException.class, () -> facade.getSubmodel("TEST", generate.jobDataDTO()));
+        assertThrows(HttpServerErrorException.class, () -> facade.getSubmodel("TEST", TestMother.jobParameter()));
 
         verify(this.client, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getSubmodel(anyString(), any());
     }

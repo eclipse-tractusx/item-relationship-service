@@ -11,7 +11,7 @@ package net.catenax.irs.connector.job;
 
 import java.util.function.Consumer;
 
-import net.catenax.irs.dto.JobDataDTO;
+import net.catenax.irs.dto.JobParameter;
 
 /**
  * Manages the processes to retrieve data by executing them asynchronously.
@@ -27,10 +27,9 @@ public interface TransferProcessManager<T extends DataRequest, P extends Transfe
      * @param dataRequest              the data request instruction
      * @param transferProcessStarted   callback which is executed as soon as a request is being started
      * @param transferProcessCompleted callback which is executed after the request is finished
-     * @param jobData of the BomLifecycle from the RegisterJob request
-     *
+     * @param jobData                  of the BomLifecycle from the RegisterJob request
      * @return the initialization response, indicating the acceptance status of the transfer
      */
     TransferInitiateResponse initiateRequest(T dataRequest, Consumer<String> transferProcessStarted,
-                                             Consumer<P> transferProcessCompleted, JobDataDTO jobData);
+            Consumer<P> transferProcessCompleted, JobParameter jobData);
 }

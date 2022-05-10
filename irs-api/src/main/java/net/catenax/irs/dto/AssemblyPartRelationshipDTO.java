@@ -11,12 +11,12 @@
 
 package net.catenax.irs.dto;
 
+import java.util.Set;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.Set;
 
 /**
  * AssemblyPartRelationshipDTO model used for internal application use

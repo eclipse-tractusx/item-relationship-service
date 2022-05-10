@@ -17,7 +17,7 @@ import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
-import net.catenax.irs.dto.JobDataDTO;
+import net.catenax.irs.dto.JobParameter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +36,9 @@ public class SubmodelFacade {
      * @return The Aspect Model for the given submodel
      */
     @Retry(name = "submodelRetryer")
-    public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress, final JobDataDTO jobData) {
+    public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress, final JobParameter jobData) {
         final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
-                                                                                  AssemblyPartRelationship.class);
+                AssemblyPartRelationship.class);
 
         final Set<ChildData> submodelParts = submodel.getChildParts();
 
@@ -51,7 +51,7 @@ public class SubmodelFacade {
     }
 
     private AssemblyPartRelationshipDTO buildAssemblyPartRelationshipResponse(final Set<ChildData> submodelParts,
-                                                                              final String catenaXId) {
+            final String catenaXId) {
         final Set<ChildDataDTO> childParts = new HashSet<>();
         submodelParts.forEach(childData -> childParts.add(ChildDataDTO.builder()
                                                                       .childCatenaXId(childData.getChildCatenaXId())
@@ -63,12 +63,12 @@ public class SubmodelFacade {
     }
 
     private void filterSubmodelPartsByLifecycleContext(final Set<ChildData> submodelParts,
-                                                       final String lifecycleContext) {
+            final String lifecycleContext) {
         submodelParts.removeIf(isNotLifecycleContext(lifecycleContext));
     }
 
-    private boolean shouldFilterByLifecycleContext(final String lifecyleContext) {
-        return StringUtils.isNotBlank(lifecyleContext);
+    private boolean shouldFilterByLifecycleContext(final String lifecycleContext) {
+        return StringUtils.isNotBlank(lifecycleContext);
     }
 
     private Predicate<ChildData> isNotLifecycleContext(final String lifecycleContext) {

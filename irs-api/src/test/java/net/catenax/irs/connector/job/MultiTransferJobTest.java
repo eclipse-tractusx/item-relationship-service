@@ -1,12 +1,9 @@
 package net.catenax.irs.connector.job;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static net.catenax.irs.util.TestMother.jobParameter;
 
 import com.github.javafaker.Faker;
-import net.catenax.irs.component.enums.AspectType;
-import net.catenax.irs.dto.JobDataDTO;
 import net.catenax.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +13,6 @@ class MultiTransferJobTest {
     TestMother generate = new TestMother();
 
     MultiTransferJob job = generate.job();
-    JobDataDTO jobDataDTO = generate.jobDataDTO();
 
     @Test
     void getTransferProcessIds_Immutable() {
@@ -26,8 +22,8 @@ class MultiTransferJobTest {
 
     @Test
     void getJobData_Immutable() {
-        assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> jobDataDTO.getAspectTypes().add(faker.lorem().word()));
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(
+                () -> jobParameter().getAspectTypes().add(faker.lorem().word()));
     }
 
 }

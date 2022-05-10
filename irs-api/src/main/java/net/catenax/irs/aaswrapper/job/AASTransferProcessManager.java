@@ -28,7 +28,7 @@ import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.connector.job.TransferProcessManager;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
-import net.catenax.irs.dto.JobDataDTO;
+import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.dto.SubmodelEndpoint;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
@@ -62,7 +62,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
     @Override
     public TransferInitiateResponse initiateRequest(final ItemDataRequest dataRequest,
             final Consumer<String> preExecutionHandler, final Consumer<AASTransferProcess> completionCallback,
-            final JobDataDTO jobData) {
+            final JobParameter jobData) {
 
         final String processId = UUID.randomUUID().toString();
         preExecutionHandler.accept(processId);
@@ -74,7 +74,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     private Runnable getRunnable(final ItemDataRequest dataRequest,
             final Consumer<AASTransferProcess> transferProcessCompleted, final String processId,
-            final JobDataDTO jobData) {
+            final JobParameter jobData) {
 
         return () -> {
             final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId, dataRequest.getDepth());
@@ -85,8 +85,8 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             log.info("Calling Digital Twin Registry with itemId {}", itemId);
             try {
-                final List<SubmodelEndpoint> aasSubmodelEndpoints =
-                        registryFacade.getAASSubmodelEndpoints(itemId, jobData);
+                final List<SubmodelEndpoint> aasSubmodelEndpoints = registryFacade.getAASSubmodelEndpoints(itemId,
+                        jobData);
 
                 log.info("Retrieved {} SubmodelEndpoints for itemId {}", aasSubmodelEndpoints.size(), itemId);
 
