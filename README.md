@@ -1,19 +1,14 @@
 # Item Relationship Service
 
-| __Build
-Status__ | [![build](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/CI-main.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/CI-main.yml)           | 
+| __Build Status__ | [![build](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/CI-main.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/CI-main.yml)           | 
 |:-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| __
-Coverage__     | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=catenax-ng_product-item-relationship-service&metric=coverage)](https://sonarcloud.io/summary/new_code?id=catenax-ng_product-item-relationship-service) |
-| __
-CodeQL__       | [![CodeQL](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.<br/>yml)       |
-| __
-License__      | [![GitHub](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/catenax-ng/product-item-relationship-service/blob/main/LICENSE)                                                                     |
+| __Coverage__     | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=catenax-ng_product-item-relationship-service&metric=coverage)](https://sonarcloud.io/summary/new_code?id=catenax-ng_product-item-relationship-service) |
+| __CodeQL__       | [![CodeQL](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.<br/>yml)       |
+| __License__      | [![GitHub](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/catenax-ng/product-item-relationship-service/blob/main/LICENSE)                                                                     |
 
 ## How to run
 
-The two following subsections provide instructions for running either only the infrastructure on docker-compose and the
-application in the IDE, or for running the full stack (including the application) in docker-compose.
+The two following subsections provide instructions for running either only the infrastructure on docker-compose and the application in the IDE, or for running the full stack (including the application) in docker-compose.
 
 ### Docker-compose + IDE
 
@@ -29,8 +24,7 @@ application in the IDE, or for running the full stack (including the application
 
 * Run `docker-compose --profile debug up`
 * This will start additional containers:
-    * [Prometheus](https://prometheus.io/docs/introduction/overview/), a server to collect and query metrics. Prometheus
-      is available at http://localhost:9091/.
+  * [Prometheus](https://prometheus.io/docs/introduction/overview/), a server to collect and query metrics. Prometheus is available at http://localhost:9091/.
 
 ## Work with sample data
 
@@ -75,20 +69,17 @@ Not available yet.
 
 ## Smoke tests
 
-[Smoke tests](integration-tests/src/test/java/net/catenax/irs/smoketest) are running against the application and the
-consumer connectors in the IRS Smoke tests pipeline. To run the tests against locally running application
-provide `baseURI` (IRS API base URI, by default http://localhost:8080). If you want to run it against connector you need
-to add the following VM options:
+[Smoke tests](integration-tests/src/test/java/net/catenax/irs/smoketest) are running against the application and the consumer connectors in the IRS Smoke tests pipeline.
+To run the tests against locally running application provide `baseURI` (IRS API base URI, by default http://localhost:8080).
+If you want to run it against connector you need to add the following VM options:
 `-DbaseURI=<consumer-artifact-uri> -Dusername=<username-to-access-consumer> -Dpassword=<password>`
 
 ## System tests
 
-[System tests](integration-tests/src/test/java/net/catenax/irs/systemtest) are running against multiple IRS deployments
-and reconstructing a parts tree from multiple partial trees. To run the tests, download the file
-artifact `dataspace-deployments.json` from the latest IRS Deploy GitHub Actions run into the `dev/local` folder.
+[System tests](integration-tests/src/test/java/net/catenax/irs/systemtest) are running against multiple IRS deployments and reconstructing a parts tree from multiple partial trees.
+To run the tests, download the file artifact `dataspace-deployments.json` from the latest IRS Deploy GitHub Actions run into the `dev/local` folder.
 
 ## Commit messages
-
 The commit messages have to match a pattern in the form of:  
 < type >(optional scope):[<Ticket_ID>] < description >
 
@@ -98,7 +89,6 @@ chore(api):[TRI-123] some text
 Detailed pattern can be found here: [commit-msg](dev/commit-msg)
 
 ### Installation
-
 ```shell
 cp dev/commit-msg .git/hooks/commit-msg && chmod 500 .git/hooks/commit-msg
 ```
@@ -106,5 +96,4 @@ cp dev/commit-msg .git/hooks/commit-msg && chmod 500 .git/hooks/commit-msg
 For further information please see https://github.com/hazcod/semantic-commit-hook
 
 ## Licenses
-
 Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
