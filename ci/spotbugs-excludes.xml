@@ -8,15 +8,11 @@
         <Bug pattern="SE_NO_SERIALVERSIONID"/>
     </Match>
     <Match>
-        <!-- Filter generated sources.. -->
-        <Package name="net.catenax.irs.client.api"/>
+        <!-- Classes should be able to write logs. -->
+        <Bug pattern="CRLF_INJECTION_LOGS"/>
     </Match>
     <Match>
-        <!-- Filter generated sources.. -->
-        <Package name="net.catenax.irs.client"/>
-    </Match>
-    <Match>
-        <!-- Filter generated sources.. -->
-        <Package name="net.catenax.irs.client.auth"/>
+        <Class name="net.catenax.irs.component.Shell$ShellBuilder" />
+        <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
     </Match>
 </FindBugsFilter>

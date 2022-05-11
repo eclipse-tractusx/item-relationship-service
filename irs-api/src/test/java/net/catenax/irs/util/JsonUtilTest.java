@@ -16,27 +16,23 @@ class JsonUtilTest {
 
     @Test
     void asString_onSuccess() {
-        assertThat(sut.asString(new HashMap<String, String>()))
-                .isEqualTo("{}");
+        assertThat(sut.asString(new HashMap<String, String>())).isEqualTo("{}");
     }
 
     @Test
     void asString_onFailure() {
         Object mockItem = mock(Object.class);
         when(mockItem.toString()).thenReturn(mockItem.getClass().getName());
-        assertThatExceptionOfType(JsonParseException.class)
-                .isThrownBy(() -> sut.asString(mockItem));
+        assertThatExceptionOfType(JsonParseException.class).isThrownBy(() -> sut.asString(mockItem));
     }
 
     @Test
     void fromString_OnSuccess() {
-        assertThat(sut.fromString("{}", HashMap.class))
-                .isEqualTo(new HashMap<String, String>());
+        assertThat(sut.fromString("{}", HashMap.class)).isEqualTo(new HashMap<String, String>());
     }
 
     @Test
     void fromString_OnFailure() {
-        assertThatExceptionOfType(JsonParseException.class)
-                .isThrownBy(() -> sut.fromString("{", HashMap.class));
+        assertThatExceptionOfType(JsonParseException.class).isThrownBy(() -> sut.fromString("{", HashMap.class));
     }
 }

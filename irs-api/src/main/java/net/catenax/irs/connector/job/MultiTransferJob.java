@@ -18,7 +18,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
@@ -26,6 +28,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Singular;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
@@ -36,6 +39,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @ToString
 @Builder(toBuilder = true)
+@Slf4j
 @JsonDeserialize(builder = MultiTransferJob.MultiTransferJobBuilder.class)
 public class MultiTransferJob {
 
@@ -56,7 +60,6 @@ public class MultiTransferJob {
      * Arbitrary data attached to the job.
      */
     @Getter
-    @Singular("jobDatum")
     private Map<String, String> jobData;
 
     /**
@@ -68,6 +71,16 @@ public class MultiTransferJob {
 
     public Collection<String> getTransferProcessIds() {
         return Collections.unmodifiableSet(this.transferProcessIds);
+    }
+
+    @JsonIgnore
+    public UUID getJobId() {
+        return job.getJobId();
+    }
+
+    @JsonIgnore
+    public String getJobIdString() {
+        return getJobId().toString();
     }
 
     /**
@@ -131,7 +144,7 @@ public class MultiTransferJob {
                 throw new IllegalStateException(
                         format("Cannot transition from state %s to %s", job.getJobState(), end));
             }
-
+            log.info("Transitioning job {} from {} to {}", job.getJobId().toString(), job.getJobState(), end);
             job = job.toBuilder().jobState(end).build();
             return this;
         }

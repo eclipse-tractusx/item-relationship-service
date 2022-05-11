@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.PathVariable;
  */
 //@Profile("prod")
 @FeignClient(contextId = "digitalTwinRegistryClientContextId", value = "digitalTwinRegistryClient",
-        url = "${feign.client.config.digitalTwinRegistry.url}",
-        configuration = DigitalTwinRegistryClientConfiguration.class)
+             url = "${feign.client.config.digitalTwinRegistry.url}",
+             configuration = DigitalTwinRegistryClientConfiguration.class)
 interface DigitalTwinRegistryClient {
 
     /**

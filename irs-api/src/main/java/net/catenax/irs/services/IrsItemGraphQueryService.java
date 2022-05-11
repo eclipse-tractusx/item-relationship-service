@@ -95,7 +95,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         paramMap.put(ROOT_ITEM_ID_KEY, uuid);
         paramMap.put(DEPTH_ID_KEY, String.valueOf(request.getDepth()));
-        bomLifecycleFormRequest.ifPresent(bomLifecycle -> paramMap.put(LIFE_CYCLE_CONTEXT, bomLifecycle.getLifecycleContextCharacteristicValue()));
+        bomLifecycleFormRequest.ifPresent(bomLifecycle -> paramMap.put(LIFE_CYCLE_CONTEXT,
+                bomLifecycle.getLifecycleContextCharacteristicValue()));
 
         return paramMap;
     }

@@ -20,7 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class AASTransferProcessManagerTest {
+class AASTransferProcessManagerTest {
 
     DigitalTwinRegistryFacade digitalTwinRegistryFacade = mock(DigitalTwinRegistryFacade.class);
 
@@ -37,13 +37,12 @@ public class AASTransferProcessManagerTest {
         final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(UUID.randomUUID().toString());
 
         // when
-        manager.initiateRequest(itemDataRequest,
-            s -> {},
-            aasTransferProcess -> {}, LIFE_CYCLE_CONTEXT
-        );
+        manager.initiateRequest(itemDataRequest, s -> {
+        }, aasTransferProcess -> {
+        }, LIFE_CYCLE_CONTEXT);
 
         // then
-        verify(pool, times(1)).submit(any(Runnable.class));
+        verify(pool, times(1)).execute(any(Runnable.class));
     }
 
     @Test
@@ -52,7 +51,9 @@ public class AASTransferProcessManagerTest {
         final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(UUID.randomUUID().toString());
 
         // when
-        final TransferInitiateResponse initiateResponse = manager.initiateRequest(itemDataRequest, s -> {}, aasTransferProcess -> {}, LIFE_CYCLE_CONTEXT);
+        final TransferInitiateResponse initiateResponse = manager.initiateRequest(itemDataRequest, s -> {
+        }, aasTransferProcess -> {
+        }, LIFE_CYCLE_CONTEXT);
 
         // then
         assertThat(initiateResponse.getTransferId()).isNotBlank();

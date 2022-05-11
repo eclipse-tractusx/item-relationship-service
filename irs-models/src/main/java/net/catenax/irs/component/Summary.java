@@ -26,8 +26,7 @@ public class Summary {
     /**
      * asyncFetchedItems
      */
-    @Schema(description = "Summary of the fetched jobs",
-            implementation = AsyncFetchedItems.class)
+    @Schema(description = "Summary of the fetched jobs", implementation = AsyncFetchedItems.class)
     private AsyncFetchedItems asyncFetchedItems;
 
     /**

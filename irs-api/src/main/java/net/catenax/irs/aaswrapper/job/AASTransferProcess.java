@@ -15,6 +15,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import net.catenax.irs.connector.job.TransferProcess;
 
 /**
@@ -23,6 +24,7 @@ import net.catenax.irs.connector.job.TransferProcess;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class AASTransferProcess implements TransferProcess {
 
     @SuppressWarnings("PMD.ShortVariable")

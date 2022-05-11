@@ -10,11 +10,11 @@ spring:
         registration:
           keylocak:
             authorization-grant-type: client_credentials
-            client-id: ${keycloak-oauth2-client-id:}
+            client-id: ${keycloak-oauth2-client-id:sa-cl6-cx-9}
             client-secret: ${keycloak-oauth2-client-secret:}
         provider:
           keylocak:
-            token-uri: ${keycloak-oauth2-client-token-uri:https://centralidp.demo.catena-x.net/auth/realms/master/protocol/openid-connect/token}
+            token-uri: ${keycloak-oauth2-client-token-uri:https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token}
 
 management:
   endpoints:
