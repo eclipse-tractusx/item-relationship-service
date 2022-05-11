@@ -63,7 +63,7 @@ class IrsApplicationTests {
 
     @Test
     void shouldStoreBlobResultWhenRunningJob() throws Exception {
-        final JobParameter jobParameter = JobParameter.builder().rootItemId("rootitemid").treeDepth("5").build();
+        final JobParameter jobParameter = JobParameter.builder().rootItemId("rootitemid").treeDepth(5).build();
 
         final JobInitiateResponse response = jobOrchestrator.startJob(jobParameter);
 

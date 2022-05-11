@@ -40,7 +40,7 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
     public Stream<ItemDataRequest> recurse(final MultiTransferJob job, final AASTransferProcess transferProcess) {
         log.info("Starting recursive request for job {}", job.getJobIdString());
 
-        final Integer expectedDepth = getExpectedTreeDepth(job.getJobParameter());
+        final int expectedDepth = getExpectedTreeDepth(job.getJobParameter());
         final Integer currentDepth = transferProcess.getDepth();
 
         if (expectedDepthOfTreeIsNotReached(expectedDepth, currentDepth)) {
@@ -60,8 +60,8 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
         logic.assemblePartialItemGraphBlobs(completedTransfers, targetBlobName.toString());
     }
 
-    private Integer getExpectedTreeDepth(final JobParameter jobData) {
-        return Integer.parseInt(jobData.getTreeDepth());
+    private int getExpectedTreeDepth(final JobParameter jobData) {
+        return jobData.getTreeDepth();
     }
 
     private boolean expectedDepthOfTreeIsNotReached(final Integer expectedDepth, final Integer currentDepth) {

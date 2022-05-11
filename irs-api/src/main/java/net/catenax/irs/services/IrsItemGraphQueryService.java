@@ -87,7 +87,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private JobParameter buildJobData(final @NonNull RegisterJob request) {
         final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
-        final String depthId = String.valueOf(request.getDepth());
+        final int treeDepth = request.getDepth();
         final Optional<BomLifecycle> bomLifecycleFormRequest = Optional.ofNullable(request.getBomLifecycle());
 
         String lifecycle = null;
@@ -97,13 +97,15 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         final Optional<List<AspectType>> aspectTypes = Optional.ofNullable(request.getAspects());
         List<String> aspectTypeValues;
-        aspectTypeValues = aspectTypes.map(
-                                              types -> types.stream().map(AspectType::toString).map(String::toLowerCase).collect(Collectors.toList()))
+        aspectTypeValues = aspectTypes.map(types -> types.stream()
+                                                         .map(AspectType::toString)
+                                                         .map(String::toLowerCase)
+                                                         .collect(Collectors.toList()))
                                       .orElse(emptyList());
 
         return JobParameter.builder()
                            .rootItemId(uuid)
-                           .treeDepth(depthId)
+                           .treeDepth(treeDepth)
                            .bomLifecycle(lifecycle)
                            .aspectTypes(aspectTypeValues)
                            .build();
