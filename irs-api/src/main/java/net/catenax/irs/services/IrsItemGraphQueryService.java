@@ -103,7 +103,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         return JobParameter.builder()
                            .rootItemId(uuid)
-                           .treeDepthId(depthId)
+                           .treeDepth(depthId)
                            .bomLifecycle(lifecycle)
                            .aspectTypes(aspectTypeValues)
                            .build();

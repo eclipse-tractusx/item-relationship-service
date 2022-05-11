@@ -78,7 +78,7 @@ public class TestMother {
     public static JobParameter jobParameter() {
         return JobParameter.builder()
                            .rootItemId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")
-                           .treeDepthId("")
+                           .treeDepth("")
                            .bomLifecycle("AsBuilt")
                            .aspectTypes(List.of(AspectType.SERIAL_PART_TYPIZATION.toString().toLowerCase(Locale.ROOT),
                                  AspectType.ASSEMBLY_PART_RELATIONSHIP.toString().toLowerCase(Locale.ROOT)))
@@ -88,7 +88,7 @@ public class TestMother {
     public static JobParameter jobParameterFilter() {
         return JobParameter.builder()
                            .rootItemId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")
-                           .treeDepthId("")
+                           .treeDepth("")
                            .bomLifecycle("AsRequired")
                            .aspectTypes(List.of(AspectType.MATERIAL_ASPECT.toString().toLowerCase(Locale.ROOT)))
                            .build();

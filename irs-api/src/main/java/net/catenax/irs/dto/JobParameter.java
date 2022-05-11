@@ -33,7 +33,7 @@ public class JobParameter {
     /**
      * Expected depth of the tree
      */
-    private String treeDepthId;
+    private String treeDepth;
 
     /**
      * Specified aspect types by the consumer
