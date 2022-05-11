@@ -51,12 +51,14 @@ public class MultiTransferJob {
     /**
      * The attached job.
      */
+
     @NonNull
     @Getter
     private Job job;
     /**
      * Arbitrary data attached to the job.
      */
+
     @Getter
     private JobParameter jobParameter;
 
