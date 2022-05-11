@@ -5,9 +5,8 @@
 
     <parent>
         <groupId>net.catenax.irs</groupId>
-        <artifactId>irs-parent</artifactId>
+        <artifactId>item-relationship-service-root</artifactId>
         <version>${revision}</version>
-        <relativePath>../irs-parent</relativePath>
     </parent>
 
     <artifactId>irs-common</artifactId>

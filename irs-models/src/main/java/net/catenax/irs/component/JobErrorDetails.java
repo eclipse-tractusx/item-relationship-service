@@ -9,11 +9,9 @@
 //
 package net.catenax.irs.component;
 
+import java.io.Serializable;
 import java.time.Instant;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,13 +25,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder(toBuilder = true)
-@JsonDeserialize(builder = JobErrorDetails.JobErrorDetailsBuilder.class)
 @NoArgsConstructor
 @AllArgsConstructor
-@SuppressWarnings({ "PMD.ShortClassName",
-                    "PMD.MethodArgumentCouldBeFinal"
-})
-public class JobErrorDetails {
+@SuppressWarnings({ "PMD.ShortClassName", "PMD.MethodArgumentCouldBeFinal" })
+public class JobErrorDetails implements Serializable {
 
     public static final int EXCEPTION_NAME_MAX_LENGTH = 100;
     public static final int ERROR_DETAIL_MAX_LENGTH = 4000;
@@ -48,49 +43,5 @@ public class JobErrorDetails {
 
     @Schema(description = "Datetime when error occurred.", implementation = Instant.class)
     private Instant exceptionDate;
-
-    @Override
-    public String toString() {
-        return "JobErrorDetails{" + "exception='" + exception + '\'' + ", errorDetail='" + errorDetail + '\''
-                + ", exceptionDate=" + exceptionDate + '}';
-    }
-
-    /**
-     * Builder class
-     */
-    @JsonPOJOBuilder(withPrefix = "")
-    public static final class JobErrorDetailsBuilder {
-
-        private final JobErrorDetails errorDetails;
-
-        private JobErrorDetailsBuilder() {
-            errorDetails = new JobErrorDetails();
-        }
-
-        @JsonCreator
-        public static JobErrorDetailsBuilder instance() {
-            return new JobErrorDetailsBuilder();
-        }
-
-        public JobErrorDetailsBuilder exception(String exception) {
-            errorDetails.exception = exception;
-            return this;
-        }
-
-        public JobErrorDetailsBuilder errorDetail(String errorDetail) {
-            errorDetails.errorDetail = errorDetail;
-            return this;
-        }
-
-        public JobErrorDetailsBuilder exceptionDate(Instant exceptionDate) {
-            errorDetails.exceptionDate = exceptionDate;
-            return this;
-        }
-
-        public JobErrorDetails build() {
-            return this.errorDetails;
-        }
-
-    }
 
 }
