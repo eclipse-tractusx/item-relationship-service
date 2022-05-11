@@ -40,7 +40,7 @@ public class SubmodelFacade {
         final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
                 AssemblyPartRelationship.class);
 
-        final Set<ChildData> submodelParts = submodel.getChildParts();
+        final Set<ChildData> submodelParts = new HashSet<>(submodel.getChildParts());
 
         if (shouldFilterByLifecycleContext(lifecycleContext)) {
             filterSubmodelPartsByLifecycleContext(submodelParts, lifecycleContext);
