@@ -9,12 +9,12 @@
 //
 package net.catenax.irs.component;
 
+import java.util.UUID;
+
 import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Value;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
-
-import java.util.UUID;
 
 /**
  * The unique jobId handle of the just processed job.

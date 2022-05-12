@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static net.catenax.irs.util.TestMother.jobParameter;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -47,8 +48,6 @@ class JobOrchestratorTest {
     @Captor
     ArgumentCaptor<MultiTransferJob> jobCaptor;
 
-    private static final String AS_BUILT = "AsBuilt";
-
     Pattern uuid = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
 
     TestMother generate = new TestMother();
@@ -65,7 +64,7 @@ class JobOrchestratorTest {
         assertThat(job2).usingRecursiveComparison()
                         .ignoringFields("job.job.jobId")
                         .isEqualTo(MultiTransferJob.builder()
-                                                   .jobData(job.getJobData())
+                                                   .jobParameter(job.getJobParameter())
                                                    .job(job2.getJob().toBuilder().jobState(JobState.UNSAVED).build())
                                                    .build());
     }
@@ -91,15 +90,15 @@ class JobOrchestratorTest {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.of(dataRequest, dataRequest2));
 
-        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT))).thenReturn(okResponse);
-        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(AS_BUILT))).thenReturn(okResponse2);
+        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(okResponse);
+        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()))).thenReturn(okResponse2);
 
         // Act
         startJob();
 
         // Assert
-        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT));
-        verify(processManager).initiateRequest(eq(dataRequest2), any(), any(), eq(AS_BUILT));
+        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()));
+        verify(processManager).initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()));
     }
 
     @Test
@@ -107,7 +106,7 @@ class JobOrchestratorTest {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.empty());
 
-        var response = sut.startJob(job.getJobData());
+        var response = sut.startJob(job.getJobParameter());
         var newJob = getStartedJob();
 
         // Assert
@@ -123,10 +122,10 @@ class JobOrchestratorTest {
     void startJob_WithSuccessfulTransferStarts_ReturnsOk() {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.of(dataRequest));
-        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT))).thenReturn(okResponse);
+        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(okResponse);
 
         // Act
-        var response = sut.startJob(job.getJobData());
+        var response = sut.startJob(job.getJobParameter());
 
         // Assert
         var newJob = getStartedJob();
@@ -139,15 +138,15 @@ class JobOrchestratorTest {
     void startJob_WhenTransferStartUnsuccessful_Abort(ResponseStatus status) {
         // Arrange
         when(handler.initiate(any())).thenReturn(Stream.of(dataRequest, dataRequest2));
-        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT))).thenReturn(
+        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(
                 generate.response(status));
 
         // Act
-        var response = sut.startJob(job.getJobData());
+        var response = sut.startJob(job.getJobParameter());
 
         // Assert
-        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT));
-        verify(processManager, never()).initiateRequest(eq(dataRequest2), any(), any(), eq(AS_BUILT));
+        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()));
+        verify(processManager, never()).initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()));
 
         // temporarily created job should be deleted
         verify(jobStore).create(jobCaptor.capture());
@@ -163,7 +162,7 @@ class JobOrchestratorTest {
         when(handler.initiate(any(MultiTransferJob.class))).thenThrow(new RuntimeException());
 
         // Act
-        var response = sut.startJob(job.getJobData());
+        var response = sut.startJob(job.getJobParameter());
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
@@ -180,13 +179,13 @@ class JobOrchestratorTest {
     @Test
     void transferProcessCompleted_WhenCalledBackForCompletedTransfer_RunsNextTransfers() {
         // Arrange
-        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT))).thenReturn(okResponse);
-        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(AS_BUILT))).thenReturn(okResponse2);
+        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(okResponse);
+        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()))).thenReturn(okResponse2);
         // Act
         callCompleteAndReturnNextTransfers(Stream.of(dataRequest, dataRequest2));
 
         // Assert
-        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT));
+        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()));
         verify(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
 
     }
@@ -286,15 +285,15 @@ class JobOrchestratorTest {
     @EnumSource(value = ResponseStatus.class, names = "OK", mode = EXCLUDE)
     void transferProcessCompleted_WhenNextTransferStartUnsuccessful_Abort(ResponseStatus status) {
         // Arrange
-        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT))).thenReturn(
+        when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(
                 generate.response(status));
 
         // Act
         callCompleteAndReturnNextTransfers(Stream.of(dataRequest, dataRequest2));
 
         // Assert
-        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(AS_BUILT));
-        verify(processManager, never()).initiateRequest(eq(dataRequest2), any(), any(), eq(AS_BUILT));
+        verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()));
+        verify(processManager, never()).initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()));
 
         // temporarily created job should be deleted
         verify(jobStore).markJobInError(job.getJobIdString(), "Failed to start a transfer");
@@ -323,7 +322,7 @@ class JobOrchestratorTest {
     }
 
     private MultiTransferJob startJob() {
-        sut.startJob(job.getJobData());
+        sut.startJob(job.getJobParameter());
         return getStartedJob();
     }
 

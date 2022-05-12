@@ -28,6 +28,7 @@ import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.connector.job.TransferProcessManager;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
+import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.dto.SubmodelEndpoint;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
@@ -61,19 +62,20 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
     @Override
     public TransferInitiateResponse initiateRequest(final ItemDataRequest dataRequest,
             final Consumer<String> preExecutionHandler, final Consumer<AASTransferProcess> completionCallback,
-            final String lifecyleContext) {
+            final JobParameter jobData) {
 
         final String processId = UUID.randomUUID().toString();
         preExecutionHandler.accept(processId);
 
-        executor.execute(getRunnable(dataRequest, completionCallback, processId, lifecyleContext));
+        executor.execute(getRunnable(dataRequest, completionCallback, processId, jobData));
 
         return new TransferInitiateResponse(processId, ResponseStatus.OK);
     }
 
     private Runnable getRunnable(final ItemDataRequest dataRequest,
             final Consumer<AASTransferProcess> transferProcessCompleted, final String processId,
-            final String lifecycleContext) {
+            final JobParameter jobData) {
+
         return () -> {
             final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId, dataRequest.getDepth());
 
@@ -83,15 +85,14 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             log.info("Calling Digital Twin Registry with itemId {}", itemId);
             try {
-                final List<SubmodelEndpoint> aasSubmodelEndpoints;
-                aasSubmodelEndpoints = registryFacade.getAASSubmodelEndpoints(itemId);
+                final List<SubmodelEndpoint> aasSubmodelEndpoints = registryFacade.getAASSubmodelEndpoints(itemId,
+                        jobData);
 
                 log.info("Retrieved {} SubmodelEndpoints for itemId {}", aasSubmodelEndpoints.size(), itemId);
 
                 aasSubmodelEndpoints.stream().map(SubmodelEndpoint::getAddress).forEach(address -> {
                     try {
-                        final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address,
-                                lifecycleContext);
+                        final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address, jobData);
                         processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
                     } catch (RestClientException e) {
                         log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",

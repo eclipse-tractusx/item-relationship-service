@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.dto.JobParameter;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -44,23 +44,23 @@ import org.jetbrains.annotations.Nullable;
 public class MultiTransferJob {
 
     /**
-     * The attached job.
-     */
-    @NonNull
-    @Getter
-    private Job job;
-
-    /**
      * Collection of transfer IDs that have not yet completed for the job.
      */
     @Singular
     private final Set<String> transferProcessIds;
+    /**
+     * The attached job.
+     */
 
+    @NonNull
+    @Getter
+    private Job job;
     /**
      * Arbitrary data attached to the job.
      */
+
     @Getter
-    private Map<String, String> jobData;
+    private JobParameter jobParameter;
 
     /**
      * Collection of transfers that have completed for the job.

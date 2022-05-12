@@ -36,6 +36,8 @@ class IrsFunctionalTest {
 
     private static final MinioContainer minioContainer = new MinioContainer(
             new MinioContainer.CredentialsProvider(ACCESS_KEY, SECRET_KEY)).withReuse(true);
+    @Autowired
+    private IrsController controller;
 
     @BeforeAll
     static void startContainer() {
@@ -50,21 +52,6 @@ class IrsFunctionalTest {
     @BeforeEach
     void setUp() {
     }
-
-    public static class MinioConfigInitializer
-            implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-
-        @Override
-        public void initialize(ConfigurableApplicationContext applicationContext) {
-            final String hostAddress = minioContainer.getHostAddress();
-            TestPropertySourceUtils.addInlinedPropertiesToEnvironment(applicationContext,
-                    "blobstore.endpoint=http://" + hostAddress, "blobstore.accessKey=" + ACCESS_KEY,
-                    "blobstore.secretKey=" + SECRET_KEY);
-        }
-    }
-
-    @Autowired
-    private IrsController controller;
 
     @Test
     void shouldStartJobAndRetrieveResult() {
@@ -95,6 +82,18 @@ class IrsFunctionalTest {
                 return Optional.empty();
             }
         };
+    }
+
+    public static class MinioConfigInitializer
+            implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+        @Override
+        public void initialize(ConfigurableApplicationContext applicationContext) {
+            final String hostAddress = minioContainer.getHostAddress();
+            TestPropertySourceUtils.addInlinedPropertiesToEnvironment(applicationContext,
+                    "blobstore.endpoint=http://" + hostAddress, "blobstore.accessKey=" + ACCESS_KEY,
+                    "blobstore.secretKey=" + SECRET_KEY);
+        }
     }
 
 }

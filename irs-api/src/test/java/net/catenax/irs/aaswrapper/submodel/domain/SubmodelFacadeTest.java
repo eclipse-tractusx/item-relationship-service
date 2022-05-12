@@ -13,6 +13,8 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.doReturn;
+import static net.catenax.irs.util.TestMother.jobParameter;
+import static net.catenax.irs.util.TestMother.jobParameterFilter;
 
 import java.util.HashSet;
 import java.util.List;
@@ -33,8 +35,10 @@ import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
 class SubmodelFacadeTest {
+
     @Mock
     RestTemplate restTemplate;
+
     private SubmodelFacade submodelFacade;
 
     @BeforeEach
@@ -49,15 +53,14 @@ class SubmodelFacadeTest {
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate());
         final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
-        assertThatExceptionOfType(RestClientException.class).isThrownBy(
-                () -> submodelFacade.getSubmodel(url, "lifecycle"));
+        assertThatExceptionOfType(RestClientException.class).isThrownBy(() -> submodelFacade.getSubmodel(url, jobParameter()));
     }
 
     @Test
     void shouldReturnAssemblyPartRelationshipWithChildDataWhenRequestingWithCatenaXId() {
         final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getSubmodel(catenaXId,
-                LifecycleContextCharacteristic.ASBUILT.getValue());
+
+        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getSubmodel(catenaXId, jobParameter());
 
         assertThat(submodelResponse.getCatenaXId()).isEqualTo(catenaXId);
 
@@ -74,9 +77,8 @@ class SubmodelFacadeTest {
     @Test
     void shouldReturnFilteredAssemblyPartRelationshipWithoutChildrenWhenRequestingWithCatenaXId() {
         final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-        final String filterLifecycle = LifecycleContextCharacteristic.ASREQUIRED.getValue();
 
-        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getSubmodel(catenaXId, filterLifecycle);
+        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getSubmodel(catenaXId, jobParameterFilter());
 
         assertThat(submodelResponse.getCatenaXId()).isEqualTo(catenaXId);
         assertThat(submodelResponse.getChildParts()).isEmpty();
@@ -98,7 +100,7 @@ class SubmodelFacadeTest {
         final String endpointUrl = "test.test";
         doReturn(okResponse).when(restTemplate).getForEntity(endpointUrl, AssemblyPartRelationship.class);
 
-        final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(endpointUrl, "lifecycle");
+        final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(endpointUrl, jobParameter());
 
         assertThat(submodel.getCatenaXId()).isEqualTo(catenaXId);
         final Set<ChildDataDTO> childParts = submodel.getChildParts();

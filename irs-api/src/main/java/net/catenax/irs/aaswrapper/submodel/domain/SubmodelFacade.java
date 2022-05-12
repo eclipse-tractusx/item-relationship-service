@@ -17,6 +17,7 @@ import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
+import net.catenax.irs.dto.JobParameter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -31,17 +32,17 @@ public class SubmodelFacade {
 
     /**
      * @param submodelEndpointAddress The URL to the submodel endpoint
-     * @param lifecycleContext        filter value
+     * @param jobData                 relevant job data values
      * @return The Aspect Model for the given submodel
      */
     @Retry(name = "submodelRetryer")
-    public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress,
-            final String lifecycleContext) {
+    public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress, final JobParameter jobData) {
         final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
                 AssemblyPartRelationship.class);
 
         final Set<ChildData> submodelParts = new HashSet<>(submodel.getChildParts());
 
+        final String lifecycleContext = jobData.getBomLifecycle();
         if (shouldFilterByLifecycleContext(lifecycleContext)) {
             filterSubmodelPartsByLifecycleContext(submodelParts, lifecycleContext);
         }

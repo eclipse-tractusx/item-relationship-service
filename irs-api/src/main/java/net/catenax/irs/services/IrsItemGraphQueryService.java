@@ -9,16 +9,12 @@
 //
 package net.catenax.irs.services;
 
-import static net.catenax.irs.dtos.IrsCommonConstants.DEPTH_ID_KEY;
-import static net.catenax.irs.dtos.IrsCommonConstants.LIFE_CYCLE_CONTEXT;
-import static net.catenax.irs.dtos.IrsCommonConstants.ROOT_ITEM_ID_KEY;
+import static java.util.Collections.emptyList;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -39,6 +35,7 @@ import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.Tombstone;
+import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobInitiateResponse;
@@ -49,6 +46,7 @@ import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferProcess;
 import net.catenax.irs.controllers.IrsApiConstants;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
+import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
@@ -73,7 +71,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
-        final var params = buildJobParams(request);
+        final var params = buildJobData(request);
 
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
 
@@ -87,18 +85,30 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         }
     }
 
-    private Map<String, String> buildJobParams(final @NonNull RegisterJob request) {
+    private JobParameter buildJobData(final @NonNull RegisterJob request) {
         final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
+        final int treeDepth = request.getDepth();
         final Optional<BomLifecycle> bomLifecycleFormRequest = Optional.ofNullable(request.getBomLifecycle());
 
-        final var paramMap = new HashMap<String, String>();
+        String lifecycle = null;
+        if (bomLifecycleFormRequest.isPresent()) {
+            lifecycle = bomLifecycleFormRequest.get().getLifecycleContextCharacteristicValue();
+        }
 
-        paramMap.put(ROOT_ITEM_ID_KEY, uuid);
-        paramMap.put(DEPTH_ID_KEY, String.valueOf(request.getDepth()));
-        bomLifecycleFormRequest.ifPresent(bomLifecycle -> paramMap.put(LIFE_CYCLE_CONTEXT,
-                bomLifecycle.getLifecycleContextCharacteristicValue()));
+        final Optional<List<AspectType>> aspectTypes = Optional.ofNullable(request.getAspects());
+        List<String> aspectTypeValues;
+        aspectTypeValues = aspectTypes.map(types -> types.stream()
+                                                         .map(AspectType::toString)
+                                                         .map(String::toLowerCase)
+                                                         .collect(Collectors.toList()))
+                                      .orElse(emptyList());
 
-        return paramMap;
+        return JobParameter.builder()
+                           .rootItemId(uuid)
+                           .treeDepth(treeDepth)
+                           .bomLifecycle(lifecycle)
+                           .aspectTypes(aspectTypeValues)
+                           .build();
     }
 
     @Override

@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static net.catenax.irs.util.TestMother.jobParameter;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,21 +32,19 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class PersistentJobStoreTest {
     private static final String ACCESS_KEY = "accessKey";
     private static final String SECRET_KEY = "secretKey";
-    final int TTL_IN_HOUR_SECONDS = 3600;
-
     private static final MinioContainer minioContainer = new MinioContainer(
             new MinioContainer.CredentialsProvider(ACCESS_KEY, SECRET_KEY)).withReuse(true);
-
+    final int TTL_IN_HOUR_SECONDS = 3600;
     PersistentJobStore sut;
     Faker faker = new Faker();
     TestMother generate = new TestMother();
     MultiTransferJob job = generate.job(JobState.UNSAVED);
-    MultiTransferJob job2 = generate.job(JobState.UNSAVED);
     MultiTransferJob originalJob = job.toBuilder().build();
+    MultiTransferJob job2 = generate.job(JobState.UNSAVED);
     String otherJobId = faker.lorem().characters(36);
     TransferProcess process1 = generate.transfer();
-    TransferProcess process2 = generate.transfer();
     String processId1 = process1.getId();
+    TransferProcess process2 = generate.transfer();
     String processId2 = process2.getId();
     String errorDetail = faker.lorem().sentence();
     MinioBlobPersistence blobStoreSpy;
@@ -399,7 +397,7 @@ class PersistentJobStoreTest {
             softly.assertThat(storedJob.getJob().getException().getErrorDetail())
                   .isEqualTo(job.getJob().getException().getErrorDetail());
             softly.assertThat(storedJob.getJob().getJobCompleted()).isEqualTo(job.getJob().getJobCompleted());
-            softly.assertThat(storedJob.getJobData()).isEqualTo(job.getJobData());
+            softly.assertThat(storedJob.getJobParameter()).isEqualTo(job.getJobParameter());
             softly.assertThat(storedJob.getCompletedTransfers()).isEqualTo(job.getCompletedTransfers());
         });
 
@@ -416,7 +414,7 @@ class PersistentJobStoreTest {
                                                                  .exceptionDate(Instant.now())
                                                                  .build())
                                        .build())
-                               .jobData(Map.of("dataKey", "dataValue"))
+                               .jobParameter(jobParameter())
                                .build();
     }
 
@@ -440,7 +438,7 @@ class PersistentJobStoreTest {
             softly.assertThat(storedJob.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
             softly.assertThat(storedJob.getJob().getException().getErrorDetail())
                   .isEqualTo(job.getJob().getException().getErrorDetail());
-            softly.assertThat(storedJob.getJobData()).isEqualTo(job.getJobData());
+            softly.assertThat(storedJob.getJobParameter()).isEqualTo(job.getJobParameter());
             softly.assertThat(storedJob.getCompletedTransfers()).isEqualTo(job.getCompletedTransfers());
         });
     }
