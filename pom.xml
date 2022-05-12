@@ -34,7 +34,7 @@
 
         <!-- Dependencies -->
         <springboot.version>2.6.6</springboot.version>
-        <springcloud-feign.version>3.1.1</springcloud-feign.version>
+        <springcloud-feign.version>3.1.2</springcloud-feign.version>
         <springdoc.version>1.6.7</springdoc.version>
         <micrometer.version>1.7.3</micrometer.version>
         <junit.version>5.7.2</junit.version>
