@@ -40,7 +40,7 @@
         <junit.version>5.8.2</junit.version>
         <javafaker.version>1.0.2</javafaker.version>
         <json-unit-assertj.version>2.35.0</json-unit-assertj.version>
-        <mockito-junit-jupiter.version>3.12.4</mockito-junit-jupiter.version>
+        <mockito-junit-jupiter.version>4.5.1</mockito-junit-jupiter.version>
         <assertj-core.version>3.22.0</assertj-core.version>
         <gatling.version>3.7.6</gatling.version>
         <resilience4j.version>1.7.1</resilience4j.version>
