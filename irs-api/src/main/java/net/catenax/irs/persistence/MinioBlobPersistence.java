@@ -65,12 +65,6 @@ public class MinioBlobPersistence implements BlobPersistence {
         this(bucketName, createClient(endpoint, accessKey, secretKey));
     }
 
-    @NotNull
-    private static MinioClient createClient(final String endpoint, final String accessKey, final String secretKey) {
-        log.info("Building Minio client with url '{}'", endpoint);
-        return MinioClient.builder().endpoint(endpoint).credentials(accessKey, secretKey).build();
-    }
-
     public MinioBlobPersistence(final String bucketName, final MinioClient client) throws BlobPersistenceException {
         this.bucketName = bucketName;
         this.minioClient = client;
@@ -84,6 +78,12 @@ public class MinioBlobPersistence implements BlobPersistence {
         } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
             throw new BlobPersistenceException("Encountered error while trying to create min.io client", e);
         }
+    }
+
+    @NotNull
+    private static MinioClient createClient(final String endpoint, final String accessKey, final String secretKey) {
+        log.info("Building Minio client with url '{}'", endpoint);
+        return MinioClient.builder().endpoint(endpoint).credentials(accessKey, secretKey).build();
     }
 
     private void setExpirationLifecycle(final String bucketName)

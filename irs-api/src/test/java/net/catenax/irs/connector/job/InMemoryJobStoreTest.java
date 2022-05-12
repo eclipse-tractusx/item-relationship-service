@@ -3,11 +3,11 @@ package net.catenax.irs.connector.job;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static net.catenax.irs.util.TestMother.jobParameter;
 
 import java.net.URL;
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,12 +27,12 @@ class InMemoryJobStoreTest {
     Faker faker = new Faker();
     TestMother generate = new TestMother();
     MultiTransferJob job = generate.job(JobState.UNSAVED);
-    MultiTransferJob job2 = generate.job(JobState.UNSAVED);
     MultiTransferJob originalJob = job.toBuilder().build();
+    MultiTransferJob job2 = generate.job(JobState.UNSAVED);
     String otherJobId = faker.lorem().characters();
     TransferProcess process1 = generate.transfer();
-    TransferProcess process2 = generate.transfer();
     String processId1 = process1.getId();
+    TransferProcess process2 = generate.transfer();
     String processId2 = process2.getId();
     String errorDetail = faker.lorem().sentence();
 
@@ -400,7 +400,7 @@ class InMemoryJobStoreTest {
             softly.assertThat(storedJob.getJob().getException().getErrorDetail())
                   .isEqualTo(job.getJob().getException().getErrorDetail());
             softly.assertThat(storedJob.getJob().getJobCompleted()).isEqualTo(job.getJob().getJobCompleted());
-            softly.assertThat(storedJob.getJobData()).isEqualTo(job.getJobData());
+            softly.assertThat(storedJob.getJobParameter()).isEqualTo(job.getJobParameter());
             softly.assertThat(storedJob.getCompletedTransfers()).isEqualTo(job.getCompletedTransfers());
         });
 
@@ -417,7 +417,7 @@ class InMemoryJobStoreTest {
                                                                  .exceptionDate(Instant.now())
                                                                  .build())
                                        .build())
-                               .jobData(Map.of("dataKey", "dataValue"))
+                               .jobParameter(jobParameter())
                                .build();
     }
 
@@ -441,7 +441,7 @@ class InMemoryJobStoreTest {
             softly.assertThat(storedJob.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
             softly.assertThat(storedJob.getJob().getException().getErrorDetail())
                   .isEqualTo(job.getJob().getException().getErrorDetail());
-            softly.assertThat(storedJob.getJobData()).isEqualTo(job.getJobData());
+            softly.assertThat(storedJob.getJobParameter()).isEqualTo(job.getJobParameter());
             softly.assertThat(storedJob.getCompletedTransfers()).isEqualTo(job.getCompletedTransfers());
         });
     }

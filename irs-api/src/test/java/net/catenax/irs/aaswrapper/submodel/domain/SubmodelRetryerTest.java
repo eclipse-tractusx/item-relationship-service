@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import net.catenax.irs.TestConfig;
+import net.catenax.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,10 +26,8 @@ class SubmodelRetryerTest {
 
     @Autowired
     private SubmodelFacade facade;
-
     @Autowired
     private RetryRegistry retryRegistry;
-
     @MockBean
     private SubmodelClient client;
 
@@ -37,7 +36,7 @@ class SubmodelRetryerTest {
         given(this.client.getSubmodel(anyString(), any())).willThrow(
                 new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception"));
 
-        assertThrows(HttpServerErrorException.class, () -> facade.getSubmodel("TEST", "lifecycle"));
+        assertThrows(HttpServerErrorException.class, () -> facade.getSubmodel("TEST", TestMother.jobParameter()));
 
         verify(this.client, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getSubmodel(anyString(), any());
     }

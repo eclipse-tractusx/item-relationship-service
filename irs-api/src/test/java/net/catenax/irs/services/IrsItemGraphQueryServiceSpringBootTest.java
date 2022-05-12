@@ -1,5 +1,16 @@
 package net.catenax.irs.services;
 
+import static net.catenax.irs.util.TestMother.registerJobWithDepthAndAspect;
+import static net.catenax.irs.util.TestMother.registerJobWithoutDepth;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.given;
+import static org.hamcrest.Matchers.equalTo;
+
+import java.time.Instant;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
 import net.catenax.irs.TestConfig;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
@@ -15,19 +26,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.Instant;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-
-import static net.catenax.irs.util.TestMother.registerJobWithDepth;
-import static net.catenax.irs.util.TestMother.registerJobWithoutDepth;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.given;
-import static org.hamcrest.Matchers.equalTo;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = {"test"})
+@ActiveProfiles(profiles = { "test" })
 @Import(TestConfig.class)
 class IrsItemGraphQueryServiceSpringBootTest {
 
@@ -50,15 +50,15 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         // then
         given().ignoreException(EntityNotFoundException.class)
-                .await()
-                .atMost(10, TimeUnit.SECONDS)
-                .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFullTree));
+               .await()
+               .atMost(10, TimeUnit.SECONDS)
+               .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFullTree));
     }
 
     @Test
     void registerItemJobWithDepthShouldBuildTreeUntilGivenDepth() {
         // given
-        final RegisterJob registerJob = registerJobWithDepth(0);
+        final RegisterJob registerJob = registerJobWithDepthAndAspect(0, null);
         final int expectedRelationshipsSizeFirstDepth = 3; // stub
 
         // when
@@ -66,27 +66,27 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         // then
         given().ignoreException(EntityNotFoundException.class)
-                .await()
-                .atMost(10, TimeUnit.SECONDS)
-                .until(() -> getRelationshipsSize(registeredJob.getJobId()),
-                        equalTo(expectedRelationshipsSizeFirstDepth));
+               .await()
+               .atMost(10, TimeUnit.SECONDS)
+               .until(() -> getRelationshipsSize(registeredJob.getJobId()),
+                       equalTo(expectedRelationshipsSizeFirstDepth));
     }
 
     @Test
     void cancelJobById() {
         final String idAsString = String.valueOf(jobId);
         final MultiTransferJob multiTransferJob = MultiTransferJob.builder()
-                .job(Job.builder()
-                        .jobId(UUID.fromString(idAsString))
-                        .jobState(JobState.UNSAVED)
-                        .exception(JobErrorDetails.builder()
-                                .errorDetail(
-                                        "Job should be canceled")
-                                .exceptionDate(
-                                        Instant.now())
-                                .build())
-                        .build())
-                .build();
+                                                                  .job(Job.builder()
+                                                                          .jobId(UUID.fromString(idAsString))
+                                                                          .jobState(JobState.UNSAVED)
+                                                                          .exception(JobErrorDetails.builder()
+                                                                                                    .errorDetail(
+                                                                                                            "Job should be canceled")
+                                                                                                    .exceptionDate(
+                                                                                                            Instant.now())
+                                                                                                    .build())
+                                                                          .build())
+                                                                  .build();
 
         jobStore.create(multiTransferJob);
 

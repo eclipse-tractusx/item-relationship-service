@@ -1,6 +1,7 @@
 package net.catenax.irs.connector.job;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static net.catenax.irs.util.TestMother.jobParameter;
 
 import com.github.javafaker.Faker;
 import net.catenax.irs.util.TestMother;
@@ -22,7 +23,7 @@ class MultiTransferJobTest {
     @Test
     void getJobData_Immutable() {
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(
-                () -> job.getJobData().put(faker.lorem().word(), faker.lorem().word()));
+                () -> jobParameter().getAspectTypes().add(faker.lorem().word()));
     }
 
 }

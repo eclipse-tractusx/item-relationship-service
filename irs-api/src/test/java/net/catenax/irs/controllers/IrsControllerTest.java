@@ -1,8 +1,8 @@
 package net.catenax.irs.controllers;
 
-import static net.catenax.irs.util.TestMother.registerJobWithDepth;
+import static net.catenax.irs.util.TestMother.registerJobWithDepthAndAspect;
 import static net.catenax.irs.util.TestMother.registerJobWithGlobalAssetIdAndDepth;
-import static net.catenax.irs.util.TestMother.registerJobWithoutDepth;
+import static net.catenax.irs.util.TestMother.registerJobWithoutDepthAndAspect;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,14 +45,20 @@ class IrsControllerTest {
     @MockBean
     private IrsItemGraphQueryService service;
 
+    private static Stream<RegisterJob> corruptedJobs() {
+        return Stream.of(registerJobWithDepthAndAspect(110, null),
+                registerJobWithGlobalAssetIdAndDepth("invalidGlobalAssetId", 0, null),
+                registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0, null));
+    }
+
     @Test
     void initiateJobForGlobalAssetId() throws Exception {
         final UUID returnedJob = UUID.randomUUID();
         when(service.registerItemJob(any())).thenReturn(JobHandle.builder().jobId(returnedJob).build());
 
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
-                                              .content(
-                                                      new ObjectMapper().writeValueAsString(registerJobWithoutDepth())))
+                                              .content(new ObjectMapper().writeValueAsString(
+                                                      registerJobWithoutDepthAndAspect())))
                     .andExpect(status().isCreated())
                     .andExpect(content().string(containsString(returnedJob.toString())));
     }
@@ -97,11 +103,6 @@ class IrsControllerTest {
         this.mockMvc.perform(put("/irs/jobs/" + jobId))
                     .andExpect(status().isNotFound())
                     .andExpect(result -> assertTrue(result.getResolvedException() instanceof EntityNotFoundException));
-    }
-
-    private static Stream<RegisterJob> corruptedJobs() {
-        return Stream.of(registerJobWithDepth(110), registerJobWithGlobalAssetIdAndDepth("invalidGlobalAssetId", 0),
-                registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0));
     }
 
 }
