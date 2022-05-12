@@ -35,8 +35,7 @@ public class SubmodelFacade {
      * @return The Aspect Model for the given submodel
      */
     @Retry(name = "submodelRetryer")
-    public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress,
-            final String lifecycleContext) {
+    public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress, final String lifecycleContext) {
         final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
                 AssemblyPartRelationship.class);
 

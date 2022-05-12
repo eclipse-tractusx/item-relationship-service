@@ -19,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpServerErrorException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = { "test" })
+@ActiveProfiles(profiles = { "local" })
 @Import(TestConfig.class)
 class SubmodelRetryerTest {
 

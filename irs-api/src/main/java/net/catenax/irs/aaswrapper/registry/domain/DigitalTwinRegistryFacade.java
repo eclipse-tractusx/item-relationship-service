@@ -20,8 +20,8 @@ import org.springframework.stereotype.Service;
 /**
  * Public API Facade for digital twin registry domain
  */
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class DigitalTwinRegistryFacade {
 
     private final DigitalTwinRegistryClient digitalTwinRegistryClient;
