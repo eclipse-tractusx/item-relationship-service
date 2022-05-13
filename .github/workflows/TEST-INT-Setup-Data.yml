@@ -1,0 +1,24 @@
+name: IRS TEST Setup Test Data
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'feature/**'
+      - 'bugfix/**'
+      - 'fix/**'
+      - 'chore/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Test Data on INT
+        env:
+          SUBMODEL_URL: https://TODO
+          DTR_URL: https://TODO
+        run: |
+          ./.github/scripts/setup-testdata.sh
+        shell: bash
