@@ -13,7 +13,6 @@ import static net.catenax.irs.configuration.OAuthRestTemplateConfig.OAUTH_REST_T
 
 import java.net.URI;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -55,7 +54,6 @@ class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
 /**
  * Digital Twin Registry Rest Client Implementation
  */
-@Slf4j
 @Service
 @Profile({"!local && !test"})
 class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient {
