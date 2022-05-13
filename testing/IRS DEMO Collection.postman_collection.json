@@ -1,0 +1,342 @@
+{
+	"info": {
+		"_postman_id": "45ee9d12-de87-4ca4-b6ad-32a036abc855",
+		"name": "IRS DEMO Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1.0.0 [Register Job] https://irs.int.demo.catena-x.net/irs/jobs",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+				},
+				"url": {
+					"raw": "https://irs.int.demo.catena-x.net/irs/jobs",
+					"protocol": "https",
+					"host": [
+						"irs",
+						"int",
+						"demo",
+						"catena-x",
+						"net"
+					],
+					"path": [
+						"irs",
+						"jobs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1.1.0 [Register Job globalAssetId <Unknown>] https://irs.int.demo.catena-x.net/irs/jobs",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+				},
+				"url": {
+					"raw": "https://irs.int.demo.catena-x.net/irs/jobs",
+					"protocol": "https",
+					"host": [
+						"irs",
+						"int",
+						"demo",
+						"catena-x",
+						"net"
+					],
+					"path": [
+						"irs",
+						"jobs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.0.0 [Search for completed Jobs]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=COMPLETED",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://irs.int.demo.catena-x.net/irs/jobs?jobStates=COMPLETED",
+					"protocol": "http",
+					"host": [
+						"irs",
+						"int",
+						"demo",
+						"catena-x",
+						"net"
+					],
+					"path": [
+						"irs",
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "jobStates",
+							"value": "COMPLETED"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.0.1 [Search for Jobs in error state]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=ERROR",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://irs.int.demo.catena-x.net/irs/jobs?jobStates=COMPLETED",
+					"protocol": "http",
+					"host": [
+						"irs",
+						"int",
+						"demo",
+						"catena-x",
+						"net"
+					],
+					"path": [
+						"irs",
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "jobStates",
+							"value": "COMPLETED"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.0.2 [Search for Jobs in error state]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=INITIAL",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://irs.int.demo.catena-x.net/irs/jobs?jobStates=COMPLETED",
+					"protocol": "http",
+					"host": [
+						"irs",
+						"int",
+						"demo",
+						"catena-x",
+						"net"
+					],
+					"path": [
+						"irs",
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "jobStates",
+							"value": "COMPLETED"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.0.3 [Search for any Jobs]  http://irs.int.demo.catena-x.net/irs/jobs",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://irs.int.demo.catena-x.net/irs/jobs?jobStates=COMPLETED",
+					"protocol": "http",
+					"host": [
+						"irs",
+						"int",
+						"demo",
+						"catena-x",
+						"net"
+					],
+					"path": [
+						"irs",
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "jobStates",
+							"value": "COMPLETED"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.1.0 [Search for error Jobs]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=COMPLETED",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://irs.int.demo.catena-x.net/irs/jobs?jobStates=COMPLETED",
+					"protocol": "http",
+					"host": [
+						"irs",
+						"int",
+						"demo",
+						"catena-x",
+						"net"
+					],
+					"path": [
+						"irs",
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "jobStates",
+							"value": "COMPLETED"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3.0.0 [Search for given jobId] http://irs.int.demo.catena-x.net/irs/jobs/:jobId?returnUncompletedJob=true",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"warning": "This is a duplicate header and will be overridden by the Content-Type header generated by Postman.",
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "jobId",
+						"value": "9c2f591a-9779-4cb6-81f9-bb3b219da30a",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "",
+							"value": "9c2f591a-9779-4cb6-81f9-bb3b219da30a",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://irs.int.demo.catena-x.net/irs/jobs/9c2f591a-9779-4cb6-81f9-bb3b219da30a",
+					"protocol": "http",
+					"host": [
+						"irs",
+						"int",
+						"demo",
+						"catena-x",
+						"net"
+					],
+					"path": [
+						"irs",
+						"jobs",
+						"9c2f591a-9779-4cb6-81f9-bb3b219da30a"
+					],
+					"query": [
+						{
+							"key": "jobId",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4.0.0 [Search for error Jobs]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=ERROR",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://irs.int.demo.catena-x.net/irs/jobs?jobStates=COMPLETED",
+					"protocol": "http",
+					"host": [
+						"irs",
+						"int",
+						"demo",
+						"catena-x",
+						"net"
+					],
+					"path": [
+						"irs",
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "jobStates",
+							"value": "COMPLETED"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
