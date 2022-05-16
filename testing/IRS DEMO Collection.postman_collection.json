@@ -51,7 +51,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+					"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fcabcdef\"\r\n}"
 				},
 				"url": {
 					"raw": "https://irs.int.demo.catena-x.net/irs/jobs",
