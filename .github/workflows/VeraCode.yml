@@ -16,6 +16,9 @@ jobs:
       - name: Check out main branch
         uses: actions/checkout@v2
 
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+
       - name: Veracode Upload And Scan
         uses: veracode/veracode-uploadandscan-action@0.2.1
         with:
