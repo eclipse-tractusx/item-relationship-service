@@ -21,38 +21,20 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-#      - name: Cache maven packages
-#        uses: actions/cache@v3
-#        with:
-#          path: ~/.m2
-#          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-#          restore-keys: ${{ runner.os }}-m2
-#
-#      - name: Build with Maven
-#        run: |
-#          mvn package
-
-      # zip the project and move it to a staging directory
       - name: Zip Project
         run: zip -r project.zip .* *
         env:
           build-name: project.zip
-      - uses: actions/upload-artifact@v2 # Copy files from repository to docker container so the next uploadandscan action can access them.
+      - uses: actions/upload-artifact@v2
         with:
-          path: project.zip # Wildcards can be used to filter the files copied into the container. See: https://github.com/actions/upload-artifact
+          path: project.zip
 
       - name: Veracode Upload And Scan
         uses: veracode/veracode-uploadandscan-action@0.2.1
         with:
           appname: 'IRS'
           createprofile: false
-#          filepath: '../../irs-api/target/*.[j]ar'
           vid: '${{ secrets.VERACODE_API_ID }}'
           vkey: '${{ secrets.VERACODE_API_KEY }}'
           filepath: 'project.zip'
-#          createsandbox: 'true'
-#          sandboxname: 'SANDBOXNAME'
-#          scantimeout: 0
-#          exclude: '*.jar'
-#          include: '*-exec.jar'
-#          criticality: 'VeryHigh'
+          criticality: 'High'
