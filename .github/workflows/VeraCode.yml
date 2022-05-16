@@ -34,7 +34,7 @@ jobs:
 
       # zip the project and move it to a staging directory
       - name: Zip Project
-        run: zip -R project.zip
+        run: zip -r project.zip .* *
         env:
           build-name: project.zip
       - uses: actions/upload-artifact@v2 # Copy files from repository to docker container so the next uploadandscan action can access them.
