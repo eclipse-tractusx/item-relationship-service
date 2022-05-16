@@ -118,7 +118,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://irs.int.demo.catena-x.net/irs/jobs?jobStates=COMPLETED",
+					"raw": "http://irs.int.demo.catena-x.net/irs/jobs?jobStates=ERROR",
 					"protocol": "http",
 					"host": [
 						"irs",
@@ -134,7 +134,7 @@
 					"query": [
 						{
 							"key": "jobStates",
-							"value": "COMPLETED"
+							"value": "ERROR"
 						}
 					]
 				}
