@@ -41,6 +41,6 @@ jobs:
           createprofile: false
           vid: '${{ secrets.VERACODE_API_ID }}'
           vkey: '${{ secrets.VERACODE_API_KEY }}'
-          filepath: '/irs-api-*-exec.jar'
+          filepath: '*exec.jar'
           criticality: 'High'
           deleteIncompleteScan: 2 #delete a scan of any status except Results Ready to proceed with the uploadandscan action. If errors occur when running this action, the Java wrapper automatically deletes the incomplete scan.
