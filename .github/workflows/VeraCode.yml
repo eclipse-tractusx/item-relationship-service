@@ -31,7 +31,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          path: '/traceability-irs/irs-api/target/irs-api-*-exec.jar'
+          path: 'irs-api/target/*exec.jar'
 
       - name: Veracode Upload And Scan
         uses: veracode/veracode-uploadandscan-action@0.2.2
