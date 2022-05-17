@@ -2,10 +2,10 @@ name: Veracode Static Analysis
 on:
   workflow_dispatch:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ main, master ]
+    branches: [ main ]
 
 jobs:
   static_analysis:
@@ -19,15 +19,19 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'adopt'
+          distribution: 'corretto'
 
-      - name: Zip Project
-        run: zip -r project.zip .* *
-        env:
-          build-name: project.zip
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.3
+        with:
+          maven-version: 3.8.2
+
+      - name: Build
+        run: mvn package
+
       - uses: actions/upload-artifact@v2
         with:
-          path: project.zip
+          path: '../../irs-api/target/*.[j]ar'
 
       - name: Veracode Upload And Scan
         uses: veracode/veracode-uploadandscan-action@0.2.2
@@ -37,6 +41,6 @@ jobs:
           createprofile: false
           vid: '${{ secrets.VERACODE_API_ID }}'
           vkey: '${{ secrets.VERACODE_API_KEY }}'
-          filepath: 'project.zip'
+          filepath: 'irs-api-*-exec.jar'
           criticality: 'High'
           deleteIncompleteScan: 2 #delete a scan of any status except Results Ready to proceed with the uploadandscan action. If errors occur when running this action, the Java wrapper automatically deletes the incomplete scan.
