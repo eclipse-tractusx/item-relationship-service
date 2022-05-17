@@ -32,9 +32,11 @@ jobs:
       - name: Veracode Upload And Scan
         uses: veracode/veracode-uploadandscan-action@0.2.1
         with:
-          appname: 'IRS'
+          appname: '${{ github.repository }}'
+          version: '${{ github.run_id }}'
           createprofile: false
           vid: '${{ secrets.VERACODE_API_ID }}'
           vkey: '${{ secrets.VERACODE_API_KEY }}'
           filepath: 'project.zip'
           criticality: 'High'
+          deleteIncompleteScan: 2 #delete a scan of any status except Results Ready to proceed with the uploadandscan action. If errors occur when running this action, the Java wrapper automatically deletes the incomplete scan.
