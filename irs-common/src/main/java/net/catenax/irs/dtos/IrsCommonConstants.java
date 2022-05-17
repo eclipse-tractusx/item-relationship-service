@@ -9,12 +9,9 @@
 //
 package net.catenax.irs.dtos;
 
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
-
 /**
  * Common constant used in IRS
  */
-@ExcludeFromCodeCoverageGeneratedReport
 public class IrsCommonConstants {
     /**
      * Job Data key for root item ID
@@ -25,5 +22,10 @@ public class IrsCommonConstants {
      * Expected depth of the tree
      */
     public static final String DEPTH_ID_KEY = "depth.id.key";
+
+    /**
+     * Given lifecycleContext from the consumer
+     */
+    public static final String LIFE_CYCLE_CONTEXT = "lifecycleContext";
 
 }

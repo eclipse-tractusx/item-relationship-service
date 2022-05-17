@@ -14,16 +14,14 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Describe the state of the fetched items
  */
 @Schema(description = "State of the Item fetch.")
 @Value
-@Builder
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = AsyncFetchedItems.AsyncFetchedItemsBuilder.class)
-@ExcludeFromCodeCoverageGeneratedReport
 public class AsyncFetchedItems {
 
     @Schema(description = "No of job with the globalAssetId on the queue.", implementation = Integer.class)

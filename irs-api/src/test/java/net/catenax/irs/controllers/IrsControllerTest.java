@@ -1,6 +1,8 @@
 package net.catenax.irs.controllers;
 
-import static net.catenax.irs.util.TestMother.registerJobWithoutDepth;
+import static net.catenax.irs.util.TestMother.registerJobWithDepthAndAspect;
+import static net.catenax.irs.util.TestMother.registerJobWithGlobalAssetIdAndDepth;
+import static net.catenax.irs.util.TestMother.registerJobWithoutDepthAndAspect;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -14,14 +16,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -39,16 +45,30 @@ class IrsControllerTest {
     @MockBean
     private IrsItemGraphQueryService service;
 
+    private static Stream<RegisterJob> corruptedJobs() {
+        return Stream.of(registerJobWithDepthAndAspect(110, null),
+                registerJobWithGlobalAssetIdAndDepth("invalidGlobalAssetId", 0, null),
+                registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0, null));
+    }
+
     @Test
     void initiateJobForGlobalAssetId() throws Exception {
         final UUID returnedJob = UUID.randomUUID();
         when(service.registerItemJob(any())).thenReturn(JobHandle.builder().jobId(returnedJob).build());
 
-        this.mockMvc.perform(post("/irs/jobs")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(new ObjectMapper().writeValueAsString(registerJobWithoutDepth())))
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(new ObjectMapper().writeValueAsString(
+                                                      registerJobWithoutDepthAndAspect())))
                     .andExpect(status().isCreated())
                     .andExpect(content().string(containsString(returnedJob.toString())));
+    }
+
+    @ParameterizedTest
+    @MethodSource("corruptedJobs")
+    void shouldReturnBadRequestWhenRegisterJobBodyNotValid(final RegisterJob registerJob) throws Exception {
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(new ObjectMapper().writeValueAsString(registerJob)))
+                    .andExpect(status().isBadRequest());
     }
 
     @Test

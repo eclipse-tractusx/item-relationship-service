@@ -9,26 +9,26 @@
 //
 package net.catenax.irs.aaswrapper.job;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Singular;
+import lombok.extern.jackson.Jacksonized;
+import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 
 /**
  * Container class to store item data
  */
 @Getter
+@Builder
+@Jacksonized
 public class ItemContainer {
 
-    private final List<AssemblyPartRelationshipDTO> assemblyPartRelationships = new ArrayList<>();
+    @Singular
+    private List<AssemblyPartRelationshipDTO> assemblyPartRelationships;
 
-    public void add(final AssemblyPartRelationshipDTO relationship) {
-        assemblyPartRelationships.add(relationship);
-    }
-
-    public void addAll(final Collection<AssemblyPartRelationshipDTO> relationships) {
-        assemblyPartRelationships.addAll(relationships);
-    }
+    @Singular
+    private List<Tombstone> tombstones;
 }

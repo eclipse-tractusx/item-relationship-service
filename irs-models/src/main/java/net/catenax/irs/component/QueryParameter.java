@@ -18,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
@@ -31,7 +30,6 @@ import net.catenax.irs.component.enums.Direction;
 @Builder(toBuilder = true)
 @JsonDeserialize(builder = QueryParameter.QueryParameterBuilder.class)
 @AllArgsConstructor
-@ExcludeFromCodeCoverageGeneratedReport
 public class QueryParameter {
 
     @Schema(implementation = BomLifecycle.class)
@@ -46,7 +44,6 @@ public class QueryParameter {
 
     @Schema(implementation = Direction.class)
     private Direction direction;
-
 
     /**
      * Builder for QueryParameter class

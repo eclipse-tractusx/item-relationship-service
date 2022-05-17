@@ -15,6 +15,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import net.catenax.irs.connector.job.TransferProcess;
 
 /**
@@ -23,14 +24,13 @@ import net.catenax.irs.connector.job.TransferProcess;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class AASTransferProcess implements TransferProcess {
 
+    private final List<String> idsToProcess = new ArrayList<>();
     @SuppressWarnings("PMD.ShortVariable")
     private String id;
-
     private Integer depth;
-
-    private final List<String> idsToProcess = new ArrayList<>();
 
     public void addIdsToProcess(final List<String> childIds) {
         idsToProcess.addAll(childIds);

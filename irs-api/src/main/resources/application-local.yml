@@ -2,10 +2,17 @@ feign:
   client:
     config:
       digitalTwinRegistry:
-        url: http://stub
+        url: http://localhost
 
 blobstore:
   endpoint: http://localhost:9000
   accessKey: minioadmin
   secretKey: minioadmin
+
+irs:
+  job:
+    cleanup:
+      scheduler:
+        completed: 0 * * * * *
+        failed: 0 * * * * *
 

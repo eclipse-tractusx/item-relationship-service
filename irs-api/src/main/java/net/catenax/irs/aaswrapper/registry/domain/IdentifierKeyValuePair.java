@@ -15,7 +15,7 @@ import lombok.Data;
  * IdentifierKeyValuePair
  */
 @Data
-class IdentifierKeyValuePair extends HasSemantics {
+class IdentifierKeyValuePair {
 
     /**
      * key
@@ -29,5 +29,9 @@ class IdentifierKeyValuePair extends HasSemantics {
      * value
      */
     private String value;
+    /**
+     * semanticId
+     */
+    private Reference semanticId;
 
 }

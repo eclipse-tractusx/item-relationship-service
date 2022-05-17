@@ -17,7 +17,6 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.AsyncFetchedItems;
 import net.catenax.irs.component.ChildItem;
 import net.catenax.irs.component.Description;
@@ -28,6 +27,7 @@ import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.MeasurementUnit;
+import net.catenax.irs.component.ProcessingError;
 import net.catenax.irs.component.ProtocolInformation;
 import net.catenax.irs.component.Quantity;
 import net.catenax.irs.component.QueryParameter;
@@ -36,6 +36,7 @@ import net.catenax.irs.component.SemanticId;
 import net.catenax.irs.component.Shell;
 import net.catenax.irs.component.SubmodelDescriptor;
 import net.catenax.irs.component.Summary;
+import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
@@ -49,7 +50,6 @@ import org.springframework.http.HttpStatus;
 @SuppressWarnings({ "PMD.ExcessiveImports",
                     "PMD.TooManyMethods"
 })
-@ExcludeFromCodeCoverageGeneratedReport
 public class OpenApiExamples {
     private static final Instant EXAMPLE_INSTANT = Instant.parse("2022-02-03T14:48:54.709Z");
     private static final String JOB_ID = "e5347c88-a921-11ec-b909-0242ac120002";
@@ -61,10 +61,10 @@ public class OpenApiExamples {
         components.addExamples("job-handle", toExample(createJobHandle(JOB_HANDLE_ID_1)));
         components.addExamples("error-response", toExample(ErrorResponse.builder()
                                                                         .withErrors(List.of("TimeoutException",
-                                                                            "ParsingException"))
+                                                                                "ParsingException"))
                                                                         .withMessage("Some errors occured")
                                                                         .withStatusCode(
-                                                                            HttpStatus.INTERNAL_SERVER_ERROR)
+                                                                                HttpStatus.INTERNAL_SERVER_ERROR)
                                                                         .build()));
         components.addExamples("complete-job-result", createCompleteJobResult());
         components.addExamples("job-result-without-uncompleted-result-tree", createJobResultWithoutTree());
@@ -161,7 +161,20 @@ public class OpenApiExamples {
                                      .build())
                              .relationships(List.of(createRelationship()))
                              .shells(List.of(createShell()))
+                             .tombstone(createTombstone())
                              .build());
+    }
+
+    private Tombstone createTombstone() {
+        return Tombstone.builder()
+                        .catenaXId(createGAID(GLOBAL_ASSET_ID).getGlobalAssetId())
+                        .endpointURL("https://catena-x.net/vehicle/partdetails/")
+                        .processingError(ProcessingError.builder()
+                                                        .withErrorDetail("Details to reason of Failure")
+                                                        .withLastAttempt(EXAMPLE_INSTANT)
+                                                        .withRetryCounter(0)
+                                                        .build())
+                        .build();
     }
 
     private Shell createShell() {
@@ -199,7 +212,7 @@ public class OpenApiExamples {
                        .quantityNumber(1)
                        .measurementUnit(MeasurementUnit.builder()
                                                        .datatypeURI(
-                                                           "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece")
+                                                               "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece")
                                                        .lexicalValue("piece")
                                                        .build())
 

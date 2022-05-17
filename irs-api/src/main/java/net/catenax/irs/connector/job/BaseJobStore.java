@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -83,19 +84,21 @@ public abstract class BaseJobStore implements JobStore {
     public void create(final MultiTransferJob job) {
         writeLock(() -> {
             final var newJob = job.toBuilder().transitionInitial().build();
-            log.info("Add the job into jobstore here {}", newJob);
-            put(job.getJob().getJobId().toString(), newJob);
+            log.info("Adding new job into jobstore: {}", newJob);
+            put(job.getJobIdString(), newJob);
             return null;
         });
     }
 
     @Override
     public void addTransferProcess(final String jobId, final String processId) {
+        log.info("Adding transfer process {} to job {}", processId, jobId);
         modifyJob(jobId, job -> job.toBuilder().transferProcessId(processId).transitionInProgress().build());
     }
 
     @Override
     public void completeTransferProcess(final String jobId, final TransferProcess process) {
+        log.info("Completing transfer process {} for job {}", process.getId(), jobId);
         modifyJob(jobId, job -> {
             final var remainingTransfers = job.getTransferProcessIds()
                                               .stream()
@@ -106,15 +109,29 @@ public abstract class BaseJobStore implements JobStore {
                                   .transferProcessIds(remainingTransfers)
                                   .completedTransfer(process);
             if (remainingTransfers.isEmpty()) {
+                log.info("Job {} has no remaining transfers, transitioning to TRANSFERS_FINISHED", jobId);
                 newJob.transitionTransfersFinished();
+            } else {
+                log.info("Job {} has {} remaining transfers, cannot finish it: {}", jobId, remainingTransfers.size(),
+                        newJob.build());
             }
             return newJob.build();
         });
     }
 
     @Override
-    public void completeJob(final String jobId) {
-        modifyJob(jobId, job -> job.toBuilder().transitionComplete().build());
+    public void completeJob(final String jobId, final Consumer<MultiTransferJob> completionAction) {
+        log.info("Completing job {}", jobId);
+        modifyJob(jobId, job -> {
+            final JobState jobState = job.getJob().getJobState();
+            if (jobState == JobState.TRANSFERS_FINISHED || jobState == JobState.INITIAL) {
+                completionAction.accept(job);
+                return job.toBuilder().transitionComplete().build();
+            } else {
+                log.info("Job is in state {}, cannot complete it.", jobState);
+                return job;
+            }
+        });
     }
 
     @Override
@@ -150,7 +167,7 @@ public abstract class BaseJobStore implements JobStore {
                 log.warn("Job not found: {}", jobId);
             } else {
                 final MultiTransferJob multiTransferJob = job.get();
-                put(multiTransferJob.getJob().getJobId().toString(), action.apply(multiTransferJob));
+                put(multiTransferJob.getJobIdString(), action.apply(multiTransferJob));
             }
             return null;
         });

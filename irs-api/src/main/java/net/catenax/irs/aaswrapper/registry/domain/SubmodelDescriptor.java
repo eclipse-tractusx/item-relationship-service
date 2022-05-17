@@ -42,6 +42,6 @@ class SubmodelDescriptor {
     /**
      * endpoint
      */
-    private Endpoint endpoint;
+    private List<Endpoint> endpoints;
 
 }

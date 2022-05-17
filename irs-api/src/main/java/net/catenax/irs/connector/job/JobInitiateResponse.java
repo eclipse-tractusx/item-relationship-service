@@ -9,17 +9,16 @@
 //
 package net.catenax.irs.connector.job;
 
+import java.util.Map;
 
 import lombok.Builder;
 import lombok.Value;
-
-import java.util.Map;
 
 /**
  * Represents the result of a {@link JobOrchestrator#startJob(Map)} operation.
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class JobInitiateResponse {
     /**
      * Job identifier.

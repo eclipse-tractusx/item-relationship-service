@@ -10,7 +10,6 @@
 package net.catenax.irs.dtos;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /***
  * API type for the stage at which an event occurred, determining which events are used
@@ -18,7 +17,6 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
  *
  * @see ItemsTreeView
  */
-@ExcludeFromCodeCoverageGeneratedReport
 @Schema(description = "Stage defining whether changes apply to the AS_BUILT or AS_MAINTAINED BOM views.")
 @SuppressWarnings("PMD.CommentRequired")
 public enum ItemLifecycleStage {

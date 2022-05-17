@@ -9,16 +9,14 @@
 //
 package net.catenax.irs.component.enums;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
-
 import java.util.stream.Stream;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  * AspectType information for a part tree
  */
 @SuppressWarnings("PMD.ShortMethodName")
-@ExcludeFromCodeCoverageGeneratedReport
 public enum AspectType {
     SERIAL_PART_TYPIZATION(AspectTypesConstants.SERIAL_PART_TYPIZATION),
     ASSEMBLY_PART_RELATIONSHIP(AspectTypesConstants.ASSEMBLY_PART_RELATIONSHIP),
@@ -55,7 +53,10 @@ public enum AspectType {
 
     @JsonCreator
     public static AspectType fromValue(final String value) {
-        return Stream.of(AspectType.values()).filter(aspectType -> aspectType.value.equals(value)).findFirst().orElseThrow();
+        return Stream.of(AspectType.values())
+                     .filter(aspectType -> aspectType.value.equals(value))
+                     .findFirst()
+                     .orElseThrow();
     }
 
     /**

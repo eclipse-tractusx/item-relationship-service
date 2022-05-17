@@ -14,22 +14,19 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Summary
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = Summary.SummaryBuilder.class)
-@ExcludeFromCodeCoverageGeneratedReport
 public class Summary {
 
     /**
      * asyncFetchedItems
      */
-    @Schema(description = "Summary of the fetched jobs",
-            implementation = AsyncFetchedItems.class)
+    @Schema(description = "Summary of the fetched jobs", implementation = AsyncFetchedItems.class)
     private AsyncFetchedItems asyncFetchedItems;
 
     /**

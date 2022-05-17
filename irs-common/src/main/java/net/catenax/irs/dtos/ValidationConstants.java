@@ -9,14 +9,10 @@
 //
 package net.catenax.irs.dtos;
 
-
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
-
 /**
  * Helper class contains dto attributes validations as reusable constants.
  */
 @SuppressWarnings("PMD")
-@ExcludeFromCodeCoverageGeneratedReport
 public class ValidationConstants {
     /**
      * Minimum length limit for an input field.

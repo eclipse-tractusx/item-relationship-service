@@ -3,11 +3,11 @@ package net.catenax.irs.connector.job;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static net.catenax.irs.util.TestMother.jobParameter;
 
 import java.net.URL;
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,12 +27,12 @@ class InMemoryJobStoreTest {
     Faker faker = new Faker();
     TestMother generate = new TestMother();
     MultiTransferJob job = generate.job(JobState.UNSAVED);
-    MultiTransferJob job2 = generate.job(JobState.UNSAVED);
     MultiTransferJob originalJob = job.toBuilder().build();
+    MultiTransferJob job2 = generate.job(JobState.UNSAVED);
     String otherJobId = faker.lorem().characters();
     TransferProcess process1 = generate.transfer();
-    TransferProcess process2 = generate.transfer();
     String processId1 = process1.getId();
+    TransferProcess process2 = generate.transfer();
     String processId2 = process2.getId();
     String errorDetail = faker.lorem().sentence();
 
@@ -44,9 +44,9 @@ class InMemoryJobStoreTest {
     @Test
     void findByProcessId_WhenFound() {
         sut.create(job);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
+        sut.addTransferProcess(job.getJobIdString(), processId1);
         sut.create(job2);
-        sut.addTransferProcess(job2.getJob().getJobId().toString(), processId2);
+        sut.addTransferProcess(job2.getJobIdString(), processId2);
 
         refreshJob();
         assertThat(sut.findByProcessId(processId1)).contains(job);
@@ -55,7 +55,7 @@ class InMemoryJobStoreTest {
     @Test
     void findByProcessId_WhenNotFound() {
         sut.create(job);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
+        sut.addTransferProcess(job.getJobIdString(), processId1);
 
         assertThat(sut.findByProcessId(processId2)).isEmpty();
     }
@@ -64,17 +64,17 @@ class InMemoryJobStoreTest {
     void create_and_find() {
 
         sut.create(job);
-        assertThat(sut.find(job.getJob().getJobId().toString())).isPresent()
-                                                                .get()
-                                                                .usingRecursiveComparison()
-                                                                .isEqualTo(originalJob.toBuilder().transitionInitial().build());
+        assertThat(sut.find(job.getJobIdString())).isPresent()
+                                                  .get()
+                                                  .usingRecursiveComparison()
+                                                  .isEqualTo(originalJob.toBuilder().transitionInitial().build());
         assertThat(sut.find(otherJobId)).isEmpty();
     }
 
     @Test
     void addTransferProcess() {
         sut.create(job);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
+        sut.addTransferProcess(job.getJobIdString(), processId1);
         refreshJob();
         assertThat(job.getTransferProcessIds()).containsExactly(processId1);
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.RUNNING);
@@ -89,10 +89,10 @@ class InMemoryJobStoreTest {
     void completeTransferProcess_WhenTransferFound() {
         // Arrange
         sut.create(job);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
+        sut.addTransferProcess(job.getJobIdString(), processId1);
 
         // Act
-        sut.completeTransferProcess(job.getJob().getJobId().toString(), process1);
+        sut.completeTransferProcess(job.getJobIdString(), process1);
 
         // Assert
         assertThat(job.getTransferProcessIds()).isEmpty();
@@ -101,7 +101,7 @@ class InMemoryJobStoreTest {
     @Test
     void completeTransferProcess_WhenTransferNotFound() {
         // Act
-        sut.completeTransferProcess(job.getJob().getJobId().toString(), process1);
+        sut.completeTransferProcess(job.getJobIdString(), process1);
 
         // Assert
         assertThat(job.getTransferProcessIds()).isEmpty();
@@ -111,12 +111,12 @@ class InMemoryJobStoreTest {
     void completeTransferProcess_WhenTransferAlreadyCompleted() {
         // Arrange
         sut.create(job);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
-        sut.completeTransferProcess(job.getJob().getJobId().toString(), process1);
+        sut.addTransferProcess(job.getJobIdString(), processId1);
+        sut.completeTransferProcess(job.getJobIdString(), process1);
 
         // Act
         assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
-            () -> sut.completeTransferProcess(job.getJob().getJobId().toString(), process1));
+                () -> sut.completeTransferProcess(job.getJobIdString(), process1));
 
         // Assert
         refreshJob();
@@ -127,11 +127,11 @@ class InMemoryJobStoreTest {
     void completeTransferProcess_WhenNotLastTransfer_DoesNotTransitionJob() {
         // Arrange
         sut.create(job);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId2);
+        sut.addTransferProcess(job.getJobIdString(), processId1);
+        sut.addTransferProcess(job.getJobIdString(), processId2);
 
         // Act
-        sut.completeTransferProcess(job.getJob().getJobId().toString(), process1);
+        sut.completeTransferProcess(job.getJobIdString(), process1);
 
         // Assert
         refreshJob();
@@ -142,12 +142,12 @@ class InMemoryJobStoreTest {
     void completeTransferProcess_WhenLastTransfer_TransitionsJob() {
         // Arrange
         sut.create(job);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId2);
+        sut.addTransferProcess(job.getJobIdString(), processId1);
+        sut.addTransferProcess(job.getJobIdString(), processId2);
 
         // Act
-        sut.completeTransferProcess(job.getJob().getJobId().toString(), process1);
-        sut.completeTransferProcess(job.getJob().getJobId().toString(), process2);
+        sut.completeTransferProcess(job.getJobIdString(), process1);
+        sut.completeTransferProcess(job.getJobIdString(), process2);
 
         // Assert
         refreshJob();
@@ -159,10 +159,13 @@ class InMemoryJobStoreTest {
         // Arrange
         sut.create(job);
         // Act
-        sut.completeJob(otherJobId);
+        sut.completeJob(otherJobId, this::doNothing);
         refreshJob();
         // Assert
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.INITIAL);
+    }
+
+    private void doNothing(final MultiTransferJob multiTransferJob) {
     }
 
     @Test
@@ -171,7 +174,7 @@ class InMemoryJobStoreTest {
         sut.create(job);
         sut.create(job2);
         // Act
-        sut.completeJob(job.getJob().getJobId().toString());
+        sut.completeJob(job.getJobIdString(), this::doNothing);
         // Assert
         refreshJob();
         refreshJob2();
@@ -184,10 +187,10 @@ class InMemoryJobStoreTest {
     void completeJob_WhenJobInTransfersCompletedState() {
         // Arrange
         sut.create(job);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
-        sut.completeTransferProcess(job.getJob().getJobId().toString(), process1);
+        sut.addTransferProcess(job.getJobIdString(), processId1);
+        sut.completeTransferProcess(job.getJobIdString(), process1);
         // Act
-        sut.completeJob(job.getJob().getJobId().toString());
+        sut.completeJob(job.getJobIdString(), this::doNothing);
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
@@ -198,10 +201,9 @@ class InMemoryJobStoreTest {
     void completeJob_WhenJobInTransfersInProgressState() {
         // Arrange
         sut.create(job);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
+        sut.addTransferProcess(job.getJobIdString(), processId1);
         // Act
-        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
-            () -> sut.completeJob(job.getJob().getJobId().toString()));
+        sut.completeJob(job.getJobIdString(), this::doNothing);
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.RUNNING);
@@ -224,7 +226,7 @@ class InMemoryJobStoreTest {
         sut.create(job);
         sut.create(job2);
         // Act
-        sut.markJobInError(job.getJob().getJobId().toString(), errorDetail);
+        sut.markJobInError(job.getJobIdString(), errorDetail);
         // Assert
         refreshJob();
         refreshJob2();
@@ -238,10 +240,10 @@ class InMemoryJobStoreTest {
     void markJobInError_WhenJobInTransfersCompletedState() {
         // Arrange
         sut.create(job);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
-        sut.completeTransferProcess(job.getJob().getJobId().toString(), process1);
+        sut.addTransferProcess(job.getJobIdString(), processId1);
+        sut.completeTransferProcess(job.getJobIdString(), process1);
         // Act
-        sut.markJobInError(job.getJob().getJobId().toString(), errorDetail);
+        sut.markJobInError(job.getJobIdString(), errorDetail);
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
@@ -252,9 +254,9 @@ class InMemoryJobStoreTest {
     void markJobInError_WhenJobInTransfersInProgressState() {
         // Arrange
         sut.create(job);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
+        sut.addTransferProcess(job.getJobIdString(), processId1);
         // Act
-        sut.markJobInError(job.getJob().getJobId().toString(), errorDetail);
+        sut.markJobInError(job.getJobIdString(), errorDetail);
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
@@ -266,14 +268,14 @@ class InMemoryJobStoreTest {
         // Arrange
         final Instant nowPlusFiveHours = Instant.now().plusSeconds(TTL_IN_HOUR_SECONDS * 5);
         sut.create(job);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
-        sut.completeTransferProcess(job.getJob().getJobId().toString(), process1);
-        sut.completeJob(job.getJob().getJobId().toString());
+        sut.addTransferProcess(job.getJobIdString(), processId1);
+        sut.completeTransferProcess(job.getJobIdString(), process1);
+        sut.completeJob(job.getJobIdString(), this::doNothing);
         // Act
         final List<MultiTransferJob> completedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
-            nowPlusFiveHours);
+                nowPlusFiveHours);
         // Assert
-        assertThat(completedJobs.size()).isEqualTo(1);
+        assertThat(completedJobs).hasSize(1);
         assertThat(completedJobs.get(0).getJob().getJobState()).isEqualTo(JobState.COMPLETED);
         assertTrue(Optional.ofNullable(completedJobs.get(0).getJob().getJobCompleted()).isPresent());
     }
@@ -283,13 +285,13 @@ class InMemoryJobStoreTest {
         // Arrange
         final Instant nowPlusFiveHours = Instant.now().plusSeconds(TTL_IN_HOUR_SECONDS * 5);
         sut.create(job);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
-        sut.markJobInError(job.getJob().getJobId().toString(), errorDetail);
+        sut.addTransferProcess(job.getJobIdString(), processId1);
+        sut.markJobInError(job.getJobIdString(), errorDetail);
         // Act
         final List<MultiTransferJob> failedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.ERROR,
-            nowPlusFiveHours);
+                nowPlusFiveHours);
         // Assert
-        assertThat(failedJobs.size()).isEqualTo(1);
+        assertThat(failedJobs).hasSize(1);
         assertThat(failedJobs.get(0).getJob().getJobState()).isEqualTo(JobState.ERROR);
         assertTrue(Optional.ofNullable(failedJobs.get(0).getJob().getJobCompleted()).isPresent());
     }
@@ -299,15 +301,15 @@ class InMemoryJobStoreTest {
         // Arrange
         sut.create(job);
         // Act
-        sut.deleteJob(job.getJob().getJobId().toString());
+        sut.deleteJob(job.getJobIdString());
         // Assert
-        assertThat(sut.find(job.getJob().getJobId().toString())).isEmpty();
+        assertThat(sut.find(job.getJobIdString())).isEmpty();
     }
 
     @Test
     void jobStateIsInitial() {
         sut.create(job);
-        final Optional<MultiTransferJob> multiTransferJob = sut.get(job.getJob().getJobId().toString());
+        final Optional<MultiTransferJob> multiTransferJob = sut.get(job.getJobIdString());
         assertThat(multiTransferJob).isPresent();
         assertThat(multiTransferJob.get().getJob().getJobState()).isEqualTo(JobState.INITIAL);
     }
@@ -315,8 +317,8 @@ class InMemoryJobStoreTest {
     @Test
     void jobStateIsInProgress() {
         sut.create(job);
-        sut.addTransferProcess(job.getJob().getJobId().toString(), processId1);
-        final Optional<MultiTransferJob> multiTransferJob = sut.get(job.getJob().getJobId().toString());
+        sut.addTransferProcess(job.getJobIdString(), processId1);
+        final Optional<MultiTransferJob> multiTransferJob = sut.get(job.getJobIdString());
         assertThat(multiTransferJob).isPresent();
         assertThat(multiTransferJob.get().getJob().getJobState()).isEqualTo(JobState.RUNNING);
     }
@@ -325,33 +327,33 @@ class InMemoryJobStoreTest {
     void shouldFindJobsByCompletedJobState() {
         // Arrange
         sut.create(job);
-        sut.completeJob(job.getJob().getJobId().toString());
+        sut.completeJob(job.getJobIdString(), this::doNothing);
         sut.create(job2);
         // Act
         final List<MultiTransferJob> foundJobs = sut.findByStates(List.of(JobState.COMPLETED));
         // Assert
-        assertThat(foundJobs.size()).isEqualTo(1);
-        assertThat(foundJobs.get(0).getJob().getJobId().toString()).isEqualTo(job.getJob().getJobId().toString());
+        assertThat(foundJobs).hasSize(1);
+        assertThat(foundJobs.get(0).getJobIdString()).isEqualTo(job.getJobIdString());
     }
 
     @Test
     void shouldFindJobsByErrorJobState() {
         // Arrange
         sut.create(job);
-        sut.markJobInError(job.getJob().getJobId().toString(), "errorDetail");
+        sut.markJobInError(job.getJobIdString(), "errorDetail");
         // Act
         final List<MultiTransferJob> foundJobs = sut.findByStates(List.of(JobState.ERROR));
         // Assert
-        assertThat(foundJobs.size()).isEqualTo(1);
-        assertThat(foundJobs.get(0).getJob().getJobId().toString()).isEqualTo(job.getJob().getJobId().toString());
+        assertThat(foundJobs).hasSize(1);
+        assertThat(foundJobs.get(0).getJobIdString()).isEqualTo(job.getJobIdString());
     }
 
     private void refreshJob() {
-        job = sut.find(job.getJob().getJobId().toString()).get();
+        job = sut.find(job.getJobIdString()).get();
     }
 
     private void refreshJob2() {
-        job2 = sut.find(job2.getJob().getJobId().toString()).get();
+        job2 = sut.find(job2.getJobIdString()).get();
     }
 
     private Job createJob() {
@@ -393,12 +395,12 @@ class InMemoryJobStoreTest {
 
         final MultiTransferJob storedJob = multiTransferJob.get();
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(storedJob.getJob().getJobId().toString()).isEqualTo(job.getJob().getJobId().toString());
+            softly.assertThat(storedJob.getJobIdString()).isEqualTo(job.getJobIdString());
             softly.assertThat(storedJob.getJob().getJobState()).isEqualTo(JobState.INITIAL);
             softly.assertThat(storedJob.getJob().getException().getErrorDetail())
                   .isEqualTo(job.getJob().getException().getErrorDetail());
             softly.assertThat(storedJob.getJob().getJobCompleted()).isEqualTo(job.getJob().getJobCompleted());
-            softly.assertThat(storedJob.getJobData()).isEqualTo(job.getJobData());
+            softly.assertThat(storedJob.getJobParameter()).isEqualTo(job.getJobParameter());
             softly.assertThat(storedJob.getCompletedTransfers()).isEqualTo(job.getCompletedTransfers());
         });
 
@@ -415,7 +417,7 @@ class InMemoryJobStoreTest {
                                                                  .exceptionDate(Instant.now())
                                                                  .build())
                                        .build())
-                               .jobData(Map.of("dataKey", "dataValue"))
+                               .jobParameter(jobParameter())
                                .build();
     }
 
@@ -427,7 +429,7 @@ class InMemoryJobStoreTest {
 
         // act
         sut.create(job);
-        sut.completeJob(jobId);
+        sut.completeJob(jobId, this::doNothing);
         final Optional<MultiTransferJob> multiTransferJob = sut.find(jobId);
 
         // assert
@@ -435,11 +437,11 @@ class InMemoryJobStoreTest {
 
         final MultiTransferJob storedJob = multiTransferJob.get();
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(storedJob.getJob().getJobId().toString()).isEqualTo(job.getJob().getJobId().toString());
+            softly.assertThat(storedJob.getJobIdString()).isEqualTo(job.getJobIdString());
             softly.assertThat(storedJob.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
             softly.assertThat(storedJob.getJob().getException().getErrorDetail())
                   .isEqualTo(job.getJob().getException().getErrorDetail());
-            softly.assertThat(storedJob.getJobData()).isEqualTo(job.getJobData());
+            softly.assertThat(storedJob.getJobParameter()).isEqualTo(job.getJobParameter());
             softly.assertThat(storedJob.getCompletedTransfers()).isEqualTo(job.getCompletedTransfers());
         });
     }

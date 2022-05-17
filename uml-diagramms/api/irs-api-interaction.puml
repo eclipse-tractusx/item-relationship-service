@@ -1,0 +1,38 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+actor APIConsumer
+activate APIConsumer
+
+box "IRS" #LightBlue
+participant WebService as "IRS API"
+activate WebService
+
+APIConsumer -> WebService : POST /irs/jobs/
+opt
+APIConsumer <-- WebService : 201: Job id response for successful job registration.
+
+    loop poll until response is  "200"
+         APIConsumer -> WebService : GET /irs/jobs/{jobId}
+
+         opt job.hasCompleted()
+                APIConsumer <-- WebService : "200" Item Graph for given jobId.
+         else job.isRunning()
+               alt ?returnUncompletedResultTree=true
+                 APIConsumer <-- WebService : "206" + payload(Job and Partial Item Graph)
+               else
+                 APIConsumer <-- WebService : "206" + payload(Job)
+                end alt
+         else job.hasFailed()
+            APIConsumer <-- WebService : "404" + Error
+        end opt
+    end loop
+
+else
+APIConsumer <-- WebService : 400: Registering job failed.
+end opt
+
+
+
+@enduml

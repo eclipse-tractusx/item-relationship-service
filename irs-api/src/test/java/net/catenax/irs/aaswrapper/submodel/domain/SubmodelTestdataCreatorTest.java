@@ -11,20 +11,17 @@
 package net.catenax.irs.aaswrapper.submodel.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 import java.util.Set;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.client.RestClientException;
 
 class SubmodelTestdataCreatorTest {
-    private SubmodelTestdataCreator submodelTestdataCreator;
 
-    @BeforeEach
-    void setUp() {
-        submodelTestdataCreator = new SubmodelTestdataCreator();
-    }
+    private final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
 
     @Test
     void shouldReturnAssemblyPartRelationshipWithoutChildrenWhenRequestingWithTestId() {
@@ -61,5 +58,14 @@ class SubmodelTestdataCreatorTest {
         assertThat(childParts).hasSize(3);
         final List<String> childIDs = List.of("abc", "def", "ghi");
         childParts.forEach(childData -> assertThat(childIDs).contains(childData.getChildCatenaXId()));
+    }
+
+    @Test
+    void shouldThrowErrorWhenCallingTestId() {
+        final String catenaXId = "c35ee875-5443-4a2d-bc14-fdacd64b9446";
+        final SubmodelClientLocalStub client = new SubmodelClientLocalStub();
+
+        assertThatExceptionOfType(RestClientException.class).isThrownBy(
+                () -> client.getSubmodel(catenaXId, AssemblyPartRelationship.class));
     }
 }

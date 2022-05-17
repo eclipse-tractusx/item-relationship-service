@@ -1,120 +1,106 @@
 package net.catenax.irs.services;
 
-import static net.catenax.irs.util.TestMother.registerJobWithDepth;
-import static net.catenax.irs.util.TestMother.registerJobWithoutDepth;
-import static org.awaitility.Awaitility.await;
-import static org.awaitility.Awaitility.given;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
-import java.time.Duration;
-import java.time.Instant;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
-import net.catenax.irs.TestConfig;
-import net.catenax.irs.component.JobHandle;
-import net.catenax.irs.component.RegisterJob;
+import net.catenax.irs.aaswrapper.job.AASTransferProcess;
+import net.catenax.irs.aaswrapper.job.ItemContainer;
 import net.catenax.irs.component.Job;
-import net.catenax.irs.component.JobErrorDetails;
+import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
+import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.exceptions.EntityNotFoundException;
-import org.junit.jupiter.api.Disabled;
+import net.catenax.irs.persistence.BlobPersistence;
+import net.catenax.irs.persistence.BlobPersistenceException;
+import net.catenax.irs.util.JsonUtil;
+import net.catenax.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = { "test" })
-@Import(TestConfig.class)
+@ExtendWith(MockitoExtension.class)
 class IrsItemGraphQueryServiceTest {
 
     private final UUID jobId = UUID.randomUUID();
+    private final TestMother generate = new TestMother();
 
-    @Autowired
+    @Mock
     private JobStore jobStore;
 
-    @Autowired
-    private IrsItemGraphQueryService service;
+    @Mock
+    private BlobPersistence blobStore;
+
+    @InjectMocks
+    private IrsItemGraphQueryService testee;
 
     @Test
-    @Disabled // its not consistent before TRI-390 not resolved
-    void registerItemJobWithoutDepthShouldBuildFullTree() {
+    void registerItemJobWithoutDepthShouldBuildFullTree() throws Exception {
         // given
-        final RegisterJob registerJob = registerJobWithoutDepth();
-        final int expectedRelationshipsSizeFullTree = 6; // stub
+        final var jobId = UUID.randomUUID();
+        final AASTransferProcess transfer1 = generate.aasTransferProcess();
+        givenTransferResultIsStored(transfer1);
+
+        final AASTransferProcess transfer2 = generate.aasTransferProcess();
+        givenTransferResultIsStored(transfer2);
+
+        givenRunningJobHasFinishedTransfers(jobId, transfer1, transfer2);
 
         // when
-        final JobHandle registeredJob = service.registerItemJob(registerJob);
+        final Jobs jobs = testee.getJobForJobId(jobId, true);
 
         // then
-        given().ignoreException(EntityNotFoundException.class)
-           .await()
-           .atMost(10, TimeUnit.SECONDS)
-           .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFullTree));
+        assertThat(jobs.getRelationships()).hasSize(2);
     }
 
-    @Test
-    @Disabled // its not consistent before TRI-390 not resolved
-    void registerItemJobWithDepthShouldBuildTreeUntilGivenDepth() {
-        // given
-        final RegisterJob registerJob = registerJobWithDepth(0);
-        final int expectedRelationshipsSizeFirstDepth = 3; // stub
-
-        // when
-        final JobHandle registeredJob = service.registerItemJob(registerJob);
-
-        // then
-        given().ignoreException(EntityNotFoundException.class)
-            .await()
-            .atMost(10, TimeUnit.SECONDS)
-            .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFirstDepth));
+    private void givenRunningJobHasFinishedTransfers(final UUID jobId, final AASTransferProcess... transfers) {
+        final MultiTransferJob job = MultiTransferJob.builder()
+                                                     .completedTransfers(Arrays.asList(transfers))
+                                                     .job(generate.fakeJob(JobState.RUNNING))
+                                                     .build();
+        when(jobStore.find(jobId.toString())).thenReturn(Optional.of(job));
     }
 
-    @Test
-    void jobLifecycle() {
-        assertTrue(true);
+    private void givenTransferResultIsStored(final AASTransferProcess transfer1) throws BlobPersistenceException {
+        final AssemblyPartRelationshipDTO relationship1 = generate.assemblyPartRelationshipDTO();
+        final ItemContainer itemContainer1 = ItemContainer.builder().assemblyPartRelationship(relationship1).build();
+        when(blobStore.getBlob(transfer1.getId())).thenReturn(Optional.of(toBlob(itemContainer1)));
     }
 
-    @Test
-    void getJobsByProcessingState() {
-        assertTrue(true);
+    private byte[] toBlob(final Object transfer) {
+        return new JsonUtil().asString(transfer).getBytes(StandardCharsets.UTF_8);
     }
 
     @Test
     void cancelJobById() {
-        final String idAsString = String.valueOf(jobId);
-        final MultiTransferJob multiTransferJob = MultiTransferJob.builder()
-                                                                  .job(Job.builder()
-                                                                          .jobId(UUID.fromString(idAsString))
-                                                                          .jobState(JobState.UNSAVED)
-                                                                          .exception(JobErrorDetails.builder()
-                                                                                                    .errorDetail(
-                                                                                                        "Job should be canceled")
-                                                                                                    .exceptionDate(
-                                                                                                        Instant.now())
-                                                                                                    .build())
-                                                                          .build())
-                                                                  .build();
+        final Job job = generate.fakeJob(JobState.CANCELED);
 
-        jobStore.create(multiTransferJob);
+        final MultiTransferJob multiTransferJob = MultiTransferJob.builder().job(job).build();
 
-        assertNotNull(service.cancelJobById(jobId));
-        assertFalse(jobStore.find(idAsString).isEmpty());
+        when(jobStore.cancelJob(jobId.toString())).thenReturn(Optional.ofNullable(multiTransferJob));
+        final Job canceledJob = testee.cancelJobById(jobId);
 
-        final JobState state = jobStore.find(idAsString).get().getJob().getJobState();
-        assertEquals(state, JobState.CANCELED);
+        assertNotNull(canceledJob);
+        assertEquals(canceledJob.getJobState().name(), JobState.CANCELED.name());
     }
 
-    private int getRelationshipsSize(final UUID jobId) {
-        return service.getJobForJobId(jobId).getRelationships().size();
+    @Test
+    void cancelJobById_throwEntityNotFoundException() {
+        when(jobStore.cancelJob(jobId.toString())).thenThrow(
+                new EntityNotFoundException("No job exists with id " + jobId));
+
+        assertThrows(EntityNotFoundException.class, () -> testee.cancelJobById(jobId));
     }
 
 }

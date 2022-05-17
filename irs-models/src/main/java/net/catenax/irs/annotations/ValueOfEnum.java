@@ -29,7 +29,6 @@ import net.catenax.irs.validators.ValueOfEnumValidator;
 @Documented
 @Constraint(validatedBy = ValueOfEnumValidator.class)
 @SuppressWarnings("checkstyle:MissingJavadocMethod")
-@ExcludeFromCodeCoverageGeneratedReport
 public @interface ValueOfEnum {
     Class<? extends Enum<?>> enumClass();
 

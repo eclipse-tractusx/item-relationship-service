@@ -18,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * SubmodelDescriptor description
@@ -26,9 +25,8 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @Value
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@ExcludeFromCodeCoverageGeneratedReport
 @JsonDeserialize(builder = SubmodelDescriptor.SubmodelDescriptorBuilder.class)
-public class SubmodelDescriptor  {
+public class SubmodelDescriptor {
 
     @Schema(implementation = String.class)
     private String identification;
@@ -49,7 +47,7 @@ public class SubmodelDescriptor  {
 
     /**
      * User to build SubmodelDescriptor
-    */
+     */
     @Schema(description = "User to build async fetched items")
     @JsonPOJOBuilder(withPrefix = "")
     public static class SubmodelDescriptorBuilder {

@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static net.catenax.irs.util.TestMother.jobParameter;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -14,12 +15,15 @@ import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
+import net.catenax.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class AASTransferProcessManagerTest {
+class AASTransferProcessManagerTest {
+
+    private final TestMother generate = new TestMother();
 
     DigitalTwinRegistryFacade digitalTwinRegistryFacade = mock(DigitalTwinRegistryFacade.class);
 
@@ -27,8 +31,8 @@ public class AASTransferProcessManagerTest {
 
     ExecutorService pool = mock(ExecutorService.class);
 
-    final AASTransferProcessManager manager = new AASTransferProcessManager(digitalTwinRegistryFacade, submodelFacade,
-            pool, new InMemoryBlobStore());
+    final AASTransferProcessManager manager =
+            new AASTransferProcessManager(digitalTwinRegistryFacade, submodelFacade, pool, new InMemoryBlobStore());
 
     @Test
     void shouldExecuteThreadForProcessing() {
@@ -36,22 +40,23 @@ public class AASTransferProcessManagerTest {
         final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(UUID.randomUUID().toString());
 
         // when
-        manager.initiateRequest(itemDataRequest,
-            s -> {},
-            aasTransferProcess -> {}
-        );
+        manager.initiateRequest(itemDataRequest, s -> {
+        }, aasTransferProcess -> {
+        }, jobParameter());
 
         // then
-        verify(pool, times(1)).submit(any(Runnable.class));
+        verify(pool, times(1)).execute(any(Runnable.class));
     }
 
     @Test
-    void shouldInitiateProcessingAndReturnOkStatus() throws Exception {
+    void shouldInitiateProcessingAndReturnOkStatus() {
         // given
         final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(UUID.randomUUID().toString());
 
         // when
-        final TransferInitiateResponse initiateResponse = manager.initiateRequest(itemDataRequest, s -> {}, aasTransferProcess -> {});
+        final TransferInitiateResponse initiateResponse = manager.initiateRequest(itemDataRequest, s -> {
+        }, aasTransferProcess -> {
+        }, jobParameter());
 
         // then
         assertThat(initiateResponse.getTransferId()).isNotBlank();
