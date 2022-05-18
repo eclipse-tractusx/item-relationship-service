@@ -1,7 +1,7 @@
 name: Veracode Static Analysis
 on:
   schedule:
-    - cron: "0 10 * * *"
+    - cron: "0 0 * * *"
 
 jobs:
   static_analysis:
