@@ -46,7 +46,7 @@ public class OAuthRestTemplateConfig {
     public static final String OAUTH_REST_TEMPLATE = "oAuthRestTemplate";
 
     private static final String CLIENT_REGISTRATION_ID = "keycloak";
-    private static final int TIMEOUT = 5;
+    private static final int TIMEOUT_SECONDS = 5;
 
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final ClientRegistrationRepository clientRegistrationRepository;
@@ -57,8 +57,8 @@ public class OAuthRestTemplateConfig {
 
         return restTemplateBuilder
                 .additionalInterceptors(new OAuthClientCredentialsRestTemplateInterceptor(authorizedClientManager(), clientRegistration))
-                .setReadTimeout(Duration.ofSeconds(TIMEOUT))
-                .setConnectTimeout(Duration.ofSeconds(TIMEOUT))
+                .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                 .build();
     }
 

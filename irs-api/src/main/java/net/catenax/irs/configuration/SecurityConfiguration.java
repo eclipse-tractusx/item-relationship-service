@@ -9,25 +9,50 @@
 //
 package net.catenax.irs.configuration;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 
 /**
  * Security config bean
  */
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    private static final String[] WHITELIST  = {
+        "/actuator/health",
+        "/api/swagger-ui/index.html",
+        "/api/api-docs",
+        "/api/api-docs.yaml"
+    };
 
     @Override
     protected void configure(final HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.httpBasic().disable();
+        httpSecurity.formLogin().disable();
+        httpSecurity.csrf().disable();
+        httpSecurity.logout().disable();
+        httpSecurity.cors().disable();
+
         httpSecurity
-            .csrf().disable()
+            .sessionManagement()
+            .sessionCreationPolicy(STATELESS)
+            .and()
             .authorizeRequests()
-            .antMatchers("/**").permitAll()
-            .and().oauth2Client();
+            .antMatchers(WHITELIST)
+            .permitAll()
+            .antMatchers("/**")
+            .authenticated()
+            .and()
+            .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+            .oauth2Client();
     }
 
 }

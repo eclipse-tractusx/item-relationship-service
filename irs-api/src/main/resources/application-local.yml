@@ -9,4 +9,3 @@ irs:
       scheduler:
         completed: 0 * * * * *
         failed: 0 * * * * *
-
