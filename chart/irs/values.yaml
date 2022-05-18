@@ -107,6 +107,6 @@ minio:
 
 keycloak:
   oauth2:
-    clientId: <path:product-traceability-irs/int/keycloak/oauth2#clientId>
-    clientSecret: <path:product-traceability-irs/int/keycloak/oauth2#clientSecret>
-    clientTokenUri: <path:product-traceability-irs/int/keycloak/oauth2#tokenUri>
+    clientId: <path:product-traceability-irs/data/int/keycloak/oauth2#clientId>
+    clientSecret: <path:product-traceability-irs/data/int/keycloak/oauth2#clientSecret>
+    clientTokenUri: <path:product-traceability-irs/data/int/keycloak/oauth2#tokenUri>
