@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4a90f8c2-503d-488d-95fa-58a6e2ea6c30",
+		"_postman_id": "9bceea8a-4c0c-49f2-8087-97c848d0bed8",
 		"name": "IRS DEMO Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -52,6 +52,39 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fcabcdef\"\r\n}"
+				},
+				"url": {
+					"raw": "https://irs.int.demo.catena-x.net/irs/jobs",
+					"protocol": "https",
+					"host": [
+						"irs",
+						"int",
+						"demo",
+						"catena-x",
+						"net"
+					],
+					"path": [
+						"irs",
+						"jobs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1.2.0 [Register Job with depth and bomLifecycle] https://irs.int.demo.catena-x.net/irs/jobs",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\",\r\n  \"bomLifecycle\": \"asBuilt\",\r\n  \"depth\": 2\r\n}"
 				},
 				"url": {
 					"raw": "https://irs.int.demo.catena-x.net/irs/jobs",
@@ -271,6 +304,42 @@
 							"key": "returnUncompletedJob",
 							"value": "true"
 						}
+					],
+					"variable": [
+						{
+							"key": "jobId",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3.1.0 [Search for given jobId] http://irs.int.demo.catena-x.net/irs/jobs/:jobId",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://irs.int.demo.catena-x.net/irs/jobs/:jobId",
+					"protocol": "http",
+					"host": [
+						"irs",
+						"int",
+						"demo",
+						"catena-x",
+						"net"
+					],
+					"path": [
+						"irs",
+						"jobs",
+						":jobId"
 					],
 					"variable": [
 						{
