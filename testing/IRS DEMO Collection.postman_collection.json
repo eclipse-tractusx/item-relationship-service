@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "9bceea8a-4c0c-49f2-8087-97c848d0bed8",
+		"_postman_id": "9288f5b7-bf8f-4698-a6b4-8f3e396bd82f",
 		"name": "IRS DEMO Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -381,6 +381,54 @@
 							"key": "jobStates",
 							"value": "ERROR"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.0.0 [Authenticate with Keycloak]",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "default"
+						},
+						{
+							"key": "client_id",
+							"value": "sa-cl6-cx-2",
+							"type": "default"
+						},
+						{
+							"key": "client_secret",
+							"value": "",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/iamcentralidp/auth/realms/CX-Central/protocol/openid-connect/token",
+					"protocol": "https",
+					"host": [
+						"catenaxintakssrv",
+						"germanywestcentral",
+						"cloudapp",
+						"azure",
+						"com"
+					],
+					"path": [
+						"iamcentralidp",
+						"auth",
+						"realms",
+						"CX-Central",
+						"protocol",
+						"openid-connect",
+						"token"
 					]
 				}
 			},
