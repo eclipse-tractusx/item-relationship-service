@@ -28,9 +28,11 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] WHITELIST  = {
         "/actuator/health",
-        "/api/swagger-ui/index.html",
+        "/actuator/prometheus",
+        "/api/swagger-ui/**",
         "/api/api-docs",
-        "/api/api-docs.yaml"
+        "/api/api-docs.yaml",
+        "/api/api-docs/swagger-config",
     };
 
     @Override
@@ -49,7 +51,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers(WHITELIST)
             .permitAll()
             .antMatchers("/**")
-            .authenticated()
+            .permitAll()
             .and()
             .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
             .oauth2Client();
