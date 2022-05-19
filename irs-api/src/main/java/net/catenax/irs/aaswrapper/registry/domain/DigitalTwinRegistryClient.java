@@ -40,12 +40,14 @@ interface DigitalTwinRegistryClient {
 @Service
 @Profile({"local", "test"})
 class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
+
+    private final AssetAdministrationShellTestdataCreator testdataCreator = new AssetAdministrationShellTestdataCreator();
+
     @Override
     public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
-        if ("9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d".equals(aasIdentifier)) {
+        if ("urn:uuid:9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d".equals(aasIdentifier)) {
             throw new RestClientException("Dummy Exception");
         }
-        final AssetAdministrationShellTestdataCreator testdataCreator = new AssetAdministrationShellTestdataCreator();
         return testdataCreator.createDummyAssetAdministrationShellDescriptorForId(aasIdentifier);
     }
 }
