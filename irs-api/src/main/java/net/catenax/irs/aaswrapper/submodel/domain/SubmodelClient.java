@@ -37,7 +37,7 @@ class SubmodelClientLocalStub implements SubmodelClient {
 
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
-        if ("c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(submodelEndpointAddress)) {
+        if ("urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(submodelEndpointAddress)) {
             throw new RestClientException("Dummy Exception");
         }
         final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();

@@ -18,7 +18,7 @@ class DigitalTwinRegistryClientImplTest {
 
     @Test
     void shouldCallExternalServiceOnceAndGetsData() {
-        final String aasIdentifier = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+        final String aasIdentifier = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
         doReturn(new AssetAdministrationShellDescriptor()).when(restTemplate).getForObject(any(), any());
 
         final AssetAdministrationShellDescriptor assetAdministrationShellDescriptor = digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(

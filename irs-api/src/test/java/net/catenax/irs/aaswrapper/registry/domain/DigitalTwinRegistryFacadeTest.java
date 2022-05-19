@@ -35,7 +35,7 @@ class DigitalTwinRegistryFacadeTest {
 
     @Test
     void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() {
-        final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
         final List<SubmodelEndpoint> shellEndpoints =
                 digitalTwinRegistryFacade.getAASSubmodelEndpoints(catenaXId, jobParameter());
@@ -73,16 +73,16 @@ class DigitalTwinRegistryFacadeTest {
 
     @Test
     void shouldThrowErrorWhenCallingTestId() {
-        final String catenaXId = "9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d";
+        final String globalAssetId = "urn:uuid:9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d";
         final DigitalTwinRegistryClientLocalStub client = new DigitalTwinRegistryClientLocalStub();
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
-                () -> client.getAssetAdministrationShellDescriptor(catenaXId));
+                () -> client.getAssetAdministrationShellDescriptor(globalAssetId));
     }
 
     @Test
     void shouldReturnEmptySubmodelEndpointsWhenFilteringByNotMatchingAspectType() {
-        final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
         final List<SubmodelEndpoint> shellEndpoints =
                 digitalTwinRegistryFacade.getAASSubmodelEndpoints(catenaXId, jobParameterFilter());
@@ -92,7 +92,7 @@ class DigitalTwinRegistryFacadeTest {
 
     @Test
     void shouldReturnSubmodelEndpointsWhenFilteringByAspectType() {
-        final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
         final List<SubmodelEndpoint> shellEndpoints =
                 digitalTwinRegistryFacade.getAASSubmodelEndpoints(catenaXId, jobParameter());
