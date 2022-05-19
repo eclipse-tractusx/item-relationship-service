@@ -60,9 +60,7 @@ class SubmodelClientImplTest {
         final String data = objectMapper.readTree(file).get("data").toString();
         final AssemblyPartRelationship assemblyPartRelationship = objectMapper.readValue(data,
                 AssemblyPartRelationship.class);
-        final ResponseEntity<AssemblyPartRelationship> okResponse = new ResponseEntity<>(assemblyPartRelationship,
-                HttpStatus.OK);
-        doReturn(okResponse).when(restTemplate).getForEntity(url, AssemblyPartRelationship.class);
+        doReturn(assemblyPartRelationship).when(restTemplate).getForObject(url, AssemblyPartRelationship.class);
 
         final AssemblyPartRelationship submodelResponse = submodelClient.getSubmodel(url,
                 AssemblyPartRelationship.class);

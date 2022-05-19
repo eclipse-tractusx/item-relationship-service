@@ -4,6 +4,17 @@ server:
 spring:
   application:
     name: item-relationship-service
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            authorization-grant-type: client_credentials
+            client-id: ${KEYCLOAK_OAUTH2_CLIENT_ID}
+            client-secret: ${KEYCLOAK_OAUTH2_CLIENT_SECRET}
+        provider:
+          keycloak:
+            token-uri: ${KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI}
 
 management:
   endpoints:
@@ -61,16 +72,6 @@ irs:
         completed: 0 0 * * * *
         failed: 0 0 * * * *
 
-feign:
-  client:
-    config:
-      default:
-        connectTimeout: 5000
-        readTimeout: 5000
-        loggerLevel: full
-      digitalTwinRegistry:
-        url: http://localhost:4242
-
 blobstore:
   endpoint: "${MINIO_URL}"
   accessKey: "${MINIO_ACCESS_KEY}"
@@ -91,4 +92,7 @@ resilience4j.retry:
   instances:
     submodelRetryer:
       baseConfig: default
+
+digitalTwinRegistry:
+  url: https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry
 

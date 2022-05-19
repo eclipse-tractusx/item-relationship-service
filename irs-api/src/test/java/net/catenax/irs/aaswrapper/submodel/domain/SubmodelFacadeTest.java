@@ -94,11 +94,8 @@ class SubmodelFacadeTest {
         assemblyPartRelationship.setCatenaXId(catenaXId);
         assemblyPartRelationship.setChildParts(new HashSet<>());
 
-        final ResponseEntity<AssemblyPartRelationship> okResponse = new ResponseEntity<>(assemblyPartRelationship,
-                HttpStatus.OK);
-
         final String endpointUrl = "test.test";
-        doReturn(okResponse).when(restTemplate).getForEntity(endpointUrl, AssemblyPartRelationship.class);
+        doReturn(assemblyPartRelationship).when(restTemplate).getForObject(endpointUrl, AssemblyPartRelationship.class);
 
         final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(endpointUrl, jobParameter());
 

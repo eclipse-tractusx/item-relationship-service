@@ -9,36 +9,28 @@
 //
 package net.catenax.irs.aaswrapper.registry.domain;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static net.catenax.irs.configuration.OAuthRestTemplateConfig.OAUTH_REST_TEMPLATE;
 
-import java.nio.charset.Charset;
-import java.util.Map;
+import java.net.URI;
 
-import feign.FeignException;
-import feign.Request;
-import feign.RequestTemplate;
-import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Digital Twin Registry Rest Client
  */
-@Profile("prod")
-@FeignClient(contextId = "digitalTwinRegistryClientContextId", value = "digitalTwinRegistryClient",
-             url = "${feign.client.config.digitalTwinRegistry.url}",
-             configuration = DigitalTwinRegistryClientConfiguration.class)
 interface DigitalTwinRegistryClient {
 
     /**
      * @param aasIdentifier The Asset Administration Shell’s unique id
      * @return Returns a specific Asset Administration Shell Descriptor
      */
-    @GetMapping(value = "/registry/shell-descriptors/{aasIdentifier}", consumes = APPLICATION_JSON_VALUE)
-    AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(
-            @PathVariable("aasIdentifier") String aasIdentifier);
+    AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(String aasIdentifier);
 
 }
 
@@ -46,15 +38,43 @@ interface DigitalTwinRegistryClient {
  * Digital Twin Registry Rest Client Stub used in local environment
  */
 @Service
+@Profile({"local", "test"})
 class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
     @Override
     public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
         if ("9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d".equals(aasIdentifier)) {
-            final Request request = Request.create(Request.HttpMethod.GET, "url", Map.of(), new byte[0],
-                    Charset.defaultCharset(), new RequestTemplate());
-            throw new FeignException.NotFound("Not found", request, new byte[0], Map.of());
+            throw new RestClientException("Dummy Exception");
         }
         final AssetAdministrationShellTestdataCreator testdataCreator = new AssetAdministrationShellTestdataCreator();
         return testdataCreator.createDummyAssetAdministrationShellDescriptorForId(aasIdentifier);
+    }
+}
+
+
+/**
+ * Digital Twin Registry Rest Client Implementation
+ */
+@Service
+@Profile({"!local && !test"})
+class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient {
+
+    private final RestTemplate restTemplate;
+    private final String digitalTwinRegistryUrl;
+
+    /* package */ DigitalTwinRegistryClientImpl(@Qualifier(OAUTH_REST_TEMPLATE) final RestTemplate restTemplate, @Value("${digitalTwinRegistry.url:}") final String digitalTwinRegistryUrl) {
+        this.restTemplate = restTemplate;
+        this.digitalTwinRegistryUrl = digitalTwinRegistryUrl;
+    }
+
+    @Override
+    public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
+        return restTemplate.getForObject(buildUri(aasIdentifier), AssetAdministrationShellDescriptor.class);
+    }
+
+    private URI buildUri(final String aasIdentifier) {
+        final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(digitalTwinRegistryUrl);
+        uriBuilder.path("/registry/shell-descriptors/").path(aasIdentifier);
+
+        return uriBuilder.build().toUri();
     }
 }
