@@ -51,7 +51,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers(WHITELIST)
             .permitAll()
             .antMatchers("/**")
-            .permitAll()
+            .authenticated()
             .and()
             .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
             .oauth2Client();
