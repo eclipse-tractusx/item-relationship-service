@@ -17,7 +17,7 @@ spring:
             token-uri: ${KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI}
       resourceserver:
         jwt:
-          jwk-set-uri: https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/iamcentralidp/auth/realms/CX-Central/protocol/openid-connect/certs
+          jwk-set-uri: ${KEYCLOAK_OAUTH2_JWK_SET_URI}
 
 management:
   endpoints:
