@@ -15,12 +15,19 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'corretto'
+          distribution: 'adopt'
 
       - name: Set up Maven
         uses: stCarolas/setup-maven@v4.3
         with:
           maven-version: 3.8.2
+
+      - name: Cache maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
 
       - name: Build
         run: mvn package
