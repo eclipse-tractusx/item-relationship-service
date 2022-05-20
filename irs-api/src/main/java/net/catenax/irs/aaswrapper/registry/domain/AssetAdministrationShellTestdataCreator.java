@@ -27,9 +27,11 @@ class AssetAdministrationShellTestdataCreator {
 
         submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId));
 
+        final Reference globalAssetId = new Reference();
+        globalAssetId.setValue(List.of(catenaXId));
         return AssetAdministrationShellDescriptor.builder()
                                                  .description(List.of(new LangString()))
-                                                 .globalAssetId(new Reference())
+                                                 .globalAssetId(globalAssetId)
                                                  .idShort("idShort")
                                                  .identification(catenaXId)
                                                  .specificAssetIds(List.of(new IdentifierKeyValuePair()))

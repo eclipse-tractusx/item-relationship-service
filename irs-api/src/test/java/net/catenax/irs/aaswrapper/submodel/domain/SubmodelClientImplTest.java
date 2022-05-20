@@ -65,6 +65,6 @@ class SubmodelClientImplTest {
         final AssemblyPartRelationship submodelResponse = submodelClient.getSubmodel(url,
                 AssemblyPartRelationship.class);
 
-        assertThat(submodelResponse.getCatenaXId()).isEqualTo("8a61c8db-561e-4db0-84ec-a693fc5ffdf6");
+        assertThat(submodelResponse.getCatenaXId()).isEqualTo("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6");
     }
 }
