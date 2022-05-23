@@ -1,9 +1,3 @@
-feign:
-  client:
-    config:
-      digitalTwinRegistry:
-        url: http://localhost
-
 blobstore:
   endpoint: http://localhost:9000
   accessKey: minioadmin
@@ -16,3 +10,9 @@ irs:
         completed: 0 * * * * *
         failed: 0 * * * * *
 
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/iamcentralidp/auth/realms/CX-Central/protocol/openid-connect/certs

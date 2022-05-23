@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(IrsController.class)
@@ -52,6 +53,7 @@ class IrsControllerTest {
     }
 
     @Test
+    @WithMockUser
     void initiateJobForGlobalAssetId() throws Exception {
         final UUID returnedJob = UUID.randomUUID();
         when(service.registerItemJob(any())).thenReturn(JobHandle.builder().jobId(returnedJob).build());
@@ -65,6 +67,7 @@ class IrsControllerTest {
 
     @ParameterizedTest
     @MethodSource("corruptedJobs")
+    @WithMockUser
     void shouldReturnBadRequestWhenRegisterJobBodyNotValid(final RegisterJob registerJob) throws Exception {
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
                                               .content(new ObjectMapper().writeValueAsString(registerJob)))
@@ -72,11 +75,7 @@ class IrsControllerTest {
     }
 
     @Test
-    void getJobById() {
-        assertTrue(true);
-    }
-
-    @Test
+    @WithMockUser
     void getJobsByJobState() throws Exception {
         final UUID returnedJob = UUID.randomUUID();
         when(service.getJobsByJobState(any())).thenReturn(List.of(returnedJob));
@@ -87,6 +86,7 @@ class IrsControllerTest {
     }
 
     @Test
+    @WithMockUser
     void cancelJobById() throws Exception {
         final Job canceledJob = Job.builder().jobId(jobId).jobState(JobState.CANCELED).build();
 
@@ -96,6 +96,7 @@ class IrsControllerTest {
     }
 
     @Test
+    @WithMockUser
     void cancelJobById_throwEntityNotFoundException() throws Exception {
         given(this.service.cancelJobById(jobId)).willThrow(
                 new EntityNotFoundException("No job exists with id " + jobId));

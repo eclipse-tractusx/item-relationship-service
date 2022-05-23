@@ -17,7 +17,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
@@ -100,7 +99,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
                         itemContainerBuilder.tombstone(createTombstone(itemId, address, e));
                     }
                 });
-            } catch (FeignException e) {
+            } catch (RestClientException e) {
                 log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
                 itemContainerBuilder.tombstone(createTombstone(itemId, null, e));
             }

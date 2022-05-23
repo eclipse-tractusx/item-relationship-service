@@ -44,7 +44,6 @@ import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferProcess;
-import net.catenax.irs.controllers.IrsApiConstants;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.exceptions.EntityNotFoundException;
@@ -86,14 +85,11 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     private JobParameter buildJobData(final @NonNull RegisterJob request) {
-        final String uuid = request.getGlobalAssetId().substring(IrsApiConstants.URN_PREFIX_SIZE);
+        final String uuid = request.getGlobalAssetId();
         final int treeDepth = request.getDepth();
         final Optional<BomLifecycle> bomLifecycleFormRequest = Optional.ofNullable(request.getBomLifecycle());
 
-        String lifecycle = null;
-        if (bomLifecycleFormRequest.isPresent()) {
-            lifecycle = bomLifecycleFormRequest.get().getLifecycleContextCharacteristicValue();
-        }
+        final String lifecycle = bomLifecycleFormRequest.map(BomLifecycle::getLifecycleContextCharacteristicValue).orElse(null);
 
         final Optional<List<AspectType>> aspectTypes = Optional.ofNullable(request.getAspects());
         List<String> aspectTypeValues;

@@ -11,6 +11,7 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -28,14 +29,15 @@ interface SubmodelClient {
 }
 
 /**
- * Digital Twin Registry Rest Client Stub used in local environment
+ * Submodel client Rest Client Stub used in local environment
  */
 @Service
+@Profile({"local", "test"})
 class SubmodelClientLocalStub implements SubmodelClient {
 
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
-        if ("c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(submodelEndpointAddress)) {
+        if ("urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(submodelEndpointAddress)) {
             throw new RestClientException("Dummy Exception");
         }
         final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
@@ -48,6 +50,8 @@ class SubmodelClientLocalStub implements SubmodelClient {
  * Submodel Rest Client Implementation
  */
 @Slf4j
+@Service
+@Profile({"!local && !test"})
 @RequiredArgsConstructor
 class SubmodelClientImpl implements SubmodelClient {
 
@@ -55,7 +59,7 @@ class SubmodelClientImpl implements SubmodelClient {
 
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
-        return restTemplate.getForEntity(submodelEndpointAddress, submodelClass).getBody();
+        return restTemplate.getForObject(submodelEndpointAddress, submodelClass);
     }
 
 }
