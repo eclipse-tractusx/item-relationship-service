@@ -28,6 +28,8 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] WHITELIST  = {
         "/actuator/health",
+        "/actuator/health/readiness",
+        "/actuator/health/liveness",
         "/actuator/prometheus",
         "/api/swagger-ui/**",
         "/api/api-docs",
