@@ -1,29 +1,10 @@
 #!/usr/bin/python
 
-#
-#  Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
-#
-#  See the AUTHORS file(s) distributed with this work for additional
-#  information regarding authorship.
-#
-#  See the LICENSE file(s) distributed with this work for
-#  additional information regarding license terms.
-#
 import json
 import os
 
 if __name__ == "__main__":
-    filepath = "OEMA_HYBRID_VEHICLES_10_fix18.json"
-
-    submodel_server_1_folder = "BPNL00000003B0Q0"
-    submodel_server_1_address = "http://localhost:1111"
-
-    submodel_server_2_folder = "BPNL00000003AXS3"
-    submodel_server_2_address = "http://localhost:2222"
-
-    submodel_server_3_address = "http://localhost:3333"
-
-    replaceURL = "http://provider.connector:port"
+    filepath = "220513_CatenaX_Testdata_v1.1.json"
 
     # Opening JSON file
     f = open(filepath)
@@ -36,17 +17,15 @@ if __name__ == "__main__":
 
     list_bpn = []
     dict_serial_parts = {}
-    dict_assembly_parts = {}
-    dict_aas = {}
+    dict_assemply_parts = {}
+
+    counter = 0
 
     for tmp_data in testdata:
         tmp_keys = tmp_data.keys()
 
         for tmp_key in tmp_keys:
-            if tmp_key == "https://catenax.io/schema/BPDM/1.1.0":
-                list_bpn.append(tmp_data[tmp_key][0]["bpn"])
-
-            elif tmp_key == "https://catenax.io/schema/SerialPartTypization/1.0.0":
+            if tmp_key == "https://catenax.io/schema/SerialPartTypization/1.0.0":
                 serial_part = tmp_data[tmp_key][0]
 
                 part_bpn = ""
@@ -59,40 +38,29 @@ if __name__ == "__main__":
 
                 dict_cxId_bpn[serial_part["catenaXId"]] = part_bpn
 
-                if dict_serial_parts.get(part_bpn) is None:
+                if dict_serial_parts.get(part_bpn) == None:
                     dict_serial_parts[part_bpn] = []
 
                 dict_serial_parts[part_bpn].append(serial_part)
 
+                if part_bpn not in list_bpn:
+                    list_bpn.append(part_bpn)
+
             elif tmp_key == "https://catenax.io/schema/AssemblyPartRelationship/1.0.0":
-                assembly_part = tmp_data[tmp_key][0]
+                assemply_part = tmp_data[tmp_key][0]
+                counter += 1
 
                 part_bpn = ""
-                if dict_cxId_bpn.get(assembly_part["catenaXId"]) is not None:
-                    part_bpn = dict_cxId_bpn[assembly_part["catenaXId"]]
+                if dict_cxId_bpn.get(assemply_part["catenaXId"]) != None:
+                    part_bpn = dict_cxId_bpn[assemply_part["catenaXId"]]
 
                 if part_bpn == "":
                     print("!!! ERROR: NO BPN FOUND !!!")
 
-                if dict_assembly_parts.get(part_bpn) is None:
-                    dict_assembly_parts[part_bpn] = []
+                if dict_assemply_parts.get(part_bpn) == None:
+                    dict_assemply_parts[part_bpn] = []
 
-                dict_assembly_parts[part_bpn].append(assembly_part)
-
-            elif tmp_key == "https://catenax.io/schema/AAS/3.0":
-                aas = tmp_data[tmp_key][0]
-
-                part_bpn = ""
-                if dict_cxId_bpn.get(aas.get("globalAssetId").get("value")[0]) is not None:
-                    part_bpn = dict_cxId_bpn[aas.get("globalAssetId").get("value")[0]]
-
-                if part_bpn == "":
-                    print("!!! ERROR: NO BPN FOUND !!!")
-
-                if dict_aas.get(part_bpn) is None:
-                    dict_aas[part_bpn] = []
-
-                dict_aas[part_bpn].append(aas)
+                dict_assemply_parts[part_bpn].append(assemply_part)
 
     print(list_bpn)
 
@@ -101,84 +69,103 @@ if __name__ == "__main__":
     dict_uuid_local_identifier = {}
 
     for tmp_bpn in list_bpn:
-        folder_bpn = "%s" % tmp_bpn
+        folder_bpn = "%s"%tmp_bpn
 
         if not os.path.isdir(folder_bpn):
             os.mkdir(folder_bpn)
 
-        ##########################
-        # SERIAL PART TYPIZATION #
-        if dict_serial_parts.get(tmp_bpn) is None:
-            print("!!! ERROR: No parts for BPN %s" % tmp_bpn)
+        ############################
+        ## SERIAL PART TYPIZATION ##
+        if dict_serial_parts.get(tmp_bpn) == None:
+            print("!!! ERROR: No parts for BPN %s"%tmp_bpn)
         else:
             print(tmp_bpn, len(dict_serial_parts[tmp_bpn]))
 
-            f = open(folder_bpn + "/serialPartTypization.json", "w+")
-            f.write("[\n")
-            result = ",\n"
-            json_list = []
+            f = open(folder_bpn+"/serialPartTypization.csv", "w+")
+            f.write("UUID;part_instance_id;manufacturing_date;manufacturing_country;manufacturer_part_id;customer_part_id;classification;name_at_manufacturer;name_at_customer;optional_identifier_key;optional_identifier_value\n")
+
             for tmp_json in dict_serial_parts[tmp_bpn]:
-                json_list.append(json.dumps(tmp_json))
-            f.write(result.join(json_list))
-            f.write("\n]")
+                UUID = tmp_json["catenaXId"]
+
+                part_instance_id = ""
+                optional_identifier_key = ""
+                optional_identifier_value = ""
+                for local_identifier in tmp_json["localIdentifiers"]:
+                    if local_identifier["key"] == "PartInstanceID":
+                        part_instance_id = local_identifier["value"]
+                    elif local_identifier["key"] == "VAN":
+                        optional_identifier_key = "VAN"
+                        optional_identifier_value = local_identifier["value"]
+                    #elif BATCH
+
+                manufacturing_date = tmp_json["manufacturingInformation"]["date"]
+                manufacturing_country = tmp_json["manufacturingInformation"]["country"]
+                manufacturer_part_id = tmp_json["partTypeInformation"]["manufacturerPartID"]
+                
+                customer_part_id = ""
+                if tmp_json["partTypeInformation"].get("customerPartId") != None:
+                    customer_part_id = tmp_json["partTypeInformation"]["customerPartId"]
+
+                classification = tmp_json["partTypeInformation"]["classification"]
+                name_at_manufacturer = tmp_json["partTypeInformation"]["nameAtManufacturer"]
+
+                name_at_customer = ""
+                if tmp_json["partTypeInformation"].get("nameAtCustomer") != None:
+                    name_at_customer = tmp_json["partTypeInformation"]["nameAtCustomer"]
+
+                dict_uuid_local_identifier[UUID] = [part_instance_id, manufacturer_part_id, optional_identifier_key, optional_identifier_value]
+
+                f.write("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n"%(UUID,part_instance_id,manufacturing_date,manufacturing_country,manufacturer_part_id,customer_part_id,classification,name_at_manufacturer,name_at_customer,optional_identifier_key,optional_identifier_value))
             f.close()
 
     print("\n")
 
     for tmp_bpn in list_bpn:
-        folder_bpn = "%s" % tmp_bpn
+        folder_bpn = "%s"%tmp_bpn
 
         if not os.path.isdir(folder_bpn):
             os.mkdir(folder_bpn)
 
-        ###############################
-        # ASSEMBLY PARTS RELATIONSHIP #
-        if dict_assembly_parts.get(tmp_bpn) is None:
-            print("!!! ERROR: No assembly_part for BPN %s" % tmp_bpn)
+        #################################
+        ## ASSEMBLY PARTS RELATIONSHIP ##
+        if dict_assemply_parts.get(tmp_bpn) == None:
+            print("!!! ERROR: No assemply_part for BPN %s"%tmp_bpn)
         else:
-            print(tmp_bpn, len(dict_assembly_parts[tmp_bpn]))
+            print(tmp_bpn, len(dict_assemply_parts[tmp_bpn]))
 
-            f = open(folder_bpn + "/assemblyPartRelationship.json", "w+")
-            f.write("[\n")
-            result = ",\n"
-            json_list = []
-            for tmp_json in dict_assembly_parts[tmp_bpn]:
-                json_list.append(json.dumps(tmp_json))
-            f.write(result.join(json_list))
-            f.write("\n]")
+            f = open(folder_bpn+"/assemblyPartRelationship.csv", "w+")
+            f.write("parent_UUID;parent_part_instance_id;parent_manufacturer_part_id;parent_optional_identifier_key;parent_optional_identifier_value;UUID;part_instance_id;manufacturer_part_id;optional_identifier_key;optional_identifier_value;lifecycle_context;quantity_number;measurement_unit_lexical_value;datatype_URI;assembled_on\n")
+
+            for tmp_json in dict_assemply_parts[tmp_bpn]:
+                parent_UUID = tmp_json["catenaXId"]
+
+                parent_part_instance_id = dict_uuid_local_identifier[parent_UUID][0]
+                parent_manufacturer_part_id = dict_uuid_local_identifier[parent_UUID][1]
+                parent_optional_identifier_key = dict_uuid_local_identifier[parent_UUID][2]
+                parent_optional_identifier_value = dict_uuid_local_identifier[parent_UUID][3]
+
+                if tmp_json.get("childParts") != None:
+                    children_parts = tmp_json["childParts"]
+
+                    for tmp_child in children_parts:
+                        UUID = tmp_child["childCatenaXId"]
+
+                        part_instance_id = ""
+                        manufacturer_part_id = ""
+                        optional_identifier_key = ""
+                        optional_identifier_value = ""
+                        if dict_uuid_local_identifier.get(UUID) != None:
+                            part_instance_id = dict_uuid_local_identifier[UUID][0]
+                            manufacturer_part_id = dict_uuid_local_identifier[UUID][1]
+                            optional_identifier_key = dict_uuid_local_identifier[UUID][2]
+                            optional_identifier_value = dict_uuid_local_identifier[UUID][3]
+
+                        lifecycle_context = tmp_child["lifecycleContext"]
+                        quantity_number = tmp_child["quantity"]["quantityNumber"]
+                        measurement_unit_lexical_value = tmp_child["quantity"]["measurementUnit"]["lexicalValue"]
+                        datatype_URI = tmp_child["quantity"]["measurementUnit"]["datatypeURI"]
+                        assembled_on = tmp_child["assembledOn"]
+
+
+                        f.write("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n"%(parent_UUID,parent_part_instance_id,parent_manufacturer_part_id,parent_optional_identifier_key,parent_optional_identifier_value,UUID,part_instance_id,manufacturer_part_id,optional_identifier_key,optional_identifier_value,lifecycle_context,quantity_number,measurement_unit_lexical_value,datatype_URI,assembled_on))
             f.close()
-
-    print("\n")
-
-    for tmp_bpn in list_bpn:
-        folder_bpn = "%s" % tmp_bpn
-
-        if not os.path.isdir(folder_bpn):
-            os.mkdir(folder_bpn)
-
-        ##############################
-        # ASSET ADMINISTRATION SHELL #
-        if dict_aas.get(tmp_bpn) is None:
-            print("!!! ERROR: No aas for BPN %s" % tmp_bpn)
-        else:
-            print(tmp_bpn, len(dict_aas[tmp_bpn]))
-            f = open(folder_bpn + "/aas.json", "w+")
-            f.write("[\n")
-            result = ",\n"
-            json_list = []
-
-            for tmp_json in dict_aas[tmp_bpn]:
-                for descriptor in tmp_json["submodelDescriptors"]:
-                    for endpoint in descriptor["endpoints"]:
-                        address_ = endpoint["protocolInformation"]["endpointAddress"]
-                        if tmp_bpn == submodel_server_1_folder:
-                            endpoint["protocolInformation"]["endpointAddress"] = address_.replace(replaceURL, submodel_server_1_address)
-                        elif tmp_bpn == submodel_server_2_folder:
-                            endpoint["protocolInformation"]["endpointAddress"] = address_.replace(replaceURL, submodel_server_2_address)
-                        else:
-                            endpoint["protocolInformation"]["endpointAddress"] = address_.replace(replaceURL, submodel_server_3_address)
-                json_list.append(json.dumps(tmp_json))
-            f.write(result.join(json_list))
-            f.write("\n]")
-            f.close()
-
