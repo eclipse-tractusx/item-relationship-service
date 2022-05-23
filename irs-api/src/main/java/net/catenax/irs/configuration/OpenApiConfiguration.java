@@ -42,7 +42,7 @@ public class OpenApiConfiguration {
                             .info(new Info().title("IRS API")
                                             .version(IrsApplication.API_VERSION)
                                             .description(
-                                                    "API to retrieve parts tree information. See <a href=\"https://confluence.catena-x.net/display/CXM/PRS+Environments+and+Test+Data\">this page</a> for more information on test data available in this environment."));
+                                                    "The API of the Item Relationship Service (IRS) for retrieving item graphs along the value chain of CATENA-X partners."));
     }
 
     /**

@@ -48,7 +48,7 @@ public class Job {
      */
     @NotNull
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
-    @Schema(description = "Job ID for the requested item.", minLength = INPUT_FIELD_MIN_LENGTH,
+    @Schema(description = "JobId for the requested item.", minLength = INPUT_FIELD_MIN_LENGTH,
             maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class)
     private UUID jobId;
 
@@ -111,7 +111,7 @@ public class Job {
     @Schema(description = "The requester of the request.")
     private String owner;
 
-    @Schema(description = "Summary of the job", implementation = Summary.class)
+    @Schema(description = "Summary of the job with statistics of the job processing.", implementation = Summary.class)
     private Summary summary;
 
     @Schema(description = "The passed query parameters", implementation = QueryParameter.class)
