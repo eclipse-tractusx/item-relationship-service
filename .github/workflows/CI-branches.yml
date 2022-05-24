@@ -58,25 +58,3 @@ jobs:
           # RUN --mount=type=cache is used in the IRS Dockerfile to cache directories for maven.
           # And the --mount option requires BuildKit.
           DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TARGET=${{ matrix.image }} --target ${{ matrix.image }} -t ${{ matrix.image }}:latest .
-      - name: Log in to registry
-        # This is where you will update the PAT to GITHUB_TOKEN
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Push image
-        run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "master" ] && VERSION=latest
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag ${{ matrix.image }} $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
-          
-          docker tag ${{ matrix.image }} $IMAGE_ID:$GITHUB_SHA
-          docker push $IMAGE_ID:$GITHUB_SHA

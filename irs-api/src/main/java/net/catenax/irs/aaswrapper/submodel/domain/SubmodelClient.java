@@ -9,10 +9,13 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import static net.catenax.irs.configuration.OAuthRestTemplateConfig.OAUTH_REST_TEMPLATE;
+
 import java.net.URI;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -56,24 +59,28 @@ class SubmodelClientLocalStub implements SubmodelClient {
 @Slf4j
 @Service
 @Profile({"!local && !test"})
-@RequiredArgsConstructor
 class SubmodelClientImpl implements SubmodelClient {
 
     private final RestTemplate restTemplate;
+    private final String aasProxyUrl;
+    /* package */ SubmodelClientImpl(@Qualifier(OAUTH_REST_TEMPLATE) final RestTemplate restTemplate, @Value("${aasProxy.url:}") final String aasProxyUrl) {
+        this.restTemplate = restTemplate;
+        this.aasProxyUrl = aasProxyUrl;
+    }
 
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
-        log.info("calling submodel api");
         return restTemplate.getForObject(buildUri(submodelEndpointAddress), submodelClass);
     }
 
     private URI buildUri(final String submodelEndpointAddress) {
         final UriComponents uriComponents = UriComponentsBuilder.fromUriString(submodelEndpointAddress).build();
 
-        log.info("Uri string {}", uriComponents.toUriString());
-        log.info("Host {}", uriComponents.getHost());
+        if (uriComponents.toUriString().startsWith(aasProxyUrl)) {
+            return uriComponents.toUri();
+        }
 
-        return uriComponents.toUri();
+        throw new IllegalArgumentException("Received unexpected Submodel URL: " + submodelEndpointAddress);
     }
 
 }

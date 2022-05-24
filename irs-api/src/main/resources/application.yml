@@ -96,6 +96,6 @@ resilience4j.retry:
     submodelRetryer:
       baseConfig: default
 
-digitalTwinRegistry:
+aasProxy:
   url: https://irs-aas-proxy.int.demo.catena-x.net
 

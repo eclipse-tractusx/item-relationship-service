@@ -82,7 +82,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             final ItemContainer.ItemContainerBuilder itemContainerBuilder = ItemContainer.builder();
 
-            log.info("TEST Calling Digital Twin Registry with itemId {}", itemId);
+            log.info("Calling Digital Twin Registry with itemId {}", itemId);
             try {
                 final List<SubmodelEndpoint> aasSubmodelEndpoints = registryFacade.getAASSubmodelEndpoints(itemId,
                         jobData);
@@ -91,7 +91,6 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
                 aasSubmodelEndpoints.stream().map(SubmodelEndpoint::getAddress).forEach(address -> {
                     try {
-                        log.info("Address: {}", address);
                         final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address, jobData);
                         processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
                     } catch (RestClientException e) {
