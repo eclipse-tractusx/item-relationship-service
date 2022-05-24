@@ -1,5 +1,5 @@
 image:
-  tag: "$ARGOCD_APP_REVISION"
+  tag: "TRI-444"
 
 ingress:
   enabled: true
