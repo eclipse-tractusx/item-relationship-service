@@ -89,10 +89,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final int treeDepth = request.getDepth();
         final Optional<BomLifecycle> bomLifecycleFormRequest = Optional.ofNullable(request.getBomLifecycle());
 
-        String lifecycle = null;
-        if (bomLifecycleFormRequest.isPresent()) {
-            lifecycle = bomLifecycleFormRequest.get().getLifecycleContextCharacteristicValue();
-        }
+        final String lifecycle = bomLifecycleFormRequest.map(BomLifecycle::getLifecycleContextCharacteristicValue).orElse(null);
 
         final Optional<List<AspectType>> aspectTypes = Optional.ofNullable(request.getAspects());
         List<String> aspectTypeValues;

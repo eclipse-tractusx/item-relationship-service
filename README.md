@@ -3,7 +3,7 @@
 | __Build Status__ | [![build](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/CI-main.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/CI-main.yml)           | 
 |:-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | __Coverage__     | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=catenax-ng_product-item-relationship-service&metric=coverage)](https://sonarcloud.io/summary/new_code?id=catenax-ng_product-item-relationship-service) |
-| __CodeQL__       | [![CodeQL](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.<br/>yml)       |
+| __CodeQL__       | [![CodeQL](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml)       |
 | __License__      | [![GitHub](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/catenax-ng/product-item-relationship-service/blob/main/LICENSE)                                                                     |
 
 ## How to run
@@ -26,6 +26,11 @@ The two following subsections provide instructions for running either only the i
 * This will start additional containers:
   * [Prometheus](https://prometheus.io/docs/introduction/overview/), a server to collect and query metrics. Prometheus is available at http://localhost:9091/.
 
+## Keycloak authentication
+
+Access token is required to access every IRS endpoint and should be included in Authorization header for all requests - otherwise 401 Unauthorized status is returned to client. 
+To obtain access token prepared [Postman collection can be used](testing/IRS DEMO Collection.postman_collection.json)
+
 ## Work with sample data
 
 * Retrieve sample BOM:
@@ -35,6 +40,7 @@ curl -X 'POST' \
   'http://localhost:8080/irs/jobs' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <<token_value>>' \
   -d '{
   "aspects": [
     "SerialPartTypization"
@@ -45,7 +51,7 @@ curl -X 'POST' \
   "globalAssetId": "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6"
 }'
   
-curl -X 'GET'  'http://localhost:8080/irs/jobs/<jobID from first call>' -H 'accept: application/json'
+curl -X 'GET'  'http://localhost:8080/irs/jobs/<jobID from first call>' -H 'accept: application/json' -H 'Authorization: Bearer <<token_value>>'
 ```
 
 ## Swagger UI
