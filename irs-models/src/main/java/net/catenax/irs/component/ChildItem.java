@@ -11,6 +11,7 @@ package net.catenax.irs.component;
 
 import java.time.Instant;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,6 +42,7 @@ public class ChildItem {
     private Instant lastModifiedOn;
 
     @Schema(description = "CatenaX child Id.", implementation = GlobalAssetIdentification.class)
+    @JsonUnwrapped
     private GlobalAssetIdentification childCatenaXId;
 
     /**

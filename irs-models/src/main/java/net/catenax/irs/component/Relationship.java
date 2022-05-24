@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.component;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +26,7 @@ import lombok.extern.jackson.Jacksonized;
 public class Relationship {
 
     @Schema(implementation = GlobalAssetIdentification.class)
+    @JsonUnwrapped
     private GlobalAssetIdentification catenaXId;
 
     private ChildItem childItem;

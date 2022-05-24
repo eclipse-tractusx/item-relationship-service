@@ -11,6 +11,7 @@ package net.catenax.irs.component;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,6 +26,7 @@ import lombok.Value;
 @Schema(description = "Container for a job its relationship and shells.")
 @Value
 @Builder(toBuilder = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonDeserialize(builder = Jobs.JobsBuilder.class)
 @AllArgsConstructor
 @SuppressWarnings("PMD.ShortClassName")

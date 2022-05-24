@@ -12,6 +12,8 @@ package net.catenax.irs.component.enums;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
@@ -23,6 +25,7 @@ import net.catenax.irs.dtos.ItemLifecycleStage;
  * @see ItemLifecycleStage
  */
 @ExcludeFromCodeCoverageGeneratedReport
+@JsonSerialize(using = ToStringSerializer.class)
 @Schema(description = "View defining which data of the item tree is retrieved.")
 @Getter
 public enum BomLifecycle {

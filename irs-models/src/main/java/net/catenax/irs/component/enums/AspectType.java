@@ -12,10 +12,13 @@ package net.catenax.irs.component.enums;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 /**
  * AspectType information for a part tree
  */
+@JsonSerialize(using = ToStringSerializer.class)
 @SuppressWarnings("PMD.ShortMethodName")
 public enum AspectType {
     SERIAL_PART_TYPIZATION(AspectTypesConstants.SERIAL_PART_TYPIZATION),
