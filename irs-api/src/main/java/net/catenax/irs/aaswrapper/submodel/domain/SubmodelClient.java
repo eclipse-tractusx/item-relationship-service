@@ -63,6 +63,7 @@ class SubmodelClientImpl implements SubmodelClient {
 
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
+        log.info("calling submodel api");
         return restTemplate.getForObject(buildUri(submodelEndpointAddress), submodelClass);
     }
 

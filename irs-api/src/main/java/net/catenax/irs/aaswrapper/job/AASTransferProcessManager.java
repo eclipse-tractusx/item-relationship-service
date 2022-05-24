@@ -91,6 +91,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
                 aasSubmodelEndpoints.stream().map(SubmodelEndpoint::getAddress).forEach(address -> {
                     try {
+                        log.info("Address: {}", address);
                         final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address, jobData);
                         processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
                     } catch (RestClientException e) {
