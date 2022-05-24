@@ -97,5 +97,5 @@ resilience4j.retry:
       baseConfig: default
 
 digitalTwinRegistry:
-  url: https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry
+  url: https://irs-aas-proxy.int.demo.catena-x.net
 

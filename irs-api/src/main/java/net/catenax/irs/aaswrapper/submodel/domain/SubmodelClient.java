@@ -9,12 +9,16 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import java.net.URI;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Submodel client
@@ -59,7 +63,16 @@ class SubmodelClientImpl implements SubmodelClient {
 
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
-        return restTemplate.getForObject(submodelEndpointAddress, submodelClass);
+        return restTemplate.getForObject(buildUri(submodelEndpointAddress), submodelClass);
+    }
+
+    private URI buildUri(final String submodelEndpointAddress) {
+        final UriComponents uriComponents = UriComponentsBuilder.fromUriString(submodelEndpointAddress).build();
+
+        log.info("Uri string {}", uriComponents.toUriString());
+        log.info("Host {}", uriComponents.getHost());
+
+        return uriComponents.toUri();
     }
 
 }
