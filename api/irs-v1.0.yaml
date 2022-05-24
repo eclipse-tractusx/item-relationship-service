@@ -301,7 +301,7 @@ components:
         errors:
         - TimeoutException
         - ParsingException
-        message: Some errors occured
+        message: Some errors occurred
         statusCode: 500 INTERNAL_SERVER_ERROR
     failed-job-result:
       value:
@@ -610,17 +610,17 @@ components:
           - 511 NETWORK_AUTHENTICATION_REQUIRED
     GlobalAssetIdentification:
       type: object
-      description: Represents a CatenaX id in the format urn:uuid:<uuid>.
+      description: CATENA-X global asset id in the format urn:uuid:<uuid>.
       properties:
         globalAssetId:
           type: string
-          description: Global unique C-X identifier.
+          description: CATENA-X global asset id in the format urn:uuid:<uuid>.
           example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           maxLength: 45
           minLength: 45
     Job:
       type: object
-      description: Information and data for the job.
+      description: Executable unit with meta information and item graph result.
       properties:
         action:
           type: string
@@ -638,7 +638,7 @@ components:
         jobId:
           type: string
           format: uuid
-          description: JobId for the requested item.
+          description: JobId of the job.
           maxLength: 36
           minLength: 36
         jobState:
@@ -656,7 +656,7 @@ components:
           format: date-time
         owner:
           type: string
-          description: The requester of the request.
+          description: The IRS api consumer.
         queryParameter:
           $ref: '#/components/schemas/QueryParameter'
         requestUrl:
@@ -673,20 +673,20 @@ components:
       - jobState
     JobErrorDetails:
       type: object
-      description: Exception state for this job.
+      description: Job error details.
       properties:
         errorDetail:
           type: string
-          description: Detail information for the error occurred.
+          description: Detailed exception information.
           maxLength: 4000
         exception:
           type: string
-          description: Name of the exception occurred.
+          description: Exception name.
           maxLength: 100
         exceptionDate:
           type: string
           format: date-time
-          description: Datetime when error occurred.
+          description: Datetime error occurs.
     JobHandle:
       type: object
       properties:
@@ -695,14 +695,13 @@ components:
           format: uuid
     Jobs:
       type: object
-      description: Container for a job its relationship and shells.
+      description: Container for a job with item graph.
       properties:
         job:
           $ref: '#/components/schemas/Job'
         relationships:
           type: array
-          description: Relationships between parent and child items defined by AssemblyPartRelationShip
-            aspect.
+          description: Relationships between parent and child items.
           items:
             $ref: '#/components/schemas/Relationship'
         shells:
@@ -852,8 +851,7 @@ components:
       - globalAssetId
     Relationship:
       type: object
-      description: Relationships between parent and child items defined by AssemblyPartRelationShip
-        aspect.
+      description: Relationships between parent and child items.
       properties:
         catenaXId:
           $ref: '#/components/schemas/GlobalAssetIdentification'

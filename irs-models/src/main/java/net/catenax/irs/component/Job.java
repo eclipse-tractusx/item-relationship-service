@@ -48,7 +48,7 @@ public class Job {
      */
     @NotNull
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
-    @Schema(description = "JobId for the requested item.", minLength = INPUT_FIELD_MIN_LENGTH,
+    @Schema(description = "JobId of the job.", minLength = INPUT_FIELD_MIN_LENGTH,
             maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class)
     private UUID jobId;
 
@@ -66,7 +66,7 @@ public class Job {
     @Schema()
     private JobState jobState;
 
-    @Schema(description = "Exception state for this job.", implementation = JobErrorDetails.class)
+    @Schema(description = "Job error details.", implementation = JobErrorDetails.class)
     private JobErrorDetails exception;
 
     /**
@@ -108,7 +108,7 @@ public class Job {
     /**
      * Owner of the job
      */
-    @Schema(description = "The requester of the request.")
+    @Schema(description = "The IRS api consumer.")
     private String owner;
 
     @Schema(description = "Summary of the job with statistics of the job processing.", implementation = Summary.class)

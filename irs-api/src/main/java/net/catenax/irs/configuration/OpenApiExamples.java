@@ -62,7 +62,7 @@ public class OpenApiExamples {
         components.addExamples("error-response", toExample(ErrorResponse.builder()
                                                                         .withErrors(List.of("TimeoutException",
                                                                                 "ParsingException"))
-                                                                        .withMessage("Some errors occured")
+                                                                        .withMessage("Some errors occurred")
                                                                         .withStatusCode(
                                                                                 HttpStatus.INTERNAL_SERVER_ERROR)
                                                                         .build()));
