@@ -82,7 +82,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             final ItemContainer.ItemContainerBuilder itemContainerBuilder = ItemContainer.builder();
 
-            log.info("Calling Digital Twin Registry with itemId {}", itemId);
+            log.info("TEST Calling Digital Twin Registry with itemId {}", itemId);
             try {
                 final List<SubmodelEndpoint> aasSubmodelEndpoints = registryFacade.getAASSubmodelEndpoints(itemId,
                         jobData);
