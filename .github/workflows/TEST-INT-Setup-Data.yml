@@ -44,9 +44,9 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: setup python
-          uses: actions/setup-python@v2
-          with:
-            python-version: 3.8 #install the python needed
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8 #install the python needed
 
       - name: Setup Test Data on INT
         env:
