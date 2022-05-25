@@ -5,8 +5,8 @@ on:
     inputs:
       testfilePath:
         description: 'Path to Testdata file on GitHub'
-          required: true
-          type: string
+        required: true
+        type: string
       submodelUrl1:
         description: 'URL for Submodel server 1'
         required: true
