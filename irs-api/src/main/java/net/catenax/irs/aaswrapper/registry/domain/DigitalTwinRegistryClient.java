@@ -61,11 +61,11 @@ class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
 class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient {
 
     private final RestTemplate restTemplate;
-    private final String digitalTwinRegistryUrl;
+    private final String aasProxyUrl;
 
-    /* package */ DigitalTwinRegistryClientImpl(@Qualifier(OAUTH_REST_TEMPLATE) final RestTemplate restTemplate, @Value("${digitalTwinRegistry.url:}") final String digitalTwinRegistryUrl) {
+    /* package */ DigitalTwinRegistryClientImpl(@Qualifier(OAUTH_REST_TEMPLATE) final RestTemplate restTemplate, @Value("${aasProxy.url:}") final String aasProxyUrl) {
         this.restTemplate = restTemplate;
-        this.digitalTwinRegistryUrl = digitalTwinRegistryUrl;
+        this.aasProxyUrl = aasProxyUrl;
     }
 
     @Override
@@ -74,7 +74,7 @@ class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient {
     }
 
     private URI buildUri(final String aasIdentifier) {
-        final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(digitalTwinRegistryUrl);
+        final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(aasProxyUrl);
         uriBuilder.path("/registry/shell-descriptors/").path(aasIdentifier);
 
         return uriBuilder.build().toUri();
