@@ -1,5 +1,8 @@
 springprofile: dev
 
+image:
+  tag: "$ARGOCD_APP_REVISION"
+
 keycloak:
   oauth2:
     clientId: <path:product-traceability-irs/data/dev/keycloak/oauth2#clientId>
