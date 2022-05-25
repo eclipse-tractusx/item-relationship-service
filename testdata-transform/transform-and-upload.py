@@ -1,20 +1,11 @@
 #!/usr/bin/python
 
-#
-#  Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
-#
-#  See the AUTHORS file(s) distributed with this work for additional
-#  information regarding authorship.
-#
-#  See the LICENSE file(s) distributed with this work for
-#  additional information regarding license terms.
-#
-
 import json
-import os
+import math
 import time
 import uuid
 import requests
+import argparse
 
 
 def create_submodel_payload(json_payload):
@@ -79,26 +70,43 @@ def create_edc_contract_definition_payload(contract_id, edc_policy_id):
     })
 
 
+def print_response(response_):
+    if response_.status_code > 205:
+        print(response_)
+
+
 if __name__ == "__main__":
     timestamp_start = time.time()
-    filepath = "220513_CatenaX_Testdata_v1.1.json"
+    # -f smallTestdata.json -s1 "http://localhost:8194" -s2 "http://localhost:8194" -s3 "http://localhost:8194" -i "http://provider-control-plane:8282" -a "http://localhost:4243" -e "http://localhost:8187" -k '123456'
+    parser = argparse.ArgumentParser(description="Script to upload testdata into CX-Network.",
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("-f", "--file", type=str, help="Test data file location", required=True)
+    parser.add_argument("-s1", "--submodel1", type=str, help="url of submodel server 1", required=True)
+    parser.add_argument("-s2", "--submodel2", type=str, help="url of submodel server 2", required=True)
+    parser.add_argument("-s3", "--submodel3", type=str, help="url of submodel server 3", required=True)
+    parser.add_argument("-i", "--internal", type=str, help="internal control plane submodel url", required=True)
+    parser.add_argument("-a", "--aas", type=str, help="aas url", required=True)
+    parser.add_argument("-e", "--edc", type=str, help="edc url", required=True)
+    parser.add_argument("-k", "--apikey", type=str, help="edc api key", required=True)
+
+    args = parser.parse_args()
+    config = vars(args)
+
+    filepath = config.get("file")
+    submodel_server_1_address = config.get("submodel1")
+    submodel_server_2_address = config.get("submodel2")
+    submodel_server_3_address = config.get("submodel3")
+    internal_control_plane_submodel_url = config.get("internal")
+    aas_url = config.get("aas")
+    edc_url = config.get("edc")
+    edc_api_key = config.get("apikey")
 
     submodel_server_1_folder = "BPNL00000003B0Q0"
-    submodel_server_1_address = "http://localhost:8194"
-
     submodel_server_2_folder = "BPNL00000003AXS3"
-    submodel_server_2_address = "http://localhost:8194"
 
-    submodel_server_3_address = "http://localhost:8194"
-
-    internal_control_plane_submodel_url = "http://provider-control-plane:8282"
-
-    aas_url = "http://localhost:4243"
-
-    edc_asset_url = "http://localhost:8187/api/v1/data/assets"
-    edc_policy_url = "http://localhost:8187/api/v1/data/policies"
-    edc_contract_definition_url = "http://localhost:8187/api/v1/data/contractdefinitions"
-    edc_api_key = '123456'
+    edc_asset_url = "%s/api/v1/data/assets" % edc_url
+    edc_policy_url = "%s/api/v1/data/policies" % edc_url
+    edc_contract_definition_url = "%s/api/v1/data/contractdefinitions" % edc_url
 
     replaceURL = "http://provider.connector:port"
 
@@ -125,6 +133,7 @@ if __name__ == "__main__":
     dict_assembly_parts = {}
     dict_aas = {}
     contract_id = 1
+    iteration = 1
 
     for tmp_data in testdata:
         tmp_keys = tmp_data.keys()
@@ -197,8 +206,7 @@ if __name__ == "__main__":
             for submodel_descriptor in aas.get("submodelDescriptors"):
                 digital_twin_submodel_id = uuid.uuid4().urn
 
-                if submodel_descriptor["idShort"] == "assembly-part-relationship" or submodel_descriptor[
-                        "idShort"] == "serial-part-typization":
+                if submodel_descriptor["idShort"] == "assembly-part-relationship" or submodel_descriptor["idShort"] == "serial-part-typization":
                     # 1. Prepare submodel endpoint address
                     endpoint = submodel_descriptor["endpoints"][0]
                     address = endpoint["protocolInformation"]["endpointAddress"]
@@ -208,127 +216,51 @@ if __name__ == "__main__":
                         submodel_url = submodel_server_2_address
                     else:
                         submodel_url = submodel_server_3_address
+
                     generated_address = internal_control_plane_submodel_url + "/" + part_bpn + "/" + digital_twin_id + \
-                        "-" + digital_twin_submodel_id + "/submodel?content=value&extent=withBlobValue"
+                                        "-" + digital_twin_submodel_id + "/submodel?content=value&extent=withBlobValue"
                     endpoint["protocolInformation"]["endpointAddress"] = generated_address
                     submodel_descriptor["identification"] = digital_twin_submodel_id
 
                     # 2. Create submodel on submodel server
                     if submodel_descriptor["idShort"] == "assembly-part-relationship":
-                        print("Create assembly-part-relationship")
+                        # Create assembly-part-relationship
                         response = requests.request(method="POST",
                                                     url=create_submodel_url(submodel_url, digital_twin_submodel_id),
                                                     headers=headers, data=create_submodel_payload(assembly_part))
-                        print(response)
+                        print_response(response)
                     elif submodel_descriptor["idShort"] == "serial-part-typization":
-                        print("Create serial-part-typization")
+                        # Create serial-part-typization
                         response = requests.request(method="POST",
                                                     url=create_submodel_url(submodel_url, digital_twin_submodel_id),
                                                     headers=headers, data=create_submodel_payload(serial_part))
-                        print(response)
+                        print_response(response)
                     # 3. Create edc asset
-                    print("Create edc asset")
                     response = requests.request(method="POST", url=edc_asset_url, headers=headers_with_api_key,
                                                 data=create_edc_asset_payload(digital_twin_id,
                                                                               digital_twin_submodel_id))
-                    print(response)
+                    print_response(response)
                     # 4. Create edc policy
-                    print("Create edc policy")
                     edc_policy_id = str(uuid.uuid4())
                     response = requests.request(method="POST", url=edc_policy_url, headers=headers_with_api_key,
                                                 data=create_edc_policy_payload(edc_policy_id, digital_twin_id,
                                                                                digital_twin_submodel_id))
-                    print(response)
+                    print_response(response)
                     # 5. Create edc contract definition
-                    print("Create edc contreact definition")
                     response = requests.request(method="POST", url=edc_contract_definition_url,
                                                 headers=headers_with_api_key,
                                                 data=create_edc_contract_definition_payload(contract_id, edc_policy_id))
-                    print(response)
+                    print_response(response)
                     contract_id = contract_id + 1
-            # 6. Create digital twin
-            response = requests.request(method="POST", url=create_digital_twin_payload_url(aas_url), headers=headers,
+                else:
+                    print("No Submodel for AssemblyPartRelationship or SerialPartTypization exists in Data Set.")
+            response = requests.request(method="POST", url=create_digital_twin_payload_url(aas_url),
+                                        headers=headers,
                                         data=create_digital_twin_payload(aas))
-            print(response)
-            print("%s / 2822" % contract_id)
-    print(list_bpn)
-
-    print("\n")
-
-    dict_uuid_local_identifier = {}
-
-    for tmp_bpn in list_bpn:
-        folder_bpn = "%s" % tmp_bpn
-
-        if not os.path.isdir(folder_bpn):
-            os.mkdir(folder_bpn)
-
-        ##########################
-        # SERIAL PART TYPIZATION #
-        if dict_serial_parts.get(tmp_bpn) is None:
-            print("!!! ERROR: No parts for BPN %s" % tmp_bpn)
-        else:
-            print(tmp_bpn, len(dict_serial_parts[tmp_bpn]))
-
-            f = open(folder_bpn + "/serialPartTypization.json", "w+")
-            f.write("[\n")
-            result = ",\n"
-            json_list = []
-            for tmp_json in dict_serial_parts[tmp_bpn]:
-                json_list.append(json.dumps(tmp_json))
-            f.write(result.join(json_list))
-            f.write("\n]")
-            f.close()
-
-    print("\n")
-
-    for tmp_bpn in list_bpn:
-        folder_bpn = "%s" % tmp_bpn
-
-        if not os.path.isdir(folder_bpn):
-            os.mkdir(folder_bpn)
-
-        ###############################
-        # ASSEMBLY PARTS RELATIONSHIP #
-        if dict_assembly_parts.get(tmp_bpn) is None:
-            print("!!! ERROR: No assembly_part for BPN %s" % tmp_bpn)
-        else:
-            print(tmp_bpn, len(dict_assembly_parts[tmp_bpn]))
-
-            f = open(folder_bpn + "/assemblyPartRelationship.json", "w+")
-            f.write("[\n")
-            result = ",\n"
-            json_list = []
-            for tmp_json in dict_assembly_parts[tmp_bpn]:
-                json_list.append(json.dumps(tmp_json))
-            f.write(result.join(json_list))
-            f.write("\n]")
-            f.close()
-
-    print("\n")
-
-    for tmp_bpn in list_bpn:
-        folder_bpn = "%s" % tmp_bpn
-
-        if not os.path.isdir(folder_bpn):
-            os.mkdir(folder_bpn)
-
-        ##############################
-        # ASSET ADMINISTRATION SHELL #
-        if dict_aas.get(tmp_bpn) is None:
-            print("!!! ERROR: No aas for BPN %s" % tmp_bpn)
-        else:
-            print(tmp_bpn, len(dict_aas[tmp_bpn]))
-            f = open(folder_bpn + "/aas.json", "w+")
-            f.write("[\n")
-            result = ",\n"
-            json_list = []
-
-            for tmp_json in dict_aas[tmp_bpn]:
-                json_list.append(json.dumps(tmp_json))
-            f.write(result.join(json_list))
-            f.write("\n]")
-            f.close()
+            print_response(response)
+            print("%s / 1492" % iteration)
+            iteration += 1
 
     timestamp_end = time.time()
-    print(timestamp_end - timestamp_start)
+    duration = timestamp_end - timestamp_start
+    print("\nDuration: %s Seconds" % math.ceil(duration))
