@@ -59,7 +59,7 @@ class IrsFunctionalTest {
     void shouldStartJobAndRetrieveResult() {
         final RegisterJob registerJob = TestMother.registerJobWithoutDepth();
 
-        final JobHandle jobHandle = controller.initiateJobForGlobalAssetId(registerJob);
+        final JobHandle jobHandle = controller.registerJobForGlobalAssetId(registerJob);
         final Optional<Jobs> finishedJob = Awaitility.await()
                                                      .pollDelay(500, TimeUnit.MILLISECONDS)
                                                      .pollInterval(500, TimeUnit.MILLISECONDS)

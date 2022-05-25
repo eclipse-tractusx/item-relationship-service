@@ -18,22 +18,22 @@ import lombok.Value;
 /**
  * Describe the state of the fetched items
  */
-@Schema(description = "State of the Item fetch.")
+@Schema(description = "Statistics of job execution.")
 @Value
 @Builder(toBuilder = true)
 @JsonDeserialize(builder = AsyncFetchedItems.AsyncFetchedItemsBuilder.class)
 public class AsyncFetchedItems {
 
-    @Schema(description = "No of job with the globalAssetId on the queue.", implementation = Integer.class)
+    @Schema(description = "Number of item transfers remaining.", implementation = Integer.class)
     private Integer queue;
 
-    @Schema(description = "Summary of running job with the globalAssetId.", implementation = Integer.class)
+    @Schema(description = "Number of running item transfers.", implementation = Integer.class)
     private Integer running;
 
-    @Schema(description = "Summary of completed job with the globalAssetId.", implementation = Integer.class)
+    @Schema(description = "Number of completed item transfers.", implementation = Integer.class)
     private Integer complete;
 
-    @Schema(description = "Summary of failed job with the globalAssetId.", implementation = Integer.class)
+    @Schema(description = "Number of failed item transfers.", implementation = Integer.class)
     private Integer failed;
 
     /**

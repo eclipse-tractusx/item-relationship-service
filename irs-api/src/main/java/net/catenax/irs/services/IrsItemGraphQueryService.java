@@ -108,7 +108,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     @Override
-    public List<UUID> getJobsByJobState(final @NonNull List<JobState> jobStates) {
+    public List<UUID> getJobIdsByJobStates(final @NonNull List<JobState> jobStates) {
         final List<MultiTransferJob> jobs = jobStore.findByStates(jobStates);
 
         return jobs.stream().map(x -> x.getJob().getJobId()).collect(Collectors.toList());

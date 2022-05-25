@@ -33,15 +33,15 @@ public class JobErrorDetails implements Serializable {
     public static final int EXCEPTION_NAME_MAX_LENGTH = 100;
     public static final int ERROR_DETAIL_MAX_LENGTH = 4000;
 
-    @Schema(description = "Name of the exception occurred.", implementation = String.class,
+    @Schema(description = "Exception name.", implementation = String.class,
             maxLength = EXCEPTION_NAME_MAX_LENGTH)
     private String exception;
 
-    @Schema(description = "Detail information for the error occurred.", implementation = String.class,
+    @Schema(description = "Detailed exception information.", implementation = String.class,
             maxLength = ERROR_DETAIL_MAX_LENGTH)
     private String errorDetail;
 
-    @Schema(description = "Datetime when error occurred.", implementation = Instant.class)
+    @Schema(description = "Datetime error occurs.", implementation = Instant.class)
     private Instant exceptionDate;
 
 }
