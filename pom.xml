@@ -53,6 +53,7 @@
         <checkstyle.version>10.2</checkstyle.version>
         <jacoco.version>0.8.8</jacoco.version>
         <pmd-plugin.version>3.16.0</pmd-plugin.version>
+        <owasp-plugin.version>7.1.0</owasp-plugin.version>
 
         <surefire-plugin.version>3.0.0-M6</surefire-plugin.version>
         <jar-plugin.version>3.2.2</jar-plugin.version>
@@ -114,6 +115,11 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>${owasp-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -240,6 +246,45 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${owasp-plugin.version}</version>
+                <configuration>
+                    <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
+                    <!-- only execute the scan when profile is set to active, skip otherwise-->
+                    <skip>true</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                        <configuration>
+                            <ossindexAnalyzerUseCache>true</ossindexAnalyzerUseCache>
+                            <ossIndexWarnOnlyOnRemoteErrors>true</ossIndexWarnOnlyOnRemoteErrors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>active</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <version>${owasp-plugin.version}</version>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
