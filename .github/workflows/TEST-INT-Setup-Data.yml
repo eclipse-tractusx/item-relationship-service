@@ -20,7 +20,7 @@ on:
         required: true
         type: string
       internalProviderControlPlane:
-        description: 'Internal provider control plane URL'
+        description: 'Internal provider control plane URL of ids port'
         required: true
         type: string
       aasUrl:

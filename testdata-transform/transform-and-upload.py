@@ -24,11 +24,11 @@ def create_digital_twin_payload_url(host):
     return host + "/registry/shell-descriptors"
 
 
-def create_edc_asset_payload(digital_twin_id, digital_twin_submodel_id):
+def create_edc_asset_payload(submodel_url_, digital_twin_id_, digital_twin_submodel_id_):
     return json.dumps({
         "asset": {
             "properties": {
-                "asset:prop:id": digital_twin_id + "-" + digital_twin_submodel_id,
+                "asset:prop:id": digital_twin_id_ + "-" + digital_twin_submodel_id_,
                 "asset:prop:name": "product description",
                 "asset:prop:contenttype": "application/json",
                 "asset:prop:policy-id": "use-eu"
@@ -36,19 +36,19 @@ def create_edc_asset_payload(digital_twin_id, digital_twin_submodel_id):
         },
         "dataAddress": {
             "properties": {
-                "endpoint": "http://provider-backend-service:8080/data/" + digital_twin_submodel_id,
+                "endpoint": submodel_url_ + "/data/" + digital_twin_submodel_id_,
                 "type": "HttpData"
             }
         }
     })
 
 
-def create_edc_policy_payload(edc_policy_id, digital_twin_id, digital_twin_submodel_id):
+def create_edc_policy_payload(edc_policy_id_, digital_twin_id_, digital_twin_submodel_id_):
     return json.dumps({
-        "uid": edc_policy_id,
+        "uid": edc_policy_id_,
         "permissions": [
             {
-                "target": digital_twin_id + "-" + digital_twin_submodel_id,
+                "target": digital_twin_id_ + "-" + digital_twin_submodel_id_,
                 "action": {
                     "type": "USE"
                 },
@@ -61,11 +61,11 @@ def create_edc_policy_payload(edc_policy_id, digital_twin_id, digital_twin_submo
     })
 
 
-def create_edc_contract_definition_payload(contract_id, edc_policy_id):
+def create_edc_contract_definition_payload(contract_id_, edc_policy_id_):
     return json.dumps({
-        "id": contract_id,
-        "accessPolicyId": edc_policy_id,
-        "contractPolicyId": edc_policy_id,
+        "id": contract_id_,
+        "accessPolicyId": edc_policy_id_,
+        "contractPolicyId": edc_policy_id_,
         "criteria": []
     })
 
@@ -77,7 +77,8 @@ def print_response(response_):
 
 if __name__ == "__main__":
     timestamp_start = time.time()
-    # -f smallTestdata.json -s1 "http://localhost:8194" -s2 "http://localhost:8194" -s3 "http://localhost:8194" -i "http://provider-control-plane:8282" -a "http://localhost:4243" -e "http://localhost:8187" -k '123456'
+    # -f smallTestdata.json -s1 "http://localhost:8194" -s2 "http://localhost:8194" -s3 "http://localhost:8194"
+    # -i "http://provider-control-plane:8282" -a "http://localhost:4243" -e "http://localhost:8187" -k '123456'
     parser = argparse.ArgumentParser(description="Script to upload testdata into CX-Network.",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-f", "--file", type=str, help="Test data file location", required=True)
@@ -108,8 +109,6 @@ if __name__ == "__main__":
     edc_policy_url = "%s/api/v1/data/policies" % edc_url
     edc_contract_definition_url = "%s/api/v1/data/contractdefinitions" % edc_url
 
-    replaceURL = "http://provider.connector:port"
-
     headers = {
         'Content-Type': 'application/json'
     }
@@ -118,6 +117,8 @@ if __name__ == "__main__":
         'X-Api-Key': edc_api_key,
         'Content-Type': 'application/json'
     }
+
+    error_no_bpn_found_ = "!!! ERROR: NO BPN FOUND !!!"
 
     # Opening JSON file
     f = open(filepath)
@@ -133,7 +134,6 @@ if __name__ == "__main__":
     dict_assembly_parts = {}
     dict_aas = {}
     contract_id = 1
-    iteration = 1
 
     for tmp_data in testdata:
         tmp_keys = tmp_data.keys()
@@ -152,7 +152,7 @@ if __name__ == "__main__":
                         part_bpn = local_identifier["value"]
 
                 if part_bpn == "":
-                    print("!!! ERROR: NO BPN FOUND !!!")
+                    print(error_no_bpn_found_)
 
                 dict_cxId_bpn[serial_part["catenaXId"]] = part_bpn
 
@@ -172,7 +172,7 @@ if __name__ == "__main__":
                     part_bpn = dict_cxId_bpn[assembly_part["catenaXId"]]
 
                 if part_bpn == "":
-                    print("!!! ERROR: NO BPN FOUND !!!")
+                    print(error_no_bpn_found_)
 
                 if dict_assembly_parts.get(part_bpn) is None:
                     dict_assembly_parts[part_bpn] = []
@@ -187,8 +187,9 @@ if __name__ == "__main__":
                     part_bpn = dict_cxId_bpn[aas.get("globalAssetId").get("value")[0]]
 
                 if part_bpn == "":
-                    print("!!! ERROR: NO BPN FOUND !!!")
+                    print(error_no_bpn_found_)
 
+                # Transform semanticId to match the current model on CX-INT DT-Registry
                 for submodel_descriptor in aas["submodelDescriptors"]:
                     value = submodel_descriptor["semanticId"][0]["value"]
                     data = {"value": [value]}
@@ -206,7 +207,8 @@ if __name__ == "__main__":
             for submodel_descriptor in aas.get("submodelDescriptors"):
                 digital_twin_submodel_id = uuid.uuid4().urn
 
-                if submodel_descriptor["idShort"] == "assembly-part-relationship" or submodel_descriptor["idShort"] == "serial-part-typization":
+                if submodel_descriptor["idShort"] == "assembly-part-relationship" or submodel_descriptor[
+                        "idShort"] == "serial-part-typization":
                     # 1. Prepare submodel endpoint address
                     endpoint = submodel_descriptor["endpoints"][0]
                     address = endpoint["protocolInformation"]["endpointAddress"]
@@ -218,7 +220,7 @@ if __name__ == "__main__":
                         submodel_url = submodel_server_3_address
 
                     generated_address = internal_control_plane_submodel_url + "/" + part_bpn + "/" + digital_twin_id + \
-                                        "-" + digital_twin_submodel_id + "/submodel?content=value&extent=withBlobValue"
+                        "-" + digital_twin_submodel_id + "/submodel?content=value&extent=withBlobValue"
                     endpoint["protocolInformation"]["endpointAddress"] = generated_address
                     submodel_descriptor["identification"] = digital_twin_submodel_id
 
@@ -237,7 +239,7 @@ if __name__ == "__main__":
                         print_response(response)
                     # 3. Create edc asset
                     response = requests.request(method="POST", url=edc_asset_url, headers=headers_with_api_key,
-                                                data=create_edc_asset_payload(digital_twin_id,
+                                                data=create_edc_asset_payload(submodel_url, digital_twin_id,
                                                                               digital_twin_submodel_id))
                     print_response(response)
                     # 4. Create edc policy
@@ -252,15 +254,11 @@ if __name__ == "__main__":
                                                 data=create_edc_contract_definition_payload(contract_id, edc_policy_id))
                     print_response(response)
                     contract_id = contract_id + 1
-                else:
-                    print("No Submodel for AssemblyPartRelationship or SerialPartTypization exists in Data Set.")
             response = requests.request(method="POST", url=create_digital_twin_payload_url(aas_url),
                                         headers=headers,
                                         data=create_digital_twin_payload(aas))
             print_response(response)
-            print("%s / 1492" % iteration)
-            iteration += 1
 
     timestamp_end = time.time()
     duration = timestamp_end - timestamp_start
-    print("\nDuration: %s Seconds" % math.ceil(duration))
+    print("Duration: %s Seconds" % math.ceil(duration))
