@@ -28,7 +28,7 @@ import net.catenax.irs.component.enums.Direction;
 /**
  * Request body for registering new job
  */
-@Schema(description = "Register job request.")
+@Schema(description = "The requested job definition.")
 @Data
 @NoArgsConstructor
 public class RegisterJob {
@@ -45,7 +45,7 @@ public class RegisterJob {
     @Pattern(regexp = GLOBAL_ASSET_ID_REGEX)
     @NotBlank
     @Size(min = GLOBAL_ASSET_ID_SIZE, max = GLOBAL_ASSET_ID_SIZE)
-    @Schema(description = "GlobalAssetId of Item from which the tree building process starts.",
+    @Schema(description = "Id of global asset.",
             example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0", implementation = String.class,
             minLength = GLOBAL_ASSET_ID_SIZE, maxLength = GLOBAL_ASSET_ID_SIZE)
     private String globalAssetId;
@@ -57,7 +57,7 @@ public class RegisterJob {
     private List<AspectType> aspects;
 
     @Schema(implementation = Integer.class, minimum = MIN_TREE_DEPTH_DESC, maximum = MAX_TREE_DEPTH_DESC,
-            description = "Max depth of the returned tree, if empty max depth is returned.")
+            description = "Max depth of the item graph returned. If no depth is set item graph with max depth is returned.")
     @Min(MIN_TREE_DEPTH)
     @Max(MAX_TREE_DEPTH)
 

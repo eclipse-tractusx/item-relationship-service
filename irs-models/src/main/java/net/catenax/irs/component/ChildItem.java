@@ -21,7 +21,7 @@ import lombok.Value;
 import net.catenax.irs.component.enums.BomLifecycle;
 
 /*** API type for ChildItem name/url entry. */
-@Schema(description = "Describe child item of a global asset ")
+@Schema(description = "Set of child parts the parent object is assembled by (one structural level down).")
 @Value
 @Builder(toBuilder = true)
 @JsonDeserialize(builder = ChildItem.ChildItemBuilder.class)
@@ -31,14 +31,14 @@ public class ChildItem {
     @Schema(description = "Quantity component.", implementation = Quantity.class)
     private Quantity quantity;
 
-    @Schema(description = "Unique identifier of a single, unique (sub)component/part/batch,given by its globalAssetId/ digital twin id",
+    @Schema(description = "The lifecycle context in which the child part was assembled into the parent part.",
             implementation = BomLifecycle.class)
     private BomLifecycle lifecycleContext;
 
     @Schema(description = "Datetime of assembly.", implementation = Instant.class)
     private Instant assembledOn;
 
-    @Schema(description = "Last date and time part was modified.", implementation = Instant.class)
+    @Schema(description = "Last datetime item was modified.", implementation = Instant.class)
     private Instant lastModifiedOn;
 
     @Schema(description = "CatenaX child Id.", implementation = GlobalAssetIdentification.class)

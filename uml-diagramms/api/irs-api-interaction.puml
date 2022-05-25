@@ -11,7 +11,7 @@ activate WebService
 
 APIConsumer -> WebService : POST /irs/jobs/
 opt
-APIConsumer <-- WebService : 201: Job id response for successful job registration.
+APIConsumer <-- WebService : 201: Returns jobId of registered job.
 
     loop poll until response is  "200"
          APIConsumer -> WebService : GET /irs/jobs/{jobId}
