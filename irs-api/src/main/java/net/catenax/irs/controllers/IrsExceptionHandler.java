@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * API Exception Handler.
@@ -70,6 +71,17 @@ public class IrsExceptionHandler {
                                                 .withStatusCode(HttpStatus.BAD_REQUEST)
                                                 .withMessage(ApiErrorsConstants.INVALID_ARGUMENTS)
                                                 .withErrors(errors)
+                                                .build());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException exception) {
+        log.info(exception.getClass().getName(), exception);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(ErrorResponse.builder()
+                                                .withStatusCode(HttpStatus.BAD_REQUEST)
+                                                .withMessage(exception.getMessage())
                                                 .build());
     }
 

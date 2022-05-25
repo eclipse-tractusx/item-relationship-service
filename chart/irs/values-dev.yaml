@@ -1,0 +1,8 @@
+springprofile: dev
+
+keycloak:
+  oauth2:
+    clientId: <path:product-traceability-irs/data/dev/keycloak/oauth2#clientId>
+    clientSecret: <path:product-traceability-irs/data/dev/keycloak/oauth2#clientSecret>
+    clientTokenUri: <path:product-traceability-irs/data/dev/keycloak/oauth2#tokenUri>
+    jwkSetUri: <path:product-traceability-irs/data/dev/keycloak/oauth2#jwkSetUri>
