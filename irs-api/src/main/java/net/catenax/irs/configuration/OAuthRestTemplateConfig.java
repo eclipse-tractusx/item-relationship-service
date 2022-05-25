@@ -47,7 +47,7 @@ public class OAuthRestTemplateConfig {
     public static final String OAUTH_REST_TEMPLATE = "oAuthRestTemplate";
 
     private static final String CLIENT_REGISTRATION_ID = "keycloak";
-    private static final int TIMEOUT_SECONDS = 5;
+    private static final int TIMEOUT_SECONDS = 30;
 
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final ClientRegistrationRepository clientRegistrationRepository;
