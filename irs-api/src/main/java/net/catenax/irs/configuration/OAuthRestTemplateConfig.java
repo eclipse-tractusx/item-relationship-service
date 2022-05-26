@@ -46,7 +46,7 @@ import org.springframework.web.client.RestTemplate;
 public class OAuthRestTemplateConfig {
 
     public static final String OAUTH_REST_TEMPLATE = "oAuthRestTemplate";
-    public static final String BEARER_REST_TEMPLATE = "bearerRestTemplate";
+    public static final String BASIC_AUTH_REST_TEMPLATE = "basicAuthRestTemplate";
 
     private static final String CLIENT_REGISTRATION_ID = "keycloak";
     private static final int TIMEOUT_SECONDS = 30;
@@ -65,8 +65,8 @@ public class OAuthRestTemplateConfig {
                 .build();
     }
 
-    @Bean(BEARER_REST_TEMPLATE)
-        /* package */ RestTemplate bearerRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
+    @Bean(BASIC_AUTH_REST_TEMPLATE)
+        /* package */ RestTemplate basicAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder
                 .additionalInterceptors(new BasicAuthenticationInterceptor("someuser", "somepassword"))
                 .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
