@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import static net.catenax.irs.configuration.OAuthRestTemplateConfig.BEARER_REST_TEMPLATE;
 import static net.catenax.irs.configuration.OAuthRestTemplateConfig.OAUTH_REST_TEMPLATE;
 
 import java.net.URI;
@@ -63,7 +64,7 @@ class SubmodelClientImpl implements SubmodelClient {
 
     private final RestTemplate restTemplate;
     private final String aasProxyUrl;
-    /* package */ SubmodelClientImpl(@Qualifier(OAUTH_REST_TEMPLATE) final RestTemplate restTemplate, @Value("${aasProxy.url:}") final String aasProxyUrl) {
+    /* package */ SubmodelClientImpl(@Qualifier(BEARER_REST_TEMPLATE) final RestTemplate restTemplate, @Value("${aasProxy.url:}") final String aasProxyUrl) {
         this.restTemplate = restTemplate;
         this.aasProxyUrl = aasProxyUrl;
     }
