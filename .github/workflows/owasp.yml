@@ -47,3 +47,7 @@ jobs:
 
       - name: run maven owasp plugin
         run: mvn install -Pactive
+
+      - uses: actions/upload-artifact@v3
+        with:
+          path: '/target/dependency-check-report.html'
