@@ -36,6 +36,7 @@ import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.dto.JobStatusResult;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.springdoc.api.annotations.ParameterObject;
@@ -148,22 +149,22 @@ public class IrsController {
 
     @Operation(operationId = "getJobsByJobState", summary = "List of jobs for a certain job states.",
                tags = { "Item Relationship Service" })
-    @ApiResponses(
-            value = { @ApiResponse(responseCode = "200", description = "List of job ids for requested job states.",
-                                   content = { @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(
-                                           schema = @Schema(implementation = UUID.class)),
-                                                        examples = @ExampleObject(name = "complete",
-                                                                                  ref = "#/components/examples/complete-job-list-processing-state"))
-                                   }),
-                      @ApiResponse(responseCode = "404", description = "No process found with this state.",
-                                   content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                                        schema = @Schema(implementation = ErrorResponse.class),
-                                                        examples = @ExampleObject(name = "complete",
-                                                                                  ref = "#/components/examples/error-response"))
-                                   }),
-            })
+    @ApiResponses(value = { @ApiResponse(responseCode = "200",
+                                         description = "List of job ids and status for requested job states.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(
+                                                 schema = @Schema(implementation = UUID.class)),
+                                                              examples = @ExampleObject(name = "complete",
+                                                                                        ref = "#/components/examples/complete-job-list-processing-state"))
+                                         }),
+                            @ApiResponse(responseCode = "404", description = "No process found with this state.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "complete",
+                                                                                        ref = "#/components/examples/error-response"))
+                                         }),
+    })
     @GetMapping("/jobs")
-    public List<UUID> getJobsByJobState(
+    public List<JobStatusResult> getJobsByJobState(
             @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
                                                explode = Explode.FALSE, array = @ArraySchema(
                     schema = @Schema(implementation = JobState.class))) @RequestParam(value = "jobStates",
@@ -171,4 +172,5 @@ public class IrsController {
                                                                                       defaultValue = "") final List<JobState> jobStates) {
         return itemJobService.getJobsByJobState(jobStates);
     }
+
 }
