@@ -1,18 +1,23 @@
+springprofile: int
+
 image:
   tag: "$ARGOCD_APP_REVISION"
 
 ingress:
-  enabled: true
-  className: "nginx"
-  annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
   hosts:
-    - host: irs.int.demo.catena-x.net
+    - host: "irs.int.demo.catena-x.net"
       paths:
         - path: /
           pathType: ImplementationSpecific
-  tls: [ ]
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - irs.int.demo.catena-x.net
+  tls:
+    - hosts:
+        - "irs.int.demo.catena-x.net"
+      # Default secret for certificate creation already provided to your namespace
+      secretName: tls-secret
+
+keycloak:
+  oauth2:
+    clientId: <path:product-traceability-irs/data/int/keycloak/oauth2#clientId>
+    clientSecret: <path:product-traceability-irs/data/int/keycloak/oauth2#clientSecret>
+    clientTokenUri: <path:product-traceability-irs/data/int/keycloak/oauth2#tokenUri>
+    jwkSetUri: <path:product-traceability-irs/data/int/keycloak/oauth2#jwkSetUri>

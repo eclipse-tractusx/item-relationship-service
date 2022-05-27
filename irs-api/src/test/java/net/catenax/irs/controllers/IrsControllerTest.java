@@ -76,9 +76,9 @@ class IrsControllerTest {
 
     @Test
     @WithMockUser
-    void getJobsByJobState() throws Exception {
+    void getJobsByJobStates() throws Exception {
         final UUID returnedJob = UUID.randomUUID();
-        when(service.getJobsByJobState(any())).thenReturn(List.of(returnedJob));
+        when(service.getJobIdsByJobStates(any())).thenReturn(List.of(returnedJob));
 
         this.mockMvc.perform(get("/irs/jobs"))
                     .andExpect(status().isOk())

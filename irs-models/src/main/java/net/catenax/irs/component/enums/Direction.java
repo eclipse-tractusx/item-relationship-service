@@ -17,7 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * Direction indicator
  */
-@Schema(description = "Direction in which the tree shall be traversed.")
+@Schema(description = "Item graph traversal direction.")
 public enum Direction {
     //@Schema(description = "The tree is traversed in upward direction.") UPWARD("upward"),
     @Schema(description = "The tree is traversed in downward direction.") DOWNWARD(DirectionConstants.DOWNWARD);

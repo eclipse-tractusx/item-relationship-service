@@ -22,7 +22,7 @@ import lombok.Value;
 /**
  * List of Job and relationship to parts
  */
-@Schema(description = "Container for a job its relationship and shells.")
+@Schema(description = "Container for a job with item graph.")
 @Value
 @Builder(toBuilder = true)
 @JsonDeserialize(builder = Jobs.JobsBuilder.class)
@@ -30,17 +30,17 @@ import lombok.Value;
 @SuppressWarnings("PMD.ShortClassName")
 public class Jobs {
 
-    @Schema(description = "Information and data for the job.", implementation = Job.class)
+    @Schema(description = "Executable unit with meta information and item graph result.", implementation = Job.class)
     private Job job;
 
-    @Schema(description = "Collection of relationships mapping the parent child relationship of AssemblyPartRelationShip aspects.")
+    @Schema(description = "Relationships between parent and child items.")
     @Singular
     private List<Relationship> relationships;
 
-    @Schema(description = "Collections of AAS shells.")
+    @Schema(description = "AAS shells.")
     private List<Shell> shells;
 
-    @Schema(description = "Collection of not resolvable Endpoints as Tombstones. Including cause of error and endpoint URL.")
+    @Schema(description = "Collection of not resolvable endpoints as tombstones. Including cause of error and endpoint URL.")
     @Singular
     private List<Tombstone> tombstones;
 
