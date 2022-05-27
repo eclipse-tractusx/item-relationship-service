@@ -41,7 +41,7 @@ paths:
                 items:
                   type: string
                   format: uuid
-          description: Array of jobIds for requested job states.
+          description: List of job ids and status for requested job states.
         "404":
           content:
             application/json:
@@ -50,7 +50,7 @@ paths:
                   $ref: '#/components/examples/error-response'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: No jobIds found for requested job states.
+          description: No process found with this state.
       summary: Returns jobIds for requested job states.
       tags:
       - Item Relationship Service
