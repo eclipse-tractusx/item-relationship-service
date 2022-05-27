@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,7 +44,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration
 @RequiredArgsConstructor
-public class OAuthRestTemplateConfig {
+public class RestTemplateConfig {
 
     public static final String OAUTH_REST_TEMPLATE = "oAuthRestTemplate";
     public static final String BASIC_AUTH_REST_TEMPLATE = "basicAuthRestTemplate";
@@ -66,9 +67,10 @@ public class OAuthRestTemplateConfig {
     }
 
     @Bean(BASIC_AUTH_REST_TEMPLATE)
-        /* package */ RestTemplate basicAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
+        /* package */ RestTemplate basicAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder,
+            @Value("${aasProxy.submodel.username}") final String aasProxySubmodelUsername, @Value("${aasProxy.submodel.password}") final String aasProxySubmodelPassword) {
         return restTemplateBuilder
-                .additionalInterceptors(new BasicAuthenticationInterceptor("someuser", "somepassword"))
+                .additionalInterceptors(new BasicAuthenticationInterceptor(aasProxySubmodelUsername, aasProxySubmodelPassword))
                 .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                 .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                 .build();
