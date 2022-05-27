@@ -2,14 +2,18 @@ package net.catenax.irs.smoketest;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
 import net.catenax.irs.component.GlobalAssetIdentification;
@@ -21,6 +25,7 @@ import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -38,6 +43,8 @@ public class ItemGraphSmokeTest {
     @Value("${spring.security.oauth2.client.provider.keycloak.tokenUri}")
     private String jwt;
 
+    private Header header;
+
     private static RegisterJob registerJob() {
         final RegisterJob registerJob = new RegisterJob();
         registerJob.setGlobalAssetId(GLOBAL_ASSET_ID);
@@ -48,10 +55,16 @@ public class ItemGraphSmokeTest {
         return registerJob;
     }
 
+    @BeforeEach
+    void setUp() {
+        header = this.buildHeader();
+    }
+
     @Test
-    void initiateJobForGlobalAssetId() throws JsonProcessingException {
+    void shouldCreateAndCompleteJob() throws JsonProcessingException {
         // Integration test Scenario 2 STEP 1
-        final JobHandle responsePost = given().contentType("application/json")
+        final JobHandle responsePost = given().header(this.header)
+                                              .contentType("application/json")
                                               .body(new ObjectMapper().writeValueAsString(registerJob()))
                                               .when()
                                               .post("http://localhost:8081/irs/jobs")
@@ -67,7 +80,9 @@ public class ItemGraphSmokeTest {
         assertThat(jobId).isNotNull();
 
         // Integration test Scenario 2 STEP 2
-        final Jobs responseGet = given().queryParam("returnUncompletedJob", true)
+        final Jobs responseGet = given().header(this.header)
+                                        .contentType("application/json")
+                                        .queryParam("returnUncompletedJob", true)
                                         .get("http://localhost:8081/irs/jobs/" + jobId)
                                         .then()
                                         .assertThat()
@@ -115,10 +130,7 @@ public class ItemGraphSmokeTest {
 
     @Test
     public void testRegisterItemJob() throws JsonProcessingException {
-        final Header header = new Header("Authorization", "Bearer " + jwt);
-        System.out.println("header: " + header);
-
-        final JobHandle responsePost = given().header(header)
+        final JobHandle responsePost = given().header(this.header)
                                               .contentType("application/json")
                                               .body(new ObjectMapper().writeValueAsString(registerJob()))
                                               .when()
@@ -132,6 +144,32 @@ public class ItemGraphSmokeTest {
 
         final UUID jobId = responsePost.getJobId();
         assertThat(jobId).isNotNull();
+    }
+
+    private Header buildHeader() {
+        final String accessToken =
+                obtainAccessToken("client_credentials", "sa-cl6-cx-2", "15NnEltJeBZmvnlLmeH7SzNsBX9A4mVp");
+
+        assertNotNull(accessToken);
+
+        final Header header = new Header("Authorization", "Bearer " + accessToken);
+        System.out.println("header: " + header);
+
+        return header;
+    }
+
+    private String obtainAccessToken(final String grantType, final String clientId, final String clientSecret) {
+        final Map<String, String> oauth2Payload = new HashMap<String, String>();
+        oauth2Payload.put("grant_type", grantType);
+        oauth2Payload.put("client_id", clientId);
+        oauth2Payload.put("client_secret", clientSecret);
+
+        return given().params(oauth2Payload)
+                      .post("https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/iamcentralidp/auth/realms/CX-Central/protocol/openid-connect/token")
+                      .then()
+                      .extract()
+                      .jsonPath()
+                      .getString("access_token");
     }
 
 }
