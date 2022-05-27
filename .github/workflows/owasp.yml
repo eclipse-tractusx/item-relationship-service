@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - master
+      - 'TRI-'
       - 'feature/**'
       - 'bugfix/**'
       - 'fix/**'
