@@ -23,7 +23,7 @@ import net.catenax.irs.dtos.ItemLifecycleStage;
  * @see ItemLifecycleStage
  */
 @ExcludeFromCodeCoverageGeneratedReport
-@Schema(description = "View defining which data of the item tree is retrieved.")
+@Schema(description = "The lifecycle context in which the child part was assembled into the parent part.")
 @Getter
 public enum BomLifecycle {
     @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") AS_BUILT("asBuilt", "AsBuilt");
