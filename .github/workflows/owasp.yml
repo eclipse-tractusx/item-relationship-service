@@ -52,4 +52,4 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          path: '/target/dependency-check-report.html'
+          path: 'target/dependency-check-report.html'
