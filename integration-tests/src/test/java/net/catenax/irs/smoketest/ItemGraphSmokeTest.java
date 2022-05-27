@@ -49,7 +49,7 @@ public class ItemGraphSmokeTest {
     }
 
     @Test
-    void initiateJobForGlobalAssetId() throws JsonProcessingException, InterruptedException {
+    void initiateJobForGlobalAssetId() throws JsonProcessingException {
         // Integration test Scenario 2 STEP 1
         final JobHandle responsePost = given().contentType("application/json")
                                               .body(new ObjectMapper().writeValueAsString(registerJob()))
