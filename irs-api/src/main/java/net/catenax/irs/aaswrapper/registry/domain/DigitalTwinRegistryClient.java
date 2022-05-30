@@ -9,7 +9,7 @@
 //
 package net.catenax.irs.aaswrapper.registry.domain;
 
-import static net.catenax.irs.configuration.OAuthRestTemplateConfig.OAUTH_REST_TEMPLATE;
+import static net.catenax.irs.configuration.RestTemplateConfig.OAUTH_REST_TEMPLATE;
 
 import java.net.URI;
 

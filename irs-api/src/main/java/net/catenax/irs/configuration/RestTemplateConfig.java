@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -42,9 +44,10 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration
 @RequiredArgsConstructor
-public class OAuthRestTemplateConfig {
+public class RestTemplateConfig {
 
     public static final String OAUTH_REST_TEMPLATE = "oAuthRestTemplate";
+    public static final String BASIC_AUTH_REST_TEMPLATE = "basicAuthRestTemplate";
 
     private static final String CLIENT_REGISTRATION_ID = "keycloak";
     private static final int TIMEOUT_SECONDS = 30;
@@ -58,6 +61,16 @@ public class OAuthRestTemplateConfig {
 
         return restTemplateBuilder
                 .additionalInterceptors(new OAuthClientCredentialsRestTemplateInterceptor(authorizedClientManager(), clientRegistration))
+                .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                .build();
+    }
+
+    @Bean(BASIC_AUTH_REST_TEMPLATE)
+        /* package */ RestTemplate basicAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder,
+            @Value("${aasProxy.submodel.username}") final String aasProxySubmodelUsername, @Value("${aasProxy.submodel.password}") final String aasProxySubmodelPassword) {
+        return restTemplateBuilder
+                .additionalInterceptors(new BasicAuthenticationInterceptor(aasProxySubmodelUsername, aasProxySubmodelPassword))
                 .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                 .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                 .build();

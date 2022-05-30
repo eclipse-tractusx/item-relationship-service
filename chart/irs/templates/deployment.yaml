@@ -57,6 +57,10 @@ spec:
               value: {{ .Values.keycloak.oauth2.clientTokenUri }}
             - name: KEYCLOAK_OAUTH2_JWK_SET_URI
               value: {{ .Values.keycloak.oauth2.jwkSetUri }}
+            - name: AAS_PROXY_SUBMODEL_USERNAME
+              value: {{ .Values.aasProxy.submodel.username }}
+            - name: AAS_PROXY_SUBMODEL_PASSWORD
+              value: {{ .Values.aasProxy.submodel.password }}
           ports:
             - name: http
               containerPort: 8080
