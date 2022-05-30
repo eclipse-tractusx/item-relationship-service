@@ -47,6 +47,8 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: 3.8 #install the python needed
+          cache: 'pip'
+      - run: pip install -r testdata-transform/requirements.txt
 
       - name: Setup Test Data on INT
         env:
