@@ -132,7 +132,7 @@ For further information please see https://github.com/hazcod/semantic-commit-hoo
 
 ### Coverage
 
-Sonarcloud Coverage (https://sonarcloud.io/component_measures?id=catenax-ng_product-item-relationship-service&metric=coverage&view=list)
+Sonarcloud Coverage [Sonarcloud](https://sonarcloud.io/component_measures?id=catenax-ng_product-item-relationship-service&metric=coverage&view=list)
 
 ## Licenses
 Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
