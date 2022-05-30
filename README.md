@@ -68,28 +68,51 @@ curl -X 'GET'  'http://localhost:8080/irs/jobs/<jobID from first call>' -H 'acce
 - API docs: http://localhost:8080/api/api-docs
 - API docs in yaml:  http://localhost:8080/api/api-docs.yaml
 
-## Deploy to DEV
+## DEV environment
 
 The latest version on main is automatically picked up by ArgoCD and deployed to the DEV environment.
 See https://catenax-ng.github.io/.
 
+http://irs.dev.demo.catena-x.net/api/swagger-ui/index.html?configUrl=/api/api-docs/swagger-config
+
+Additionally, we supply our own EDC setup to be able to do end-to-end tests in an isolated environment.
+This contains of:
+ - API Proxy
+ - AAS Wrapper
+ - DigitalTwin Registry
+ - EDC Consumer (Control and Data Plane)
+ - EDC Provider (Control and Data Plane)
+ - Multiple submodel servers to provide test data
+
+The setup is based on [Catena-X@Home](https://github.com/catenax-ng/catenax-at-home/) and uses those docker images.
+
+Check the Helm charts at ./chart for the configuration.
+
+The testdata on DEV is volatile and gets lost on pod restarts. New testdata can be provisioned using the GitHub action trigger.
+
+## INT environment
+
+The latest version on main is automatically picked up by ArgoCD and deployed to the INT environment.
+See https://catenax-ng.github.io/.
+
 http://irs.int.demo.catena-x.net/api/swagger-ui/index.html?configUrl=/api/api-docs/swagger-config
 
-## Deploy to INT
+Additionally, we supply our own EDC consumer to connect to the Catena-X integration system.
+This contains of:
+- API Proxy
+- AAS Wrapper
+- EDC Consumer (Control and Data Plane)
 
-Not available yet.
+This setup uses the docker images provided by [the EDC team](https://github.com/catenax-ng/product-edc/).
+
+Check the Helm charts at ./chart for the configuration. 
 
 ## Smoke tests
 
-[Smoke tests](integration-tests/src/test/java/net/catenax/irs/smoketest) are running against the application and the consumer connectors in the IRS Smoke tests pipeline.
-To run the tests against locally running application provide `baseURI` (IRS API base URI, by default http://localhost:8080).
-If you want to run it against connector you need to add the following VM options:
-`-DbaseURI=<consumer-artifact-uri> -Dusername=<username-to-access-consumer> -Dpassword=<password>`
+TBD
 
 ## System tests
-
-[System tests](integration-tests/src/test/java/net/catenax/irs/systemtest) are running against multiple IRS deployments and reconstructing a parts tree from multiple partial trees.
-To run the tests, download the file artifact `dataspace-deployments.json` from the latest IRS Deploy GitHub Actions run into the `dev/local` folder.
+TBD
 
 ## Commit messages
 The commit messages have to match a pattern in the form of:  
