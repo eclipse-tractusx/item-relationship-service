@@ -35,7 +35,7 @@ The two following subsections provide instructions for running either only the i
 ## Keycloak authentication
 
 Access token is required to access every IRS endpoint and should be included in Authorization header for all requests - otherwise 401 Unauthorized status is returned to client. 
-To obtain access token prepared [Postman collection can be used](testing/IRS DEMO Collection.postman_collection.json)
+To obtain access token prepared [Postman collection can be used](https://github.com/catenax-ng/product-item-relationship-service/blob/main/testing/IRS%20DEMO%20Collection.postman_collection.json)
 
 ## Work with sample data
 
