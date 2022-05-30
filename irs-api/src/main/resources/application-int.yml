@@ -2,4 +2,4 @@ aasProxy:
   url: https://irs-aas-proxy.int.demo.catena-x.net
 
 connection:
-  baseuri: http://localhost:8081
+  baseuri:
