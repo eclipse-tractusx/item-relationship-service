@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "edc-provider-data-plane.fullname" . }}-configmap
+  labels:
+    {{- include "edc-provider-data-plane.labels" . | nindent 4 }}
+data:
+  configuration.properties: |-
+    {{- .Values.configuration.properties | nindent 4 }}
+
+  opentelemetry.properties: |-
+    {{- .Values.opentelemetry.properties | nindent 4 }}
+
+  logging.properties: |-
+    {{- .Values.logging.properties | nindent 4 }}
