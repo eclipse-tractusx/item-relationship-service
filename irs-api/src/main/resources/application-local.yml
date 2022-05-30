@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 blobstore:
   endpoint: http://localhost:9000
   accessKey: minioadmin
@@ -16,3 +19,9 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/iamcentralidp/auth/realms/CX-Central/protocol/openid-connect/certs
+  config:
+    activate:
+      on-profile: local
+
+connection:
+  baseuri: http://localhost:8081
