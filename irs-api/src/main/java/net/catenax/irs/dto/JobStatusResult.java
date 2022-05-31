@@ -10,13 +10,13 @@
 package net.catenax.irs.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 /**
  * Response for job status request
  */
-@Data
+@Value
 @Jacksonized
 @Builder(toBuilder = true)
 public class JobStatusResult {

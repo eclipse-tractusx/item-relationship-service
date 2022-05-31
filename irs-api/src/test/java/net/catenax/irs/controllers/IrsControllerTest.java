@@ -83,11 +83,14 @@ class IrsControllerTest {
                                                            .jobId(jobId.toString())
                                                            .status(JobState.RUNNING.toString())
                                                            .build();
+
+        String returnJobAsString = new ObjectMapper().writeValueAsString(returnedJob);
+
         when(service.getJobsByJobState(any())).thenReturn(List.of(returnedJob));
 
         this.mockMvc.perform(get("/irs/jobs"))
                     .andExpect(status().isOk())
-                    .andExpect(content().string(containsString(jobId.toString())));
+                    .andExpect(content().string(containsString(returnJobAsString)));
     }
 
     @Test
