@@ -1,7 +1,7 @@
 springprofile: int
 
 image:
-  tag: "$ARGOCD_APP_REVISION"
+  tag: $ARGOCD_APP_REVISION
 
 ingress:
   hosts:
