@@ -3,9 +3,8 @@ package net.catenax.irs.configuration;
 import lombok.Data;
 
 @Data
-public class ClientProperties {
-    private String baseuri;
-    private String authorizationGrantType;
+public class SmokeTestCredentialsProperties {
     private String clientId;
     private String clientSecret;
+    private String authorizationGrantType;
 }

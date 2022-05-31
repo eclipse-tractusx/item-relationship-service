@@ -1,5 +1,2 @@
 aasProxy:
   url: https://irs-aas-proxy.dev.demo.catena-x.net
-
-connection:
-  baseuri:

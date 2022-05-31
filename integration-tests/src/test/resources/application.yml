@@ -1,4 +1,4 @@
-server:
+erver:
   port: 8080
 
 spring:
@@ -18,6 +18,8 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: ${KEYCLOAK_OAUTH2_JWK_SET_URI:https://default}
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
 
 management:
   endpoints:
