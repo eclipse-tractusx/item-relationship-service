@@ -147,21 +147,21 @@ public class IrsController {
     }
 
     @Operation(description = "Returns jobIds for requested job states.", operationId = "getJobIdsByJobStates",
-               summary = "Returns jobIds and status for requested job states.", tags = { "Item Relationship Service" })
-    @ApiResponses(value = { @ApiResponse(responseCode = "200",
-                                         description = "List of job ids and status for requested job states.",
-                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(
-                                                 schema = @Schema(implementation = JobStatusResult.class)),
-                                                              examples = @ExampleObject(name = "complete",
-                                                                                        ref = "#/components/examples/complete-job-list-processing-state"))
-                                         }),
-                            @ApiResponse(responseCode = "404", description = "No process found with this state.",
-                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                                              schema = @Schema(implementation = ErrorResponse.class),
-                                                              examples = @ExampleObject(name = "complete",
-                                                                                        ref = "#/components/examples/error-response"))
-                                         }),
-    })
+               summary = "Returns jobIds for requested job states.", tags = { "Item Relationship Service" })
+    @ApiResponses(
+            value = { @ApiResponse(responseCode = "200", description = "List of job ids for requested job states.",
+                                   content = { @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(
+                                           schema = @Schema(implementation = UUID.class)),
+                                                        examples = @ExampleObject(name = "complete",
+                                                                                  ref = "#/components/examples/complete-job-list-processing-state"))
+                                   }),
+                      @ApiResponse(responseCode = "404", description = "No jobIds found for requested job states.",
+                                   content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                        schema = @Schema(implementation = ErrorResponse.class),
+                                                        examples = @ExampleObject(name = "complete",
+                                                                                  ref = "#/components/examples/error-response"))
+                                   }),
+            })
     @GetMapping("/jobs")
     public List<JobStatusResult> getJobsByJobState(
             @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
