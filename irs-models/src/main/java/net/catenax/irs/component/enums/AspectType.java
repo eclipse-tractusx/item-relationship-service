@@ -13,6 +13,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * AspectType information for a part tree
@@ -53,6 +54,7 @@ public enum AspectType {
     }
 
     @JsonCreator
+    @ExcludeFromCodeCoverageGeneratedReport
     public static AspectType fromValue(final String value) {
         return Stream.of(AspectType.values())
                      .filter(aspectType -> aspectType.value.equals(value))

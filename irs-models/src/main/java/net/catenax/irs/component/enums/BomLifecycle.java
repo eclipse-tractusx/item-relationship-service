@@ -53,6 +53,7 @@ public enum BomLifecycle {
     }
 
     @JsonCreator
+    @ExcludeFromCodeCoverageGeneratedReport
     public static BomLifecycle fromValue(final String value) {
         return Stream.of(BomLifecycle.values())
                      .filter(bomLifecycle -> bomLifecycle.value.equals(value))
