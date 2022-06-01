@@ -150,7 +150,6 @@
                 <configuration>
                     <excludes>
                         <exclude>**/*Application.class</exclude>
-                        <exclude>**/irs-models/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
