@@ -1,11 +1,10 @@
-package net.catenax.irs.model;
+package net.catenax.irs.component.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.NoSuchElementException;
 
-import net.catenax.irs.component.enums.BomLifecycle;
 import org.junit.jupiter.api.Test;
 
 class BomLifecycleTest {
