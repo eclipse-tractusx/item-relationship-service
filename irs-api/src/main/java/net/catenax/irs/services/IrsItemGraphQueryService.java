@@ -112,10 +112,10 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final List<MultiTransferJob> jobs = jobStore.findByStates(jobStates);
 
         return jobs.stream()
-                   .map(x -> JobStatusResult.builder()
-                                            .jobId(x.getJob().getJobId().toString())
-                                            .status(x.getJob().getJobState().toString())
-                                            .build())
+                   .map(job -> JobStatusResult.builder()
+                                              .jobId(job.getJob().getJobId().toString())
+                                              .status(job.getJob().getJobState().toString())
+                                              .build())
 
                    .collect(Collectors.toList());
     }
