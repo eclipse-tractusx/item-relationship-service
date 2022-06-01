@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.component.enums;
 
+import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -56,7 +57,7 @@ public enum AspectType {
         return Stream.of(AspectType.values())
                      .filter(aspectType -> aspectType.value.equals(value))
                      .findFirst()
-                     .orElseThrow();
+                     .orElseThrow(() -> new NoSuchElementException("Cannot construct AspectType from: " + value));
     }
 
     /**

@@ -106,4 +106,13 @@ class IrsControllerTest {
                     .andExpect(result -> assertTrue(result.getResolvedException() instanceof EntityNotFoundException));
     }
 
+    @Test
+    @WithMockUser
+    void getJobWithMalformedIdShouldReturnBadRequest() throws Exception {
+        final String jobIdMalformed = UUID.randomUUID() + "MALFORMED";
+
+        this.mockMvc.perform(get("/irs/jobs/" + jobIdMalformed))
+                    .andExpect(status().isBadRequest());
+    }
+
 }

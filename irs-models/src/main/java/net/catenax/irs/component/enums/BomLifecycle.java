@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.component.enums;
 
+import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -56,7 +57,7 @@ public enum BomLifecycle {
         return Stream.of(BomLifecycle.values())
                      .filter(bomLifecycle -> bomLifecycle.value.equals(value))
                      .findFirst()
-                     .orElseThrow();
+                     .orElseThrow(() -> new NoSuchElementException("Cannot construct BomLifecycle from: " + value));
     }
 
     public static BomLifecycle fromLifecycleContextCharacteristic(final String value) {
