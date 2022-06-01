@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.exceptions.EntityNotFoundException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -98,7 +99,7 @@ public class IrsExceptionHandler {
         String message = "Malformed JSON request";
 
         if (exception.getRootCause() instanceof NoSuchElementException) {
-            message = exception.getRootCause().getMessage();
+            message = ExceptionUtils.getRootCauseMessage(exception);
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
