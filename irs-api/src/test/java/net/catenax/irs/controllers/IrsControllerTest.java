@@ -115,4 +115,14 @@ class IrsControllerTest {
                     .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @WithMockUser
+    void shouldReturnBadRequestWhenRegisterJobWithMalformedAspectJson(final RegisterJob registerJob) throws Exception {
+        final String requestBody = "{ \"aspects\": [ \"MALFORMED\" ], \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\" }";
+
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(requestBody))
+                    .andExpect(status().isBadRequest());
+    }
+
 }
