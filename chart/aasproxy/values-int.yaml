@@ -1,0 +1,28 @@
+# INT values for aasproxy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+ingress:
+  hosts:
+    - host: "irs-aas-proxy.int.demo.catena-x.net"
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: aasproxy
+              port:
+                number: 4245
+  tls:
+    - hosts:
+        - "irs-aas-proxy.int.demo.catena-x.net"
+      # Default secret for certificate creation already provided to your namespace
+      secretName: tls-secret
+
+env:
+  - name: AASPROXY_WRAPPERURL
+    value: http://aaswrapper:9191/api/service
+  - name: AASPROXY_PROXYURL
+    value: https://irs-aas-proxy.int.demo.catena-x.net
+  - name: AASPROXY_REGISTRYURL
+    value: https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry

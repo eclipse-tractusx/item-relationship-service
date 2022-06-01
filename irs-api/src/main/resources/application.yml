@@ -95,3 +95,8 @@ resilience4j.retry:
   instances:
     submodelRetryer:
       baseConfig: default
+
+aasProxy:
+  submodel:
+    username: ${AAS_PROXY_SUBMODEL_USERNAME:}
+    password: ${AAS_PROXY_SUBMODEL_PASSWORD:}
