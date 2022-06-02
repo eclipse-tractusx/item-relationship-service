@@ -9,6 +9,8 @@
 //
 package net.catenax.irs.component.enums;
 
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -59,7 +61,12 @@ public enum BomLifecycle {
         return Stream.of(BomLifecycle.values())
                      .filter(bomLifecycle -> bomLifecycle.value.equals(value))
                      .findFirst()
-                     .orElseThrow();
+                     .orElseThrow(() -> new NoSuchElementException("Unsupported BomLifecycle: " + value
+                             + ". Must be one of: " + supportedBomLifecycles()));
+    }
+
+    private static String supportedBomLifecycles() {
+        return Stream.of(BomLifecycle.values()).map(bomLifecycle -> bomLifecycle.value).collect(Collectors.joining(", "));
     }
 
     public static BomLifecycle fromLifecycleContextCharacteristic(final String value) {

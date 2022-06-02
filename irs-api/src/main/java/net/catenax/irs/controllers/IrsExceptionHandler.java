@@ -11,14 +11,17 @@ package net.catenax.irs.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.exceptions.EntityNotFoundException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -76,6 +79,38 @@ public class IrsExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException exception) {
+        log.info(exception.getClass().getName(), exception);
+
+        if (exception.getRootCause() instanceof IllegalArgumentException) {
+            return handleIllegalArgumentException((IllegalArgumentException) exception.getRootCause());
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(ErrorResponse.builder()
+                                                .withStatusCode(HttpStatus.BAD_REQUEST)
+                                                .withMessage(exception.getMessage())
+                                                .build());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(final HttpMessageNotReadableException exception) {
+        log.info(exception.getClass().getName(), exception);
+
+        String message = "Malformed JSON request";
+
+        if (exception.getRootCause() instanceof NoSuchElementException) {
+            message = ExceptionUtils.getRootCauseMessage(exception);
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(ErrorResponse.builder()
+                                                .withStatusCode(HttpStatus.BAD_REQUEST)
+                                                .withMessage(message)
+                                                .build());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(final IllegalArgumentException exception) {
         log.info(exception.getClass().getName(), exception);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
