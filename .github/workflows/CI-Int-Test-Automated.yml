@@ -37,4 +37,4 @@ jobs:
       - name: Run ItemGraphSmokeTest with Maven
         env:
           PROFILE_GITHUB: ${{ github.event.inputs.irsTestProfile }}
-        run: mvn -Dtest=ItemGraphSmokeTest test -P -i $PROFILE_GITHUB
+        run: mvn -Dtest= **/intergartion-tests/src/test/java/net/catenax/irs/smoketest/ItemGraphSmokeTest test -P -i $PROFILE_GITHUB
