@@ -23,8 +23,8 @@ spring:
         registration:
           keycloak:
             authorization-grant-type: client_credentials
-            client-id: sa-cl6-cx-2
-            client-secret: 15NnEltJeBZmvnlLmeH7SzNsBX9A4mVp
+            client-id: ${KEYCLOAK_OAUTH2_CLIENT_ID}
+            client-secret: ${KEYCLOAK_OAUTH2_CLIENT_SECRET}
   config:
     activate:
       on-profile: local
