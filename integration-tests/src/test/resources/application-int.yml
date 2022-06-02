@@ -1,3 +1,12 @@
+spring:
+  security:
+    client:
+      registration:
+        keycloak:
+          authorization-grant-type: client_credentials
+          client-id: ${KEYCLOAK_OAUTH2_CLIENT_ID}
+          client-secret: ${KEYCLOAK_OAUTH2_CLIENT_SECRET}
+
 connection:
   base-uri:
   access-token:

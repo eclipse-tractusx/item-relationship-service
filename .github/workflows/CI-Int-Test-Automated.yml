@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       irsTestProfile:
+        default: local
         description: 'Profile value to activate on GitHub like local, dev, int or prod'
-        required: true
+        required: false
         type: string
   push:
     branches:
