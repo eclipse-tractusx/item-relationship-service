@@ -1,10 +1,16 @@
-name: Maven Run the integration test class ItemGraphSmokeTest when push to Main branch.
+name: Maven Run of the integration test class ItemGraphSmokeTest when push to Main branch.
 
 on:
   workflow_dispatch:
+    inputs:
+      irsTestProfile:
+        description: 'Profile value to activate on GitHub like local, dev, int or prod'
+        required: true
+        type: string
   push:
     branches:
       - main
+      - 'feature/**'
 
 jobs:
   build:
@@ -27,19 +33,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-
-      - name: Build with Maven and analyze with Sonar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          mvn --batch-mode --update-snapshots verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=catenax-ng_product-item-relationship-service
-
       - name: Run ItemGraphSmokeTest with Maven
-        run: mvn -Dtest=ItemGraphSmokeTest test
+        env:
+          PROFILE_GITHUB: ${{ github.event.inputs.irsTestProfile }}
+        run: mvn -Dtest=ItemGraphSmokeTest test -P -i $PROFILE_GITHUB
