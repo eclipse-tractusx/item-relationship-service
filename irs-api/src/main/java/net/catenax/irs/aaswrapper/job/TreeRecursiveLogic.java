@@ -20,12 +20,12 @@ import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
 
 /**
- * Retrieves parts trees from potentially multiple calls to IRS API behind
+ * Retrieves item graph from potentially multiple calls to IRS API behind
  * multiple EDC Providers, and assembles their outputs into
- * one overall parts tree.
+ * one overall item graph.
  * <p>
  * In this increment, the implementation only retrieves the first level
- * parts tree, as a non-recursive implementation would do. In a next
+ * item graph, as a non-recursive implementation would do. In a next
  * increment, this class will be extended to perform recursive queries
  * by querying multiple IRS API instances.
  */
@@ -48,24 +48,24 @@ public class TreeRecursiveLogic {
     private final ItemTreesAssembler assembler;
 
     /**
-     * Assembles multiple partial parts trees into one overall parts tree.
+     * Assembles multiple partial item graph into one overall item graph.
      *
      * @param completedTransfers the completed transfer processes, containing the location of the
-     *                           blobs with partial parts trees.
-     * @param targetBlobName     Storage blob name to store overall parts tree.
+     *                           blobs with partial item graph.
+     * @param targetBlobName     Storage blob name to store overall item graph.
      */
     /* package */ void assemblePartialItemGraphBlobs(final List<TransferProcess> completedTransfers,
             final String targetBlobName) {
         final var partialTrees = completedTransfers.stream()
-                                                   .map(this::downloadPartialPartsTree)
+                                                   .map(this::downloadPartialItemGraphBlobs)
                                                    .map(payload -> jsonUtil.fromString(new String(payload, StandardCharsets.UTF_8),
                                                            ItemContainer.class));
-        final var assembledTree = assembler.retrievePartsTrees(partialTrees);
+        final var assembledTree = assembler.retrieveItemTrees(partialTrees);
         final String json = jsonUtil.asString(assembledTree);
-        log.info("Storing assembled tree: {}", json);
+        log.info("Storing assembled item graph: {}", json);
         final var blob = json.getBytes(StandardCharsets.UTF_8);
 
-        log.info("Uploading assembled parts tree to {}", targetBlobName);
+        log.info("Uploading assembled item graph to {}", targetBlobName);
         try {
             blobStoreApi.putBlob(targetBlobName, blob);
         } catch (BlobPersistenceException e) {
@@ -73,8 +73,8 @@ public class TreeRecursiveLogic {
         }
     }
 
-    private byte[] downloadPartialPartsTree(final TransferProcess transfer) {
-        log.info("Downloading partial parts tree from blob at {}", transfer.getId());
+    private byte[] downloadPartialItemGraphBlobs(final TransferProcess transfer) {
+        log.info("Downloading partial item graph from blob at {}", transfer.getId());
         try {
             return blobStoreApi.getBlob(transfer.getId()).orElse(new byte[0]);
         } catch (BlobPersistenceException e) {

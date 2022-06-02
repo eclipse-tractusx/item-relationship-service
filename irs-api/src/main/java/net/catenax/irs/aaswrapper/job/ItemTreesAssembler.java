@@ -27,20 +27,20 @@ import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 public class ItemTreesAssembler {
 
     /**
-     * Assembles multiple partial parts trees into one overall parts tree.
+     * Assembles multiple partial item trees into one overall item tree.
      *
-     * @param partialTrees partial parts trees.
-     * @return A parts tree containing all the items from {@code partialTrees}, with deduplication.
+     * @param itemTrees partial item trees.
+     * @return An item tree containing all the items from {@code itemTrees}, with deduplication.
      */
-    /* package */ ItemContainer retrievePartsTrees(final Stream<ItemContainer> partialTrees) {
+    /* package */ ItemContainer retrieveItemTrees(final Stream<ItemContainer> itemTrees) {
         final var relationships = new LinkedHashSet<AssemblyPartRelationshipDTO>();
         final var numberOfPartialTrees = new AtomicInteger();
         final ArrayList<Tombstone> tombstones = new ArrayList<>();
 
-        partialTrees.forEachOrdered(partialTree -> {
-            relationships.addAll(partialTree.getAssemblyPartRelationships());
+        itemTrees.forEachOrdered(itemTree -> {
+            relationships.addAll(itemTree.getAssemblyPartRelationships());
             numberOfPartialTrees.incrementAndGet();
-            tombstones.addAll(partialTree.getTombstones());
+            tombstones.addAll(itemTree.getTombstones());
         });
 
         log.info("Assembled item tree from {} partial trees", numberOfPartialTrees);
