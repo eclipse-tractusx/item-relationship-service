@@ -60,7 +60,7 @@ public class TreeRecursiveLogic {
                                                    .map(this::downloadPartialItemGraphBlobs)
                                                    .map(payload -> jsonUtil.fromString(new String(payload, StandardCharsets.UTF_8),
                                                            ItemContainer.class));
-        final var assembledTree = assembler.retrieveItemTrees(partialTrees);
+        final var assembledTree = assembler.retrieveItemGraph(partialTrees);
         final String json = jsonUtil.asString(assembledTree);
         log.info("Storing assembled item graph: {}", json);
         final var blob = json.getBytes(StandardCharsets.UTF_8);
