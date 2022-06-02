@@ -32,6 +32,12 @@ The two following subsections provide instructions for running either only the i
 * This will start additional containers:
   * [Prometheus](https://prometheus.io/docs/introduction/overview/), a server to collect and query metrics. Prometheus is available at http://localhost:9091/.
 
+### Local IRS API
+
+- Swagger UI: http://localhost:8080/api/swagger-ui
+- API docs: http://localhost:8080/api/api-docs
+- API docs in yaml:  http://localhost:8080/api/api-docs.yaml
+
 ## Keycloak authentication
 
 Access token is required to access every IRS endpoint and should be included in Authorization header for all requests - otherwise 401 Unauthorized status is returned to client. 
@@ -59,14 +65,6 @@ curl -X 'POST' \
   
 curl -X 'GET'  'http://localhost:8080/irs/jobs/<jobID from first call>' -H 'accept: application/json' -H 'Authorization: Bearer <<token_value>>'
 ```
-
-## Swagger UI
-
-### IRS API
-
-- Swagger UI: http://localhost:8080/api/swagger-ui
-- API docs: http://localhost:8080/api/api-docs
-- API docs in yaml:  http://localhost:8080/api/api-docs.yaml
 
 ## DEV environment
 
@@ -106,13 +104,6 @@ This contains of:
 This setup uses the docker images provided by [the EDC team](https://github.com/catenax-ng/product-edc/).
 
 Check the Helm charts at ./chart for the configuration. 
-
-## Smoke tests
-
-TBD
-
-## System tests
-TBD
 
 ## Commit messages
 The commit messages have to match a pattern in the form of:  

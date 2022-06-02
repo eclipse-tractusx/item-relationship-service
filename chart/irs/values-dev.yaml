@@ -1,7 +1,7 @@
 springprofile: dev
 
 image:
-  tag: "$ARGOCD_APP_REVISION"
+  tag: $ARGOCD_APP_REVISION
 
 keycloak:
   oauth2:
