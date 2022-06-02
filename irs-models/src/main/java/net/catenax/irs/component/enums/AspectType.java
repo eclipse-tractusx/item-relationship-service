@@ -9,6 +9,8 @@
 //
 package net.catenax.irs.component.enums;
 
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -56,7 +58,12 @@ public enum AspectType {
         return Stream.of(AspectType.values())
                      .filter(aspectType -> aspectType.value.equals(value))
                      .findFirst()
-                     .orElseThrow();
+                     .orElseThrow(() -> new NoSuchElementException("Unsupported AspectType: " + value
+                             + ". Must be one of: " + supportedAspectTypes()));
+    }
+
+    private static String supportedAspectTypes() {
+        return Stream.of(AspectType.values()).map(aspect -> aspect.value).collect(Collectors.joining(", "));
     }
 
     /**
