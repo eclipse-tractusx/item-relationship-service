@@ -7,7 +7,7 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain;
+package net.catenax.irs.component.assemblypartrelationship;
 
 import java.util.List;
 
@@ -15,15 +15,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * AssetAdministrationShellDescriptor
  */
 @Data
+@Jacksonized
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-class AssetAdministrationShellDescriptor {
+public class AssetAdministrationShellDescriptor {
 
     /**
      * administration

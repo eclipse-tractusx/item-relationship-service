@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
@@ -63,7 +64,7 @@ class IrsApplicationTests {
 
     @Test
     void shouldStoreBlobResultWhenRunningJob() throws Exception {
-        final JobParameter jobParameter = JobParameter.builder().rootItemId("rootitemid").treeDepth(5).build();
+        final JobParameter jobParameter = JobParameter.builder().rootItemId("rootitemid").treeDepth(5).aspectTypes(List.of()).build();
 
         final JobInitiateResponse response = jobOrchestrator.startJob(jobParameter);
 

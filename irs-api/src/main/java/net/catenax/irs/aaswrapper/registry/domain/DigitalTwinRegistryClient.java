@@ -13,6 +13,7 @@ import static net.catenax.irs.configuration.RestTemplateConfig.OAUTH_REST_TEMPLA
 
 import java.net.URI;
 
+import net.catenax.irs.component.assemblypartrelationship.AssetAdministrationShellDescriptor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;

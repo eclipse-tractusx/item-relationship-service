@@ -35,6 +35,7 @@ import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.Tombstone;
+import net.catenax.irs.component.assemblypartrelationship.AssetAdministrationShellDescriptor;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
@@ -93,11 +94,18 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final String lifecycle = bomLifecycleFormRequest.map(BomLifecycle::getLifecycleContextCharacteristicValue)
                                                         .orElse(null);
 
+        // TODO (ds-jhartmann) change retrieval of default aspect type to config
+        final String defaultAspect = AspectType.SERIAL_PART_TYPIZATION.toString();
+        log.info("Default Aspect: {}", defaultAspect);
         final Optional<List<AspectType>> aspectTypes = Optional.ofNullable(request.getAspects());
         List<String> aspectTypeValues;
         aspectTypeValues = aspectTypes.map(
-                                              types -> types.stream().map(AspectType::toString).map(String::toLowerCase).collect(Collectors.toList()))
-                                      .orElse(emptyList());
+                                              types -> types.stream().map(AspectType::toString).collect(Collectors.toList()))
+                                      .orElse(List.of(defaultAspect));
+        if (aspectTypeValues.isEmpty()) {
+            aspectTypeValues.add(defaultAspect);
+        }
+        log.info("Aspect Type Filter '{}'", aspectTypeValues);
 
         return JobParameter.builder()
                            .rootItemId(uuid)
@@ -144,25 +152,31 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
             final var relationships = new ArrayList<Relationship>();
             final var tombstones = new ArrayList<Tombstone>();
+            final var shells = new ArrayList<AssetAdministrationShellDescriptor>();
 
             if (jobIsCompleted(multiJob)) {
                 final var container = retrieveJobResultRelationships(multiJob.getJob().getJobId());
                 relationships.addAll(convert(container.getAssemblyPartRelationships()));
                 tombstones.addAll(container.getTombstones());
-
+                shells.addAll(container.getShells());
             } else {
                 if (includePartialResults) {
                     final var container = retrievePartialResults(multiJob);
                     relationships.addAll(convert(container.getAssemblyPartRelationships()));
                     tombstones.addAll(container.getTombstones());
-
+                    shells.addAll(container.getShells());
                 }
             }
 
             log.info("Found job with id {} in status {} with {} relationships and {} tombstones", jobId,
                     multiJob.getJob().getJobState(), relationships.size(), tombstones.size());
 
-            return Jobs.builder().job(multiJob.getJob()).relationships(relationships).tombstones(tombstones).build();
+            return Jobs.builder()
+                       .job(multiJob.getJob())
+                       .relationships(relationships)
+                       .tombstones(tombstones)
+                       .shells(shells)
+                       .build();
         } else {
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
@@ -176,6 +190,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         final var relationships = new ArrayList<AssemblyPartRelationshipDTO>();
         final var tombstones = new ArrayList<Tombstone>();
+        final var shells = new ArrayList<AssetAdministrationShellDescriptor>();
 
         for (final String id : transferIds) {
             try {
@@ -184,13 +199,18 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                     final ItemContainer itemContainer = toItemContainer(bytes);
                     relationships.addAll(itemContainer.getAssemblyPartRelationships());
                     tombstones.addAll(itemContainer.getTombstones());
+                    shells.addAll(itemContainer.getShells());
                 });
 
             } catch (BlobPersistenceException e) {
                 log.error("Unable to read transfer result", e);
             }
         }
-        return ItemContainer.builder().assemblyPartRelationships(relationships).tombstones(tombstones).build();
+        return ItemContainer.builder()
+                            .assemblyPartRelationships(relationships)
+                            .tombstones(tombstones)
+                            .shells(shells)
+                            .build();
     }
 
     private ItemContainer toItemContainer(final byte[] blob) {

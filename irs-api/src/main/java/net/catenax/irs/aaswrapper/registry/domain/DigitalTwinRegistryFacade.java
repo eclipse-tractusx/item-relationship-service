@@ -9,14 +9,16 @@
 //
 package net.catenax.irs.aaswrapper.registry.domain;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.aaswrapper.job.AspectTypeFilter;
+import net.catenax.irs.component.assemblypartrelationship.AssetAdministrationShellDescriptor;
+import net.catenax.irs.component.assemblypartrelationship.SubmodelDescriptor;
+import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.dto.JobParameter;
-import net.catenax.irs.dto.SubmodelEndpoint;
-import net.catenax.irs.dto.SubmodelType;
 import org.springframework.stereotype.Service;
 
 /**
@@ -24,8 +26,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DigitalTwinRegistryFacade {
 
+    private final AspectTypeFilter aspectTypeFilter = new AspectTypeFilter();
     private final DigitalTwinRegistryClient digitalTwinRegistryClient;
 
     /**
@@ -35,64 +39,36 @@ public class DigitalTwinRegistryFacade {
      * @param jobData       the job data parameters
      * @return list of submodel addresses
      */
-    public List<SubmodelEndpoint> getAASSubmodelEndpoints(final String aasIdentifier, final JobParameter jobData) {
-        final List<SubmodelDescriptor> submodelDescriptors = digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(
-                aasIdentifier).getSubmodelDescriptors();
-
-        return submodelDescriptors.stream()
-                                  .filter(submodelDescriptor -> filterByAspectType(submodelDescriptor, jobData))
-                                  .map(submodelDescriptor -> new SubmodelEndpoint(submodelDescriptor.getEndpoints()
-                                                                                                    .get(0)
-                                                                                                    .getProtocolInformation()
-                                                                                                    .getEndpointAddress(),
-                                          convert(submodelDescriptor.getIdShort())))
-                                  .collect(Collectors.toList());
+    public AssetAdministrationShellDescriptor getAASShellDescriptor(final String aasIdentifier,
+            final JobParameter jobData) {
+        final AssetAdministrationShellDescriptor assetAdministrationShellDescriptor = digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(
+                aasIdentifier);
+        final List<SubmodelDescriptor> submodelDescriptors = filterByAspectType(
+                assetAdministrationShellDescriptor.getSubmodelDescriptors(), jobData.getAspectTypes());
+        return assetAdministrationShellDescriptor.toBuilder().submodelDescriptors(submodelDescriptors).build();
     }
 
     /**
-     * TODO: Adjust when we will know how to distinguish assembly part relationships
-     *
      * @param submodelDescriptor the submodel descriptor
-     * @param jobData            the job data parameters
-     * @return True, if no filter has been selected otherwise filter the submodelDescriptor
-     * according to the given consumer aspectType
+     * @param aspectTypes        the aspect types which should be filtered by
+     * @return True, if the aspect type of the submodelDescriptor is part of
+     * the given consumer aspectTypes
      */
-    private boolean filterByAspectType(final SubmodelDescriptor submodelDescriptor, final JobParameter jobData) {
-        final List<String> aspectTypes = jobData.getAspectTypes();
+    private List<SubmodelDescriptor> filterByAspectType(final List<SubmodelDescriptor> submodelDescriptor,
+            final List<String> aspectTypes) {
 
-        if (shouldFilterByAspectType(aspectTypes)) {
-            final String type = submodelDescriptor.getIdShort();
-            return aspectTypes.contains(type.toLowerCase(Locale.ROOT));
+        final List<String> filterAspectTypes = new ArrayList<>(aspectTypes);
+
+        if (containsAssemblyPartRelationship(filterAspectTypes)) {
+            filterAspectTypes.add(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString());
         }
-        return true;
+        log.info("Adjusted Aspect Type Filter '{}'", filterAspectTypes);
+
+        return aspectTypeFilter.filterDescriptorsByAspectTypes(submodelDescriptor, filterAspectTypes);
     }
 
-    private boolean shouldFilterByAspectType(final List<String> aspectTypes) {
-        return aspectTypes != null && !aspectTypes.isEmpty();
-    }
-
-    /**
-     * Convert from AspectType value into an SubmodelType enum
-     *
-     * @param aspectType the given consumer AspectType value
-     * @return the converted SubmodelType enum
-     */
-    private SubmodelType convert(final String aspectType) {
-        SubmodelType submodelType;
-
-        switch (aspectType) {
-            case "assemblypartrelationship":
-                submodelType = SubmodelType.ASSEMBLY_PART_RELATIONSHIP;
-                break;
-            case "serialparttypization":
-                submodelType = SubmodelType.SERIAL_PART_TYPIZATION;
-                break;
-            default:
-                // TODO (Saber Dridi) Extend the submodel types and improve the default case
-                submodelType = SubmodelType.ASSEMBLY_PART_RELATIONSHIP;
-                break;
-        }
-        return submodelType;
+    private boolean containsAssemblyPartRelationship(final List<String> filterAspectTypes) {
+        return !filterAspectTypes.contains(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString());
     }
 
 }
