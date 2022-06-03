@@ -33,7 +33,7 @@ import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.Tombstone;
-import net.catenax.irs.component.assemblypartrelationship.AssetAdministrationShellDescriptor;
+import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;

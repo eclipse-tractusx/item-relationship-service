@@ -7,7 +7,7 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.component.assemblypartrelationship;
+package net.catenax.irs.component.assetadministrationshell;
 
 import lombok.Builder;
 import lombok.Data;

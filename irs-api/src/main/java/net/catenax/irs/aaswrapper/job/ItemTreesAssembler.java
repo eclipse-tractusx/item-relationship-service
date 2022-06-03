@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.Tombstone;
-import net.catenax.irs.component.assemblypartrelationship.AssetAdministrationShellDescriptor;
+import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 
 /**

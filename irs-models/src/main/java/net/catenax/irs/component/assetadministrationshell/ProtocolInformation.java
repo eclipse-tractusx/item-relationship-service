@@ -7,45 +7,43 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.component.assemblypartrelationship;
-
-import java.util.List;
+package net.catenax.irs.component.assetadministrationshell;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * SubmodelDescriptor
+ * ProtocolInformation
  */
 @Data
 @Builder
 @Jacksonized
-public class SubmodelDescriptor {
+public class ProtocolInformation {
 
     /**
-     * administration
+     * endpointAddress
      */
-    private AdministrativeInformation administration;
+    private String endpointAddress;
     /**
-     * description
+     * endpointProtocol
      */
-    private List<LangString> description;
+    private String endpointProtocol;
     /**
-     * idShort
+     * endpointProtocolVersion
      */
-    private String idShort;
+    private String endpointProtocolVersion;
     /**
-     * identification
+     * subprotocol
      */
-    private String identification;
+    private String subprotocol;
     /**
-     * semanticId
+     * subprotocolBody
      */
-    private Reference semanticId;
+    private String subprotocolBody;
     /**
-     * endpoint
+     * subprotocolBodyEncoding
      */
-    private List<Endpoint> endpoints;
+    private String subprotocolBodyEncoding;
 
 }
