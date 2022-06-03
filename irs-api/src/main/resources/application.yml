@@ -101,6 +101,5 @@ aasProxy:
     username: ${AAS_PROXY_SUBMODEL_USERNAME:}
     password: ${AAS_PROXY_SUBMODEL_PASSWORD:}
 
-aspect:
-  types:
-    default: urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization
+aspectTypes:
+    default: SerialPartTypization

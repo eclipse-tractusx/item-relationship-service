@@ -49,6 +49,7 @@ import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -66,6 +67,9 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     private final JobStore jobStore;
 
     private final BlobPersistence blobStore;
+
+    @Value("${aspectTypes.default}")
+    private String defaultAspect;
 
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
@@ -91,8 +95,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final String lifecycle = bomLifecycleFormRequest.map(BomLifecycle::getLifecycleContextCharacteristicValue)
                                                         .orElse(null);
 
-        // TODO (ds-jhartmann) change retrieval of default aspect type to config
-        final String defaultAspect = AspectType.SERIAL_PART_TYPIZATION.toString();
         log.info("Default Aspect: {}", defaultAspect);
         final Optional<List<AspectType>> aspectTypes = Optional.ofNullable(request.getAspects());
         List<String> aspectTypeValues;

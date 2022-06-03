@@ -79,7 +79,7 @@ public enum AspectType {
     /**
      * Constants for aspectTypes
      */
-    public static class AspectTypesConstants {
+    public static final class AspectTypesConstants {
         public static final String SERIAL_PART_TYPIZATION = "SerialPartTypization";
         public static final String ASSEMBLY_PART_RELATIONSHIP = "AssemblyPartRelationship";
         public static final String PRODUCT_DESCRIPTION = "ProductDescription";
