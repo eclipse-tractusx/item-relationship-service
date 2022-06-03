@@ -96,6 +96,10 @@ public abstract class BaseJobStore implements JobStore {
         modifyJob(jobId, job -> job.toBuilder().transferProcessId(processId).transitionInProgress().build());
     }
 
+    public List<MultiTransferJob> findAll() {
+        return readLock(() -> getAll().stream().collect(Collectors.toList()));
+    }
+
     @Override
     public void completeTransferProcess(final String jobId, final TransferProcess process) {
         log.info("Completing transfer process {} for job {}", process.getId(), jobId);
