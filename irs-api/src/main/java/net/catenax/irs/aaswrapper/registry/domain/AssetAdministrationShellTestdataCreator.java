@@ -13,13 +13,13 @@ package net.catenax.irs.aaswrapper.registry.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.catenax.irs.component.assemblypartrelationship.AssetAdministrationShellDescriptor;
-import net.catenax.irs.component.assemblypartrelationship.Endpoint;
-import net.catenax.irs.component.assemblypartrelationship.IdentifierKeyValuePair;
-import net.catenax.irs.component.assemblypartrelationship.LangString;
-import net.catenax.irs.component.assemblypartrelationship.ProtocolInformation;
-import net.catenax.irs.component.assemblypartrelationship.Reference;
-import net.catenax.irs.component.assemblypartrelationship.SubmodelDescriptor;
+import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import net.catenax.irs.component.assetadministrationshell.Endpoint;
+import net.catenax.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import net.catenax.irs.component.assetadministrationshell.LangString;
+import net.catenax.irs.component.assetadministrationshell.ProtocolInformation;
+import net.catenax.irs.component.assetadministrationshell.Reference;
+import net.catenax.irs.component.assetadministrationshell.SubmodelDescriptor;
 
 /**
  * Class to create AssetAdministrationShell Testdata

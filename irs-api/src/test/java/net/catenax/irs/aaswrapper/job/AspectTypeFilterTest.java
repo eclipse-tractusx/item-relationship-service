@@ -13,8 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import net.catenax.irs.component.assemblypartrelationship.Reference;
-import net.catenax.irs.component.assemblypartrelationship.SubmodelDescriptor;
+import net.catenax.irs.component.assetadministrationshell.Reference;
+import net.catenax.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.junit.jupiter.api.Test;
 
 class AspectTypeFilterTest {

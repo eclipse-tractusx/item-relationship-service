@@ -7,27 +7,29 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.component.assemblypartrelationship;
+package net.catenax.irs.component.assetadministrationshell;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * AdministrativeInformation
+ * Endpoint
  */
 @Data
 @Builder
 @Jacksonized
-public class AdministrativeInformation {
+public class Endpoint {
 
     /**
-     * revision
+     * interfaceInformation
      */
-    private String revision;
+    @JsonProperty("interface")
+    private String interfaceInformation;
     /**
-     * version
+     * protocolInformation
      */
-    private String version;
+    private ProtocolInformation protocolInformation;
 
 }

@@ -9,9 +9,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import net.catenax.irs.component.assemblypartrelationship.AssetAdministrationShellDescriptor;
-import net.catenax.irs.component.assemblypartrelationship.Endpoint;
-import net.catenax.irs.component.assemblypartrelationship.SubmodelDescriptor;
+import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import net.catenax.irs.component.assetadministrationshell.Endpoint;
+import net.catenax.irs.component.assetadministrationshell.SubmodelDescriptor;
 import net.catenax.irs.dto.JobParameter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

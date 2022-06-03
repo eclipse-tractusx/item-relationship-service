@@ -7,25 +7,21 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.component.assemblypartrelationship;
+package net.catenax.irs.component.assetadministrationshell;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * AssetAdministrationShellDescriptor
+ * SubmodelDescriptor
  */
 @Data
+@Builder
 @Jacksonized
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder(toBuilder = true)
-public class AssetAdministrationShellDescriptor {
+public class SubmodelDescriptor {
 
     /**
      * administration
@@ -36,10 +32,6 @@ public class AssetAdministrationShellDescriptor {
      */
     private List<LangString> description;
     /**
-     * globalAssetId
-     */
-    private Reference globalAssetId;
-    /**
      * idShort
      */
     private String idShort;
@@ -48,12 +40,12 @@ public class AssetAdministrationShellDescriptor {
      */
     private String identification;
     /**
-     * specificAssetIds
+     * semanticId
      */
-    private List<IdentifierKeyValuePair> specificAssetIds;
+    private Reference semanticId;
     /**
-     * submodelDescriptors
+     * endpoint
      */
-    private List<SubmodelDescriptor> submodelDescriptors;
+    private List<Endpoint> endpoints;
 
 }

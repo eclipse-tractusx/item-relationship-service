@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
-import net.catenax.irs.component.assemblypartrelationship.AssetAdministrationShellDescriptor;
+import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 
 /**
  * List of Job and relationship to parts

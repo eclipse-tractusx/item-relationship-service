@@ -7,25 +7,27 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.component.assemblypartrelationship;
-
-import java.util.List;
+package net.catenax.irs.component.assetadministrationshell;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * Reference
+ * LangString
  */
 @Data
 @Builder
 @Jacksonized
-public class Reference {
+public class LangString {
 
     /**
-     * value
+     * language
      */
-    private List<String> value;
+    private String language;
+    /**
+     * text
+     */
+    private String text;
 
 }

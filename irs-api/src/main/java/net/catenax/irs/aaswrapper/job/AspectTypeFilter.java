@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.component.assemblypartrelationship.SubmodelDescriptor;
+import net.catenax.irs.component.assetadministrationshell.SubmodelDescriptor;
 import net.catenax.irs.component.enums.AspectType;
 import org.jetbrains.annotations.NotNull;
 

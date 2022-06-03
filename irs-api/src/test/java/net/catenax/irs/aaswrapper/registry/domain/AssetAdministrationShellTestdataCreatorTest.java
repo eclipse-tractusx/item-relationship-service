@@ -18,7 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.catenax.irs.component.assemblypartrelationship.AssetAdministrationShellDescriptor;
+import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.junit.jupiter.api.Test;
 
 class AssetAdministrationShellTestdataCreatorTest {
