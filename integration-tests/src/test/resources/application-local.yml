@@ -1,24 +1,8 @@
 server:
   port: 8081
 
-blobstore:
-  endpoint: http://localhost:9000
-  accessKey: minioadmin
-  secretKey: minioadmin
-
-irs:
-  job:
-    cleanup:
-      scheduler:
-        completed: 0 * * * * *
-        failed: 0 * * * * *
-
 spring:
   security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/iamcentralidp/auth/realms/CX-Central/protocol/openid-connect/certs
       client:
         registration:
           keycloak:
