@@ -39,4 +39,4 @@ jobs:
           PROFILE_GITHUB: ${{ github.event.inputs.irsTestProfile }}
         run: |
           mvn -Dtest=intergartion-tests/src/test/java/net/catenax/irs/smoketest/ItemGraphSmokeTest test \
-          -P -i $PROFILE_GITHUB
+          -Dspring.profiles.active= $PROFILE_GITHUB
