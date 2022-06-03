@@ -1,4 +1,4 @@
-name: Maven Run of the integration test class ItemGraphSmokeTest when push to Main branch.
+name: IRS CI Integration test
 
 on:
   workflow_dispatch:
@@ -39,4 +39,4 @@ jobs:
           PROFILE_GITHUB: ${{ github.event.inputs.irsTestProfile }}
         run: |
           mvn -Dtest=intergartion-tests/src/test/java/net/catenax/irs/smoketest/ItemGraphSmokeTest test \
-          -Dspring.profiles.active= $PROFILE_GITHUB
+          -D spring.profiles.active=$PROFILE_GITHUB
