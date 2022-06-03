@@ -2,11 +2,6 @@ name: IRS CI Integration test
 
 on:
   workflow_dispatch:
-    inputs:
-      irsTestProfile:
-        description: 'Profile value to activate on GitHub like local, dev, int or prod'
-        required: true
-        type: string
   push:
     branches:
       - main
@@ -38,5 +33,5 @@ jobs:
           PROFILE_GITHUB: ${{ github.event.inputs.irsTestProfile }}
         run: |
           mvn -Dtest=intergartion-tests/src/test/java/net/catenax/irs/smoketest/ItemGraphSmokeTest test \
-          -D spring.profiles.active=$PROFILE_GITHUB \
+          -D spring.profiles.active=local \
           -D surefire.failIfNoSpecifiedTests=false
