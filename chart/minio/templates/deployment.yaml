@@ -1,3 +1,8 @@
+{{- if eq .Values.mode "standalone" }}
+{{ $scheme := "http" }}
+{{- if .Values.tls.enabled }}
+{{ $scheme = "https" }}
+{{ end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -33,6 +38,10 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/bin/sh"
+            - "-ce"
+            - "/usr/bin/docker-entrypoint.sh minio server --address :{{ .Values.minioAPIPort }} {{- template "minio.extraArgs" . }}"
           ports:
             - name: http
               containerPort: 80

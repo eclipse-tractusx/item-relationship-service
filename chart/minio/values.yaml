@@ -5,14 +5,26 @@
 replicaCount: 1
 
 image:
-  repository: "https://helm.min.io"
+  repository: quay.io/minio/minio
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "RELEASE.2022-05-08T23-50-31Z"
 
 imagePullSecrets: []
 nameOverride: "minio"
 fullnameOverride: "minio"
+
+## minio mode, i.e. standalone or distributed or gateway.
+mode: distributed ## other supported values are "standalone", "gateway"  
+
+## Port number for MinIO S3 API Access
+minioAPIPort: "9000"
+
+# Number of drives attached to a node
+drivesPerNode: 1
+
+# Number of expanded MinIO clusters
+pools: 1
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -22,6 +34,33 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
+
+## Pod priority settings
+## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+##
+priorityClassName: ""
+
+## Set default rootUser, rootPassword
+## AccessKey and secretKey is generated when not set
+## Distributed MinIO ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
+##
+rootUser: <path:product-traceability-irs/data/dev/minio#minioDevUser>
+rootPassword: <path:product-traceability-irs/data/dev/minio#minioDevUserPassword>
+
+## Use existing Secret that store following variables:
+##
+## | Chart var             | .data.<key> in Secret    |
+## |:----------------------|:-------------------------|
+## | rootUser              | rootUser                 |
+## | rootPassword          | rootPassword             |
+##
+## All mentioned variables will be ignored in values file.
+## .data.rootUser and .data.rootPassword are mandatory,
+## others depend on enabled status of corresponding sections.
+existingSecret: ""
+
+## Path where PV would be mounted on the MinIO Pod
+mountPath: "/export"
 
 podAnnotations: {}
 
@@ -56,17 +95,12 @@ ingress:
         - "app-irs-dev-minio"
       secretName: tls-secret  
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 4Gi
 
 autoscaling:
   enabled: false
@@ -74,6 +108,16 @@ autoscaling:
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
+
+## The name of a secret in the same kubernetes namespace which contain secret values
+## This can be useful for LDAP password, etc
+## The key in the secret must be 'config.env'
+##
+# extraSecret: minio-extraenv
+
+networkPolicy:
+  enabled: false
+  allowExternal: true  
 
 nodeSelector: {}
 
@@ -106,3 +150,59 @@ readinessProbe:
   periodSeconds: 10
   successThreshold: 1
   timeoutSeconds: 1
+
+## TLS Settings for MinIO
+tls:
+  enabled: false
+  ## Create a secret with private.key and public.crt files and pass that here. Ref: https://github.com/minio/minio/tree/master/docs/tls/kubernetes#2-create-kubernetes-secret
+  certSecret: ""
+  publicCrt: public.crt
+  privateKey: private.key
+
+## Trusted Certificates Settings for MinIO. Ref: https://docs.minio.io/docs/how-to-secure-access-to-minio-server-with-tls#install-certificates-from-third-party-cas
+## Bundle multiple trusted certificates into one secret and pass that here. Ref: https://github.com/minio/minio/tree/master/docs/tls/kubernetes#2-create-kubernetes-secret
+## When using self-signed certificates, remember to include MinIO's own certificate in the bundle with key public.crt.
+## If certSecret is left empty and tls is enabled, this chart installs the public certificate from .Values.tls.certSecret.
+trustedCertsSecret: ""
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  annotations: {}
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  existingClaim: ""
+
+  ## minio data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  ## Storage class of PV to bind. By default it looks for standard storage class.
+  ## If the PV uses a different storage class, specify that here.
+  storageClass: ""
+  VolumeName: ""
+  accessMode: ReadWriteOnce
+  size: 500Gi
+
+  ## If subPath is set mount a sub folder of a volume instead of the root of the volume.
+  ## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).
+  ##
+  subPath: ""
+
+## Expose the MinIO service to be accessed from outside the cluster (LoadBalancer service).
+## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
+## ref: http://kubernetes.io/docs/user-guide/services/
+##
+service:
+  type: ClusterIP
+  clusterIP: ~
+  ## Make sure to match it to minioAPIPort
+  port: "9000"
+  nodePort: 32000
