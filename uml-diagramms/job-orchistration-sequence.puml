@@ -22,18 +22,18 @@ activate JobOrchestrator
 
 ApiEndpointExtension -> InMemoryJobStore: new()
 activate InMemoryJobStore
-ApiEndpointExtension ->  PartsTreeRecursiveLogic: new()
-activate PartsTreeRecursiveLogic
+ApiEndpointExtension ->  ItemGraphRecursiveLogic: new()
+activate ItemGraphRecursiveLogic
 ApiEndpointExtension ->  DataRequestFactory: new()
 activate DataRequestFactory
-participant PartsTreeRecursiveJobHandler
+participant ItemGraphRecursiveJobHandler
 participant TransferProcessManager
 database Blobstore
 
 WebService -> ConsumerApiController: register (monitor, service, middleware)
 
-APIConsumer -> ConsumerApiController: retrievePartsTree
-ConsumerApiController -> ConsumerService : retrievePartsTree(request)
+APIConsumer -> ConsumerApiController: retrieveItemGraph
+ConsumerApiController -> ConsumerService : retrieveItemGraph(request)
 ConsumerService -> Blobstore : createContainer(storageAccountName, UUID)
 ConsumerService <- Blobstore : success
 note over ConsumerService
@@ -44,18 +44,18 @@ JobOrchestrator -> InMemoryJobStore: create(Job)
 
 
 InMemoryJobStore -> InMemoryJobStore: create(job)
-JobOrchestrator -> PartsTreeRecursiveJobHandler: initiate(Job)
-PartsTreeRecursiveJobHandler -> PartsTreeRecursiveJobHandler: initiate(Job)
-PartsTreeRecursiveJobHandler -> PartsTreeRecursiveJobHandler: getPartsTreeRequest(Job)
-PartsTreeRecursiveJobHandler -> InMemoryJobStore : get(jobRequest)
+JobOrchestrator -> ItemGraphRecursiveJobHandler: initiate(Job)
+ItemGraphRecursiveJobHandler -> ItemGraphRecursiveJobHandler: initiate(Job)
+ItemGraphRecursiveJobHandler -> ItemGraphRecursiveJobHandler: getItemGraphRequest(Job)
+ItemGraphRecursiveJobHandler -> InMemoryJobStore : get(jobRequest)
 
 
-PartsTreeRecursiveJobHandler -> PartsTreeRecursiveLogic : createInitialPartsTreeRequest(request)
-PartsTreeRecursiveJobHandler -> DataRequestFactory :createRequest
+ItemGraphRecursiveJobHandler -> ItemGraphRecursiveLogic : createInitialItemGraphRequest(request)
+ItemGraphRecursiveJobHandler -> DataRequestFactory :createRequest
 DataRequestFactory -> DataRequestFactory: getRequestFromRegistry or Endpoint
 DataRequestFactory --> Blobstore: store request in Blobstore
-PartsTreeRecursiveJobHandler <-- DataRequestFactory: Stream<DataRequest>
-JobOrchestrator <-- PartsTreeRecursiveJobHandler: Stream<DataRequest>
+ItemGraphRecursiveJobHandler <-- DataRequestFactory: Stream<DataRequest>
+JobOrchestrator <-- ItemGraphRecursiveJobHandler: Stream<DataRequest>
 loop over  Stream<DataRequest>
     JobOrchestrator -> JobOrchestrator: startTransfer
     ref over JobOrchestrator, TransferProcessManager
@@ -63,8 +63,8 @@ loop over  Stream<DataRequest>
     end ref
     JobOrchestrator --> InMemoryJobStore: addTransferProcess
 end loop
-PartsTreeRecursiveJobHandler -> PartsTreeRecursiveJobHandler:startTransfers
-note over PartsTreeRecursiveJobHandler
+ItemGraphRecursiveJobHandler -> ItemGraphRecursiveJobHandler:startTransfers
+note over ItemGraphRecursiveJobHandler
     Some other stuff
 end note
 JobOrchestrator --> InMemoryJobStore: (completeTransferProcess)
