@@ -100,7 +100,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         log.info("Default Aspect: {}", defaultAspect);
         final Optional<List<AspectType>> aspectTypes = Optional.ofNullable(request.getAspects());
-        List<String> aspectTypeValues = aspectTypes.map(types -> types.stream()
+        final List<String> aspectTypeValues = aspectTypes.map(types -> types.stream()
                                                                       .map(AspectType::toString)
                                                                       .collect(Collectors.toList()))
                                                    .orElse(List.of(defaultAspect));

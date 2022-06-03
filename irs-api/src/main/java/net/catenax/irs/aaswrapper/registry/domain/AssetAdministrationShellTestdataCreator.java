@@ -20,7 +20,6 @@ import net.catenax.irs.component.assemblypartrelationship.LangString;
 import net.catenax.irs.component.assemblypartrelationship.ProtocolInformation;
 import net.catenax.irs.component.assemblypartrelationship.Reference;
 import net.catenax.irs.component.assemblypartrelationship.SubmodelDescriptor;
-import net.catenax.irs.dto.SubmodelType;
 
 /**
  * Class to create AssetAdministrationShell Testdata

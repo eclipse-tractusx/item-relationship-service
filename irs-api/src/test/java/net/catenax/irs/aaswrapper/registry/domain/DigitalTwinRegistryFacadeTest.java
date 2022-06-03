@@ -13,7 +13,6 @@ import net.catenax.irs.component.assemblypartrelationship.AssetAdministrationShe
 import net.catenax.irs.component.assemblypartrelationship.Endpoint;
 import net.catenax.irs.component.assemblypartrelationship.SubmodelDescriptor;
 import net.catenax.irs.dto.JobParameter;
-import net.catenax.irs.dto.SubmodelType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
