@@ -7,21 +7,27 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain;
+package net.catenax.irs.component.assemblypartrelationship;
 
-import java.util.List;
-
+import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * Reference
+ * AdministrativeInformation
  */
 @Data
-class Reference {
+@Builder
+@Jacksonized
+public class AdministrativeInformation {
 
     /**
-     * value
+     * revision
      */
-    private List<String> value;
+    private String revision;
+    /**
+     * version
+     */
+    private String version;
 
 }

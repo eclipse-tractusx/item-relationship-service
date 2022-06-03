@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
+import net.catenax.irs.component.assemblypartrelationship.AssetAdministrationShellDescriptor;
 
 /**
  * List of Job and relationship to parts
@@ -38,7 +39,7 @@ public class Jobs {
     private List<Relationship> relationships;
 
     @Schema(description = "AAS shells.")
-    private List<Shell> shells;
+    private List<AssetAdministrationShellDescriptor> shells;
 
     @Schema(description = "Collection of not resolvable endpoints as tombstones. Including cause of error and endpoint URL.")
     @Singular

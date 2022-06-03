@@ -13,6 +13,13 @@ package net.catenax.irs.aaswrapper.registry.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.catenax.irs.component.assemblypartrelationship.AssetAdministrationShellDescriptor;
+import net.catenax.irs.component.assemblypartrelationship.Endpoint;
+import net.catenax.irs.component.assemblypartrelationship.IdentifierKeyValuePair;
+import net.catenax.irs.component.assemblypartrelationship.LangString;
+import net.catenax.irs.component.assemblypartrelationship.ProtocolInformation;
+import net.catenax.irs.component.assemblypartrelationship.Reference;
+import net.catenax.irs.component.assemblypartrelationship.SubmodelDescriptor;
 import net.catenax.irs.dto.SubmodelType;
 
 /**
@@ -26,38 +33,49 @@ class AssetAdministrationShellTestdataCreator {
         final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
 
         submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId));
+        submodelDescriptors.add(createSerialPartTypizationSubmodelDescriptor(catenaXId));
 
-        final Reference globalAssetId = new Reference();
-        globalAssetId.setValue(List.of(catenaXId));
+        final Reference globalAssetId = Reference.builder().value(List.of(catenaXId)).build();
         return AssetAdministrationShellDescriptor.builder()
-                                                 .description(List.of(new LangString()))
+                                                 .description(List.of(LangString.builder().build()))
                                                  .globalAssetId(globalAssetId)
                                                  .idShort("idShort")
                                                  .identification(catenaXId)
-                                                 .specificAssetIds(List.of(new IdentifierKeyValuePair()))
+                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder().build()))
                                                  .submodelDescriptors(submodelDescriptors)
                                                  .build();
     }
 
     private SubmodelDescriptor createAssemblyPartRelationshipSubmodelDescriptor(final String catenaXId) {
-        final ProtocolInformation protocolInformation = new ProtocolInformation();
-        protocolInformation.setEndpointAddress(catenaXId);
-        protocolInformation.setEndpointProtocol("AAS/SUBMODEL");
-        protocolInformation.setEndpointProtocolVersion("1.0RC02");
+        return createSubmodelDescriptor(catenaXId, SubmodelType.ASSEMBLY_PART_RELATIONSHIP.getValue(),
+                "assemblyPartRelationship");
+    }
 
-        final Endpoint endpoint = new Endpoint();
-        endpoint.setInterfaceInformation("https://TEST.connector");
-        endpoint.setProtocolInformation(protocolInformation);
+    private SubmodelDescriptor createSerialPartTypizationSubmodelDescriptor(final String catenaXId) {
+        return createSubmodelDescriptor(catenaXId, SubmodelType.SERIAL_PART_TYPIZATION.getValue(),
+                "serialPartTypization");
+    }
 
-        final Reference reference = new Reference();
-        reference.setValue(List.of(SubmodelType.ASSEMBLY_PART_RELATIONSHIP.getValue()));
+    private SubmodelDescriptor createSubmodelDescriptor(final String catenaXId, final String submodelUrn,
+            final String submodelName) {
+        final ProtocolInformation protocolInformation = ProtocolInformation.builder()
+                                                                           .endpointAddress(catenaXId)
+                                                                           .endpointProtocol("AAS/SUBMODEL")
+                                                                           .endpointProtocolVersion("1.0RC02")
+                                                                           .build();
 
-        final SubmodelDescriptor submodelDescriptor = new SubmodelDescriptor();
-        submodelDescriptor.setIdentification(catenaXId);
-        submodelDescriptor.setIdShort("assemblyPartRelationship");
-        submodelDescriptor.setEndpoints(List.of(endpoint));
-        submodelDescriptor.setSemanticId(reference);
+        final Endpoint endpoint = Endpoint.builder()
+                                          .interfaceInformation("https://TEST.connector")
+                                          .protocolInformation(protocolInformation)
+                                          .build();
 
-        return submodelDescriptor;
+        final Reference reference = Reference.builder().value(List.of(submodelUrn)).build();
+
+        return SubmodelDescriptor.builder()
+                                 .identification(catenaXId)
+                                 .idShort(submodelName)
+                                 .endpoints(List.of(endpoint))
+                                 .semanticId(reference)
+                                 .build();
     }
 }

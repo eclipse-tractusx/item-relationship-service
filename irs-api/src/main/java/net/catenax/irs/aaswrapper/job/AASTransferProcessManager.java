@@ -16,19 +16,23 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.component.ProcessingError;
 import net.catenax.irs.component.Tombstone;
+import net.catenax.irs.component.assemblypartrelationship.AssetAdministrationShellDescriptor;
+import net.catenax.irs.component.assemblypartrelationship.Endpoint;
+import net.catenax.irs.component.assemblypartrelationship.ProtocolInformation;
+import net.catenax.irs.component.assemblypartrelationship.SubmodelDescriptor;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.connector.job.TransferProcessManager;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.JobParameter;
-import net.catenax.irs.dto.SubmodelEndpoint;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
@@ -49,6 +53,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
     private final ExecutorService executor;
 
     private final BlobPersistence blobStore;
+    private final AspectTypeFilter aspectTypeFilter = new AspectTypeFilter();
 
     public AASTransferProcessManager(final DigitalTwinRegistryFacade registryFacade,
             final SubmodelFacade submodelFacade, final ExecutorService executor, final BlobPersistence blobStore) {
@@ -84,12 +89,13 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             log.info("Calling Digital Twin Registry with itemId {}", itemId);
             try {
-                final List<SubmodelEndpoint> aasSubmodelEndpoints = registryFacade.getAASSubmodelEndpoints(itemId,
+                final AssetAdministrationShellDescriptor aasShell = registryFacade.getAASShellDescriptor(itemId,
                         jobData);
+                final List<SubmodelDescriptor> aasSubmodelDescriptors = aasShell.getSubmodelDescriptors();
 
-                log.info("Retrieved {} SubmodelEndpoints for itemId {}", aasSubmodelEndpoints.size(), itemId);
+                log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
 
-                aasSubmodelEndpoints.stream().map(SubmodelEndpoint::getAddress).forEach(address -> {
+                getAssemblyPartRelationshipEndpointAddresses(aasSubmodelDescriptors).forEach(address -> {
                     try {
                         final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address, jobData);
                         processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
@@ -99,6 +105,14 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
                         itemContainerBuilder.tombstone(createTombstone(itemId, address, e));
                     }
                 });
+                final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = aspectTypeFilter.filterDescriptorsByAspectTypes(
+                        aasSubmodelDescriptors, jobData.getAspectTypes());
+
+                log.info("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
+                log.info("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
+
+                itemContainerBuilder.shell(
+                        aasShell.toBuilder().submodelDescriptors(filteredSubmodelDescriptorsByAspectType).build());
             } catch (RestClientException e) {
                 log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
                 itemContainerBuilder.tombstone(createTombstone(itemId, null, e));
@@ -107,6 +121,18 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             transferProcessCompleted.accept(aasTransferProcess);
         };
+    }
+
+    private Stream<String> getAssemblyPartRelationshipEndpointAddresses(
+            final List<SubmodelDescriptor> aasSubmodelEndpoints) {
+        final List<SubmodelDescriptor> submodelDescriptors = aspectTypeFilter.filterDescriptorsByAssemblyPartRelationship(
+                aasSubmodelEndpoints);
+        return submodelDescriptors.stream()
+                                  .map(SubmodelDescriptor::getEndpoints)
+                                  .flatMap(endpoints -> endpoints.stream()
+                                                                 .map(Endpoint::getProtocolInformation)
+                                                                 .map(ProtocolInformation::getEndpointAddress));
+
     }
 
     private void storeItemContainer(final String processId, final ItemContainer itemContainer) {
