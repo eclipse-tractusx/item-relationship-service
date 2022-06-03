@@ -1,8 +1,3 @@
-{{- if eq .Values.mode "standalone" }}
-{{ $scheme := "http" }}
-{{- if .Values.tls.enabled }}
-{{ $scheme = "https" }}
-{{ end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -42,10 +37,37 @@ spec:
             - "/bin/sh"
             - "-ce"
             - "/usr/bin/docker-entrypoint.sh minio server --address :{{ .Values.minioAPIPort }} {{- template "minio.extraArgs" . }}"
+          volumeMounts:
+            - name: minio-user
+              mountPath: "/tmp/credentials"
+              readOnly: true
+            {{- if .Values.persistence.enabled }}
+            - name: export
+              mountPath: {{ .Values.mountPath }}
+              {{- if .Values.persistence.subPath }}
+              subPath: "{{ .Values.persistence.subPath }}"
+              {{- end }}
+            {{- end }}            
+            {{- include "minio.tlsKeysVolumeMount" . | indent 12 }}  
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.minioAPIPort }}
               protocol: TCP
+          env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "minio.secretName" . }}
+                  key: rootUser
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "minio.secretName" . }}
+                  key: rootPassword
+            {{- range $key, $val := .Values.environment }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end}}    
           livenessProbe:
             httpGet:
               path: /
@@ -56,6 +78,23 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: export
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "minio.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        {{- if .Values.extraSecret }}
+        - name: extra-secret
+          secret:
+            secretName: {{ .Values.extraSecret }}
+        {{- end }}
+        - name: minio-user
+          secret:
+            secretName: {{ template "minio.secretName" . }}
+        {{- include "minio.tlsKeysVolume" . | indent 8 }}      
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
