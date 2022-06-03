@@ -15,13 +15,13 @@ participant JobOrchestrator
 activate JobOrchestrator
 
 APIConsumer -> WebService : /irs/items/{globalAssetId}
-WebService -> ConsumerApiController :  retrievePartsTree
-ConsumerApiController -> ConsumerService :  retrievePartsTree
+WebService -> ConsumerApiController :  retrieveItemGraph
+ConsumerApiController -> ConsumerService :  retrieveItemGraph
 ConsumerService -> JobOrchestrator: startJob
 JobOrchestrator -> InMemoryJobStore: create(Job)
 
-JobOrchestrator --> PartsTreeRecursiveJobHandler: initiate(Job)
-activate PartsTreeRecursiveJobHandler
+JobOrchestrator --> ItemGraphRecursiveJobHandler: initiate(Job)
+activate ItemGraphRecursiveJobHandler
 
 ConsumerService <-- JobOrchestrator : success jobID (UUID)
 ConsumerApiController <-- ConsumerService : success jobID (UUID)

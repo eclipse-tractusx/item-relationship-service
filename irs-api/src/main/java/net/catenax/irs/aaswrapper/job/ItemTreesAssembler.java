@@ -20,30 +20,30 @@ import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 
 /**
- * Assembles multiple partial parts trees into one overall parts tree.
+ * Assembles multiple partial item graphs into one overall item graph.
  */
 @Slf4j
 @RequiredArgsConstructor
 public class ItemTreesAssembler {
 
     /**
-     * Assembles multiple partial parts trees into one overall parts tree.
+     * Assembles multiple partial item graphs into one overall item graph.
      *
-     * @param partialTrees partial parts trees.
-     * @return A parts tree containing all the items from {@code partialTrees}, with deduplication.
+     * @param partialGraph partial item graph.
+     * @return An item graph containing all the items from {@code partialGraph}, with deduplication.
      */
-    /* package */ ItemContainer retrievePartsTrees(final Stream<ItemContainer> partialTrees) {
+    /* package */ ItemContainer retrieveItemGraph(final Stream<ItemContainer> partialGraph) {
         final var relationships = new LinkedHashSet<AssemblyPartRelationshipDTO>();
         final var numberOfPartialTrees = new AtomicInteger();
         final ArrayList<Tombstone> tombstones = new ArrayList<>();
 
-        partialTrees.forEachOrdered(partialTree -> {
-            relationships.addAll(partialTree.getAssemblyPartRelationships());
+        partialGraph.forEachOrdered(itemGraph -> {
+            relationships.addAll(itemGraph.getAssemblyPartRelationships());
             numberOfPartialTrees.incrementAndGet();
-            tombstones.addAll(partialTree.getTombstones());
+            tombstones.addAll(itemGraph.getTombstones());
         });
 
-        log.info("Assembled item tree from {} partial trees", numberOfPartialTrees);
+        log.info("Assembled item graph from {} partial graphs", numberOfPartialTrees);
 
         return ItemContainer.builder().assemblyPartRelationships(relationships).tombstones(tombstones).build();
     }

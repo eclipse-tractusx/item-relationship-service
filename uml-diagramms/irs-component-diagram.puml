@@ -16,10 +16,10 @@ interface JobStore
 component [**InMemoryJobStore**] <<Component>> as InMemoryJobStore
 component [**RecursiveJobHandler**] <<Component>> as RecursiveJobHandler
 component [**IRSAASClient**] <<Component>> as IRSAASClient
-component [**PartsTreeRecursiveLogic**] <<Component>> as PartsTreeRecursiveLogic
+component [**ItemGraphRecursiveLogic**] <<Component>> as ItemGraphRecursiveLogic
 interface BlobStoreApi as DataStoreApi
 component [**BlobStoreClient**] <<Component>> as DataStoreClient
-component [**PartsTreesAssembler**] as PartsTreesAssembler
+component [**ItemGraphAssembler**] as ItemGraphAssembler
 
 JobStore -  [InMemoryJobStore]
 DataStoreApi - [DataStoreClient]

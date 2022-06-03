@@ -20,7 +20,7 @@ import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
 
 /**
- * IrsPartTreeQueryService interface
+ * IIrsItemGraphQueryService interface
  */
 public interface IIrsItemGraphQueryService {
 
