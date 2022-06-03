@@ -22,15 +22,17 @@ import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.configuration.SmokeTestConfiguration;
 import net.catenax.irs.configuration.SmokeTestConnectionProperties;
 import net.catenax.irs.configuration.SmokeTestCredentialsProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {SmokeTestConfiguration.class})
 public class ItemGraphSmokeTest {
 
     @Autowired
