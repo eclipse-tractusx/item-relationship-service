@@ -1,5 +1,5 @@
 erver:
-  port: 8080
+  port: 8081
 
 spring:
   application:
@@ -12,93 +12,6 @@ spring:
             authorization-grant-type: client_credentials
             client-id: ${KEYCLOAK_OAUTH2_CLIENT_ID}
             client-secret: ${KEYCLOAK_OAUTH2_CLIENT_SECRET}
-        provider:
-          keycloak:
-            token-uri: ${KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI}
-      resourceserver:
-        jwt:
-          jwk-set-uri: ${KEYCLOAK_OAUTH2_JWK_SET_URI:https://default}
+
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:local}
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health, threaddump, loggers, prometheus
-  endpoint:
-    health:
-      probes:
-        enabled: true
-      group:
-        readiness:
-          include: readinessState, diskSpace
-      show-details: always
-  health:
-    livenessstate:
-      enabled: true
-    readinessstate:
-      enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
-  server:
-    port: 4004
-
-logging:
-  pattern:
-    console: "%d %-5level %logger : %msg%n"
-  level:
-    root: WARN
-    org.springframework: INFO
-    net.catenax.irs: INFO
-
-springdoc:
-  api-docs:
-    path: /api/api-docs
-  swagger-ui:
-    path: /api/swagger-ui
-  writer-with-order-by-keys: true
-
-irs:
-  apiUrl: http://irs.int.demo.catena-x.net
-  partsTreeMaxDepth: 100
-  job:
-    cleanup:
-      scheduler:
-        #          ┌───────────── second (0-59)
-        #          │ ┌───────────── minute (0 - 59)
-        #          │ │ ┌───────────── hour (0 - 23)
-        #          │ │ │ ┌───────────── day of the month (1 - 31)
-        #          │ │ │ │ ┌───────────── month (1 - 12) (or JAN-DEC)
-        #          │ │ │ │ │ ┌───────────── day of the week (0 - 7)
-        #          │ │ │ │ │ │          (or MON-SUN -- 0 or 7 is Sunday)
-        #          │ │ │ │ │ │
-        completed: 0 0 * * * *
-        failed: 0 0 * * * *
-
-blobstore:
-  endpoint: "${MINIO_URL}"
-  accessKey: "${MINIO_ACCESS_KEY}"
-  secretKey: "${MINIO_SECRET_KEY}"
-  bucketName: irsbucket
-
-resilience4j.retry:
-  configs:
-    default:
-      maxAttempts: 3
-      waitDuration: 100
-      retryExceptions:
-        - org.springframework.web.client.HttpServerErrorException
-        - java.util.concurrent.TimeoutException
-        - java.io.IOException
-      retryOnException:
-        - net.catenax.irs.exceptions.AspectNotSupportedException
-  instances:
-    submodelRetryer:
-      baseConfig: default
-
-aasProxy:
-  submodel:
-    username: ${AAS_PROXY_SUBMODEL_USERNAME:}
-    password: ${AAS_PROXY_SUBMODEL_PASSWORD:}
