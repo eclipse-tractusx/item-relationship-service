@@ -19,37 +19,35 @@ import org.junit.jupiter.api.Test;
 
 class AspectTypeFilterTest {
 
-    private final AspectTypeFilter aspectTypeFilter = new AspectTypeFilter();
     final String assemblyPartRelationshipId = "urn:bamm:com.catenax.assembly_part_relationship:1.0.0";
-    final String assemblyPartRelationshipIdWithCamelCaseEnding = "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship";
-
+    final String assemblyPartRelationshipIdWithAspectName = "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship";
     final String serialPartTypizationId = "urn:bamm:com.catenax.serial_part_typization:1.0.0";
-    final String serialPartTypizationIdWithCamelCaseEnding = "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization";
+    final String serialPartTypizationIdWithAspectName = "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization";
+    private final AspectTypeFilter aspectTypeFilter = new AspectTypeFilter();
 
     @Test
-    void shouldFilterByAssemblyPartRelationshipWhenEndingWithCamelCaseId() {
+    void shouldFilterByAssemblyPartRelationshipWhenEndingWithAspectName() {
         // Arrange
-        final Reference semanticId = Reference.builder().value(List.of(assemblyPartRelationshipIdWithCamelCaseEnding)).build();
-        final List<SubmodelDescriptor> submodelDescriptors = List.of(SubmodelDescriptor.builder()
-                                                                                       .semanticId(semanticId)
-                                                                                       .build());
+        final Reference semanticId = Reference.builder()
+                                              .value(List.of(assemblyPartRelationshipIdWithAspectName))
+                                              .build();
+        final List<SubmodelDescriptor> submodelDescriptors = List.of(
+                SubmodelDescriptor.builder().semanticId(semanticId).build());
         // Act
         final List<SubmodelDescriptor> result = aspectTypeFilter.filterDescriptorsByAssemblyPartRelationship(
                 submodelDescriptors);
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(
-                assemblyPartRelationshipIdWithCamelCaseEnding);
+        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(assemblyPartRelationshipIdWithAspectName);
     }
 
     @Test
-    void shouldFilterByAssemblyPartRelationshipWhenNotEndingWithCamelCaseId() {
+    void shouldFilterByAssemblyPartRelationshipWhenNotEndingWithAspectName() {
         // Arrange
         final Reference semanticId = Reference.builder().value(List.of(assemblyPartRelationshipId)).build();
-        final List<SubmodelDescriptor> submodelDescriptors = List.of(SubmodelDescriptor.builder()
-                                                                                       .semanticId(semanticId)
-                                                                                       .build());
+        final List<SubmodelDescriptor> submodelDescriptors = List.of(
+                SubmodelDescriptor.builder().semanticId(semanticId).build());
         // Act
         final List<SubmodelDescriptor> result = aspectTypeFilter.filterDescriptorsByAssemblyPartRelationship(
                 submodelDescriptors);
@@ -60,33 +58,35 @@ class AspectTypeFilterTest {
     }
 
     @Test
-    void shouldFilterByAspectTypeWhenEndingWithCamelCaseId() {
+    void shouldFilterByAspectTypeWhenEndingWithAspectName() {
         // Arrange
-        final Reference semanticId = Reference.builder().value(List.of(assemblyPartRelationshipIdWithCamelCaseEnding)).build();
-        final List<SubmodelDescriptor> submodelDescriptors = List.of(SubmodelDescriptor.builder()
-                                                                                       .semanticId(semanticId)
-                                                                                       .build());
+        final Reference semanticId = Reference.builder()
+                                              .value(List.of(assemblyPartRelationshipIdWithAspectName))
+                                              .build();
+        final List<SubmodelDescriptor> submodelDescriptors = List.of(
+                SubmodelDescriptor.builder().semanticId(semanticId).build());
         final List<String> aspectTypeFilter = List.of("AssemblyPartRelationship");
 
         // Act
-        final List<SubmodelDescriptor> result = this.aspectTypeFilter.filterDescriptorsByAspectTypes(submodelDescriptors, aspectTypeFilter);
+        final List<SubmodelDescriptor> result = this.aspectTypeFilter.filterDescriptorsByAspectTypes(
+                submodelDescriptors, aspectTypeFilter);
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(assemblyPartRelationshipIdWithCamelCaseEnding);
+        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(assemblyPartRelationshipIdWithAspectName);
     }
 
     @Test
-    void shouldFilterByAspectTypeWhenNotEndingWithCamelCaseId() {
+    void shouldFilterByAspectTypeWhenNotEndingWithAspectName() {
         // Arrange
         final Reference semanticId = Reference.builder().value(List.of(serialPartTypizationId)).build();
-        final List<SubmodelDescriptor> submodelDescriptors = List.of(SubmodelDescriptor.builder()
-                                                                                       .semanticId(semanticId)
-                                                                                       .build());
+        final List<SubmodelDescriptor> submodelDescriptors = List.of(
+                SubmodelDescriptor.builder().semanticId(semanticId).build());
         final List<String> aspectTypeFilter = List.of("SerialPartTypization");
 
         // Act
-        final List<SubmodelDescriptor> result = this.aspectTypeFilter.filterDescriptorsByAspectTypes(submodelDescriptors, aspectTypeFilter);
+        final List<SubmodelDescriptor> result = this.aspectTypeFilter.filterDescriptorsByAspectTypes(
+                submodelDescriptors, aspectTypeFilter);
 
         // Assert
         assertThat(result).hasSize(1);
@@ -96,19 +96,26 @@ class AspectTypeFilterTest {
     @Test
     void shouldFilterByAspectTypeWhenWithDifferentAspects() {
         // Arrange
-        final Reference semanticIdSerial = Reference.builder().value(List.of(serialPartTypizationIdWithCamelCaseEnding)).build();
-        final SubmodelDescriptor assemblyPartRelationship = SubmodelDescriptor.builder().semanticId(semanticIdSerial).build();
+        final Reference semanticIdSerial = Reference.builder()
+                                                    .value(List.of(serialPartTypizationIdWithAspectName))
+                                                    .build();
+        final SubmodelDescriptor assemblyPartRelationship = SubmodelDescriptor.builder()
+                                                                              .semanticId(semanticIdSerial)
+                                                                              .build();
         final Reference semanticIdAssembly = Reference.builder().value(List.of(assemblyPartRelationshipId)).build();
-        final SubmodelDescriptor serialPartTypization = SubmodelDescriptor.builder().semanticId(semanticIdAssembly).build();
+        final SubmodelDescriptor serialPartTypization = SubmodelDescriptor.builder()
+                                                                          .semanticId(semanticIdAssembly)
+                                                                          .build();
 
-        final List<SubmodelDescriptor> submodelDescriptors = List.of(assemblyPartRelationship,serialPartTypization);
+        final List<SubmodelDescriptor> submodelDescriptors = List.of(assemblyPartRelationship, serialPartTypization);
         final List<String> aspectTypeFilter = List.of("SerialPartTypization");
 
         // Act
-        final List<SubmodelDescriptor> result = this.aspectTypeFilter.filterDescriptorsByAspectTypes(submodelDescriptors, aspectTypeFilter);
+        final List<SubmodelDescriptor> result = this.aspectTypeFilter.filterDescriptorsByAspectTypes(
+                submodelDescriptors, aspectTypeFilter);
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(serialPartTypizationIdWithCamelCaseEnding);
+        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(serialPartTypizationIdWithAspectName);
     }
 }

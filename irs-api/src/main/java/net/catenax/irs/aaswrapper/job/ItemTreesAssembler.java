@@ -48,6 +48,10 @@ public class ItemTreesAssembler {
 
         log.info("Assembled item tree from {} partial trees", numberOfPartialTrees);
 
-        return ItemContainer.builder().assemblyPartRelationships(relationships).tombstones(tombstones).shells(shells).build();
+        return ItemContainer.builder()
+                            .assemblyPartRelationships(relationships)
+                            .tombstones(tombstones)
+                            .shells(shells)
+                            .build();
     }
 }
