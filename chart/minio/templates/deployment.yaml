@@ -80,16 +80,10 @@ spec:
             claimName: {{ .Values.persistence.existingClaim | default (include "minio.fullname" .) }}
         {{- else }}
           emptyDir: {}
-        {{- end }}
-        {{- if .Values.extraSecret }}
-        - name: extra-secret
-          secret:
-            secretName: {{ .Values.extraSecret }}
-        {{- end }}
+        {{- end }}        
         - name: minio-user
           secret:
-            secretName: {{ template "minio.secretName" . }}
-        {{- include "minio.tlsKeysVolume" . | indent 8 }}      
+            secretName: {{ template "minio.secretName" . }}        
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
