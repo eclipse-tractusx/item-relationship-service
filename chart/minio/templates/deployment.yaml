@@ -36,7 +36,7 @@ spec:
           command:
             - "/bin/sh"
             - "-ce"
-            - "/usr/bin/docker-entrypoint.sh minio server --address :{{ .Values.minioAPIPort }} {{- template "minio.extraArgs" . }}"
+            - "/usr/bin/docker-entrypoint.sh minio server --address :{{ .Values.minioAPIPort }}"
           volumeMounts:
             - name: minio-user
               mountPath: "/tmp/credentials"
@@ -47,8 +47,7 @@ spec:
               {{- if .Values.persistence.subPath }}
               subPath: "{{ .Values.persistence.subPath }}"
               {{- end }}
-            {{- end }}            
-            {{- include "minio.tlsKeysVolumeMount" . | indent 12 }}  
+            {{- end }}                        
           ports:
             - name: http
               containerPort: {{ .Values.minioAPIPort }}
