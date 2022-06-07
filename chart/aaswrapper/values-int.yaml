@@ -6,6 +6,12 @@ image:
   tag: "0.0.3"
 
 ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
   hosts:
     - host: "irs-aas-wrapper.int.demo.catena-x.net"
       paths:
