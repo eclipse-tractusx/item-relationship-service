@@ -16,7 +16,7 @@ ingress:
     - host: "irs-consumer-controlplane.int.demo.catena-x.net"
       paths:
         - path: /
-          pathType: ImplementationSpecific
+          pathType: Prefix
           backend:
             service:
               name: edc-consumer-controlplane
