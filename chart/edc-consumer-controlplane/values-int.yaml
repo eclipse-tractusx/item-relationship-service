@@ -99,6 +99,7 @@ configuration:
     # edc.ids.curator=
     # edc.ids.description=
     edc.ids.endpoint=https://irs-consumer-controlplane.int.demo.catena-x.net/api/v1/ids
+    ids.webhook.address=https://edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B2OM
     # edc.ids.id=
     # edc.ids.maintainer=
     # edc.ids.security.profile=
