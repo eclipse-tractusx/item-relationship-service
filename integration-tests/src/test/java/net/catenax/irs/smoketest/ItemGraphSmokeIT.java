@@ -32,7 +32,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {SmokeTestConfiguration.class})
-public class ItemGraphSmokeTest {
+public class ItemGraphSmokeIT {
 
     @Autowired
     private SmokeTestConnectionProperties connectionProperties;
@@ -71,6 +71,11 @@ public class ItemGraphSmokeTest {
 
     @BeforeEach
     void setUp() {
+        System.out.println("credentialsProperties.getAuthorizationGrantType(): " + credentialsProperties.getAuthorizationGrantType());
+        System.out.println("credentialsProperties.getClientId(): " + credentialsProperties.getClientId());
+        System.out.println("credentialsProperties.getClientSecret(): " + credentialsProperties.getClientSecret());
+        System.out.println("connectionProperties.getAccessToken(): " + connectionProperties.getAccessToken());
+
         final String accessToken =
                 obtainAccessToken(credentialsProperties.getAuthorizationGrantType(),
                                   credentialsProperties.getClientId(),
@@ -85,7 +90,7 @@ public class ItemGraphSmokeTest {
     }
 
     @Test
-    void shouldCreateAndCompleteJob() {
+    public void shouldCreateAndCompleteJob() {
         // Integration test Scenario 2 STEP 1
         final JobHandle responsePost = given().spec(requestSpecification)
                                               .contentType("application/json")
