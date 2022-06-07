@@ -112,7 +112,7 @@ configuration:
     # edc.ids.catalog.id=
     # edc.ids.curator=
     # edc.ids.description=
-    # edc.ids.endpoint=
+    # edc.ids.endpoint=/api/v1/ids
     # edc.ids.id=
     # edc.ids.maintainer=
     # edc.ids.security.profile=
