@@ -19,12 +19,10 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
-import net.catenax.irs.dtos.ItemLifecycleStage;
 
 /***
  * API type for the view of the items tree to be returned by a query.
  *
- * @see ItemLifecycleStage
  */
 @ExcludeFromCodeCoverageGeneratedReport
 @JsonSerialize(using = ToStringSerializer.class)
@@ -32,11 +30,11 @@ import net.catenax.irs.dtos.ItemLifecycleStage;
 @Getter
 public enum BomLifecycle {
     @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") AS_BUILT("asBuilt", "AsBuilt");
-    //@Schema(description = "The view of the PartsTree ... lifecycle.") AS_MAINTAINED("asMaintained"),
-    //@Schema(description = "TThe view of the PartsTree ... lifecycle.") AS_PLANNED("asPlanned"),
-    //@Schema(description = "TThe view of the PartsTree ... lifecycle.") AS_DESIGNED("asDesigned"),
-    //@Schema(description = "The view of the PartsTree ... lifecycle.") AS_ORDERED("asOrdered"),
-    //@Schema(description = "The view of the PartsTree ... lifecycle.") AS_RECYCLED("asRecycled");
+    //@Schema(description = "The view of the ItemsTree ... lifecycle.") AS_MAINTAINED("asMaintained"),
+    //@Schema(description = "TThe view of the ItemsTree ... lifecycle.") AS_PLANNED("asPlanned"),
+    //@Schema(description = "TThe view of the ItemsTree ... lifecycle.") AS_DESIGNED("asDesigned"),
+    //@Schema(description = "The view of the ItemsTree ... lifecycle.") AS_ORDERED("asOrdered"),
+    //@Schema(description = "The view of the ItemsTree ... lifecycle.") AS_RECYCLED("asRecycled");
 
     private final String value;
     private final String lifecycleContextCharacteristicValue;

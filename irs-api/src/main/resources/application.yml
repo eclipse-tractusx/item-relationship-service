@@ -60,7 +60,6 @@ springdoc:
 
 irs:
   apiUrl: http://irs.int.demo.catena-x.net
-  partsTreeMaxDepth: 100
   job:
     cleanup:
       scheduler:

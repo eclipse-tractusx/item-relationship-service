@@ -29,8 +29,4 @@ public class IrsConfiguration {
      */
     private URL apiUrl;
 
-    /**
-     * The maximum depth at which parts tree are recursively retrieved.
-     */
-    private int partsTreeMaxDepth = Integer.MAX_VALUE;
 }
