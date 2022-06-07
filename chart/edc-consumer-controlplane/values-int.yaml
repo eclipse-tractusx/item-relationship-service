@@ -98,7 +98,7 @@ configuration:
     # edc.ids.catalog.id=
     # edc.ids.curator=
     # edc.ids.description=
-    # edc.ids.endpoint=/api/v1/ids
+    edc.ids.endpoint=https://irs-consumer-controlplane.int.demo.catena-x.net/api/v1/ids
     # edc.ids.id=
     # edc.ids.maintainer=
     # edc.ids.security.profile=
