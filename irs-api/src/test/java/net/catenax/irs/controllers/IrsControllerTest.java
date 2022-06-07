@@ -79,10 +79,7 @@ class IrsControllerTest {
     @WithMockUser
     void getJobsByJobState() throws Exception {
         UUID jobId = UUID.randomUUID();
-        final JobStatusResult returnedJob = JobStatusResult.builder()
-                                                           .jobId(jobId.toString())
-                                                           .status(JobState.RUNNING.toString())
-                                                           .build();
+        final JobStatusResult returnedJob = JobStatusResult.builder().jobId(jobId).status(JobState.RUNNING).build();
 
         String returnJobAsString = new ObjectMapper().writeValueAsString(returnedJob);
 

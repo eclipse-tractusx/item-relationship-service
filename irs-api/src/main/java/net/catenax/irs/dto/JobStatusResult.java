@@ -9,9 +9,12 @@
 //
 package net.catenax.irs.dto;
 
+import java.util.UUID;
+
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+import net.catenax.irs.component.enums.JobState;
 
 /**
  * Response for job status request
@@ -24,11 +27,11 @@ public class JobStatusResult {
     /**
      * Job identifier
      */
-    private String jobId;
+    private UUID jobId;
 
     /**
      * Current status for this job
      */
-    private String status;
+    private JobState status;
 
 }

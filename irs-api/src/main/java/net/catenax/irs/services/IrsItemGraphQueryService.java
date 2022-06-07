@@ -109,12 +109,11 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     @Override
     public List<JobStatusResult> getJobsByJobState(final @NonNull List<JobState> jobStates) {
-        final List<MultiTransferJob> jobs =
-                jobStates == null || jobStates.isEmpty() ? jobStore.findAll() : jobStore.findByStates(jobStates);
+        final List<MultiTransferJob> jobs = jobStates.isEmpty() ? jobStore.findAll() : jobStore.findByStates(jobStates);
         return jobs.stream()
                    .map(job -> JobStatusResult.builder()
-                                              .jobId(job.getJob().getJobId().toString())
-                                              .status(job.getJob().getJobState().toString())
+                                              .jobId(job.getJob().getJobId())
+                                              .status(job.getJob().getJobState())
                                               .build())
 
                    .collect(Collectors.toList());
