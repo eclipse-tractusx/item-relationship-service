@@ -12,7 +12,11 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-passthrough: "false"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-  hostname: "irs-consumer-controlplane.int.demo.catena-x.net"
+  hosts:
+    - host: "irs-consumer-controlplane.int.demo.catena-x.net"
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
   tls:
     - hosts:
         - "irs-consumer-controlplane.int.demo.catena-x.net"
