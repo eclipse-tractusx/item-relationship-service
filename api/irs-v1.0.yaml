@@ -39,9 +39,8 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string
-                  format: uuid
-          description: List of job ids for requested job states.
+                  $ref: '#/components/schemas/JobStatusResult'
+          description: List of job ids and status for requested job states.
         "404":
           content:
             application/json:
@@ -693,6 +692,22 @@ components:
         jobId:
           type: string
           format: uuid
+    JobStatusResult:
+      type: object
+      properties:
+        jobId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+          - UNSAVED
+          - INITIAL
+          - RUNNING
+          - TRANSFERS_FINISHED
+          - COMPLETED
+          - CANCELED
+          - ERROR
     Jobs:
       type: object
       description: Container for a job with item graph.
