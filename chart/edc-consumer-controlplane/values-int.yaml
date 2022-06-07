@@ -17,6 +17,11 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
+          backend:
+            service:
+              name: edc-consumer-controlplane
+              port:
+                number: 8282
   tls:
     - hosts:
         - "irs-consumer-controlplane.int.demo.catena-x.net"
