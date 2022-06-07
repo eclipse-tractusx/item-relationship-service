@@ -122,6 +122,7 @@ edc:
 ##
 service:
   type: ClusterIP
+  port: 8282
 
 ##
 ## Ingress declaration to expose the network service.
