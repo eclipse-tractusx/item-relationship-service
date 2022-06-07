@@ -130,7 +130,7 @@ configuration:
     # edc.oauth.validation.nbf.leeway=
     # edc.receiver.http.auth-code=
     # edc.receiver.http.auth-key=
-    edc.receiver.http.endpoint=http://aaswrapper:9192/callback
+    edc.receiver.http.endpoint=http://aaswrapper:9192/callback/endpoint-data-reference
     edc.transfer.proxy.endpoint=https://irs-consumer-dataplane.int.demo.catena-x.net/api/public
     # edc.transfer.dataplane.sync.token.validity=
     edc.transfer.proxy.token.signer.privatekey.alias=azure-vault-token-signer-private-key
