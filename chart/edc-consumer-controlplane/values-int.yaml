@@ -5,42 +5,13 @@
 ##
 ## Ingress declaration to expose the network service.
 ##
-ingresses:
-  ## Public / Internet facing Ingress
-  - enabled: true
-    ##
-    ## The hostname to be used to precisely map incoming traffic onto the underlying network service
-    ##
-    hostname: "irs-consumer-controlplane.int.demo.catena-x.net"
-    ##
-    ## Additional ingress annotations to add
-    ##
-    annotations: {}
-    ##
-    ## EDC endpoints exposed by this ingress resource
-    ##
-    endpoints:
-      - ids
-    ##
-    ## Defines the ingress class to use https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class
-    ##
-    className: ""
-    ##
-    ## Enables TLS on the ingress resource
-    ##
-    tls: false
-    ##
-    ## Adds cert-manager annotations to the ingress
-    ##
-    certManager:
-      ##
-      ## If preset enables certificate generation via cert-manager namespace scoped issuer
-      ##
-      issuer: ""
-      ##
-      ## If preset enables certificate generation via cert-manager cluster-wide issuer
-      ##
-      clusterIssuer: ""
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+  hostname: "irs-consumer-controlplane.int.demo.catena-x.net"
 
 ##
 ## EDC configuration.properties
