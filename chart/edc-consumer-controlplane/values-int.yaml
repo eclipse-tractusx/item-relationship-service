@@ -7,11 +7,17 @@
 ##
 ingress:
   enabled: true
+  className: "nginx"
   annotations:
     nginx.ingress.kubernetes.io/ssl-passthrough: "false"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
   hostname: "irs-consumer-controlplane.int.demo.catena-x.net"
+  tls:
+    - hosts:
+        - "irs-consumer-controlplane.int.demo.catena-x.net"
+      # Default secret for certificate creation already provided to your namespace
+      secretName: tls-secret
 
 ##
 ## EDC configuration.properties
