@@ -39,5 +39,5 @@ jobs:
           PROFILE_GITHUB: ${{ github.event.inputs.irsTestProfile }}
         run: |
           mvn -Dtest=intergartion-tests/src/test/java/net/catenax/irs/smoketest/ItemGraphSmokeTest test \
-          -D spring.profiles.active=$PROFILE_GITHUB \
+          -D spring.profiles.active=local \
           -D surefire.failIfNoSpecifiedTests=false
