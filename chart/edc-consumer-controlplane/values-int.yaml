@@ -95,12 +95,12 @@ configuration:
     # edc.fs.config=
     # edc.hostname=
     # edc.identity.did.url=
-    # edc.ids.catalog.id=
+    edc.ids.catalog.id=urn:catalog:default
     # edc.ids.curator=
     # edc.ids.description=
     edc.ids.endpoint=https://irs-consumer-controlplane.int.demo.catena-x.net/api/v1/ids
-    ids.webhook.address=https://edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B2OM
-    # edc.ids.id=
+    ids.webhook.address=https://irs-consumer-controlplane.int.demo.catena-x.net
+    edc.ids.id=urn:connector:edc-consumer-controlplane
     # edc.ids.maintainer=
     # edc.ids.security.profile=
     # edc.ids.title=
@@ -131,9 +131,10 @@ configuration:
     # edc.receiver.http.auth-code=
     # edc.receiver.http.auth-key=
     edc.receiver.http.endpoint=http://aaswrapper:9192/callback
-    edc.transfer.proxy.endpoint=http://edc-consumer-dataplane:8185/api/public
+    edc.transfer.proxy.endpoint=https://irs-consumer-dataplane.int.demo.catena-x.net/api/public
     # edc.transfer.dataplane.sync.token.validity=
     edc.transfer.proxy.token.signer.privatekey.alias=azure-vault-token-signer-private-key
+    edc.transfer.proxy.token.verifier.publickey.alias=azure-vault-token-signer-private-key-pub
     # edc.transfer.functions.check.endpoint=
     # edc.transfer.functions.enabled.protocols=
     # edc.transfer.functions.transfer.endpoint=
