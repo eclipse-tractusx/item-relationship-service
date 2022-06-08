@@ -46,12 +46,12 @@ class AssetAdministrationShellTestdataCreator {
     }
 
     private SubmodelDescriptor createAssemblyPartRelationshipSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, SubmodelType.ASSEMBLY_PART_RELATIONSHIP.getValue(),
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:com.catenax.assembly_part_relationship:1.0.0",
                 "assemblyPartRelationship");
     }
 
     private SubmodelDescriptor createSerialPartTypizationSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, SubmodelType.SERIAL_PART_TYPIZATION.getValue(),
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:com.catenax.serial_part_typization:1.0.0",
                 "serialPartTypization");
     }
 
