@@ -115,4 +115,11 @@ public interface JobStore {
      */
     Optional<MultiTransferJob> cancelJob(String jobId);
 
+    /**
+     * Retrieve all jobs
+     *
+     * @return jobs if found, otherwise empty.
+     * @see MultiTransferJob#getJob()
+     */
+    List<MultiTransferJob> findAll();
 }

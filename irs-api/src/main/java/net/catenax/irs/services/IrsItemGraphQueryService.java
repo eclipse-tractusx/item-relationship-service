@@ -46,6 +46,7 @@ import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferProcess;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.JobParameter;
+import net.catenax.irs.dto.JobStatusResult;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
@@ -89,14 +90,13 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final int treeDepth = request.getDepth();
         final Optional<BomLifecycle> bomLifecycleFormRequest = Optional.ofNullable(request.getBomLifecycle());
 
-        final String lifecycle = bomLifecycleFormRequest.map(BomLifecycle::getLifecycleContextCharacteristicValue).orElse(null);
+        final String lifecycle = bomLifecycleFormRequest.map(BomLifecycle::getLifecycleContextCharacteristicValue)
+                                                        .orElse(null);
 
         final Optional<List<AspectType>> aspectTypes = Optional.ofNullable(request.getAspects());
         List<String> aspectTypeValues;
-        aspectTypeValues = aspectTypes.map(types -> types.stream()
-                                                         .map(AspectType::toString)
-                                                         .map(String::toLowerCase)
-                                                         .collect(Collectors.toList()))
+        aspectTypeValues = aspectTypes.map(
+                                              types -> types.stream().map(AspectType::toString).map(String::toLowerCase).collect(Collectors.toList()))
                                       .orElse(emptyList());
 
         return JobParameter.builder()
@@ -108,10 +108,15 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     @Override
-    public List<UUID> getJobIdsByJobStates(final @NonNull List<JobState> jobStates) {
-        final List<MultiTransferJob> jobs = jobStore.findByStates(jobStates);
+    public List<JobStatusResult> getJobsByJobState(final @NonNull List<JobState> jobStates) {
+        final List<MultiTransferJob> jobs = jobStates.isEmpty() ? jobStore.findAll() : jobStore.findByStates(jobStates);
+        return jobs.stream()
+                   .map(job -> JobStatusResult.builder()
+                                              .jobId(job.getJob().getJobId())
+                                              .status(job.getJob().getJobState())
+                                              .build())
 
-        return jobs.stream().map(x -> x.getJob().getJobId()).collect(Collectors.toList());
+                   .collect(Collectors.toList());
     }
 
     @Override
