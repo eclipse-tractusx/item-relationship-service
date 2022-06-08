@@ -87,7 +87,9 @@ class IrsControllerTest {
 
         this.mockMvc.perform(get("/irs/jobs"))
                     .andExpect(status().isOk())
-                    .andExpect(content().string(containsString(returnJobAsString)));
+                    .andExpect(content().string(containsString(returnJobAsString)))
+                    .andExpect(content().string(containsString(returnedJob.getJobId().toString())))
+                    .andExpect(content().string(containsString(returnedJob.getStatus().toString())));
     }
 
     @Test
