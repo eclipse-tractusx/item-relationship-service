@@ -39,7 +39,7 @@ spec:
             - "/usr/bin/docker-entrypoint.sh minio server --address :{{ .Values.minioAPIPort }}"
           volumeMounts:
             - name: minio-user
-              mountPath: "/tmp/credentials"
+              mountPath: "/app/vault.properties"
               readOnly: true
             {{- if .Values.persistence.enabled }}
             - name: export
