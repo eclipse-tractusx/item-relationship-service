@@ -14,7 +14,6 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.aaswrapper.job.AspectTypeFilter;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import net.catenax.irs.component.assetadministrationshell.SubmodelDescriptor;
 import net.catenax.irs.component.enums.AspectType;
@@ -29,7 +28,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class DigitalTwinRegistryFacade {
 
-    private final AspectTypeFilter aspectTypeFilter = new AspectTypeFilter();
     private final DigitalTwinRegistryClient digitalTwinRegistryClient;
 
     /**
@@ -44,27 +42,26 @@ public class DigitalTwinRegistryFacade {
         final AssetAdministrationShellDescriptor assetAdministrationShellDescriptor = digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(
                 aasIdentifier);
         final List<SubmodelDescriptor> submodelDescriptors = filterByAspectType(
-                assetAdministrationShellDescriptor.getSubmodelDescriptors(), jobData.getAspectTypes());
+                assetAdministrationShellDescriptor, jobData.getAspectTypes());
         return assetAdministrationShellDescriptor.toBuilder().submodelDescriptors(submodelDescriptors).build();
     }
 
     /**
-     * @param submodelDescriptor the submodel descriptor
      * @param aspectTypes        the aspect types which should be filtered by
      * @return True, if the aspect type of the submodelDescriptor is part of
      * the given consumer aspectTypes
      */
-    private List<SubmodelDescriptor> filterByAspectType(final List<SubmodelDescriptor> submodelDescriptor,
+    private List<SubmodelDescriptor> filterByAspectType(final AssetAdministrationShellDescriptor assetAdministrationShellDescriptor,
             final List<String> aspectTypes) {
 
         final List<String> filterAspectTypes = new ArrayList<>(aspectTypes);
 
         if (containsAssemblyPartRelationship(filterAspectTypes)) {
             filterAspectTypes.add(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString());
+            log.info("Adjusted Aspect Type Filter '{}'", filterAspectTypes);
         }
-        log.info("Adjusted Aspect Type Filter '{}'", filterAspectTypes);
 
-        return aspectTypeFilter.filterDescriptorsByAspectTypes(submodelDescriptor, filterAspectTypes);
+        return assetAdministrationShellDescriptor.filterDescriptorsByAspectTypes(filterAspectTypes);
     }
 
     private boolean containsAssemblyPartRelationship(final List<String> filterAspectTypes) {

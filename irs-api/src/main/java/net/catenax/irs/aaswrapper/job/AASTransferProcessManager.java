@@ -16,7 +16,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
@@ -24,8 +23,6 @@ import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.component.ProcessingError;
 import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
-import net.catenax.irs.component.assetadministrationshell.Endpoint;
-import net.catenax.irs.component.assetadministrationshell.ProtocolInformation;
 import net.catenax.irs.component.assetadministrationshell.SubmodelDescriptor;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
@@ -53,7 +50,6 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
     private final ExecutorService executor;
 
     private final BlobPersistence blobStore;
-    private final AspectTypeFilter aspectTypeFilter = new AspectTypeFilter();
 
     public AASTransferProcessManager(final DigitalTwinRegistryFacade registryFacade,
             final SubmodelFacade submodelFacade, final ExecutorService executor, final BlobPersistence blobStore) {
@@ -95,7 +91,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
                 log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
 
-                getAssemblyPartRelationshipEndpointAddresses(aasSubmodelDescriptors).forEach(address -> {
+                aasShell.findAssemblyPartRelationshipEndpointAddresses().forEach(address -> {
                     try {
                         final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address, jobData);
                         processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
@@ -105,11 +101,11 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
                         itemContainerBuilder.tombstone(createTombstone(itemId, address, e));
                     }
                 });
-                final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = aspectTypeFilter.filterDescriptorsByAspectTypes(
-                        aasSubmodelDescriptors, jobData.getAspectTypes());
+                final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = aasShell.filterDescriptorsByAspectTypes(
+                        jobData.getAspectTypes());
 
-                log.info("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
-                log.info("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
+                log.debug("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
+                log.debug("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
 
                 itemContainerBuilder.shell(
                         aasShell.toBuilder().submodelDescriptors(filteredSubmodelDescriptorsByAspectType).build());
@@ -121,18 +117,6 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             transferProcessCompleted.accept(aasTransferProcess);
         };
-    }
-
-    private Stream<String> getAssemblyPartRelationshipEndpointAddresses(
-            final List<SubmodelDescriptor> aasSubmodelEndpoints) {
-        final List<SubmodelDescriptor> submodelDescriptors = aspectTypeFilter.filterDescriptorsByAssemblyPartRelationship(
-                aasSubmodelEndpoints);
-        return submodelDescriptors.stream()
-                                  .map(SubmodelDescriptor::getEndpoints)
-                                  .flatMap(endpoints -> endpoints.stream()
-                                                                 .map(Endpoint::getProtocolInformation)
-                                                                 .map(ProtocolInformation::getEndpointAddress));
-
     }
 
     private void storeItemContainer(final String processId, final ItemContainer itemContainer) {
