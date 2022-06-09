@@ -15,6 +15,7 @@ import java.util.function.Predicate;
 
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.JobParameter;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 /**
  * Public API Facade for submodel domain
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SubmodelFacade {
@@ -39,6 +41,8 @@ public class SubmodelFacade {
     public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress, final JobParameter jobData) {
         final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
                 AssemblyPartRelationship.class);
+
+        log.info("Submodel: {}, childParts{}", submodel.getCatenaXId(), submodel.getChildParts());
 
         final Set<ChildData> submodelParts = new HashSet<>(submodel.getChildParts());
 

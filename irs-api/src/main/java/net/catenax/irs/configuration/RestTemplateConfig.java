@@ -50,7 +50,7 @@ public class RestTemplateConfig {
     public static final String BASIC_AUTH_REST_TEMPLATE = "basicAuthRestTemplate";
 
     private static final String CLIENT_REGISTRATION_ID = "keycloak";
-    private static final int TIMEOUT_SECONDS = 30;
+    private static final int TIMEOUT_SECONDS = 90;
 
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final ClientRegistrationRepository clientRegistrationRepository;
