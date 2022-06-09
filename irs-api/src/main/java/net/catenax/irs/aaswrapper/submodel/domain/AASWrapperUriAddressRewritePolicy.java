@@ -1,3 +1,12 @@
+//
+// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
+//
+// See the AUTHORS file(s) distributed with this work for additional
+// information regarding authorship.
+//
+// See the LICENSE file(s) distributed with this work for
+// additional information regarding license terms.
+//
 package net.catenax.irs.aaswrapper.submodel.domain;
 
 import java.net.URI;
@@ -11,7 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 class AASWrapperUriAddressRewritePolicy {
 
     public URI rewriteToAASWrapperUri(final String endpointAddress) {
-        final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(AASWrapperUri.host);
+        final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(AASWrapperUri.AAS_WRAPPER_HOST);
 
         final AASWrapperUri aasWrapperUri = new AASWrapperUri(endpointAddress);
 
@@ -28,7 +37,7 @@ class AASWrapperUriAddressRewritePolicy {
 
     @Getter
     static class AASWrapperUri {
-        static final String host = "http://aaswrapper:9191/api/service";
+        static final String AAS_WRAPPER_HOST = "http://aaswrapper:9191/api/service";
 
         final String providerConnectUrl;
         final String path;
