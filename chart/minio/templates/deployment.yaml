@@ -72,12 +72,11 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: export
-        {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.existingClaim | default (include "minio.fullname" .) }}
-        {{- else }}
-          emptyDir: {}
-        {{- end }}                     
+        - name: minio-user
+          secret:
+            secretName: app-irs-dev-minio            
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
