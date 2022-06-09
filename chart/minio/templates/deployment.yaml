@@ -58,8 +58,8 @@ spec:
             - name: MINIO_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.rootPassword }}
-                  key: rootPassword            
+                  name: rootPassword
+                  key: {{ .Values.rootPassword }}            
           livenessProbe:
             httpGet:
               path: /
