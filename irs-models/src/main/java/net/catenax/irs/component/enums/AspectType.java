@@ -22,20 +22,22 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 public enum AspectType {
     SERIAL_PART_TYPIZATION(AspectTypesConstants.SERIAL_PART_TYPIZATION),
     ASSEMBLY_PART_RELATIONSHIP(AspectTypesConstants.ASSEMBLY_PART_RELATIONSHIP),
-    PART_DIMENSION(AspectTypesConstants.PART_DIMENSION),
-    SUPPLY_RELATION_DATA(AspectTypesConstants.SUPPLY_RELATION_DATA),
-    PCF_CORE_DATA(AspectTypesConstants.PCFCORE_DATA),
-    PCF_TECHNICAL_DATA(AspectTypesConstants.PCFTECHNICAL_DATA),
-    MARKET_PLACE_OFFER(AspectTypesConstants.MARKET_PLACE_OFFER1),
-    MATERIAL_ASPECT(AspectTypesConstants.MATERIAL_ASPECT1),
-    BATTERY_PASS(AspectTypesConstants.BATTERY_PASS1),
-    PRODUCT_DESCRIPTION_VEHICLE(AspectTypesConstants.PRODUCT_DESCRIPTION_VEHICLE1),
-    PRODUCT_DESCRIPTION_BATTERY(AspectTypesConstants.PRODUCT_DESCRIPTION_BATTERY1),
-    RETURN_REQUEST(AspectTypesConstants.RETURN_REQUEST1),
-    CERTIFICATION_OF_DESTRUCTION(AspectTypesConstants.CERTIFICATE_OF_DESTRUCTION),
-    CERTIFICATE_OF_DISMANTLER(AspectTypesConstants.CERTIFICATE_OF_DISMANTLER1),
-    ADDRESS(AspectTypesConstants.ADDRESS1),
-    CONTACT(AspectTypesConstants.CONTACT1);
+    PRODUCT_DESCRIPTION(AspectTypesConstants.PRODUCT_DESCRIPTION),
+    ID_CONVERSION(AspectTypesConstants.ID_CONVERSION),
+    MARKETPLACE_OFFER(AspectTypesConstants.MARKETPLACE_OFFER),
+    MATERIAL_FOR_RECYCLING(AspectTypesConstants.MATERIAL_FOR_RECYCLING),
+    PHYSICAL_DIMENSION(AspectTypesConstants.PHYSICAL_DIMENSION),
+    RETURN_REQUEST(AspectTypesConstants.RETURN_REQUEST),
+    CERTIFICATE_OF_DESTRUCTION(AspectTypesConstants.CERTIFICATE_OF_DESTRUCTION),
+    CERTIFICATE_OF_DISMANTLER(AspectTypesConstants.CERTIFICATE_OF_DISMANTLER),
+    END_OF_LIFE(AspectTypesConstants.END_OF_LIFE),
+    PCF_CORE(AspectTypesConstants.PCF_CORE),
+    PCF_SUPPLY_RELATION(AspectTypesConstants.PCF_SUPPLY_RELATION),
+    PCF_TECHNICAL(AspectTypesConstants.PCF_TECHNICAL),
+    ADDRESS_ASPECT(AspectTypesConstants.ADDRESS_ASPECT),
+    CONTACT_INFORMATION(AspectTypesConstants.CONTACT_INFORMATION),
+    BATTERY_PASS(AspectTypesConstants.BATTERY_PASS),
+    VEHICLE_DIAGNOSTIC_DATA_QUALITY(AspectTypesConstants.VEHICLE_DIAGNOSTIC_DATA_QUALITY);
 
     private final String value;
 
@@ -77,22 +79,27 @@ public enum AspectType {
     /**
      * Constants for aspectTypes
      */
-    public static class AspectTypesConstants {
+    public static final class AspectTypesConstants {
         public static final String SERIAL_PART_TYPIZATION = "SerialPartTypization";
         public static final String ASSEMBLY_PART_RELATIONSHIP = "AssemblyPartRelationship";
-        public static final String SUPPLY_RELATION_DATA = "SupplyRelationData";
-        public static final String PART_DIMENSION = "PartDimension";
-        public static final String PCFCORE_DATA = "PCFCoreData";
-        public static final String PCFTECHNICAL_DATA = "PCFTechnicalData";
-        public static final String MARKET_PLACE_OFFER1 = "MarketPlaceOffer";
-        public static final String MATERIAL_ASPECT1 = "MaterialAspect";
-        public static final String BATTERY_PASS1 = "BatteryPass";
-        public static final String PRODUCT_DESCRIPTION_VEHICLE1 = "ProductDescriptionVehicle";
-        public static final String PRODUCT_DESCRIPTION_BATTERY1 = "ProductDescriptionBattery";
-        public static final String RETURN_REQUEST1 = "ReturnRequest";
+        public static final String PRODUCT_DESCRIPTION = "ProductDescription";
+        public static final String ID_CONVERSION = "IdConversion";
+        public static final String MARKETPLACE_OFFER = "MarketplaceOffer";
+        public static final String MATERIAL_FOR_RECYCLING = "MaterialForRecycling";
+        public static final String PHYSICAL_DIMENSION = "PhysicalDimension";
+        public static final String RETURN_REQUEST = "ReturnRequest";
         public static final String CERTIFICATE_OF_DESTRUCTION = "CertificateOfDestruction";
-        public static final String CERTIFICATE_OF_DISMANTLER1 = "CertificateOfDismantler";
-        public static final String ADDRESS1 = "Address";
-        public static final String CONTACT1 = "Contact";
+        public static final String CERTIFICATE_OF_DISMANTLER = "CertificateOfDismantler";
+        public static final String END_OF_LIFE = "EndOfLife";
+        public static final String PCF_CORE = "PcfCore";
+        public static final String PCF_SUPPLY_RELATION = "PcfSupplyRelation";
+        public static final String PCF_TECHNICAL = "PcfTechnical";
+        public static final String ADDRESS_ASPECT = "AddressAspect";
+        public static final String CONTACT_INFORMATION = "ContactInformation";
+        public static final String BATTERY_PASS = "BatteryPass";
+        public static final String VEHICLE_DIAGNOSTIC_DATA_QUALITY = "VehicleDiagnosticDataQuality";
+
+        private AspectTypesConstants() {
+        }
     }
 }

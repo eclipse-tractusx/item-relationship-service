@@ -7,15 +7,19 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain;
+package net.catenax.irs.component.assetadministrationshell;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * IdentifierKeyValuePair
  */
 @Data
-class IdentifierKeyValuePair {
+@Builder
+@Jacksonized
+public class IdentifierKeyValuePair {
 
     /**
      * key

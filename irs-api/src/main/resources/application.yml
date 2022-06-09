@@ -100,5 +100,8 @@ aasProxy:
     username: ${AAS_PROXY_SUBMODEL_USERNAME:}
     password: ${AAS_PROXY_SUBMODEL_PASSWORD:}
 
+aspectTypes:
+    default: SerialPartTypization
+
 digitalTwinRegistry:
   url: https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry

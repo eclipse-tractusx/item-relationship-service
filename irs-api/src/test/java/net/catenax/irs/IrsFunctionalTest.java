@@ -72,6 +72,7 @@ class IrsFunctionalTest {
 
         assertThat(finishedJob).isPresent();
         assertThat(finishedJob.get().getRelationships()).isNotEmpty();
+        assertThat(finishedJob.get().getShells()).isNotEmpty();
     }
 
     @NotNull
