@@ -34,7 +34,7 @@ class AASWrapperUriAddressRewritePolicy {
 
         uriComponentsBuilder.path(aasWrapperUri.getPath());
         uriComponentsBuilder.query(aasWrapperUri.getQuery());
-        uriComponentsBuilder.queryParam("provider-connector-url", aasWrapperUri.getProviderConnectUrl());
+        uriComponentsBuilder.queryParam("provider-connector-url", aasWrapperUri.getProviderConnectorUrl());
 
         final UriComponents uriComponents = uriComponentsBuilder.build();
 
@@ -50,7 +50,7 @@ class AASWrapperUriAddressRewritePolicy {
     /* package */ static class AASWrapperUri {
         /* package */ static final String AAS_WRAPPER_HOST = "http://aaswrapper:9191/api/service";
 
-        private final String providerConnectUrl;
+        private final String providerConnectorUrl;
         private final String path;
         private final String query;
 
@@ -62,7 +62,7 @@ class AASWrapperUriAddressRewritePolicy {
                 throw new IllegalArgumentException("Cannot rewrite endpoint address, malformed format: " + endpointAddress);
             }
 
-            this.providerConnectUrl = endpointAddress.substring(0, indexOfUrn);
+            this.providerConnectorUrl = endpointAddress.substring(0, indexOfUrn);
             this.path = endpointAddress.substring(indexOfUrn, indexOfQuestionMarkQuery);
             this.query = endpointAddress.substring(indexOfQuestionMarkQuery + 1);
         }
