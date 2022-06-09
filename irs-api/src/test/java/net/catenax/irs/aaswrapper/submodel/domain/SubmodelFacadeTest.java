@@ -53,7 +53,7 @@ class SubmodelFacadeTest {
     @Test
     void shouldThrowExceptionWhenSubmodelNotFound() {
         final String url = "http://localhost/notAvailableUrl/testCatenaXId";
-        final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(), url);
+        final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate());
         final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(() -> submodelFacade.getSubmodel(url, jobParameter()));
@@ -90,7 +90,7 @@ class SubmodelFacadeTest {
     @Test
     void shouldReturnAssemblyPartRelationshipDTOWhenRequestingOnRealClient() {
         final String endpointUrl = "test.test";
-        final SubmodelClientImpl submodelClient = new SubmodelClientImpl(restTemplate, endpointUrl);
+        final SubmodelClientImpl submodelClient = new SubmodelClientImpl(restTemplate);
         SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
         final AssemblyPartRelationship assemblyPartRelationship = new AssemblyPartRelationship();

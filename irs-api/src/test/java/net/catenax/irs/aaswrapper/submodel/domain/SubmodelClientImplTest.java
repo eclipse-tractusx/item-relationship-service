@@ -32,13 +32,13 @@ class SubmodelClientImplTest {
     private final RestTemplate restTemplate = mock(RestTemplate.class);
 
     private final static String url = "http://localhost/submodel";
-    private final SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate, url);
+    private final SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate);
     private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
     @Test
     void shouldThrowExceptionWhenSubmodelNotFound() {
         final String url = "https://irs-aas-proxy.int.demo.catena-x.net";
-        final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(), url);
+        final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate());
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
                 () -> submodelClient.getSubmodel(url, AssemblyPartRelationship.class));
