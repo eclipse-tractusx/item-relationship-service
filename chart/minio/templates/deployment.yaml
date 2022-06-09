@@ -73,7 +73,7 @@ spec:
       volumes:
         - name: export
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "minio.fullname" .) }}
+            claimName: app-irs-dev-minio
         - name: minio-user
           secret:
             secretName: app-irs-dev-minio            
