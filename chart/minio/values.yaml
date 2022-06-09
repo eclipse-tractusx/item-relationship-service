@@ -44,8 +44,8 @@ priorityClassName: ""
 ## AccessKey and secretKey is generated when not set
 ## Distributed MinIO ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
-rootUser: <path:product-traceability-irs/data/dev/minio#minioDevUser>
-rootPassword: <path:product-traceability-irs/data/dev/minio#minioDevUserPassword>
+rootUser: <path:product-traceability-irs/data/dev/minio#minioUser>
+rootPassword: <path:product-traceability-irs/data/dev/minio#minioPassword>
 
 ## Use existing Secret that store following variables:
 ##
