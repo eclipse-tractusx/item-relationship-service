@@ -16,9 +16,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+/**
+ * Rewriting endpoint address returned by Registry service, to the one working with AASWrapper
+ */
 @Slf4j
 class AASWrapperUriAddressRewritePolicy {
 
+    /**
+     * Rewritten address to AASWrapper
+     * @param endpointAddress returned by registry
+     * @return rewritten address
+     */
     public URI rewriteToAASWrapperUri(final String endpointAddress) {
         final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(AASWrapperUri.AAS_WRAPPER_HOST);
 
@@ -35,25 +43,28 @@ class AASWrapperUriAddressRewritePolicy {
         return uriComponents.toUri();
     }
 
+    /**
+     * AASWrapper uri container
+     */
     @Getter
-    static class AASWrapperUri {
-        static final String AAS_WRAPPER_HOST = "http://aaswrapper:9191/api/service";
+    /* package */ static class AASWrapperUri {
+        /* package */ static final String AAS_WRAPPER_HOST = "http://aaswrapper:9191/api/service";
 
-        final String providerConnectUrl;
-        final String path;
-        final String query;
+        private final String providerConnectUrl;
+        private final String path;
+        private final String query;
 
-        AASWrapperUri(final String endpointAddress) {
+        /* package */ AASWrapperUri(final String endpointAddress) {
             final int indexOfUrn = findIndexOf(endpointAddress, "/urn:uuid:");
             final int indexOfQuestionMarkQuery = findIndexOf(endpointAddress, "?");
 
-            if (indexOfUrn != -1 && indexOfQuestionMarkQuery != -1) {
-                this.providerConnectUrl = endpointAddress.substring(0, indexOfUrn);
-                this.path = endpointAddress.substring(indexOfUrn, indexOfQuestionMarkQuery);
-                this.query = endpointAddress.substring(indexOfQuestionMarkQuery + 1);
-            } else {
-                throw new RuntimeException("Cannot rewrite endpoint address, malformed format: " + endpointAddress);
+            if (indexOfUrn == -1 || indexOfQuestionMarkQuery == -1) {
+                throw new IllegalArgumentException("Cannot rewrite endpoint address, malformed format: " + endpointAddress);
             }
+
+            this.providerConnectUrl = endpointAddress.substring(0, indexOfUrn);
+            this.path = endpointAddress.substring(indexOfUrn, indexOfQuestionMarkQuery);
+            this.query = endpointAddress.substring(indexOfQuestionMarkQuery + 1);
         }
 
         private int findIndexOf(final String endpointAddress, final String str) {
