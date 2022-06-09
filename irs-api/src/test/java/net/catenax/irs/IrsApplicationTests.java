@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
@@ -50,20 +51,16 @@ class IrsApplicationTests {
     private JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator;
 
     @Test
-    void contextLoads() {
-    }
-
-    @Test
     void generatedOpenApiMatchesContract() throws Exception {
         final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
                 String.class);
         final String fixedYaml = Files.readString(new File("../api/irs-v1.0.yaml").toPath(), UTF_8);
-        assertThat(generatedYaml).isEqualToIgnoringNewLines(fixedYaml);
+        assertThat(generatedYaml).isEqualToIgnoringWhitespace(fixedYaml);
     }
 
     @Test
     void shouldStoreBlobResultWhenRunningJob() throws Exception {
-        final JobParameter jobParameter = JobParameter.builder().rootItemId("rootitemid").treeDepth(5).build();
+        final JobParameter jobParameter = JobParameter.builder().rootItemId("rootitemid").treeDepth(5).aspectTypes(List.of()).build();
 
         final JobInitiateResponse response = jobOrchestrator.startJob(jobParameter);
 
