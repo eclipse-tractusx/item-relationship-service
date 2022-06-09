@@ -9,8 +9,6 @@
 //
 package net.catenax.irs.services;
 
-import static java.util.Collections.emptyList;
-
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
