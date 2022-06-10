@@ -32,7 +32,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {SmokeTestConfiguration.class})
-public class ItemGraphSmokeIT {
+public class ItemGraphSmokeTest {
 
     @Autowired
     private SmokeTestConnectionProperties connectionProperties;
@@ -71,11 +71,6 @@ public class ItemGraphSmokeIT {
 
     @BeforeEach
     void setUp() {
-        System.out.println("credentialsProperties.getAuthorizationGrantType(): " + credentialsProperties.getAuthorizationGrantType());
-        System.out.println("credentialsProperties.getClientId(): " + credentialsProperties.getClientId());
-        System.out.println("credentialsProperties.getClientSecret(): " + credentialsProperties.getClientSecret());
-        System.out.println("connectionProperties.getAccessToken(): " + connectionProperties.getAccessToken());
-
         final String accessToken =
                 obtainAccessToken(credentialsProperties.getAuthorizationGrantType(),
                                   credentialsProperties.getClientId(),
@@ -130,7 +125,7 @@ public class ItemGraphSmokeIT {
 
         final List<Relationship> relationships = responseGet.getRelationships();
         assertThat(relationships).isNotEmpty();
-        assertThat(responseGet.getShells()).isNull();
+        assertThat(responseGet.getShells()).isNotNull();
         assertThat(responseGet.getTombstones()).isNotEmpty();
 
         // Integration test Scenario 2 STEP 3
@@ -152,7 +147,7 @@ public class ItemGraphSmokeIT {
 
         assertThat(jobs.getJob()).isNotNull();
         assertThat(jobs.getRelationships()).isNotEmpty();
-        assertThat(jobs.getShells()).isNull();
+        assertThat(jobs.getShells()).isNotNull();
         assertThat(jobs.getTombstones()).isNotEmpty();
     }
 

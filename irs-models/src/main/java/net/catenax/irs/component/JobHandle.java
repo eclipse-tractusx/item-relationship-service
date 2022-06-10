@@ -11,11 +11,11 @@ package net.catenax.irs.component;
 
 import java.util.UUID;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
@@ -23,22 +23,21 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
  */
 @ApiModel(description = "The unique jobId handle of the just processed job.")
 @Value
+@Jacksonized
 @Builder(toBuilder = true)
-@JsonDeserialize(builder = JobHandle.JobHandleBuilder.class)
 @ExcludeFromCodeCoverageGeneratedReport
 public class JobHandle {
 
     private UUID jobId;
+
+    @JsonCreator
+    public JobHandle(final UUID jobId) {
+        this.jobId = jobId;
+    }
 
     @Override
     public String toString() {
         return jobId.toString();
     }
 
-    /**
-     * Builder class
-     */
-    @JsonPOJOBuilder(withPrefix = "")
-    public static class JobHandleBuilder {
-    }
 }

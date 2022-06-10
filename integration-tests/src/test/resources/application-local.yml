@@ -1,6 +1,3 @@
-server:
-  port: 8081
-
 spring:
   security:
       client:
@@ -14,5 +11,5 @@ spring:
       on-profile: local
 
 connection:
-  base-uri: http://localhost:8081
+  base-uri: http://localhost:8080
   access-token: https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/iamcentralidp/auth/realms/CX-Central/protocol/openid-connect/token
