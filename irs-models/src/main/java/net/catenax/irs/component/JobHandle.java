@@ -11,7 +11,6 @@ package net.catenax.irs.component;
 
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Value;
@@ -30,7 +29,6 @@ public class JobHandle {
 
     private UUID jobId;
 
-    @JsonCreator
     public JobHandle(final UUID jobId) {
         this.jobId = jobId;
     }
