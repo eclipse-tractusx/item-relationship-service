@@ -4,9 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.net.URI;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -67,11 +64,6 @@ class AASWrapperUriAddressRewritePolicyTest {
     @Test
     void shouldThrowRuntimeExceptionWhenMalformedEndpointAddress() {
         final String malformedEndpointAddress = "http://xxxxNOURN.pl?x=2";
-
-        AssemblyPartRelationship a = new AssemblyPartRelationship();
-
-        Set<ChildData> stringSet = a.getChildParts() == null ? Collections.emptySet() : new HashSet<>(a.getChildParts());
-
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> new AASWrapperUriAddressRewritePolicy.AASWrapperUri(malformedEndpointAddress));
     }
