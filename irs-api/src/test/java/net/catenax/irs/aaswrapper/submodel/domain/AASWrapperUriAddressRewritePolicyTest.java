@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.net.URI;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.web.util.UriComponentsBuilder;
 
 class AASWrapperUriAddressRewritePolicyTest {
 
