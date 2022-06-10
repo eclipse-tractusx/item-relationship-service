@@ -56,7 +56,7 @@ public class DigitalTwinRegistryFacade {
 
         final List<String> filterAspectTypes = new ArrayList<>(aspectTypes);
 
-        if (containsAssemblyPartRelationship(filterAspectTypes)) {
+        if (notContainsAssemblyPartRelationship(filterAspectTypes)) {
             filterAspectTypes.add(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString());
             log.info("Adjusted Aspect Type Filter '{}'", filterAspectTypes);
         }
@@ -64,7 +64,7 @@ public class DigitalTwinRegistryFacade {
         return assetAdministrationShellDescriptor.filterDescriptorsByAspectTypes(filterAspectTypes);
     }
 
-    private boolean containsAssemblyPartRelationship(final List<String> filterAspectTypes) {
+    private boolean notContainsAssemblyPartRelationship(final List<String> filterAspectTypes) {
         return !filterAspectTypes.contains(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString());
     }
 
