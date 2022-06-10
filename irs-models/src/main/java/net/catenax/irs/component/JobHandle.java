@@ -29,13 +29,8 @@ public class JobHandle {
 
     private UUID jobId;
 
-    public JobHandle(final UUID jobId) {
-        this.jobId = jobId;
-    }
-
     @Override
     public String toString() {
         return jobId.toString();
     }
-
 }
