@@ -12,7 +12,7 @@ package "IRS" {
   interface "IRS API"  as IrsAPI
   [ConsumerApiController]
   [ConsumerService]
-  ConsumerApiController --> ConsumerService : retrievePartsTree(request)
+  ConsumerApiController --> ConsumerService : retrieveItemGraph(request)
   BlobstoreAPI - [BlobstoreAPIImpl]
 
   ConsumerService ---( BlobstoreAPI : createContainer(storageAccountName, containerName)
@@ -22,7 +22,7 @@ package "IRS" {
   JobStore -  [InMemoryJobStore]
   JobOrchestrator -( JobStore : create(job)
 
-  RecursiveJobHandler --- [PartsTreeRecursiveJobHandler]
+  RecursiveJobHandler --- [ItemGraphRecursiveJobHandler]
   JobOrchestrator --( RecursiveJobHandler: initiate(job)
 
   TransferProcessManager - [TransferProcessManagerImpl]

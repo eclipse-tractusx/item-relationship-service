@@ -1,0 +1,51 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+skinparam shadowing false
+
+autonumber "<b>[000]"
+box "Consumer" #LightGrey
+participant IRS
+participant AASTransferProcessManager
+activate AASTransferProcessManager
+participant DigitalTwinRegistryFacade
+participant SubmodelFacade
+participant BlobPersistence
+participant ExecutorService
+
+
+IRS -> AASTransferProcessManager: initiateRequest with globalAssetId and aspects
+note right
+    IRS API endpoint
+    POST /isr/jobs with
+    {globalAssetId: urn:uuid:<uuid4>,
+    aspects [SerialPartTypization, SupplyRelationData]]}
+end note
+AASTransferProcessManager -> AASTransferProcessManager : initiateRequest
+note left
+    prepare thread executing transfer process
+end note
+AASTransferProcessManager -> DigitalTwinRegistryFacade : calling Digital Twin Registry for **globalAssetId**
+AASTransferProcessManager <-- DigitalTwinRegistryFacade : return AAS shell for **globalAssetId**
+AASTransferProcessManager -> AASTransferProcessManager : filter AAS shell **submodelDescriptors** by aspects
+AASTransferProcessManager -> BlobPersistence : write filtered AAS shell to **JobResponse** # **shell** section
+AASTransferProcessManager <-- BlobPersistence : **JobResponse # shells** updated
+AASTransferProcessManager -> AASTransferProcessManager : filter AAS shell for **AssemblyPartRelationship** aspect(s)
+AASTransferProcessManager -> SubmodelFacade: request for submodel of AssemblyPartRelationship aspects
+AASTransferProcessManager <-- SubmodelFacade: submodel payload of AssemblyPartRelationship
+opt "request for submodel succeeded"
+AASTransferProcessManager -> BlobPersistence : add AssemblyPartRelationship aspect to relationships section of JobResponse
+AASTransferProcessManager <-- BlobPersistence : **JobResponse # relationships** updated
+else
+AASTransferProcessManager -> BlobPersistence : write Tombstone
+AASTransferProcessManager <-- BlobPersistence : **JobResponse # tombstone** updated
+end
+
+
+AASTransferProcessManager -> ExecutorService: execute dataRequest
+ref over ExecutorService
+    execute dataRequest
+end
+
+
+
+@enduml

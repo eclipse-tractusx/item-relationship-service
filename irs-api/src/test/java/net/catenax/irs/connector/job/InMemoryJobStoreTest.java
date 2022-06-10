@@ -1,9 +1,9 @@
 package net.catenax.irs.connector.job;
 
+import static net.catenax.irs.util.TestMother.jobParameter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static net.catenax.irs.util.TestMother.jobParameter;
 
 import java.net.URL;
 import java.time.Instant;
@@ -444,6 +444,17 @@ class InMemoryJobStoreTest {
             softly.assertThat(storedJob.getJobParameter()).isEqualTo(job.getJobParameter());
             softly.assertThat(storedJob.getCompletedTransfers()).isEqualTo(job.getCompletedTransfers());
         });
+    }
+
+    @Test
+    void create_and_findAll_jobs() {
+        sut.create(job);
+        assertThat(sut.findAll()).isNotEmpty();
+        assertThat(sut.findAll()).hasSize(1);
+
+        sut.create(job2);
+        assertThat(sut.findAll()).isNotEmpty();
+        assertThat(sut.findAll()).hasSize(2);
     }
 
 }

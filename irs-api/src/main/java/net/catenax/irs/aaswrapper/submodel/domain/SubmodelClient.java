@@ -9,19 +9,16 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
-import static net.catenax.irs.configuration.OAuthRestTemplateConfig.OAUTH_REST_TEMPLATE;
+import static net.catenax.irs.configuration.RestTemplateConfig.BASIC_AUTH_REST_TEMPLATE;
 
 import java.net.URI;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Submodel client
@@ -62,10 +59,11 @@ class SubmodelClientLocalStub implements SubmodelClient {
 class SubmodelClientImpl implements SubmodelClient {
 
     private final RestTemplate restTemplate;
-    private final String aasProxyUrl;
-    /* package */ SubmodelClientImpl(@Qualifier(OAUTH_REST_TEMPLATE) final RestTemplate restTemplate, @Value("${aasProxy.url:}") final String aasProxyUrl) {
+    private final AASWrapperUriAddressRewritePolicy aasWrapperUriAddressRewritePolicy;
+
+    /* package */ SubmodelClientImpl(@Qualifier(BASIC_AUTH_REST_TEMPLATE) final RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.aasProxyUrl = aasProxyUrl;
+        this.aasWrapperUriAddressRewritePolicy = new AASWrapperUriAddressRewritePolicy();
     }
 
     @Override
@@ -74,13 +72,7 @@ class SubmodelClientImpl implements SubmodelClient {
     }
 
     private URI buildUri(final String submodelEndpointAddress) {
-        final UriComponents uriComponents = UriComponentsBuilder.fromUriString(submodelEndpointAddress).build();
-
-        if (uriComponents.toUriString().startsWith(aasProxyUrl)) {
-            return uriComponents.toUri();
-        }
-
-        throw new IllegalArgumentException("Received unexpected Submodel URL: " + submodelEndpointAddress);
+        return this.aasWrapperUriAddressRewritePolicy.rewriteToAASWrapperUri(submodelEndpointAddress);
     }
 
 }

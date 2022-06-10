@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestTemplate;
 

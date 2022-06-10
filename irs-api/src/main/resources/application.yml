@@ -60,7 +60,6 @@ springdoc:
 
 irs:
   apiUrl: http://irs.int.demo.catena-x.net
-  partsTreeMaxDepth: 100
   job:
     cleanup:
       scheduler:
@@ -95,3 +94,14 @@ resilience4j.retry:
   instances:
     submodelRetryer:
       baseConfig: default
+
+aasProxy:
+  submodel:
+    username: ${AAS_PROXY_SUBMODEL_USERNAME:}
+    password: ${AAS_PROXY_SUBMODEL_PASSWORD:}
+
+aspectTypes:
+    default: SerialPartTypization
+
+digitalTwinRegistry:
+  url: https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry

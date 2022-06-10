@@ -9,29 +9,29 @@
 //
 package net.catenax.irs.component.enums;
 
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
-import net.catenax.irs.dtos.ItemLifecycleStage;
 
 /***
  * API type for the view of the items tree to be returned by a query.
  *
- * @see ItemLifecycleStage
  */
 @ExcludeFromCodeCoverageGeneratedReport
 @Schema(description = "The lifecycle context in which the child part was assembled into the parent part.")
 @Getter
 public enum BomLifecycle {
     @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") AS_BUILT("asBuilt", "AsBuilt");
-    //@Schema(description = "The view of the PartsTree ... lifecycle.") AS_MAINTAINED("asMaintained"),
-    //@Schema(description = "TThe view of the PartsTree ... lifecycle.") AS_PLANNED("asPlanned"),
-    //@Schema(description = "TThe view of the PartsTree ... lifecycle.") AS_DESIGNED("asDesigned"),
-    //@Schema(description = "The view of the PartsTree ... lifecycle.") AS_ORDERED("asOrdered"),
-    //@Schema(description = "The view of the PartsTree ... lifecycle.") AS_RECYCLED("asRecycled");
+    //@Schema(description = "The view of the ItemsTree ... lifecycle.") AS_MAINTAINED("asMaintained"),
+    //@Schema(description = "TThe view of the ItemsTree ... lifecycle.") AS_PLANNED("asPlanned"),
+    //@Schema(description = "TThe view of the ItemsTree ... lifecycle.") AS_DESIGNED("asDesigned"),
+    //@Schema(description = "The view of the ItemsTree ... lifecycle.") AS_ORDERED("asOrdered"),
+    //@Schema(description = "The view of the ItemsTree ... lifecycle.") AS_RECYCLED("asRecycled");
 
     private final String value;
     private final String lifecycleContextCharacteristicValue;
@@ -56,7 +56,12 @@ public enum BomLifecycle {
         return Stream.of(BomLifecycle.values())
                      .filter(bomLifecycle -> bomLifecycle.value.equals(value))
                      .findFirst()
-                     .orElseThrow();
+                     .orElseThrow(() -> new NoSuchElementException("Unsupported BomLifecycle: " + value
+                             + ". Must be one of: " + supportedBomLifecycles()));
+    }
+
+    private static String supportedBomLifecycles() {
+        return Stream.of(BomLifecycle.values()).map(bomLifecycle -> bomLifecycle.value).collect(Collectors.joining(", "));
     }
 
     public static BomLifecycle fromLifecycleContextCharacteristic(final String value) {
