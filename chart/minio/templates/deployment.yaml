@@ -36,7 +36,7 @@ spec:
           command:
             - "/bin/sh"
             - "-ce"
-            - "/usr/bin/docker-entrypoint.sh minio -S /etc/minio/certs/ server /export --address :{{ .Values.minioAPIPort }}"
+            - "/usr/bin/docker-entrypoint.sh minio -S /etc/minio/certs/ server /data --address :{{ .Values.minioAPIPort }}"
           volumeMounts:            
             {{- if .Values.persistence.enabled }}
             - name: export

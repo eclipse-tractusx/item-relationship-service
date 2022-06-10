@@ -60,7 +60,7 @@ rootPassword: <path:product-traceability-irs/data/dev/minio#minioPassword>
 existingSecret: ""
 
 ## Path where PV would be mounted on the MinIO Pod
-mountPath: "/export"
+mountPath: "/data"
 
 podAnnotations: {}
 
