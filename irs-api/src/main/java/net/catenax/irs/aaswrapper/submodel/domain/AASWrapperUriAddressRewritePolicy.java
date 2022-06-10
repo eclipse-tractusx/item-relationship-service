@@ -36,7 +36,7 @@ class AASWrapperUriAddressRewritePolicy {
         uriComponentsBuilder.query(aasWrapperUri.getQuery());
         uriComponentsBuilder.queryParam("provider-connector-url", aasWrapperUri.getProviderConnectorUrl());
 
-        final UriComponents uriComponents = uriComponentsBuilder.build();
+        final UriComponents uriComponents = uriComponentsBuilder.build(true);
 
         log.debug("Rewritten endpoint address from: {}, to: {}", endpointAddress, uriComponents.toUriString());
 
