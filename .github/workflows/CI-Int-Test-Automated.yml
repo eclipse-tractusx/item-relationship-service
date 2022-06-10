@@ -8,10 +8,6 @@ on:
         description: 'Profile value to activate on GitHub like local, dev, int or prod'
         required: false
         type: string
-  push:
-    branches:
-      - main
-      - 'feature/TRI-488'
 
 jobs:
   build:
