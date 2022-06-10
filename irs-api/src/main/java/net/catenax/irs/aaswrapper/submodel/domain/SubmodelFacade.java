@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -42,9 +43,9 @@ public class SubmodelFacade {
         final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
                 AssemblyPartRelationship.class);
 
-        log.info("Submodel: {}, childParts{}", submodel.getCatenaXId(), submodel.getChildParts());
+        log.info("Submodel: {}, childParts {}", submodel.getCatenaXId(), submodel.getChildParts());
 
-        final Set<ChildData> submodelParts = new HashSet<>(submodel.getChildParts());
+        final Set<ChildData> submodelParts = thereAreChildParts(submodel) ? new HashSet<>(submodel.getChildParts()) : Collections.emptySet();
 
         final String lifecycleContext = jobData.getBomLifecycle();
         if (shouldFilterByLifecycleContext(lifecycleContext)) {
@@ -52,6 +53,10 @@ public class SubmodelFacade {
         }
 
         return buildAssemblyPartRelationshipResponse(submodelParts, submodel.getCatenaXId());
+    }
+
+    private boolean thereAreChildParts(final AssemblyPartRelationship submodel) {
+        return submodel.getChildParts() != null;
     }
 
     private AssemblyPartRelationshipDTO buildAssemblyPartRelationshipResponse(final Set<ChildData> submodelParts,

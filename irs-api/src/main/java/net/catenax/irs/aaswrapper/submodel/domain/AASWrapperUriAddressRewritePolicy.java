@@ -36,7 +36,7 @@ class AASWrapperUriAddressRewritePolicy {
         uriComponentsBuilder.query(aasWrapperUri.getQuery());
         uriComponentsBuilder.queryParam("provider-connector-url", aasWrapperUri.getProviderConnectorUrl());
 
-        final UriComponents uriComponents = uriComponentsBuilder.build();
+        final UriComponents uriComponents = uriComponentsBuilder.build(true);
 
         log.debug("Rewritten endpoint address from: {}, to: {}", endpointAddress, uriComponents.toUriString());
 
@@ -55,7 +55,7 @@ class AASWrapperUriAddressRewritePolicy {
         private final String query;
 
         /* package */ AASWrapperUri(final String endpointAddress) {
-            final int indexOfUrn = findIndexOf(endpointAddress, "/urn:uuid:");
+            final int indexOfUrn = findIndexOf(endpointAddress, "/urn");
             final int indexOfQuestionMarkQuery = findIndexOf(endpointAddress, "?");
 
             if (indexOfUrn == -1 || indexOfQuestionMarkQuery == -1) {
