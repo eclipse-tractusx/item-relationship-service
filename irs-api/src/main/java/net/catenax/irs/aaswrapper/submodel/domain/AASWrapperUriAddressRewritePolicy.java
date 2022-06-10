@@ -55,7 +55,7 @@ class AASWrapperUriAddressRewritePolicy {
         private final String query;
 
         /* package */ AASWrapperUri(final String endpointAddress) {
-            final int indexOfUrn = findIndexOf(endpointAddress, "/urn:uuid:");
+            final int indexOfUrn = findIndexOf(endpointAddress, "/urn");
             final int indexOfQuestionMarkQuery = findIndexOf(endpointAddress, "?");
 
             if (indexOfUrn == -1 || indexOfQuestionMarkQuery == -1) {
