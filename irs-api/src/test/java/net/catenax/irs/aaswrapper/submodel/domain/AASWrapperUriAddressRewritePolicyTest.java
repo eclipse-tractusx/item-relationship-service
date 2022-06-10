@@ -61,9 +61,6 @@ class AASWrapperUriAddressRewritePolicyTest {
         assertThat(aasWrapperUri.getQuery()).isEqualTo("content=value&extent=withBlobValue");
     }
 
-
-
-
     @Test
     void shouldThrowRuntimeExceptionWhenMalformedEndpointAddress() {
         final String malformedEndpointAddress = "http://xxxxNOURN.pl?x=2";
