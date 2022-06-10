@@ -23,6 +23,7 @@ import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.dto.JobStatusResult;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.junit.jupiter.api.Test;
@@ -76,13 +77,19 @@ class IrsControllerTest {
 
     @Test
     @WithMockUser
-    void getJobsByJobStates() throws Exception {
-        final UUID returnedJob = UUID.randomUUID();
-        when(service.getJobIdsByJobStates(any())).thenReturn(List.of(returnedJob));
+    void getJobsByJobState() throws Exception {
+        UUID jobId = UUID.randomUUID();
+        final JobStatusResult returnedJob = JobStatusResult.builder().jobId(jobId).status(JobState.RUNNING).build();
+
+        String returnJobAsString = new ObjectMapper().writeValueAsString(returnedJob);
+
+        when(service.getJobsByJobState(any())).thenReturn(List.of(returnedJob));
 
         this.mockMvc.perform(get("/irs/jobs"))
                     .andExpect(status().isOk())
-                    .andExpect(content().string(containsString(returnedJob.toString())));
+                    .andExpect(content().string(containsString(returnJobAsString)))
+                    .andExpect(content().string(containsString(returnedJob.getJobId().toString())))
+                    .andExpect(content().string(containsString(returnedJob.getStatus().toString())));
     }
 
     @Test

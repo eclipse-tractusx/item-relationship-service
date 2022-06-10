@@ -7,25 +7,27 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.registry.domain;
+package net.catenax.irs.component.assetadministrationshell;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * Endpoint
+ * LangString
  */
 @Data
-class Endpoint {
+@Builder
+@Jacksonized
+public class LangString {
 
     /**
-     * interfaceInformation
+     * language
      */
-    @JsonProperty("interface")
-    private String interfaceInformation;
+    private String language;
     /**
-     * protocolInformation
+     * text
      */
-    private ProtocolInformation protocolInformation;
+    private String text;
 
 }

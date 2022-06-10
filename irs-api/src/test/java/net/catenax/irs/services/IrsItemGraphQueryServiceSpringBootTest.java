@@ -7,6 +7,7 @@ import static org.awaitility.Awaitility.given;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -16,6 +17,7 @@ import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.RegisterJob;
+import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
@@ -97,6 +99,22 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         final JobState state = fetchedJob.get().getJob().getJobState();
         assertThat(state).isEqualTo(JobState.CANCELED);
+    }
+
+    @Test
+    void registerJobWithoutAspectsShouldUseDefault() {
+        // given
+        final String defaultAspectType = "SerialPartTypization";
+        final List<AspectType> emptyAspectTypeFilterList = List.of();
+        final RegisterJob registerJob = registerJobWithDepthAndAspect(null, emptyAspectTypeFilterList);
+
+        // when
+        final JobHandle jobHandle = service.registerItemJob(registerJob);
+        final Optional<MultiTransferJob> multiTransferJob = jobStore.find(jobHandle.toString());
+
+        // then
+        assertThat(multiTransferJob).isPresent();
+        assertThat(multiTransferJob.get().getJobParameter().getAspectTypes()).contains(defaultAspectType);
     }
 
     private int getRelationshipsSize(final UUID jobId) {
