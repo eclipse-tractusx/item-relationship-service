@@ -62,9 +62,6 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-        - name: export
-          persistentVolumeClaim:
-            claimName: app-irs-dev01-minio
         - name: minio-user
           secret:
             secretName: app-irs-dev01-minio            
