@@ -4,26 +4,28 @@
 # Declare variables to be passed into your templates.
 
 ## Ingress declaration to expose the network service.
-ingresses:
-  ## Public / Internet facing Ingress
-  - enabled: true
-    # -- The hostname to be used to precisely map incoming traffic onto the underlying network service
-    hostname: "irs-consumer-dataplane.int.demo.catena-x.net"
-    # -- Additional ingress annotations to add
-    annotations: { }
-    # -- EDC endpoints exposed by this ingress resource
-    endpoints:
-      - public
-    # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
-    className: ""
-    # -- Enables TLS on the ingress resource
-    tls: false
-    ## Adds [cert-manager](https://cert-manager.io/docs/) annotations to the ingress resource
-    certManager:
-      # -- If preset enables certificate generation via cert-manager namespace scoped issuer
-      issuer: ""
-      # -- If preset enables certificate generation via cert-manager cluster-wide issuer
-      clusterIssuer: ""
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+  hosts:
+    - host: "irs-consumer-dataplane.int.demo.catena-x.net"
+      paths:
+        - path: /api/public
+          pathType: Prefix
+          backend:
+            service:
+              name: edc-consumer-dataplane
+              port:
+                number: 8185
+  tls:
+    - hosts:
+        - "irs-consumer-dataplane.int.demo.catena-x.net"
+      # Default secret for certificate creation already provided to your namespace
+      secretName: tls-secret
 
 configuration:
   properties: |-
@@ -50,7 +52,7 @@ configuration:
     # edc.contractnegotiationstore.cosmos.container-name=
     # edc.contractnegotiationstore.cosmos.database-name=
     # edc.contractnegotiationstore.cosmos.preferred-region=
-    edc.controlplane.validation-endpoint=https://edc-consumer-controlplane:8182/validation
+    edc.controlplane.validation-endpoint=http://edc-consumer-controlplane:8182/validation/token
     # edc.core.retry.backoff.max=
     # edc.core.retry.backoff.min=
     # edc.core.retry.retries.max=
