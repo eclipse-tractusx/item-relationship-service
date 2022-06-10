@@ -58,16 +58,16 @@ spec:
                   name: rootpassword
                   key: {{ .Values.rootPassword }}   
             - name: MINIO_URL
-              value: 'http://app-irs-dev-minio:9000'               
+              value: 'http://app-irs-dev01-minio:9000'               
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: export
           persistentVolumeClaim:
-            claimName: app-irs-dev-minio
+            claimName: app-irs-dev01-minio
         - name: minio-user
           secret:
-            secretName: app-irs-dev-minio            
+            secretName: app-irs-dev01-minio            
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

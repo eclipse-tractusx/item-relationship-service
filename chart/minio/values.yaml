@@ -11,8 +11,8 @@ image:
   tag: "RELEASE.2022-05-08T23-50-31Z"
 
 imagePullSecrets: []
-nameOverride: "minio"
-fullnameOverride: "minio"
+nameOverride: "app-irs-dev01-minio"
+fullnameOverride: "app-irs-dev01-minio"
 
 ## minio mode, i.e. standalone or distributed or gateway.
 mode: distributed ## other supported values are "standalone", "gateway"  
@@ -86,7 +86,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: "app-irs-dev-minio"
+    - host: "app-irs-dev01-minio"
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -175,7 +175,7 @@ persistence:
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
-  existingClaim: "app-irs-dev-minio"
+  existingClaim: "app-irs-dev01-minio"
 
   ## minio data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
