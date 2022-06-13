@@ -50,12 +50,12 @@ spec:
             - name: MINIO_ROOT_USER
               valueFrom:
                 secretKeyRef:
-                  name: rootuser
+                  name: rootUser
                   key: {{ .Values.rootUser }}
             - name: MINIO_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: rootpassword
+                  name: rootPassword
                   key: {{ .Values.rootPassword }}   
             - name: MINIO_URL
               value: 'http://app-irs-dev01-minio:9000'               
