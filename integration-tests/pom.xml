@@ -96,7 +96,7 @@
                                 <exclude>none</exclude>
                             </excludes>
                             <includes>
-                                <include>**/*IT</include>
+                                <include>**/*Test</include>
                             </includes>
                         </configuration>
                     </execution>
