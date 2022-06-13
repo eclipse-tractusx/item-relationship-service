@@ -271,7 +271,7 @@
 
     <profiles>
         <profile>
-            <id>active</id>
+            <id>dependency-check</id>
             <build>
                 <plugins>
                     <plugin>
