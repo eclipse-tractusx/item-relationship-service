@@ -50,8 +50,8 @@ spec:
             - name: MINIO_ROOT_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.rootUser }}
-                  key: rootuser
+                  name: rootuser
+                  key: {{ .Values.rootUser }}
             - name: MINIO_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -62,9 +62,8 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-        - name: minio-user
-          secret:
-            secretName: app-irs-dev01-minio            
+        - name: minio-dev-temp
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
