@@ -43,6 +43,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
+Determine secret name.
+*/}}
+{{- define "minio.secretName" -}}
+{{- if .Values.existingSecret -}}
+{{- .Values.existingSecret }}
+{{- else -}}
+{{- include "minio.fullname" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Selector labels
 */}}
 {{- define "minio.selectorLabels" -}}
