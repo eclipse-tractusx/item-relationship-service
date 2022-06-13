@@ -75,9 +75,8 @@ http://irs.dev.demo.catena-x.net/api/swagger-ui/index.html?configUrl=/api/api-do
 
 Additionally, we supply our own EDC setup to be able to do end-to-end tests in an isolated environment.
 This contains of:
- - API Proxy
  - AAS Wrapper
- - DigitalTwin Registry
+ - Digital Twin Registry
  - EDC Consumer (Control and Data Plane)
  - EDC Provider (Control and Data Plane)
  - Multiple submodel servers to provide test data
@@ -97,7 +96,6 @@ http://irs.int.demo.catena-x.net/api/swagger-ui/index.html?configUrl=/api/api-do
 
 Additionally, we supply our own EDC consumer to connect to the Catena-X integration system.
 This contains of:
-- API Proxy
 - AAS Wrapper
 - EDC Consumer (Control and Data Plane)
 
