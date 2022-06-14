@@ -3,11 +3,12 @@
 | __Build Status__ | [![build](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/CI-main.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/CI-main.yml)           | 
 |:-----------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | __Coverage__     | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=catenax-ng_product-item-relationship-service&metric=coverage)](https://sonarcloud.io/summary/new_code?id=catenax-ng_product-item-relationship-service) |
-| __CodeQL__       | [![CodeQL](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml)       |
-| __Checkov__      | [![Checkov](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/checkov.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/checkov.yml)    |   
-| __Trivy__        | [![Trivy](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/trivy.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/trivy.yml)    |   
-| __VeraCode__     | [![VeraCode](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/VeraCode.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/VeraCode.yml) | 
-| __License__      | [![GitHub](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/catenax-ng/product-item-relationship-service/blob/main/LICENSE)                                                                |   
+| __CodeQL__       | [![CodeQL](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml)            |
+| __Checkov__      | [![Checkov](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/checkov.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/checkov.yml)         |   
+| __Trivy__        | [![Trivy](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/trivy.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/trivy.yml)               |   
+| __VeraCode__     | [![VeraCode](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/VeraCode.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/VeraCode.yml)      | 
+| __OWASP__        | [![Owasp](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml)               | 
+| __License__      | [![GitHub](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/catenax-ng/product-item-relationship-service/blob/main/LICENSE)                                                                     |   
 
 
 
@@ -75,9 +76,8 @@ http://irs.dev.demo.catena-x.net/api/swagger-ui/index.html?configUrl=/api/api-do
 
 Additionally, we supply our own EDC setup to be able to do end-to-end tests in an isolated environment.
 This contains of:
- - API Proxy
  - AAS Wrapper
- - DigitalTwin Registry
+ - Digital Twin Registry
  - EDC Consumer (Control and Data Plane)
  - EDC Provider (Control and Data Plane)
  - Multiple submodel servers to provide test data
@@ -97,7 +97,6 @@ http://irs.int.demo.catena-x.net/api/swagger-ui/index.html?configUrl=/api/api-do
 
 Additionally, we supply our own EDC consumer to connect to the Catena-X integration system.
 This contains of:
-- API Proxy
 - AAS Wrapper
 - EDC Consumer (Control and Data Plane)
 

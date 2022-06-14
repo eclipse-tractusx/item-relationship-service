@@ -5,9 +5,9 @@ skinparam shadowing false
 component [**DataConsumer**] <<BusinessEntity>> as DC {
 component [**Dismantler DB**] <<System>> as CE
 component [**IRS**] <<System>> as IRS   
-component [**AAS Wrapper / AAS Proxy**] <<Component>> as AASW
+component [**AAS Wrapper**] <<Component>> as AASW
 interface "IRS API" as IAPI
-interface "AAS Wrapper/ \nProxy API" as AASA
+interface "AAS Wrapper API" as AASA
 
 }
 

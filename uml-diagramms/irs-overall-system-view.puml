@@ -4,7 +4,7 @@ skinparam shadowing false
 
 [**IRS**] <<System>> as IRS
 
-[**AAS Wrapper / AAS Proxy**] <<Component>> as AASW
+[**AAS Wrapper**] <<Component>> as AASW
 
 
 node "Digital Twin Registry" {
@@ -14,20 +14,20 @@ node "Digital Twin Registry" {
 node "Group of Submodel Endpoints" {
   [**Submodel-Server**] <<Component>> as SN
 }
+
 actor Consumer
 interface "IRS API" as IAPI
-interface "AASProxyAPI" as IAASW
-interface "IRegistryAPI" as IRAPI
-interface "ISubmodelAPI" as ISubModelAPI
+interface "AASWrapper API" as IAASW
+interface "Registry API" as IRAPI
+interface "Submodel API" as ISubModelAPI
 
 Consumer -( IAPI
 IAPI - IRS
 IAASW - AASW
 IRS -( IAASW
-IRAPI - AASR
-AASW --( IRAPI
 ISubModelAPI - SN
 AASW -( ISubModelAPI
-
+IRS --( IRAPI
+IRAPI -- AASR
 
 @enduml
