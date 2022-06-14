@@ -62,6 +62,9 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           livenessProbe:
+            httpGet:
+              path: "/"
+              scheme: HTTP
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -69,6 +72,9 @@ spec:
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}  
           # @url: https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-setting-up-health-checks-with-readiness-and-liveness-probes
           readinessProbe:
+            httpGet:
+              path: "/"
+              scheme: HTTP
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
