@@ -1,5 +1,8 @@
 spring:
+  application:
+    name: item-relationship-service
   security:
+    oauth2:
       client:
         registration:
           keycloak:

@@ -19,6 +19,8 @@ import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.Relationship;
+import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import net.catenax.irs.component.assetadministrationshell.SubmodelDescriptor;
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
@@ -40,8 +42,8 @@ public class ItemGraphSmokeTest {
     @Autowired
     private SmokeTestCredentialsProperties credentialsProperties;
 
-    private static final String GLOBAL_ASSET_ID = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-    private static final int TREE_DEPTH = 5;
+    private static final String GLOBAL_ASSET_ID = "urn:uuid:5e3e9060-ba73-4d5d-a6c8-dfd5123f4d99";
+    private static final int TREE_DEPTH = 1;
     private static final List<AspectType> ASPECTS = List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP);
     private static RequestSpecification requestSpecification;
 
@@ -118,15 +120,17 @@ public class ItemGraphSmokeTest {
         final Job job = responseGet.getJob();
         assertThat(job).isNotNull();
         assertThat(job.getJobId()).isNotNull();
+        System.out.println("job.getJobState(): " + job.getJobState());
         assertThat(job.getJobState()).isIn(JobState.COMPLETED, JobState.RUNNING, JobState.TRANSFERS_FINISHED);
 
         final GlobalAssetIdentification globalAsset = job.getGlobalAssetId();
         assertThat(globalAsset.getGlobalAssetId()).isEqualTo(GLOBAL_ASSET_ID);
 
         final List<Relationship> relationships = responseGet.getRelationships();
-        assertThat(relationships).isNotEmpty();
-        assertThat(responseGet.getShells()).isNotNull();
-        assertThat(responseGet.getTombstones()).isNotEmpty();
+        System.out.println("relationships.size(): " + relationships.size());
+        assertThat(relationships.size()).isEqualTo(0);
+        assertThat(responseGet.getShells().size()).isGreaterThanOrEqualTo(0);
+        assertThat(responseGet.getTombstones().size()).isEqualTo(0);
 
         // Integration test Scenario 2 STEP 3
         final Response responseGetPoll = given().spec(requestSpecification)
@@ -134,7 +138,8 @@ public class ItemGraphSmokeTest {
                                                 .queryParam("returnUncompletedJob", true)
                                                 .get("/irs/jobs/" + jobId);
 
-        await().atMost(30, TimeUnit.SECONDS)
+        System.out.println("responseGetPoll: " + responseGetPoll.as(Jobs.class).getJob().getJobState());
+        await().atMost(3, TimeUnit.MINUTES)
                .until(() -> responseGetPoll.as(Jobs.class).getJob().getJobState().equals(JobState.COMPLETED));
 
         final Jobs jobs = responseGetPoll.then()
@@ -146,9 +151,13 @@ public class ItemGraphSmokeTest {
         assertThat(jobs).isNotNull();
 
         assertThat(jobs.getJob()).isNotNull();
-        assertThat(jobs.getRelationships()).isNotEmpty();
-        assertThat(jobs.getShells()).isNotNull();
-        assertThat(jobs.getTombstones()).isNotEmpty();
+        assertThat(jobs.getRelationships().size()).isGreaterThanOrEqualTo(0);
+        assertThat(jobs.getShells().size()).isGreaterThan(0);
+        assertThat(jobs.getTombstones().size()).isGreaterThanOrEqualTo(0);
+
+        final AssetAdministrationShellDescriptor assDescriptor = responseGet.getShells().get(0);
+        final List<SubmodelDescriptor> submodelDescriptors = assDescriptor.getSubmodelDescriptors();
+        assertThat(submodelDescriptors.size()).isGreaterThan(0);
     }
 
 }
