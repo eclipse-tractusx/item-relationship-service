@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {SmokeTestConfiguration.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { SmokeTestConfiguration.class })
 public class ItemGraphSmokeTest {
 
     @Autowired
@@ -43,7 +43,7 @@ public class ItemGraphSmokeTest {
     private SmokeTestCredentialsProperties credentialsProperties;
 
     private static final String GLOBAL_ASSET_ID = "urn:uuid:5e3e9060-ba73-4d5d-a6c8-dfd5123f4d99";
-    private static final int TREE_DEPTH = 1;
+    private static final int TREE_DEPTH = 2;
     private static final List<AspectType> ASPECTS = List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP);
     private static RequestSpecification authenticationRequest;
 
@@ -75,9 +75,9 @@ public class ItemGraphSmokeTest {
     void setUp() {
         final String accessToken =
                 obtainAccessToken(credentialsProperties.getAuthorizationGrantType(),
-                                  credentialsProperties.getClientId(),
-                                  credentialsProperties.getClientSecret(),
-                                  connectionProperties.getAccessToken());
+                        credentialsProperties.getClientId(),
+                        credentialsProperties.getClientSecret(),
+                        connectionProperties.getAccessToken());
 
         final RequestSpecBuilder builder = new RequestSpecBuilder();
         builder.addHeader("Authorization", "Bearer " + accessToken);
@@ -101,58 +101,65 @@ public class ItemGraphSmokeTest {
 
         assertThat(createdJobResponse).isNotNull();
 
-        final UUID jobId = createdJobResponse.getJobId();
-        assertThat(jobId).isNotNull();
+        final UUID createdJobId = createdJobResponse.getJobId();
+        assertThat(createdJobId).isNotNull();
 
         // Integration test Scenario 2 STEP 2
-        final Jobs getJobByIdResponse = given().spec(authenticationRequest)
-                                               .contentType("application/json")
-                                               .queryParam("returnUncompletedJob", true)
-                                               .get("/irs/jobs/" + jobId)
-                                               .then()
+        final Jobs getPartialJobs = given().spec(authenticationRequest)
+                                           .contentType("application/json")
+                                           .queryParam("returnUncompletedJob", true)
+                                           .get("/irs/jobs/" + createdJobId)
+                                           .then()
+                                           .assertThat()
+                                           .statusCode(HttpStatus.OK.value())
+                                           .extract()
+                                           .as(Jobs.class);
+
+        assertThat(getPartialJobs).isNotNull();
+
+        final Job partialJob = getPartialJobs.getJob();
+        assertThat(partialJob).isNotNull();
+        assertThat(partialJob.getJobId()).isNotNull();
+        assertThat(partialJob.getJobState()).isIn(JobState.COMPLETED, JobState.RUNNING, JobState.TRANSFERS_FINISHED);
+
+        final GlobalAssetIdentification globalAsset = partialJob.getGlobalAssetId();
+        assertThat(globalAsset.getGlobalAssetId()).isEqualTo(GLOBAL_ASSET_ID);
+
+        final List<Relationship> relationships = getPartialJobs.getRelationships();
+        assertThat(relationships.size()).isEqualTo(0);
+        assertThat(getPartialJobs.getShells().size()).isGreaterThanOrEqualTo(0);
+        assertThat(getPartialJobs.getTombstones().size()).isEqualTo(0);
+
+        // Integration test Scenario 2 STEP 3
+        await().atMost(80, TimeUnit.SECONDS)
+               .until(() -> given().spec(authenticationRequest)
+                                   .contentType("application/json")
+                                   .queryParam("returnUncompletedJob", true)
+                                   .get("/irs/jobs/" + createdJobId)
+                                   .as(Jobs.class)
+                                   .getJob()
+                                   .getJobState()
+                                   .equals(JobState.COMPLETED));
+
+        final Response pollResponse = given().spec(authenticationRequest)
+                                             .contentType("application/json")
+                                             .queryParam("returnUncompletedJob", true)
+                                             .get("/irs/jobs/" + createdJobId);
+
+        final Jobs completedJobs = pollResponse.then()
                                                .assertThat()
                                                .statusCode(HttpStatus.OK.value())
                                                .extract()
                                                .as(Jobs.class);
 
-        assertThat(getJobByIdResponse).isNotNull();
+        assertThat(completedJobs).isNotNull();
+        assertThat(completedJobs.getJob()).isNotNull();
+        assertThat(completedJobs.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
+        assertThat(completedJobs.getRelationships().size()).isGreaterThanOrEqualTo(0);
+        assertThat(completedJobs.getShells().size()).isGreaterThan(0);
+        assertThat(completedJobs.getTombstones().size()).isGreaterThanOrEqualTo(0);
 
-        final Job job = getJobByIdResponse.getJob();
-        assertThat(job).isNotNull();
-        assertThat(job.getJobId()).isNotNull();
-        assertThat(job.getJobState()).isIn(JobState.COMPLETED, JobState.RUNNING, JobState.TRANSFERS_FINISHED);
-
-        final GlobalAssetIdentification globalAsset = job.getGlobalAssetId();
-        assertThat(globalAsset.getGlobalAssetId()).isEqualTo(GLOBAL_ASSET_ID);
-
-        final List<Relationship> relationships = getJobByIdResponse.getRelationships();
-        assertThat(relationships.size()).isEqualTo(0);
-        assertThat(getJobByIdResponse.getShells().size()).isGreaterThanOrEqualTo(0);
-        assertThat(getJobByIdResponse.getTombstones().size()).isEqualTo(0);
-
-        // Integration test Scenario 2 STEP 3
-        final Response pollResponse = given().spec(authenticationRequest)
-                                             .contentType("application/json")
-                                             .queryParam("returnUncompletedJob", true)
-                                             .get("/irs/jobs/" + jobId);
-
-        await().atMost(3, TimeUnit.MINUTES)
-               .until(() -> pollResponse.as(Jobs.class).getJob().getJobState().equals(JobState.COMPLETED));
-
-        final Jobs jobs = pollResponse.then()
-                                      .assertThat()
-                                      .statusCode(HttpStatus.OK.value())
-                                      .extract()
-                                      .as(Jobs.class);
-
-        assertThat(jobs).isNotNull();
-
-        assertThat(jobs.getJob()).isNotNull();
-        assertThat(jobs.getRelationships().size()).isGreaterThanOrEqualTo(0);
-        assertThat(jobs.getShells().size()).isGreaterThan(0);
-        assertThat(jobs.getTombstones().size()).isGreaterThanOrEqualTo(0);
-
-        final AssetAdministrationShellDescriptor assDescriptor = jobs.getShells().get(0);
+        final AssetAdministrationShellDescriptor assDescriptor = completedJobs.getShells().get(0);
         final List<SubmodelDescriptor> submodelDescriptors = assDescriptor.getSubmodelDescriptors();
         assertThat(submodelDescriptors.size()).isGreaterThan(0);
     }
