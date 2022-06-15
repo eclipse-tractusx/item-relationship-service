@@ -80,8 +80,8 @@ public class TestMother {
                            .rootItemId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")
                            .treeDepth(0)
                            .bomLifecycle("AsBuilt")
-                           .aspectTypes(List.of(AspectType.SERIAL_PART_TYPIZATION.toString().toLowerCase(Locale.ROOT),
-                                 AspectType.ASSEMBLY_PART_RELATIONSHIP.toString().toLowerCase(Locale.ROOT)))
+                           .aspectTypes(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(),
+                                 AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()))
                            .build();
     }
 
@@ -90,7 +90,16 @@ public class TestMother {
                            .rootItemId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")
                            .treeDepth(0)
                            .bomLifecycle("AsRequired")
-                           .aspectTypes(List.of(AspectType.MATERIAL_ASPECT.toString().toLowerCase(Locale.ROOT)))
+                           .aspectTypes(List.of(AspectType.MATERIAL_FOR_RECYCLING.toString()))
+                           .build();
+    }
+
+    public static JobParameter jobParameterEmptyFilter() {
+        return JobParameter.builder()
+                           .rootItemId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")
+                           .treeDepth(0)
+                           .bomLifecycle("AsRequired")
+                           .aspectTypes(List.of())
                            .build();
     }
 

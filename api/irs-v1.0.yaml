@@ -5,30 +5,30 @@ info:
   title: IRS API
   version: "1.0"
 servers:
-- url: http://irs.int.demo.catena-x.net
+  - url: http://irs.int.demo.catena-x.net
 paths:
   /irs/jobs:
     get:
       description: Returns jobIds for requested job states.
       operationId: getJobIdsByJobStates
       parameters:
-      - description: Requested job states.
-        explode: false
-        in: query
-        name: jobStates
-        required: false
-        schema:
-          type: array
-          items:
-            type: string
-            enum:
-            - UNSAVED
-            - INITIAL
-            - RUNNING
-            - TRANSFERS_FINISHED
-            - COMPLETED
-            - CANCELED
-            - ERROR
+        - description: Requested job states.
+          explode: false
+          in: query
+          name: jobStates
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - UNSAVED
+                - INITIAL
+                - RUNNING
+                - TRANSFERS_FINISHED
+                - COMPLETED
+                - CANCELED
+                - ERROR
       responses:
         "200":
           content:
@@ -39,9 +39,8 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string
-                  format: uuid
-          description: List of job ids for requested job states.
+                  $ref: '#/components/schemas/JobStatusResult'
+          description: List of job ids and status for requested job states.
         "404":
           content:
             application/json:
@@ -53,7 +52,7 @@ paths:
           description: No jobIds found for requested job states.
       summary: Returns jobIds for requested job states.
       tags:
-      - Item Relationship Service
+        - Item Relationship Service
     post:
       description: "Register an IRS job to retrieve an item graph for given {globalAssetId}."
       operationId: registerJobForGlobalAssetId
@@ -84,30 +83,30 @@ paths:
           description: Job registration failed.
       summary: "Register an IRS job to retrieve an item graph for given {globalAssetId}."
       tags:
-      - Item Relationship Service
+        - Item Relationship Service
   /irs/jobs/{jobId}:
     get:
       description: Return job with optional item graph result for requested jobId.
       operationId: getJobForJobId
       parameters:
-      - description: JobId of the job.
-        example: 6c311d29-5753-46d4-b32c-19b918ea93b0
-        in: path
-        name: jobId
-        required: true
-        schema:
-          type: string
-          format: uuid
-          maxLength: 36
-          minLength: 36
-      - description: "<true> Return job with current processed item graph. <false>\
+        - description: JobId of the job.
+          example: 6c311d29-5753-46d4-b32c-19b918ea93b0
+          in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+            format: uuid
+            maxLength: 36
+            minLength: 36
+        - description: "<true> Return job with current processed item graph. <false>\
           \ Return job with item graph if job is in state <COMPLETED>, otherwise job."
-        in: query
-        name: returnUncompletedJob
-        required: false
-        schema:
-          type: boolean
-          default: true
+          in: query
+          name: returnUncompletedJob
+          required: false
+          schema:
+            type: boolean
+            default: true
       responses:
         "200":
           content:
@@ -139,21 +138,21 @@ paths:
           description: Job with the requested jobId not found.
       summary: Return job with optional item graph result for requested jobId.
       tags:
-      - Item Relationship Service
+        - Item Relationship Service
     put:
       description: Cancel job for requested jobId.
       operationId: cancelJobByJobId
       parameters:
-      - description: JobId of the job.
-        example: 6c311d29-5753-46d4-b32c-19b918ea93b0
-        in: path
-        name: jobId
-        required: true
-        schema:
-          type: string
-          format: uuid
-          maxLength: 36
-          minLength: 36
+        - description: JobId of the job.
+          example: 6c311d29-5753-46d4-b32c-19b918ea93b0
+          in: path
+          name: jobId
+          required: true
+          schema:
+            type: string
+            format: uuid
+            maxLength: 36
+            minLength: 36
       responses:
         "200":
           content:
@@ -172,7 +171,7 @@ paths:
           description: Job for requested jobId not found.
       summary: Cancel job for requested jobId.
       tags:
-      - Item Relationship Service
+        - Item Relationship Service
 components:
   examples:
     canceled-job-result:
@@ -191,8 +190,8 @@ components:
           owner: ""
           queryParameter:
             aspects:
-            - SerialPartTypization
-            - Contact
+              - SerialPartTypization
+              - ContactInformation
             bomLifecycle: asBuilt
             depth: 4
             direction: downward
@@ -204,11 +203,11 @@ components:
               failed: 0
               queue: 0
               running: 0
-        relationships: []
-        tombstones: []
+        relationships: [ ]
+        tombstones: [ ]
     complete-job-list-processing-state:
       value:
-      - 6c311d29-5753-46d4-b32c-19b918ea93b0
+        - 6c311d29-5753-46d4-b32c-19b918ea93b0
     complete-job-result:
       value:
         job:
@@ -225,8 +224,8 @@ components:
           owner: ""
           queryParameter:
             aspects:
-            - SerialPartTypization
-            - Contact
+              - SerialPartTypization
+              - ContactInformation
             bomLifecycle: asBuilt
             depth: 4
             direction: downward
@@ -239,68 +238,70 @@ components:
               queue: 0
               running: 0
         relationships:
-        - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
-          childItem:
-            assembledOn: 2022-02-03T14:48:54.709Z
-            childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
-            lastModifiedOn: 2022-02-03T14:48:54.709Z
-            lifecycleContext: asBuilt
-            quantity:
-              measurementUnit:
-                datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
-                lexicalValue: piece
-              quantityNumber: 1
+          - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+            childItem:
+              assembledOn: 2022-02-03T14:48:54.709Z
+              childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+              lastModifiedOn: 2022-02-03T14:48:54.709Z
+              lifecycleContext: asBuilt
+              quantity:
+                measurementUnit:
+                  datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
+                  lexicalValue: piece
+                quantityNumber: 1
         shells:
-        - descriptions:
-          - language: en
-            text: The shell for a vehicle
-          globalAssetIds:
-          - urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
-          idShort: future concept x
-          identification: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
-          specificAssetIds:
-            engineserialid: "12309481209312"
-          submodelDescriptors:
-          - descriptions:
-            - language: en
-              text: Provides base vehicle information
-            endpoints:
-            - interfaceType: HTTP
-              protocolInformation:
-                endpointAddress: https://catena-x.net/vehicle/basedetails/
-                endpointProtocol: HTTPS
-                enpointProtocolVersion: "1.0"
-            idShort: vehicle base details
-            identification: 4a738a24-b7d8-4989-9cd6-387772f40565
-            semanticId:
-              values:
-              - urn:bamm:com.catenax.vehicle:0.1.1
-          - descriptions:
-            - language: en
-              text: Provides base vehicle information
-            endpoints:
-            - interfaceType: HTTP
-              protocolInformation:
-                endpointAddress: https://catena-x.net/vehicle/partdetails/
-                endpointProtocol: HTTPS
-                enpointProtocolVersion: "1.0"
-            idShort: vehicle part details
-            identification: dae4d249-6d66-4818-b576-bf52f3b9ae90
-            semanticId:
-              values:
-              - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+          - description:
+              - language: en
+                text: The shell for a vehicle
+            globalAssetId:
+              value:
+                - urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+            idShort: future concept x
+            identification: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+            specificAssetIds:
+              - key: engineserialid
+                value: "12309481209312"
+            submodelDescriptors:
+              - description:
+                  - language: en
+                    text: Provides base vehicle information
+                endpoints:
+                  - interface: HTTP
+                    protocolInformation:
+                      endpointAddress: https://catena-x.net/vehicle/basedetails/
+                      endpointProtocol: HTTPS
+                      endpointProtocolVersion: "1.0"
+                idShort: vehicle base details
+                identification: 4a738a24-b7d8-4989-9cd6-387772f40565
+                semanticId:
+                  value:
+                    - urn:bamm:com.catenax.vehicle:0.1.1
+              - description:
+                  - language: en
+                    text: Provides base vehicle information
+                endpoints:
+                  - interface: HTTP
+                    protocolInformation:
+                      endpointAddress: https://catena-x.net/vehicle/partdetails/
+                      endpointProtocol: HTTPS
+                      endpointProtocolVersion: "1.0"
+                idShort: vehicle part details
+                identification: dae4d249-6d66-4818-b576-bf52f3b9ae90
+                semanticId:
+                  value:
+                    - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
         tombstones:
-        - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-          endpointURL: https://catena-x.net/vehicle/partdetails/
-          processingError:
-            errorDetail: Details to reason of Failure
-            lastAttempt: 2022-02-03T14:48:54.709Z
-            retryCounter: 0
+          - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+            endpointURL: https://catena-x.net/vehicle/partdetails/
+            processingError:
+              errorDetail: Details to reason of Failure
+              lastAttempt: 2022-02-03T14:48:54.709Z
+              retryCounter: 0
     error-response:
       value:
         errors:
-        - TimeoutException
-        - ParsingException
+          - TimeoutException
+          - ParsingException
         message: Some errors occurred
         statusCode: 500 INTERNAL_SERVER_ERROR
     failed-job-result:
@@ -318,8 +319,8 @@ components:
           owner: ""
           queryParameter:
             aspects:
-            - SerialPartTypization
-            - Contact
+              - SerialPartTypization
+              - ContactInformation
             bomLifecycle: asBuilt
             depth: 4
             direction: downward
@@ -331,8 +332,8 @@ components:
               failed: 0
               queue: 0
               running: 0
-        relationships: []
-        tombstones: []
+        relationships: [ ]
+        tombstones: [ ]
     job-handle:
       value:
         jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
@@ -352,8 +353,8 @@ components:
           owner: ""
           queryParameter:
             aspects:
-            - SerialPartTypization
-            - Contact
+              - SerialPartTypization
+              - ContactInformation
             bomLifecycle: asBuilt
             depth: 4
             direction: downward
@@ -366,63 +367,65 @@ components:
               queue: 0
               running: 0
         relationships:
-        - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
-          childItem:
-            assembledOn: 2022-02-03T14:48:54.709Z
-            childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
-            lastModifiedOn: 2022-02-03T14:48:54.709Z
-            lifecycleContext: asBuilt
-            quantity:
-              measurementUnit:
-                datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
-                lexicalValue: piece
-              quantityNumber: 1
+          - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+            childItem:
+              assembledOn: 2022-02-03T14:48:54.709Z
+              childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+              lastModifiedOn: 2022-02-03T14:48:54.709Z
+              lifecycleContext: asBuilt
+              quantity:
+                measurementUnit:
+                  datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
+                  lexicalValue: piece
+                quantityNumber: 1
         shells:
-        - descriptions:
-          - language: en
-            text: The shell for a vehicle
-          globalAssetIds:
-          - urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
-          idShort: future concept x
-          identification: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
-          specificAssetIds:
-            engineserialid: "12309481209312"
-          submodelDescriptors:
-          - descriptions:
-            - language: en
-              text: Provides base vehicle information
-            endpoints:
-            - interfaceType: HTTP
-              protocolInformation:
-                endpointAddress: https://catena-x.net/vehicle/basedetails/
-                endpointProtocol: HTTPS
-                enpointProtocolVersion: "1.0"
-            idShort: vehicle base details
-            identification: 4a738a24-b7d8-4989-9cd6-387772f40565
-            semanticId:
-              values:
-              - urn:bamm:com.catenax.vehicle:0.1.1
-          - descriptions:
-            - language: en
-              text: Provides base vehicle information
-            endpoints:
-            - interfaceType: HTTP
-              protocolInformation:
-                endpointAddress: https://catena-x.net/vehicle/partdetails/
-                endpointProtocol: HTTPS
-                enpointProtocolVersion: "1.0"
-            idShort: vehicle part details
-            identification: dae4d249-6d66-4818-b576-bf52f3b9ae90
-            semanticId:
-              values:
-              - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+          - description:
+              - language: en
+                text: The shell for a vehicle
+            globalAssetId:
+              value:
+                - urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+            idShort: future concept x
+            identification: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+            specificAssetIds:
+              - key: engineserialid
+                value: "12309481209312"
+            submodelDescriptors:
+              - description:
+                  - language: en
+                    text: Provides base vehicle information
+                endpoints:
+                  - interface: HTTP
+                    protocolInformation:
+                      endpointAddress: https://catena-x.net/vehicle/basedetails/
+                      endpointProtocol: HTTPS
+                      endpointProtocolVersion: "1.0"
+                idShort: vehicle base details
+                identification: 4a738a24-b7d8-4989-9cd6-387772f40565
+                semanticId:
+                  value:
+                    - urn:bamm:com.catenax.vehicle:0.1.1
+              - description:
+                  - language: en
+                    text: Provides base vehicle information
+                endpoints:
+                  - interface: HTTP
+                    protocolInformation:
+                      endpointAddress: https://catena-x.net/vehicle/partdetails/
+                      endpointProtocol: HTTPS
+                      endpointProtocolVersion: "1.0"
+                idShort: vehicle part details
+                identification: dae4d249-6d66-4818-b576-bf52f3b9ae90
+                semanticId:
+                  value:
+                    - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
         tombstones:
-        - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-          endpointURL: https://catena-x.net/vehicle/partdetails/
-          processingError:
-            errorDetail: Details to reason of Failure
-            lastAttempt: 2022-02-03T14:48:54.709Z
-            retryCounter: 0
+          - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+            endpointURL: https://catena-x.net/vehicle/partdetails/
+            processingError:
+              errorDetail: Details to reason of Failure
+              lastAttempt: 2022-02-03T14:48:54.709Z
+              retryCounter: 0
     partial-job-result:
       value:
         job:
@@ -439,8 +442,8 @@ components:
           owner: ""
           queryParameter:
             aspects:
-            - SerialPartTypization
-            - Contact
+              - SerialPartTypization
+              - ContactInformation
             bomLifecycle: asBuilt
             depth: 4
             direction: downward
@@ -452,9 +455,40 @@ components:
               failed: 0
               queue: 0
               running: 0
-        relationships: []
-        tombstones: []
+        relationships: [ ]
+        tombstones: [ ]
   schemas:
+    AdministrativeInformation:
+      type: object
+      properties:
+        revision:
+          type: string
+        version:
+          type: string
+    AssetAdministrationShellDescriptor:
+      type: object
+      description: AAS shells.
+      properties:
+        administration:
+          $ref: '#/components/schemas/AdministrativeInformation'
+        description:
+          type: array
+          items:
+            $ref: '#/components/schemas/LangString'
+        globalAssetId:
+          $ref: '#/components/schemas/Reference'
+        idShort:
+          type: string
+        identification:
+          type: string
+        specificAssetIds:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdentifierKeyValuePair'
+        submodelDescriptors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubmodelDescriptor'
     AsyncFetchedItems:
       type: object
       description: Statistics of job execution.
@@ -495,32 +529,14 @@ components:
           description: The lifecycle context in which the child part was assembled
             into the parent part.
           enum:
-          - asBuilt
+            - asBuilt
         quantity:
           $ref: '#/components/schemas/Quantity'
-    Description:
-      type: object
-      description: Provide descriptions to request parts.
-      properties:
-        language:
-          type: string
-          description: Language used for description.
-          example: en
-          maxLength: 3
-        text:
-          type: string
-          description: Description text.
-          example: The shell for a vehicle
-          maxLength: 4000
     Endpoint:
       type: object
-      description: Communication endpoint.
       properties:
-        interfaceType:
+        interface:
           type: string
-          default: HTTP
-          description: Communication interface type.
-          example: HTTP
         protocolInformation:
           $ref: '#/components/schemas/ProtocolInformation'
     ErrorResponse:
@@ -540,74 +556,74 @@ components:
           type: string
           description: Error code.
           enum:
-          - 100 CONTINUE
-          - 101 SWITCHING_PROTOCOLS
-          - 102 PROCESSING
-          - 103 CHECKPOINT
-          - 200 OK
-          - 201 CREATED
-          - 202 ACCEPTED
-          - 203 NON_AUTHORITATIVE_INFORMATION
-          - 204 NO_CONTENT
-          - 205 RESET_CONTENT
-          - 206 PARTIAL_CONTENT
-          - 207 MULTI_STATUS
-          - 208 ALREADY_REPORTED
-          - 226 IM_USED
-          - 300 MULTIPLE_CHOICES
-          - 301 MOVED_PERMANENTLY
-          - 302 FOUND
-          - 302 MOVED_TEMPORARILY
-          - 303 SEE_OTHER
-          - 304 NOT_MODIFIED
-          - 305 USE_PROXY
-          - 307 TEMPORARY_REDIRECT
-          - 308 PERMANENT_REDIRECT
-          - 400 BAD_REQUEST
-          - 401 UNAUTHORIZED
-          - 402 PAYMENT_REQUIRED
-          - 403 FORBIDDEN
-          - 404 NOT_FOUND
-          - 405 METHOD_NOT_ALLOWED
-          - 406 NOT_ACCEPTABLE
-          - 407 PROXY_AUTHENTICATION_REQUIRED
-          - 408 REQUEST_TIMEOUT
-          - 409 CONFLICT
-          - 410 GONE
-          - 411 LENGTH_REQUIRED
-          - 412 PRECONDITION_FAILED
-          - 413 PAYLOAD_TOO_LARGE
-          - 413 REQUEST_ENTITY_TOO_LARGE
-          - 414 URI_TOO_LONG
-          - 414 REQUEST_URI_TOO_LONG
-          - 415 UNSUPPORTED_MEDIA_TYPE
-          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
-          - 417 EXPECTATION_FAILED
-          - 418 I_AM_A_TEAPOT
-          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
-          - 420 METHOD_FAILURE
-          - 421 DESTINATION_LOCKED
-          - 422 UNPROCESSABLE_ENTITY
-          - 423 LOCKED
-          - 424 FAILED_DEPENDENCY
-          - 425 TOO_EARLY
-          - 426 UPGRADE_REQUIRED
-          - 428 PRECONDITION_REQUIRED
-          - 429 TOO_MANY_REQUESTS
-          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
-          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
-          - 500 INTERNAL_SERVER_ERROR
-          - 501 NOT_IMPLEMENTED
-          - 502 BAD_GATEWAY
-          - 503 SERVICE_UNAVAILABLE
-          - 504 GATEWAY_TIMEOUT
-          - 505 HTTP_VERSION_NOT_SUPPORTED
-          - 506 VARIANT_ALSO_NEGOTIATES
-          - 507 INSUFFICIENT_STORAGE
-          - 508 LOOP_DETECTED
-          - 509 BANDWIDTH_LIMIT_EXCEEDED
-          - 510 NOT_EXTENDED
-          - 511 NETWORK_AUTHENTICATION_REQUIRED
+            - 100 CONTINUE
+            - 101 SWITCHING_PROTOCOLS
+            - 102 PROCESSING
+            - 103 CHECKPOINT
+            - 200 OK
+            - 201 CREATED
+            - 202 ACCEPTED
+            - 203 NON_AUTHORITATIVE_INFORMATION
+            - 204 NO_CONTENT
+            - 205 RESET_CONTENT
+            - 206 PARTIAL_CONTENT
+            - 207 MULTI_STATUS
+            - 208 ALREADY_REPORTED
+            - 226 IM_USED
+            - 300 MULTIPLE_CHOICES
+            - 301 MOVED_PERMANENTLY
+            - 302 FOUND
+            - 302 MOVED_TEMPORARILY
+            - 303 SEE_OTHER
+            - 304 NOT_MODIFIED
+            - 305 USE_PROXY
+            - 307 TEMPORARY_REDIRECT
+            - 308 PERMANENT_REDIRECT
+            - 400 BAD_REQUEST
+            - 401 UNAUTHORIZED
+            - 402 PAYMENT_REQUIRED
+            - 403 FORBIDDEN
+            - 404 NOT_FOUND
+            - 405 METHOD_NOT_ALLOWED
+            - 406 NOT_ACCEPTABLE
+            - 407 PROXY_AUTHENTICATION_REQUIRED
+            - 408 REQUEST_TIMEOUT
+            - 409 CONFLICT
+            - 410 GONE
+            - 411 LENGTH_REQUIRED
+            - 412 PRECONDITION_FAILED
+            - 413 PAYLOAD_TOO_LARGE
+            - 413 REQUEST_ENTITY_TOO_LARGE
+            - 414 URI_TOO_LONG
+            - 414 REQUEST_URI_TOO_LONG
+            - 415 UNSUPPORTED_MEDIA_TYPE
+            - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+            - 417 EXPECTATION_FAILED
+            - 418 I_AM_A_TEAPOT
+            - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+            - 420 METHOD_FAILURE
+            - 421 DESTINATION_LOCKED
+            - 422 UNPROCESSABLE_ENTITY
+            - 423 LOCKED
+            - 424 FAILED_DEPENDENCY
+            - 425 TOO_EARLY
+            - 426 UPGRADE_REQUIRED
+            - 428 PRECONDITION_REQUIRED
+            - 429 TOO_MANY_REQUESTS
+            - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+            - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+            - 500 INTERNAL_SERVER_ERROR
+            - 501 NOT_IMPLEMENTED
+            - 502 BAD_GATEWAY
+            - 503 SERVICE_UNAVAILABLE
+            - 504 GATEWAY_TIMEOUT
+            - 505 HTTP_VERSION_NOT_SUPPORTED
+            - 506 VARIANT_ALSO_NEGOTIATES
+            - 507 INSUFFICIENT_STORAGE
+            - 508 LOOP_DETECTED
+            - 509 BANDWIDTH_LIMIT_EXCEEDED
+            - 510 NOT_EXTENDED
+            - 511 NETWORK_AUTHENTICATION_REQUIRED
     GlobalAssetIdentification:
       type: object
       description: CATENA-X global asset id in the format urn:uuid:<uuid>.
@@ -618,6 +634,17 @@ components:
           example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           maxLength: 45
           minLength: 45
+    IdentifierKeyValuePair:
+      type: object
+      properties:
+        key:
+          type: string
+        semanticId:
+          $ref: '#/components/schemas/Reference'
+        subjectId:
+          $ref: '#/components/schemas/Reference'
+        value:
+          type: string
     Job:
       type: object
       description: Executable unit with meta information and item graph result.
@@ -644,13 +671,13 @@ components:
         jobState:
           type: string
           enum:
-          - UNSAVED
-          - INITIAL
-          - RUNNING
-          - TRANSFERS_FINISHED
-          - COMPLETED
-          - CANCELED
-          - ERROR
+            - UNSAVED
+            - INITIAL
+            - RUNNING
+            - TRANSFERS_FINISHED
+            - COMPLETED
+            - CANCELED
+            - ERROR
         lastModifiedOn:
           type: string
           format: date-time
@@ -668,9 +695,9 @@ components:
         summary:
           $ref: '#/components/schemas/Summary'
       required:
-      - globalAssetId
-      - jobId
-      - jobState
+        - globalAssetId
+        - jobId
+        - jobState
     JobErrorDetails:
       type: object
       description: Job error details.
@@ -693,6 +720,22 @@ components:
         jobId:
           type: string
           format: uuid
+    JobStatusResult:
+      type: object
+      properties:
+        jobId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+          - UNSAVED
+          - INITIAL
+          - RUNNING
+          - TRANSFERS_FINISHED
+          - COMPLETED
+          - CANCELED
+          - ERROR
     Jobs:
       type: object
       description: Container for a job with item graph.
@@ -708,13 +751,20 @@ components:
           type: array
           description: AAS shells.
           items:
-            $ref: '#/components/schemas/Shell'
+            $ref: '#/components/schemas/AssetAdministrationShellDescriptor'
         tombstones:
           type: array
           description: Collection of not resolvable endpoints as tombstones. Including
             cause of error and endpoint URL.
           items:
             $ref: '#/components/schemas/Tombstone'
+    LangString:
+      type: object
+      properties:
+        language:
+          type: string
+        text:
+          type: string
     MeasurementUnit:
       type: object
       properties:
@@ -735,21 +785,19 @@ components:
           format: int32
     ProtocolInformation:
       type: object
-      description: Information to the interface used.
       properties:
         endpointAddress:
           type: string
-          format: uri
-          description: Uniform resource identifier of endpoint.
-          example: https://catena-x.net/vehicle/basedetails/
         endpointProtocol:
           type: string
-          description: Protocol used to access the endpoint.
-          example: HTTP or HTTPS
-        enpointProtocolVersion:
+        endpointProtocolVersion:
           type: string
-          description: Protocol version.
-          example: "1.0"
+        subprotocol:
+          type: string
+        subprotocolBody:
+          type: string
+        subprotocolBodyEncoding:
+          type: string
     Quantity:
       type: object
       description: Quantity component.
@@ -766,28 +814,30 @@ components:
         aspects:
           type: string
           enum:
-          - SerialPartTypization
-          - AssemblyPartRelationship
-          - PartDimension
-          - SupplyRelationData
-          - PCFCoreData
-          - PCFTechnicalData
-          - MarketPlaceOffer
-          - MaterialAspect
-          - BatteryPass
-          - ProductDescriptionVehicle
-          - ProductDescriptionBattery
-          - ReturnRequest
-          - CertificateOfDestruction
-          - CertificateOfDismantler
-          - Address
-          - Contact
+            - SerialPartTypization
+            - AssemblyPartRelationship
+            - ProductDescription
+            - IdConversion
+            - MarketplaceOffer
+            - MaterialForRecycling
+            - PhysicalDimension
+            - ReturnRequest
+            - CertificateOfDestruction
+            - CertificateOfDismantler
+            - EndOfLife
+            - PcfCore
+            - PcfSupplyRelation
+            - PcfTechnical
+            - AddressAspect
+            - ContactInformation
+            - BatteryPass
+            - VehicleDiagnosticDataQuality
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
             into the parent part.
           enum:
-          - asBuilt
+            - asBuilt
         depth:
           type: integer
           format: int32
@@ -795,7 +845,14 @@ components:
           type: string
           description: Item graph traversal direction.
           enum:
-          - downward
+            - downward
+    Reference:
+      type: object
+      properties:
+        value:
+          type: array
+          items:
+            type: string
     RegisterJob:
       type: object
       description: The requested job definition.
@@ -805,28 +862,30 @@ components:
           items:
             type: string
             enum:
-            - SerialPartTypization
-            - AssemblyPartRelationship
-            - PartDimension
-            - SupplyRelationData
-            - PCFCoreData
-            - PCFTechnicalData
-            - MarketPlaceOffer
-            - MaterialAspect
-            - BatteryPass
-            - ProductDescriptionVehicle
-            - ProductDescriptionBattery
-            - ReturnRequest
-            - CertificateOfDestruction
-            - CertificateOfDismantler
-            - Address
-            - Contact
+              - SerialPartTypization
+              - AssemblyPartRelationship
+              - ProductDescription
+              - IdConversion
+              - MarketplaceOffer
+              - MaterialForRecycling
+              - PhysicalDimension
+              - ReturnRequest
+              - CertificateOfDestruction
+              - CertificateOfDismantler
+              - EndOfLife
+              - PcfCore
+              - PcfSupplyRelation
+              - PcfTechnical
+              - AddressAspect
+              - ContactInformation
+              - BatteryPass
+              - VehicleDiagnosticDataQuality
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
             into the parent part.
           enum:
-          - asBuilt
+            - asBuilt
         depth:
           type: integer
           format: int32
@@ -839,7 +898,7 @@ components:
           default: downward
           description: Item graph traversal direction.
           enum:
-          - downward
+            - downward
         globalAssetId:
           type: string
           description: Id of global asset.
@@ -848,7 +907,7 @@ components:
           minLength: 45
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
       required:
-      - globalAssetId
+        - globalAssetId
     Relationship:
       type: object
       description: Relationships between parent and child items.
@@ -859,44 +918,15 @@ components:
           $ref: '#/components/schemas/ChildItem'
         parentItem:
           $ref: '#/components/schemas/ChildItem'
-    SemanticId:
-      type: object
-      properties:
-        values:
-          type: array
-          items:
-            type: string
-    Shell:
-      type: object
-      description: AAS shells.
-      properties:
-        descriptions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Description'
-        globalAssetIds:
-          type: array
-          items:
-            $ref: '#/components/schemas/GlobalAssetIdentification'
-        idShort:
-          type: string
-        identification:
-          type: string
-        specificAssetIds:
-          type: object
-          additionalProperties:
-            type: string
-        submodelDescriptors:
-          type: array
-          items:
-            $ref: '#/components/schemas/SubmodelDescriptor'
     SubmodelDescriptor:
       type: object
       properties:
-        descriptions:
+        administration:
+          $ref: '#/components/schemas/AdministrativeInformation'
+        description:
           type: array
           items:
-            $ref: '#/components/schemas/Description'
+            $ref: '#/components/schemas/LangString'
         endpoints:
           type: array
           items:
@@ -906,7 +936,7 @@ components:
         identification:
           type: string
         semanticId:
-          $ref: '#/components/schemas/SemanticId'
+          $ref: '#/components/schemas/Reference'
     Summary:
       type: object
       description: Summary of the job with statistics of the job processing.

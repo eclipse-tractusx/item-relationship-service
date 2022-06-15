@@ -7,31 +7,29 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.dto;
+package net.catenax.irs.component.assetadministrationshell;
 
-import java.util.UUID;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
-import net.catenax.irs.component.enums.JobState;
 
 /**
- * Response for job status request
+ * Endpoint
  */
-@Value
+@Data
+@Builder
 @Jacksonized
-@Builder(toBuilder = true)
-public class JobStatusResult {
+public class Endpoint {
 
     /**
-     * Job identifier
+     * interfaceInformation
      */
-    private UUID jobId;
-
+    @JsonProperty("interface")
+    private String interfaceInformation;
     /**
-     * Current status for this job
+     * protocolInformation
      */
-    private JobState status;
+    private ProtocolInformation protocolInformation;
 
 }

@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.junit.jupiter.api.Test;
 
 class AssetAdministrationShellTestdataCreatorTest {
@@ -38,9 +39,12 @@ class AssetAdministrationShellTestdataCreatorTest {
                                                     .getProtocolInformation()
                                                     .getEndpointAddress();
 
-        assertThat(aasDescriptor.getSubmodelDescriptors()).hasSize(1);
+        assertThat(aasDescriptor.getSubmodelDescriptors()).hasSize(2);
         assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getEndpoints()).isNotNull();
         assertThat(endpointAddress).isEqualTo(catenaXId);
+
+        assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getSemanticId().getValue().get(0)).isEqualTo("urn:bamm:com.catenax.assembly_part_relationship:1.0.0");
+        assertThat(aasDescriptor.getSubmodelDescriptors().get(1).getSemanticId().getValue().get(0)).isEqualTo("urn:bamm:com.catenax.serial_part_typization:1.0.0");
     }
 
     @Test

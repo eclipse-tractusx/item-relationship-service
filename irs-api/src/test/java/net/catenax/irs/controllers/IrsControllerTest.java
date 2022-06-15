@@ -79,10 +79,7 @@ class IrsControllerTest {
     @WithMockUser
     void getJobsByJobState() throws Exception {
         UUID jobId = UUID.randomUUID();
-        final JobStatusResult returnedJob = JobStatusResult.builder()
-                                                           .jobId(jobId.toString())
-                                                           .status(JobState.RUNNING.toString())
-                                                           .build();
+        final JobStatusResult returnedJob = JobStatusResult.builder().jobId(jobId).status(JobState.RUNNING).build();
 
         String returnJobAsString = new ObjectMapper().writeValueAsString(returnedJob);
 
@@ -90,7 +87,9 @@ class IrsControllerTest {
 
         this.mockMvc.perform(get("/irs/jobs"))
                     .andExpect(status().isOk())
-                    .andExpect(content().string(containsString(returnJobAsString)));
+                    .andExpect(content().string(containsString(returnJobAsString)))
+                    .andExpect(content().string(containsString(returnedJob.getJobId().toString())))
+                    .andExpect(content().string(containsString(returnedJob.getStatus().toString())));
     }
 
     @Test
@@ -112,6 +111,25 @@ class IrsControllerTest {
         this.mockMvc.perform(put("/irs/jobs/" + jobId))
                     .andExpect(status().isNotFound())
                     .andExpect(result -> assertTrue(result.getResolvedException() instanceof EntityNotFoundException));
+    }
+
+    @Test
+    @WithMockUser
+    void getJobWithMalformedIdShouldReturnBadRequest() throws Exception {
+        final String jobIdMalformed = UUID.randomUUID() + "MALFORMED";
+
+        this.mockMvc.perform(get("/irs/jobs/" + jobIdMalformed))
+                    .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser
+    void shouldReturnBadRequestWhenRegisterJobWithMalformedAspectJson() throws Exception {
+        final String requestBody = "{ \"aspects\": [ \"MALFORMED\" ], \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\" }";
+
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(requestBody))
+                    .andExpect(status().isBadRequest());
     }
 
 }
