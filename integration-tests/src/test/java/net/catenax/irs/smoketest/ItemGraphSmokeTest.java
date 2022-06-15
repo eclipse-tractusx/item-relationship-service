@@ -45,7 +45,7 @@ public class ItemGraphSmokeTest {
     private static final String GLOBAL_ASSET_ID = "urn:uuid:5e3e9060-ba73-4d5d-a6c8-dfd5123f4d99";
     private static final int TREE_DEPTH = 1;
     private static final List<AspectType> ASPECTS = List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP);
-    private static RequestSpecification requestSpecification;
+    private static RequestSpecification authenticationRequest;
 
     private static RegisterJob registerJob() {
         final RegisterJob registerJob = new RegisterJob();
@@ -83,70 +83,67 @@ public class ItemGraphSmokeTest {
         builder.addHeader("Authorization", "Bearer " + accessToken);
         builder.setBaseUri(connectionProperties.getBaseUri());
 
-        requestSpecification = builder.build();
+        authenticationRequest = builder.build();
     }
 
     @Test
     public void shouldCreateAndCompleteJob() {
         // Integration test Scenario 2 STEP 1
-        final JobHandle responsePost = given().spec(requestSpecification)
-                                              .contentType("application/json")
-                                              .body(registerJob())
-                                              .when()
-                                              .post("/irs/jobs")
-                                              .then()
-                                              .statusCode(HttpStatus.CREATED.value())
-                                              .extract()
-                                              .as(JobHandle.class);
+        final JobHandle createdJobResponse = given().spec(authenticationRequest)
+                                                    .contentType("application/json")
+                                                    .body(registerJob())
+                                                    .when()
+                                                    .post("/irs/jobs")
+                                                    .then()
+                                                    .statusCode(HttpStatus.CREATED.value())
+                                                    .extract()
+                                                    .as(JobHandle.class);
 
-        assertThat(responsePost).isNotNull();
+        assertThat(createdJobResponse).isNotNull();
 
-        final UUID jobId = responsePost.getJobId();
+        final UUID jobId = createdJobResponse.getJobId();
         assertThat(jobId).isNotNull();
 
         // Integration test Scenario 2 STEP 2
-        final Jobs responseGet = given().spec(requestSpecification)
-                                        .contentType("application/json")
-                                        .queryParam("returnUncompletedJob", true)
-                                        .get("/irs/jobs/" + jobId)
-                                        .then()
-                                        .assertThat()
-                                        .statusCode(HttpStatus.OK.value())
-                                        .extract()
-                                        .as(Jobs.class);
+        final Jobs getJobByIdResponse = given().spec(authenticationRequest)
+                                               .contentType("application/json")
+                                               .queryParam("returnUncompletedJob", true)
+                                               .get("/irs/jobs/" + jobId)
+                                               .then()
+                                               .assertThat()
+                                               .statusCode(HttpStatus.OK.value())
+                                               .extract()
+                                               .as(Jobs.class);
 
-        assertThat(responseGet).isNotNull();
+        assertThat(getJobByIdResponse).isNotNull();
 
-        final Job job = responseGet.getJob();
+        final Job job = getJobByIdResponse.getJob();
         assertThat(job).isNotNull();
         assertThat(job.getJobId()).isNotNull();
-        System.out.println("job.getJobState(): " + job.getJobState());
         assertThat(job.getJobState()).isIn(JobState.COMPLETED, JobState.RUNNING, JobState.TRANSFERS_FINISHED);
 
         final GlobalAssetIdentification globalAsset = job.getGlobalAssetId();
         assertThat(globalAsset.getGlobalAssetId()).isEqualTo(GLOBAL_ASSET_ID);
 
-        final List<Relationship> relationships = responseGet.getRelationships();
-        System.out.println("relationships.size(): " + relationships.size());
+        final List<Relationship> relationships = getJobByIdResponse.getRelationships();
         assertThat(relationships.size()).isEqualTo(0);
-        assertThat(responseGet.getShells().size()).isGreaterThanOrEqualTo(0);
-        assertThat(responseGet.getTombstones().size()).isEqualTo(0);
+        assertThat(getJobByIdResponse.getShells().size()).isGreaterThanOrEqualTo(0);
+        assertThat(getJobByIdResponse.getTombstones().size()).isEqualTo(0);
 
         // Integration test Scenario 2 STEP 3
-        final Response responseGetPoll = given().spec(requestSpecification)
-                                                .contentType("application/json")
-                                                .queryParam("returnUncompletedJob", true)
-                                                .get("/irs/jobs/" + jobId);
+        final Response pollResponse = given().spec(authenticationRequest)
+                                             .contentType("application/json")
+                                             .queryParam("returnUncompletedJob", true)
+                                             .get("/irs/jobs/" + jobId);
 
-        System.out.println("responseGetPoll: " + responseGetPoll.as(Jobs.class).getJob().getJobState());
         await().atMost(3, TimeUnit.MINUTES)
-               .until(() -> responseGetPoll.as(Jobs.class).getJob().getJobState().equals(JobState.COMPLETED));
+               .until(() -> pollResponse.as(Jobs.class).getJob().getJobState().equals(JobState.COMPLETED));
 
-        final Jobs jobs = responseGetPoll.then()
-                                         .assertThat()
-                                         .statusCode(HttpStatus.OK.value())
-                                         .extract()
-                                         .as(Jobs.class);
+        final Jobs jobs = pollResponse.then()
+                                      .assertThat()
+                                      .statusCode(HttpStatus.OK.value())
+                                      .extract()
+                                      .as(Jobs.class);
 
         assertThat(jobs).isNotNull();
 
@@ -155,7 +152,7 @@ public class ItemGraphSmokeTest {
         assertThat(jobs.getShells().size()).isGreaterThan(0);
         assertThat(jobs.getTombstones().size()).isGreaterThanOrEqualTo(0);
 
-        final AssetAdministrationShellDescriptor assDescriptor = responseGet.getShells().get(0);
+        final AssetAdministrationShellDescriptor assDescriptor = jobs.getShells().get(0);
         final List<SubmodelDescriptor> submodelDescriptors = assDescriptor.getSubmodelDescriptors();
         assertThat(submodelDescriptors.size()).isGreaterThan(0);
     }
