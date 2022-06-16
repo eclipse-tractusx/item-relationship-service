@@ -14,6 +14,7 @@ import java.util.UUID;
 import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
@@ -21,6 +22,7 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
  */
 @ApiModel(description = "The unique jobId handle of the just processed job.")
 @Value
+@Jacksonized
 @Builder(toBuilder = true)
 @ExcludeFromCodeCoverageGeneratedReport
 public class JobHandle {

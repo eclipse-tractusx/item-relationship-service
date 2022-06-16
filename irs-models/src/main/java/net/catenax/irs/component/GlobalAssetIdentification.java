@@ -30,7 +30,6 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @JsonSerialize(using = ToStringSerializer.class)
 @JsonDeserialize(builder = GlobalAssetIdentification.GlobalAssetIdentificationBuilder.class)
 @ExcludeFromCodeCoverageGeneratedReport
-
 public class GlobalAssetIdentification {
 
     private static final int GLOBAL_ASSET_ID_LENGTH = 45;
