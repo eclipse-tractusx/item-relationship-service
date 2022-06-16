@@ -96,7 +96,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final String lifecycle = bomLifecycleFormRequest.map(BomLifecycle::getLifecycleContextCharacteristicValue)
                                                         .orElse(null);
 
-        log.info("Default Aspect: {}", defaultAspect);
         final Optional<List<AspectType>> aspectTypes = Optional.ofNullable(request.getAspects());
         final List<String> aspectTypeValues = aspectTypes.map(types -> types.stream()
                                                                       .map(AspectType::toString)
