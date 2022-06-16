@@ -206,3 +206,6 @@ service:
   ## Make sure to match it to minioAPIPort
   port: "9000"
   nodePort: 32000
+
+minio:
+  url: http://app-irs-dev01-minio:9000  
