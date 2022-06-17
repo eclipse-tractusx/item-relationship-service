@@ -11,9 +11,12 @@ package net.catenax.irs.aaswrapper.registry.domain;
 
 import static net.catenax.irs.configuration.RestTemplateConfig.OAUTH_REST_TEMPLATE;
 
-import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import net.catenax.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import net.catenax.irs.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -33,6 +36,14 @@ interface DigitalTwinRegistryClient {
      */
     AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(String aasIdentifier);
 
+    /**
+     * Returns a list of Asset Administration Shell ids based on Asset identifier key-value-pairs.
+     * Only the Shell ids are returned when all provided key-value pairs match.
+     * @param assetIds The key-value-pair of an Asset identifier
+     * @return urn uuid string list
+     */
+    List<String> getAllAssetAdministrationShellIdsByAssetLink(List<IdentifierKeyValuePair> assetIds);
+
 }
 
 /**
@@ -50,6 +61,11 @@ class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
             throw new RestClientException("Dummy Exception");
         }
         return testdataCreator.createDummyAssetAdministrationShellDescriptorForId(aasIdentifier);
+    }
+
+    @Override
+    public List<String> getAllAssetAdministrationShellIdsByAssetLink(final List<IdentifierKeyValuePair> assetIds) {
+        return Collections.emptyList();
     }
 }
 
@@ -71,13 +87,19 @@ class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient {
 
     @Override
     public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
-        return restTemplate.getForObject(buildUri(aasIdentifier), AssetAdministrationShellDescriptor.class);
-    }
-
-    private URI buildUri(final String aasIdentifier) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(digitalTwinRegistryUrl);
         uriBuilder.path("/registry/shell-descriptors/").path(aasIdentifier);
 
-        return uriBuilder.build().toUri();
+        return restTemplate.getForObject(uriBuilder.build().toUri(), AssetAdministrationShellDescriptor.class);
     }
+
+    @Override
+    public List<String> getAllAssetAdministrationShellIdsByAssetLink(final List<IdentifierKeyValuePair> assetIds) {
+        final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(digitalTwinRegistryUrl);
+        uriBuilder.path("/lookup/shells").queryParam("assetIds", new JsonUtil().asString(assetIds));
+
+        return restTemplate.getForObject(uriBuilder.build().toUri(), List.class);
+    }
+
+
 }

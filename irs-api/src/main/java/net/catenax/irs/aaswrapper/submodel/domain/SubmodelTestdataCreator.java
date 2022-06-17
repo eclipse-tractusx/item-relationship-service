@@ -37,7 +37,7 @@ class SubmodelTestdataCreator {
         testData.add(getDummyAssemblyPartRelationshipWithChildren("urn:uuid:ea724f73-cb93-4b7b-b92f-d97280ff888b", List.of()));
     }
 
-    public AssemblyPartRelationship getDummyAssemblyPartRelationshipWithChildren(final String catenaXId,
+    /* package */ AssemblyPartRelationship getDummyAssemblyPartRelationshipWithChildren(final String catenaXId,
             final List<String> childIds) {
         final AssemblyPartRelationship assemblyPartRelationship = new AssemblyPartRelationship();
         assemblyPartRelationship.setCatenaXId(catenaXId);
