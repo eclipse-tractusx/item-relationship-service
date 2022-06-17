@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -41,11 +42,21 @@ class SubmodelTestdataCreator {
             final List<String> childIds) {
         final AssemblyPartRelationship assemblyPartRelationship = new AssemblyPartRelationship();
         assemblyPartRelationship.setCatenaXId(catenaXId);
+
         final Set<ChildData> childData = new HashSet<>();
         childIds.forEach(childId -> {
             final ChildData child = new ChildData();
             child.setChildCatenaXId(childId);
             child.setLifecycleContext(LifecycleContextCharacteristic.ASBUILT);
+            child.setAssembledOn(LocalDateTime.now());
+            child.setLastModifiedOn(LocalDateTime.now());
+            final Quantity quantity = new Quantity();
+            quantity.setQuantityNumber(1d);
+            final Quantity.MeasurementUnit measurementUnit = new Quantity.MeasurementUnit();
+            measurementUnit.setDatatypeURI("urn:bamm:io.openmanufacturing:meta-model:1.0.0#sth");
+            measurementUnit.setLexicalValue("sth");
+            quantity.setMeasurementUnit(measurementUnit);
+            child.setQuantity(quantity);
             childData.add(child);
         });
         assemblyPartRelationship.setChildParts(childData);

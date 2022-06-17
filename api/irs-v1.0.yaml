@@ -207,7 +207,8 @@ components:
         tombstones: [ ]
     complete-job-list-processing-state:
       value:
-        - 6c311d29-5753-46d4-b32c-19b918ea93b0
+      - jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
+        status: COMPLETED
     complete-job-result:
       value:
         job:
@@ -240,9 +241,9 @@ components:
         relationships:
           - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
             childItem:
-              assembledOn: 2022-02-03T14:48:54.709Z
+              assembledOn: 2022-02-03T14:48:54.709
               childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
-              lastModifiedOn: 2022-02-03T14:48:54.709Z
+              lastModifiedOn: 2022-02-03T14:48:54.709
               lifecycleContext: asBuilt
               quantity:
                 measurementUnit:
@@ -369,9 +370,9 @@ components:
         relationships:
           - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
             childItem:
-              assembledOn: 2022-02-03T14:48:54.709Z
+              assembledOn: 2022-02-03T14:48:54.709
               childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
-              lastModifiedOn: 2022-02-03T14:48:54.709Z
+              lastModifiedOn: 2022-02-03T14:48:54.709
               lifecycleContext: asBuilt
               quantity:
                 measurementUnit:
