@@ -38,10 +38,8 @@ spec:
             - "-ce"
             - "/usr/bin/docker-entrypoint.sh server /data --address :{{ .Values.minioAPIPort }}"
           volumeMounts:            
-            {{- if .Values.persistence.enabled }}
             - name: export
               mountPath: {{ .Values.mountPath }}              
-            {{- end }}                        
           ports:
             - name: http
               containerPort: {{ .Values.minioAPIPort }}
