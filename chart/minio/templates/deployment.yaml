@@ -84,12 +84,13 @@ spec:
             successThreshold: {{ .Values.readinessProbe.successThreshold }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
       volumes:
-      {{- if .Values.persistence.enabled }}
-      persistentVolumeClaim:
-        claimName: {{ .Values.persistence.existingClaim | default (include "minio.fullname" .) }}
-      {{- else }}
-      emptyDir: {}
-      {{- end }}
+        - name: export
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "minio.fullname" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
