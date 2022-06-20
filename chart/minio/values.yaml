@@ -15,7 +15,7 @@ nameOverride: "app-irs-dev01-minio"
 fullnameOverride: "app-irs-dev01-minio"
 
 ## minio mode, i.e. standalone or distributed or gateway.
-mode: distributed ## other supported values are "standalone", "gateway"  
+mode: standalone ## other supported values are "distributed", "gateway"
 
 ## Port number for MinIO S3 API Access
 minioAPIPort: "9000"
@@ -200,12 +200,5 @@ persistence:
 ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
 ## ref: http://kubernetes.io/docs/user-guide/services/
 ##
-service:
-  type: ClusterIP
-  clusterIP: ~
-  ## Make sure to match it to minioAPIPort
-  port: "9000"
-  nodePort: 32000
-
 minio:
   url: http://app-irs-dev01-minio:9000
