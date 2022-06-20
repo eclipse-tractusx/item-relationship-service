@@ -189,7 +189,7 @@ persistence:
   storageClass: ""
   VolumeName: "export"
   accessMode: ReadWriteOnce
-  size: 4Gi
+  size: 1Gi
 
   ## If subPath is set mount a sub folder of a volume instead of the root of the volume.
   ## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).
@@ -208,4 +208,4 @@ service:
   nodePort: 32000
 
 minio:
-  url: http://app-irs-dev01-minio:9000  
+  url: http://app-irs-dev01-minio:9000
