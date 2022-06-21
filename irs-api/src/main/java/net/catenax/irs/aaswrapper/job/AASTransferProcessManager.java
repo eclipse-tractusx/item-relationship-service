@@ -95,7 +95,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
                     try {
                         final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address, jobData);
                         processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
-                    } catch (RestClientException e) {
+                    } catch (RestClientException | IllegalArgumentException e) {
                         log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                                 address);
                         itemContainerBuilder.tombstone(createTombstone(itemId, address, e));
