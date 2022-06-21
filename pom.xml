@@ -159,7 +159,6 @@
                         <exclude>**/*EntityNotFoundException.class</exclude>
                         <exclude>**/*IrsApiConstants.class</exclude>
                         <exclude>**/*ApiErrorsConstants.class</exclude>
-                        <exclude>**/*IrsExceptionHandler.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>
