@@ -1,59 +1,67 @@
-# Item Relationship Service
+# ![Item Relationship Service (IRS)](logo.png)
 
-| __Build Status__ | [![build](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/CI-main.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/CI-main.yml)           | 
-|:-----------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| __Coverage__     | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=catenax-ng_product-item-relationship-service&metric=coverage)](https://sonarcloud.io/summary/new_code?id=catenax-ng_product-item-relationship-service) |
-| __CodeQL__       | [![CodeQL](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml)            |
-| __Checkov__      | [![Checkov](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/checkov.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/checkov.yml)         |   
-| __Trivy__        | [![Trivy](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/trivy.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/trivy.yml)               |   
-| __VeraCode__     | [![VeraCode](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/VeraCode.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/VeraCode.yml)      | 
-| __OWASP__        | [![Owasp](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml)               | 
-| __License__      | [![GitHub](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/catenax-ng/product-item-relationship-service/blob/main/LICENSE)                                                                     |   
+[![build](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/CI-main.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/CI-main.yml)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=catenax-ng_product-item-relationship-service&metric=coverage)](https://sonarcloud.io/summary/new_code?id=catenax-ng_product-item-relationship-service)
+[![CodeQL](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml)
+[![Checkov](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/checkov.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/checkov.yml)
+[![Trivy](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/trivy.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/trivy.yml)
+[![VeraCode](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/VeraCode.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/VeraCode.yml)
+[![OWASP Dependency Check](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml)
+[![Apache 2 License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/catenax-ng/product-item-relationship-service/blob/main/LICENSE)   
 
+## What is the IRS?
 
+Within the [Catena-X network](https://catena-x.net/), the so-called Item Relationship Service (IRS) forms an essential 
+foundation for various services and products. Within the Catena-X use cases, the IRS serves to increase business value.
+For example, the IRS provides functionalities to serve requirements, such as occasion-based Traceability, 
+from the Supply Chain Act. In doing so, IDSA and Gaia-X principles, such as data interoperability and sovereignty, are 
+maintained on the Catena-X network and access to dispersed data is enabled. Data chains are established as a common asset.
 
+With the help of the IRS, data chains are to be provided ad-hoc across n-tiers within the Catena-X network. 
+To realize these data chains, the IRS relies on data models of the Traceability use case and provides the federated 
+data chains to customers or applications. Furthermore, the target picture of the IRS includes the enablement of new 
+business areas by means of data chains along the value chain in the automotive industry.
 
-## How to run
+## Usage
+
+### Local deployment
 
 The two following subsections provide instructions for running either only the infrastructure on docker-compose and the application in the IDE, or for running the full stack (including the application) in docker-compose.
 
-### Docker-compose + IDE
+#### Docker-compose + IDE
 
 * Start the necessary infrastructure by running `docker-compose up`
 
-* Start the application from your favorite IDE
+* Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
 
-### Docker-compose full stack
+#### Docker-compose full stack
 
 * Run `docker-compose --profile irs up`
 
-### Docker-compose debug profile
-
-* Run `docker-compose --profile debug up`
-* This will start additional containers:
-  * [Prometheus](https://prometheus.io/docs/introduction/overview/), a server to collect and query metrics. Prometheus is available at http://localhost:9091/.
-
-### Local IRS API
+#### Local IRS API
 
 - Swagger UI: http://localhost:8080/api/swagger-ui
 - API docs: http://localhost:8080/api/api-docs
 - API docs in yaml:  http://localhost:8080/api/api-docs.yaml
 
-## Keycloak authentication
+### Accessing the secured API
 
-Access token is required to access every IRS endpoint and should be included in Authorization header for all requests - otherwise 401 Unauthorized status is returned to client. 
-To obtain access token prepared [Postman collection can be used](https://github.com/catenax-ng/product-item-relationship-service/blob/main/testing/IRS%20DEMO%20Collection.postman_collection.json)
+A valid access token is required to access every IRS endpoint and must be included in the Authorization header - otherwise **HTTP 401 Unauthorized** status is returned to the client.
 
-## Work with sample data
+The IRS uses the configured Keycloak server to validate access tokens. By default, this is the Catena-X INT Keycloak instance. Get in contact with them to receive your client credentials.
 
-* Retrieve sample BOM:
+To obtain an access token, you can use the prepared [Postman collection](https://github.com/catenax-ng/product-item-relationship-service/blob/main/testing/IRS%20DEMO%20Collection.postman_collection.json). 
+
+### Sample calls
+
+Start a job for a globalAssetId:
 
 ```bash
 curl -X 'POST' \
   'http://localhost:8080/irs/jobs' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer <<token_value>>' \
+  -H 'Authorization: Bearer <token_value>' \
   -d '{
   "aspects": [
     "SerialPartTypization"
@@ -63,11 +71,15 @@ curl -X 'POST' \
   "direction": "downward",
   "globalAssetId": "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6"
 }'
-  
-curl -X 'GET'  'http://localhost:8080/irs/jobs/<jobID from first call>' -H 'accept: application/json' -H 'Authorization: Bearer <<token_value>>'
 ```
 
-## DEV environment
+Retrieve the job results by using the jobId returned by the previous call:
+```bash
+curl -X 'GET' 'http://localhost:8080/irs/jobs/<jobID>' -H 'accept: application/json' -H 'Authorization: Bearer <token_value>'
+```
+
+## Environments
+### DEV environment
 
 The latest version on main is automatically picked up by ArgoCD and deployed to the DEV environment.
 See https://catenax-ng.github.io/.
@@ -88,7 +100,7 @@ Check the Helm charts at ./chart for the configuration.
 
 The testdata on DEV is volatile and gets lost on pod restarts. New testdata can be provisioned using the GitHub action trigger.
 
-## INT environment
+### INT environment
 
 The latest version on main is automatically picked up by ArgoCD and deployed to the INT environment.
 See https://catenax-ng.github.io/.
@@ -104,7 +116,8 @@ This setup uses the docker images provided by [the EDC team](https://github.com/
 
 Check the Helm charts at ./chart for the configuration. 
 
-## Commit messages
+## Contribution
+### Commit messages
 The commit messages have to match a pattern in the form of:  
 < type >(optional scope):[<Ticket_ID>] < description >
 
@@ -113,16 +126,12 @@ chore(api):[TRI-123] some text
 
 Detailed pattern can be found here: [commit-msg](dev/commit-msg)
 
-### Installation
+#### Installation
 ```shell
 cp dev/commit-msg .git/hooks/commit-msg && chmod 500 .git/hooks/commit-msg
 ```
 
 For further information please see https://github.com/hazcod/semantic-commit-hook
 
-### Coverage
-
-Sonarcloud Coverage [Sonarcloud](https://sonarcloud.io/component_measures?id=catenax-ng_product-item-relationship-service&metric=coverage&view=list)
-
 ## Licenses
-Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
+Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0) - see [LICENSE](./LICENSE)
