@@ -41,7 +41,7 @@ public class ChildDataDTO {
     private String childCatenaXId;
 
     public Relationship toRelationship(final String catenaXId) {
-        ChildItem.ChildItemBuilder childItem = ChildItem.builder()
+        final ChildItem.ChildItemBuilder childItem = ChildItem.builder()
                                                         .childCatenaXId(
                                                                 withGlobalAssetIdentification(getChildCatenaXId()))
                                                         .lifecycleContext(
