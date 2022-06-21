@@ -28,7 +28,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.ToString;
 import lombok.Value;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.enums.JobState;
 
 /**
@@ -40,7 +39,6 @@ import net.catenax.irs.component.enums.JobState;
 @AllArgsConstructor
 @ToString
 @SuppressWarnings("PMD.ShortClassName")
-@ExcludeFromCodeCoverageGeneratedReport
 public class Job {
 
     /**
