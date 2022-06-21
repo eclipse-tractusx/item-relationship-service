@@ -11,7 +11,6 @@
 package net.catenax.irs.dto;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Data;
