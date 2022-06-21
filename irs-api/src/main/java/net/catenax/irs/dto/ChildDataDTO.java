@@ -42,28 +42,30 @@ public class ChildDataDTO {
     private String childCatenaXId;
 
     public Relationship toRelationship(final String catenaXId) {
-        final ChildItem childItem = ChildItem.builder()
-                                         .childCatenaXId(withGlobalAssetIdentification(getChildCatenaXId()))
-                                         .lifecycleContext(
-                                                 BomLifecycle.fromLifecycleContextCharacteristic(getLifecycleContext()))
-                                         .assembledOn(getAssembledOn())
-                                         .lastModifiedOn(getLastModifiedOn())
-                                         .build();
+        ChildItem.ChildItemBuilder childItem = ChildItem.builder()
+                                                        .childCatenaXId(
+                                                                withGlobalAssetIdentification(getChildCatenaXId()))
+                                                        .lifecycleContext(
+                                                                BomLifecycle.fromLifecycleContextCharacteristic(
+                                                                        getLifecycleContext()))
+                                                        .assembledOn(getAssembledOn())
+                                                        .lastModifiedOn(getLastModifiedOn());
 
-        Optional.ofNullable(this.getQuantity())
-                .ifPresent(quantityDTO -> childItem.toBuilder().quantity(Quantity.builder()
-                                               .quantityNumber(quantityDTO.getQuantityNumber().intValue())
-                                               .measurementUnit(MeasurementUnit.builder()
-                                                                               .datatypeURI(
-                                                                                       quantityDTO.getMeasurementUnit().getDatatypeURI())
-                                                                               .lexicalValue(
-                                                                                       quantityDTO.getMeasurementUnit().getLexicalValue())
-                                                                               .build())
-                                               .build())
-                         .build());
+        if (this.getQuantity() != null) {
+            childItem.quantity(Quantity.builder()
+                                       .quantityNumber(getQuantity().getQuantityNumber().intValue())
+                                       .measurementUnit(MeasurementUnit.builder()
+                                                                       .datatypeURI(getQuantity().getMeasurementUnit()
+                                                                                                 .getDatatypeURI())
+                                                                       .lexicalValue(getQuantity().getMeasurementUnit()
+                                                                                                  .getLexicalValue())
+                                                                       .build())
+                                       .build()).build();
+        }
 
-        return Relationship.builder().catenaXId(withGlobalAssetIdentification(catenaXId))
-                           .childItem(childItem)
+        return Relationship.builder()
+                           .catenaXId(withGlobalAssetIdentification(catenaXId))
+                           .childItem(childItem.build())
                            .build();
     }
 
