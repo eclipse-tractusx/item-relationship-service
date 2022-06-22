@@ -1,0 +1,37 @@
+## Set default rootUser, rootPassword
+## AccessKey and secretKey is generated when not set
+## Distributed MinIO ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
+##
+rootUser: <path:product-traceability-irs/data/int/minio#minioUser>
+rootPassword: <path:product-traceability-irs/data/int/minio#minioPassword>
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  annotations: {}
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  existingClaim: ""
+
+  ## minio data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  ## Storage class of PV to bind. By default it looks for standard storage class.
+  ## If the PV uses a different storage class, specify that here.
+  storageClass: ""
+  VolumeName: "export"
+  accessMode: ReadWriteOnce
+  size: 4Gi
+
+  ## If subPath is set mount a sub folder of a volume instead of the root of the volume.
+  ## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).
+  ##
+  subPath: ""
