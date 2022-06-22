@@ -7,31 +7,33 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
+//
 package net.catenax.irs.dto;
 
-import java.util.UUID;
-
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
-import net.catenax.irs.component.enums.JobState;
 
 /**
- * Response for job status request
+ * QuantityDTO model used for internal application use
  */
-@Value
+@Data
+@Builder
 @Jacksonized
-@Builder(toBuilder = true)
-public class JobStatusResult {
+public class QuantityDTO {
+
+    private Double quantityNumber;
+
+    private MeasurementUnitDTO measurementUnit;
 
     /**
-     * Job identifier
+     * MeasurementUnitDTO
      */
-    private UUID jobId;
-
-    /**
-     * Current status for this job
-     */
-    private JobState status;
-
+    @Data
+    @Builder
+    @Jacksonized
+    public static class MeasurementUnitDTO {
+        private String lexicalValue;
+        private String datatypeURI;
+    }
 }

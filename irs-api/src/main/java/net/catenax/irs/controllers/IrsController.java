@@ -36,7 +36,7 @@ import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.dto.JobStatusResult;
+import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.springdoc.api.annotations.ParameterObject;
