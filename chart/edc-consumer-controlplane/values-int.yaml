@@ -146,7 +146,7 @@ configuration:
     # edc.vault=
     # edc.vault.certificate=
     edc.vault.clientid=c1778e7d-db16-4404-9080-26d2280d2f63
-    edc.vault.clientsecret=<path:product-traceability-irs/data/int/controlplane#vaultClientSecret>
+    edc.vault.clientsecret=<path:traceability-irs/data/int/controlplane#vaultClientSecret>
     edc.vault.name=cxtsi-dev001-vault
     edc.vault.tenantid=495463c3-0991-4659-9cc5-94b4a3f7b1d6
     # edc.webdid.doh.url=
