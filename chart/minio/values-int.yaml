@@ -1,9 +1,12 @@
+nameOverride: "app-irs-int-minio"
+fullnameOverride: "app-irs-int-minio"
+
 ## Set default rootUser, rootPassword
 ## AccessKey and secretKey is generated when not set
 ## Distributed MinIO ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
-rootUser: <path:product-traceability-irs/data/int/minio#minioUser>
-rootPassword: <path:product-traceability-irs/data/int/minio#minioPassword>
+rootUser: <path:product-traceability-irs/data/int/minio#minioIntUser>
+rootPassword: <path:product-traceability-irs/data/int/minio#minioIntPassword>
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -35,3 +38,10 @@ persistence:
   ## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).
   ##
   subPath: ""
+
+  ## Expose the MinIO service to be accessed from outside the cluster (LoadBalancer service).
+## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
+## ref: http://kubernetes.io/docs/user-guide/services/
+##
+minio:
+  url: http://app-irs-int-minio:9000
