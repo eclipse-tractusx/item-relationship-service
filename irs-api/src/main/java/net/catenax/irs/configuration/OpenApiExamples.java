@@ -12,6 +12,8 @@ package net.catenax.irs.configuration;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +44,7 @@ import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
 
@@ -53,6 +56,7 @@ import org.springframework.http.HttpStatus;
 })
 public class OpenApiExamples {
     private static final Instant EXAMPLE_INSTANT = Instant.parse("2022-02-03T14:48:54.709Z");
+    private static final LocalDateTime EXAMPLE_LOCAL_DATE_TIME = LocalDateTime.ofInstant(EXAMPLE_INSTANT, ZoneOffset.UTC);
     private static final String JOB_ID = "e5347c88-a921-11ec-b909-0242ac120002";
     private static final String GLOBAL_ASSET_ID = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0";
     private static final String JOB_HANDLE_ID_1 = "6c311d29-5753-46d4-b32c-19b918ea93b0";
@@ -76,7 +80,7 @@ public class OpenApiExamples {
     }
 
     private Example createJobListProcessingState() {
-        return toExample(List.of(UUID.fromString(JOB_HANDLE_ID_1)));
+        return toExample(List.of(JobStatusResult.builder().jobId(UUID.fromString(JOB_HANDLE_ID_1)).status(JobState.COMPLETED).build()));
     }
 
     private JobHandle createJobHandle(final String name) {
@@ -205,8 +209,8 @@ public class OpenApiExamples {
                            .childItem(ChildItem.builder()
                                                .quantity(createQuantity())
                                                .childCatenaXId(createGAID("a45a2246-f6e1-42da-b47d-5c3b58ed62e9"))
-                                               .lastModifiedOn(EXAMPLE_INSTANT)
-                                               .assembledOn(EXAMPLE_INSTANT)
+                                               .lastModifiedOn(EXAMPLE_LOCAL_DATE_TIME)
+                                               .assembledOn(EXAMPLE_LOCAL_DATE_TIME)
                                                .lifecycleContext(BomLifecycle.AS_BUILT)
                                                .build())
                            .build();

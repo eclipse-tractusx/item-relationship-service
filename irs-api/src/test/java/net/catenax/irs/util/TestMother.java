@@ -6,13 +6,12 @@ import static net.catenax.irs.controllers.IrsApiConstants.UUID_SIZE;
 import java.net.URL;
 import java.time.Instant;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;

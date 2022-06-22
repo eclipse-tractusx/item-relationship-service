@@ -3,7 +3,7 @@ package net.catenax.irs.connector.job;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static net.catenax.irs.util.TestMother.jobParameter;
 
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 import net.catenax.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
 
