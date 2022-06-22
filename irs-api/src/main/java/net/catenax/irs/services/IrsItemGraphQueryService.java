@@ -44,7 +44,7 @@ import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferProcess;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.JobParameter;
-import net.catenax.irs.dto.JobStatusResult;
+import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
@@ -237,19 +237,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     private Stream<Relationship> convert(final AssemblyPartRelationshipDTO dto) {
         return dto.getChildParts()
                   .stream()
-                  .map(child -> Relationship.builder()
-                                            .catenaXId(GlobalAssetIdentification.builder()
-                                                                                .globalAssetId(dto.getCatenaXId())
-                                                                                .build())
-                                            .childItem(ChildItem.builder()
-                                                                .childCatenaXId(GlobalAssetIdentification.builder()
-                                                                                                         .globalAssetId(
-                                                                                                                 child.getChildCatenaXId())
-                                                                                                         .build())
-                                                                .lifecycleContext(
-                                                                        BomLifecycle.fromLifecycleContextCharacteristic(
-                                                                                child.getLifecycleContext()))
-                                                                .build())
-                                            .build());
+                  .map(child -> child.toRelationship(dto.getCatenaXId()));
     }
+
 }

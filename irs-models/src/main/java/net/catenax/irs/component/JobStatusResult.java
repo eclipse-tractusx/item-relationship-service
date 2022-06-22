@@ -7,25 +7,31 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-//
-package net.catenax.irs.dto;
+package net.catenax.irs.component;
 
-import java.util.Set;
+import java.util.UUID;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+import net.catenax.irs.component.enums.JobState;
 
 /**
- * AssemblyPartRelationshipDTO model used for internal application use
+ * Response for job status request
  */
-@Data
-@Builder(toBuilder = true)
+@Value
 @Jacksonized
-public class AssemblyPartRelationshipDTO {
+@Builder(toBuilder = true)
+public class JobStatusResult {
 
-    private String catenaXId;
+    /**
+     * Job identifier
+     */
+    private UUID jobId;
 
-    private Set<ChildDataDTO> childParts;
+    /**
+     * Current status for this job
+     */
+    private JobState status;
 
 }
