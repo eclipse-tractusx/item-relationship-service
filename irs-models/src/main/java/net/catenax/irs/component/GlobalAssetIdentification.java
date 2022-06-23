@@ -18,7 +18,6 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
  * Global unique identifier for asset
@@ -29,7 +28,6 @@ import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 @Builder(toBuilder = true)
 @JsonSerialize(using = ToStringSerializer.class)
 @JsonDeserialize(builder = GlobalAssetIdentification.GlobalAssetIdentificationBuilder.class)
-@ExcludeFromCodeCoverageGeneratedReport
 public class GlobalAssetIdentification {
 
     private static final int GLOBAL_ASSET_ID_LENGTH = 45;

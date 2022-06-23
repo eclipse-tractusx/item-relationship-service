@@ -15,7 +15,6 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -31,7 +30,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
  * API Exception Handler.
  */
 @Slf4j
-@ExcludeFromCodeCoverageGeneratedReport
 @ControllerAdvice
 public class IrsExceptionHandler {
 

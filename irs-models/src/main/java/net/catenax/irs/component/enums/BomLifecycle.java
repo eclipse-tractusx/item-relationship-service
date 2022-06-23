@@ -18,13 +18,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 
 /***
  * API type for the view of the items tree to be returned by a query.
  *
  */
-@ExcludeFromCodeCoverageGeneratedReport
 @JsonSerialize(using = ToStringSerializer.class)
 @Schema(description = "The lifecycle context in which the child part was assembled into the parent part.")
 @Getter
