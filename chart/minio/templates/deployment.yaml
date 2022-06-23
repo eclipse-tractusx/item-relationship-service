@@ -48,12 +48,12 @@ spec:
             - name: MINIO_ROOT_USER
               valueFrom:
                 secretKeyRef:
-                  name: app-irs-dev01-minio
+                  name: {{ .Values.fullnameOverride }}
                   key: minioUser
             - name: MINIO_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: app-irs-dev01-minio
+                  name: {{ .Values.fullnameOverride }}
                   key: minioPassword
             - name: MINIO_URL
               value: {{ .Values.minio.url }}               

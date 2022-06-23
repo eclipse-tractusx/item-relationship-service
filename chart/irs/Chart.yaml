@@ -22,7 +22,7 @@ version: 0.1.0
 # It is recommended to use it with quotes.
 appVersion: "0.2.0"
 
-dependencies:
-  - name: minio
-    version: "8.0.10"
-    repository: "https://helm.min.io/"
+# dependencies:
+#  - name: minio
+#    version: "8.0.10"
+#    repository: "https://helm.min.io/"

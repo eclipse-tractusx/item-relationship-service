@@ -44,4 +44,4 @@ persistence:
 ## ref: http://kubernetes.io/docs/user-guide/services/
 ##
 minio:
-  url: http://app-irs-int-minio:9000
+  url: http://app-irs-dev-minio:9000
