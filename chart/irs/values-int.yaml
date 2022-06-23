@@ -27,3 +27,6 @@ aasProxy:
     username: <path:product-traceability-irs/data/int/aasProxy/submodel#username>
     password: <path:product-traceability-irs/data/int/aasProxy/submodel#password>
 
+minio:
+  url: http://app-irs-int-minio:9000    
+
