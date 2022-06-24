@@ -1,10 +1,210 @@
 {
 	"info": {
-		"_postman_id": "b85dc6e0-504d-4719-9c17-fe967e09a50c",
+		"_postman_id": "bb78ad99-e650-4779-b63f-5b84d0337af9",
 		"name": "IRS DEMO Collection",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19870399"
 	},
 	"item": [
+		{
+			"name": "DigitalTwinRegistry/Wrapper",
+			"item": [
+				{
+					"name": "Get Shell by aasIdentifier",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry/registry/shell-descriptors/:aasIdentifier",
+							"protocol": "https",
+							"host": [
+								"catenaxintakssrv",
+								"germanywestcentral",
+								"cloudapp",
+								"azure",
+								"com"
+							],
+							"path": [
+								"semantics",
+								"twin-registry",
+								"registry",
+								"shell-descriptors",
+								":aasIdentifier"
+							],
+							"variable": [
+								{
+									"key": "aasIdentifier",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submodel Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://irs-aas-wrapper.int.demo.catena-x.net/api/service/:assetId-SubmodelId/submodel?content=value&extent=WithBLOBValue&provider-connector-url=http://connector.cx-rel.edc.aws.bmw.cloud:8282/BPNL00000003AYRE",
+							"protocol": "https",
+							"host": [
+								"irs-aas-wrapper",
+								"int",
+								"demo",
+								"catena-x",
+								"net"
+							],
+							"path": [
+								"api",
+								"service",
+								":assetId-SubmodelId",
+								"submodel"
+							],
+							"query": [
+								{
+									"key": "content",
+									"value": "value"
+								},
+								{
+									"key": "extent",
+									"value": "WithBLOBValue"
+								},
+								{
+									"key": "provider-connector-url",
+									"value": "http://connector.cx-rel.edc.aws.bmw.cloud:8282/BPNL00000003AYRE"
+								}
+							],
+							"variable": [
+								{
+									"key": "assetId-SubmodelId",
+									"value": "urn:uuid:4629ade2-8be9-43f5-95cf-2dca84464aaf-urn:uuid:a3ca3d8d-72cc-47b3-b60c-8f9931d3f64d"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Registry By BPN",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry/lookup/shells?assetIds=[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B5MJ\"}]",
+							"protocol": "https",
+							"host": [
+								"catenaxintakssrv",
+								"germanywestcentral",
+								"cloudapp",
+								"azure",
+								"com"
+							],
+							"path": [
+								"semantics",
+								"twin-registry",
+								"lookup",
+								"shells"
+							],
+							"query": [
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B5MJ\"}]"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Registry By VAN",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry/lookup/shells?assetIds=[{\"key\":\"VAN\",\"value\": \"OMA-TGFAYUHXFLHHUQQMPLTE\"}]",
+							"protocol": "https",
+							"host": [
+								"catenaxintakssrv",
+								"germanywestcentral",
+								"cloudapp",
+								"azure",
+								"com"
+							],
+							"path": [
+								"semantics",
+								"twin-registry",
+								"lookup",
+								"shells"
+							],
+							"query": [
+								{
+									"key": "assetIds",
+									"value": "[{\"key\":\"VAN\",\"value\": \"OMA-TGFAYUHXFLHHUQQMPLTE\"}]"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Registry By globalAssetId",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry/lookup/shells?assetIds=[{\"key\":\"globalAssetId\",\"value\":\"urn:uuid:866b8c6f-8e59-4b9c-9e1d-61900bff91ce\"}]",
+							"protocol": "https",
+							"host": [
+								"catenaxintakssrv",
+								"germanywestcentral",
+								"cloudapp",
+								"azure",
+								"com"
+							],
+							"path": [
+								"semantics",
+								"twin-registry",
+								"lookup",
+								"shells"
+							],
+							"query": [
+								{
+									"key": "assetIds",
+									"value": "[{\"key\":\"globalAssetId\",\"value\":\"urn:uuid:866b8c6f-8e59-4b9c-9e1d-61900bff91ce\"}]"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
 		{
 			"name": "1.0.0 [Register Job] https://irs.int.demo.catena-x.net/irs/jobs",
 			"request": {
@@ -769,6 +969,42 @@
 						"protocol",
 						"openid-connect",
 						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6.0.0 [Cancel Job for given jobId] /irs/jobs/:jobid",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{ACCESS_TOKEN}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{IRS_HOST}}/irs/jobs/:jobid",
+					"host": [
+						"{{IRS_HOST}}"
+					],
+					"path": [
+						"irs",
+						"jobs",
+						":jobid"
+					],
+					"variable": [
+						{
+							"key": "jobid",
+							"value": null
+						}
 					]
 				}
 			},
