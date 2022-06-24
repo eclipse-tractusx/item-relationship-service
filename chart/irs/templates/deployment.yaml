@@ -61,6 +61,8 @@ spec:
               value: {{ .Values.aasProxy.submodel.username }}
             - name: AAS_PROXY_SUBMODEL_PASSWORD
               value: {{ .Values.aasProxy.submodel.password }}
+            - name: AASWRAPPER_HOST
+              value: {{ .Values.aasWrapper.host }}
           ports:
             - name: http
               containerPort: 8080
