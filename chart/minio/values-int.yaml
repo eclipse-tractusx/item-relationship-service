@@ -5,8 +5,8 @@ fullnameOverride: "app-irs-dev-minio"
 ## AccessKey and secretKey is generated when not set
 ## Distributed MinIO ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
-rootUser: <path:product-traceability-irs/data/int/minio#minioIntUser>
-rootPassword: <path:product-traceability-irs/data/int/minio#minioIntPassword>
+rootUser: <path:product-traceability-irs/data/int/minio#minioUser>
+rootPassword: <path:product-traceability-irs/data/int/minio#minioPassword>
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
