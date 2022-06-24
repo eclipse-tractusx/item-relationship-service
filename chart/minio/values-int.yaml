@@ -1,5 +1,5 @@
-nameOverride: "app-irs-int-minio"
-fullnameOverride: "app-irs-int-minio"
+nameOverride: "app-irs-dev-minio"
+fullnameOverride: "app-irs-dev-minio"
 
 ## Set default rootUser, rootPassword
 ## AccessKey and secretKey is generated when not set
