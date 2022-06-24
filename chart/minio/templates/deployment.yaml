@@ -45,16 +45,6 @@ spec:
               containerPort: {{ .Values.minioAPIPort }}
               protocol: TCP
           env:
-            - name: MINIO_ROOT_USER
-              valueFrom:
-                secretKeyRef:
-                  name: app-irs-dev01-minio
-                  key: minioUser
-            - name: MINIO_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: app-irs-dev01-minio
-                  key: minioPassword
             - name: MINIO_URL
               value: {{ .Values.minio.url }}               
           resources:
