@@ -46,7 +46,17 @@ spec:
               protocol: TCP
           env:
             - name: MINIO_URL
-              value: {{ .Values.minio.url }}               
+              value: {{ .Values.minio.url }}
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-irs-dev01-minio
+                  key: minioUser
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-irs-dev01-minio
+                  key: minioPassword     
           resources:
             {{- toYaml .Values.resources | nindent 12 }}            
           # @url: https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-setting-up-health-checks-with-readiness-and-liveness-probes
