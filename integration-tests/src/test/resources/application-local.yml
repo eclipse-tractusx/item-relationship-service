@@ -15,4 +15,4 @@ spring:
 
 connection:
   base-uri: http://localhost:8080
-  access-token: https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/iamcentralidp/auth/realms/CX-Central/protocol/openid-connect/token
+  access-token: https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token

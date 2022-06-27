@@ -15,4 +15,4 @@ spring:
 
 connection:
   base-uri: https://irs.prd.demo.catena-x.net
-  access-token: https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/iamcentralidp/auth/realms/CX-Central/protocol/openid-connect/token
+  access-token: https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token
