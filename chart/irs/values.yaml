@@ -106,3 +106,6 @@ readinessProbe:
 
 minio:
   url: http://app-irs-dev-minio:9000
+
+aasWrapper:
+  host: http://aaswrapper:9191/api/service
