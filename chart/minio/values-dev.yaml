@@ -2,8 +2,8 @@
 ## AccessKey and secretKey is generated when not set
 ## Distributed MinIO ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
-rootUser: <path:product-traceability-irs/data/dev/minio#minioUser>
-rootPassword: <path:product-traceability-irs/data/dev/minio#minioPassword>
+rootUser: <path:traceability-irs/data/dev/minio#minioUser>
+rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
