@@ -39,6 +39,16 @@ spec:
               value: {{ .Values.springprofile }}
             - name: MINIO_URL
               value: {{ .Values.minio.url }}
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-irs-dev01-minio
+                  key: minioUser
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-irs-dev01-minio
+                  key: minioPassword
             - name: KEYCLOAK_OAUTH2_CLIENT_ID
               value: {{ .Values.keycloak.oauth2.clientId }}
             - name: KEYCLOAK_OAUTH2_CLIENT_SECRET
