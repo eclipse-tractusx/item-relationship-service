@@ -21,7 +21,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry/registry/shell-descriptors/:aasIdentifier",
+							"raw": "https://semantics.int.demo.catena-x.net/registry/swagger-ui/index.html/registry/shell-descriptors/:aasIdentifier",
 							"protocol": "https",
 							"host": [
 								"catenaxintakssrv",
@@ -104,7 +104,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry/lookup/shells?assetIds=[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B5MJ\"}]",
+							"raw": "https://semantics.int.demo.catena-x.net/registry/swagger-ui/index.html/lookup/shells?assetIds=[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B5MJ\"}]",
 							"protocol": "https",
 							"host": [
 								"catenaxintakssrv",
@@ -141,7 +141,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry/lookup/shells?assetIds=[{\"key\":\"VAN\",\"value\": \"OMA-TGFAYUHXFLHHUQQMPLTE\"}]",
+							"raw": "https://semantics.int.demo.catena-x.net/registry/swagger-ui/index.html/lookup/shells?assetIds=[{\"key\":\"VAN\",\"value\": \"OMA-TGFAYUHXFLHHUQQMPLTE\"}]",
 							"protocol": "https",
 							"host": [
 								"catenaxintakssrv",
@@ -178,7 +178,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry/lookup/shells?assetIds=[{\"key\":\"globalAssetId\",\"value\":\"urn:uuid:866b8c6f-8e59-4b9c-9e1d-61900bff91ce\"}]",
+							"raw": "https://semantics.int.demo.catena-x.net/registry/swagger-ui/index.html/lookup/shells?assetIds=[{\"key\":\"globalAssetId\",\"value\":\"urn:uuid:866b8c6f-8e59-4b9c-9e1d-61900bff91ce\"}]",
 							"protocol": "https",
 							"host": [
 								"catenaxintakssrv",
