@@ -2,8 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "k8s-helm-example.fullname" . }}
+  namespace: {{ .Values.namespace }}
   labels:
     {{- include "k8s-helm-example.labels" . | nindent 4 }}
+  annotations:
+    checkov.io/skip1: CKV_K8S_35=Secrets are handled by vault and need to be passed as environment variables
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -34,6 +37,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: {{ .Values.springprofile }}
@@ -95,6 +101,9 @@ spec:
 
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

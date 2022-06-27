@@ -2,9 +2,8 @@
 # Default values for edc-controlplane.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-##
+
 ## Ingress declaration to expose the network service.
-##
 ingress:
   enabled: true
   className: "nginx"
@@ -28,12 +27,8 @@ ingress:
       # Default secret for certificate creation already provided to your namespace
       secretName: tls-secret
 
-##
-## EDC configuration.properties
-##
-## Consult the eclipse-dataspaceconnector documentation for further details: https://github.com/eclipse-dataspaceconnector/DataSpaceConnector
-##
 configuration:
+  # -- EDC configuration.properties configuring aspects of the [eclipse-dataspaceconnector](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector)
   properties: |-
     edc.api.auth.key=123456
     # edc.api.auth.key=X-Api-Key
