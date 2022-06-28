@@ -3,6 +3,9 @@ springprofile: dev
 image:
   tag: $ARGOCD_APP_REVISION
 
+nameOverride: "app-irs-dev01-minio"
+fullnameOverride: "app-irs-dev01-minio"  
+
 keycloak:
   oauth2:
     clientId: <path:traceability-irs/data/dev/keycloak/oauth2#clientId>
