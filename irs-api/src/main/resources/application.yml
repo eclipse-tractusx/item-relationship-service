@@ -84,13 +84,16 @@ resilience4j.retry:
   configs:
     default:
       maxAttempts: 3
-      waitDuration: 100
+      waitDuration: 10000
+      enableExponentialBackoff: true
+      exponentialBackoffMultiplier: 2
+
       retryExceptions:
         - org.springframework.web.client.HttpServerErrorException
         - java.util.concurrent.TimeoutException
         - java.io.IOException
-      retryOnException:
         - net.catenax.irs.exceptions.AspectNotSupportedException
+circuitbreaker
   instances:
     submodelRetryer:
       baseConfig: default
