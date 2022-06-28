@@ -42,12 +42,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: app-irs-dev01-minio
+                  name: app-irs-dev-minio
                   key: minioUser
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: app-irs-dev01-minio
+                  name: app-irs-dev-minio
                   key: minioPassword
             - name: KEYCLOAK_OAUTH2_CLIENT_ID
               value: {{ .Values.keycloak.oauth2.clientId }}
