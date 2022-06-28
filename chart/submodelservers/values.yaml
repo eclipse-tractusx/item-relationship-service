@@ -11,8 +11,6 @@ image:
   tag: ""
 
 imagePullSecrets: [ ]
-nameOverride: "submodelserver"
-fullnameOverride: "submodelserver"
 
 serviceAccount:
   # Specifies whether a service account should be created
