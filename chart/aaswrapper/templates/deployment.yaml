@@ -5,9 +5,6 @@ metadata:
   namespace: {{ .Values.namespace }}
   labels:
     {{- include "aaswrapper.labels" . | nindent 4 }}
-  annotations:
-    checkov.io/skip1: CKV_K8S_8=AASWrapper does not provide Liveness Probe
-    checkov.io/skip2: CKV_K8S_9=AASWrapper does not provide Readiness Probe
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -48,7 +45,7 @@ spec:
               protocol: TCP  
             - name: jdb
               containerPort: 8090 # JDB
-              protocol: TCP
+              protocol: TCP  
           env:
             {{- range .Values.env }}
             - name: {{ .name }}
