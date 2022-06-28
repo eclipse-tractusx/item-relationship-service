@@ -1,0 +1,22 @@
+directory:
+  - .
+quiet: true
+soft-fail: false
+framework:
+  - all
+output: sarif
+download-external-modules: true
+evaluate-variables: true
+skip-check:
+  - CKV_K8S_43 # Skipping since we always deploy the latest version for the IRS and specify the tag for the other images
+skip-path: # skipping the helm charts for the test-setup on dev
+  - chart/aasregistry
+  - chart/edc-controlplane
+  - chart/edc-dataplane
+  - chart/edc-provider-data-plane
+  - chart/edc-provider-control-plane
+  - chart/submodelservers
+  - chart/submodelserver2
+  - chart/submodelserver3
+  - chart/submodelserver4
+  - chart/irs/charts/minio # skipping minio since we don't have the possibility to configure it

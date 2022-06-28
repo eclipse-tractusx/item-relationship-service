@@ -15,6 +15,7 @@ import java.net.URI;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -61,9 +62,9 @@ class SubmodelClientImpl implements SubmodelClient {
     private final RestTemplate restTemplate;
     private final AASWrapperUriAddressRewritePolicy aasWrapperUriAddressRewritePolicy;
 
-    /* package */ SubmodelClientImpl(@Qualifier(BASIC_AUTH_REST_TEMPLATE) final RestTemplate restTemplate) {
+    /* package */ SubmodelClientImpl(@Qualifier(BASIC_AUTH_REST_TEMPLATE) final RestTemplate restTemplate, @Value("${aasWrapper.host}") final String aasWrapperHost) {
         this.restTemplate = restTemplate;
-        this.aasWrapperUriAddressRewritePolicy = new AASWrapperUriAddressRewritePolicy();
+        this.aasWrapperUriAddressRewritePolicy = new AASWrapperUriAddressRewritePolicy(aasWrapperHost);
     }
 
     @Override

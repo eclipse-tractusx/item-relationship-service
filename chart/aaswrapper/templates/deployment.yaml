@@ -2,8 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "aaswrapper.fullname" . }}
+  namespace: {{ .Values.namespace }}
   labels:
     {{- include "aaswrapper.labels" . | nindent 4 }}
+  annotations:
+    checkov.io/skip1: CKV_K8S_8=AASWrapper does not provide Liveness Probe
+    checkov.io/skip2: CKV_K8S_9=AASWrapper does not provide Readiness Probe
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -25,6 +29,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "aaswrapper.serviceAccountName" . }}
+      # @url: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server
+      automountServiceAccountToken: false
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -42,7 +48,7 @@ spec:
               protocol: TCP  
             - name: jdb
               containerPort: 8090 # JDB
-              protocol: TCP  
+              protocol: TCP
           env:
             {{- range .Values.env }}
             - name: {{ .name }}
@@ -50,7 +56,9 @@ spec:
             {{- end }}
           volumeMounts:
             - name: aaswrapper-config
-              mountPath: /connector-config            
+              mountPath: /connector-config
+            - name: tmp
+              mountPath: /tmp
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -60,6 +68,8 @@ spec:
             items:
               - key: configuration.properties
                 path: configuration.properties
+        - name: tmp
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

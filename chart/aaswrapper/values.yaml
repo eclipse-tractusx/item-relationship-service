@@ -4,6 +4,8 @@
 
 replicaCount: 1
 
+namespace: product-traceability-irs
+
 image:
   repository: ghcr.io/catenax-ng/catenax-at-home/api-wrapper
   pullPolicy: Always
@@ -11,8 +13,9 @@ image:
   tag: "0.0.1"
 
 imagePullSecrets: []
-nameOverride: "aaswrapper"
-fullnameOverride: "aaswrapper"
+
+ingress:
+  enabled: false
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -25,15 +28,22 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext: {}
-# fsGroup: 2000
+# -- The [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod) defines privilege and access control settings for a Pod within the deployment
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+  # fsGroup: 2000
 
 # Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
 securityContext:
+  capabilities:
+    drop:
+      - ALL
   allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
   runAsNonRoot: true
-  runAsUser: 1000
+  runAsUser: 10000
   runAsGroup: 3000
 
 service:
@@ -79,17 +89,9 @@ affinity:
 # Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://github.com/helm/charts/blob/master/stable/nginx-ingress/values.yaml#L210
 livenessProbe:
-  failureThreshold: 6
-  initialDelaySeconds: 30
-  periodSeconds: 10
-  successThreshold: 1
-  timeoutSeconds: 1
+  enabled: false # AASWrapper does not provide Liveness Probe
 readinessProbe:
-  failureThreshold: 3
-  initialDelaySeconds: 30
-  periodSeconds: 10
-  successThreshold: 1
-  timeoutSeconds: 1
+  enabled: false # AASWrapper does not provide Readiness Probe
 
 env:
   - name: EDC_FS_CONFIG

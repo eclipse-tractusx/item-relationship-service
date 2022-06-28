@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "edc-dataplane.fullname" . }}
+  namespace: {{ .Values.namespace }}
   labels:
     {{- include "edc-dataplane.labels" . | nindent 4 }}
 spec:
@@ -33,6 +34,8 @@ spec:
       {{- end }}
       {{- end }}
       serviceAccountName: {{ include "edc-dataplane.serviceAccountName" . }}
+      # @url: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server
+      automountServiceAccountToken: false
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -89,6 +92,8 @@ spec:
             - name: configuration
               mountPath: /app/logging.properties
               subPath: logging.properties
+            - name: tmp
+              mountPath: /tmp
       volumes:
         - name: configuration
           configMap:
@@ -100,6 +105,8 @@ spec:
                 path: opentelemetry.properties
               - key: logging.properties
                 path: logging.properties
+        - name: tmp
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

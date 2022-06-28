@@ -4,6 +4,7 @@ blobstore:
   secretKey: minioadmin
 
 irs:
+  apiUrl: http://localhost:8080
   job:
     cleanup:
       scheduler:

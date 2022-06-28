@@ -28,6 +28,7 @@ ingress:
       secretName: tls-secret
 
 configuration:
+  # -- EDC configuration.properties configuring aspects of the [eclipse-dataspaceconnector](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector)
   properties: |-
     edc.api.auth.key=123456
     # edc.assetindex.cosmos.account-name=

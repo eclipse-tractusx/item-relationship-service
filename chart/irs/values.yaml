@@ -4,6 +4,8 @@
 
 replicaCount: 1
 
+namespace: product-traceability-irs
+
 image:
   repository: ghcr.io/catenax-ng/irs-api
   pullPolicy: Always
@@ -11,20 +13,25 @@ image:
   tag: "main"
 
 imagePullSecrets: [ ]
-nameOverride: "irs"
-fullnameOverride: "irs"
 
 podAnnotations: { }
 
-podSecurityContext: { }
-# fsGroup: 2000
+# -- The [pod security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod) defines privilege and access control settings for a Pod within the deployment
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+  # fsGroup: 2000
 
 # Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
 securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
   allowPrivilegeEscalation: false
   runAsNonRoot: true
-  runAsUser: 1000
+  runAsUser: 10000
   runAsGroup: 3000
 
 service:
@@ -55,22 +62,16 @@ ingress:
 # Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-resource-requests-and-limits
 resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
     cpu: 500m
     memory: 512Mi
   requests:
     cpu: 500m
     memory: 512Mi
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
 
 nodeSelector: { }
 
@@ -106,3 +107,14 @@ readinessProbe:
 
 minio:
   url: http://app-irs-dev-minio:9000
+
+keycloak:
+  oauth2:
+    clientId:
+
+aasProxy:
+  submodel:
+    username:
+
+aasWrapper:
+  host: http://aaswrapper:9191/api/service
