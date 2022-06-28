@@ -1,3 +1,4 @@
+{{ $bucketRoot := or ($.Values.bucketRoot) ($.Values.mountPath) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -36,7 +37,7 @@ spec:
           command:
             - "/bin/sh"
             - "-ce"
-            - "/usr/bin/docker-entrypoint.sh server /data --address :{{ .Values.minioAPIPort }}"
+            - "/usr/bin/docker-entrypoint.sh server {{ .Values.mountPath }} --address :{{ .Values.minioAPIPort }}"
           volumeMounts:            
             - name: export
               mountPath: {{ .Values.mountPath }}              

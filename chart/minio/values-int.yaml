@@ -1,6 +1,9 @@
 nameOverride: "app-irs-dev-minio"
 fullnameOverride: "app-irs-dev-minio"
 
+## Path where PV would be mounted on the MinIO Pod
+mountPath: "/export"
+
 ## Set default rootUser, rootPassword
 ## AccessKey and secretKey is generated when not set
 ## Distributed MinIO ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
