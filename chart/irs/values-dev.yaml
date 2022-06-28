@@ -20,3 +20,6 @@ minioPassword: <path:traceability-irs/data/dev/minio#minioPassword>
 
 minio:
   url: http://app-irs-dev01-minio:9000
+
+rootUser: <path:traceability-irs/data/dev/minio#minioUser>
+rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>  

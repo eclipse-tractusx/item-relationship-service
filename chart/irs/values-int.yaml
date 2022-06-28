@@ -26,3 +26,6 @@ aasProxy:
   submodel:
     username: <path:traceability-irs/data/int/aasProxy/submodel#username>
     password: <path:traceability-irs/data/int/aasProxy/submodel#password>
+
+rootUser: <path:traceability-irs/data/int/minio#minioUser>
+rootPassword: <path:traceability-irs/data/int/minio#minioPassword>    

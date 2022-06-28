@@ -19,6 +19,9 @@ podAnnotations: { }
 podSecurityContext: { }
 # fsGroup: 2000
 
+rootUser: <path:traceability-irs/data/int/minio#minioUser>
+rootPassword: <path:traceability-irs/data/int/minio#minioPassword>
+
 # Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
 securityContext:

@@ -31,6 +31,17 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
+Determine secret name.
+*/}}
+{{- define "k8s-helm-example.secretName" -}}
+{{- if .Values.existingSecret -}}
+{{- .Values.existingSecret }}
+{{- else -}}
+{{- include "k8s-helm-example.fullname" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Common labels
 */}}
 {{- define "k8s-helm-example.labels" -}}
