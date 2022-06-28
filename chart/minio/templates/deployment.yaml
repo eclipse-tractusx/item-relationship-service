@@ -51,12 +51,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: app-irs-dev01-minio
+                  name: {{ .Values.fullnameOverride }}
                   key: minioUser
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: app-irs-dev01-minio
+                  name: {{ .Values.fullnameOverride }}
                   key: minioPassword     
           resources:
             {{- toYaml .Values.resources | nindent 12 }}            
