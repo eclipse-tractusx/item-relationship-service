@@ -66,7 +66,7 @@ public class OpenApiConfiguration {
             final Components components = openApi.getComponents();
             components.addSecuritySchemes("OAuth2", new SecurityScheme().type(SecurityScheme.Type.OAUTH2)
                                                                         .flows(new OAuthFlows().clientCredentials(
-                                                                                new OAuthFlow().tokenUrl("https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/iamcentralidp/auth/realms/CX-Central/protocol/openid-connect/token"))));
+                                                                                new OAuthFlow().tokenUrl("https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token"))));
             new OpenApiExamples().createExamples(components);
         };
     }

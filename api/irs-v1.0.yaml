@@ -975,5 +975,5 @@ components:
     OAuth2:
       flows:
         clientCredentials:
-          tokenUrl: https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/iamcentralidp/auth/realms/CX-Central/protocol/openid-connect/token
+          tokenUrl: https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token
       type: oauth2
