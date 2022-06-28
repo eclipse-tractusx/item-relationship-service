@@ -87,13 +87,10 @@ resilience4j.retry:
       waitDuration: 10000
       enableExponentialBackoff: true
       exponentialBackoffMultiplier: 2
-
       retryExceptions:
         - org.springframework.web.client.HttpServerErrorException
         - java.util.concurrent.TimeoutException
         - java.io.IOException
-        - net.catenax.irs.exceptions.AspectNotSupportedException
-circuitbreaker
   instances:
     submodelRetryer:
       baseConfig: default
