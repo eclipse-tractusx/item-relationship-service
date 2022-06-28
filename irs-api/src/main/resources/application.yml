@@ -107,4 +107,4 @@ aspectTypes:
   default: SerialPartTypization
 
 digitalTwinRegistry:
-  url: https://semantics.int.demo.catena-x.net/registry/swagger-ui/index.html
+  url: https://semantics.int.demo.catena-x.net/registry
