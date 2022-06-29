@@ -1,5 +1,5 @@
-nameOverride: "app-irs-dev-minio"
-fullnameOverride: "app-irs-dev-minio"
+#nameOverride: "app-irs-dev-minio"
+#fullnameOverride: "app-irs-dev-minio"
 
 ## Path where PV would be mounted on the MinIO Pod
 mountPath: "/export"
