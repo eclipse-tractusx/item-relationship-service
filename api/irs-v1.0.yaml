@@ -841,52 +841,8 @@ components:
         measurementUnit:
           $ref: '#/components/schemas/MeasurementUnit'
         quantityNumber:
-<<<<<<< Updated upstream
           type: number
           format: double
-    QueryParameter:
-      type: object
-      description: Query parameter for current irs query.
-      properties:
-        aspects:
-          type: string
-          enum:
-            - SerialPartTypization
-            - AssemblyPartRelationship
-            - ProductDescription
-            - IdConversion
-            - MarketplaceOffer
-            - MaterialForRecycling
-            - PhysicalDimension
-            - ReturnRequest
-            - CertificateOfDestruction
-            - CertificateOfDismantler
-            - EndOfLife
-            - PcfCore
-            - PcfSupplyRelation
-            - PcfTechnical
-            - AddressAspect
-            - ContactInformation
-            - BatteryPass
-            - VehicleDiagnosticDataQuality
-        bomLifecycle:
-          type: string
-          description: The lifecycle context in which the child part was assembled
-            into the parent part.
-          enum:
-            - asBuilt
-        depth:
-          type: integer
-          format: int32
-        direction:
-          type: string
-          description: Item graph traversal direction.
-          enum:
-            - downward
-=======
-          type: integer
-          format: int32
->>>>>>> Stashed changes
     Reference:
       type: object
       properties:
