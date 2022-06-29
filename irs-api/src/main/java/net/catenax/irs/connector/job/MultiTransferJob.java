@@ -121,12 +121,13 @@ public class MultiTransferJob {
         /**
          * Transition the job to the {@link JobState#ERROR} state.
          */
-        /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail) {
+        /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail, final String exceptionClassName) {
             this.job = this.job.toBuilder()
                                .jobState(JobState.ERROR)
                                .jobCompleted(ZonedDateTime.now(ZoneOffset.UTC))
                                .exception(JobErrorDetails.builder()
                                                          .errorDetail(errorDetail)
+                                                         .exception(exceptionClassName)
                                                          .exceptionDate(ZonedDateTime.now(ZoneOffset.UTC))
                                                          .build())
                                .build();

@@ -10,11 +10,11 @@ spring:
         registration:
           keycloak:
             authorization-grant-type: client_credentials
-            client-id: ${KEYCLOAK_OAUTH2_CLIENT_ID}
-            client-secret: ${KEYCLOAK_OAUTH2_CLIENT_SECRET}
+            client-id: ${KEYCLOAK_OAUTH2_CLIENT_ID:sa-cl6-cx-2}
+            client-secret: ${KEYCLOAK_OAUTH2_CLIENT_SECRET:15NnEltJeBZmvnlLmeH7SzNsBX9A4mVp}
         provider:
           keycloak:
-            token-uri: ${KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI}
+            token-uri: ${KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI:https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/iamcentralidp/auth/realms/CX-Central/protocol/openid-connect/token}
       resourceserver:
         jwt:
           jwk-set-uri: ${KEYCLOAK_OAUTH2_JWK_SET_URI:https://default}

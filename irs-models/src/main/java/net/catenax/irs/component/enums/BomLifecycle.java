@@ -69,7 +69,7 @@ public enum BomLifecycle {
         return Stream.of(BomLifecycle.values())
                      .filter(bomLifecycle -> bomLifecycle.lifecycleContextCharacteristicValue.equals(value))
                      .findFirst()
-                     .orElseThrow();
+                     .orElse(null);
     }
 
     /**

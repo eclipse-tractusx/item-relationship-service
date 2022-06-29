@@ -9,8 +9,6 @@
 //
 package net.catenax.irs.configuration;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -23,11 +21,12 @@ import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.JobParameter;
+import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.MeasurementUnit;
 import net.catenax.irs.component.ProcessingError;
 import net.catenax.irs.component.Quantity;
-import net.catenax.irs.component.QueryParameter;
 import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.Summary;
 import net.catenax.irs.component.Tombstone;
@@ -42,7 +41,6 @@ import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
 
@@ -94,9 +92,8 @@ public class OpenApiExamples {
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
-                                     .requestUrl(getExampleRequestURL())
                                      .summary(createSummary())
-                                     .queryParameter(createQueryParameter())
+                                     .jobParameter(createJobParameter())
                                      .exception(createJobException())
                                      .build())
                              .build());
@@ -113,26 +110,25 @@ public class OpenApiExamples {
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
                                      .jobCompleted(EXAMPLE_ZONED_DATETIME)
-                                     .requestUrl(getExampleRequestURL())
                                      .summary(createSummary())
-                                     .queryParameter(createQueryParameter())
+                                     .jobParameter(createJobParameter())
                                      .exception(createJobException())
                                      .build())
                              .build());
     }
 
-    private QueryParameter createQueryParameter() {
-        return QueryParameter.builder()
-                             .bomLifecycle(BomLifecycle.AS_BUILT)
-                             .depth(DEFAULT_DEPTH)
-                             .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION, AspectType.CONTACT_INFORMATION))
-                             .direction(Direction.DOWNWARD)
-                             .build();
+    private JobParameter createJobParameter() {
+        return JobParameter.builder()
+                           .bomLifecycle(BomLifecycle.AS_BUILT)
+                           .depth(DEFAULT_DEPTH)
+                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION, AspectType.CONTACT_INFORMATION))
+                           .direction(Direction.DOWNWARD)
+                           .build();
     }
 
     private Summary createSummary() {
         return Summary.builder()
-                      .asyncFetchedItems(AsyncFetchedItems.builder().complete(0).failed(0).running(0).queue(0).build())
+                      .asyncFetchedItems(AsyncFetchedItems.builder().completed(0).failed(0).running(0).build())
                       .build();
     }
 
@@ -156,10 +152,9 @@ public class OpenApiExamples {
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
                                      .jobCompleted(EXAMPLE_ZONED_DATETIME)
-                                     .requestUrl(getExampleRequestURL())
                                      .owner("")
                                      .summary(createSummary())
-                                     .queryParameter(createQueryParameter())
+                                     .jobParameter(createJobParameter())
                                      .exception(createJobException())
                                      .build())
                              .relationships(List.of(createRelationship()))
@@ -283,24 +278,12 @@ public class OpenApiExamples {
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
                                      .jobCompleted(EXAMPLE_ZONED_DATETIME)
-                                     .requestUrl(getExampleRequestURL())
-                                     .queryParameter(createQueryParameter())
+                                     .jobParameter(createJobParameter())
+                                     .jobParameter(createJobParameter())
                                      .exception(createJobException())
                                      .summary(createSummary())
                                      .build())
                              .build());
-    }
-
-    private URL getExampleRequestURL() {
-        return toUrl("https://api.server.test/api/../");
-    }
-
-    private URL toUrl(final String urlString) {
-        try {
-            return new URL(urlString);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Cannot create URL " + urlString, e);
-        }
     }
 
     private Example toExample(final Object value) {
