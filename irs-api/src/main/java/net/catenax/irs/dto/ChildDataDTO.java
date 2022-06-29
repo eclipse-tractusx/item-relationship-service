@@ -52,7 +52,7 @@ public class ChildDataDTO {
 
         if (this.getQuantity() != null) {
             childItem.quantity(Quantity.builder()
-                                       .quantityNumber(getQuantity().getQuantityNumber().intValue())
+                                       .quantityNumber(getQuantity().getQuantityNumber())
                                        .measurementUnit(MeasurementUnit.builder()
                                                                        .datatypeURI(getQuantity().getMeasurementUnit()
                                                                                                  .getDatatypeURI())

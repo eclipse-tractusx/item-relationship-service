@@ -265,7 +265,7 @@ components:
                 measurementUnit:
                   datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
                   lexicalValue: piece
-                quantityNumber: 1
+                quantityNumber: 1.0
         shells:
           - description:
               - language: en
@@ -394,7 +394,7 @@ components:
                 measurementUnit:
                   datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
                   lexicalValue: piece
-                quantityNumber: 1
+                quantityNumber: 1.0
         shells:
           - description:
               - language: en
@@ -822,8 +822,8 @@ components:
         measurementUnit:
           $ref: '#/components/schemas/MeasurementUnit'
         quantityNumber:
-          type: integer
-          format: int32
+          type: number
+          format: double
     QueryParameter:
       type: object
       description: Query parameter for current irs query.
