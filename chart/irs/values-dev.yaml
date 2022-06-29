@@ -3,8 +3,8 @@ springprofile: dev
 image:
   tag: $ARGOCD_APP_REVISION
 
-nameOverride: ""
-fullnameOverride: ""  
+nameOverride: "app-irs-dev"
+fullnameOverride: "app-irs-dev"  
 
 keycloak:
   oauth2:
