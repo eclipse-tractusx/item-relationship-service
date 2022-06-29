@@ -1,0 +1,38 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+
+component [**TransferProcessManagement**] <<Component>> as TransferProcessManagement {
+    component [**AASTransferProcessManager**] <<Component>> as TransferProcessManager
+    component [**DigitalTwinRegistryFacade**] <<Component>> as DTRFacade {
+        component [**DigitalTwinRegistryClient**] <<Component>> as DTRClient
+    }
+    component [**SubmodelFacade**] <<Component>> as SubmodelFacade {
+        component [**SubmodelClient**] <<Component>> as SubmodelClient
+    }
+    component [**ExecutorService**] <<Component>> as ExecutorService
+}
+
+component [**AASWrapper**] <<System>> as AASWrapper
+node "Digital Twin Registry" {
+    [**AAS Registry**] <<Component>> as AASR
+}
+
+DTRFacade --0)- TransferProcessManager
+SubmodelFacade --0)- TransferProcessManager
+ExecutorService <...> TransferProcessManager
+
+interface "Registry API" as RegAPI
+RegAPI -- AASR
+DTRClient ----( RegAPI
+
+interface "Wrapper API" as WrAPI
+WrAPI -- AASWrapper
+SubmodelClient ----( WrAPI
+
+database BlobStore
+TransferProcessManager -left-( BlobStoreInterface
+'BlobStoreInterface - TransferProcessManager
+BlobStoreInterface <..> BlobStore
+@enduml
