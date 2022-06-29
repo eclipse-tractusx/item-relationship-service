@@ -10,7 +10,8 @@
 package net.catenax.irs.aaswrapper.job;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -131,7 +132,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
     private Tombstone createTombstone(final String itemId, final String address, final Exception exception) {
         final ProcessingError processingError = ProcessingError.builder()
                                                                .withRetryCounter(0)
-                                                               .withLastAttempt(Instant.now())
+                                                               .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
                                                                .withErrorDetail(exception.getMessage())
                                                                .build();
         return Tombstone.builder().endpointURL(address).catenaXId(itemId).processingError(processingError).build();

@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.given;
 import static org.hamcrest.Matchers.equalTo;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -85,7 +85,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
                                                                                                     .errorDetail(
                                                                                                             "Job should be canceled")
                                                                                                     .exceptionDate(
-                                                                                                            Instant.now())
+                                                                                                            ZonedDateTime.now())
                                                                                                     .build())
                                                                           .build())
                                                                   .build();
