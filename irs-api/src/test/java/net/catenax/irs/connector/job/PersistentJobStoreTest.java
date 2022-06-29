@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static net.catenax.irs.util.TestMother.jobParameter;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -307,7 +307,7 @@ class PersistentJobStoreTest {
     @Test
     void shouldFindCompletedJobsOlderThanFiveHours() {
         // Arrange
-        final Instant nowPlusFiveHours = Instant.now().plusSeconds(TTL_IN_HOUR_SECONDS * 5);
+        final ZonedDateTime nowPlusFiveHours = ZonedDateTime.now().plusSeconds(TTL_IN_HOUR_SECONDS * 5);
         sut.create(job);
         sut.addTransferProcess(job.getJobIdString(), processId1);
         sut.completeTransferProcess(job.getJobIdString(), process1);
@@ -324,7 +324,7 @@ class PersistentJobStoreTest {
     @Test
     void shouldFindFailedJobsOlderThanFiveHours() {
         // Arrange
-        final Instant nowPlusFiveHours = Instant.now().plusSeconds(3600 * 5);
+        final ZonedDateTime nowPlusFiveHours = ZonedDateTime.now().plusSeconds(3600 * 5);
         sut.create(job);
         sut.addTransferProcess(job.getJobIdString(), processId1);
         sut.markJobInError(job.getJobIdString(), errorDetail);
@@ -408,10 +408,10 @@ class PersistentJobStoreTest {
                                .job(Job.builder()
                                        .jobId(UUID.fromString(jobId))
                                        .jobState(JobState.UNSAVED)
-                                       .jobCompleted(Instant.now())
+                                       .jobCompleted(ZonedDateTime.now())
                                        .exception(JobErrorDetails.builder()
                                                                  .exception("SomeError")
-                                                                 .exceptionDate(Instant.now())
+                                                                 .exceptionDate(ZonedDateTime.now())
                                                                  .build())
                                        .build())
                                .jobParameter(jobParameter())

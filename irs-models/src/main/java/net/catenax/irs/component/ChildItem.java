@@ -9,7 +9,7 @@
 //
 package net.catenax.irs.component;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -35,11 +35,11 @@ public class ChildItem {
             implementation = BomLifecycle.class)
     private BomLifecycle lifecycleContext;
 
-    @Schema(description = "Datetime of assembly.", implementation = LocalDateTime.class)
-    private LocalDateTime assembledOn;
+    @Schema(description = "Datetime of assembly.", implementation = ZonedDateTime.class)
+    private ZonedDateTime assembledOn;
 
-    @Schema(description = "Last datetime item was modified.", implementation = LocalDateTime.class)
-    private LocalDateTime lastModifiedOn;
+    @Schema(description = "Last datetime item was modified.", implementation = ZonedDateTime.class)
+    private ZonedDateTime lastModifiedOn;
 
     @Schema(description = "CatenaX child Id.", implementation = GlobalAssetIdentification.class)
     @JsonUnwrapped

@@ -13,7 +13,7 @@ import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
 import static net.catenax.irs.dtos.ValidationConstants.JOB_ID_FIELD_MAX_LENGTH;
 
 import java.net.URL;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
@@ -70,26 +70,26 @@ public class Job {
     /**
      * Timestamp when the job was created
      */
-    @Schema(implementation = Instant.class)
-    private Instant createdOn;
+    @Schema(implementation = ZonedDateTime.class)
+    private ZonedDateTime createdOn;
 
     /**
      * Timestamp when the job was started
      */
-    @Schema(implementation = Instant.class)
-    private Instant startedOn;
+    @Schema(implementation = ZonedDateTime.class)
+    private ZonedDateTime startedOn;
 
     /**
      * Last time job was modified
      */
-    @Schema(implementation = Instant.class)
-    private Instant lastModifiedOn;
+    @Schema(implementation = ZonedDateTime.class)
+    private ZonedDateTime lastModifiedOn;
 
     /**
      * Mark the time the was completed
      */
-    @Schema(implementation = Instant.class)
-    private Instant jobCompleted;
+    @Schema(implementation = ZonedDateTime.class)
+    private ZonedDateTime jobCompleted;
 
     /**
      * Url of request that resulted to this job
