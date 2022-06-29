@@ -221,7 +221,7 @@ public class OpenApiExamples {
 
     private Quantity createQuantity() {
         return Quantity.builder()
-                       .quantityNumber(1)
+                       .quantityNumber(1d)
                        .measurementUnit(MeasurementUnit.builder()
                                                        .datatypeURI(
                                                                "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece")
