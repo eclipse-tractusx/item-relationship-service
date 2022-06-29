@@ -1,6 +1,8 @@
 @startuml
 skinparam monochrome true
 skinparam shadowing false
+skinparam nodesep 10
+skinparam ranksep 100
 
 
 component [**TransferProcessManagement**] <<Component>> as TransferProcessManagement {
@@ -19,6 +21,11 @@ node "Digital Twin Registry" {
     [**AAS Registry**] <<Component>> as AASR
 }
 
+node "SubmodelServer" {
+    [**SubmodelServer**] <<Component>> as SMS
+}
+
+
 DTRFacade --0)- TransferProcessManager
 SubmodelFacade --0)- TransferProcessManager
 ExecutorService <...> TransferProcessManager
@@ -31,8 +38,12 @@ interface "Wrapper API" as WrAPI
 WrAPI -- AASWrapper
 SubmodelClient ----( WrAPI
 
+interface "SubmodelAPI" as SMSAPI
+SMSAPI -- SMS
+AASWrapper --( SMSAPI
+
 database BlobStore
 TransferProcessManager -left-( BlobStoreInterface
 'BlobStoreInterface - TransferProcessManager
-BlobStoreInterface <..> BlobStore
+BlobStoreInterface <...> BlobStore
 @enduml
