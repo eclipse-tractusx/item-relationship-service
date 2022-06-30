@@ -1,17 +1,16 @@
 package net.catenax.irs.connector.job;
 
+import static net.catenax.irs.util.TestMother.jobParameter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
-import static net.catenax.irs.util.TestMother.jobParameter;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import net.datafaker.Faker;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
@@ -20,6 +19,7 @@ import net.catenax.irs.persistence.MinioBlobPersistence;
 import net.catenax.irs.testing.containers.MinioContainer;
 import net.catenax.irs.util.JsonUtil;
 import net.catenax.irs.util.TestMother;
+import net.datafaker.Faker;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -97,6 +97,7 @@ class PersistentJobStoreTest {
         assertThat(sut.find(job.getJobIdString())).isPresent()
                                                   .get()
                                                   .usingRecursiveComparison()
+                                                  .ignoringFields("job.lastModifiedOn")
                                                   .isEqualTo(originalJob.toBuilder().transitionInitial().build());
         assertThat(sut.find(otherJobId)).isEmpty();
     }

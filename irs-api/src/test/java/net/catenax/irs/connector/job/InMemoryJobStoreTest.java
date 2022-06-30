@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import net.datafaker.Faker;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.util.TestMother;
+import net.datafaker.Faker;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
@@ -62,11 +62,12 @@ class InMemoryJobStoreTest {
 
     @Test
     void create_and_find() {
-
+        //
         sut.create(job);
         assertThat(sut.find(job.getJobIdString())).isPresent()
                                                   .get()
                                                   .usingRecursiveComparison()
+                                                  .ignoringFields("job.lastModifiedOn")
                                                   .isEqualTo(originalJob.toBuilder().transitionInitial().build());
         assertThat(sut.find(otherJobId)).isEmpty();
     }
