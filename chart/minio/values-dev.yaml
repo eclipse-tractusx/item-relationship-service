@@ -35,4 +35,7 @@ persistence:
   storageClass: ""
   VolumeName: "export"
   accessMode: ReadWriteOnce
-  size: 4Gi
+  size: 5Gi
+
+minio:
+  url: http://app-irs-dev01-minio:9000  
