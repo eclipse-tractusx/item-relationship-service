@@ -14,9 +14,11 @@ import static net.catenax.irs.configuration.RestTemplateConfig.BASIC_AUTH_REST_T
 import java.net.URI;
 
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -56,20 +58,24 @@ class SubmodelClientLocalStub implements SubmodelClient {
  */
 @Slf4j
 @Service
-@Profile({"!local && !test"})
+@Profile({ "!local && !test" })
 class SubmodelClientImpl implements SubmodelClient {
 
     private final RestTemplate restTemplate;
     private final AASWrapperUriAddressRewritePolicy aasWrapperUriAddressRewritePolicy;
+    private final JsonUtil jsonUtil = new JsonUtil();
 
-    /* package */ SubmodelClientImpl(@Qualifier(BASIC_AUTH_REST_TEMPLATE) final RestTemplate restTemplate, @Value("${aasWrapper.host}") final String aasWrapperHost) {
+    /* package */ SubmodelClientImpl(@Qualifier(BASIC_AUTH_REST_TEMPLATE) final RestTemplate restTemplate,
+            @Value("${aasWrapper.host}") final String aasWrapperHost) {
         this.restTemplate = restTemplate;
         this.aasWrapperUriAddressRewritePolicy = new AASWrapperUriAddressRewritePolicy(aasWrapperHost);
     }
 
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
-        return restTemplate.getForObject(buildUri(submodelEndpointAddress), submodelClass);
+        final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
+                String.class);
+        return jsonUtil.fromString(entity.getBody(), submodelClass);
     }
 
     private URI buildUri(final String submodelEndpointAddress) {

@@ -10,13 +10,12 @@
  */
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import static net.catenax.irs.util.TestMother.jobParameter;
+import static net.catenax.irs.util.TestMother.jobParameterFilter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
-import static net.catenax.irs.util.TestMother.jobParameter;
-import static net.catenax.irs.util.TestMother.jobParameterFilter;
 
 import java.net.URI;
 import java.util.HashSet;
@@ -26,6 +25,7 @@ import java.util.stream.Collectors;
 
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
+import net.catenax.irs.util.JsonUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +39,7 @@ import org.springframework.web.client.RestTemplate;
 @ExtendWith(MockitoExtension.class)
 class SubmodelFacadeTest {
 
+    private final JsonUtil jsonUtil = new JsonUtil();
     @Mock
     RestTemplate restTemplate;
 
@@ -53,10 +54,12 @@ class SubmodelFacadeTest {
     @Test
     void shouldThrowExceptionWhenSubmodelNotFound() {
         final String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
-        final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(), "http://aaswrapper:9191/api/service");
+        final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(),
+                "http://aaswrapper:9191/api/service");
         final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
-        assertThatExceptionOfType(RestClientException.class).isThrownBy(() -> submodelFacade.getSubmodel(url, jobParameter()));
+        assertThatExceptionOfType(RestClientException.class).isThrownBy(
+                () -> submodelFacade.getSubmodel(url, jobParameter()));
     }
 
     @Test
@@ -81,7 +84,8 @@ class SubmodelFacadeTest {
     void shouldReturnFilteredAssemblyPartRelationshipWithoutChildrenWhenRequestingWithCatenaXId() {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
-        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getSubmodel(catenaXId, jobParameterFilter());
+        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getSubmodel(catenaXId,
+                jobParameterFilter());
 
         assertThat(submodelResponse.getCatenaXId()).isEqualTo(catenaXId);
         assertThat(submodelResponse.getChildParts()).isEmpty();
@@ -90,7 +94,8 @@ class SubmodelFacadeTest {
     @Test
     void shouldReturnAssemblyPartRelationshipDTOWhenRequestingOnRealClient() {
         final String endpointUrl = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
-        final SubmodelClientImpl submodelClient = new SubmodelClientImpl(restTemplate, "http://aaswrapper:9191/api/service");
+        final SubmodelClientImpl submodelClient = new SubmodelClientImpl(restTemplate,
+                "http://aaswrapper:9191/api/service");
         SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
         final AssemblyPartRelationship assemblyPartRelationship = new AssemblyPartRelationship();
@@ -98,7 +103,9 @@ class SubmodelFacadeTest {
         assemblyPartRelationship.setCatenaXId(catenaXId);
         assemblyPartRelationship.setChildParts(new HashSet<>());
 
-        doReturn(assemblyPartRelationship).when(restTemplate).getForObject(any(URI.class), any());
+        final String jsonObject = jsonUtil.asString(assemblyPartRelationship);
+        final ResponseEntity<String> responseEntity = new ResponseEntity<>(jsonObject, HttpStatus.OK);
+        doReturn(responseEntity).when(restTemplate).getForEntity(any(URI.class), any());
 
         final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(endpointUrl, jobParameter());
 
