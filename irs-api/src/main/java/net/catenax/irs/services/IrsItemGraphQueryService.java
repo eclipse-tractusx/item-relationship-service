@@ -24,11 +24,13 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.ItemContainer;
 import net.catenax.irs.aaswrapper.job.ItemDataRequest;
+import net.catenax.irs.component.AsyncFetchedItems;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.Relationship;
+import net.catenax.irs.component.Summary;
 import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import net.catenax.irs.component.enums.AspectType;
@@ -118,7 +120,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                                               .jobId(job.getJob().getJobId())
                                               .status(job.getJob().getJobState())
                                               .build())
-
                    .collect(Collectors.toList());
     }
 
@@ -167,7 +168,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                     multiJob.getJob().getJobState(), relationships.size(), tombstones.size());
 
             return Jobs.builder()
-                       .job(multiJob.getJob())
+                       .job(multiJob.getJob().toBuilder().summary(
+                               buildSummary(multiJob.getCompletedTransfers().size(), multiJob.getTransferProcessIds().size(), tombstones.size())).build())
                        .relationships(relationships)
                        .tombstones(tombstones)
                        .shells(shells)
@@ -175,6 +177,10 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         } else {
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
+    }
+
+    private Summary buildSummary(final int completedTransfersSize, final int runningSize, final int tombstonesSize) {
+        return Summary.builder().asyncFetchedItems(AsyncFetchedItems.builder().completed(completedTransfersSize).running(runningSize).failed(tombstonesSize).build()).build();
     }
 
     private ItemContainer retrievePartialResults(final MultiTransferJob multiJob) {

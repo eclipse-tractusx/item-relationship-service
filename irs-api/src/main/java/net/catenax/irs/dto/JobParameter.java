@@ -12,17 +12,18 @@ package net.catenax.irs.dto;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * JobParameter model used for job creation
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(toBuilder = true)
-@JsonDeserialize(builder = JobParameter.JobParameterBuilder.class)
 public class JobParameter {
 
     /**
@@ -44,12 +45,5 @@ public class JobParameter {
      * Given lifecycleContext from the consumer
      */
     private String bomLifecycle;
-
-    /**
-     * Builder class
-     */
-    @JsonPOJOBuilder(withPrefix = "")
-    public static class JobParameterBuilder {
-    }
 
 }

@@ -21,8 +21,12 @@ import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
+import net.catenax.irs.component.enums.AspectType;
+import net.catenax.irs.component.enums.BomLifecycle;
+import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.dto.JobParameter;
+import net.catenax.irs.services.SecurityHelperService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -58,6 +62,11 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     private final RecursiveJobHandler<T, P> handler;
 
     /**
+     * Helper for retrieving data from JWT token
+     */
+    private final SecurityHelperService securityHelperService;
+
+    /**
      * Create a new instance of {@link JobOrchestrator}.
      *
      * @param processManager the process manager
@@ -70,6 +79,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         this.processManager = processManager;
         this.jobStore = jobStore;
         this.handler = handler;
+        this.securityHelperService = new SecurityHelperService();
     }
 
     /**
@@ -79,7 +89,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      * @return response.
      */
     public JobInitiateResponse startJob(final JobParameter jobData) {
-        final Job job = createJob(jobData.getRootItemId());
+        final Job job = createJob(jobData.getRootItemId(), jobData);
         final var multiJob = MultiTransferJob.builder().job(job).jobParameter(jobData).build();
         jobStore.create(multiJob);
 
@@ -193,9 +203,8 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     private void markJobInError(final MultiTransferJob job, final Throwable exception, final String message) {
-
         log.error(message, exception);
-        jobStore.markJobInError(job.getJobIdString(), message);
+        jobStore.markJobInError(job.getJobIdString(), message, exception.getClass().getName());
     }
 
     private long startTransfers(final MultiTransferJob job, final Stream<T> dataRequests) /* throws JobErrorDetails */ {
@@ -217,8 +226,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         return response;
     }
 
-    private Job createJob(final String globalAssetId) {
-
+    private Job createJob(final String globalAssetId, final JobParameter jobData) {
         if (StringUtils.isEmpty(globalAssetId)) {
             throw new JobException("GlobalAsset Identifier cannot be null or empty string");
         }
@@ -229,7 +237,24 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                   .createdOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .jobState(JobState.UNSAVED)
+                  .owner(securityHelperService.getClientIdClaim())
+                  .jobParameter(buildJobParameter(jobData))
                   .build();
+    }
+
+    @SuppressWarnings("PMD.NullAssignment")
+    private net.catenax.irs.component.JobParameter buildJobParameter(final JobParameter jobData) {
+        return net.catenax.irs.component.JobParameter.builder()
+                                                     .depth(jobData.getTreeDepth())
+                                                     .direction(Direction.DOWNWARD)
+                                                     .aspects(jobData.getAspectTypes()
+                                                                     .stream()
+                                                                     .map(AspectType::fromValue)
+                                                                     .collect(Collectors.toList()))
+                                                     .bomLifecycle(StringUtils.isNotBlank(jobData.getBomLifecycle())
+                                                             ? BomLifecycle.fromLifecycleContextCharacteristic(
+                                                             jobData.getBomLifecycle()) : null)
+                                                     .build();
     }
 
     private ResponseStatus convertMessage(final String message) {
