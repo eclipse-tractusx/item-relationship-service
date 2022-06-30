@@ -114,8 +114,14 @@ public class MultiTransferJob {
          * Transition the job to the {@link JobState#COMPLETED} state.
          */
         /* package */ MultiTransferJobBuilder transitionComplete() {
-            return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL).job(
-                    job.toBuilder().jobCompleted(ZonedDateTime.now(ZoneOffset.UTC)).build());
+            return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL).job(job.toBuilder()
+                                                                                                        .jobCompleted(
+                                                                                                                ZonedDateTime.now(
+                                                                                                                        ZoneOffset.UTC))
+                                                                                                        .lastModifiedOn(
+                                                                                                                ZonedDateTime.now(
+                                                                                                                        ZoneOffset.UTC))
+                                                                                                        .build());
         }
 
         /**
@@ -125,6 +131,7 @@ public class MultiTransferJob {
             this.job = this.job.toBuilder()
                                .jobState(JobState.ERROR)
                                .jobCompleted(ZonedDateTime.now(ZoneOffset.UTC))
+                               .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
                                .exception(JobErrorDetails.builder()
                                                          .errorDetail(errorDetail)
                                                          .exceptionDate(ZonedDateTime.now(ZoneOffset.UTC))
@@ -146,7 +153,7 @@ public class MultiTransferJob {
                         format("Cannot transition from state %s to %s", job.getJobState(), end));
             }
             log.info("Transitioning job {} from {} to {}", job.getJobId().toString(), job.getJobState(), end);
-            job = job.toBuilder().jobState(end).build();
+            job = job.toBuilder().jobState(end).lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC)).build();
             return this;
         }
     }

@@ -1,5 +1,6 @@
 package net.catenax.irs.connector.job;
 
+import static net.catenax.irs.util.TestMother.jobParameter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,8 +12,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static net.catenax.irs.util.TestMother.jobParameter;
 
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -79,6 +80,9 @@ class JobOrchestratorTest {
         // Act
         var newJob = startJob();
 
+        ZonedDateTime lastModifiedOn = newJob.getJob().getLastModifiedOn();
+        assertThat(lastModifiedOn).isNotNull();
+
         // Assert
         verify(handler).initiate(jobCaptor.capture());
         MultiTransferJob job1 = jobCaptor.getValue();
@@ -91,7 +95,8 @@ class JobOrchestratorTest {
         when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.of(dataRequest, dataRequest2));
 
         when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(okResponse);
-        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()))).thenReturn(okResponse2);
+        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()))).thenReturn(
+                okResponse2);
 
         // Act
         startJob();
@@ -180,7 +185,8 @@ class JobOrchestratorTest {
     void transferProcessCompleted_WhenCalledBackForCompletedTransfer_RunsNextTransfers() {
         // Arrange
         when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(okResponse);
-        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()))).thenReturn(okResponse2);
+        when(processManager.initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()))).thenReturn(
+                okResponse2);
         // Act
         callCompleteAndReturnNextTransfers(Stream.of(dataRequest, dataRequest2));
 
