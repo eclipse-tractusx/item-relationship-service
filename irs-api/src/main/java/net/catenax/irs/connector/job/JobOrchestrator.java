@@ -242,6 +242,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                   .build();
     }
 
+    @SuppressWarnings("PMD.NullAssignment")
     private net.catenax.irs.component.JobParameter buildJobParameter(final JobParameter jobData) {
         return net.catenax.irs.component.JobParameter.builder()
                                                      .depth(jobData.getTreeDepth())
