@@ -230,7 +230,6 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                   .globalAssetId(GlobalAssetIdentification.builder().globalAssetId(globalAssetId).build())
                   .createdOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
-                  .startedOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .jobState(JobState.UNSAVED)
                   .owner(SecurityHelperService.getClientIdClaim())
                   .jobParameter(buildJobParameter(jobData))

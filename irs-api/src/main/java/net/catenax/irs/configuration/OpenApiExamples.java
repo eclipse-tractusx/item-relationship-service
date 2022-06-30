@@ -279,7 +279,6 @@ public class OpenApiExamples {
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
                                      .jobCompleted(EXAMPLE_ZONED_DATETIME)
                                      .jobParameter(createJobParameter())
-                                     .jobParameter(createJobParameter())
                                      .exception(createJobException())
                                      .summary(createSummary())
                                      .build())

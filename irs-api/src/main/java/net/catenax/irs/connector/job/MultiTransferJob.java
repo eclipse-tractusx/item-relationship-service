@@ -93,7 +93,8 @@ public class MultiTransferJob {
          * Transition the job to the {@link JobState#INITIAL} state.
          */
         /* package */ MultiTransferJobBuilder transitionInitial() {
-            return transition(JobState.INITIAL, JobState.UNSAVED);
+            return transition(JobState.INITIAL, JobState.UNSAVED).job(
+                    job.toBuilder().startedOn(ZonedDateTime.now(ZoneOffset.UTC)).build());
         }
 
         /**
