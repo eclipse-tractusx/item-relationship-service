@@ -28,4 +28,11 @@
         <gav regex="true">org\.springframework\.security:spring-security-crypto.*</gav>
         <vulnerabilityName>CVE-2020-5408</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Not relevant for IRS, only regards example application which we don't provide.
+        ]]></notes>
+        <gav regex="true">org\.apache\.tomcat\.embed:tomcat-embed-core.*</gav>
+        <vulnerabilityName>CVE-2022-34305</vulnerabilityName>
+    </suppress>
 </suppressions>
