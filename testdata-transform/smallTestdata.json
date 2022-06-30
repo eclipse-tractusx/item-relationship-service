@@ -1923,11 +1923,11 @@
                     ],
                     "idShort": "material-for-recycling",
                     "identification": "urn:uuid:f75dda8d-feaa-45e1-b5f1-31d5ba129cf2",
-                    "semanticId": {
-                      "value": [
-                        "urn:bamm:com.catenax.material_for_recycling:1.0.0"
-                      ]
-                    },
+                      "semanticId": [
+                          {
+                              "value": "urn:bamm:com.catenax.material_for_recycling:1.0.0"
+                          }
+                      ],
                     "endpoints": [
                       {
                         "interface": "https://BPNL00000003AYRE.connector",
@@ -1939,12 +1939,12 @@
                       }
                     ]
                   },
-                  {
-                    "semanticId": {
-                      "value": [
-                        "urn:bamm:com.catenax.assembly_part_relationship:1.0.0"
-                      ]
-                    },
+                    {
+                        "semanticId": [
+                            {
+                                "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0"
+                            }
+                        ],
                     "endpoints": [
                       {
                         "interface": "https://BPNL00000003AYRE.connector",
