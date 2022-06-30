@@ -10,7 +10,7 @@
 package net.catenax.irs.component;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -41,7 +41,7 @@ public class JobErrorDetails implements Serializable {
             maxLength = ERROR_DETAIL_MAX_LENGTH)
     private String errorDetail;
 
-    @Schema(description = "Datetime error occurs.", implementation = Instant.class)
-    private Instant exceptionDate;
+    @Schema(description = "Datetime error occurs.", implementation = ZonedDateTime.class)
+    private ZonedDateTime exceptionDate;
 
 }

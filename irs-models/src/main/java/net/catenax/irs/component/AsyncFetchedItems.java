@@ -9,11 +9,10 @@
 //
 package net.catenax.irs.component;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * Describe the state of the fetched items
@@ -21,26 +20,16 @@ import lombok.Value;
 @Schema(description = "Statistics of job execution.")
 @Value
 @Builder(toBuilder = true)
-@JsonDeserialize(builder = AsyncFetchedItems.AsyncFetchedItemsBuilder.class)
+@Jacksonized
 public class AsyncFetchedItems {
-
-    @Schema(description = "Number of item transfers remaining.", implementation = Integer.class)
-    private Integer queue;
 
     @Schema(description = "Number of running item transfers.", implementation = Integer.class)
     private Integer running;
 
     @Schema(description = "Number of completed item transfers.", implementation = Integer.class)
-    private Integer complete;
+    private Integer completed;
 
     @Schema(description = "Number of failed item transfers.", implementation = Integer.class)
     private Integer failed;
 
-    /**
-     * User to build async fetched items
-     */
-    @Schema(description = "User to build async fetched items")
-    @JsonPOJOBuilder(withPrefix = "")
-    public static class AsyncFetchedItemsBuilder {
-    }
 }

@@ -10,7 +10,7 @@
 //
 package net.catenax.irs.dto;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import lombok.Builder;
 import lombok.Data;
@@ -30,11 +30,11 @@ import net.catenax.irs.component.enums.BomLifecycle;
 @Jacksonized
 public class ChildDataDTO {
 
-    private LocalDateTime assembledOn;
+    private ZonedDateTime assembledOn;
 
     private QuantityDTO quantity;
 
-    private LocalDateTime lastModifiedOn;
+    private ZonedDateTime lastModifiedOn;
 
     private String lifecycleContext;
 
@@ -52,7 +52,7 @@ public class ChildDataDTO {
 
         if (this.getQuantity() != null) {
             childItem.quantity(Quantity.builder()
-                                       .quantityNumber(getQuantity().getQuantityNumber().intValue())
+                                       .quantityNumber(getQuantity().getQuantityNumber())
                                        .measurementUnit(MeasurementUnit.builder()
                                                                        .datatypeURI(getQuantity().getMeasurementUnit()
                                                                                                  .getDatatypeURI())

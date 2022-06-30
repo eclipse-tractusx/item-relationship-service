@@ -21,7 +21,7 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 public class Quantity {
 
-    private Integer quantityNumber;
+    private Double quantityNumber;
 
     private MeasurementUnit measurementUnit;
 }

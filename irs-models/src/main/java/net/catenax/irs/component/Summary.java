@@ -9,8 +9,6 @@
 //
 package net.catenax.irs.component;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
@@ -20,7 +18,6 @@ import lombok.Value;
  */
 @Value
 @Builder(toBuilder = true)
-@JsonDeserialize(builder = Summary.SummaryBuilder.class)
 public class Summary {
 
     /**
@@ -29,11 +26,5 @@ public class Summary {
     @Schema(description = "Summary of the fetched jobs", implementation = AsyncFetchedItems.class)
     private AsyncFetchedItems asyncFetchedItems;
 
-    /**
-     * Builder class
-     */
-    @JsonPOJOBuilder(withPrefix = "")
-    public static class SummaryBuilder {
-    }
 
 }

@@ -9,11 +9,7 @@
 //
 package net.catenax.irs.configuration;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,11 +21,12 @@ import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.JobParameter;
+import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.MeasurementUnit;
 import net.catenax.irs.component.ProcessingError;
 import net.catenax.irs.component.Quantity;
-import net.catenax.irs.component.QueryParameter;
 import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.Summary;
 import net.catenax.irs.component.Tombstone;
@@ -44,7 +41,6 @@ import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
 
@@ -55,8 +51,7 @@ import org.springframework.http.HttpStatus;
                     "PMD.TooManyMethods"
 })
 public class OpenApiExamples {
-    private static final Instant EXAMPLE_INSTANT = Instant.parse("2022-02-03T14:48:54.709Z");
-    private static final LocalDateTime EXAMPLE_LOCAL_DATE_TIME = LocalDateTime.ofInstant(EXAMPLE_INSTANT, ZoneOffset.UTC);
+    private static final ZonedDateTime EXAMPLE_ZONED_DATETIME = ZonedDateTime.parse("2022-02-03T14:48:54.709Z");
     private static final String JOB_ID = "e5347c88-a921-11ec-b909-0242ac120002";
     private static final String GLOBAL_ASSET_ID = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0";
     private static final String JOB_HANDLE_ID_1 = "6c311d29-5753-46d4-b32c-19b918ea93b0";
@@ -94,12 +89,11 @@ public class OpenApiExamples {
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .jobState(JobState.ERROR)
                                      .owner("")
-                                     .createdOn(EXAMPLE_INSTANT)
-                                     .startedOn(EXAMPLE_INSTANT)
-                                     .lastModifiedOn(EXAMPLE_INSTANT)
-                                     .requestUrl(getExampleRequestURL())
+                                     .createdOn(EXAMPLE_ZONED_DATETIME)
+                                     .startedOn(EXAMPLE_ZONED_DATETIME)
+                                     .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
                                      .summary(createSummary())
-                                     .queryParameter(createQueryParameter())
+                                     .jobParameter(createJobParameter())
                                      .exception(createJobException())
                                      .build())
                              .build());
@@ -112,35 +106,35 @@ public class OpenApiExamples {
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .jobState(JobState.RUNNING)
                                      .owner("")
-                                     .createdOn(EXAMPLE_INSTANT)
-                                     .startedOn(EXAMPLE_INSTANT)
-                                     .lastModifiedOn(EXAMPLE_INSTANT)
-                                     .jobCompleted(EXAMPLE_INSTANT)
-                                     .requestUrl(getExampleRequestURL())
+                                     .createdOn(EXAMPLE_ZONED_DATETIME)
+                                     .startedOn(EXAMPLE_ZONED_DATETIME)
+                                     .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
+                                     .jobCompleted(EXAMPLE_ZONED_DATETIME)
                                      .summary(createSummary())
-                                     .queryParameter(createQueryParameter())
+                                     .jobParameter(createJobParameter())
                                      .exception(createJobException())
                                      .build())
                              .build());
     }
 
-    private QueryParameter createQueryParameter() {
-        return QueryParameter.builder()
-                             .bomLifecycle(BomLifecycle.AS_BUILT)
-                             .depth(DEFAULT_DEPTH)
-                             .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION, AspectType.CONTACT_INFORMATION))
-                             .direction(Direction.DOWNWARD)
-                             .build();
+    private JobParameter createJobParameter() {
+        return JobParameter.builder()
+                           .bomLifecycle(BomLifecycle.AS_BUILT)
+                           .depth(DEFAULT_DEPTH)
+                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION, AspectType.CONTACT_INFORMATION))
+                           .direction(Direction.DOWNWARD)
+                           .build();
     }
 
     private Summary createSummary() {
         return Summary.builder()
-                      .asyncFetchedItems(AsyncFetchedItems.builder().complete(0).failed(0).running(0).queue(0).build())
+                      .asyncFetchedItems(AsyncFetchedItems.builder().completed(0).failed(0).running(0).build())
                       .build();
     }
 
     private JobErrorDetails createJobException() {
-        return new JobErrorDetails("IrsTimeoutException", "Timeout while requesting Digital Registry", EXAMPLE_INSTANT);
+        return new JobErrorDetails("IrsTimeoutException", "Timeout while requesting Digital Registry",
+                EXAMPLE_ZONED_DATETIME);
     }
 
     private Example createJobResultWithoutTree() {
@@ -154,14 +148,13 @@ public class OpenApiExamples {
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .jobState(JobState.COMPLETED)
                                      .owner("")
-                                     .createdOn(EXAMPLE_INSTANT)
-                                     .startedOn(EXAMPLE_INSTANT)
-                                     .lastModifiedOn(EXAMPLE_INSTANT)
-                                     .jobCompleted(EXAMPLE_INSTANT)
-                                     .requestUrl(getExampleRequestURL())
+                                     .createdOn(EXAMPLE_ZONED_DATETIME)
+                                     .startedOn(EXAMPLE_ZONED_DATETIME)
+                                     .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
+                                     .jobCompleted(EXAMPLE_ZONED_DATETIME)
                                      .owner("")
                                      .summary(createSummary())
-                                     .queryParameter(createQueryParameter())
+                                     .jobParameter(createJobParameter())
                                      .exception(createJobException())
                                      .build())
                              .relationships(List.of(createRelationship()))
@@ -176,7 +169,7 @@ public class OpenApiExamples {
                         .endpointURL("https://catena-x.net/vehicle/partdetails/")
                         .processingError(ProcessingError.builder()
                                                         .withErrorDetail("Details to reason of Failure")
-                                                        .withLastAttempt(EXAMPLE_INSTANT)
+                                                        .withLastAttempt(EXAMPLE_ZONED_DATETIME)
                                                         .withRetryCounter(0)
                                                         .build())
                         .build();
@@ -209,8 +202,8 @@ public class OpenApiExamples {
                            .childItem(ChildItem.builder()
                                                .quantity(createQuantity())
                                                .childCatenaXId(createGAID("a45a2246-f6e1-42da-b47d-5c3b58ed62e9"))
-                                               .lastModifiedOn(EXAMPLE_LOCAL_DATE_TIME)
-                                               .assembledOn(EXAMPLE_LOCAL_DATE_TIME)
+                                               .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
+                                               .assembledOn(EXAMPLE_ZONED_DATETIME)
                                                .lifecycleContext(BomLifecycle.AS_BUILT)
                                                .build())
                            .build();
@@ -223,7 +216,7 @@ public class OpenApiExamples {
 
     private Quantity createQuantity() {
         return Quantity.builder()
-                       .quantityNumber(1)
+                       .quantityNumber(1d)
                        .measurementUnit(MeasurementUnit.builder()
                                                        .datatypeURI(
                                                                "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece")
@@ -281,28 +274,15 @@ public class OpenApiExamples {
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .jobState(JobState.CANCELED)
                                      .owner("")
-                                     .createdOn(EXAMPLE_INSTANT)
-                                     .startedOn(EXAMPLE_INSTANT)
-                                     .lastModifiedOn(EXAMPLE_INSTANT)
-                                     .jobCompleted(EXAMPLE_INSTANT)
-                                     .requestUrl(getExampleRequestURL())
-                                     .queryParameter(createQueryParameter())
+                                     .createdOn(EXAMPLE_ZONED_DATETIME)
+                                     .startedOn(EXAMPLE_ZONED_DATETIME)
+                                     .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
+                                     .jobCompleted(EXAMPLE_ZONED_DATETIME)
+                                     .jobParameter(createJobParameter())
                                      .exception(createJobException())
                                      .summary(createSummary())
                                      .build())
                              .build());
-    }
-
-    private URL getExampleRequestURL() {
-        return toUrl("https://api.server.test/api/../");
-    }
-
-    private URL toUrl(final String urlString) {
-        try {
-            return new URL(urlString);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Cannot create URL " + urlString, e);
-        }
     }
 
     private Example toExample(final Object value) {

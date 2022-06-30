@@ -9,7 +9,8 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
-import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -48,8 +49,8 @@ class SubmodelTestdataCreator {
             final ChildData child = new ChildData();
             child.setChildCatenaXId(childId);
             child.setLifecycleContext(LifecycleContextCharacteristic.ASBUILT);
-            child.setAssembledOn(LocalDateTime.now());
-            child.setLastModifiedOn(LocalDateTime.now());
+            child.setAssembledOn(ZonedDateTime.now(ZoneOffset.UTC));
+            child.setLastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC));
             final Quantity quantity = new Quantity();
             quantity.setQuantityNumber(1d);
             final Quantity.MeasurementUnit measurementUnit = new Quantity.MeasurementUnit();

@@ -9,7 +9,7 @@
 //
 package net.catenax.irs.connector.job;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -38,7 +38,7 @@ public interface JobStore {
      * @param dateTime requested date
      * @return found jobs
      */
-    List<MultiTransferJob> findByStateAndCompletionDateOlderThan(JobState jobState, Instant dateTime);
+    List<MultiTransferJob> findByStateAndCompletionDateOlderThan(JobState jobState, ZonedDateTime dateTime);
 
     /**
      * Retrieve jobs with requested states
@@ -95,9 +95,10 @@ public interface JobStore {
      *
      * @param jobId       the job identifier.
      * @param errorDetail an optional error message.
+     * @param exceptionClassName name of the exception class
      * @see JobState#ERROR
      */
-    void markJobInError(String jobId, @Nullable String errorDetail);
+    void markJobInError(String jobId, @Nullable String errorDetail, String exceptionClassName);
 
     /**
      * Delete a job by its identifier.
