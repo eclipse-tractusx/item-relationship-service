@@ -30,6 +30,7 @@ import net.catenax.irs.connector.job.TransferProcessManager;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.JobParameter;
+import net.catenax.irs.exceptions.JsonParseException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
@@ -98,6 +99,9 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
                     } catch (RestClientException | IllegalArgumentException e) {
                         log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                                 address);
+                        itemContainerBuilder.tombstone(createTombstone(itemId, address, e));
+                    } catch (JsonParseException e) {
+                        log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
                         itemContainerBuilder.tombstone(createTombstone(itemId, address, e));
                     }
                 });

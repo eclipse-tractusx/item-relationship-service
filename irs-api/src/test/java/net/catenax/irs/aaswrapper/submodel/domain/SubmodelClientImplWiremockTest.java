@@ -19,10 +19,9 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import net.catenax.irs.exceptions.JsonParseException;
+import net.catenax.irs.util.JsonUtil;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,13 +34,15 @@ class SubmodelClientImplWiremockTest {
 
     private WireMockServer wireMockServer;
     private SubmodelClient submodelClient;
+    private final JsonUtil jsonUtil = new JsonUtil();
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @BeforeEach
     void configureSystemUnderTest() {
         this.wireMockServer = new WireMockServer(options().dynamicPort());
         this.wireMockServer.start();
         configureFor(this.wireMockServer.port());
-        this.submodelClient = new SubmodelClientImpl(new RestTemplate(), buildApiMethodUrl() + "/api/service");
+        this.submodelClient = new SubmodelClientImpl(restTemplate, buildApiMethodUrl() + "/api/service", jsonUtil);
     }
 
     @AfterEach

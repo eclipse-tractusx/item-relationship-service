@@ -42,13 +42,23 @@ interface SubmodelClient {
 @Profile({"local", "test"})
 class SubmodelClientLocalStub implements SubmodelClient {
 
+    private final JsonUtil jsonUtil = new JsonUtil();
+
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
         if ("urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(submodelEndpointAddress)) {
             throw new RestClientException("Dummy Exception");
         }
         final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
-        return (T) submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(submodelEndpointAddress);
+
+        if ("urn:uuid:ea724f73-cb93-4b7b-b92f-d97280ff888b".equals(submodelEndpointAddress)) {
+            final String serialPartTypization = submodelTestdataCreator.createDummySerialPartTypizationString();
+            return jsonUtil.fromString(serialPartTypization, submodelClass);
+        }
+
+        final AssemblyPartRelationship relationship = submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(
+                submodelEndpointAddress);
+        return jsonUtil.fromString(jsonUtil.asString(relationship), submodelClass);
     }
 
 }
@@ -63,12 +73,13 @@ class SubmodelClientImpl implements SubmodelClient {
 
     private final RestTemplate restTemplate;
     private final AASWrapperUriAddressRewritePolicy aasWrapperUriAddressRewritePolicy;
-    private final JsonUtil jsonUtil = new JsonUtil();
+    private final JsonUtil jsonUtil;
 
     /* package */ SubmodelClientImpl(@Qualifier(BASIC_AUTH_REST_TEMPLATE) final RestTemplate restTemplate,
-            @Value("${aasWrapper.host}") final String aasWrapperHost) {
+            @Value("${aasWrapper.host}") final String aasWrapperHost, final JsonUtil jsonUtil) {
         this.restTemplate = restTemplate;
         this.aasWrapperUriAddressRewritePolicy = new AASWrapperUriAddressRewritePolicy(aasWrapperHost);
+        this.jsonUtil = jsonUtil;
     }
 
     @Override

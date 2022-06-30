@@ -35,16 +35,16 @@ class SubmodelClientImplTest {
     private final RestTemplate restTemplate = mock(RestTemplate.class);
 
     private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
-    private final SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate,
-            "http://aaswrapper:9191/api/service");
-    private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
     private final JsonUtil jsonUtil = new JsonUtil();
+    private final SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate,
+            "http://aaswrapper:9191/api/service", jsonUtil);
+    private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
     @Test
     void shouldThrowExceptionWhenSubmodelNotFound() {
         final String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(),
-                "http://aaswrapper:9191/api/service");
+                "http://aaswrapper:9191/api/service", jsonUtil);
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
                 () -> submodelClient.getSubmodel(url, AssemblyPartRelationship.class));
