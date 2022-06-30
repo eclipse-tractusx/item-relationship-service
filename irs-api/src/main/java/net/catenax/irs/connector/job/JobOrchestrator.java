@@ -244,8 +244,9 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                                                                      .stream()
                                                                      .map(AspectType::fromValue)
                                                                      .collect(Collectors.toList()))
-                                                     .bomLifecycle(BomLifecycle.fromLifecycleContextCharacteristic(
-                                                             jobData.getBomLifecycle()))
+                                                     .bomLifecycle(StringUtils.isNotBlank(jobData.getBomLifecycle())
+                                                             ? BomLifecycle.fromLifecycleContextCharacteristic(
+                                                             jobData.getBomLifecycle()) : null)
                                                      .build();
     }
 
