@@ -1,3 +1,6 @@
+nameOverride: "app-irs-dev01-minio"
+fullnameOverride: "app-irs-dev01-minio"
+
 ## Set default rootUser, rootPassword
 ## AccessKey and secretKey is generated when not set
 ## Distributed MinIO ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
