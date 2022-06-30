@@ -27,16 +27,16 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.IrsApplication;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.dto.JobStatusResult;
+import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.springdoc.api.annotations.ParameterObject;
@@ -58,7 +58,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(IrsApplication.API_PREFIX)
 @RequiredArgsConstructor
-@ExcludeFromCodeCoverageGeneratedReport
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals",
                     "PMD.ExcessiveImports"
 })
@@ -68,6 +67,7 @@ public class IrsController {
 
     @Operation(operationId = "registerJobForGlobalAssetId",
                summary = "Register an IRS job to retrieve an item graph for given {globalAssetId}.",
+               security = @SecurityRequirement(name = "OAuth2", scopes = "write"),
                tags = { "Item Relationship Service" },
                description = "Register an IRS job to retrieve an item graph for given {globalAssetId}.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Returns jobId of registered job.",
@@ -93,6 +93,7 @@ public class IrsController {
     @Operation(description = "Return job with optional item graph result for requested jobId.",
                operationId = "getJobForJobId",
                summary = "Return job with optional item graph result for requested jobId.",
+               security = @SecurityRequirement(name = "OAuth2", scopes = "read"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Return job with item graph for the requested jobId.",
@@ -128,7 +129,9 @@ public class IrsController {
     }
 
     @Operation(description = "Cancel job for requested jobId.", operationId = "cancelJobByJobId",
-               summary = "Cancel job for requested jobId.", tags = { "Item Relationship Service" })
+               summary = "Cancel job for requested jobId.",
+               security = @SecurityRequirement(name = "OAuth2", scopes = "write"),
+               tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with requested jobId canceled."),
                             @ApiResponse(responseCode = "404", description = "Job for requested jobId not found.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -147,7 +150,9 @@ public class IrsController {
     }
 
     @Operation(description = "Returns jobIds for requested job states.", operationId = "getJobIdsByJobStates",
-               summary = "Returns jobIds for requested job states.", tags = { "Item Relationship Service" })
+               summary = "Returns jobIds for requested job states.",
+               security = @SecurityRequirement(name = "OAuth2", scopes = "read"),
+               tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "List of job ids and status for requested job states.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(

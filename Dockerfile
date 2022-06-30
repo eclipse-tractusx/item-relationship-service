@@ -24,7 +24,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -pl :$BUILD_TARGET 
 # Copy the jar and build image
 FROM eclipse-temurin:18-jre AS irs-api
 
-ARG UID=1000
+ARG UID=10000
 ARG GID=1000
 
 WORKDIR /app
@@ -34,3 +34,6 @@ COPY --chown=${UID}:${GID} --from=maven /build/irs-api/target/irs-api-*-exec.jar
 USER ${UID}:${GID}
 
 ENTRYPOINT ["java", "-Djava.util.logging.config.file=./logging.properties", "-jar", "app.jar"]
+
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost:4004/actuator/health || exit 1

@@ -11,7 +11,8 @@ package net.catenax.irs.connector.job;
 
 import static java.lang.String.format;
 
-import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -114,7 +115,7 @@ public class MultiTransferJob {
          */
         /* package */ MultiTransferJobBuilder transitionComplete() {
             return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL).job(
-                    job.toBuilder().jobCompleted(Instant.now()).build());
+                    job.toBuilder().jobCompleted(ZonedDateTime.now(ZoneOffset.UTC)).build());
         }
 
         /**
@@ -123,10 +124,10 @@ public class MultiTransferJob {
         /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail) {
             this.job = this.job.toBuilder()
                                .jobState(JobState.ERROR)
-                               .jobCompleted(Instant.now())
+                               .jobCompleted(ZonedDateTime.now(ZoneOffset.UTC))
                                .exception(JobErrorDetails.builder()
                                                          .errorDetail(errorDetail)
-                                                         .exceptionDate(Instant.now())
+                                                         .exceptionDate(ZonedDateTime.now(ZoneOffset.UTC))
                                                          .build())
                                .build();
             return this;

@@ -1,0 +1,41 @@
+@startuml 
+skinparam monochrome true
+skinparam shadowing false
+skinparam nodesep 100
+skinparam ranksep 20
+
+[**IRS**] <<System>> as IRS
+
+[**AAS Wrapper**] <<Component>> as AASW
+
+
+
+node "Digital Twin Registry" {
+    [**AAS Registry**] <<Component>> as AASR
+}
+node "Group of Submodel Endpoints" {
+  [**Submodel-Server**] <<Component>> as SN
+}
+node "IAM" {
+    [**Keycloak**] <<Component>> as KIAM
+}
+actor Consumer
+
+interface "IRS API" as IAPI
+interface "AASWrapper API" as IAASW
+interface "Registry API" as IRAPI
+interface "Submodel API" as ISubModelAPI
+interface "OIDC" as IAMAPI
+
+Consumer -( IAPI
+IAPI - IRS
+IAASW - AASW
+IRS -( IAASW
+ISubModelAPI - SN
+AASW -( ISubModelAPI
+IRS --( IRAPI
+IRAPI -- AASR
+IRS --down( IAMAPI
+AASR --( IAMAPI
+KIAM -- IAMAPI
+@enduml

@@ -9,7 +9,7 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import lombok.Data;
 
@@ -22,7 +22,7 @@ class ChildData {
     /**
      * createdOn
      */
-    private LocalDateTime assembledOn;
+    private ZonedDateTime assembledOn;
 
     /**
      * quantity
@@ -32,7 +32,7 @@ class ChildData {
     /**
      * lastModifiedOn
      */
-    private LocalDateTime lastModifiedOn;
+    private ZonedDateTime lastModifiedOn;
 
     /**
      * lifecycleContext

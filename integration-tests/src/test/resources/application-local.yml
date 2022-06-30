@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: item-relationship-service
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            authorization-grant-type: client_credentials
+            client-id: ${KEYCLOAK_OAUTH2_CLIENT_ID}
+            client-secret: ${KEYCLOAK_OAUTH2_CLIENT_SECRET}
+  config:
+    activate:
+      on-profile: local
+
+connection:
+  base-uri: http://localhost:8080
+  access-token: https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token

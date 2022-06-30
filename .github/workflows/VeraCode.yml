@@ -18,7 +18,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Set up Maven
-        uses: stCarolas/setup-maven@v4.3
+        uses: stCarolas/setup-maven@v4.4
         with:
           maven-version: 3.8.2
 
@@ -37,7 +37,7 @@ jobs:
           path: 'irs-api/target/*exec.jar'
 
       - name: Veracode Upload And Scan
-        uses: veracode/veracode-uploadandscan-action@0.2.2
+        uses: veracode/veracode-uploadandscan-action@0.2.3
         with:
           appname: 'IRS'
           version: '${{ github.run_id }}'

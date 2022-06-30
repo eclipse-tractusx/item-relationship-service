@@ -9,7 +9,7 @@
 //
 package net.catenax.irs.component;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -24,7 +24,7 @@ import lombok.Value;
 @JsonDeserialize(builder = ProcessingError.ProcessingErrorBuilder.class)
 public class ProcessingError {
     private final String errorDetail;
-    private final Instant lastAttempt;
+    private final ZonedDateTime lastAttempt;
     private int retryCounter;
 
     /**

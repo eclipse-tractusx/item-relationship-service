@@ -9,7 +9,8 @@
 //
 package net.catenax.irs.connector.job;
 
-import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import lombok.Getter;
 import net.catenax.irs.component.JobErrorDetails;
@@ -28,7 +29,7 @@ public class JobException extends RuntimeException {
         jobErrorDetails = JobErrorDetails.builder()
                                          .exception(ResponseStatus.FATAL_ERROR.toString())
                                          .errorDetail(DEFAULT_ERROR_MESSAGE)
-                                         .exceptionDate(Instant.now())
+                                         .exceptionDate(ZonedDateTime.now(ZoneOffset.UTC))
                                          .build();
     }
 
@@ -37,7 +38,7 @@ public class JobException extends RuntimeException {
         jobErrorDetails = JobErrorDetails.builder()
                                          .exception(message)
                                          .errorDetail(DEFAULT_ERROR_MESSAGE)
-                                         .exceptionDate(Instant.now())
+                                         .exceptionDate(ZonedDateTime.now(ZoneOffset.UTC))
                                          .build();
     }
 
@@ -46,7 +47,7 @@ public class JobException extends RuntimeException {
         jobErrorDetails = JobErrorDetails.builder()
                                          .exception(cause.getMessage())
                                          .errorDetail(message)
-                                         .exceptionDate(Instant.now())
+                                         .exceptionDate(ZonedDateTime.now(ZoneOffset.UTC))
                                          .build();
     }
 }

@@ -1,0 +1,14 @@
+@startuml 
+skinparam monochrome true
+skinparam shadowing false
+
+
+actor " Consumer" as CON
+node "Dismantler DB"  as CE
+component [**IRS**] <<system>> as IRS
+node "Catena-X Network" as CX
+
+CE --> IRS
+CON --> IRS
+IRS --> CX
+@enduml

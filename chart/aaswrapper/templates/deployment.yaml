@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "aaswrapper.fullname" . }}
+  namespace: {{ .Values.namespace }}
   labels:
     {{- include "aaswrapper.labels" . | nindent 4 }}
 spec:
@@ -25,6 +26,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "aaswrapper.serviceAccountName" . }}
+      # @url: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server
+      automountServiceAccountToken: false
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -50,7 +53,9 @@ spec:
             {{- end }}
           volumeMounts:
             - name: aaswrapper-config
-              mountPath: /connector-config            
+              mountPath: /connector-config
+            - name: tmp
+              mountPath: /tmp
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -60,6 +65,8 @@ spec:
             items:
               - key: configuration.properties
                 path: configuration.properties
+        - name: tmp
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

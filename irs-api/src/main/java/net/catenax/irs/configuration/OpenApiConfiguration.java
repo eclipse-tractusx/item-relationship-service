@@ -9,13 +9,20 @@
 //
 package net.catenax.irs.configuration;
 
+import java.util.List;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.OAuthFlow;
+import io.swagger.v3.oas.models.security.OAuthFlows;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.IrsApplication;
 import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -31,6 +38,8 @@ public class OpenApiConfiguration {
      */
     private final IrsConfiguration irsConfiguration;
 
+    private final OAuth2ClientProperties oAuth2ClientProperties;
+
     /**
      * Factory for generated Open API definition.
      *
@@ -39,6 +48,7 @@ public class OpenApiConfiguration {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI().addServersItem(new Server().url(irsConfiguration.getApiUrl().toString()))
+                            .addSecurityItem(new SecurityRequirement().addList("oAuth2", List.of("read", "write")))
                             .info(new Info().title("IRS API")
                                             .version(IrsApplication.API_VERSION)
                                             .description(
@@ -54,6 +64,9 @@ public class OpenApiConfiguration {
     public OpenApiCustomiser customiser() {
         return openApi -> {
             final Components components = openApi.getComponents();
+            components.addSecuritySchemes("OAuth2", new SecurityScheme().type(SecurityScheme.Type.OAUTH2)
+                                                                        .flows(new OAuthFlows().clientCredentials(
+                                                                                new OAuthFlow().tokenUrl("https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token"))));
             new OpenApiExamples().createExamples(components);
         };
     }

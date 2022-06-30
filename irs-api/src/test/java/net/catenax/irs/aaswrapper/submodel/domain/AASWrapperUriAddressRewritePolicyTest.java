@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class AASWrapperUriAddressRewritePolicyTest {
 
-    final AASWrapperUriAddressRewritePolicy aasWrapperUriAddressRewritePolicy = new AASWrapperUriAddressRewritePolicy();
+    final AASWrapperUriAddressRewritePolicy aasWrapperUriAddressRewritePolicy = new AASWrapperUriAddressRewritePolicy("http://aaswrapper:9191/api/service");
 
     @Test
     void shouldRewriteValidZFEndpointAddressToAASWrapperUri() {

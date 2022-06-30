@@ -100,8 +100,11 @@ aasProxy:
     username: ${AAS_PROXY_SUBMODEL_USERNAME:}
     password: ${AAS_PROXY_SUBMODEL_PASSWORD:}
 
+aasWrapper:
+  host: "${AASWRAPPER_HOST:}"
+
 aspectTypes:
-    default: SerialPartTypization
+  default: SerialPartTypization
 
 digitalTwinRegistry:
-  url: https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/semantics/twin-registry
+  url: https://semantics.int.demo.catena-x.net/registry
