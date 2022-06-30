@@ -56,8 +56,6 @@ class SubmodelClientImplWiremockTest {
         givenThat(any(anyUrl()).willReturn(aResponse().withStatus(200)
                                                       .withHeader("Content-Type", "application/json;charset=UTF-8")
                                                       .withBodyFile("assemblyPartRelationship.json")));
-        final String path = "/api/service/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue&provider-connector-url=https://edc.io/BPNL0000000BB2OK";
-        String serverUrl = buildApiMethodUrl() + path;
 
         // Act
         final AssemblyPartRelationship submodel = submodelClient.getSubmodel(url, AssemblyPartRelationship.class);
