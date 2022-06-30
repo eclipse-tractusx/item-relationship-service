@@ -62,6 +62,11 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     private final RecursiveJobHandler<T, P> handler;
 
     /**
+     * Helper for retrieving data from JWT token
+     */
+    private final SecurityHelperService securityHelperService;
+
+    /**
      * Create a new instance of {@link JobOrchestrator}.
      *
      * @param processManager the process manager
@@ -74,6 +79,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         this.processManager = processManager;
         this.jobStore = jobStore;
         this.handler = handler;
+        this.securityHelperService = new SecurityHelperService();
     }
 
     /**
@@ -231,7 +237,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                   .createdOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .jobState(JobState.UNSAVED)
-                  .owner(SecurityHelperService.getClientIdClaim())
+                  .owner(securityHelperService.getClientIdClaim())
                   .jobParameter(buildJobParameter(jobData))
                   .build();
     }
