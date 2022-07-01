@@ -64,7 +64,7 @@ mountPath: "/data"
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
   fsGroup: 3000
 
 # Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
