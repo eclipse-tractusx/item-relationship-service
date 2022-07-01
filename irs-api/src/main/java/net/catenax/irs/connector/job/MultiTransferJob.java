@@ -93,7 +93,8 @@ public class MultiTransferJob {
          * Transition the job to the {@link JobState#INITIAL} state.
          */
         /* package */ MultiTransferJobBuilder transitionInitial() {
-            return transition(JobState.INITIAL, JobState.UNSAVED);
+            return transition(JobState.INITIAL, JobState.UNSAVED).job(
+                    job.toBuilder().startedOn(ZonedDateTime.now(ZoneOffset.UTC)).build());
         }
 
         /**
@@ -114,26 +115,22 @@ public class MultiTransferJob {
          * Transition the job to the {@link JobState#COMPLETED} state.
          */
         /* package */ MultiTransferJobBuilder transitionComplete() {
-            return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL).job(job.toBuilder()
-                                                                                                        .jobCompleted(
-                                                                                                                ZonedDateTime.now(
-                                                                                                                        ZoneOffset.UTC))
-                                                                                                        .lastModifiedOn(
-                                                                                                                ZonedDateTime.now(
-                                                                                                                        ZoneOffset.UTC))
-                                                                                                        .build());
+            return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL).job(
+                    job.toBuilder().jobCompleted(ZonedDateTime.now(ZoneOffset.UTC)).build());
         }
 
         /**
          * Transition the job to the {@link JobState#ERROR} state.
          */
-        /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail) {
+        /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail,
+                final String exceptionClassName) {
             this.job = this.job.toBuilder()
                                .jobState(JobState.ERROR)
                                .jobCompleted(ZonedDateTime.now(ZoneOffset.UTC))
                                .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
                                .exception(JobErrorDetails.builder()
                                                          .errorDetail(errorDetail)
+                                                         .exception(exceptionClassName)
                                                          .exceptionDate(ZonedDateTime.now(ZoneOffset.UTC))
                                                          .build())
                                .build();

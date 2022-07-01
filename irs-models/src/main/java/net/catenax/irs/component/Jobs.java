@@ -11,13 +11,12 @@ package net.catenax.irs.component;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 
 /**
@@ -26,8 +25,8 @@ import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShe
 @Schema(description = "Container for a job with item graph.")
 @Value
 @Builder(toBuilder = true)
-@JsonDeserialize(builder = Jobs.JobsBuilder.class)
 @AllArgsConstructor
+@Jacksonized
 @SuppressWarnings("PMD.ShortClassName")
 public class Jobs {
 
@@ -45,11 +44,5 @@ public class Jobs {
     @Singular
     private List<Tombstone> tombstones;
 
-    /**
-     * Builder class
-     */
-    @JsonPOJOBuilder(withPrefix = "")
-    public static class JobsBuilder {
-    }
 
 }
