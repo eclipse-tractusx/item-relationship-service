@@ -2,14 +2,6 @@ name: "owasp"
 
 on:
   push:
-    branches:
-      - main
-      - 'TRI-**'
-      - 'feature/**'
-      - 'bugfix/**'
-      - 'fix/**'
-      - 'chore/**'
-
   schedule:
     - cron:  "0 0 * * *"
 

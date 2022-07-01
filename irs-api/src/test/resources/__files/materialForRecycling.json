@@ -1,0 +1,46 @@
+{
+  "component": [
+    {
+      "materialName": "Cooper",
+      "recycledContent": 0,
+      "materialClass": "3.1",
+      "quantity": {
+        "materialValue": 1.2,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+          "lexicalValue": "kilogram"
+        }
+      },
+      "aggregateState": "solid",
+      "materialAbbreviation": "CO7"
+    },
+    {
+      "materialName": "Polyamid6",
+      "recycledContent": 0,
+      "materialClass": "5.5.1",
+      "quantity": {
+        "materialValue": 2.5,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+          "lexicalValue": "kilogram"
+        }
+      },
+      "aggregateState": "solid",
+      "materialAbbreviation": "POL6"
+    },
+    {
+      "materialName": "Carbon Steel",
+      "recycledContent": 0,
+      "materialClass": "1.1.2",
+      "quantity": {
+        "materialValue": 0.23,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+          "lexicalValue": "kilogram"
+        }
+      },
+      "aggregateState": "solid",
+      "materialAbbreviation": "CS2"
+    }
+  ]
+}

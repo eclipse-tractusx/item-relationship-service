@@ -20,9 +20,12 @@ import java.io.File;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.catenax.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,13 +35,16 @@ class SubmodelClientImplTest {
     private final RestTemplate restTemplate = mock(RestTemplate.class);
 
     private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
-    private final SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate, "http://aaswrapper:9191/api/service");
+    private final JsonUtil jsonUtil = new JsonUtil();
+    private final SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate,
+            "http://aaswrapper:9191/api/service", jsonUtil);
     private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
     @Test
     void shouldThrowExceptionWhenSubmodelNotFound() {
         final String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
-        final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(), "http://aaswrapper:9191/api/service");
+        final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(),
+                "http://aaswrapper:9191/api/service", jsonUtil);
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
                 () -> submodelClient.getSubmodel(url, AssemblyPartRelationship.class));
@@ -50,7 +56,10 @@ class SubmodelClientImplTest {
         final String data = objectMapper.readTree(file).get("data").toString();
         final AssemblyPartRelationship assemblyPartRelationship = objectMapper.readValue(data,
                 AssemblyPartRelationship.class);
-        doReturn(assemblyPartRelationship).when(restTemplate).getForObject(any(), any());
+
+        final String jsonObject = jsonUtil.asString(assemblyPartRelationship);
+        final ResponseEntity<String> responseEntity = new ResponseEntity<>(jsonObject, HttpStatus.OK);
+        doReturn(responseEntity).when(restTemplate).getForEntity(any(), any());
 
         final AssemblyPartRelationship submodelResponse = submodelClient.getSubmodel(url,
                 AssemblyPartRelationship.class);

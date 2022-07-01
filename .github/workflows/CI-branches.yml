@@ -4,10 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'feature/**'
-      - 'bugfix/**'
-      - 'fix/**'
-      - 'chore/**'
+      - '!main'
 
 jobs:
   build:

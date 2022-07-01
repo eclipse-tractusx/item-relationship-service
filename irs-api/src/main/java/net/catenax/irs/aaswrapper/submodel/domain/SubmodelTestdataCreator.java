@@ -76,4 +76,15 @@ class SubmodelTestdataCreator {
 
         return collect.stream().findFirst().orElse(other);
     }
+
+    public String createDummySerialPartTypizationString() {
+        return "{\"localIdentifiers\":["
+                + "{\"value\":\"BPNL00000003AYRE\",\"key\":\"ManufacturerID\"},"
+                + "{\"value\":\"8840838-04\",\"key\":\"ManufacturerPartID\"},"
+                + "{\"value\":\"NO-397646649734958738335866\",\"key\":\"PartInstanceID\"}],"
+                + "\"manufacturingInformation\":{\"date\":\"2022-02-04T14:48:54\",\"country\":\"DEU\"},"
+                + "\"catenaXId\":\"urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa\","
+                + "\"partTypeInformation\":{\"manufacturerPartID\":\"8840838-04\",\"customerPartId\":\"8840838-04\","
+                + "\"classification\":\"component\",\"nameAtManufacturer\":\"HVMODUL\",\"nameAtCustomer\":\"HVMODUL\"}}";
+    }
 }
