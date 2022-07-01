@@ -39,7 +39,7 @@
         <notes><![CDATA[
         False positive, only affects a patched AWS version of log4j.
         ]]></notes>
-        <gav regex="true">org\.apache\.logging\.log4j:log4j-core.*</gav>
+        <gav regex="true">org\.apache\.logging\.log4j:log4j.*</gav>
         <vulnerabilityName>CVE-2022-33915</vulnerabilityName>
     </suppress>
 </suppressions>
