@@ -121,3 +121,6 @@ aasProxy:
 
 aasWrapper:
   host: http://aaswrapper:9191/api/service
+
+digitalTwinRegistry:
+  url: https://semantics.int.demo.catena-x.net/registry
