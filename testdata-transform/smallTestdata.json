@@ -2011,6 +2011,7 @@
             ],
             "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
               {
+                "catenaXId": "urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa",
                 "component": [
                   {
                     "materialName": "Cooper",
