@@ -26,6 +26,7 @@ class SubmodelRetryerTest {
 
     @Autowired
     private SubmodelFacade facade;
+
     @Autowired
     private RetryRegistry retryRegistry;
     @MockBean
@@ -39,5 +40,6 @@ class SubmodelRetryerTest {
         assertThrows(HttpServerErrorException.class, () -> facade.getSubmodel("TEST", TestMother.jobParameter()));
 
         verify(this.client, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getSubmodel(anyString(), any());
+        verify(this.client, times(3)).getSubmodel(anyString(), any());
     }
 }
