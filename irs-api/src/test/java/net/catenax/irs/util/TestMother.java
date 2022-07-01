@@ -117,7 +117,6 @@ public class TestMother {
                   .createdOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .owner(faker.lorem().characters())
                   .lastModifiedOn(ZonedDateTime.now(ZoneId.of("UTC")))
-                  .requestUrl(fakeURL())
                   .build();
     }
 
@@ -153,14 +152,6 @@ public class TestMother {
 
     public Stream<DataRequest> dataRequests(int count) {
         return IntStream.range(0, count).mapToObj(i -> dataRequest());
-    }
-
-    private URL fakeURL() {
-        try {
-            return new URL("http://localhost:8888/fake/url");
-        } catch (Exception e) {
-            return null;
-        }
     }
 
 }

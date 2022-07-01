@@ -12,11 +12,14 @@ package net.catenax.irs.component.enums;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Direction indicator
  */
+@JsonSerialize(using = ToStringSerializer.class)
 @Schema(description = "Item graph traversal direction.")
 public enum Direction {
     //@Schema(description = "The tree is traversed in upward direction.") UPWARD("upward"),
