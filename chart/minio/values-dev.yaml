@@ -16,3 +16,11 @@ mountPath: "/data"
 ##
 persistence:
   enabled: false
+
+
+  ## Expose the MinIO service to be accessed from outside the cluster (LoadBalancer service).
+## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
+## ref: http://kubernetes.io/docs/user-guide/services/
+##
+minio:
+  url: http://app-irs-dev01-minio:9000
