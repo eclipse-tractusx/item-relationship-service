@@ -3,10 +3,6 @@ springprofile: int
 image:
   tag: $ARGOCD_APP_REVISION
 
-nameOverride: "app-irs-int"
-fullnameOverride: "app-irs-int"  
-
-
 ingress:
   hosts:
     - host: "irs.int.demo.catena-x.net"
