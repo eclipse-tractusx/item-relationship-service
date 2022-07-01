@@ -11,8 +11,6 @@ image:
   tag: ""
 
 imagePullSecrets: []
-nameOverride: "app-irs-dev01-minio"
-fullnameOverride: "app-irs-dev01-minio"
 
 ## minio mode, i.e. standalone or distributed or gateway.
 mode: standalone ## other supported values are "distributed", "gateway"
