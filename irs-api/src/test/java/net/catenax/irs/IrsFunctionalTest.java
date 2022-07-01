@@ -74,6 +74,7 @@ class IrsFunctionalTest {
         assertThat(finishedJob.get().getRelationships()).isNotEmpty();
         assertThat(finishedJob.get().getShells()).isNotEmpty();
         assertThat(finishedJob.get().getTombstones()).isNotEmpty();
+        assertThat(finishedJob.get().getTombstones()).hasSize(3);
         assertThat(finishedJob.get().getJob()).isNotNull();
         assertThat(finishedJob.get().getJob().getSummary()).isNotNull();
         assertThat(finishedJob.get().getJob().getJobParameter()).isNotNull();
