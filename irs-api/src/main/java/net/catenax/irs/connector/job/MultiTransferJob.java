@@ -11,7 +11,8 @@ package net.catenax.irs.connector.job;
 
 import static java.lang.String.format;
 
-import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -92,7 +93,8 @@ public class MultiTransferJob {
          * Transition the job to the {@link JobState#INITIAL} state.
          */
         /* package */ MultiTransferJobBuilder transitionInitial() {
-            return transition(JobState.INITIAL, JobState.UNSAVED);
+            return transition(JobState.INITIAL, JobState.UNSAVED).job(
+                    job.toBuilder().startedOn(ZonedDateTime.now(ZoneOffset.UTC)).build());
         }
 
         /**
@@ -114,19 +116,20 @@ public class MultiTransferJob {
          */
         /* package */ MultiTransferJobBuilder transitionComplete() {
             return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL).job(
-                    job.toBuilder().jobCompleted(Instant.now()).build());
+                    job.toBuilder().jobCompleted(ZonedDateTime.now(ZoneOffset.UTC)).build());
         }
 
         /**
          * Transition the job to the {@link JobState#ERROR} state.
          */
-        /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail) {
+        /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail, final String exceptionClassName) {
             this.job = this.job.toBuilder()
                                .jobState(JobState.ERROR)
-                               .jobCompleted(Instant.now())
+                               .jobCompleted(ZonedDateTime.now(ZoneOffset.UTC))
                                .exception(JobErrorDetails.builder()
                                                          .errorDetail(errorDetail)
-                                                         .exceptionDate(Instant.now())
+                                                         .exception(exceptionClassName)
+                                                         .exceptionDate(ZonedDateTime.now(ZoneOffset.UTC))
                                                          .build())
                                .build();
             return this;

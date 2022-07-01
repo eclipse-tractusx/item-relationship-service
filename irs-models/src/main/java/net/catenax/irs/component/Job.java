@@ -12,8 +12,7 @@ package net.catenax.irs.component;
 import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
 import static net.catenax.irs.dtos.ValidationConstants.JOB_ID_FIELD_MAX_LENGTH;
 
-import java.net.URL;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
@@ -21,13 +20,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.ToString;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 import net.catenax.irs.component.enums.JobState;
 
 /**
@@ -35,24 +33,18 @@ import net.catenax.irs.component.enums.JobState;
  */
 @Value
 @Builder(toBuilder = true)
-@JsonDeserialize(builder = Job.JobBuilder.class)
 @AllArgsConstructor
 @ToString
+@Jacksonized
 @SuppressWarnings("PMD.ShortClassName")
 public class Job {
 
-    /**
-     * jobId
-     */
     @NotNull
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
     @Schema(description = "JobId of the job.", minLength = INPUT_FIELD_MIN_LENGTH,
             maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class)
     private UUID jobId;
 
-    /**
-     * globalAssetId
-     */
     @NotNull
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
     @Schema(description = "Part global unique Id", minLength = INPUT_FIELD_MIN_LENGTH,
@@ -61,7 +53,6 @@ public class Job {
     private GlobalAssetIdentification globalAssetId;
 
     @NotBlank
-    @Schema()
     private JobState jobState;
 
     @Schema(description = "Job error details.", implementation = JobErrorDetails.class)
@@ -70,38 +61,26 @@ public class Job {
     /**
      * Timestamp when the job was created
      */
-    @Schema(implementation = Instant.class)
-    private Instant createdOn;
+    @Schema(implementation = ZonedDateTime.class)
+    private ZonedDateTime createdOn;
 
     /**
      * Timestamp when the job was started
      */
-    @Schema(implementation = Instant.class)
-    private Instant startedOn;
+    @Schema(implementation = ZonedDateTime.class)
+    private ZonedDateTime startedOn;
 
     /**
      * Last time job was modified
      */
-    @Schema(implementation = Instant.class)
-    private Instant lastModifiedOn;
+    @Schema(implementation = ZonedDateTime.class)
+    private ZonedDateTime lastModifiedOn;
 
     /**
      * Mark the time the was completed
      */
-    @Schema(implementation = Instant.class)
-    private Instant jobCompleted;
-
-    /**
-     * Url of request that resulted to this job
-     */
-    @Schema(implementation = URL.class)
-    private URL requestUrl;
-
-    /**
-     * Http method, only GET is supported
-     */
-    @Schema(description = "HTTP verbs used by request.")
-    private String action;
+    @Schema(implementation = ZonedDateTime.class)
+    private ZonedDateTime jobCompleted;
 
     /**
      * Owner of the job
@@ -112,14 +91,7 @@ public class Job {
     @Schema(description = "Summary of the job with statistics of the job processing.", implementation = Summary.class)
     private Summary summary;
 
-    @Schema(description = "The passed query parameters", implementation = QueryParameter.class)
-    private QueryParameter queryParameter;
-
-    /**
-     * Builder class
-     */
-    @JsonPOJOBuilder(withPrefix = "")
-    public static class JobBuilder {
-    }
+    @Schema(description = "The passed job parameters", implementation = JobParameter.class)
+    private JobParameter jobParameter;
 
 }

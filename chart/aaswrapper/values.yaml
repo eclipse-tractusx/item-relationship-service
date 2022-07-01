@@ -14,9 +14,6 @@ image:
 
 imagePullSecrets: []
 
-ingress:
-  enabled: false
-
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -89,9 +86,17 @@ affinity:
 # Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://github.com/helm/charts/blob/master/stable/nginx-ingress/values.yaml#L210
 livenessProbe:
-  enabled: false # AASWrapper does not provide Liveness Probe
+  failureThreshold: 6
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
 readinessProbe:
-  enabled: false # AASWrapper does not provide Readiness Probe
+  failureThreshold: 3
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
 
 env:
   - name: EDC_FS_CONFIG

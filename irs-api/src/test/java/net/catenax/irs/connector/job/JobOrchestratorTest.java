@@ -166,7 +166,7 @@ class JobOrchestratorTest {
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
-        verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), "Handler method failed");
+        verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), "Handler method failed", "java.lang.RuntimeException");
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
 
@@ -248,7 +248,7 @@ class JobOrchestratorTest {
         callCompleteAndReturnNextTransfers(Stream.empty());
 
         // Assert
-        verify(jobStore).markJobInError(job.getJobIdString(), "Handler method failed");
+        verify(jobStore).markJobInError(job.getJobIdString(), "Handler method failed", "net.catenax.irs.connector.job.JobException");
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
     }
@@ -296,7 +296,7 @@ class JobOrchestratorTest {
         verify(processManager, never()).initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()));
 
         // temporarily created job should be deleted
-        verify(jobStore).markJobInError(job.getJobIdString(), "Failed to start a transfer");
+        verify(jobStore).markJobInError(job.getJobIdString(), "Failed to start a transfer", "net.catenax.irs.connector.job.JobException");
         verifyNoMoreInteractions(jobStore);
     }
 
@@ -310,7 +310,7 @@ class JobOrchestratorTest {
         callTransferProcessCompletedViaCallback();
 
         // Assert
-        verify(jobStore).markJobInError(job.getJobIdString(), "Handler method failed");
+        verify(jobStore).markJobInError(job.getJobIdString(), "Handler method failed", "java.lang.RuntimeException");
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
     }

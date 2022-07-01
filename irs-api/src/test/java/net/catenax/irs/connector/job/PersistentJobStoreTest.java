@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static net.catenax.irs.util.TestMother.jobParameter;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -94,10 +94,7 @@ class PersistentJobStoreTest {
     @Test
     void create_and_find() {
         sut.create(job);
-        assertThat(sut.find(job.getJobIdString())).isPresent()
-                                                  .get()
-                                                  .usingRecursiveComparison()
-                                                  .isEqualTo(originalJob.toBuilder().transitionInitial().build());
+        assertThat(sut.find(job.getJobIdString())).isPresent();
         assertThat(sut.find(otherJobId)).isEmpty();
     }
 
@@ -255,7 +252,7 @@ class PersistentJobStoreTest {
         // Arrange
         sut.create(job);
         // Act
-        sut.markJobInError(otherJobId, errorDetail);
+        sut.markJobInError(otherJobId, errorDetail, errorDetail);
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.INITIAL);
@@ -267,13 +264,14 @@ class PersistentJobStoreTest {
         sut.create(job);
         sut.create(job2);
         // Act
-        sut.markJobInError(job.getJobIdString(), errorDetail);
+        sut.markJobInError(job.getJobIdString(), errorDetail, errorDetail);
         // Assert
         refreshJob();
         refreshJob2();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
         assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
         assertThat(job.getJob().getException().getErrorDetail()).isEqualTo(errorDetail);
+        assertThat(job.getJob().getException().getException()).isEqualTo(errorDetail);
         assertThat(Optional.of(job.getJob().getJobCompleted())).isPresent();
     }
 
@@ -284,7 +282,7 @@ class PersistentJobStoreTest {
         sut.addTransferProcess(job.getJobIdString(), processId1);
         sut.completeTransferProcess(job.getJobIdString(), process1);
         // Act
-        sut.markJobInError(job.getJobIdString(), errorDetail);
+        sut.markJobInError(job.getJobIdString(), errorDetail, errorDetail);
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
@@ -297,7 +295,7 @@ class PersistentJobStoreTest {
         sut.create(job);
         sut.addTransferProcess(job.getJobIdString(), processId1);
         // Act
-        sut.markJobInError(job.getJobIdString(), errorDetail);
+        sut.markJobInError(job.getJobIdString(), errorDetail, errorDetail);
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
@@ -307,7 +305,7 @@ class PersistentJobStoreTest {
     @Test
     void shouldFindCompletedJobsOlderThanFiveHours() {
         // Arrange
-        final Instant nowPlusFiveHours = Instant.now().plusSeconds(TTL_IN_HOUR_SECONDS * 5);
+        final ZonedDateTime nowPlusFiveHours = ZonedDateTime.now().plusSeconds(TTL_IN_HOUR_SECONDS * 5);
         sut.create(job);
         sut.addTransferProcess(job.getJobIdString(), processId1);
         sut.completeTransferProcess(job.getJobIdString(), process1);
@@ -324,10 +322,10 @@ class PersistentJobStoreTest {
     @Test
     void shouldFindFailedJobsOlderThanFiveHours() {
         // Arrange
-        final Instant nowPlusFiveHours = Instant.now().plusSeconds(3600 * 5);
+        final ZonedDateTime nowPlusFiveHours = ZonedDateTime.now().plusSeconds(3600 * 5);
         sut.create(job);
         sut.addTransferProcess(job.getJobIdString(), processId1);
-        sut.markJobInError(job.getJobIdString(), errorDetail);
+        sut.markJobInError(job.getJobIdString(), errorDetail, errorDetail);
         // Act
         final List<MultiTransferJob> failedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.ERROR,
                 nowPlusFiveHours);
@@ -408,10 +406,10 @@ class PersistentJobStoreTest {
                                .job(Job.builder()
                                        .jobId(UUID.fromString(jobId))
                                        .jobState(JobState.UNSAVED)
-                                       .jobCompleted(Instant.now())
+                                       .jobCompleted(ZonedDateTime.now())
                                        .exception(JobErrorDetails.builder()
                                                                  .exception("SomeError")
-                                                                 .exceptionDate(Instant.now())
+                                                                 .exceptionDate(ZonedDateTime.now())
                                                                  .build())
                                        .build())
                                .jobParameter(jobParameter())

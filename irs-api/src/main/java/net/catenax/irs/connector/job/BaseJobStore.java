@@ -9,7 +9,7 @@
 //
 package net.catenax.irs.connector.job;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +57,7 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public List<MultiTransferJob> findByStateAndCompletionDateOlderThan(final JobState jobState,
-            final Instant dateTime) {
+            final ZonedDateTime dateTime) {
         return readLock(() -> getAll().stream()
                                       .filter(hasState(jobState))
                                       .filter(isCompletionDateBefore(dateTime))
@@ -68,9 +68,9 @@ public abstract class BaseJobStore implements JobStore {
         return job -> job.getJob().getJobState().equals(jobState);
     }
 
-    private Predicate<MultiTransferJob> isCompletionDateBefore(final Instant localDateTime) {
+    private Predicate<MultiTransferJob> isCompletionDateBefore(final ZonedDateTime localDateTime) {
         return job -> {
-            final Instant completed = job.getJob().getJobCompleted();
+            final ZonedDateTime completed = job.getJob().getJobCompleted();
             return completed != null && completed.isBefore(localDateTime);
         };
     }
@@ -140,8 +140,8 @@ public abstract class BaseJobStore implements JobStore {
     }
 
     @Override
-    public void markJobInError(final String jobId, @Nullable final String errorDetail) {
-        modifyJob(jobId, job -> job.toBuilder().transitionError(errorDetail).build());
+    public void markJobInError(final String jobId, @Nullable final String errorDetail, final String exceptionClassName) {
+        modifyJob(jobId, job -> job.toBuilder().transitionError(errorDetail, exceptionClassName).build());
     }
 
     @Override

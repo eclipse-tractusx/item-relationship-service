@@ -201,23 +201,21 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobCompleted: 2022-02-03T14:48:54.709Z
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: CANCELED
-          lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
-          queryParameter:
+          jobParameter:
             aspects:
               - SerialPartTypization
               - ContactInformation
             bomLifecycle: asBuilt
             depth: 4
             direction: downward
-          requestUrl: https://api.server.test/api/../
+          jobState: CANCELED
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
           startedOn: 2022-02-03T14:48:54.709Z
           summary:
             asyncFetchedItems:
-              complete: 0
+              completed: 0
               failed: 0
-              queue: 0
               running: 0
         relationships: [ ]
         tombstones: [ ]
@@ -236,36 +234,34 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobCompleted: 2022-02-03T14:48:54.709Z
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: COMPLETED
-          lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
-          queryParameter:
+          jobParameter:
             aspects:
               - SerialPartTypization
               - ContactInformation
             bomLifecycle: asBuilt
             depth: 4
             direction: downward
-          requestUrl: https://api.server.test/api/../
+          jobState: COMPLETED
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
           startedOn: 2022-02-03T14:48:54.709Z
           summary:
             asyncFetchedItems:
-              complete: 0
+              completed: 0
               failed: 0
-              queue: 0
               running: 0
         relationships:
           - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
             childItem:
-              assembledOn: 2022-02-03T14:48:54.709
+              assembledOn: 2022-02-03T14:48:54.709Z
               childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
-              lastModifiedOn: 2022-02-03T14:48:54.709
+              lastModifiedOn: 2022-02-03T14:48:54.709Z
               lifecycleContext: asBuilt
               quantity:
                 measurementUnit:
                   datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
                   lexicalValue: piece
-                quantityNumber: 1
+                quantityNumber: 1.0
         shells:
           - description:
               - language: en
@@ -331,23 +327,21 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: ERROR
-          lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
-          queryParameter:
+          jobParameter:
             aspects:
               - SerialPartTypization
               - ContactInformation
             bomLifecycle: asBuilt
             depth: 4
             direction: downward
-          requestUrl: https://api.server.test/api/../
+          jobState: ERROR
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
           startedOn: 2022-02-03T14:48:54.709Z
           summary:
             asyncFetchedItems:
-              complete: 0
+              completed: 0
               failed: 0
-              queue: 0
               running: 0
         relationships: [ ]
         tombstones: [ ]
@@ -365,36 +359,34 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobCompleted: 2022-02-03T14:48:54.709Z
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: COMPLETED
-          lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
-          queryParameter:
+          jobParameter:
             aspects:
               - SerialPartTypization
               - ContactInformation
             bomLifecycle: asBuilt
             depth: 4
             direction: downward
-          requestUrl: https://api.server.test/api/../
+          jobState: COMPLETED
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
           startedOn: 2022-02-03T14:48:54.709Z
           summary:
             asyncFetchedItems:
-              complete: 0
+              completed: 0
               failed: 0
-              queue: 0
               running: 0
         relationships:
           - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
             childItem:
-              assembledOn: 2022-02-03T14:48:54.709
+              assembledOn: 2022-02-03T14:48:54.709Z
               childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
-              lastModifiedOn: 2022-02-03T14:48:54.709
+              lastModifiedOn: 2022-02-03T14:48:54.709Z
               lifecycleContext: asBuilt
               quantity:
                 measurementUnit:
                   datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
                   lexicalValue: piece
-                quantityNumber: 1
+                quantityNumber: 1.0
         shells:
           - description:
               - language: en
@@ -454,23 +446,21 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           jobCompleted: 2022-02-03T14:48:54.709Z
           jobId: e5347c88-a921-11ec-b909-0242ac120002
-          jobState: RUNNING
-          lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
-          queryParameter:
+          jobParameter:
             aspects:
               - SerialPartTypization
               - ContactInformation
             bomLifecycle: asBuilt
             depth: 4
             direction: downward
-          requestUrl: https://api.server.test/api/../
+          jobState: RUNNING
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
           startedOn: 2022-02-03T14:48:54.709Z
           summary:
             asyncFetchedItems:
-              complete: 0
+              completed: 0
               failed: 0
-              queue: 0
               running: 0
         relationships: [ ]
         tombstones: [ ]
@@ -510,7 +500,7 @@ components:
       type: object
       description: Statistics of job execution.
       properties:
-        complete:
+        completed:
           type: integer
           format: int32
           description: Number of completed item transfers.
@@ -518,10 +508,6 @@ components:
           type: integer
           format: int32
           description: Number of failed item transfers.
-        queue:
-          type: integer
-          format: int32
-          description: Number of item transfers remaining.
         running:
           type: integer
           format: int32
@@ -666,9 +652,6 @@ components:
       type: object
       description: Executable unit with meta information and item graph result.
       properties:
-        action:
-          type: string
-          description: HTTP verbs used by request.
         createdOn:
           type: string
           format: date-time
@@ -685,6 +668,8 @@ components:
           description: JobId of the job.
           maxLength: 36
           minLength: 36
+        jobParameter:
+          $ref: '#/components/schemas/JobParameter'
         jobState:
           type: string
           enum:
@@ -701,11 +686,6 @@ components:
         owner:
           type: string
           description: The IRS api consumer.
-        queryParameter:
-          $ref: '#/components/schemas/QueryParameter'
-        requestUrl:
-          type: string
-          format: url
         startedOn:
           type: string
           format: date-time
@@ -737,6 +717,45 @@ components:
         jobId:
           type: string
           format: uuid
+    JobParameter:
+      type: object
+      description: Job parameter of job processing.
+      properties:
+        aspects:
+          type: string
+          enum:
+            - SerialPartTypization
+            - AssemblyPartRelationship
+            - ProductDescription
+            - IdConversion
+            - MarketplaceOffer
+            - MaterialForRecycling
+            - PhysicalDimension
+            - ReturnRequest
+            - CertificateOfDestruction
+            - CertificateOfDismantler
+            - EndOfLife
+            - PcfCore
+            - PcfSupplyRelation
+            - PcfTechnical
+            - AddressAspect
+            - ContactInformation
+            - BatteryPass
+            - VehicleDiagnosticDataQuality
+        bomLifecycle:
+          type: string
+          description: The lifecycle context in which the child part was assembled
+            into the parent part.
+          enum:
+            - asBuilt
+        depth:
+          type: integer
+          format: int32
+        direction:
+          type: string
+          description: Item graph traversal direction.
+          enum:
+            - downward
     JobStatusResult:
       type: object
       properties:
@@ -822,47 +841,8 @@ components:
         measurementUnit:
           $ref: '#/components/schemas/MeasurementUnit'
         quantityNumber:
-          type: integer
-          format: int32
-    QueryParameter:
-      type: object
-      description: Query parameter for current irs query.
-      properties:
-        aspects:
-          type: string
-          enum:
-            - SerialPartTypization
-            - AssemblyPartRelationship
-            - ProductDescription
-            - IdConversion
-            - MarketplaceOffer
-            - MaterialForRecycling
-            - PhysicalDimension
-            - ReturnRequest
-            - CertificateOfDestruction
-            - CertificateOfDismantler
-            - EndOfLife
-            - PcfCore
-            - PcfSupplyRelation
-            - PcfTechnical
-            - AddressAspect
-            - ContactInformation
-            - BatteryPass
-            - VehicleDiagnosticDataQuality
-        bomLifecycle:
-          type: string
-          description: The lifecycle context in which the child part was assembled
-            into the parent part.
-          enum:
-            - asBuilt
-        depth:
-          type: integer
-          format: int32
-        direction:
-          type: string
-          description: Item graph traversal direction.
-          enum:
-            - downward
+          type: number
+          format: double
     Reference:
       type: object
       properties:
