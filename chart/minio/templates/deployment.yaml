@@ -48,12 +48,12 @@ spec:
           env:
             - name: MINIO_URL
               value: {{ .Values.minio.url }}
-            - name: MINIO_ACCESS_KEY
+            - name: MINIO_ROOT_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ template "minio.secretName" . }}
                   key: minioUser
-            - name: MINIO_SECRET_KEY
+            - name: MINIO_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "minio.secretName" . }}
