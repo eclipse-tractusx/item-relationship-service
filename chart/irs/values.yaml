@@ -1,4 +1,4 @@
-# Default values for k8s-helm-example.
+# Default values for irs.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -21,6 +21,9 @@ podSecurityContext:
   seccompProfile:
     type: RuntimeDefault
   # fsGroup: 2000
+
+rootUser: <path:traceability-irs/data/int/minio#minioUser>
+rootPassword: <path:traceability-irs/data/int/minio#minioPassword>
 
 # Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
@@ -118,3 +121,6 @@ aasProxy:
 
 aasWrapper:
   host: http://aaswrapper:9191/api/service
+
+digitalTwinRegistry:
+  url: https://semantics.int.demo.catena-x.net/registry

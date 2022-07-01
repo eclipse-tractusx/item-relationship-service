@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "k8s-helm-example.fullname" . }}
+  name: {{ include "irs.fullname" . }}
   namespace: {{ .Values.namespace }}
   labels:
-    {{- include "k8s-helm-example.labels" . | nindent 4 }}
+    {{- include "irs.labels" . | nindent 4 }}
   annotations:
     checkov.io/skip1: CKV_K8S_35=Secrets are handled by vault and need to be passed as environment variables
 spec:
@@ -13,7 +13,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "k8s-helm-example.selectorLabels" . | nindent 6 }}
+      {{- include "irs.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -21,7 +21,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "k8s-helm-example.selectorLabels" . | nindent 8 }}
+        {{- include "irs.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -48,27 +48,41 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: app-irs-dev-minio
-                  key: accesskey
+                  name: {{ template "irs.secretName" . }}
+                  key: minioUser
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: app-irs-dev-minio
-                  key: secretkey
+                  name: {{ template "irs.secretName" . }}
+                  key: minioPassword
             - name: KEYCLOAK_OAUTH2_CLIENT_ID
-              value: {{ .Values.keycloak.oauth2.clientId }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "irs.secretName" . }}
+                  key: keycloakClientId
             - name: KEYCLOAK_OAUTH2_CLIENT_SECRET
-              value: {{ .Values.keycloak.oauth2.clientSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "irs.secretName" . }}
+                  key: keycloakClientSecret
             - name: KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI
               value: {{ .Values.keycloak.oauth2.clientTokenUri }}
             - name: KEYCLOAK_OAUTH2_JWK_SET_URI
               value: {{ .Values.keycloak.oauth2.jwkSetUri }}
             - name: AAS_PROXY_SUBMODEL_USERNAME
-              value: {{ .Values.aasProxy.submodel.username }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "irs.secretName" . }}
+                  key: aasProxyUsername
             - name: AAS_PROXY_SUBMODEL_PASSWORD
-              value: {{ .Values.aasProxy.submodel.password }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "irs.secretName" . }}
+                  key: aasProxyPassword
             - name: AASWRAPPER_HOST
               value: {{ .Values.aasWrapper.host }}
+            - name: DIGITALTWINREGISTRY_URL
+              value: {{ .Values.digitalTwinRegistry.url }}
           ports:
             - name: http
               containerPort: 8080
