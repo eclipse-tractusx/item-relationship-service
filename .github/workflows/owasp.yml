@@ -9,6 +9,9 @@ on:
       - 'bugfix/**'
       - 'fix/**'
       - 'chore/**'
+  pull_request:
+    branches:
+      - main
 
   schedule:
     - cron:  "0 0 * * *"

@@ -8,6 +8,9 @@ on:
       - 'bugfix/**'
       - 'fix/**'
       - 'chore/**'
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
