@@ -110,8 +110,13 @@ public class SubmodelFacade {
         return childData -> !childData.getLifecycleContext().getValue().equals(lifecycleContext);
     }
 
+    /**
+     * Apply the customized retry component on retrieving the given submodel
+     * @param submodelEndpointAddress The URL to the submodel endpoint
+     * @return The Aspect Model for the given submodel
+     */
     private AssemblyPartRelationship retryGetSubmodel(final String submodelEndpointAddress) {
-        Function<String, AssemblyPartRelationship> decorated =
+        final Function<String, AssemblyPartRelationship> decorated =
                 Retry.decorateFunction(RetryConfiguration.retryer(),
                         (String s) -> this.submodelClient.getSubmodel(submodelEndpointAddress, AssemblyPartRelationship.class));
 
