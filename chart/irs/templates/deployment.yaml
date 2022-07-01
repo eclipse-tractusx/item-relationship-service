@@ -2,8 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "k8s-helm-example.fullname" . }}
+  namespace: {{ .Values.namespace }}
   labels:
     {{- include "k8s-helm-example.labels" . | nindent 4 }}
+  annotations:
+    checkov.io/skip1: CKV_K8S_35=Secrets are handled by vault and need to be passed as environment variables
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -34,6 +37,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: {{ .Values.springprofile }}
@@ -42,12 +48,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.fullname }}
+                  name: {{ template "k8s-helm-example.secretName" . }}
                   key: minioUser
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.fullname }}
+                  name: {{ template "k8s-helm-example.secretName" . }}
                   key: minioPassword
             - name: KEYCLOAK_OAUTH2_CLIENT_ID
               value: {{ .Values.keycloak.oauth2.clientId }}
@@ -61,6 +67,10 @@ spec:
               value: {{ .Values.aasProxy.submodel.username }}
             - name: AAS_PROXY_SUBMODEL_PASSWORD
               value: {{ .Values.aasProxy.submodel.password }}
+            - name: AASWRAPPER_HOST
+              value: {{ .Values.aasWrapper.host }}
+            - name: DIGITALTWINREGISTRY_URL
+              value: {{ .Values.digitalTwinRegistry.url }}
           ports:
             - name: http
               containerPort: 8080
@@ -93,6 +103,9 @@ spec:
 
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

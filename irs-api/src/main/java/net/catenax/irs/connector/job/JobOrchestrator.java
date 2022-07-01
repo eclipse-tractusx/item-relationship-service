@@ -9,7 +9,8 @@
 //
 package net.catenax.irs.connector.job;
 
-import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -154,7 +155,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     @Scheduled(cron = "${irs.job.cleanup.scheduler.completed}")
     public void findAndCleanupCompletedJobs() {
         log.info("Running cleanup of completed jobs");
-        final Instant currentDateMinusSeconds = Instant.now().minus(TTL_CLEANUP_COMPLETED_JOBS_HOURS, ChronoUnit.HOURS);
+        final ZonedDateTime currentDateMinusSeconds = ZonedDateTime.now(ZoneOffset.UTC).minus(TTL_CLEANUP_COMPLETED_JOBS_HOURS, ChronoUnit.HOURS);
         final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
                 currentDateMinusSeconds);
 
@@ -165,7 +166,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     @Scheduled(cron = "${irs.job.cleanup.scheduler.failed}")
     public void findAndCleanupFailedJobs() {
         log.info("Running cleanup of failed jobs");
-        final Instant currentDateMinusSeconds = Instant.now().minus(TTL_CLEANUP_FAILED_JOBS_HOURS, ChronoUnit.HOURS);
+        final ZonedDateTime currentDateMinusSeconds = ZonedDateTime.now(ZoneOffset.UTC).minus(TTL_CLEANUP_FAILED_JOBS_HOURS, ChronoUnit.HOURS);
         final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR,
                 currentDateMinusSeconds);
         final List<MultiTransferJob> multiTransferJobs = deleteJobs(failedJobs);
@@ -225,8 +226,8 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         return Job.builder()
                   .jobId(UUID.randomUUID())
                   .globalAssetId(GlobalAssetIdentification.builder().globalAssetId(globalAssetId).build())
-                  .createdOn(Instant.now())
-                  .lastModifiedOn(Instant.now())
+                  .createdOn(ZonedDateTime.now(ZoneOffset.UTC))
+                  .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .jobState(JobState.UNSAVED)
                   .build();
     }

@@ -9,6 +9,8 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -37,15 +39,25 @@ class SubmodelTestdataCreator {
         testData.add(getDummyAssemblyPartRelationshipWithChildren("urn:uuid:ea724f73-cb93-4b7b-b92f-d97280ff888b", List.of()));
     }
 
-    public AssemblyPartRelationship getDummyAssemblyPartRelationshipWithChildren(final String catenaXId,
+    /* package */ AssemblyPartRelationship getDummyAssemblyPartRelationshipWithChildren(final String catenaXId,
             final List<String> childIds) {
         final AssemblyPartRelationship assemblyPartRelationship = new AssemblyPartRelationship();
         assemblyPartRelationship.setCatenaXId(catenaXId);
+
         final Set<ChildData> childData = new HashSet<>();
         childIds.forEach(childId -> {
             final ChildData child = new ChildData();
             child.setChildCatenaXId(childId);
             child.setLifecycleContext(LifecycleContextCharacteristic.ASBUILT);
+            child.setAssembledOn(ZonedDateTime.now(ZoneOffset.UTC));
+            child.setLastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC));
+            final Quantity quantity = new Quantity();
+            quantity.setQuantityNumber(1d);
+            final Quantity.MeasurementUnit measurementUnit = new Quantity.MeasurementUnit();
+            measurementUnit.setDatatypeURI("urn:bamm:io.openmanufacturing:meta-model:1.0.0#sth");
+            measurementUnit.setLexicalValue("sth");
+            quantity.setMeasurementUnit(measurementUnit);
+            child.setQuantity(quantity);
             childData.add(child);
         });
         assemblyPartRelationship.setChildParts(childData);

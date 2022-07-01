@@ -8,38 +8,24 @@
 // additional information regarding license terms.
 //
 //
-
 package net.catenax.irs.dto;
 
 import java.util.Set;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * AssemblyPartRelationshipDTO model used for internal application use
  */
 @Data
 @Builder(toBuilder = true)
-@JsonDeserialize(builder = AssemblyPartRelationshipDTO.AssemblyPartRelationshipDTOBuilder.class)
+@Jacksonized
 public class AssemblyPartRelationshipDTO {
-    /**
-     * catenaXId
-     */
+
     private String catenaXId;
 
-    /**
-     * childParts
-     */
     private Set<ChildDataDTO> childParts;
 
-    /**
-     * Builder class
-     */
-    @JsonPOJOBuilder(withPrefix = "")
-    public static class AssemblyPartRelationshipDTOBuilder {
-
-    }
 }

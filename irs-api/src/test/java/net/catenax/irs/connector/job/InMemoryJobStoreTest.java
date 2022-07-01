@@ -6,12 +6,12 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URL;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
@@ -266,7 +266,7 @@ class InMemoryJobStoreTest {
     @Test
     void shouldFindCompletedJobsOlderThanFiveHours() {
         // Arrange
-        final Instant nowPlusFiveHours = Instant.now().plusSeconds(TTL_IN_HOUR_SECONDS * 5);
+        final ZonedDateTime nowPlusFiveHours = ZonedDateTime.now().plusSeconds(TTL_IN_HOUR_SECONDS * 5);
         sut.create(job);
         sut.addTransferProcess(job.getJobIdString(), processId1);
         sut.completeTransferProcess(job.getJobIdString(), process1);
@@ -283,7 +283,7 @@ class InMemoryJobStoreTest {
     @Test
     void shouldFindFailedJobsOlderThanFiveHours() {
         // Arrange
-        final Instant nowPlusFiveHours = Instant.now().plusSeconds(TTL_IN_HOUR_SECONDS * 5);
+        final ZonedDateTime nowPlusFiveHours = ZonedDateTime.now().plusSeconds(TTL_IN_HOUR_SECONDS * 5);
         sut.create(job);
         sut.addTransferProcess(job.getJobIdString(), processId1);
         sut.markJobInError(job.getJobIdString(), errorDetail);
@@ -365,8 +365,8 @@ class InMemoryJobStoreTest {
                   .globalAssetId(globalAssetId)
                   .jobId(UUID.randomUUID())
                   .jobState(JobState.INITIAL)
-                  .createdOn(Instant.now())
-                  .lastModifiedOn(Instant.now())
+                  .createdOn(ZonedDateTime.now())
+                  .lastModifiedOn(ZonedDateTime.now())
                   .requestUrl(fakeURL())
                   .action(HttpMethod.POST.toString())
                   .build();
@@ -411,10 +411,10 @@ class InMemoryJobStoreTest {
                                .job(Job.builder()
                                        .jobId(UUID.fromString(jobId))
                                        .jobState(JobState.UNSAVED)
-                                       .jobCompleted(Instant.now())
+                                       .jobCompleted(ZonedDateTime.now())
                                        .exception(JobErrorDetails.builder()
                                                                  .exception("SomeError")
-                                                                 .exceptionDate(Instant.now())
+                                                                 .exceptionDate(ZonedDateTime.now())
                                                                  .build())
                                        .build())
                                .jobParameter(jobParameter())

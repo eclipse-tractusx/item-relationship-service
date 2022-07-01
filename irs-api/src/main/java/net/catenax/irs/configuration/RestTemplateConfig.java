@@ -16,7 +16,6 @@ import java.time.Duration;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.annotations.ExcludeFromCodeCoverageGeneratedReport;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -93,7 +92,6 @@ public class RestTemplateConfig {
      */
     @RequiredArgsConstructor
     @Slf4j
-    @ExcludeFromCodeCoverageGeneratedReport
     /* package */ static class OAuthClientCredentialsRestTemplateInterceptor implements ClientHttpRequestInterceptor {
 
         private final OAuth2AuthorizedClientManager manager;

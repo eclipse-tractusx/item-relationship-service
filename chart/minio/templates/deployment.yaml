@@ -51,12 +51,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.fullname }}
+                  name: {{ template "minio.secretName" . }}
                   key: minioUser
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.fullname }}
+                  name: {{ template "minio.secretName" . }}
                   key: minioPassword     
           resources:
             {{- toYaml .Values.resources | nindent 12 }}            

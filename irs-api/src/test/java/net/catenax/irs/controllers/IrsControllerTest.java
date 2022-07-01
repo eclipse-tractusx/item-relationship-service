@@ -23,7 +23,7 @@ import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.dto.JobStatusResult;
+import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.junit.jupiter.api.Test;

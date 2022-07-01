@@ -3,8 +3,8 @@ springprofile: dev
 image:
   tag: $ARGOCD_APP_REVISION
 
-nameOverride: ""
-fullnameOverride: ""  
+nameOverride: "app-irs-dev"
+fullnameOverride: "app-irs-dev"  
 
 keycloak:
   oauth2:
@@ -18,11 +18,11 @@ aasProxy:
     username: <path:traceability-irs/data/dev/aasProxy/submodel#username>
     password: <path:traceability-irs/data/dev/aasProxy/submodel#password>
 
-minioUser: <path:traceability-irs/data/dev/minio#minioUser>
-minioPassword: <path:traceability-irs/data/dev/minio#minioPassword>    
-
 minio:
   url: http://app-irs-dev01-minio:9000
 
 rootUser: <path:traceability-irs/data/dev/minio#minioUser>
-rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>  
+rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
+
+digitalTwinRegistry:
+  url: https://irs-aas-registry.dev.demo.catena-x.net

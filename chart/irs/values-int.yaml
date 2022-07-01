@@ -3,6 +3,10 @@ springprofile: int
 image:
   tag: $ARGOCD_APP_REVISION
 
+nameOverride: "app-irs-int"
+fullnameOverride: "app-irs-int"  
+
+
 ingress:
   hosts:
     - host: "irs.int.demo.catena-x.net"
@@ -26,6 +30,9 @@ aasProxy:
   submodel:
     username: <path:traceability-irs/data/int/aasProxy/submodel#username>
     password: <path:traceability-irs/data/int/aasProxy/submodel#password>
+
+minio:
+  url: http://app-irs-int-minio:9000
 
 rootUser: <path:traceability-irs/data/int/minio#minioUser>
 rootPassword: <path:traceability-irs/data/int/minio#minioPassword>    

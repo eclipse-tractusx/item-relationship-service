@@ -22,13 +22,19 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Slf4j
 class AASWrapperUriAddressRewritePolicy {
 
+    private final String aasWrapperHost;
+
+    /* package */ AASWrapperUriAddressRewritePolicy(final String aasWrapperHost) {
+        this.aasWrapperHost = aasWrapperHost;
+    }
+
     /**
      * Rewritten address to AASWrapper
      * @param endpointAddress returned by registry
      * @return rewritten address
      */
     public URI rewriteToAASWrapperUri(final String endpointAddress) {
-        final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(AASWrapperUri.AAS_WRAPPER_HOST);
+        final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(aasWrapperHost);
 
         final AASWrapperUri aasWrapperUri = new AASWrapperUri(endpointAddress);
 

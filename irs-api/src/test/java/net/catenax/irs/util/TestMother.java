@@ -4,15 +4,16 @@ import static net.catenax.irs.controllers.IrsApiConstants.GLOBAL_ASSET_ID_SIZE;
 import static net.catenax.irs.controllers.IrsApiConstants.UUID_SIZE;
 
 import java.net.URL;
-import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
@@ -113,9 +114,9 @@ public class TestMother {
                   .globalAssetId(
                           GlobalAssetIdentification.builder().globalAssetId(UUID.randomUUID().toString()).build())
                   .jobState(state)
-                  .createdOn(Instant.now())
+                  .createdOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .owner(faker.lorem().characters())
-                  .lastModifiedOn(Instant.now())
+                  .lastModifiedOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .requestUrl(fakeURL())
                   .build();
     }
