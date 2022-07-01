@@ -95,9 +95,10 @@ public interface JobStore {
      *
      * @param jobId       the job identifier.
      * @param errorDetail an optional error message.
+     * @param exceptionClassName name of the exception class
      * @see JobState#ERROR
      */
-    void markJobInError(String jobId, @Nullable String errorDetail);
+    void markJobInError(String jobId, @Nullable String errorDetail, String exceptionClassName);
 
     /**
      * Delete a job by its identifier.

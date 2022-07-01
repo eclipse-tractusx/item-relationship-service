@@ -62,12 +62,8 @@ class InMemoryJobStoreTest {
 
     @Test
     void create_and_find() {
-
         sut.create(job);
-        assertThat(sut.find(job.getJobIdString())).isPresent()
-                                                  .get()
-                                                  .usingRecursiveComparison()
-                                                  .isEqualTo(originalJob.toBuilder().transitionInitial().build());
+        assertThat(sut.find(job.getJobIdString())).isPresent();
         assertThat(sut.find(otherJobId)).isEmpty();
     }
 
@@ -214,7 +210,7 @@ class InMemoryJobStoreTest {
         // Arrange
         sut.create(job);
         // Act
-        sut.markJobInError(otherJobId, errorDetail);
+        sut.markJobInError(otherJobId, errorDetail, errorDetail);
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.INITIAL);
@@ -226,13 +222,14 @@ class InMemoryJobStoreTest {
         sut.create(job);
         sut.create(job2);
         // Act
-        sut.markJobInError(job.getJobIdString(), errorDetail);
+        sut.markJobInError(job.getJobIdString(), errorDetail, errorDetail);
         // Assert
         refreshJob();
         refreshJob2();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
         assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
         assertThat(job.getJob().getException().getErrorDetail()).isEqualTo(errorDetail);
+        assertThat(job.getJob().getException().getException()).isEqualTo(errorDetail);
         assertTrue(Optional.ofNullable(job.getJob().getJobCompleted()).isPresent());
     }
 
@@ -243,7 +240,7 @@ class InMemoryJobStoreTest {
         sut.addTransferProcess(job.getJobIdString(), processId1);
         sut.completeTransferProcess(job.getJobIdString(), process1);
         // Act
-        sut.markJobInError(job.getJobIdString(), errorDetail);
+        sut.markJobInError(job.getJobIdString(), errorDetail, errorDetail);
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
@@ -256,7 +253,7 @@ class InMemoryJobStoreTest {
         sut.create(job);
         sut.addTransferProcess(job.getJobIdString(), processId1);
         // Act
-        sut.markJobInError(job.getJobIdString(), errorDetail);
+        sut.markJobInError(job.getJobIdString(), errorDetail, errorDetail);
         // Assert
         refreshJob();
         assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
@@ -286,7 +283,7 @@ class InMemoryJobStoreTest {
         final ZonedDateTime nowPlusFiveHours = ZonedDateTime.now().plusSeconds(TTL_IN_HOUR_SECONDS * 5);
         sut.create(job);
         sut.addTransferProcess(job.getJobIdString(), processId1);
-        sut.markJobInError(job.getJobIdString(), errorDetail);
+        sut.markJobInError(job.getJobIdString(), errorDetail, errorDetail);
         // Act
         final List<MultiTransferJob> failedJobs = sut.findByStateAndCompletionDateOlderThan(JobState.ERROR,
                 nowPlusFiveHours);
@@ -340,7 +337,7 @@ class InMemoryJobStoreTest {
     void shouldFindJobsByErrorJobState() {
         // Arrange
         sut.create(job);
-        sut.markJobInError(job.getJobIdString(), "errorDetail");
+        sut.markJobInError(job.getJobIdString(), errorDetail, errorDetail);
         // Act
         final List<MultiTransferJob> foundJobs = sut.findByStates(List.of(JobState.ERROR));
         // Assert
@@ -354,30 +351,6 @@ class InMemoryJobStoreTest {
 
     private void refreshJob2() {
         job2 = sut.find(job2.getJobIdString()).get();
-    }
-
-    private Job createJob() {
-        GlobalAssetIdentification globalAssetId = GlobalAssetIdentification.builder()
-                                                                           .globalAssetId(UUID.randomUUID().toString())
-                                                                           .build();
-
-        return Job.builder()
-                  .globalAssetId(globalAssetId)
-                  .jobId(UUID.randomUUID())
-                  .jobState(JobState.INITIAL)
-                  .createdOn(ZonedDateTime.now())
-                  .lastModifiedOn(ZonedDateTime.now())
-                  .requestUrl(fakeURL())
-                  .action(HttpMethod.POST.toString())
-                  .build();
-    }
-
-    private URL fakeURL() {
-        try {
-            return new URL("http://localhost:8888/fake/url");
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     @Test
