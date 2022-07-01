@@ -19,7 +19,7 @@ aasProxy:
     password: <path:traceability-irs/data/dev/aasProxy/submodel#password>
 
 minio:
-  url: http://app-irs-dev01-minio:9000
+  url: http://app-minio-dev:9000
 
 rootUser: <path:traceability-irs/data/dev/minio#minioUser>
 rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>

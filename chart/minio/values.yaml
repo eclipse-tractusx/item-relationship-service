@@ -8,7 +8,7 @@ image:
   repository: quay.io/minio/minio
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "RELEASE.2022-05-08T23-50-31Z"
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: "app-irs-dev01-minio"

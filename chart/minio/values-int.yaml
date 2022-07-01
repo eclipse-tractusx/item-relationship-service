@@ -1,6 +1,3 @@
-nameOverride: "app-irs-int-minio"
-fullnameOverride: "app-irs-int-minio"
-
 ## Path where PV would be mounted on the MinIO Pod
 mountPath: "/export"
 
@@ -19,11 +16,3 @@ persistence:
   enabled: true
   accessMode: ReadWriteOnce
   size: 500Mi
-
-
-  ## Expose the MinIO service to be accessed from outside the cluster (LoadBalancer service).
-## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
-## ref: http://kubernetes.io/docs/user-guide/services/
-##
-minio:
-  url: http://app-irs-int-minio:9000

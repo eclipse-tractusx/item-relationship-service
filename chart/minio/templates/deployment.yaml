@@ -46,8 +46,6 @@ spec:
               containerPort: {{ .Values.minioAPIPort }}
               protocol: TCP
           env:
-            - name: MINIO_URL
-              value: {{ .Values.minio.url }}
             - name: MINIO_ROOT_USER
               valueFrom:
                 secretKeyRef:
