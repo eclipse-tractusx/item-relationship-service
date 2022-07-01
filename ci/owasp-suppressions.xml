@@ -35,4 +35,11 @@
         <gav regex="true">org\.apache\.tomcat\.embed:tomcat-embed-.*</gav>
         <vulnerabilityName>CVE-2022-34305</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        False positive, only affects a patched AWS version of log4j.
+        ]]></notes>
+        <gav regex="true">org\.apache\.logging\.log4j:log4j-core.*</gav>
+        <vulnerabilityName>CVE-2022-33915</vulnerabilityName>
+    </suppress>
 </suppressions>
