@@ -12,11 +12,13 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 import java.time.ZonedDateTime;
 
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  *
  */
 @Data
+@Jacksonized
 class ChildData {
 
     /**

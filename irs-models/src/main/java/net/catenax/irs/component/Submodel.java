@@ -7,27 +7,20 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.submodel.domain;
+package net.catenax.irs.component;
 
-import java.util.Set;
-
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * AssemblyPartRelationship
+ * Submodel with identification of SubmodelDescriptor, aspect type and payload as String
  */
-@Data
+@Getter
+@Builder
 @Jacksonized
-class AssemblyPartRelationship {
-
-    /**
-     * catenaXId
-     */
-    private String catenaXId;
-
-    /**
-     * childParts
-     */
-    private Set<ChildData> childParts;
+public class Submodel {
+    private String identification;
+    private String aspectType;
+    private String payload;
 }

@@ -48,7 +48,7 @@ class SubmodelFacadeTest {
     @BeforeEach
     void setUp() {
         final SubmodelClientLocalStub submodelClientStub = new SubmodelClientLocalStub();
-        submodelFacade = new SubmodelFacade(submodelClientStub);
+        submodelFacade = new SubmodelFacade(submodelClientStub, jsonUtil);
     }
 
     @Test
@@ -56,7 +56,7 @@ class SubmodelFacadeTest {
         final String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(),
                 "http://aaswrapper:9191/api/service", jsonUtil);
-        final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
+        final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient, jsonUtil);
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
                 () -> submodelFacade.getSubmodel(url, jobParameter()));
@@ -96,7 +96,7 @@ class SubmodelFacadeTest {
         final String endpointUrl = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(restTemplate,
                 "http://aaswrapper:9191/api/service", jsonUtil);
-        SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
+        SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient, jsonUtil);
 
         final AssemblyPartRelationship assemblyPartRelationship = new AssemblyPartRelationship();
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
@@ -112,5 +112,15 @@ class SubmodelFacadeTest {
         assertThat(submodel.getCatenaXId()).isEqualTo(catenaXId);
         final Set<ChildDataDTO> childParts = submodel.getChildParts();
         assertThat(childParts).isEmpty();
+    }
+
+    @Test
+    void shouldReturnStringWhenRequestingSubmodelWithoutAspect() {
+        final String catenaXId = "urn:uuid:ea724f73-cb93-4b7b-b92f-d97280ff888b";
+
+        final String submodelResponse = submodelFacade.getSubmodelAsString(catenaXId);
+
+        assertThat(submodelResponse).startsWith(
+                "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"ManufacturerID\"}");
     }
 }

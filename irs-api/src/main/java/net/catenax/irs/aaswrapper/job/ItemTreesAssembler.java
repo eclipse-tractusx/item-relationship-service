@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.component.Submodel;
 import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
@@ -38,12 +39,14 @@ public class ItemTreesAssembler {
         final var numberOfPartialTrees = new AtomicInteger();
         final ArrayList<Tombstone> tombstones = new ArrayList<>();
         final ArrayList<AssetAdministrationShellDescriptor> shells = new ArrayList<>();
+        final ArrayList<Submodel> submodels = new ArrayList<>();
 
         partialGraph.forEachOrdered(itemGraph -> {
             relationships.addAll(itemGraph.getAssemblyPartRelationships());
             numberOfPartialTrees.incrementAndGet();
             tombstones.addAll(itemGraph.getTombstones());
             shells.addAll(itemGraph.getShells());
+            submodels.addAll(itemGraph.getSubmodels());
         });
 
         log.info("Assembled item graph from {} partial graphs", numberOfPartialTrees);
@@ -52,6 +55,7 @@ public class ItemTreesAssembler {
                             .assemblyPartRelationships(relationships)
                             .tombstones(tombstones)
                             .shells(shells)
+                            .submodels(submodels)
                             .build();
     }
 }

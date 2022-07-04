@@ -15,12 +15,14 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import io.github.resilience4j.retry.annotation.Retry;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.dto.QuantityDTO;
+import net.catenax.irs.exceptions.JsonParseException;
+import net.catenax.irs.util.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -29,10 +31,11 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SubmodelFacade {
 
     private final SubmodelClient submodelClient;
+    private final JsonUtil jsonUtil;
 
     /**
      * @param submodelEndpointAddress The URL to the submodel endpoint
@@ -54,6 +57,25 @@ public class SubmodelFacade {
         }
 
         return buildAssemblyPartRelationshipResponse(submodelParts, submodel.getCatenaXId());
+    }
+
+    /**
+     * @param submodelEndpointAddress The URL to the submodel endpoint
+     * @return The Aspect Model for the given submodel
+     */
+    @Retry(name = "submodelRetryer")
+    public String getSubmodelAsString(final String submodelEndpointAddress) {
+        final Object submodel = this.submodelClient.getSubmodel(submodelEndpointAddress, Object.class);
+        log.info("Submodel: {}.", submodel);
+        String response;
+        try {
+            response = this.jsonUtil.asString(submodel);
+        } catch (JsonParseException e) {
+            response = submodel.toString();
+            log.info("Could not parse Submodel response into JSON-Structure. Returning String: '{}'", response);
+        }
+        log.info("Returning Submodel as String: '{}'", response);
+        return response;
     }
 
     private boolean thereAreChildParts(final AssemblyPartRelationship submodel) {

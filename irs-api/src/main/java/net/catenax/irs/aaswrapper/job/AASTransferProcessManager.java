@@ -12,6 +12,7 @@ package net.catenax.irs.aaswrapper.job;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -22,8 +23,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.component.ProcessingError;
+import net.catenax.irs.component.Submodel;
 import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import net.catenax.irs.component.assetadministrationshell.Endpoint;
 import net.catenax.irs.component.assetadministrationshell.SubmodelDescriptor;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
@@ -109,6 +112,10 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
                 final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = aasShell.filterDescriptorsByAspectTypes(
                         jobData.getAspectTypes());
 
+                if (jobData.isCollectAspects()) {
+                    log.info("Collecting Submodels.");
+                    collectSubmodels(filteredSubmodelDescriptorsByAspectType, itemContainerBuilder, itemId);
+                }
                 log.debug("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
                 log.debug("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
 
@@ -122,6 +129,45 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             transferProcessCompleted.accept(aasTransferProcess);
         };
+    }
+
+    private void collectSubmodels(final List<SubmodelDescriptor> submodelDescriptors,
+            final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId) {
+        submodelDescriptors.forEach(submodelDescriptor -> itemContainerBuilder.submodels(
+                getSubmodels(submodelDescriptor, itemContainerBuilder, itemId)));
+    }
+
+    private List<Submodel> getSubmodels(final SubmodelDescriptor submodelDescriptor,
+            final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId) {
+        final List<Submodel> submodels = new ArrayList<>();
+        submodelDescriptor.getEndpoints().forEach(endpoint -> {
+            try {
+                submodels.add(createSubmodel(submodelDescriptor, endpoint));
+            } catch (JsonParseException e) {
+                log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
+                itemContainerBuilder.tombstone(
+                        createTombstone(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e));
+            }
+        });
+        return submodels;
+    }
+
+    private Submodel createSubmodel(final SubmodelDescriptor submodelDescriptor, final Endpoint endpoint) {
+        final String payload = requestSubmodelAsString(endpoint);
+        return Submodel.builder().identification(submodelDescriptor.getIdentification()).aspectType(
+                getAspectType(submodelDescriptor)).payload(payload).build();
+    }
+
+    private String getAspectType(final SubmodelDescriptor submodelDescriptor) {
+        return submodelDescriptor.getSemanticId()
+                                 .getValue()
+                                 .stream()
+                                 .findFirst()
+                                 .orElse(null);
+    }
+
+    private String requestSubmodelAsString(final Endpoint endpoint) {
+        return submodelFacade.getSubmodelAsString(endpoint.getProtocolInformation().getEndpointAddress());
     }
 
     private void storeItemContainer(final String processId, final ItemContainer itemContainer) {

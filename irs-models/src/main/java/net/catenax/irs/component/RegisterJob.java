@@ -45,9 +45,8 @@ public class RegisterJob {
     @Pattern(regexp = GLOBAL_ASSET_ID_REGEX)
     @NotBlank
     @Size(min = GLOBAL_ASSET_ID_SIZE, max = GLOBAL_ASSET_ID_SIZE)
-    @Schema(description = "Id of global asset.",
-            example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0", implementation = String.class,
-            minLength = GLOBAL_ASSET_ID_SIZE, maxLength = GLOBAL_ASSET_ID_SIZE)
+    @Schema(description = "Id of global asset.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+            implementation = String.class, minLength = GLOBAL_ASSET_ID_SIZE, maxLength = GLOBAL_ASSET_ID_SIZE)
     private String globalAssetId;
 
     @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)
@@ -60,11 +59,13 @@ public class RegisterJob {
             description = "Max depth of the item graph returned. If no depth is set item graph with max depth is returned.")
     @Min(MIN_TREE_DEPTH)
     @Max(MAX_TREE_DEPTH)
-
     private Integer depth;
 
     @Schema(implementation = Direction.class, defaultValue = Direction.DirectionConstants.DOWNWARD)
     private Direction direction;
+
+    @Schema(description = "Flag to specify whether aspects should be requested and collected. Default is false.")
+    private boolean collectAspects;
 
     /**
      * Returns requested depth if provided, otherwise MAX_TREE_DEPTH value

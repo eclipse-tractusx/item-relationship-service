@@ -15,6 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
 import lombok.extern.jackson.Jacksonized;
+import net.catenax.irs.component.Submodel;
 import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
@@ -35,4 +36,7 @@ public class ItemContainer {
 
     @Singular
     private List<AssetAdministrationShellDescriptor> shells;
+
+    @Singular
+    private List<Submodel> submodels;
 }
