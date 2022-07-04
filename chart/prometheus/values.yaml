@@ -30,11 +30,17 @@ podSecurityContext: {}
 
 # Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+#securityContext:
+#  allowPrivilegeEscalation: false
+#  runAsNonRoot: true
+#  runAsUser: 1000
+#  runAsGroup: 3000
+
 securityContext:
-  allowPrivilegeEscalation: false
-  runAsNonRoot: true
   runAsUser: 1000
-  runAsGroup: 3000
+  runAsNonRoot: true
+  runAsGroup: 65534
+  fsGroup: 2000
 
 service:
   type: ClusterIP
