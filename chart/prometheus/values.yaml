@@ -37,9 +37,10 @@ podSecurityContext: {}
 #  runAsGroup: 3000
 
 securityContext:
-  runAsGroup: 2000
+  runAsUser: 1000  
   runAsNonRoot: true
-  runAsUser: 1000
+  runAsGroup: 65534
+  fsGroup: 2000
 
 service:
   type: ClusterIP
