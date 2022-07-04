@@ -40,7 +40,7 @@ spec:
           livenessProbe:
             httpGet:
               path: "/api/health"
-              port: actuator
+              port: http
               scheme: HTTP
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -50,7 +50,7 @@ spec:
           readinessProbe:
             httpGet:
               path: "/api/health"
-              port: actuator
+              port: http
               scheme: HTTP
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
