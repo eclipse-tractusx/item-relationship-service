@@ -31,11 +31,10 @@ import org.springframework.web.client.RestTemplate;
 class SubmodelFacadeWiremockTest {
 
     private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
-
-    private WireMockServer wireMockServer;
-    private SubmodelFacade submodelFacade;
     private final JsonUtil jsonUtil = new JsonUtil();
     private final RestTemplate restTemplate = new RestTemplate();
+    private WireMockServer wireMockServer;
+    private SubmodelFacade submodelFacade;
 
     @BeforeEach
     void configureSystemUnderTest() {
@@ -63,7 +62,8 @@ class SubmodelFacadeWiremockTest {
         final String submodel = submodelFacade.getSubmodelAsString(url);
 
         // Assert
-        assertThat(submodel).startsWith("{\"catenaXId\":\"urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978\",\"childParts\":[");
+        assertThat(submodel).startsWith(
+                "{\"catenaXId\":\"urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978\",\"childParts\":[");
     }
 
     @Test
@@ -77,7 +77,8 @@ class SubmodelFacadeWiremockTest {
         final String submodel = submodelFacade.getSubmodelAsString(url);
 
         // Assert
-        assertThat(submodel).startsWith("{\"component\":[{\"materialName\":\"Cooper\",\"recycledContent\":0,\"materialClass\":\"3.1\"");
+        assertThat(submodel).startsWith(
+                "{\"component\":[{\"materialName\":\"Cooper\",\"recycledContent\":0,\"materialClass\":\"3.1\"");
     }
 
     @Test

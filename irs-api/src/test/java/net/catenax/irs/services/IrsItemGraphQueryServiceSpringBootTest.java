@@ -1,6 +1,7 @@
 package net.catenax.irs.services;
 
 import static net.catenax.irs.util.TestMother.registerJobWithDepthAndAspect;
+import static net.catenax.irs.util.TestMother.registerJobWithDepthAndAspectAndCollectAspects;
 import static net.catenax.irs.util.TestMother.registerJobWithoutDepth;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.given;
@@ -55,6 +56,22 @@ class IrsItemGraphQueryServiceSpringBootTest {
                .await()
                .atMost(10, TimeUnit.SECONDS)
                .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFullTree));
+    }
+
+    @Test
+    void registerItemJobWithCollectAspectsShouldIncludeSubmodels() {
+        // given
+        final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3, List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP));
+        final int expectedRelationshipsSizeFullTree = 5; // stub
+
+        // when
+        final JobHandle registeredJob = service.registerItemJob(registerJob);
+
+        // then
+        given().ignoreException(EntityNotFoundException.class)
+               .await()
+               .atMost(10, TimeUnit.SECONDS)
+               .until(() -> getSubmodelsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFullTree));
     }
 
     @Test
@@ -115,10 +132,15 @@ class IrsItemGraphQueryServiceSpringBootTest {
         // then
         assertThat(multiTransferJob).isPresent();
         assertThat(multiTransferJob.get().getJobParameter().getAspectTypes()).contains(defaultAspectType);
+        assertThat(multiTransferJob.get().getJobParameter().isCollectAspects()).isFalse();
     }
 
     private int getRelationshipsSize(final UUID jobId) {
         return service.getJobForJobId(jobId, false).getRelationships().size();
+    }
+
+    private int getSubmodelsSize(final UUID jobId) {
+        return service.getJobForJobId(jobId, false).getSubmodels().size();
     }
 
 }
