@@ -17,12 +17,15 @@ import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.givenThat;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import net.catenax.irs.util.JsonUtil;
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 class SubmodelFacadeWiremockTest {
@@ -64,7 +67,7 @@ class SubmodelFacadeWiremockTest {
     }
 
     @Test
-    void shouldMaterialForRecyclingAsString() {
+    void shouldReturnMaterialForRecyclingAsString() {
         // Arrange
         givenThat(any(anyUrl()).willReturn(aResponse().withStatus(200)
                                                       .withHeader("Content-Type", "application/json;charset=UTF-8")
@@ -89,6 +92,34 @@ class SubmodelFacadeWiremockTest {
 
         // Assert
         assertThat(submodel).isEqualTo("test");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenResponse_400() {
+        // Arrange
+        givenThat(any(anyUrl()).willReturn(aResponse().withStatus(400)
+                                                      .withHeader("Content-Type", "application/json;charset=UTF-8")
+                                                      .withBody("{ error: '400'}")));
+
+        // Act
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelAsString(url);
+
+        // Assert
+        assertThatExceptionOfType(RestClientException.class).isThrownBy(throwingCallable);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenResponse_500() {
+        // Arrange
+        givenThat(any(anyUrl()).willReturn(aResponse().withStatus(500)
+                                                      .withHeader("Content-Type", "application/json;charset=UTF-8")
+                                                      .withBody("{ error: '500'}")));
+
+        // Act
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelAsString(url);
+
+        // Assert
+        assertThatExceptionOfType(RestClientException.class).isThrownBy(throwingCallable);
     }
 
     private String buildApiMethodUrl() {

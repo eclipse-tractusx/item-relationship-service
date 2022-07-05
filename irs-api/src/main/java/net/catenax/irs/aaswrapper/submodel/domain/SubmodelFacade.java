@@ -61,17 +61,17 @@ public class SubmodelFacade {
 
     /**
      * @param submodelEndpointAddress The URL to the submodel endpoint
-     * @return The Aspect Model for the given submodel
+     * @return The Aspect Model as JSON-String for the given submodel
      */
     @Retry(name = "submodelRetryer")
     public String getSubmodelAsString(final String submodelEndpointAddress) {
-        final Object submodel = this.submodelClient.getSubmodel(submodelEndpointAddress, Object.class);
+        final String submodel = this.submodelClient.getSubmodel(submodelEndpointAddress);
         log.info("Submodel: {}.", submodel);
         String response;
         try {
-            response = this.jsonUtil.asString(submodel);
+            response = jsonUtil.asString(jsonUtil.fromString(submodel, Object.class));
         } catch (JsonParseException e) {
-            response = submodel.toString();
+            response = submodel;
             log.info("Could not parse Submodel response into JSON-Structure. Returning String: '{}'", response);
         }
         log.info("Returning Submodel as String: '{}'", response);
