@@ -42,10 +42,7 @@ spec:
               mountPath: /tmp
           ports:
             - name: http
-              containerPort: 8080
-              protocol: TCP
-            - name: actuator
-              containerPort: 4004
+              containerPort: 3000
               protocol: TCP
           livenessProbe:
             httpGet:
