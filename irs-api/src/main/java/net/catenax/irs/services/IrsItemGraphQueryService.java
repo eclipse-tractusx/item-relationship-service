@@ -27,6 +27,7 @@ import net.catenax.irs.aaswrapper.job.ItemDataRequest;
 import net.catenax.irs.component.AsyncFetchedItems;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.Relationship;
@@ -44,7 +45,6 @@ import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferProcess;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.JobParameter;
-import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
@@ -67,6 +67,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final BlobPersistence blobStore;
 
+    private final MeterRegistryService meterRegistryService;
+
     @Value("${aspectTypes.default}")
     private String defaultAspect;
 
@@ -77,6 +79,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
+            meterRegistryService.incrementNumberOfCreatedJobs();
             final String jobId = jobInitiateResponse.getJobId();
 
             return JobHandle.builder().jobId(UUID.fromString(jobId)).build();
