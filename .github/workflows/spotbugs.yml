@@ -1,4 +1,4 @@
-name: "owasp"
+name: "spotbugs"
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
       actions: read
       contents: read
 
-    name: owasp-check
+    name: spotbugs-check
     steps:
       - uses: actions/checkout@v3
 
@@ -29,11 +29,5 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: run maven owasp plugin
-        run: mvn install -Pdependency-check
-
-      - name: upload results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          path: 'target/dependency-check-report.html'
+      - name: run maven spotbugs plugin
+        run: mvn clean package -DskipTests=true spotbugs:check
