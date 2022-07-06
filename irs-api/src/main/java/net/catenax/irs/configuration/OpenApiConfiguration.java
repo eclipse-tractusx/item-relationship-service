@@ -22,7 +22,6 @@ import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
 import net.catenax.irs.IrsApplication;
 import org.springdoc.core.customizers.OpenApiCustomiser;
-import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -37,8 +36,6 @@ public class OpenApiConfiguration {
      * IRS configuration settings.
      */
     private final IrsConfiguration irsConfiguration;
-
-    private final OAuth2ClientProperties oAuth2ClientProperties;
 
     /**
      * Factory for generated Open API definition.
