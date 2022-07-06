@@ -11,6 +11,7 @@ package net.catenax.irs.configuration;
 
 import java.util.concurrent.Executors;
 
+import net.catenax.irs.aaswrapper.job.AASHandler;
 import net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.AASTransferProcessManager;
@@ -40,8 +41,8 @@ public class JobConfiguration {
             final DigitalTwinRegistryFacade registryFacade, final SubmodelFacade submodelFacade,
             final BlobPersistence blobStore, final JobStore jobStore) {
 
-        final var manager = new AASTransferProcessManager(registryFacade, submodelFacade,
-                Executors.newCachedThreadPool(), blobStore);
+        final var aasHandler = new AASHandler(registryFacade, submodelFacade);
+        final var manager = new AASTransferProcessManager(aasHandler, Executors.newCachedThreadPool(), blobStore);
         final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);
 
