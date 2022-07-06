@@ -53,6 +53,8 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     private final BlobPersistence blobStore;
 
+    private int retryCount;
+
     public AASTransferProcessManager(final DigitalTwinRegistryFacade registryFacade,
             final SubmodelFacade submodelFacade, final ExecutorService executor, final BlobPersistence blobStore) {
         this.registryFacade = registryFacade;
