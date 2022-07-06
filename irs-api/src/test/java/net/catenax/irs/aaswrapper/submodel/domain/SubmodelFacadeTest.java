@@ -48,7 +48,7 @@ class SubmodelFacadeTest {
     @BeforeEach
     void setUp() {
         final SubmodelClientLocalStub submodelClientStub = new SubmodelClientLocalStub();
-        submodelFacade = new SubmodelFacade(submodelClientStub, jsonUtil);
+        submodelFacade = new SubmodelFacade(submodelClientStub);
     }
 
     @Test
@@ -56,7 +56,7 @@ class SubmodelFacadeTest {
         final String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(),
                 "http://aaswrapper:9191/api/service", jsonUtil);
-        final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient, jsonUtil);
+        final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
                 () -> submodelFacade.getSubmodel(url, jobParameter()));
@@ -96,7 +96,7 @@ class SubmodelFacadeTest {
         final String endpointUrl = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(restTemplate,
                 "http://aaswrapper:9191/api/service", jsonUtil);
-        SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient, jsonUtil);
+        SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
         final AssemblyPartRelationship assemblyPartRelationship = new AssemblyPartRelationship();
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";

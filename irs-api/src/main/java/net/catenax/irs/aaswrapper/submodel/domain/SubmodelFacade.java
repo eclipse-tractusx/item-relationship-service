@@ -21,8 +21,6 @@ import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.dto.QuantityDTO;
-import net.catenax.irs.exceptions.JsonParseException;
-import net.catenax.irs.util.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +33,6 @@ import org.springframework.stereotype.Service;
 public class SubmodelFacade {
 
     private final SubmodelClient submodelClient;
-    private final JsonUtil jsonUtil;
 
     /**
      * @param submodelEndpointAddress The URL to the submodel endpoint
@@ -66,16 +63,8 @@ public class SubmodelFacade {
     @Retry(name = "submodelRetryer")
     public String getSubmodelAsString(final String submodelEndpointAddress) {
         final String submodel = this.submodelClient.getSubmodel(submodelEndpointAddress);
-        log.info("Submodel: {}.", submodel);
-        String response;
-        try {
-            response = jsonUtil.asString(jsonUtil.fromString(submodel, Object.class));
-        } catch (JsonParseException e) {
-            response = submodel;
-            log.info("Could not parse Submodel response into JSON-Structure. Returning String: '{}'", response);
-        }
-        log.info("Returning Submodel as String: '{}'", response);
-        return response;
+        log.info("Returning Submodel as String: '{}'", submodel);
+        return submodel;
     }
 
     private boolean thereAreChildParts(final AssemblyPartRelationship submodel) {

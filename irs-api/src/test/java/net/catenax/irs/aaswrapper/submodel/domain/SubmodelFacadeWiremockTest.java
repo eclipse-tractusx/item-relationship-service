@@ -43,7 +43,7 @@ class SubmodelFacadeWiremockTest {
         configureFor(this.wireMockServer.port());
         SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate, buildApiMethodUrl() + "/api/service",
                 jsonUtil);
-        this.submodelFacade = new SubmodelFacade(submodelClient, jsonUtil);
+        this.submodelFacade = new SubmodelFacade(submodelClient);
     }
 
     @AfterEach
@@ -62,8 +62,7 @@ class SubmodelFacadeWiremockTest {
         final String submodel = submodelFacade.getSubmodelAsString(url);
 
         // Assert
-        assertThat(submodel).startsWith(
-                "{\"catenaXId\":\"urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978\",\"childParts\":[");
+        assertThat(submodel).contains("\"catenaXId\": \"urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978\"");
     }
 
     @Test
@@ -77,8 +76,7 @@ class SubmodelFacadeWiremockTest {
         final String submodel = submodelFacade.getSubmodelAsString(url);
 
         // Assert
-        assertThat(submodel).startsWith(
-                "{\"component\":[{\"materialName\":\"Cooper\",\"recycledContent\":0,\"materialClass\":\"3.1\"");
+        assertThat(submodel).contains("\"materialName\": \"Cooper\",");
     }
 
     @Test
