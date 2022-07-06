@@ -17,21 +17,17 @@ import org.springframework.stereotype.Service;
  * Registering customer metrics for application
  */
 @Service
-public class MeterRegistryService {
-
-    private final MeterRegistry meterRegistry;
+/* package */ class MeterRegistryService {
 
     private final Counter counterCreatedJobs;
 
-    public MeterRegistryService(final MeterRegistry meterRegistry) {
-        this.meterRegistry = meterRegistry;
-
+    /* package */ MeterRegistryService(final MeterRegistry meterRegistry) {
         this.counterCreatedJobs = Counter.builder("jobs.created")
                .description("The number of jobs ever created")
                .register(meterRegistry);
     }
 
-    void incrementNumberOfCreatedJobs() {
+    /* package */ void incrementNumberOfCreatedJobs() {
         counterCreatedJobs.increment();
     }
 }
