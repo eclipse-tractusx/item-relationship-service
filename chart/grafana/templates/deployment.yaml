@@ -44,6 +44,17 @@ spec:
             - name: http
               containerPort: 3000
               protocol: TCP
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "grafana.fullname" . }}
+                  key: username
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "grafana.fullname" . }}
+                  key: password
           livenessProbe:
             httpGet:
               path: "/api/health"
