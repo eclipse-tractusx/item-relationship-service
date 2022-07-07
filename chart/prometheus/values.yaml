@@ -136,5 +136,5 @@ config:
       metrics_path: '/actuator/prometheus'
       scrape_interval: 5s
       static_configs:
-        - targets: [ 'app-irs-dev:8080' ]
+        - targets: [ 'app-irs-dev:4004' ]
 
