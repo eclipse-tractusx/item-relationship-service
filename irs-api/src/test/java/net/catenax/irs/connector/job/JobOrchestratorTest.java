@@ -1,10 +1,7 @@
 package net.catenax.irs.connector.job;
 
-<<<<<<< HEAD
 import static net.catenax.irs.controllers.IrsAppConstants.JOB_EXECUTION_FAILED;
-=======
 import static net.catenax.irs.util.TestMother.jobParameter;
->>>>>>> main
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.ArgumentMatchers.any;
