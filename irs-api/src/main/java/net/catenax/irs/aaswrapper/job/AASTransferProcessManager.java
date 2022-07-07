@@ -87,6 +87,8 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             final ItemContainer.ItemContainerBuilder itemContainerBuilder = ItemContainer.builder();
 
+            long retryCount = 0L;
+
             log.info("Starting processing Digital Twin Registry with itemId {}", itemId);
             try {
                 final AssetAdministrationShellDescriptor aasShell = registryFacade.getAAShellDescriptor(itemId,
@@ -102,10 +104,10 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
                     } catch (RestClientException | IllegalArgumentException e) {
                         log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                                 address);
-                        itemContainerBuilder.tombstone(createTombstone(itemId, address, e));
+                        itemContainerBuilder.tombstone(createTombstone(itemId, address, e, ++retryCount));
                     } catch (JsonParseException e) {
                         log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
-                        itemContainerBuilder.tombstone(createTombstone(itemId, address, e));
+                        itemContainerBuilder.tombstone(createTombstone(itemId, address, e, ++retryCount));
                     }
                 });
                 final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = aasShell.filterDescriptorsByAspectTypes(
@@ -118,7 +120,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
                         aasShell.toBuilder().submodelDescriptors(filteredSubmodelDescriptorsByAspectType).build());
             } catch (RestClientException e) {
                 log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-                itemContainerBuilder.tombstone(createTombstone(itemId, null, e));
+                itemContainerBuilder.tombstone(createTombstone(itemId, null, e, ++retryCount));
             }
             storeItemContainer(processId, itemContainerBuilder.build());
 
@@ -135,9 +137,10 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
         }
     }
 
-    private Tombstone createTombstone(final String itemId, final String address, final Exception exception) {
+    private Tombstone createTombstone(final String itemId, final String address, final Exception exception,
+            final int retryCount) {
         final ProcessingError processingError = ProcessingError.builder()
-                                                               .withRetryCounter(0)
+                                                               .withRetryCounter(retryCount)
                                                                .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
                                                                .withErrorDetail(exception.getMessage())
                                                                .build();
