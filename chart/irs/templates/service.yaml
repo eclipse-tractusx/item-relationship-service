@@ -12,7 +12,7 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.service.actuatorPort }}
       targetPort: actuator
       protocol: TCP
       name: actuator
