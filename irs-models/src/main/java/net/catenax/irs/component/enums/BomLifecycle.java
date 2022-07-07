@@ -28,11 +28,6 @@ import lombok.Getter;
 @Getter
 public enum BomLifecycle {
     @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") AS_BUILT("asBuilt", "AsBuilt");
-    //@Schema(description = "The view of the ItemsTree ... lifecycle.") AS_MAINTAINED("asMaintained"),
-    //@Schema(description = "TThe view of the ItemsTree ... lifecycle.") AS_PLANNED("asPlanned"),
-    //@Schema(description = "TThe view of the ItemsTree ... lifecycle.") AS_DESIGNED("asDesigned"),
-    //@Schema(description = "The view of the ItemsTree ... lifecycle.") AS_ORDERED("asOrdered"),
-    //@Schema(description = "The view of the ItemsTree ... lifecycle.") AS_RECYCLED("asRecycled");
 
     private final String value;
     private final String lifecycleContextCharacteristicValue;

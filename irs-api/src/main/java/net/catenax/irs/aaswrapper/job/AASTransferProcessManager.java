@@ -150,7 +150,6 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
                                                   .map(ChildDataDTO::getChildCatenaXId)
                                                   .collect(Collectors.toList());
         aasTransferProcess.addIdsToProcess(childIds);
-        // TODO (jkreutzfeld) what do we actually need to store here?
         itemContainer.assemblyPartRelationship(relationship);
     }
 

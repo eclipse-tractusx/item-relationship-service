@@ -9,9 +9,6 @@
 //
 package net.catenax.irs.component;
 
-import static net.catenax.irs.dtos.ValidationConstants.INPUT_FIELD_MIN_LENGTH;
-import static net.catenax.irs.dtos.ValidationConstants.JOB_ID_FIELD_MAX_LENGTH;
-
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -38,6 +35,9 @@ import net.catenax.irs.component.enums.JobState;
 @Jacksonized
 @SuppressWarnings("PMD.ShortClassName")
 public class Job {
+
+    private static final int INPUT_FIELD_MIN_LENGTH = 36;
+    private static final int JOB_ID_FIELD_MAX_LENGTH = 36;
 
     @NotNull
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
