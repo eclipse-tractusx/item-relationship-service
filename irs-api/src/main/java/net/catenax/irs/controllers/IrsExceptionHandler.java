@@ -70,7 +70,7 @@ public class IrsExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                              .body(ErrorResponse.builder()
                                                 .withStatusCode(HttpStatus.BAD_REQUEST)
-                                                .withMessage(ApiErrorsConstants.INVALID_ARGUMENTS)
+                                                .withMessage(IrsAppConstants.INVALID_ARGUMENTS)
                                                 .withErrors(errors)
                                                 .build());
     }

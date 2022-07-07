@@ -13,7 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
-public class SecurityHelperServiceTest {
+class SecurityHelperServiceTest {
 
     private final String CLIENT_ID = "sa-cl6-cx-2";
 

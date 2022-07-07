@@ -8,19 +8,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.web.client.HttpServerErrorException.InternalServerError;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.catenax.irs.configuration.SecurityConfiguration;
 import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(IrsController.class)
+@Import(SecurityConfiguration.class)
 class IrsExceptionHandlerTest {
+
     @MockBean
     private IrsItemGraphQueryService service;
+
     @Autowired
     private MockMvc mockMvc;
 

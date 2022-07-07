@@ -1,11 +1,9 @@
 package net.catenax.irs.util;
 
-import static net.catenax.irs.controllers.IrsApiConstants.GLOBAL_ASSET_ID_SIZE;
-import static net.catenax.irs.controllers.IrsApiConstants.UUID_SIZE;
+import static net.catenax.irs.controllers.IrsAppConstants.GLOBAL_ASSET_ID_SIZE;
+import static net.catenax.irs.controllers.IrsAppConstants.UUID_SIZE;
 
-import java.net.URL;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;

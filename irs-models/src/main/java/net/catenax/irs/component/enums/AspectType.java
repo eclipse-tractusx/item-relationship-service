@@ -16,6 +16,8 @@ import java.util.stream.Stream;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * AspectType information for a part tree
@@ -82,6 +84,7 @@ public enum AspectType {
     /**
      * Constants for aspectTypes
      */
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class AspectTypesConstants {
         public static final String SERIAL_PART_TYPIZATION = "SerialPartTypization";
         public static final String ASSEMBLY_PART_RELATIONSHIP = "AssemblyPartRelationship";
@@ -101,8 +104,5 @@ public enum AspectType {
         public static final String CONTACT_INFORMATION = "ContactInformation";
         public static final String BATTERY_PASS = "BatteryPass";
         public static final String VEHICLE_DIAGNOSTIC_DATA_QUALITY = "VehicleDiagnosticDataQuality";
-
-        private AspectTypesConstants() {
-        }
     }
 }
