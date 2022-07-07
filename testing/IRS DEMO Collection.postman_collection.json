@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bb78ad99-e650-4779-b63f-5b84d0337af9",
+		"_postman_id": "3d037b30-c643-470e-9e13-841717771afe",
 		"name": "IRS DEMO Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "19870399"
@@ -21,18 +21,11 @@
 							}
 						],
 						"url": {
-							"raw": "https://semantics.int.demo.catena-x.net/registry/registry/shell-descriptors/:aasIdentifier",
-							"protocol": "https",
+							"raw": "{{DIGITAL_TWIN_REGISTRY}}/registry/shell-descriptors/:aasIdentifier",
 							"host": [
-								"catenaxintakssrv",
-								"germanywestcentral",
-								"cloudapp",
-								"azure",
-								"com"
+								"{{DIGITAL_TWIN_REGISTRY}}"
 							],
 							"path": [
-								"semantics",
-								"twin-registry",
 								"registry",
 								"shell-descriptors",
 								":aasIdentifier"
@@ -40,7 +33,7 @@
 							"variable": [
 								{
 									"key": "aasIdentifier",
-									"value": null
+									"value": "urn:uuid:a72cae69-69f7-4827-b734-76e6aab9d581"
 								}
 							]
 						}
@@ -51,16 +44,17 @@
 					"name": "Submodel Request",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "123456",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "https://irs-aas-wrapper.int.demo.catena-x.net/api/service/:assetId-SubmodelId/submodel?content=value&extent=WithBLOBValue&provider-connector-url=http://connector.cx-rel.edc.aws.bmw.cloud:8282/BPNL00000003AYRE",
-							"protocol": "https",
+							"raw": "{{AAS_WRAPPER}}/api/service/:assetId-SubmodelId/submodel?content=value&extent=withBlobValue&provider-connector-url=http://idsvm.westeurope.cloudapp.azure.com:8282/BPNL00000003AXS3",
 							"host": [
-								"irs-aas-wrapper",
-								"int",
-								"demo",
-								"catena-x",
-								"net"
+								"{{AAS_WRAPPER}}"
 							],
 							"path": [
 								"api",
@@ -75,17 +69,24 @@
 								},
 								{
 									"key": "extent",
-									"value": "WithBLOBValue"
+									"value": "withBlobValue"
 								},
 								{
 									"key": "provider-connector-url",
-									"value": "http://connector.cx-rel.edc.aws.bmw.cloud:8282/BPNL00000003AYRE"
+									"value": "http://connector.cx-rel.edc.aws.bmw.cloud:8282/BPNL00000003AYRE",
+									"description": "BMW",
+									"disabled": true
+								},
+								{
+									"key": "provider-connector-url",
+									"value": "http://idsvm.westeurope.cloudapp.azure.com:8282/BPNL00000003AXS3",
+									"description": "ZF"
 								}
 							],
 							"variable": [
 								{
 									"key": "assetId-SubmodelId",
-									"value": "urn:uuid:4629ade2-8be9-43f5-95cf-2dca84464aaf-urn:uuid:a3ca3d8d-72cc-47b3-b60c-8f9931d3f64d"
+									"value": "urn:uuid:3d9a60bc-e2ce-4ca4-bcae-6ff898963468-urn:uuid:a967c914-11c9-421c-a118-34ade59d59ab"
 								}
 							]
 						}
@@ -104,25 +105,62 @@
 							}
 						],
 						"url": {
-							"raw": "https://semantics.int.demo.catena-x.net/registry/lookup/shells?assetIds=[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B5MJ\"}]",
-							"protocol": "https",
+							"raw": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells",
 							"host": [
-								"catenaxintakssrv",
-								"germanywestcentral",
-								"cloudapp",
-								"azure",
-								"com"
+								"{{DIGITAL_TWIN_REGISTRY}}"
 							],
 							"path": [
-								"semantics",
-								"twin-registry",
 								"lookup",
 								"shells"
 							],
 							"query": [
 								{
 									"key": "assetIds",
-									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B5MJ\"}]"
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003AYRE\"}],",
+									"description": "BMW OEM A",
+									"disabled": true
+								},
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003AVTH\"}],",
+									"description": "Mercedes OEM B",
+									"disabled": true
+								},
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003AZQP\"}]",
+									"description": "SAP OEM C",
+									"disabled": true
+								},
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B2OM\"}],",
+									"description": "ZF Tier A",
+									"disabled": true
+								},
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B3NX\"}],",
+									"description": "ZF Sub Tier A",
+									"disabled": true
+								},
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B5MJ\"}],",
+									"description": "Bosch Tier B",
+									"disabled": true
+								},
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B0Q0\"}],",
+									"description": "BASF N-Tier A",
+									"disabled": true
+								},
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003AXS3\"}],",
+									"description": "Henkel Sub Tier B",
+									"disabled": true
 								}
 							]
 						}
@@ -141,18 +179,11 @@
 							}
 						],
 						"url": {
-							"raw": "https://semantics.int.demo.catena-x.net/registry/lookup/shells?assetIds=[{\"key\":\"VAN\",\"value\": \"OMA-TGFAYUHXFLHHUQQMPLTE\"}]",
-							"protocol": "https",
+							"raw": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells?assetIds=[{\"key\":\"VAN\",\"value\": \"OMA-TGFAYUHXFLHHUQQMPLTE\"}]",
 							"host": [
-								"catenaxintakssrv",
-								"germanywestcentral",
-								"cloudapp",
-								"azure",
-								"com"
+								"{{DIGITAL_TWIN_REGISTRY}}"
 							],
 							"path": [
-								"semantics",
-								"twin-registry",
 								"lookup",
 								"shells"
 							],
@@ -178,18 +209,11 @@
 							}
 						],
 						"url": {
-							"raw": "https://semantics.int.demo.catena-x.net/registry/lookup/shells?assetIds=[{\"key\":\"globalAssetId\",\"value\":\"urn:uuid:866b8c6f-8e59-4b9c-9e1d-61900bff91ce\"}]",
-							"protocol": "https",
+							"raw": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells?assetIds=[{\"key\":\"globalAssetId\",\"value\":\"urn:uuid:866b8c6f-8e59-4b9c-9e1d-61900bff91ce\"}]",
 							"host": [
-								"catenaxintakssrv",
-								"germanywestcentral",
-								"cloudapp",
-								"azure",
-								"com"
+								"{{DIGITAL_TWIN_REGISTRY}}"
 							],
 							"path": [
-								"semantics",
-								"twin-registry",
 								"lookup",
 								"shells"
 							],
@@ -198,6 +222,40 @@
 									"key": "assetIds",
 									"value": "[{\"key\":\"globalAssetId\",\"value\":\"urn:uuid:866b8c6f-8e59-4b9c-9e1d-61900bff91ce\"}]"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Registry",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"query\": {\r\n    \"assetIds\": [\r\n      {\r\n        \"value\" : \"OMA-TGFAYUHXFLHHUQQMPLTE\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-TGETGMWPZFMNWOSFSUTB\",\r\n                    \"key\" : \"VAN\"\r\n            }\r\n            ,\r\n            {\r\n                \"value\" : \"OMA-LFVTNWIDZPPRXGZEFEMN\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-TYFEAJPWMOXNDYYJTHOB\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-NRWQMZQXSKSZCRWDMWHF\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-FUQTIGXCVPVLRJAZXXYZ\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-DDGCCSBNEIVZDMXEMMTH\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-VXXHAGYPPYCLXANZCZXX\",\r\n        \"key\" : \"VAN\"\r\n            }\r\n    ]\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells/query",
+							"host": [
+								"{{DIGITAL_TWIN_REGISTRY}}"
+							],
+							"path": [
+								"lookup",
+								"shells",
+								"query"
 							]
 						}
 					},

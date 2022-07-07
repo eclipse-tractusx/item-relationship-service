@@ -99,6 +99,10 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         final JobState state = fetchedJob.get().getJob().getJobState();
         assertThat(state).isEqualTo(JobState.CANCELED);
+
+        final ZonedDateTime lastModifiedOn = fetchedJob.get().getJob().getLastModifiedOn();
+        assertThat(lastModifiedOn).isNotNull();
+        assertThat(lastModifiedOn).isBefore(ZonedDateTime.now());
     }
 
     @Test
