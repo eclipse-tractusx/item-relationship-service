@@ -3,11 +3,8 @@ name: IRS CI feature branch
 on:
   workflow_dispatch:
   push:
-    branches:
-      - 'feature/**'
-      - 'bugfix/**'
-      - 'fix/**'
-      - 'chore/**'
+    branches-ignore:
+      - 'main'
 
 jobs:
   build:

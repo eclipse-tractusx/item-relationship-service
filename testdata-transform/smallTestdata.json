@@ -1856,6 +1856,208 @@
                     "childCatenaXId" : "urn:uuid:84c6d1b3-89b5-4979-99f2-fbfbf55be601"
                 } ]
             } ]
+        }, {
+            "catenaXId": "urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa",
+            "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+              {
+                "localIdentifiers": [
+                  {
+                    "value": "BPNL00000003AYRE",
+                    "key": "ManufacturerID"
+                  },
+                  {
+                    "value": "8840838-04",
+                    "key": "ManufacturerPartID"
+                  },
+                  {
+                    "value": "NO-397646649734958738335866",
+                    "key": "PartInstanceID"
+                  }
+                ],
+                "manufacturingInformation": {
+                  "date": "2022-02-04T14:48:54",
+                  "country": "DEU"
+                },
+                "catenaXId": "urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa",
+                "partTypeInformation": {
+                  "manufacturerPartID": "8840838-04",
+                  "customerPartId": "8840838-04",
+                  "classification": "component",
+                  "nameAtManufacturer": "HV MODUL",
+                  "nameAtCustomer": "HV MODUL"
+                }
+              }
+            ],
+            "https://catenax.io/schema/AAS/3.0": [
+              {
+                "description": [
+                  {
+                    "language": "en",
+                    "text": "HV MODUL"
+                  }
+                ],
+                "globalAssetId": {
+                  "value": [
+                    "urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa"
+                  ]
+                },
+                "idShort": "hv_modul.asm",
+                "identification": "urn:uuid:9ec14d43-c009-464a-9717-86cf28d4df28",
+                "specificAssetIds": [
+                  {
+                    "key": "http://pwc.t-systems.com/datamodel/common",
+                    "value": "NO-397646649734958738335866"
+                  },
+                  {
+                    "key": "urn:VR:wt.part.WTPart#",
+                    "value": "8840838-04"
+                  }
+                ],
+                "submodelDescriptors": [
+                  {
+                    "description": [
+                      {
+                        "language": "en",
+                        "text": "Traceability Submodel"
+                      }
+                    ],
+                    "idShort": "material-for-recycling",
+                    "identification": "urn:uuid:f75dda8d-feaa-45e1-b5f1-31d5ba129cf2",
+                      "semanticId": [
+                          {
+                              "value": "urn:bamm:com.catenax.material_for_recycling:1.0.0"
+                          }
+                      ],
+                    "endpoints": [
+                      {
+                        "interface": "https://BPNL00000003AYRE.connector",
+                        "protocolInformation": {
+                          "endpointAddress": "http://provider-control-plane:8282/BPNL00000003AYRE/urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa-urn:uuid:f75dda8d-feaa-45e1-b5f1-31d5ba129cf2/submodel?content=value&extent=WithBLOBValue",
+                          "endpointProtocolVersion": "1.0RC02",
+                          "endpointProtocol": "AAS/SUBMODEL"
+                        }
+                      }
+                    ]
+                  },
+                    {
+                        "semanticId": [
+                            {
+                                "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0"
+                            }
+                        ],
+                    "endpoints": [
+                      {
+                        "interface": "https://BPNL00000003AYRE.connector",
+                        "protocolInformation": {
+                          "endpointAddress": "http://provider-control-plane:8282/BPNL00000003AYRE/urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa-urn:uuid:3064f87d-5e4a-496b-9685-c1cf3e113198/submodel?content=value&extent=WithBLOBValue",
+                          "endpointProtocolVersion": "1.0RC02",
+                          "endpointProtocol": "AAS/SUBMODEL"
+                        }
+                      }
+                    ],
+                    "identification": "urn:uuid:3064f87d-5e4a-496b-9685-c1cf3e113198",
+                    "idShort": "assembly-part-relationship"
+                  }
+                ]
+              }
+            ],
+            "https://catenax.io/schema/MaterialForRecycling/1.1.0": [
+              {
+                "component": [
+                  {
+                    "materialName": "Cooper",
+                    "recycledContent": 0,
+                    "materialClass": "3.1",
+                    "quantity": {
+                      "materialValue": 1.2,
+                      "measurementUnit": {
+                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+                        "lexicalValue": "kilogram"
+                      }
+                    },
+                    "aggregateState": "solid",
+                    "materialAbbreviation": "CO7"
+                  },
+                  {
+                    "materialName": "Polyamid6",
+                    "recycledContent": 0,
+                    "materialClass": "5.5.1",
+                    "quantity": {
+                      "materialValue": 2.5,
+                      "measurementUnit": {
+                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+                        "lexicalValue": "kilogram"
+                      }
+                    },
+                    "aggregateState": "solid",
+                    "materialAbbreviation": "POL6"
+                  },
+                  {
+                    "materialName": "Carbon Steel",
+                    "recycledContent": 0,
+                    "materialClass": "1.1.2",
+                    "quantity": {
+                      "materialValue": 0.23,
+                      "measurementUnit": {
+                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+                        "lexicalValue": "kilogram"
+                      }
+                    },
+                    "aggregateState": "solid",
+                    "materialAbbreviation": "CS2"
+                  }
+                ]
+              }
+            ],
+            "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
+              {
+                "catenaXId": "urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa",
+                "component": [
+                  {
+                    "materialName": "Cooper",
+                    "recycledContent": 0,
+                    "materialClass": "3.1",
+                    "quantity": {
+                      "materialValue": 1.2,
+                      "measurementUnit": {
+                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+                        "lexicalValue": "kilogram"
+                      }
+                    },
+                    "aggregateState": "solid",
+                    "materialAbbreviation": "CO7"
+                  },
+                  {
+                    "materialName": "Polyamid6",
+                    "recycledContent": 0,
+                    "materialClass": "5.5.1",
+                    "quantity": {
+                      "materialValue": 2.5,
+                      "measurementUnit": {
+                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+                        "lexicalValue": "kilogram"
+                      }
+                    },
+                    "aggregateState": "solid",
+                    "materialAbbreviation": "POL6"
+                  },
+                  {
+                    "materialName": "Carbon Steel",
+                    "recycledContent": 0,
+                    "materialClass": "1.1.2",
+                    "quantity": {
+                      "materialValue": 0.23,
+                      "measurementUnit": {
+                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+                        "lexicalValue": "kilogram"
+                      }
+                    },
+                    "aggregateState": "solid",
+                    "materialAbbreviation": "CS2"
+                  }
+                ]
+              }
+            ]
         }
     ]
 }

@@ -59,7 +59,7 @@ public class ChildDataDTO {
                                                                        .lexicalValue(getQuantity().getMeasurementUnit()
                                                                                                   .getLexicalValue())
                                                                        .build())
-                                       .build()).build();
+                                       .build());
         }
 
         return Relationship.builder()

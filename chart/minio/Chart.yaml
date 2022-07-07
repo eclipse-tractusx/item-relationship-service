@@ -1,8 +1,9 @@
 apiVersion: v2
-name: irs
-description: A Helm chart for Kubernetes for Catena-X
+name: minio
+description: A Helm chart for Kubernetes
 
-
+# A chart can be either an 'application' or a 'library' chart.
+#
 # Application charts are a collection of templates that can be packaged into versioned archives
 # to be deployed.
 #
@@ -20,4 +21,4 @@ version: 0.1.0
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "0.2.0"
+appVersion: "RELEASE.2022-05-08T23-50-31Z"

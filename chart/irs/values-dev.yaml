@@ -14,3 +14,12 @@ aasProxy:
   submodel:
     username: <path:traceability-irs/data/dev/aasProxy/submodel#username>
     password: <path:traceability-irs/data/dev/aasProxy/submodel#password>
+
+minio:
+  url: http://app-minio-dev:9000
+
+rootUser: <path:traceability-irs/data/dev/minio#minioUser>
+rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
+
+digitalTwinRegistry:
+  url: https://irs-aas-registry.dev.demo.catena-x.net
