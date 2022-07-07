@@ -126,9 +126,9 @@ class ItemGraphSmokeTest {
         assertThat(globalAsset.getGlobalAssetId()).isEqualTo(GLOBAL_ASSET_ID);
 
         final List<Relationship> relationships = getPartialJobs.getRelationships();
-        assertThat(relationships.size()).isZero();
+        assertThat(relationships).isEmpty();
         assertThat(getPartialJobs.getShells().size()).isNotNegative();
-        assertThat(getPartialJobs.getTombstones().size()).isZero();
+        assertThat(getPartialJobs.getTombstones()).isEmpty();
 
         // Integration test Scenario 2 STEP 3
         await().atMost(80, TimeUnit.SECONDS)
@@ -156,12 +156,12 @@ class ItemGraphSmokeTest {
         assertThat(completedJobs.getJob()).isNotNull();
         assertThat(completedJobs.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
         assertThat(completedJobs.getRelationships().size()).isNotNegative();
-        assertThat(completedJobs.getShells().size()).isPositive();
+        assertThat(completedJobs.getShells()).isNotEmpty();
         assertThat(completedJobs.getTombstones().size()).isNotNegative();
 
         final AssetAdministrationShellDescriptor assDescriptor = completedJobs.getShells().get(0);
         final List<SubmodelDescriptor> submodelDescriptors = assDescriptor.getSubmodelDescriptors();
-        assertThat(submodelDescriptors.size()).isPositive();
+        assertThat(submodelDescriptors).isNotEmpty();
     }
 
 }
