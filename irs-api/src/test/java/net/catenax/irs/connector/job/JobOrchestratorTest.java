@@ -1,5 +1,6 @@
 package net.catenax.irs.connector.job;
 
+import static net.catenax.irs.controllers.IrsAppConstants.JOB_EXECUTION_FAILED;
 import static net.catenax.irs.util.TestMother.jobParameter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
@@ -171,8 +172,7 @@ class JobOrchestratorTest {
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
-        verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), "Handler method failed",
-                "java.lang.RuntimeException");
+        verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), JOB_EXECUTION_FAILED, "java.lang.RuntimeException");
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
 
@@ -255,8 +255,7 @@ class JobOrchestratorTest {
         callCompleteAndReturnNextTransfers(Stream.empty());
 
         // Assert
-        verify(jobStore).markJobInError(job.getJobIdString(), "Handler method failed",
-                "net.catenax.irs.connector.job.JobException");
+        verify(jobStore).markJobInError(job.getJobIdString(), JOB_EXECUTION_FAILED, "net.catenax.irs.connector.job.JobException");
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
     }
@@ -319,7 +318,7 @@ class JobOrchestratorTest {
         callTransferProcessCompletedViaCallback();
 
         // Assert
-        verify(jobStore).markJobInError(job.getJobIdString(), "Handler method failed", "java.lang.RuntimeException");
+        verify(jobStore).markJobInError(job.getJobIdString(), JOB_EXECUTION_FAILED, "java.lang.RuntimeException");
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
     }

@@ -119,8 +119,8 @@ public class IrsController {
     @GetMapping("/jobs/{jobId}")
     public Jobs getJobById(
             @Parameter(description = "JobId of the job.", schema = @Schema(implementation = UUID.class), name = "jobId",
-                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsApiConstants.JOB_ID_SIZE,
-                                                                               max = IrsApiConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID jobId,
+                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
+                                                                               max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID jobId,
             @Parameter(
                     description = "<true> Return job with current processed item graph. <false> Return job with item graph if job is in state <COMPLETED>, otherwise job.") @Schema(
                     implementation = Boolean.class, defaultValue = "true") @RequestParam(value = "returnUncompletedJob",
@@ -143,8 +143,8 @@ public class IrsController {
     @PutMapping("/jobs/{jobId}")
     public Job cancelJobByJobId(
             @Parameter(description = "JobId of the job.", schema = @Schema(implementation = UUID.class), name = "jobId",
-                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsApiConstants.JOB_ID_SIZE,
-                                                                               max = IrsApiConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID jobId) {
+                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
+                                                                               max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID jobId) {
 
         return this.itemJobService.cancelJobById(jobId);
     }

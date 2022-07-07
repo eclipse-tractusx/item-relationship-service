@@ -26,13 +26,13 @@
     <Match>
         <!-- CSRF protection turned off on purpose. -->
         <Class name="net.catenax.irs.configuration.SecurityConfiguration" />
-        <Method name="configure"/>
+        <Method name="securityFilterChain"/>
         <Bug pattern="SPRING_CSRF_PROTECTION_DISABLED"/>
     </Match>
     <Match>
         <!-- We want to explicitly throw Exception in this method. -->
         <Class name="net.catenax.irs.configuration.SecurityConfiguration" />
-        <Method name="configure"/>
+        <Method name="securityFilterChain"/>
         <Bug pattern="THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"/>
     </Match>
     <Match>

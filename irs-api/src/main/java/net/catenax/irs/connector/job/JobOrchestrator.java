@@ -9,6 +9,8 @@
 //
 package net.catenax.irs.connector.job;
 
+import static net.catenax.irs.controllers.IrsAppConstants.JOB_EXECUTION_FAILED;
+
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -97,7 +99,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         try {
             requests = handler.initiate(multiJob);
         } catch (RuntimeException e) {
-            markJobInError(multiJob, e, "Handler method failed");
+            markJobInError(multiJob, e, JOB_EXECUTION_FAILED);
             return JobInitiateResponse.builder()
                                       .jobId(multiJob.getJobIdString())
                                       .status(ResponseStatus.FATAL_ERROR)
@@ -145,7 +147,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         try {
             requests = handler.recurse(job, process);
         } catch (RuntimeException e) {
-            markJobInError(job, e, "Handler method failed");
+            markJobInError(job, e, JOB_EXECUTION_FAILED);
             return;
         }
 
@@ -198,7 +200,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         try {
             handler.complete(job);
         } catch (RuntimeException e) {
-            markJobInError(job, e, "Handler method failed");
+            markJobInError(job, e, JOB_EXECUTION_FAILED);
         }
     }
 

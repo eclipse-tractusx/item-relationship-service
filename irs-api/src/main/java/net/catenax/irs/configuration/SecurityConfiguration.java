@@ -11,12 +11,13 @@ package net.catenax.irs.configuration;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
 
 /**
  * Security config bean
@@ -24,7 +25,7 @@ import org.springframework.security.config.annotation.web.configurers.oauth2.ser
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
 
     private static final String[] WHITELIST  = {
         "/actuator/health",
@@ -37,8 +38,9 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         "/api/api-docs/swagger-config",
     };
 
-    @Override
-    protected void configure(final HttpSecurity httpSecurity) throws Exception {
+    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
+    @Bean
+    /* package */ SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
         httpSecurity.httpBasic().disable();
         httpSecurity.formLogin().disable();
         httpSecurity.csrf().disable();
@@ -57,6 +59,8 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
             .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
             .oauth2Client();
+
+        return httpSecurity.build();
     }
 
 }
