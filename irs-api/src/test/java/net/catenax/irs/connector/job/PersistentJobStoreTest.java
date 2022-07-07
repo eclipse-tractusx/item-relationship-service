@@ -95,7 +95,7 @@ class PersistentJobStoreTest {
     void create_and_find() {
         sut.create(job);
         assertThat(sut.find(job.getJobIdString())).isPresent();
-
+        assertThat(sut.find(otherJobId)).isEmpty();
     }
 
     @Test
