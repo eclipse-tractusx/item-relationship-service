@@ -37,6 +37,9 @@ spec:
             - name: http
               containerPort: 9090
               protocol: TCP
+          volumeMounts:
+            - name: {{ include "prometheus.fullname" . }}-config
+              mountPath: /etc/prometheus
           livenessProbe:
             httpGet:
               path: "/-/healthy"
@@ -59,6 +62,10 @@ spec:
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: {{ include "prometheus.fullname" . }}-config
+          configMap:
+            name: {{ include "prometheus.fullname" . }}-configmap
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
