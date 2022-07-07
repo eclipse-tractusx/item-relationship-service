@@ -23,4 +23,12 @@ public class Submodel {
     private String identification;
     private String aspectType;
     private String payload;
+
+    public static Submodel from(final String identification, final String aspectType, final String payload) {
+        return Submodel.builder()
+                       .identification(identification)
+                       .aspectType(aspectType)
+                       .payload(payload)
+                       .build();
+    }
 }

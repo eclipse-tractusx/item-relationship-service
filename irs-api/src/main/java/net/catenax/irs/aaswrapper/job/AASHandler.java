@@ -9,8 +9,6 @@
 //
 package net.catenax.irs.aaswrapper.job;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +16,6 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
-import net.catenax.irs.component.ProcessingError;
 import net.catenax.irs.component.Submodel;
 import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -59,10 +56,10 @@ public class AASHandler {
                     processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
                 } catch (RestClientException | IllegalArgumentException e) {
                     log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.", address);
-                    itemContainerBuilder.tombstone(createTombstone(itemId, address, e));
+                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e));
                 } catch (JsonParseException e) {
                     log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
-                    itemContainerBuilder.tombstone(createTombstone(itemId, address, e));
+                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e));
                 }
             });
             final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = aasShell.filterDescriptorsByAspectTypes(
@@ -79,7 +76,7 @@ public class AASHandler {
                     aasShell.toBuilder().submodelDescriptors(filteredSubmodelDescriptorsByAspectType).build());
         } catch (RestClientException e) {
             log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-            itemContainerBuilder.tombstone(createTombstone(itemId, null, e));
+            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e));
         }
         return itemContainerBuilder.build();
     }
@@ -95,36 +92,20 @@ public class AASHandler {
         final List<Submodel> submodels = new ArrayList<>();
         submodelDescriptor.getEndpoints().forEach(endpoint -> {
             try {
-                submodels.add(createSubmodel(submodelDescriptor, endpoint));
+                final String payload = requestSubmodelAsString(endpoint);
+                submodels.add(Submodel.from(submodelDescriptor.getIdentification(), submodelDescriptor.getAspectType(),
+                        payload));
             } catch (JsonParseException e) {
                 log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
                 itemContainerBuilder.tombstone(
-                        createTombstone(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e));
+                        Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e));
             }
         });
         return submodels;
     }
 
-    private Submodel createSubmodel(final SubmodelDescriptor submodelDescriptor, final Endpoint endpoint) {
-        final String payload = requestSubmodelAsString(endpoint);
-        return Submodel.builder()
-                       .identification(submodelDescriptor.getIdentification())
-                       .aspectType(submodelDescriptor.getAspectType())
-                       .payload(payload)
-                       .build();
-    }
-
     private String requestSubmodelAsString(final Endpoint endpoint) {
         return submodelFacade.getSubmodelAsString(endpoint.getProtocolInformation().getEndpointAddress());
-    }
-
-    private Tombstone createTombstone(final String itemId, final String address, final Exception exception) {
-        final ProcessingError processingError = ProcessingError.builder()
-                                                               .withRetryCounter(0)
-                                                               .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
-                                                               .withErrorDetail(exception.getMessage())
-                                                               .build();
-        return Tombstone.builder().endpointURL(address).catenaXId(itemId).processingError(processingError).build();
     }
 
     private void processEndpoint(final AASTransferProcess aasTransferProcess,
