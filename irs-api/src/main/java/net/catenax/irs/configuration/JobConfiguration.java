@@ -55,4 +55,8 @@ public class JobConfiguration {
                 config.getBucketName());
     }
 
+    @Bean
+    public JsonUtil jsonUtil() {
+        return new JsonUtil();
+    }
 }
