@@ -50,13 +50,13 @@ ingress:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
   hosts:
-    - host: "irs.grafana.dev.demo.catena-x.net"
+    - host: "irs-grafana.dev.demo.catena-x.net"
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
     - hosts:
-        - "irs.grafana.dev.demo.catena-x.net"
+        - "irs-grafana.dev.demo.catena-x.net"
       # Default secret for certificate creation already provided to your namespace
       secretName: tls-secret
 
