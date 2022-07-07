@@ -226,6 +226,40 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Query Registry",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"query\": {\r\n    \"assetIds\": [\r\n      {\r\n        \"value\" : \"OMA-TGFAYUHXFLHHUQQMPLTE\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-TGETGMWPZFMNWOSFSUTB\",\r\n                    \"key\" : \"VAN\"\r\n            }\r\n            ,\r\n            {\r\n                \"value\" : \"OMA-LFVTNWIDZPPRXGZEFEMN\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-TYFEAJPWMOXNDYYJTHOB\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-NRWQMZQXSKSZCRWDMWHF\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-FUQTIGXCVPVLRJAZXXYZ\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-DDGCCSBNEIVZDMXEMMTH\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-VXXHAGYPPYCLXANZCZXX\",\r\n        \"key\" : \"VAN\"\r\n            }\r\n    ]\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells/query",
+							"host": [
+								"{{DIGITAL_TWIN_REGISTRY}}"
+							],
+							"path": [
+								"lookup",
+								"shells",
+								"query"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
