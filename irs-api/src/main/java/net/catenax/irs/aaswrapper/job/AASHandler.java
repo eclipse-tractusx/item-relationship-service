@@ -41,7 +41,13 @@ public class AASHandler {
         this.submodelFacade = submodelFacade;
     }
 
-    public ItemContainer createAndFillItemContainer(final JobParameter jobData,
+    /**
+     * @param jobData            The job parameters used for filtering
+     * @param aasTransferProcess The transfer process which will be filled with childIds for further processing
+     * @param itemId             The id of the current item
+     * @return The ItemContainer filled with Relationships, Shells, Submodels (if requested in jobData) and Tombstones (if requests fail).
+     */
+    public ItemContainer collectShellAndSubmodels(final JobParameter jobData,
             final AASTransferProcess aasTransferProcess, final String itemId) {
         final ItemContainer.ItemContainerBuilder itemContainerBuilder = ItemContainer.builder();
         try {
@@ -52,7 +58,8 @@ public class AASHandler {
 
             aasShell.findAssemblyPartRelationshipEndpointAddresses().forEach(address -> {
                 try {
-                    final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address, jobData);
+                    final AssemblyPartRelationshipDTO submodel = submodelFacade.getAssemblyPartRelationshipSubmodel(
+                            address, jobData);
                     processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
                 } catch (RestClientException | IllegalArgumentException e) {
                     log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.", address);
@@ -105,7 +112,7 @@ public class AASHandler {
     }
 
     private String requestSubmodelAsString(final Endpoint endpoint) {
-        return submodelFacade.getSubmodelAsString(endpoint.getProtocolInformation().getEndpointAddress());
+        return submodelFacade.getSubmodelRawPayload(endpoint.getProtocolInformation().getEndpointAddress());
     }
 
     private void processEndpoint(final AASTransferProcess aasTransferProcess,

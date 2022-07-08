@@ -59,7 +59,7 @@ class SubmodelFacadeWiremockTest {
                                                       .withBodyFile("assemblyPartRelationship.json")));
 
         // Act
-        final String submodel = submodelFacade.getSubmodelAsString(url);
+        final String submodel = submodelFacade.getSubmodelRawPayload(url);
 
         // Assert
         assertThat(submodel).contains("\"catenaXId\": \"urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978\"");
@@ -73,7 +73,7 @@ class SubmodelFacadeWiremockTest {
                                                       .withBodyFile("materialForRecycling.json")));
 
         // Act
-        final String submodel = submodelFacade.getSubmodelAsString(url);
+        final String submodel = submodelFacade.getSubmodelRawPayload(url);
 
         // Assert
         assertThat(submodel).contains("\"materialName\": \"Cooper\",");
@@ -87,7 +87,7 @@ class SubmodelFacadeWiremockTest {
                                                       .withBody("test")));
 
         // Act
-        final String submodel = submodelFacade.getSubmodelAsString(url);
+        final String submodel = submodelFacade.getSubmodelRawPayload(url);
 
         // Assert
         assertThat(submodel).isEqualTo("test");
@@ -101,7 +101,7 @@ class SubmodelFacadeWiremockTest {
                                                       .withBody("{ error: '400'}")));
 
         // Act
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelAsString(url);
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelRawPayload(url);
 
         // Assert
         assertThatExceptionOfType(RestClientException.class).isThrownBy(throwingCallable);
@@ -115,7 +115,7 @@ class SubmodelFacadeWiremockTest {
                                                       .withBody("{ error: '500'}")));
 
         // Act
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelAsString(url);
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelRawPayload(url);
 
         // Assert
         assertThatExceptionOfType(RestClientException.class).isThrownBy(throwingCallable);

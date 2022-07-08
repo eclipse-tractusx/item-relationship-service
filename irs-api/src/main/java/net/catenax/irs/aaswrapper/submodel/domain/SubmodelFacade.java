@@ -40,7 +40,7 @@ public class SubmodelFacade {
      * @return The Aspect Model for the given submodel
      */
     @Retry(name = "submodelRetryer")
-    public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress, final JobParameter jobData) {
+    public AssemblyPartRelationshipDTO getAssemblyPartRelationshipSubmodel(final String submodelEndpointAddress, final JobParameter jobData) {
         final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
                 AssemblyPartRelationship.class);
 
@@ -63,7 +63,7 @@ public class SubmodelFacade {
      * @return The Aspect Model as JSON-String for the given submodel
      */
     @Retry(name = "submodelRetryer")
-    public String getSubmodelAsString(final String submodelEndpointAddress) {
+    public String getSubmodelRawPayload(final String submodelEndpointAddress) {
         final String submodel = this.submodelClient.getSubmodel(submodelEndpointAddress);
         log.info("Returning Submodel as String: '{}'", submodel);
         return submodel;

@@ -59,14 +59,14 @@ class SubmodelFacadeTest {
         final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
-                () -> submodelFacade.getSubmodel(url, jobParameter()));
+                () -> submodelFacade.getAssemblyPartRelationshipSubmodel(url, jobParameter()));
     }
 
     @Test
     void shouldReturnAssemblyPartRelationshipWithChildDataWhenRequestingWithCatenaXId() {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
-        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getSubmodel(catenaXId, jobParameter());
+        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getAssemblyPartRelationshipSubmodel(catenaXId, jobParameter());
 
         assertThat(submodelResponse.getCatenaXId()).isEqualTo(catenaXId);
 
@@ -84,7 +84,7 @@ class SubmodelFacadeTest {
     void shouldReturnFilteredAssemblyPartRelationshipWithoutChildrenWhenRequestingWithCatenaXId() {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
-        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getSubmodel(catenaXId,
+        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getAssemblyPartRelationshipSubmodel(catenaXId,
                 jobParameterFilter());
 
         assertThat(submodelResponse.getCatenaXId()).isEqualTo(catenaXId);
@@ -107,7 +107,7 @@ class SubmodelFacadeTest {
         final ResponseEntity<String> responseEntity = new ResponseEntity<>(jsonObject, HttpStatus.OK);
         doReturn(responseEntity).when(restTemplate).getForEntity(any(URI.class), any());
 
-        final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(endpointUrl, jobParameter());
+        final AssemblyPartRelationshipDTO submodel = submodelFacade.getAssemblyPartRelationshipSubmodel(endpointUrl, jobParameter());
 
         assertThat(submodel.getCatenaXId()).isEqualTo(catenaXId);
         final Set<ChildDataDTO> childParts = submodel.getChildParts();
@@ -118,7 +118,7 @@ class SubmodelFacadeTest {
     void shouldReturnStringWhenRequestingSubmodelWithoutAspect() {
         final String catenaXId = "urn:uuid:ea724f73-cb93-4b7b-b92f-d97280ff888b";
 
-        final String submodelResponse = submodelFacade.getSubmodelAsString(catenaXId);
+        final String submodelResponse = submodelFacade.getSubmodelRawPayload(catenaXId);
 
         assertThat(submodelResponse).startsWith(
                 "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"ManufacturerID\"}");
