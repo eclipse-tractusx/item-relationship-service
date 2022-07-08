@@ -7,8 +7,12 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
 import io.github.resilience4j.retry.RetryRegistry;
 import net.catenax.irs.TestConfig;
+import net.catenax.irs.component.ProcessingError;
 import net.catenax.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +37,23 @@ class SubmodelRetryerTest {
 
     @Test
     void shouldRetryExecutionOfGetSubmodelMaxAttemptTimes() {
+        given(this.client.getSubmodel(anyString(), any())).willThrow(
+                new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception"));
+
+        assertThrows(HttpServerErrorException.class, () -> facade.getSubmodel("TEST", TestMother.jobParameter()));
+
+        verify(this.client, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getSubmodel(anyString(), any());
+    }
+
+    @Test
+    void shouldRetryExecutionOfGetSubmodelMaxAttemptTimesAndRecordTrial() {
+        int retryCount = 0;
+        ProcessingError error = ProcessingError.builder()
+                                               .withRetryCounter(++retryCount)
+                                               .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
+                                               .withErrorDetail("Fake detail message")
+                                               .build();
+
         given(this.client.getSubmodel(anyString(), any())).willThrow(
                 new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception"));
 

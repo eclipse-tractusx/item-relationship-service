@@ -2,7 +2,6 @@ package net.catenax.irs.aaswrapper.job;
 
 import static net.catenax.irs.util.TestMother.jobParameter;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -11,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import net.catenax.irs.InMemoryBlobStore;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
+import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.assetadministrationshell.AdministrativeInformation;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import net.catenax.irs.component.assetadministrationshell.Endpoint;
@@ -29,11 +30,11 @@ import net.catenax.irs.component.assetadministrationshell.Reference;
 import net.catenax.irs.component.assetadministrationshell.SubmodelDescriptor;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
+import net.catenax.irs.util.JsonUtil;
 import net.catenax.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpServerErrorException;
 
 @ExtendWith(MockitoExtension.class)
 class AASTransferProcessManagerTest {
@@ -49,8 +50,9 @@ class AASTransferProcessManagerTest {
 
     AssetAdministrationShellDescriptor aasShell = mock(AssetAdministrationShellDescriptor.class);
 
+    InMemoryBlobStore blobStore = new InMemoryBlobStore();
     final AASTransferProcessManager manager = new AASTransferProcessManager(digitalTwinRegistryFacade, submodelFacade,
-            pool, new InMemoryBlobStore());
+            pool, blobStore);
 
     @Test
     void shouldExecuteThreadForProcessing() {
@@ -76,8 +78,9 @@ class AASTransferProcessManagerTest {
         }, aasTransferProcess -> {
         }, jobParameter());
 
-        // then
-        assertThat(initiateResponse.getTransferId()).isNotBlank();
+        assertThat(initiateResponse.getStatus()).withFailMessage().isNotNull().
+                // then
+                        assertThat(initiateResponse.getTransferId()).isNotBlank();
         assertThat(initiateResponse.getStatus()).isEqualTo(ResponseStatus.OK);
     }
 
@@ -89,23 +92,23 @@ class AASTransferProcessManagerTest {
                 List.of(createSubmodelDescriptorWithoutEndpoint(assemblyPartRelationshipIdWithAspectName)));
 
         when(digitalTwinRegistryFacade.getAAShellDescriptor(any(), any())).thenReturn(fakeShellDescriptorBuilder());
-        /*when(aasShell.getSubmodelDescriptors()).thenReturn(
-                List.of(createSubmodelDescriptorWithoutEndpoint(assemblyPartRelationshipIdWithAspectName)));
-*/
+
         final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(UUID.randomUUID().toString());
-        /*Throwable exception = assertThrows(RestClientException.class,
-                () -> manager.initiateRequest(itemDataRequest, s -> {
-                }, aasTransferProcess -> {
-                }, jobParameter()));
-*/
+
         given(submodelFacade.getSubmodel(anyString(), any())).willThrow(IllegalArgumentException.class);
 
         // when
-        assertThrows(HttpServerErrorException.class, () -> manager.initiateRequest(itemDataRequest, s -> {
+        TransferInitiateResponse tranfer = manager.initiateRequest(itemDataRequest, s -> {
         }, aasTransferProcess -> {
-        }, jobParameter()));
+        }, jobParameter());
 
-        verify(this.submodelFacade, times(3)).getSubmodel(anyString(), any());
+        byte[] dataByte = blobStore.getStore().entrySet().stream().findFirst().get().getValue();
+        JsonUtil jsonUtil = new JsonUtil();
+
+        ItemContainer item = jsonUtil.fromString(new String(dataByte, StandardCharsets.UTF_8), ItemContainer.class);
+        assertThat(item).isNotNull();
+
+        Tombstone tombStone = item.getTombstones().get(0);
     }
 
     private AssetAdministrationShellDescriptor createShellDescriptor(
@@ -156,7 +159,7 @@ class AASTransferProcessManagerTest {
                                                                                                  .semanticId(
                                                                                                          Reference.builder()
                                                                                                                   .value(List.of(
-                                                                                                                          "urn:uuid:5e3e9060-ba73-4d5d-a6c8-dfd5123f4d99"))
+                                                                                                                          "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship#"))
                                                                                                                   .build())
                                                                                                  .build()))
                                                  .submodelDescriptors(List.of(fakeSubmodelDescriptor()))
@@ -173,6 +176,10 @@ class AASTransferProcessManagerTest {
                                                                 .build()))
                                  .idShort("5e3e9060-ba73-4d5d-a6c8-dfd5123f4d99")
                                  .identification("8a61c8db-561e-4db0-84ec-a693fc5ffdf6")
+                                 .semanticId(Reference.builder()
+                                                      .value(List.of(
+                                                              "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship#"))
+                                                      .build())
                                  .endpoints(List.of(Endpoint.builder()
                                                             .interfaceInformation(
                                                                     "http://localhost/dummy/interfaceinformation")
@@ -185,7 +192,8 @@ class AASTransferProcessManagerTest {
     private ProtocolInformation fakeProtocolInformation() {
         return ProtocolInformation.builder()
                                   .endpointProtocol("Https")
-                                  .endpointAddress("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")
+                                  .endpointAddress(
+                                          "http://localhost/dummy/interfaceinformation/urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")
                                   .endpointProtocolVersion("v2")
                                   .build();
     }

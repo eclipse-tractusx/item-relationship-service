@@ -120,6 +120,8 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             } catch (RestClientException e) {
                 log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
                 itemContainerBuilder.tombstone(createTombstone(itemId, null, e, ++retryCount));
+            } catch (Exception e) {
+                log.error("Unexpected error occur: {}", e.getMessage());
             }
             storeItemContainer(processId, itemContainerBuilder.build());
 
@@ -141,7 +143,9 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
         final ProcessingError processingError = ProcessingError.builder()
                                                                .withRetryCounter(retryCount)
                                                                .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
-                                                               .withErrorDetail(exception.getMessage())
+                                                               .withErrorDetail(exception.getMessage() == null ?
+                                                                       "" :
+                                                                       exception.getMessage())
                                                                .build();
         return Tombstone.builder().endpointURL(address).catenaXId(itemId).processingError(processingError).build();
     }
