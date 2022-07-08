@@ -122,10 +122,12 @@ public class MultiTransferJob {
         /**
          * Transition the job to the {@link JobState#ERROR} state.
          */
-        /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail, final String exceptionClassName) {
+        /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail,
+                final String exceptionClassName) {
             this.job = this.job.toBuilder()
                                .jobState(JobState.ERROR)
                                .jobCompleted(ZonedDateTime.now(ZoneOffset.UTC))
+                               .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
                                .exception(JobErrorDetails.builder()
                                                          .errorDetail(errorDetail)
                                                          .exception(exceptionClassName)
@@ -148,7 +150,7 @@ public class MultiTransferJob {
                         format("Cannot transition from state %s to %s", job.getJobState(), end));
             }
             log.info("Transitioning job {} from {} to {}", job.getJobId().toString(), job.getJobState(), end);
-            job = job.toBuilder().jobState(end).build();
+            job = job.toBuilder().jobState(end).lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC)).build();
             return this;
         }
     }

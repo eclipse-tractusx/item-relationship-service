@@ -144,13 +144,13 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     private void processEndpoint(final AASTransferProcess aasTransferProcess,
             final ItemContainer.ItemContainerBuilder itemContainer, final AssemblyPartRelationshipDTO relationship) {
-        log.info("Processing AssemblyPartRelationship with {} children", relationship.getChildParts().size());
         final List<String> childIds = relationship.getChildParts()
                                                   .stream()
                                                   .map(ChildDataDTO::getChildCatenaXId)
                                                   .collect(Collectors.toList());
+        log.info("Processing AssemblyPartRelationship with {} children", childIds.size());
+
         aasTransferProcess.addIdsToProcess(childIds);
-        // TODO (jkreutzfeld) what do we actually need to store here?
         itemContainer.assemblyPartRelationship(relationship);
     }
 
