@@ -87,8 +87,6 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             final ItemContainer.ItemContainerBuilder itemContainerBuilder = ItemContainer.builder();
 
-            long retryCount = 0L;
-
             log.info("Starting processing Digital Twin Registry with itemId {}", itemId);
             try {
                 final AssetAdministrationShellDescriptor aasShell = registryFacade.getAAShellDescriptor(itemId,
@@ -98,6 +96,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
                 log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
 
                 aasShell.findAssemblyPartRelationshipEndpointAddresses().forEach(address -> {
+
                     try {
                         final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address, jobData);
                         processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);

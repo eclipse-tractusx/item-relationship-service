@@ -40,4 +40,5 @@ class SubmodelRetryerTest {
 
         verify(this.client, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getSubmodel(anyString(), any());
     }
+
 }
