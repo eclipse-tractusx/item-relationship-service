@@ -85,7 +85,7 @@ resilience4j:
     configs:
       default:
         maxRetryAttempts: 3
-        waitDuration: 1s
+        waitDuration: 10s
         enableExponentialBackoff: true
         exponentialBackoffMultiplier: 2
     instances:
