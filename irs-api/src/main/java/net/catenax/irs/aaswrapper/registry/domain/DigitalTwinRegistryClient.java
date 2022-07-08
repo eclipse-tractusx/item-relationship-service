@@ -14,6 +14,7 @@ import static net.catenax.irs.configuration.RestTemplateConfig.OAUTH_REST_TEMPLA
 import java.util.Collections;
 import java.util.List;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import net.catenax.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import net.catenax.irs.util.JsonUtil;
@@ -50,7 +51,7 @@ interface DigitalTwinRegistryClient {
  * Digital Twin Registry Rest Client Stub used in local environment
  */
 @Service
-@Profile({"local", "test"})
+@Profile({"local", "stubtest"})
 class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
 
     private final AssetAdministrationShellTestdataCreator testdataCreator = new AssetAdministrationShellTestdataCreator();
@@ -74,7 +75,7 @@ class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
  * Digital Twin Registry Rest Client Implementation
  */
 @Service
-@Profile({"!local && !test"})
+@Profile({"!local && !stubtest"})
 class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient {
 
     private final RestTemplate restTemplate;
@@ -86,6 +87,7 @@ class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient {
     }
 
     @Override
+    @Retry(name = "exponentialBackoff")
     public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(digitalTwinRegistryUrl);
         uriBuilder.path("/registry/shell-descriptors/").path(aasIdentifier);
@@ -94,6 +96,7 @@ class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient {
     }
 
     @Override
+    @Retry(name = "exponentialBackoff")
     public List<String> getAllAssetAdministrationShellIdsByAssetLink(final List<IdentifierKeyValuePair> assetIds) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(digitalTwinRegistryUrl);
         uriBuilder.path("/lookup/shells").queryParam("assetIds", new JsonUtil().asString(assetIds));

@@ -1,4 +1,4 @@
-package net.catenax.irs.aaswrapper.submodel.domain;
+package net.catenax.irs.aaswrapper.registry.domain;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,13 +22,13 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = { "test" })
 @Import(TestConfig.class)
-class SubmodelExponentialRetryTest {
+class DigitalTwinRegistryExponentialRetryTest {
 
     @Autowired
-    private SubmodelClient submodelClient;
+    private DigitalTwinRegistryClient digitalTwinRegistryClient;
 
     @MockBean
-    @Qualifier("restTemplate")
+    @Qualifier("oAuthRestTemplate")
     private RestTemplate restTemplate;
 
     @Autowired
@@ -37,15 +37,14 @@ class SubmodelExponentialRetryTest {
     @Test
     void shouldRetryExecutionOfGetSubmodelOnClientMaxAttemptTimes() {
         // Arrange
-        given(restTemplate.getForEntity(any(), any())).willThrow(
+        given(restTemplate.getForObject(any(), any())).willThrow(
                 new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception"));
 
         // Act
         assertThrows(HttpServerErrorException.class,
-                () -> submodelClient.getSubmodel("http://test.test/urn:uuid:12345/submodel?content=value",
-                        Object.class));
+                () -> digitalTwinRegistryClient.getAssetAdministrationShellDescriptor("urn:uuid:12345"));
 
         // Assert
-        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getForEntity(any(), any());
+        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getForObject(any(), any());
     }
 }

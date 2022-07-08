@@ -80,10 +80,17 @@ blobstore:
   secretKey: "${MINIO_SECRET_KEY}"
   bucketName: irsbucket
 
-aasProxy:
-  submodel:
-    username: ${AAS_PROXY_SUBMODEL_USERNAME:}
-    password: ${AAS_PROXY_SUBMODEL_PASSWORD:}
+resilience4j:
+  retry:
+    configs:
+      default:
+        maxRetryAttempts: 3
+        waitDuration: 1s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+    instances:
+      exponentialBackoff:
+        baseConfig: default
 
 aasWrapper:
   host: "${AASWRAPPER_HOST:}"

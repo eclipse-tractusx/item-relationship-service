@@ -9,19 +9,11 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
-import static io.github.resilience4j.core.IntervalFunction.ofExponentialBackoff;
-
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeoutException;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
-import io.github.resilience4j.retry.Retry;
-import io.github.resilience4j.retry.RetryConfig;
-import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
@@ -30,7 +22,6 @@ import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.dto.QuantityDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpServerErrorException;
 
 /**
  * Public API Facade for submodel domain
@@ -48,11 +39,14 @@ public class SubmodelFacade {
      * @return The Aspect Model for the given submodel
      */
     public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress, final JobParameter jobData) {
-        final AssemblyPartRelationship submodel = this.retryGetSubmodel(submodelEndpointAddress);
+        final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
+                AssemblyPartRelationship.class);
 
         log.info("Submodel: {}, childParts {}", submodel.getCatenaXId(), submodel.getChildParts());
 
-        final Set<ChildData> submodelParts = thereAreChildParts(submodel) ? new HashSet<>(submodel.getChildParts()) : Collections.emptySet();
+        final Set<ChildData> submodelParts = thereAreChildParts(submodel)
+                ? new HashSet<>(submodel.getChildParts())
+                : Collections.emptySet();
 
         final String lifecycleContext = jobData.getBomLifecycle();
         if (shouldFilterByLifecycleContext(lifecycleContext)) {
@@ -109,44 +103,4 @@ public class SubmodelFacade {
     private Predicate<ChildData> isNotLifecycleContext(final String lifecycleContext) {
         return childData -> !childData.getLifecycleContext().getValue().equals(lifecycleContext);
     }
-
-    /**
-     * Apply the customized retry component on retrieving the given submodel
-     * @param submodelEndpointAddress The URL to the submodel endpoint
-     * @return The Aspect Model for the given submodel
-     */
-    private AssemblyPartRelationship retryGetSubmodel(final String submodelEndpointAddress) {
-        final Function<String, AssemblyPartRelationship> decorated =
-                Retry.decorateFunction(RetryConfiguration.retryer(),
-                        (String s) -> this.submodelClient.getSubmodel(submodelEndpointAddress, AssemblyPartRelationship.class));
-
-        return decorated.apply(submodelEndpointAddress);
-    }
-
-    /**
-     * Configure the resilience4j retry procedure
-     */
-    public static class RetryConfiguration {
-        private static final double MULTIPLIER = 2.0D;
-        private static final long INITIAL_INTERVAL = 10L;
-        private static final int MAX_RETRIES = 3;
-
-        /**
-         * Customize the resilience4j retry method
-         * @return configured retry mechanism
-         */
-        public static Retry retryer() {
-            final RetryConfig retryConfig = RetryConfig.custom()
-                                                       .maxAttempts(MAX_RETRIES)
-                                                       .intervalFunction(ofExponentialBackoff(INITIAL_INTERVAL, MULTIPLIER))
-                                                       .retryExceptions(IOException.class, TimeoutException.class, HttpServerErrorException.class)
-                                                       .failAfterMaxAttempts(true)
-                                                       .build();
-
-            final RetryRegistry retryRegistry = RetryRegistry.of(retryConfig);
-
-            return retryRegistry.retry("submodelRetryer");
-        }
-    }
-
 }
