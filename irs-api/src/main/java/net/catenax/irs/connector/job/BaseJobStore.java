@@ -85,7 +85,7 @@ public abstract class BaseJobStore implements JobStore {
         writeLock(() -> {
             final var newJob = job.toBuilder().transitionInitial().build();
             log.info("Adding new job into jobstore: {}", newJob);
-            put(job.getJobIdString(), newJob);
+            put(job.getJobId().toString(), newJob);
             return null;
         });
     }
@@ -172,7 +172,7 @@ public abstract class BaseJobStore implements JobStore {
                 log.warn("Job not found: {}", jobId);
             } else {
                 final MultiTransferJob multiTransferJob = job.get();
-                put(multiTransferJob.getJobIdString(), action.apply(multiTransferJob));
+                put(multiTransferJob.getJobId().toString(), action.apply(multiTransferJob));
             }
             return null;
         });

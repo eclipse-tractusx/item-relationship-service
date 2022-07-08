@@ -73,7 +73,7 @@ class JobOrchestratorTest {
 
     @Test
     void startJob_storesJobWithUuidAsIdentifier() {
-        assertThat(startJob().getJobIdString()).matches(uuid.asPredicate());
+        assertThat(startJob().getJobId().toString()).matches(uuid.asPredicate());
     }
 
     @Test
@@ -117,11 +117,11 @@ class JobOrchestratorTest {
 
         // Assert
         verifyNoInteractions(processManager);
-        verify(jobStore).completeJob(eq(newJob.getJobIdString()), any());
+        verify(jobStore).completeJob(eq(newJob.getJobId().toString()), any());
         verifyNoMoreInteractions(jobStore);
 
         assertThat(response).isEqualTo(
-                JobInitiateResponse.builder().jobId(newJob.getJobIdString()).status(ResponseStatus.OK).build());
+                JobInitiateResponse.builder().jobId(newJob.getJobId().toString()).status(ResponseStatus.OK).build());
     }
 
     @Test
@@ -136,7 +136,7 @@ class JobOrchestratorTest {
         // Assert
         var newJob = getStartedJob();
         assertThat(response).isEqualTo(
-                JobInitiateResponse.builder().jobId(newJob.getJobIdString()).status(ResponseStatus.OK).build());
+                JobInitiateResponse.builder().jobId(newJob.getJobId().toString()).status(ResponseStatus.OK).build());
     }
 
     @ParameterizedTest
@@ -159,7 +159,7 @@ class JobOrchestratorTest {
         verifyNoMoreInteractions(jobStore);
 
         assertThat(response).isEqualTo(
-                JobInitiateResponse.builder().jobId(jobCaptor.getValue().getJobIdString()).status(status).build());
+                JobInitiateResponse.builder().jobId(jobCaptor.getValue().getJobId().toString()).status(status).build());
     }
 
     @Test
@@ -172,12 +172,12 @@ class JobOrchestratorTest {
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
-        verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), JOB_EXECUTION_FAILED, "java.lang.RuntimeException");
+        verify(jobStore).markJobInError(jobCaptor.getValue().getJobId().toString(), JOB_EXECUTION_FAILED, "java.lang.RuntimeException");
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
 
         assertThat(response).isEqualTo(JobInitiateResponse.builder()
-                                                          .jobId(jobCaptor.getValue().getJobIdString())
+                                                          .jobId(jobCaptor.getValue().getJobId().toString())
                                                           .status(ResponseStatus.FATAL_ERROR)
                                                           .build());
     }
@@ -193,7 +193,7 @@ class JobOrchestratorTest {
 
         // Assert
         verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()));
-        verify(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
+        verify(jobStore).completeTransferProcess(job.getJobId().toString(), transfer);
 
     }
 
@@ -203,8 +203,8 @@ class JobOrchestratorTest {
         callCompleteAndReturnNextTransfers(Stream.empty());
 
         // Assert
-        verify(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
-        verify(jobStore).completeJob(eq(job.getJobIdString()), any());
+        verify(jobStore).completeTransferProcess(job.getJobId().toString(), transfer);
+        verify(jobStore).completeJob(eq(job.getJobId().toString()), any());
         verifyNoInteractions(processManager);
         verifyNoMoreInteractions(jobStore);
     }
@@ -215,8 +215,8 @@ class JobOrchestratorTest {
         callCompleteAndReturnNextTransfers(Stream.empty());
 
         // Assert
-        verify(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
-        verify(jobStore).completeJob(eq(job.getJobIdString()), any());
+        verify(jobStore).completeTransferProcess(job.getJobId().toString(), transfer);
+        verify(jobStore).completeJob(eq(job.getJobId().toString()), any());
         verifyNoMoreInteractions(jobStore);
         verifyNoMoreInteractions(handler);
     }
@@ -232,21 +232,21 @@ class JobOrchestratorTest {
     void transferProcessCompleted_WhenJobCompleted_CallsComplete() {
         // Arrange
         letJobStoreCallCompletionAction();
-        doAnswer(i -> byCompletingJob()).when(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
+        doAnswer(i -> byCompletingJob()).when(jobStore).completeTransferProcess(job.getJobId().toString(), transfer);
 
         // Act
         callCompleteAndReturnNextTransfers(Stream.empty());
 
         // Assert
         verify(handler).complete(job);
-        verify(jobStore).completeJob(eq(job.getJobIdString()), any());
+        verify(jobStore).completeJob(eq(job.getJobId().toString()), any());
     }
 
     @Test
     void transferProcessCompleted_WhenHandlerCompleteThrows_StopJob() {
         // Arrange
         letJobStoreCallCompletionAction();
-        doAnswer(i -> byCompletingJob()).when(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
+        doAnswer(i -> byCompletingJob()).when(jobStore).completeTransferProcess(job.getJobId().toString(), transfer);
         doAnswer(i -> {
             throw new JobException();
         }).when(handler).complete(any());
@@ -255,7 +255,7 @@ class JobOrchestratorTest {
         callCompleteAndReturnNextTransfers(Stream.empty());
 
         // Assert
-        verify(jobStore).markJobInError(job.getJobIdString(), JOB_EXECUTION_FAILED, "net.catenax.irs.connector.job.JobException");
+        verify(jobStore).markJobInError(job.getJobId().toString(), JOB_EXECUTION_FAILED, "net.catenax.irs.connector.job.JobException");
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
     }
@@ -303,7 +303,7 @@ class JobOrchestratorTest {
         verify(processManager, never()).initiateRequest(eq(dataRequest2), any(), any(), eq(jobParameter()));
 
         // temporarily created job should be deleted
-        verify(jobStore).markJobInError(job.getJobIdString(), "Failed to start a transfer",
+        verify(jobStore).markJobInError(job.getJobId().toString(), "Failed to start a transfer",
                 "net.catenax.irs.connector.job.JobException");
         verifyNoMoreInteractions(jobStore);
     }
@@ -318,14 +318,14 @@ class JobOrchestratorTest {
         callTransferProcessCompletedViaCallback();
 
         // Assert
-        verify(jobStore).markJobInError(job.getJobIdString(), JOB_EXECUTION_FAILED, "java.lang.RuntimeException");
+        verify(jobStore).markJobInError(job.getJobId().toString(), JOB_EXECUTION_FAILED, "java.lang.RuntimeException");
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
     }
 
     private Object byCompletingJob() {
         job = job.toBuilder().transitionTransfersFinished().build();
-        lenient().when(jobStore.find(job.getJobIdString())).thenReturn(Optional.of(job));
+        lenient().when(jobStore.find(job.getJobId().toString())).thenReturn(Optional.of(job));
         return null;
     }
 
@@ -341,7 +341,7 @@ class JobOrchestratorTest {
 
     private void callCompleteAndReturnNextTransfers(Stream<DataRequest> dataRequestStream) {
         when(jobStore.findByProcessId(transfer.getId())).thenReturn(Optional.of(job));
-        lenient().when(jobStore.find(job.getJobIdString())).thenReturn(Optional.of(job));
+        lenient().when(jobStore.find(job.getJobId().toString())).thenReturn(Optional.of(job));
         when(handler.recurse(job, transfer)).thenReturn(dataRequestStream);
         callTransferProcessCompletedViaCallback();
     }
