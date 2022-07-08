@@ -79,6 +79,11 @@ public class MultiTransferJob {
         return job.getJobId();
     }
 
+    @JsonIgnore
+    public String getJobIdString() {
+        return getJobId().toString();
+    }
+
     /**
      * Builder for {@link MultiTransferJob}.
      */
