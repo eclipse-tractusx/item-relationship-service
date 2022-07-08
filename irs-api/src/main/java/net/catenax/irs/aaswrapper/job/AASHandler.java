@@ -119,11 +119,12 @@ public class AASHandler {
 
     private void processEndpoint(final AASTransferProcess aasTransferProcess,
             final ItemContainer.ItemContainerBuilder itemContainer, final AssemblyPartRelationshipDTO relationship) {
-        log.info("Processing AssemblyPartRelationship with {} children", relationship.getChildParts().size());
         final List<String> childIds = relationship.getChildParts()
                                                   .stream()
                                                   .map(ChildDataDTO::getChildCatenaXId)
                                                   .collect(Collectors.toList());
+        log.info("Processing AssemblyPartRelationship with {} children", childIds.size());
+
         aasTransferProcess.addIdsToProcess(childIds);
         itemContainer.assemblyPartRelationship(relationship);
     }
