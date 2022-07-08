@@ -43,9 +43,11 @@ public class AASHandler {
 
     /**
      * @param jobData            The job parameters used for filtering
-     * @param aasTransferProcess The transfer process which will be filled with childIds for further processing
+     * @param aasTransferProcess The transfer process which will be filled with childIds for
+     *                           further processing
      * @param itemId             The id of the current item
-     * @return The ItemContainer filled with Relationships, Shells, Submodels (if requested in jobData) and Tombstones (if requests fail).
+     * @return The ItemContainer filled with Relationships, Shells, Submodels (if requested in jobData)
+     * and Tombstones (if requests fail).
      */
     public ItemContainer collectShellAndSubmodels(final JobParameter jobData,
             final AASTransferProcess aasTransferProcess, final String itemId) {
