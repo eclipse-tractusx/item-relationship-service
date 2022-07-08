@@ -24,6 +24,7 @@ import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.configuration.SecurityConfiguration;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.junit.jupiter.api.Test;
@@ -32,11 +33,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(IrsController.class)
+@Import(SecurityConfiguration.class)
 class IrsControllerTest {
 
     private final UUID jobId = UUID.randomUUID();

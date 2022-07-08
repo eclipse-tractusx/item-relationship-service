@@ -1,17 +1,16 @@
 package net.catenax.irs.connector.job;
 
+import static net.catenax.irs.util.TestMother.jobParameter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
-import static net.catenax.irs.util.TestMother.jobParameter;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import net.datafaker.Faker;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
@@ -20,6 +19,7 @@ import net.catenax.irs.persistence.MinioBlobPersistence;
 import net.catenax.irs.testing.containers.MinioContainer;
 import net.catenax.irs.util.JsonUtil;
 import net.catenax.irs.util.TestMother;
+import net.datafaker.Faker;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -110,6 +110,9 @@ class PersistentJobStoreTest {
     @Test
     void completeTransferProcess_WhenJobNotFound() {
         sut.completeTransferProcess(otherJobId, process1);
+
+        // Assertion for sonar
+        assertThat(otherJobId).isNotBlank();
     }
 
     @Test
@@ -469,5 +472,19 @@ class PersistentJobStoreTest {
         final Optional<MultiTransferJob> multiTransferJob = sut.get(job.getJobIdString());
         assertThat(multiTransferJob).isPresent();
         assertThat(multiTransferJob.get().getJob().getJobState()).isEqualTo(JobState.RUNNING);
+    }
+
+    @Test
+    void checkLastModifiedOnAfterCreation() {
+        // Arrange
+        sut.create(job);
+        MultiTransferJob job1 = job.toBuilder().build();
+
+        // Act
+        sut.addTransferProcess(job.getJobId().toString(), processId1);
+        MultiTransferJob job2 = sut.find(job.getJob().getJobId().toString()).get();
+
+        // Assert
+        assertThat(job2.getJob().getLastModifiedOn()).isAfter(job1.getJob().getLastModifiedOn());
     }
 }

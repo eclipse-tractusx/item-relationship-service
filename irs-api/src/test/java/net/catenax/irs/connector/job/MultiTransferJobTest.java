@@ -1,10 +1,10 @@
 package net.catenax.irs.connector.job;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static net.catenax.irs.util.TestMother.jobParameter;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import net.datafaker.Faker;
 import net.catenax.irs.util.TestMother;
+import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 
 class MultiTransferJobTest {
