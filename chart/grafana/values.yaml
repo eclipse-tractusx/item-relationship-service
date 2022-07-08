@@ -112,6 +112,5 @@ readinessProbe:
   successThreshold: 1
   timeoutSeconds: 1
 
-
 username: <path:traceability-irs/data/dev/grafana#username>
 password: <path:traceability-irs/data/dev/grafana#password>
