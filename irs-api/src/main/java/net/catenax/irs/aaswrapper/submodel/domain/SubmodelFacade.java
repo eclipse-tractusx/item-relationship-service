@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import io.github.resilience4j.retry.annotation.Retry;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SubmodelFacade {
 
     private final SubmodelClient submodelClient;
@@ -40,13 +40,15 @@ public class SubmodelFacade {
      * @return The Aspect Model for the given submodel
      */
     @Retry(name = "submodelRetryer")
-    public AssemblyPartRelationshipDTO getSubmodel(final String submodelEndpointAddress, final JobParameter jobData) {
+    public AssemblyPartRelationshipDTO getAssemblyPartRelationshipSubmodel(final String submodelEndpointAddress, final JobParameter jobData) {
         final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
                 AssemblyPartRelationship.class);
 
         log.info("Submodel: {}, childParts {}", submodel.getCatenaXId(), submodel.getChildParts());
 
-        final Set<ChildData> submodelParts = thereAreChildParts(submodel) ? new HashSet<>(submodel.getChildParts()) : Collections.emptySet();
+        final Set<ChildData> submodelParts = thereAreChildParts(submodel)
+                ? new HashSet<>(submodel.getChildParts())
+                : Collections.emptySet();
 
         final String lifecycleContext = jobData.getBomLifecycle();
         if (shouldFilterByLifecycleContext(lifecycleContext)) {
@@ -54,6 +56,17 @@ public class SubmodelFacade {
         }
 
         return buildAssemblyPartRelationshipResponse(submodelParts, submodel.getCatenaXId());
+    }
+
+    /**
+     * @param submodelEndpointAddress The URL to the submodel endpoint
+     * @return The Aspect Model as JSON-String for the given submodel
+     */
+    @Retry(name = "submodelRetryer")
+    public String getSubmodelRawPayload(final String submodelEndpointAddress) {
+        final String submodel = this.submodelClient.getSubmodel(submodelEndpointAddress);
+        log.info("Returning Submodel as String: '{}'", submodel);
+        return submodel;
     }
 
     private boolean thereAreChildParts(final AssemblyPartRelationship submodel) {
@@ -64,23 +77,38 @@ public class SubmodelFacade {
     private AssemblyPartRelationshipDTO buildAssemblyPartRelationshipResponse(final Set<ChildData> submodelParts,
             final String catenaXId) {
         final Set<ChildDataDTO> childParts = new HashSet<>();
-        submodelParts.forEach(childData -> childParts.add(ChildDataDTO.builder()
-                                                  .childCatenaXId(childData.getChildCatenaXId())
-                                                  .lifecycleContext(childData.getLifecycleContext().getValue())
-                                                  .assembledOn(childData.getAssembledOn())
-                                                  .lastModifiedOn(childData.getLastModifiedOn())
-                                                  .quantity(QuantityDTO.builder()
-                                                          .quantityNumber(thereIsQuantity(childData) ? childData.getQuantity().getQuantityNumber() : null)
-                                                          .measurementUnit(QuantityDTO.MeasurementUnitDTO.builder()
-                                                                        .datatypeURI(thereIsMeasurementUnit(childData)
-                                                                                ? childData.getQuantity().getMeasurementUnit().getDatatypeURI() : null)
-                                                                        .lexicalValue(thereIsMeasurementUnit(childData)
-                                                                                ? childData.getQuantity().getMeasurementUnit().getLexicalValue() : null)
-                                                                        .build())
-                                                            .build())
-                                                  .build()));
+        submodelParts.forEach(childData -> childParts.add(mapToChildDataChildDataDTO(childData)));
 
         return AssemblyPartRelationshipDTO.builder().catenaXId(catenaXId).childParts(childParts).build();
+    }
+
+    private ChildDataDTO mapToChildDataChildDataDTO(final ChildData childData) {
+        final String datatypeURI = thereIsMeasurementUnit(childData) ? childData.getQuantity()
+                                                                                .getMeasurementUnit()
+                                                                                .getDatatypeURI() : null;
+        final String lexicalValue = thereIsMeasurementUnit(childData) ? childData.getQuantity()
+                                                                                 .getMeasurementUnit()
+                                                                                 .getLexicalValue() : null;
+        final QuantityDTO.MeasurementUnitDTO measurementUnitDTO = QuantityDTO.MeasurementUnitDTO.builder()
+                                                                                                .datatypeURI(
+                                                                                                        datatypeURI)
+                                                                                                .lexicalValue(
+                                                                                                        lexicalValue)
+                                                                                                .build();
+        final QuantityDTO quantityDTO = QuantityDTO.builder()
+                                                   .quantityNumber(thereIsQuantity(childData)
+                                                           ? childData.getQuantity()
+                                                                      .getQuantityNumber()
+                                                           : null)
+                                                   .measurementUnit(measurementUnitDTO)
+                                                   .build();
+        return ChildDataDTO.builder()
+                           .childCatenaXId(childData.getChildCatenaXId())
+                           .lifecycleContext(childData.getLifecycleContext().getValue())
+                           .assembledOn(childData.getAssembledOn())
+                           .lastModifiedOn(childData.getLastModifiedOn())
+                           .quantity(quantityDTO)
+                           .build();
     }
 
     private boolean thereIsMeasurementUnit(final ChildData childData) {

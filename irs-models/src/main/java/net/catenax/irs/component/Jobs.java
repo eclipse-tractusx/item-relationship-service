@@ -44,5 +44,8 @@ public class Jobs {
     @Singular
     private List<Tombstone> tombstones;
 
+    @Schema(description = "Collection of requested Submodels")
+    @Singular
+    private List<Submodel> submodels;
 
 }

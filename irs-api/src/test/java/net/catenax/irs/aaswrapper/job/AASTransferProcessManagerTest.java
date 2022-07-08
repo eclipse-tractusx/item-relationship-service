@@ -31,8 +31,10 @@ class AASTransferProcessManagerTest {
 
     ExecutorService pool = mock(ExecutorService.class);
 
+    AASHandler aasHandler = new AASHandler(digitalTwinRegistryFacade, submodelFacade);
+
     final AASTransferProcessManager manager =
-            new AASTransferProcessManager(digitalTwinRegistryFacade, submodelFacade, pool, new InMemoryBlobStore());
+            new AASTransferProcessManager(aasHandler, pool, new InMemoryBlobStore());
 
     @Test
     void shouldExecuteThreadForProcessing() {

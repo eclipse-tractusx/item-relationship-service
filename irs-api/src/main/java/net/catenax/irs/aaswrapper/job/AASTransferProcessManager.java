@@ -10,32 +10,18 @@
 package net.catenax.irs.aaswrapper.job;
 
 import java.nio.charset.StandardCharsets;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
-import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
-import net.catenax.irs.component.ProcessingError;
-import net.catenax.irs.component.Tombstone;
-import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
-import net.catenax.irs.component.assetadministrationshell.SubmodelDescriptor;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.connector.job.TransferProcessManager;
-import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
-import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.JobParameter;
-import net.catenax.irs.exceptions.JsonParseException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
-import org.springframework.web.client.RestClientException;
 
 /**
  * Process manager for AAS Object transfers.
@@ -45,18 +31,15 @@ import org.springframework.web.client.RestClientException;
 @SuppressWarnings("PMD.DoNotUseThreads") // We want to use threads at the moment ;-)
 public class AASTransferProcessManager implements TransferProcessManager<ItemDataRequest, AASTransferProcess> {
 
-    private final DigitalTwinRegistryFacade registryFacade;
-
-    private final SubmodelFacade submodelFacade;
-
     private final ExecutorService executor;
 
     private final BlobPersistence blobStore;
 
-    public AASTransferProcessManager(final DigitalTwinRegistryFacade registryFacade,
-            final SubmodelFacade submodelFacade, final ExecutorService executor, final BlobPersistence blobStore) {
-        this.registryFacade = registryFacade;
-        this.submodelFacade = submodelFacade;
+    private final AASHandler aasHandler;
+
+    public AASTransferProcessManager(final AASHandler aasHandler, final ExecutorService executor,
+            final BlobPersistence blobStore) {
+        this.aasHandler = aasHandler;
         this.executor = executor;
         this.blobStore = blobStore;
     }
@@ -83,42 +66,9 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
             final String itemId = dataRequest.getItemId();
 
-            final ItemContainer.ItemContainerBuilder itemContainerBuilder = ItemContainer.builder();
-
             log.info("Starting processing Digital Twin Registry with itemId {}", itemId);
-            try {
-                final AssetAdministrationShellDescriptor aasShell = registryFacade.getAAShellDescriptor(itemId,
-                        jobData);
-                final List<SubmodelDescriptor> aasSubmodelDescriptors = aasShell.getSubmodelDescriptors();
-
-                log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
-
-                aasShell.findAssemblyPartRelationshipEndpointAddresses().forEach(address -> {
-                    try {
-                        final AssemblyPartRelationshipDTO submodel = submodelFacade.getSubmodel(address, jobData);
-                        processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
-                    } catch (RestClientException | IllegalArgumentException e) {
-                        log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
-                                address);
-                        itemContainerBuilder.tombstone(createTombstone(itemId, address, e));
-                    } catch (JsonParseException e) {
-                        log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
-                        itemContainerBuilder.tombstone(createTombstone(itemId, address, e));
-                    }
-                });
-                final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = aasShell.filterDescriptorsByAspectTypes(
-                        jobData.getAspectTypes());
-
-                log.debug("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
-                log.debug("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
-
-                itemContainerBuilder.shell(
-                        aasShell.toBuilder().submodelDescriptors(filteredSubmodelDescriptorsByAspectType).build());
-            } catch (RestClientException e) {
-                log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-                itemContainerBuilder.tombstone(createTombstone(itemId, null, e));
-            }
-            storeItemContainer(processId, itemContainerBuilder.build());
+            final ItemContainer itemContainer = aasHandler.collectShellAndSubmodels(jobData, aasTransferProcess, itemId);
+            storeItemContainer(processId, itemContainer);
 
             transferProcessCompleted.accept(aasTransferProcess);
         };
@@ -131,27 +81,6 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
         } catch (BlobPersistenceException e) {
             log.error("Unable to store AAS result", e);
         }
-    }
-
-    private Tombstone createTombstone(final String itemId, final String address, final Exception exception) {
-        final ProcessingError processingError = ProcessingError.builder()
-                                                               .withRetryCounter(0)
-                                                               .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
-                                                               .withErrorDetail(exception.getMessage())
-                                                               .build();
-        return Tombstone.builder().endpointURL(address).catenaXId(itemId).processingError(processingError).build();
-    }
-
-    private void processEndpoint(final AASTransferProcess aasTransferProcess,
-            final ItemContainer.ItemContainerBuilder itemContainer, final AssemblyPartRelationshipDTO relationship) {
-        final List<String> childIds = relationship.getChildParts()
-                                                  .stream()
-                                                  .map(ChildDataDTO::getChildCatenaXId)
-                                                  .collect(Collectors.toList());
-        log.info("Processing AssemblyPartRelationship with {} children", childIds.size());
-
-        aasTransferProcess.addIdsToProcess(childIds);
-        itemContainer.assemblyPartRelationship(relationship);
     }
 
 }
