@@ -101,7 +101,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         } catch (RuntimeException e) {
             markJobInError(multiJob, e, JOB_EXECUTION_FAILED);
             return JobInitiateResponse.builder()
-                                      .jobId(multiJob.getJobId().toString())
+                                      .jobId(multiJob.getJobIdString())
                                       .status(ResponseStatus.FATAL_ERROR)
                                       .build();
         }
@@ -111,17 +111,17 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
             transferCount = startTransfers(multiJob, requests);
         } catch (JobException e) {
             return JobInitiateResponse.builder()
-                                      .jobId(multiJob.getJobId().toString())
+                                      .jobId(multiJob.getJobIdString())
                                       .status(convertMessage(e.getJobErrorDetails().getException()))
                                       .build();
         }
 
         // If no transfers are requested, job is already complete
         if (transferCount == 0) {
-            callCompleteHandlerIfFinished(multiJob.getJobId().toString());
+            callCompleteHandlerIfFinished(multiJob.getJobIdString());
         }
 
-        return JobInitiateResponse.builder().jobId(multiJob.getJobId().toString()).status(ResponseStatus.OK).build();
+        return JobInitiateResponse.builder().jobId(multiJob.getJobIdString()).status(ResponseStatus.OK).build();
     }
 
     /**
@@ -159,9 +159,9 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
             return;
         }
 
-        jobStore.completeTransferProcess(job.getJobId().toString(), process);
+        jobStore.completeTransferProcess(job.getJobIdString(), process);
 
-        callCompleteHandlerIfFinished(job.getJobId().toString());
+        callCompleteHandlerIfFinished(job.getJobIdString());
     }
 
     @Scheduled(cron = "${irs.job.cleanup.scheduler.completed}")
@@ -187,7 +187,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     private List<MultiTransferJob> deleteJobs(final List<MultiTransferJob> jobs) {
         return jobs.stream()
-                   .map(job -> jobStore.deleteJob(job.getJobId().toString()))
+                   .map(job -> jobStore.deleteJob(job.getJobIdString()))
                    .flatMap(Optional::stream)
                    .collect(Collectors.toList());
     }
@@ -206,7 +206,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     private void markJobInError(final MultiTransferJob job, final Throwable exception, final String message) {
         log.error(message, exception);
-        jobStore.markJobInError(job.getJobId().toString(), message, exception.getClass().getName());
+        jobStore.markJobInError(job.getJobIdString(), message, exception.getClass().getName());
     }
 
     private long startTransfers(final MultiTransferJob job, final Stream<T> dataRequests) /* throws JobErrorDetails */ {
@@ -218,7 +218,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         final JobParameter jobData = job.getJobParameter();
 
         final var response = processManager.initiateRequest(dataRequest,
-                transferId -> jobStore.addTransferProcess(job.getJobId().toString(), transferId),
+                transferId -> jobStore.addTransferProcess(job.getJobIdString(), transferId),
                 this::transferProcessCompleted, jobData);
 
         if (response.getStatus() != ResponseStatus.OK) {
