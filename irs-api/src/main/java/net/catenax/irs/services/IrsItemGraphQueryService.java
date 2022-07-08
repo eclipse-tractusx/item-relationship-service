@@ -82,7 +82,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
             return JobHandle.builder().jobId(UUID.fromString(jobId)).build();
         } else {
-            // TODO (jkreutzfeld) Improve with better response (proper exception for error responses?)
             throw new IllegalArgumentException("Could not start job: " + jobInitiateResponse.getError());
         }
     }
