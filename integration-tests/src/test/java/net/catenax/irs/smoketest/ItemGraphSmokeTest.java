@@ -158,7 +158,7 @@ class ItemGraphSmokeTest {
         final List<SubmodelDescriptor> submodelDescriptors = assDescriptor.getSubmodelDescriptors();
         assertThat(submodelDescriptors).isNotEmpty();
 
-        assertThat(completedJobs.getTombstones().size()).isPositive();
+        assertThat(completedJobs.getTombstones()).isNotEmpty();
         assertThat(completedJobs.getTombstones().get(0).getProcessingError().getRetryCounter()).isEqualTo(
                 RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts());
     }
