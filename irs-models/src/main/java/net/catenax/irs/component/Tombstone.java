@@ -9,6 +9,9 @@
 //
 package net.catenax.irs.component;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
@@ -25,4 +28,13 @@ public class Tombstone {
     private final String catenaXId;
     private final String endpointURL;
     private final ProcessingError processingError;
+
+    public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception) {
+        final ProcessingError processingError = ProcessingError.builder()
+                                                               .withRetryCounter(0)
+                                                               .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
+                                                               .withErrorDetail(exception.getMessage())
+                                                               .build();
+        return Tombstone.builder().endpointURL(endpointURL).catenaXId(catenaXId).processingError(processingError).build();
+    }
 }

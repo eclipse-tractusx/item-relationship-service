@@ -11,6 +11,7 @@ package net.catenax.irs.configuration;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import io.swagger.v3.oas.models.Components;
@@ -28,6 +29,7 @@ import net.catenax.irs.component.MeasurementUnit;
 import net.catenax.irs.component.ProcessingError;
 import net.catenax.irs.component.Quantity;
 import net.catenax.irs.component.Relationship;
+import net.catenax.irs.component.Submodel;
 import net.catenax.irs.component.Summary;
 import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -41,7 +43,11 @@ import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
+import net.catenax.irs.dto.ChildDataDTO;
+import net.catenax.irs.dto.QuantityDTO;
 import net.catenax.irs.dtos.ErrorResponse;
+import net.catenax.irs.util.JsonUtil;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -54,8 +60,10 @@ public class OpenApiExamples {
     private static final ZonedDateTime EXAMPLE_ZONED_DATETIME = ZonedDateTime.parse("2022-02-03T14:48:54.709Z");
     private static final String JOB_ID = "e5347c88-a921-11ec-b909-0242ac120002";
     private static final String GLOBAL_ASSET_ID = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0";
+    private static final String SUBMODEL_IDENTIFICATION = "urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff";
     private static final String JOB_HANDLE_ID_1 = "6c311d29-5753-46d4-b32c-19b918ea93b0";
     private static final int DEFAULT_DEPTH = 4;
+    private final JsonUtil jsonUtil = new JsonUtil();
 
     public void createExamples(final Components components) {
         components.addExamples("job-handle", toExample(createJobHandle(JOB_HANDLE_ID_1)));
@@ -75,7 +83,10 @@ public class OpenApiExamples {
     }
 
     private Example createJobListProcessingState() {
-        return toExample(List.of(JobStatusResult.builder().jobId(UUID.fromString(JOB_HANDLE_ID_1)).status(JobState.COMPLETED).build()));
+        return toExample(List.of(JobStatusResult.builder()
+                                                .jobId(UUID.fromString(JOB_HANDLE_ID_1))
+                                                .status(JobState.COMPLETED)
+                                                .build()));
     }
 
     private JobHandle createJobHandle(final String name) {
@@ -160,7 +171,50 @@ public class OpenApiExamples {
                              .relationships(List.of(createRelationship()))
                              .shells(List.of(createShell()))
                              .tombstone(createTombstone())
+                             .submodel(createSubmodel())
                              .build());
+    }
+
+    private Submodel createSubmodel() {
+        return Submodel.builder()
+                       .aspectType("urn:bamm:io.catenax.assembly_part_relationship:1.0.0")
+                       .identification(SUBMODEL_IDENTIFICATION)
+                       .payload(jsonUtil.asString(createAssemblyPartRelationship()))
+                       .build();
+    }
+
+    private AssemblyPartRelationshipDTO createAssemblyPartRelationship() {
+        final Relationship relationship = createRelationship();
+        final QuantityDTO.MeasurementUnitDTO measurementUnit = QuantityDTO.MeasurementUnitDTO.builder()
+                                                                                             .datatypeURI(
+                                                                                                     relationship.getChildItem()
+                                                                                                                 .getQuantity()
+                                                                                                                 .getMeasurementUnit()
+                                                                                                                 .getDatatypeURI())
+                                                                                             .lexicalValue(
+                                                                                                     relationship.getChildItem()
+                                                                                                                 .getQuantity()
+                                                                                                                 .getMeasurementUnit()
+                                                                                                                 .getLexicalValue())
+                                                                                             .build();
+        final QuantityDTO quantity = QuantityDTO.builder()
+                                                .quantityNumber(
+                                                        relationship.getChildItem().getQuantity().getQuantityNumber())
+                                                .measurementUnit(measurementUnit)
+                                                .build();
+        final ChildDataDTO childData = ChildDataDTO.builder()
+                                                   .childCatenaXId(relationship.getCatenaXId().getGlobalAssetId())
+                                                   .assembledOn(relationship.getChildItem().getAssembledOn())
+                                                   .lifecycleContext(relationship.getChildItem()
+                                                                                 .getLifecycleContext()
+                                                                                 .getLifecycleContextCharacteristicValue())
+                                                   .lastModifiedOn(relationship.getChildItem().getLastModifiedOn())
+                                                   .quantity(quantity)
+                                                   .build();
+        return AssemblyPartRelationshipDTO.builder()
+                                          .catenaXId(relationship.getCatenaXId().getGlobalAssetId())
+                                          .childParts(Set.of(childData))
+                                          .build();
     }
 
     private Tombstone createTombstone() {

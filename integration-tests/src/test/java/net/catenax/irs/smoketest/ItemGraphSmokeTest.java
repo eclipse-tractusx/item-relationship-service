@@ -34,7 +34,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { SmokeTestConfiguration.class })
-public class ItemGraphSmokeTest {
+class ItemGraphSmokeTest {
 
     @Autowired
     private SmokeTestConnectionProperties connectionProperties;
@@ -87,7 +87,7 @@ public class ItemGraphSmokeTest {
     }
 
     @Test
-    public void shouldCreateAndCompleteJob() {
+    void shouldCreateAndCompleteJob() {
         // Integration test Scenario 2 STEP 1
         final JobHandle createdJobResponse = given().spec(authenticationRequest)
                                                     .contentType("application/json")
@@ -126,9 +126,9 @@ public class ItemGraphSmokeTest {
         assertThat(globalAsset.getGlobalAssetId()).isEqualTo(GLOBAL_ASSET_ID);
 
         final List<Relationship> relationships = getPartialJobs.getRelationships();
-        assertThat(relationships.size()).isEqualTo(0);
-        assertThat(getPartialJobs.getShells().size()).isGreaterThanOrEqualTo(0);
-        assertThat(getPartialJobs.getTombstones().size()).isEqualTo(0);
+        assertThat(relationships).isEmpty();
+        assertThat(getPartialJobs.getShells().size()).isNotNegative();
+        assertThat(getPartialJobs.getTombstones()).isEmpty();
 
         // Integration test Scenario 2 STEP 3
         await().atMost(80, TimeUnit.SECONDS)
@@ -155,13 +155,13 @@ public class ItemGraphSmokeTest {
         assertThat(completedJobs).isNotNull();
         assertThat(completedJobs.getJob()).isNotNull();
         assertThat(completedJobs.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
-        assertThat(completedJobs.getRelationships().size()).isGreaterThanOrEqualTo(0);
-        assertThat(completedJobs.getShells().size()).isGreaterThan(0);
-        assertThat(completedJobs.getTombstones().size()).isGreaterThanOrEqualTo(0);
+        assertThat(completedJobs.getRelationships().size()).isNotNegative();
+        assertThat(completedJobs.getShells()).isNotEmpty();
+        assertThat(completedJobs.getTombstones().size()).isNotNegative();
 
         final AssetAdministrationShellDescriptor assDescriptor = completedJobs.getShells().get(0);
         final List<SubmodelDescriptor> submodelDescriptors = assDescriptor.getSubmodelDescriptors();
-        assertThat(submodelDescriptors.size()).isGreaterThan(0);
+        assertThat(submodelDescriptors).isNotEmpty();
     }
 
 }

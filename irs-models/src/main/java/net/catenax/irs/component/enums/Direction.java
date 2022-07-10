@@ -15,6 +15,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Direction indicator
@@ -60,7 +62,8 @@ public enum Direction {
     /**
      * Constants for directions
      */
-    public static class DirectionConstants {
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public static final class DirectionConstants {
         public static final String DOWNWARD = "downward";
     }
 }

@@ -37,11 +37,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>net.catenax.irs</groupId>
-            <artifactId>irs-common</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
             <version>1.6.6</version>

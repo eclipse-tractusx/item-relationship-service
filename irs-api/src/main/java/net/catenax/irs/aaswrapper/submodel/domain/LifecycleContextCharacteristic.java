@@ -12,11 +12,13 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * LifecycleContextCharacteristic
  */
 @Getter
+@Jacksonized
 enum LifecycleContextCharacteristic {
     ASREQUIRED("AsRequired"),
     /**

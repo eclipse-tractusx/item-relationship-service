@@ -20,29 +20,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import net.catenax.irs.exceptions.JsonParseException;
 import net.catenax.irs.util.JsonUtil;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-class SubmodelClientImplWiremockTest {
+class SubmodelFacadeWiremockTest {
 
     private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
-
-    private WireMockServer wireMockServer;
-    private SubmodelClient submodelClient;
     private final JsonUtil jsonUtil = new JsonUtil();
     private final RestTemplate restTemplate = new RestTemplate();
+    private WireMockServer wireMockServer;
+    private SubmodelFacade submodelFacade;
 
     @BeforeEach
     void configureSystemUnderTest() {
         this.wireMockServer = new WireMockServer(options().dynamicPort());
         this.wireMockServer.start();
         configureFor(this.wireMockServer.port());
-        this.submodelClient = new SubmodelClientImpl(restTemplate, buildApiMethodUrl() + "/api/service", jsonUtil);
+        SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate, buildApiMethodUrl() + "/api/service",
+                jsonUtil);
+        this.submodelFacade = new SubmodelFacade(submodelClient);
     }
 
     @AfterEach
@@ -51,61 +52,73 @@ class SubmodelClientImplWiremockTest {
     }
 
     @Test
-    void shouldReturnCorrectAspectModelWithWireMockResponse() {
+    void shouldReturnAssemblyPartRelationshipAsString() {
         // Arrange
         givenThat(any(anyUrl()).willReturn(aResponse().withStatus(200)
                                                       .withHeader("Content-Type", "application/json;charset=UTF-8")
                                                       .withBodyFile("assemblyPartRelationship.json")));
 
         // Act
-        final AssemblyPartRelationship submodel = submodelClient.getSubmodel(url, AssemblyPartRelationship.class);
+        final String submodel = submodelFacade.getSubmodelRawPayload(url);
 
         // Assert
-        assertThat(submodel.getCatenaXId()).isEqualTo("urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978");
+        assertThat(submodel).contains("\"catenaXId\": \"urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978\"");
     }
 
     @Test
-    void shouldThrowParseExceptionWhenSubmodelContainsWrongPayload() {
+    void shouldReturnMaterialForRecyclingAsString() {
         // Arrange
         givenThat(any(anyUrl()).willReturn(aResponse().withStatus(200)
                                                       .withHeader("Content-Type", "application/json;charset=UTF-8")
                                                       .withBodyFile("materialForRecycling.json")));
 
         // Act
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelClient.getSubmodel(url,
-                AssemblyPartRelationship.class);
+        final String submodel = submodelFacade.getSubmodelRawPayload(url);
 
         // Assert
-        assertThatExceptionOfType(JsonParseException.class).isThrownBy(throwingCallable);
+        assertThat(submodel).contains("\"materialName\": \"Cooper\",");
     }
 
     @Test
-    void shouldReturnObjectAsStringWhenNotAssemblyPartRelationship() {
+    void shouldReturnObjectAsStringWhenResponseNotJSON() {
         // Arrange
         givenThat(any(anyUrl()).willReturn(aResponse().withStatus(200)
                                                       .withHeader("Content-Type", "application/json;charset=UTF-8")
-                                                      .withBodyFile("materialForRecycling.json")));
+                                                      .withBody("test")));
 
         // Act
-        final Object submodel = submodelClient.getSubmodel(url, Object.class);
+        final String submodel = submodelFacade.getSubmodelRawPayload(url);
 
         // Assert
-        assertThat(jsonUtil.asString(submodel)).isNotBlank();
+        assertThat(submodel).isEqualTo("test");
     }
 
     @Test
-    void shouldReturnObjectAsStringWhenMalformedResponse() {
+    void shouldThrowExceptionWhenResponse_400() {
         // Arrange
-        givenThat(any(anyUrl()).willReturn(aResponse().withStatus(200)
+        givenThat(any(anyUrl()).willReturn(aResponse().withStatus(400)
                                                       .withHeader("Content-Type", "application/json;charset=UTF-8")
-                                                      .withBody("{name: test, {}")));
+                                                      .withBody("{ error: '400'}")));
 
         // Act
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelClient.getSubmodel(url,
-                Object.class);
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelRawPayload(url);
 
         // Assert
-        assertThatExceptionOfType(JsonParseException.class).isThrownBy(throwingCallable);
+        assertThatExceptionOfType(RestClientException.class).isThrownBy(throwingCallable);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenResponse_500() {
+        // Arrange
+        givenThat(any(anyUrl()).willReturn(aResponse().withStatus(500)
+                                                      .withHeader("Content-Type", "application/json;charset=UTF-8")
+                                                      .withBody("{ error: '500'}")));
+
+        // Act
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelRawPayload(url);
+
+        // Assert
+        assertThatExceptionOfType(RestClientException.class).isThrownBy(throwingCallable);
     }
 
     private String buildApiMethodUrl() {

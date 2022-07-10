@@ -16,4 +16,4 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: https://catenaxintakssrv.germanywestcentral.cloudapp.azure.com/iamcentralidp/auth/realms/CX-Central/protocol/openid-connect/certs
+          jwk-set-uri: https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/certs

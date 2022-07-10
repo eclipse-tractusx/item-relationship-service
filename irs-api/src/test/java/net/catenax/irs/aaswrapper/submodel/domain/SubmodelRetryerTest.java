@@ -1,5 +1,6 @@
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import static net.catenax.irs.util.TestMother.jobParameter;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -7,13 +8,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-
 import io.github.resilience4j.retry.RetryRegistry;
 import net.catenax.irs.TestConfig;
-import net.catenax.irs.component.ProcessingError;
-import net.catenax.irs.util.TestMother;
+import net.catenax.irs.dto.JobParameter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,27 +34,12 @@ class SubmodelRetryerTest {
 
     @Test
     void shouldRetryExecutionOfGetSubmodelMaxAttemptTimes() {
+        final JobParameter jobParameter = jobParameter();
         given(this.client.getSubmodel(anyString(), any())).willThrow(
                 new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception"));
 
-        assertThrows(HttpServerErrorException.class, () -> facade.getSubmodel("TEST", TestMother.jobParameter()));
-
-        verify(this.client, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getSubmodel(anyString(), any());
-    }
-
-    @Test
-    void shouldRetryExecutionOfGetSubmodelMaxAttemptTimesAndRecordTrial() {
-        int retryCount = 0;
-        ProcessingError error = ProcessingError.builder()
-                                               .withRetryCounter(++retryCount)
-                                               .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
-                                               .withErrorDetail("Fake detail message")
-                                               .build();
-
-        given(this.client.getSubmodel(anyString(), any())).willThrow(
-                new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception"));
-
-        assertThrows(HttpServerErrorException.class, () -> facade.getSubmodel("TEST", TestMother.jobParameter()));
+        assertThrows(HttpServerErrorException.class,
+                () -> facade.getAssemblyPartRelationshipSubmodel("TEST", jobParameter));
 
         verify(this.client, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getSubmodel(anyString(), any());
     }

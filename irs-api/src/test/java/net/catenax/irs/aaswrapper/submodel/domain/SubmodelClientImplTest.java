@@ -66,4 +66,19 @@ class SubmodelClientImplTest {
 
         assertThat(submodelResponse.getCatenaXId()).isEqualTo("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6");
     }
+
+    @Test
+    void shouldReturnStringAspectModelResponseWhenRequestingForSerialPartTypization() throws IOException {
+        final File file = new File("src/test/resources/__files/materialForRecycling.json");
+        final String data = objectMapper.readTree(file).toString();
+
+        final ResponseEntity<String> responseEntity = new ResponseEntity<>(data, HttpStatus.OK);
+        doReturn(responseEntity).when(restTemplate).getForEntity(any(), any());
+
+        final Object submodelResponse = submodelClient.getSubmodel(url,
+                Object.class);
+
+        assertThat(submodelResponse).isNotNull();
+        assertThat(objectMapper.writeValueAsString(submodelResponse)).isEqualTo(data);
+    }
 }
