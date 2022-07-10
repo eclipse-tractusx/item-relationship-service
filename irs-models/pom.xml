@@ -42,6 +42,12 @@
             <version>1.6.6</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-retry</artifactId>
+            <version>1.7.1</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

@@ -15,6 +15,7 @@ import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
+import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +33,8 @@ class AASTransferProcessManagerTest {
     ExecutorService pool = mock(ExecutorService.class);
 
     AASHandler aasHandler = new AASHandler(digitalTwinRegistryFacade, submodelFacade);
+
+    BlobPersistence spyBlobStore;
 
     final AASTransferProcessManager manager = new AASTransferProcessManager(aasHandler, pool, new InMemoryBlobStore());
 

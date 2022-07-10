@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import io.github.resilience4j.retry.RetryRegistry;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -57,27 +58,21 @@ class ItemGraphSmokeTest {
         return registerJob;
     }
 
-    private static String obtainAccessToken(final String grantType, final String clientId, final String clientSecret, final String accessToken) {
+    private static String obtainAccessToken(final String grantType, final String clientId, final String clientSecret,
+            final String accessToken) {
         final Map<String, String> oauth2Payload = new HashMap<String, String>();
         oauth2Payload.put("grant_type", grantType);
         oauth2Payload.put("client_id", clientId);
         oauth2Payload.put("client_secret", clientSecret);
 
-        return given().params(oauth2Payload)
-                      .post(accessToken)
-                      .then()
-                      .extract()
-                      .jsonPath()
-                      .getString("access_token");
+        return given().params(oauth2Payload).post(accessToken).then().extract().jsonPath().getString("access_token");
     }
 
     @BeforeEach
     void setUp() {
-        final String accessToken =
-                obtainAccessToken(credentialsProperties.getAuthorizationGrantType(),
-                        credentialsProperties.getClientId(),
-                        credentialsProperties.getClientSecret(),
-                        connectionProperties.getAccessToken());
+        final String accessToken = obtainAccessToken(credentialsProperties.getAuthorizationGrantType(),
+                credentialsProperties.getClientId(), credentialsProperties.getClientSecret(),
+                connectionProperties.getAccessToken());
 
         final RequestSpecBuilder builder = new RequestSpecBuilder();
         builder.addHeader("Authorization", "Bearer " + accessToken);
@@ -162,6 +157,10 @@ class ItemGraphSmokeTest {
         final AssetAdministrationShellDescriptor assDescriptor = completedJobs.getShells().get(0);
         final List<SubmodelDescriptor> submodelDescriptors = assDescriptor.getSubmodelDescriptors();
         assertThat(submodelDescriptors).isNotEmpty();
+
+        assertThat(completedJobs.getTombstones().size()).isGreaterThan(0);
+        assertThat(completedJobs.getTombstones().get(0).getProcessingError().getRetryCounter()).isEqualTo(
+                RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts());
     }
 
 }
