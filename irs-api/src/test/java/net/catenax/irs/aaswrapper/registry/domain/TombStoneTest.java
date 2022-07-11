@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 
 class TombStoneTest {
 
+    Tombstone tombstone;
+
     @Test
     void fromTombstoneTest() {
         // arrange
@@ -34,7 +36,7 @@ class TombStoneTest {
                                                .build();
 
         //act
-        Tombstone tombstone = Tombstone.from(catenaXId, endPointUrl, illegalArgumentException);
+        tombstone = Tombstone.from(catenaXId, endPointUrl, illegalArgumentException);
 
         // assert
         assertThat(tombstone).isNotNull();
