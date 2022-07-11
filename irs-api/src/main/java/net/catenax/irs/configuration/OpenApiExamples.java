@@ -134,6 +134,7 @@ public class OpenApiExamples {
                            .depth(DEFAULT_DEPTH)
                            .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION, AspectType.CONTACT_INFORMATION))
                            .direction(Direction.DOWNWARD)
+                           .collectAspects(false)
                            .build();
     }
 
