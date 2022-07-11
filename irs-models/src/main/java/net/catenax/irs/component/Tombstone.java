@@ -12,7 +12,6 @@ package net.catenax.irs.component;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import io.github.resilience4j.retry.RetryRegistry;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
@@ -30,11 +29,10 @@ public class Tombstone {
     private final String endpointURL;
     private final ProcessingError processingError;
 
-    public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception) {
+    public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
+            final int retryCount) {
         final ProcessingError processingError = ProcessingError.builder()
-                                                               .withRetryCounter(RetryRegistry.ofDefaults()
-                                                                                              .getDefaultConfig()
-                                                                                              .getMaxAttempts())
+                                                               .withRetryCounter(retryCount)
                                                                .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
                                                                .withErrorDetail(exception.getMessage())
                                                                .build();

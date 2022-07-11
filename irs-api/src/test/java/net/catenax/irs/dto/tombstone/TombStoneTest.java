@@ -1,4 +1,4 @@
-package net.catenax.irs.component;
+package net.catenax.irs.dto.tombstone;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,9 +6,11 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 import io.github.resilience4j.retry.RetryRegistry;
+import net.catenax.irs.component.ProcessingError;
+import net.catenax.irs.component.Tombstone;
 import org.junit.jupiter.api.Test;
 
-class TombstoneTest {
+class TombStoneTest {
 
     Tombstone tombstone;
 
@@ -34,7 +36,8 @@ class TombstoneTest {
                                                .build();
 
         //act
-        tombstone = Tombstone.from(catenaXId, endPointUrl, illegalArgumentException);
+        tombstone = Tombstone.from(catenaXId, endPointUrl, illegalArgumentException,
+                RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts());
 
         // assert
         assertThat(tombstone).isNotNull();
@@ -62,4 +65,5 @@ class TombstoneTest {
                                   .append(dateTime.getSecond())
                                   .toString();
     }
+
 }

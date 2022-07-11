@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
@@ -52,6 +53,7 @@ public class AASHandler {
     public ItemContainer collectShellAndSubmodels(final JobParameter jobData,
             final AASTransferProcess aasTransferProcess, final String itemId) {
         final ItemContainer.ItemContainerBuilder itemContainerBuilder = ItemContainer.builder();
+        final int retryCount = RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts();
         try {
             final AssetAdministrationShellDescriptor aasShell = registryFacade.getAAShellDescriptor(itemId, jobData);
             final List<SubmodelDescriptor> aasSubmodelDescriptors = aasShell.getSubmodelDescriptors();
@@ -65,10 +67,10 @@ public class AASHandler {
                     processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
                 } catch (RestClientException | IllegalArgumentException e) {
                     log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.", address);
-                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e));
+                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount));
                 } catch (JsonParseException e) {
                     log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
-                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e));
+                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount));
                 }
             });
             final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = aasShell.filterDescriptorsByAspectTypes(
@@ -85,7 +87,7 @@ public class AASHandler {
                     aasShell.toBuilder().submodelDescriptors(filteredSubmodelDescriptorsByAspectType).build());
         } catch (RestClientException e) {
             log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e));
+            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount));
         }
         return itemContainerBuilder.build();
     }
@@ -105,9 +107,10 @@ public class AASHandler {
                 submodels.add(Submodel.from(submodelDescriptor.getIdentification(), submodelDescriptor.getAspectType(),
                         payload));
             } catch (JsonParseException e) {
-                log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
                 itemContainerBuilder.tombstone(
-                        Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e));
+                        Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e,
+                                RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts()));
+                log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
             }
         });
         return submodels;
