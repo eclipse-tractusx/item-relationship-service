@@ -28,7 +28,7 @@ class SubmodelExponentialRetryTest {
     private SubmodelClient submodelClient;
 
     @MockBean
-    @Qualifier("restTemplate")
+    @Qualifier("basicAuthRestTemplate")
     private RestTemplate restTemplate;
 
     @Autowired
@@ -42,6 +42,20 @@ class SubmodelExponentialRetryTest {
 
         // Act
         assertThrows(HttpServerErrorException.class,
+                () -> submodelClient.getSubmodel("http://test.test/urn:uuid:12345/submodel?content=value",
+                        Object.class));
+
+        // Assert
+        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getForEntity(any(), any());
+    }
+
+    @Test
+    void shouldRetryOnAnyRuntimeException() {
+        // Arrange
+        given(restTemplate.getForEntity(any(), any())).willThrow(new RuntimeException("AASWrapper remote exception"));
+
+        // Act
+        assertThrows(RuntimeException.class,
                 () -> submodelClient.getSubmodel("http://test.test/urn:uuid:12345/submodel?content=value",
                         Object.class));
 

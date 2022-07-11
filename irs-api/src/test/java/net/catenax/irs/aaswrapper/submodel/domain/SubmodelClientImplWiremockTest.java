@@ -20,29 +20,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import net.catenax.irs.TestConfig;
 import net.catenax.irs.exceptions.JsonParseException;
-import net.catenax.irs.util.JsonUtil;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
+@SpringBootTest(properties = { "aasWrapper.host=http://localhost:56985/api/service",
+                               "resilience4j.retry.configs.default.waitDuration=1s"
+})
+@Import(TestConfig.class)
+@ActiveProfiles(profiles = { "test" })
 class SubmodelClientImplWiremockTest {
 
     private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
-
     private WireMockServer wireMockServer;
+
+    @Autowired
     private SubmodelClient submodelClient;
-    private final JsonUtil jsonUtil = new JsonUtil();
-    private final RestTemplate restTemplate = new RestTemplate();
 
     @BeforeEach
     void configureSystemUnderTest() {
-        this.wireMockServer = new WireMockServer(options().dynamicPort());
+        this.wireMockServer = new WireMockServer(options().port(56985));
         this.wireMockServer.start();
         configureFor(this.wireMockServer.port());
-        this.submodelClient = new SubmodelClientImpl(restTemplate, buildApiMethodUrl() + "/api/service", jsonUtil);
     }
 
     @AfterEach
@@ -77,9 +83,5 @@ class SubmodelClientImplWiremockTest {
 
         // Assert
         assertThatExceptionOfType(JsonParseException.class).isThrownBy(throwingCallable);
-    }
-
-    private String buildApiMethodUrl() {
-        return String.format("http://localhost:%d", this.wireMockServer.port());
     }
 }

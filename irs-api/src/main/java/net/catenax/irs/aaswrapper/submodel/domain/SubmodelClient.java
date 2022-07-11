@@ -9,11 +9,14 @@
 //
 package net.catenax.irs.aaswrapper.submodel.domain;
 
+import static net.catenax.irs.configuration.RestTemplateConfig.BASIC_AUTH_REST_TEMPLATE;
+
 import java.net.URI;
 
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.util.JsonUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +40,9 @@ interface SubmodelClient {
  * Submodel client Rest Client Stub used in local environment
  */
 @Service
-@Profile({ "local", "stubtest"})
+@Profile({ "local",
+           "stubtest"
+})
 class SubmodelClientLocalStub implements SubmodelClient {
 
     private final JsonUtil jsonUtil = new JsonUtil();
@@ -73,7 +78,7 @@ class SubmodelClientImpl implements SubmodelClient {
     private final AASWrapperUriAddressRewritePolicy aasWrapperUriAddressRewritePolicy;
     private final JsonUtil jsonUtil;
 
-    /* package */ SubmodelClientImpl(final RestTemplate restTemplate,
+    /* package */ SubmodelClientImpl(@Qualifier(BASIC_AUTH_REST_TEMPLATE) final RestTemplate restTemplate,
             @Value("${aasWrapper.host}") final String aasWrapperHost, final JsonUtil jsonUtil) {
         this.restTemplate = restTemplate;
         this.aasWrapperUriAddressRewritePolicy = new AASWrapperUriAddressRewritePolicy(aasWrapperHost);

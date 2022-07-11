@@ -17,6 +17,7 @@ import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -44,6 +46,7 @@ import org.springframework.web.client.RestTemplate;
 public class RestTemplateConfig {
 
     public static final String OAUTH_REST_TEMPLATE = "oAuthRestTemplate";
+    public static final String BASIC_AUTH_REST_TEMPLATE = "basicAuthRestTemplate";
 
     private static final String CLIENT_REGISTRATION_ID = "keycloak";
     private static final int TIMEOUT_SECONDS = 90;
@@ -55,16 +58,22 @@ public class RestTemplateConfig {
     /* package */ RestTemplate oAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
         final var clientRegistration = clientRegistrationRepository.findByRegistrationId(CLIENT_REGISTRATION_ID);
 
-        return restTemplateBuilder
-                .additionalInterceptors(new OAuthClientCredentialsRestTemplateInterceptor(authorizedClientManager(), clientRegistration))
-                .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                .build();
+        return restTemplateBuilder.additionalInterceptors(
+                                          new OAuthClientCredentialsRestTemplateInterceptor(authorizedClientManager(), clientRegistration))
+                                  .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .build();
     }
 
-    @Bean
-    /* package */ RestTemplate restTemplate() {
-        return new RestTemplate();
+    @Bean(BASIC_AUTH_REST_TEMPLATE)
+    /* package */ RestTemplate basicAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder,
+            @Value("${aasWrapper.username}") final String aasProxySubmodelUsername,
+            @Value("${aasWrapper.password}") final String aasProxySubmodelPassword) {
+        return restTemplateBuilder.additionalInterceptors(
+                                          new BasicAuthenticationInterceptor(aasProxySubmodelUsername, aasProxySubmodelPassword))
+                                  .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .build();
     }
 
     @Bean
@@ -73,7 +82,8 @@ public class RestTemplateConfig {
                                                                                   .clientCredentials()
                                                                                   .build();
 
-        final var authorizedClientManager = new AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistrationRepository, oAuth2AuthorizedClientService);
+        final var authorizedClientManager = new AuthorizedClientServiceOAuth2AuthorizedClientManager(
+                clientRegistrationRepository, oAuth2AuthorizedClientService);
         authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
 
         return authorizedClientManager;
@@ -90,7 +100,8 @@ public class RestTemplateConfig {
         private final ClientRegistration clientRegistration;
 
         @Override
-        public ClientHttpResponse intercept(final HttpRequest request, final byte[] body, final ClientHttpRequestExecution execution) throws IOException {
+        public ClientHttpResponse intercept(final HttpRequest request, final byte[] body,
+                final ClientHttpRequestExecution execution) throws IOException {
             final OAuth2AuthorizeRequest oAuth2AuthorizeRequest = OAuth2AuthorizeRequest
                     .withClientRegistrationId(clientRegistration.getRegistrationId())
                     .principal(clientRegistration.getClientName())
@@ -99,7 +110,8 @@ public class RestTemplateConfig {
             final OAuth2AuthorizedClient client = manager.authorize(oAuth2AuthorizeRequest);
 
             if (isNull(client)) {
-                throw new IllegalStateException("Client credentials flow on " + clientRegistration.getRegistrationId() + " failed, client is null");
+                throw new IllegalStateException("Client credentials flow on " + clientRegistration.getRegistrationId()
+                        + " failed, client is null");
             }
 
             log.debug("Adding Authorization header to the request");
