@@ -34,42 +34,15 @@ JobOrchestrator -> AASRecursiveJobHandler: initiate(Job)
 JobOrchestrator -> JobOrchestrator: startTransfers(MultiTransferJob)
 JobOrchestrator -> AASTransferProcessManager : initiateRequest
 AASTransferProcessManager -->> ExecutorService : execute()
+ref over ExecutorService
+see process
+"job execution"
+end ref
 
 IrsItemGraphQueryService <-- JobOrchestrator : success jobID (UUID)
 IrsController <-- IrsItemGraphQueryService : success jobID (UUID)
 IrsAPI <-- IrsController : success jobID (UUID)
 IrsApiConsumer <-- IrsController : success jobID (UUID)
 
-loop poll until response is  "200"
-     IrsApiConsumer -> IrsAPI : /irs/jobs/{jobId}
-
-     ref over IrsAPI,  JobOrchestrator
-        lookupJobId in JobStore
-     end ref
-     opt job.hasCompleted()
-            IrsApiConsumer <-- IrsAPI : "200" + payload(job details + document)
-     else job.isRunning()
-           alt ?returnUncompletedJob=true
-             IrsApiConsumer <-- IrsAPI : "206" + payload(job details + document)
-           else
-             IrsApiConsumer <-- IrsAPI : "200" + payload(job details)
-            end alt
-     else job.hasCanceled()
-             IrsApiConsumer <-- IrsAPI : "200" + payload(job details)
-     else job.hasFailed()
-        alt ?returnUncompletedJob=true
-            IrsApiConsumer <-- IrsAPI : "417" + payload(job details + document)
-        else
-            IrsApiConsumer <-- IrsAPI : "417"  + payload(job details)
-        end alt
-      else  unexpected exception
-        alt ?returnUncompletedJob=true
-            IrsApiConsumer <-- IrsAPI : "500" + payload(job details + document)
-        else
-           IrsApiConsumer <-- IrsAPI : "500" + payload(job details)
-           end alt
-     end opt
-
-end loop
 
 @enduml
