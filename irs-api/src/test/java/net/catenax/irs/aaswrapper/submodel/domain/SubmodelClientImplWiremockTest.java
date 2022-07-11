@@ -71,7 +71,7 @@ class SubmodelClientImplWiremockTest {
     }
 
     @Test
-    void shouldReturnFalseAspectModelWithWireMockResponse() {
+    void shouldThrowParseExceptionWhenSubmodelContainsWrongPayload() {
         // Arrange
         givenThat(any(anyUrl()).willReturn(aResponse().withStatus(200)
                                                       .withHeader("Content-Type", "application/json;charset=UTF-8")
@@ -80,6 +80,35 @@ class SubmodelClientImplWiremockTest {
         // Act
         final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelClient.getSubmodel(url,
                 AssemblyPartRelationship.class);
+
+        // Assert
+        assertThatExceptionOfType(JsonParseException.class).isThrownBy(throwingCallable);
+    }
+
+    @Test
+    void shouldReturnObjectAsStringWhenNotAssemblyPartRelationship() {
+        // Arrange
+        givenThat(any(anyUrl()).willReturn(aResponse().withStatus(200)
+                                                      .withHeader("Content-Type", "application/json;charset=UTF-8")
+                                                      .withBodyFile("materialForRecycling.json")));
+
+        // Act
+        final Object submodel = submodelClient.getSubmodel(url, Object.class);
+
+        // Assert
+        assertThat(jsonUtil.asString(submodel)).isNotBlank();
+    }
+
+    @Test
+    void shouldReturnObjectAsStringWhenMalformedResponse() {
+        // Arrange
+        givenThat(any(anyUrl()).willReturn(aResponse().withStatus(200)
+                                                      .withHeader("Content-Type", "application/json;charset=UTF-8")
+                                                      .withBody("{name: test, {}")));
+
+        // Act
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelClient.getSubmodel(url,
+                Object.class);
 
         // Assert
         assertThatExceptionOfType(JsonParseException.class).isThrownBy(throwingCallable);

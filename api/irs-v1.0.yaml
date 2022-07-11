@@ -206,6 +206,7 @@ components:
               - SerialPartTypization
               - ContactInformation
             bomLifecycle: asBuilt
+            collectAspects: false
             depth: 4
             direction: downward
           jobState: CANCELED
@@ -218,6 +219,7 @@ components:
               failed: 0
               running: 0
         relationships: [ ]
+        submodels: []
         tombstones: [ ]
     complete-job-list-processing-state:
       value:
@@ -239,6 +241,7 @@ components:
               - SerialPartTypization
               - ContactInformation
             bomLifecycle: asBuilt
+            collectAspects: false
             depth: 4
             direction: downward
           jobState: COMPLETED
@@ -303,6 +306,16 @@ components:
                 semanticId:
                   value:
                     - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+        submodels:
+          - aspectType: urn:bamm:io.catenax.assembly_part_relationship:1.0.0
+            identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
+            payload: "{\"catenaXId\":\"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\"\
+                        ,\"childParts\":[{\"assembledOn\":\"2022-02-03T14:48:54.709Z\",\"quantity\"\
+                        :{\"quantityNumber\":1.0,\"measurementUnit\":{\"lexicalValue\":\"piece\"\
+                        ,\"datatypeURI\":\"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\"\
+                        }},\"lastModifiedOn\":\"2022-02-03T14:48:54.709Z\",\"lifecycleContext\"\
+                        :\"AsBuilt\",\"childCatenaXId\":\"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\"\
+                        }]}"
         tombstones:
           - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
             endpointURL: https://catena-x.net/vehicle/partdetails/
@@ -332,6 +345,7 @@ components:
               - SerialPartTypization
               - ContactInformation
             bomLifecycle: asBuilt
+            collectAspects: false
             depth: 4
             direction: downward
           jobState: ERROR
@@ -344,6 +358,7 @@ components:
               failed: 0
               running: 0
         relationships: [ ]
+        submodels: []
         tombstones: [ ]
     job-handle:
       value:
@@ -364,6 +379,7 @@ components:
               - SerialPartTypization
               - ContactInformation
             bomLifecycle: asBuilt
+            collectAspects: false
             depth: 4
             direction: downward
           jobState: COMPLETED
@@ -428,6 +444,16 @@ components:
                 semanticId:
                   value:
                     - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+        submodels:
+          - aspectType: urn:bamm:io.catenax.assembly_part_relationship:1.0.0
+            identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
+            payload: "{\"catenaXId\":\"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\"\
+                    ,\"childParts\":[{\"assembledOn\":\"2022-02-03T14:48:54.709Z\",\"quantity\"\
+                    :{\"quantityNumber\":1.0,\"measurementUnit\":{\"lexicalValue\":\"piece\"\
+                    ,\"datatypeURI\":\"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\"\
+                    }},\"lastModifiedOn\":\"2022-02-03T14:48:54.709Z\",\"lifecycleContext\"\
+                    :\"AsBuilt\",\"childCatenaXId\":\"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\"\
+                    }]}"
         tombstones:
           - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
             endpointURL: https://catena-x.net/vehicle/partdetails/
@@ -451,6 +477,7 @@ components:
               - SerialPartTypization
               - ContactInformation
             bomLifecycle: asBuilt
+            collectAspects: false
             depth: 4
             direction: downward
           jobState: RUNNING
@@ -463,6 +490,7 @@ components:
               failed: 0
               running: 0
         relationships: [ ]
+        submodels: []
         tombstones: [ ]
   schemas:
     AdministrativeInformation:
@@ -748,6 +776,8 @@ components:
             into the parent part.
           enum:
             - asBuilt
+        collectAspects:
+          type: boolean
         depth:
           type: integer
           format: int32
@@ -788,6 +818,11 @@ components:
           description: AAS shells.
           items:
             $ref: '#/components/schemas/AssetAdministrationShellDescriptor'
+        submodels:
+          type: array
+          description: Collection of requested Submodels
+          items:
+            $ref: '#/components/schemas/Submodel'
         tombstones:
           type: array
           description: Collection of not resolvable endpoints as tombstones. Including
@@ -883,6 +918,10 @@ components:
             into the parent part.
           enum:
             - asBuilt
+        collectAspects:
+          type: boolean
+          description: Flag to specify whether aspects should be requested and collected.
+            Default is false.
         depth:
           type: integer
           format: int32
@@ -915,6 +954,16 @@ components:
           $ref: '#/components/schemas/ChildItem'
         parentItem:
           $ref: '#/components/schemas/ChildItem'
+    Submodel:
+      type: object
+      description: Collection of requested Submodels
+      properties:
+        aspectType:
+          type: string
+        identification:
+          type: string
+        payload:
+          type: string
     SubmodelDescriptor:
       type: object
       properties:

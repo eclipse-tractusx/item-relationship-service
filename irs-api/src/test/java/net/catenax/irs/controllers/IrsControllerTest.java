@@ -35,7 +35,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -53,8 +52,8 @@ class IrsControllerTest {
 
     private static Stream<RegisterJob> corruptedJobs() {
         return Stream.of(registerJobWithDepthAndAspect(110, null),
-                registerJobWithGlobalAssetIdAndDepth("invalidGlobalAssetId", 0, null),
-                registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0, null));
+                registerJobWithGlobalAssetIdAndDepth("invalidGlobalAssetId", 0, null, false),
+                registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0, null, false));
     }
 
     @Test

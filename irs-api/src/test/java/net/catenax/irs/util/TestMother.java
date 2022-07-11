@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import net.catenax.irs.component.enums.BomLifecycle;
 import net.datafaker.Faker;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.component.GlobalAssetIdentification;
@@ -49,15 +50,21 @@ public class TestMother {
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<AspectType> aspectTypes) {
         return registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", depth,
-                aspectTypes);
+                aspectTypes, false);
+    }
+
+    public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth, final List<AspectType> aspectTypes) {
+        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", depth,
+                aspectTypes, true);
     }
 
     public static RegisterJob registerJobWithGlobalAssetIdAndDepth(final String globalAssetId, final Integer depth,
-            final List<AspectType> aspectTypes) {
+            final List<AspectType> aspectTypes, final boolean collectAspects) {
         final RegisterJob registerJob = new RegisterJob();
         registerJob.setGlobalAssetId(globalAssetId);
         registerJob.setDepth(depth);
         registerJob.setAspects(aspectTypes);
+        registerJob.setCollectAspects(collectAspects);
 
         return registerJob;
     }

@@ -12,11 +12,13 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 import java.util.Set;
 
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * AssemblyPartRelationship
  */
 @Data
+@Jacksonized
 class AssemblyPartRelationship {
 
     /**

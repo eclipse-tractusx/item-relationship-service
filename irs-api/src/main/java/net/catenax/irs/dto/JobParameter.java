@@ -46,4 +46,9 @@ public class JobParameter {
      */
     private String bomLifecycle;
 
+    /**
+     * Flag to specify whether aspects should be requested and collected.
+     */
+    private boolean collectAspects;
+
 }

@@ -107,12 +107,13 @@ class InMemoryJobStoreTest {
     void completeTransferProcess_WhenTransferAlreadyCompleted() {
         // Arrange
         sut.create(job);
-        sut.addTransferProcess(job.getJobIdString(), processId1);
-        sut.completeTransferProcess(job.getJobIdString(), process1);
+        final String jobId = job.getJobIdString();
+        sut.addTransferProcess(jobId, processId1);
+        sut.completeTransferProcess(jobId, process1);
 
         // Act
         assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
-                () -> sut.completeTransferProcess(job.getJobIdString(), process1));
+                () -> sut.completeTransferProcess(jobId, process1));
 
         // Assert
         refreshJob();

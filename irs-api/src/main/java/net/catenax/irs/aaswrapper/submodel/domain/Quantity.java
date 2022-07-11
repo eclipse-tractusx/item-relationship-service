@@ -10,11 +10,13 @@
 package net.catenax.irs.aaswrapper.submodel.domain;
 
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * Quantity
  */
 @Data
+@Jacksonized
 class Quantity {
 
     /**
@@ -31,6 +33,7 @@ class Quantity {
      * MeasurementUnit
      */
     @Data
+    @Jacksonized
     /* package */ static class MeasurementUnit {
         private String lexicalValue;
         private String datatypeURI;

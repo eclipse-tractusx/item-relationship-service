@@ -27,9 +27,11 @@ import net.catenax.irs.aaswrapper.job.ItemDataRequest;
 import net.catenax.irs.component.AsyncFetchedItems;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.Relationship;
+import net.catenax.irs.component.Submodel;
 import net.catenax.irs.component.Summary;
 import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -44,7 +46,6 @@ import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferProcess;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.JobParameter;
-import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
@@ -67,6 +68,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final BlobPersistence blobStore;
 
+    private final MeterRegistryService meterRegistryService;
+
     @Value("${aspectTypes.default}")
     private String defaultAspect;
 
@@ -77,11 +80,11 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
+            meterRegistryService.incrementNumberOfCreatedJobs();
             final String jobId = jobInitiateResponse.getJobId();
 
             return JobHandle.builder().jobId(UUID.fromString(jobId)).build();
         } else {
-            // TODO (jkreutzfeld) Improve with better response (proper exception for error responses?)
             throw new IllegalArgumentException("Could not start job: " + jobInitiateResponse.getError());
         }
     }
@@ -104,11 +107,14 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         }
         log.info("Aspect Type Filter '{}'", aspectTypeValues);
 
+        final boolean collectAspects = request.isCollectAspects();
+
         return JobParameter.builder()
                            .rootItemId(uuid)
                            .treeDepth(treeDepth)
                            .bomLifecycle(bomLifecycle.getLifecycleContextCharacteristicValue())
                            .aspectTypes(aspectTypeValues)
+                           .collectAspects(collectAspects)
                            .build();
     }
 
@@ -149,30 +155,37 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             final var relationships = new ArrayList<Relationship>();
             final var tombstones = new ArrayList<Tombstone>();
             final var shells = new ArrayList<AssetAdministrationShellDescriptor>();
+            final var submodels = new ArrayList<Submodel>();
 
             if (jobIsCompleted(multiJob)) {
                 final var container = retrieveJobResultRelationships(multiJob.getJob().getJobId());
                 relationships.addAll(convert(container.getAssemblyPartRelationships()));
                 tombstones.addAll(container.getTombstones());
                 shells.addAll(container.getShells());
+                submodels.addAll(container.getSubmodels());
             } else {
                 if (includePartialResults) {
                     final var container = retrievePartialResults(multiJob);
                     relationships.addAll(convert(container.getAssemblyPartRelationships()));
                     tombstones.addAll(container.getTombstones());
                     shells.addAll(container.getShells());
+                    submodels.addAll(container.getSubmodels());
                 }
             }
 
-            log.info("Found job with id {} in status {} with {} relationships and {} tombstones", jobId,
-                    multiJob.getJob().getJobState(), relationships.size(), tombstones.size());
+            log.info("Found job with id {} in status {} with {} relationships, {} tombstones and {} submodels", jobId,
+                    multiJob.getJob().getJobState(), relationships.size(), tombstones.size(), submodels.size());
 
             return Jobs.builder()
-                       .job(multiJob.getJob().toBuilder().summary(
-                               buildSummary(multiJob.getCompletedTransfers().size(), multiJob.getTransferProcessIds().size(), tombstones.size())).build())
+                       .job(multiJob.getJob()
+                                    .toBuilder()
+                                    .summary(buildSummary(multiJob.getCompletedTransfers().size(),
+                                            multiJob.getTransferProcessIds().size(), tombstones.size()))
+                                    .build())
                        .relationships(relationships)
                        .tombstones(tombstones)
                        .shells(shells)
+                       .submodels(submodels)
                        .build();
         } else {
             throw new EntityNotFoundException("No job exists with id " + jobId);
@@ -180,7 +193,13 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     private Summary buildSummary(final int completedTransfersSize, final int runningSize, final int tombstonesSize) {
-        return Summary.builder().asyncFetchedItems(AsyncFetchedItems.builder().completed(completedTransfersSize).running(runningSize).failed(tombstonesSize).build()).build();
+        return Summary.builder()
+                      .asyncFetchedItems(AsyncFetchedItems.builder()
+                                                          .completed(completedTransfersSize)
+                                                          .running(runningSize)
+                                                          .failed(tombstonesSize)
+                                                          .build())
+                      .build();
     }
 
     private ItemContainer retrievePartialResults(final MultiTransferJob multiJob) {
@@ -192,6 +211,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final var relationships = new ArrayList<AssemblyPartRelationshipDTO>();
         final var tombstones = new ArrayList<Tombstone>();
         final var shells = new ArrayList<AssetAdministrationShellDescriptor>();
+        final var submodels = new ArrayList<Submodel>();
 
         for (final String id : transferIds) {
             try {
@@ -201,6 +221,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                     relationships.addAll(itemContainer.getAssemblyPartRelationships());
                     tombstones.addAll(itemContainer.getTombstones());
                     shells.addAll(itemContainer.getShells());
+                    submodels.addAll(itemContainer.getSubmodels());
                 });
 
             } catch (BlobPersistenceException e) {
@@ -211,6 +232,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                             .assemblyPartRelationships(relationships)
                             .tombstones(tombstones)
                             .shells(shells)
+                            .submodels(submodels)
                             .build();
     }
 
@@ -239,9 +261,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     private Stream<Relationship> convert(final AssemblyPartRelationshipDTO dto) {
-        return dto.getChildParts()
-                  .stream()
-                  .map(child -> child.toRelationship(dto.getCatenaXId()));
+        return dto.getChildParts().stream().map(child -> child.toRelationship(dto.getCatenaXId()));
     }
 
 }

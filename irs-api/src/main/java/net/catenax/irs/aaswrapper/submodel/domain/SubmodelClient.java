@@ -34,6 +34,11 @@ interface SubmodelClient {
      */
     <T> T getSubmodel(String submodelEndpointAddress, Class<T> submodelClass);
 
+    /**
+     * @return Returns the Submodel as String
+     */
+    String getSubmodel(String submodelEndpointAddress);
+
 }
 
 /**
@@ -49,19 +54,27 @@ class SubmodelClientLocalStub implements SubmodelClient {
 
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
+        return jsonUtil.fromString(getStubData(submodelEndpointAddress), submodelClass);
+    }
+
+    @Override
+    public String getSubmodel(final String submodelEndpointAddress) {
+        return getStubData(submodelEndpointAddress);
+    }
+
+    private String getStubData(final String submodelEndpointAddress) {
         if ("urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(submodelEndpointAddress)) {
             throw new RestClientException("Dummy Exception");
         }
         final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
 
         if ("urn:uuid:ea724f73-cb93-4b7b-b92f-d97280ff888b".equals(submodelEndpointAddress)) {
-            final String serialPartTypization = submodelTestdataCreator.createDummySerialPartTypizationString();
-            return jsonUtil.fromString(serialPartTypization, submodelClass);
+            return submodelTestdataCreator.createDummySerialPartTypizationString();
         }
 
         final AssemblyPartRelationship relationship = submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(
                 submodelEndpointAddress);
-        return jsonUtil.fromString(jsonUtil.asString(relationship), submodelClass);
+        return jsonUtil.asString(relationship);
     }
 
 }
@@ -91,6 +104,13 @@ class SubmodelClientImpl implements SubmodelClient {
         final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
                 String.class);
         return jsonUtil.fromString(entity.getBody(), submodelClass);
+    }
+
+    @Override
+    public String getSubmodel(final String submodelEndpointAddress) {
+        final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
+                String.class);
+        return entity.getBody();
     }
 
     private URI buildUri(final String submodelEndpointAddress) {
