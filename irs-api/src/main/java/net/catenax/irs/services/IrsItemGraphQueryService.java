@@ -68,6 +68,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final BlobPersistence blobStore;
 
+    private final MeterRegistryService meterRegistryService;
+
     @Value("${aspectTypes.default}")
     private String defaultAspect;
 
@@ -78,6 +80,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
+            meterRegistryService.incrementNumberOfCreatedJobs();
             final String jobId = jobInitiateResponse.getJobId();
 
             return JobHandle.builder().jobId(UUID.fromString(jobId)).build();
