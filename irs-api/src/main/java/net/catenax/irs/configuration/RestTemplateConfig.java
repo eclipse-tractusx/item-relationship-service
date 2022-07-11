@@ -67,10 +67,10 @@ public class RestTemplateConfig {
 
     @Bean(BASIC_AUTH_REST_TEMPLATE)
     /* package */ RestTemplate basicAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder,
-            @Value("${aasWrapper.username}") final String aasProxySubmodelUsername,
-            @Value("${aasWrapper.password}") final String aasProxySubmodelPassword) {
+            @Value("${aasWrapper.username}") final String aasWrapperUsername,
+            @Value("${aasWrapper.password}") final String aasWrapperPassword) {
         return restTemplateBuilder.additionalInterceptors(
-                                          new BasicAuthenticationInterceptor(aasProxySubmodelUsername, aasProxySubmodelPassword))
+                                          new BasicAuthenticationInterceptor(aasWrapperUsername, aasWrapperPassword))
                                   .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                                   .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                                   .build();
