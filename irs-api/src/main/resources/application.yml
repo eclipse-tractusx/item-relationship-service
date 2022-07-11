@@ -80,28 +80,22 @@ blobstore:
   secretKey: "${MINIO_SECRET_KEY}"
   bucketName: irsbucket
 
-resilience4j.retry:
-  configs:
-    default:
-      maxAttempts: 3
-      waitDuration: 100
-      retryExceptions:
-        - org.springframework.web.client.HttpServerErrorException
-        - java.util.concurrent.TimeoutException
-        - java.io.IOException
-      retryOnException:
-        - net.catenax.irs.exceptions.AspectNotSupportedException
-  instances:
-    submodelRetryer:
-      baseConfig: default
-
-aasProxy:
-  submodel:
-    username: ${AAS_PROXY_SUBMODEL_USERNAME:}
-    password: ${AAS_PROXY_SUBMODEL_PASSWORD:}
+resilience4j:
+  retry:
+    configs:
+      default:
+        maxRetryAttempts: 3
+        waitDuration: 10s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+    instances:
+      exponentialBackoff:
+        baseConfig: default
 
 aasWrapper:
   host: "${AASWRAPPER_HOST:}"
+  username: ${AAS_PROXY_SUBMODEL_USERNAME:}
+  password: ${AAS_PROXY_SUBMODEL_PASSWORD:}
 
 aspectTypes:
   default: SerialPartTypization

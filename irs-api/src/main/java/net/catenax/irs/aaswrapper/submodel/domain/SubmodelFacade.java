@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import io.github.resilience4j.retry.annotation.Retry;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
@@ -39,7 +38,6 @@ public class SubmodelFacade {
      * @param jobData                 relevant job data values
      * @return The Aspect Model for the given submodel
      */
-    @Retry(name = "submodelRetryer")
     public AssemblyPartRelationshipDTO getAssemblyPartRelationshipSubmodel(final String submodelEndpointAddress, final JobParameter jobData) {
         final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
                 AssemblyPartRelationship.class);
@@ -62,7 +60,6 @@ public class SubmodelFacade {
      * @param submodelEndpointAddress The URL to the submodel endpoint
      * @return The Aspect Model as JSON-String for the given submodel
      */
-    @Retry(name = "submodelRetryer")
     public String getSubmodelRawPayload(final String submodelEndpointAddress) {
         final String submodel = this.submodelClient.getSubmodel(submodelEndpointAddress);
         log.info("Returning Submodel as String: '{}'", submodel);
@@ -131,5 +128,4 @@ public class SubmodelFacade {
     private Predicate<ChildData> isNotLifecycleContext(final String lifecycleContext) {
         return childData -> !childData.getLifecycleContext().getValue().equals(lifecycleContext);
     }
-
 }
