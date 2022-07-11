@@ -107,6 +107,7 @@ class SubmodelClientImpl implements SubmodelClient {
     }
 
     @Override
+    @Retry(name = "exponentialBackoff")
     public String getSubmodel(final String submodelEndpointAddress) {
         final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
                 String.class);

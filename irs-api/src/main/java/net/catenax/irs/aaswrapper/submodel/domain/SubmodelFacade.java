@@ -60,7 +60,6 @@ public class SubmodelFacade {
      * @param submodelEndpointAddress The URL to the submodel endpoint
      * @return The Aspect Model as JSON-String for the given submodel
      */
-    @Retry(name = "submodelRetryer")
     public String getSubmodelRawPayload(final String submodelEndpointAddress) {
         final String submodel = this.submodelClient.getSubmodel(submodelEndpointAddress);
         log.info("Returning Submodel as String: '{}'", submodel);
