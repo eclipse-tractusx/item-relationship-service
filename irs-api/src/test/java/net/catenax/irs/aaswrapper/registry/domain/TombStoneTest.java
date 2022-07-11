@@ -42,9 +42,10 @@ public class TombStoneTest {
         assertThat(tombstone.getProcessingError().getRetryCounter()).isEqualTo(processingError.getRetryCounter());
         assertThat(zonedDateTimeExcerpt(tombstone.getProcessingError().getLastAttempt())).isEqualTo(
                 zonedDateTimeExcerpt(processingError.getLastAttempt()));
-        assertThat(tombstone.getEndpointURL()).isEqualTo(endPointUrl);
+        assertThat(tombstone.getCatenaXId()).isEqualTo(expectedTombstone.getCatenaXId());
+        assertThat(tombstone.getEndpointURL()).isEqualTo(expectedTombstone.getEndpointURL());
         assertThat(tombstone.getProcessingError().getRetryCounter()).isEqualTo(
-                RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts());
+                expectedTombstone.getProcessingError().getRetryCounter());
     }
 
     private String zonedDateTimeExcerpt(ZonedDateTime dateTime) {
