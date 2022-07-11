@@ -73,9 +73,12 @@ class AASTransferProcessManagerTest {
         String endPointUrl = "http://localhost/dummy/interfaceinformation/urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
         //act
-        Tombstone tombstone = Tombstone.from(catenaXId, endPointUrl, new IllegalThreadStateException());
+        Tombstone tombstone = Tombstone.from(catenaXId, endPointUrl, new IllegalArgumentException("Error detail"),
+                RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts());
 
         // assert
+        assertThat(tombstone.getProcessingError().getErrorDetail()).isEqualTo("Error detail");
+        assertThat(tombstone.getEndpointURL()).isEqualTo(endPointUrl);
         assertThat(tombstone.getProcessingError().getRetryCounter()).isEqualTo(
                 RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts());
     }
