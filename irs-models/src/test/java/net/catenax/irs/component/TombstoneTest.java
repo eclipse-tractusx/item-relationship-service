@@ -1,4 +1,4 @@
-package net.catenax.irs.dto.tombstone;
+package net.catenax.irs.component;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,11 +6,9 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 import io.github.resilience4j.retry.RetryRegistry;
-import net.catenax.irs.component.ProcessingError;
-import net.catenax.irs.component.Tombstone;
 import org.junit.jupiter.api.Test;
 
-class TombStoneTest {
+class TombstoneTest {
 
     Tombstone tombstone;
 
@@ -64,5 +62,4 @@ class TombStoneTest {
                                   .append(dateTime.getSecond())
                                   .toString();
     }
-
 }
