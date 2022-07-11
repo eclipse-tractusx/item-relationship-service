@@ -1,4 +1,4 @@
-package net.catenax.irs.aaswrapper.registry.domain;
+package net.catenax.irs.dto.tombstone;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
