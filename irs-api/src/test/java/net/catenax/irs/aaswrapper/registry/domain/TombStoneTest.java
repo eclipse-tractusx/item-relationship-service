@@ -10,7 +10,7 @@ import net.catenax.irs.component.ProcessingError;
 import net.catenax.irs.component.Tombstone;
 import org.junit.jupiter.api.Test;
 
-public class TombStoneTest {
+class TombStoneTest {
 
     @Test
     void fromTombstoneTest() {
