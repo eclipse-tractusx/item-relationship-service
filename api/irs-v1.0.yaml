@@ -206,6 +206,7 @@ components:
               - SerialPartTypization
               - ContactInformation
             bomLifecycle: asBuilt
+            collectAspects: false
             depth: 4
             direction: downward
           jobState: CANCELED
@@ -240,6 +241,7 @@ components:
               - SerialPartTypization
               - ContactInformation
             bomLifecycle: asBuilt
+            collectAspects: false
             depth: 4
             direction: downward
           jobState: COMPLETED
@@ -343,6 +345,7 @@ components:
               - SerialPartTypization
               - ContactInformation
             bomLifecycle: asBuilt
+            collectAspects: false
             depth: 4
             direction: downward
           jobState: ERROR
@@ -376,6 +379,7 @@ components:
               - SerialPartTypization
               - ContactInformation
             bomLifecycle: asBuilt
+            collectAspects: false
             depth: 4
             direction: downward
           jobState: COMPLETED
@@ -473,6 +477,7 @@ components:
               - SerialPartTypization
               - ContactInformation
             bomLifecycle: asBuilt
+            collectAspects: false
             depth: 4
             direction: downward
           jobState: RUNNING
@@ -771,6 +776,8 @@ components:
             into the parent part.
           enum:
             - asBuilt
+        collectAspects:
+          type: boolean
         depth:
           type: integer
           format: int32

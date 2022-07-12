@@ -58,21 +58,22 @@ public class RestTemplateConfig {
     /* package */ RestTemplate oAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
         final var clientRegistration = clientRegistrationRepository.findByRegistrationId(CLIENT_REGISTRATION_ID);
 
-        return restTemplateBuilder
-                .additionalInterceptors(new OAuthClientCredentialsRestTemplateInterceptor(authorizedClientManager(), clientRegistration))
-                .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                .build();
+        return restTemplateBuilder.additionalInterceptors(
+                                          new OAuthClientCredentialsRestTemplateInterceptor(authorizedClientManager(), clientRegistration))
+                                  .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .build();
     }
 
     @Bean(BASIC_AUTH_REST_TEMPLATE)
-        /* package */ RestTemplate basicAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder,
-            @Value("${aasProxy.submodel.username}") final String aasProxySubmodelUsername, @Value("${aasProxy.submodel.password}") final String aasProxySubmodelPassword) {
-        return restTemplateBuilder
-                .additionalInterceptors(new BasicAuthenticationInterceptor(aasProxySubmodelUsername, aasProxySubmodelPassword))
-                .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                .build();
+    /* package */ RestTemplate basicAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder,
+            @Value("${aasWrapper.username}") final String aasWrapperUsername,
+            @Value("${aasWrapper.password}") final String aasWrapperPassword) {
+        return restTemplateBuilder.additionalInterceptors(
+                                          new BasicAuthenticationInterceptor(aasWrapperUsername, aasWrapperPassword))
+                                  .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .build();
     }
 
     @Bean
@@ -81,7 +82,8 @@ public class RestTemplateConfig {
                                                                                   .clientCredentials()
                                                                                   .build();
 
-        final var authorizedClientManager = new AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistrationRepository, oAuth2AuthorizedClientService);
+        final var authorizedClientManager = new AuthorizedClientServiceOAuth2AuthorizedClientManager(
+                clientRegistrationRepository, oAuth2AuthorizedClientService);
         authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
 
         return authorizedClientManager;
@@ -98,7 +100,8 @@ public class RestTemplateConfig {
         private final ClientRegistration clientRegistration;
 
         @Override
-        public ClientHttpResponse intercept(final HttpRequest request, final byte[] body, final ClientHttpRequestExecution execution) throws IOException {
+        public ClientHttpResponse intercept(final HttpRequest request, final byte[] body,
+                final ClientHttpRequestExecution execution) throws IOException {
             final OAuth2AuthorizeRequest oAuth2AuthorizeRequest = OAuth2AuthorizeRequest
                     .withClientRegistrationId(clientRegistration.getRegistrationId())
                     .principal(clientRegistration.getClientName())
@@ -107,7 +110,8 @@ public class RestTemplateConfig {
             final OAuth2AuthorizedClient client = manager.authorize(oAuth2AuthorizeRequest);
 
             if (isNull(client)) {
-                throw new IllegalStateException("Client credentials flow on " + clientRegistration.getRegistrationId() + " failed, client is null");
+                throw new IllegalStateException("Client credentials flow on " + clientRegistration.getRegistrationId()
+                        + " failed, client is null");
             }
 
             log.debug("Adding Authorization header to the request");

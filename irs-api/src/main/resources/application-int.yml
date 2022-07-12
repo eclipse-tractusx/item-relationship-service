@@ -1,5 +1,2 @@
 irs:
   apiUrl: https://irs.int.demo.catena-x.net
-
-aasProxy:
-  url: https://irs-aas-proxy.int.demo.catena-x.net

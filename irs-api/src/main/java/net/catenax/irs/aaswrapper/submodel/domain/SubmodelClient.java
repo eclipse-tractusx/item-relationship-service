@@ -13,6 +13,7 @@ import static net.catenax.irs.configuration.RestTemplateConfig.BASIC_AUTH_REST_T
 
 import java.net.URI;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,7 +45,9 @@ interface SubmodelClient {
  * Submodel client Rest Client Stub used in local environment
  */
 @Service
-@Profile({"local", "test"})
+@Profile({ "local",
+           "stubtest"
+})
 class SubmodelClientLocalStub implements SubmodelClient {
 
     private final JsonUtil jsonUtil = new JsonUtil();
@@ -81,7 +84,7 @@ class SubmodelClientLocalStub implements SubmodelClient {
  */
 @Slf4j
 @Service
-@Profile({ "!local && !test" })
+@Profile({ "!local && !stubtest" })
 class SubmodelClientImpl implements SubmodelClient {
 
     private final RestTemplate restTemplate;
@@ -96,6 +99,7 @@ class SubmodelClientImpl implements SubmodelClient {
     }
 
     @Override
+    @Retry(name = "exponentialBackoff")
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
         final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
                 String.class);
@@ -103,6 +107,7 @@ class SubmodelClientImpl implements SubmodelClient {
     }
 
     @Override
+    @Retry(name = "exponentialBackoff")
     public String getSubmodel(final String submodelEndpointAddress) {
         final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
                 String.class);

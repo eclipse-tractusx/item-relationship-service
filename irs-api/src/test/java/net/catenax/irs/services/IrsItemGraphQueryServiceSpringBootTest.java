@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = { "test" })
+@ActiveProfiles(profiles = { "test", "stubtest" })
 @Import(TestConfig.class)
 class IrsItemGraphQueryServiceSpringBootTest {
 
