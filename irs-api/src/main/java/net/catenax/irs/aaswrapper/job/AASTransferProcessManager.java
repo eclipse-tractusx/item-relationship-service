@@ -67,7 +67,8 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             final String itemId = dataRequest.getItemId();
 
             log.info("Starting processing Digital Twin Registry with itemId {}", itemId);
-            final ItemContainer itemContainer = aasHandler.collectShellAndSubmodels(jobData, aasTransferProcess, itemId);
+            final ItemContainer itemContainer = aasHandler.collectShellAndSubmodels(jobData, aasTransferProcess,
+                    itemId);
             storeItemContainer(processId, itemContainer);
 
             transferProcessCompleted.accept(aasTransferProcess);

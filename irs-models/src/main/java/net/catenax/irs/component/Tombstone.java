@@ -29,12 +29,17 @@ public class Tombstone {
     private final String endpointURL;
     private final ProcessingError processingError;
 
-    public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception) {
+    public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
+            final int retryCount) {
         final ProcessingError processingError = ProcessingError.builder()
-                                                               .withRetryCounter(0)
+                                                               .withRetryCounter(retryCount)
                                                                .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
                                                                .withErrorDetail(exception.getMessage())
                                                                .build();
-        return Tombstone.builder().endpointURL(endpointURL).catenaXId(catenaXId).processingError(processingError).build();
+        return Tombstone.builder()
+                        .endpointURL(endpointURL)
+                        .catenaXId(catenaXId)
+                        .processingError(processingError)
+                        .build();
     }
 }

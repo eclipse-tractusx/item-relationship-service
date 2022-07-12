@@ -62,4 +62,5 @@ class SubmodelExponentialRetryTest {
         // Assert
         verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getForEntity(any(), any());
     }
+
 }

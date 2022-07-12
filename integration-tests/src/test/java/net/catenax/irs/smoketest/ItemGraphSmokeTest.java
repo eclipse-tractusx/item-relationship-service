@@ -57,27 +57,21 @@ class ItemGraphSmokeTest {
         return registerJob;
     }
 
-    private static String obtainAccessToken(final String grantType, final String clientId, final String clientSecret, final String accessToken) {
-        final Map<String, String> oauth2Payload = new HashMap<String, String>();
+    private static String obtainAccessToken(final String grantType, final String clientId, final String clientSecret,
+            final String accessToken) {
+        final Map<String, String> oauth2Payload = new HashMap<>();
         oauth2Payload.put("grant_type", grantType);
         oauth2Payload.put("client_id", clientId);
         oauth2Payload.put("client_secret", clientSecret);
 
-        return given().params(oauth2Payload)
-                      .post(accessToken)
-                      .then()
-                      .extract()
-                      .jsonPath()
-                      .getString("access_token");
+        return given().params(oauth2Payload).post(accessToken).then().extract().jsonPath().getString("access_token");
     }
 
     @BeforeEach
     void setUp() {
-        final String accessToken =
-                obtainAccessToken(credentialsProperties.getAuthorizationGrantType(),
-                        credentialsProperties.getClientId(),
-                        credentialsProperties.getClientSecret(),
-                        connectionProperties.getAccessToken());
+        final String accessToken = obtainAccessToken(credentialsProperties.getAuthorizationGrantType(),
+                credentialsProperties.getClientId(), credentialsProperties.getClientSecret(),
+                connectionProperties.getAccessToken());
 
         final RequestSpecBuilder builder = new RequestSpecBuilder();
         builder.addHeader("Authorization", "Bearer " + accessToken);

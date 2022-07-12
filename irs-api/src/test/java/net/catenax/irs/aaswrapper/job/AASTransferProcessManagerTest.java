@@ -1,11 +1,11 @@
 package net.catenax.irs.aaswrapper.job;
 
+import static net.catenax.irs.util.TestMother.jobParameter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static net.catenax.irs.util.TestMother.jobParameter;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -33,8 +33,7 @@ class AASTransferProcessManagerTest {
 
     AASHandler aasHandler = new AASHandler(digitalTwinRegistryFacade, submodelFacade);
 
-    final AASTransferProcessManager manager =
-            new AASTransferProcessManager(aasHandler, pool, new InMemoryBlobStore());
+    final AASTransferProcessManager manager = new AASTransferProcessManager(aasHandler, pool, new InMemoryBlobStore());
 
     @Test
     void shouldExecuteThreadForProcessing() {
@@ -64,4 +63,5 @@ class AASTransferProcessManagerTest {
         assertThat(initiateResponse.getTransferId()).isNotBlank();
         assertThat(initiateResponse.getStatus()).isEqualTo(ResponseStatus.OK);
     }
+
 }
