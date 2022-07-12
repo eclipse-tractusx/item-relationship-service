@@ -60,7 +60,7 @@ class ItemGraphSmokeTest {
 
     private static String obtainAccessToken(final String grantType, final String clientId, final String clientSecret,
             final String accessToken) {
-        final Map<String, String> oauth2Payload = new HashMap<String, String>();
+        final Map<String, String> oauth2Payload = new HashMap<>();
         oauth2Payload.put("grant_type", grantType);
         oauth2Payload.put("client_id", clientId);
         oauth2Payload.put("client_secret", clientSecret);
@@ -157,10 +157,6 @@ class ItemGraphSmokeTest {
         final AssetAdministrationShellDescriptor assDescriptor = completedJobs.getShells().get(0);
         final List<SubmodelDescriptor> submodelDescriptors = assDescriptor.getSubmodelDescriptors();
         assertThat(submodelDescriptors).isNotEmpty();
-
-        assertThat(completedJobs.getTombstones()).isNotEmpty();
-        assertThat(completedJobs.getTombstones().get(0).getProcessingError().getRetryCounter()).isEqualTo(
-                RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts());
     }
 
 }
