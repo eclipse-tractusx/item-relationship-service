@@ -1,0 +1,43 @@
+@startuml
+skinparam shadowing false
+autonumber "<b>[000]"
+
+box "IRSApplication" #LightGrey
+participant JobOrchestrator
+activate JobOrchestrator
+participant AASTransferProcessManager
+activate AASTransferProcessManager
+participant AASRecursiveJobHandler
+activate AASRecursiveJobHandler
+participant ExecutorService
+activate ExecutorService
+participant AASHandler
+activate AASHandler
+participant DTRegistry
+activate DTRegistry
+participant SubmodelProvider
+activate SubmodelProvider
+participant BlobStore
+activate BlobStore
+
+loop poll until (tree traversed OR max depth reached OR canceled)
+    JobOrchestrator --> AASTransferProcessManager : initiateRequest
+    AASTransferProcessManager --> ExecutorService : execute(Transfer)
+    ExecutorService --> AASHandler : run asynchronously
+    AASHandler --> DTRegistry : request AAS
+    DTRegistry --> AASHandler : AAS for ID
+    AASHandler --> SubmodelProvider : request submodel
+    SubmodelProvider --> AASHandler : submodel for AAS
+    AASHandler --> BlobStore : store transfer result
+    AASHandler --> JobOrchestrator : call completion callback
+    JobOrchestrator --> AASRecursiveJobHandler : extract child IDs for further requests
+    AASRecursiveJobHandler --> JobOrchestrator : child item IDs
+end loop
+
+JobOrchestrator --> AASRecursiveJobHandler : complete
+AASRecursiveJobHandler --> BlobStore : retrieve stored transfer results
+BlobStore --> AASRecursiveJobHandler : stored transfer results
+AASRecursiveJobHandler --> AASRecursiveJobHandler : assemble combined result for Job
+AASRecursiveJobHandler -->  BlobStore : store combined result for Job
+JobOrchestrator -->  BlobStore : mark job as completed
+@enduml

@@ -1,0 +1,48 @@
+@startuml
+skinparam shadowing false
+autonumber "<b>[000]"
+
+actor IrsApiConsumer
+activate IrsApiConsumer
+
+
+box "IRSApplication" #LightGrey
+participant IrsAPI
+activate IrsAPI
+participant IrsController
+activate IrsController
+participant IrsItemGraphQueryService
+activate IrsItemGraphQueryService
+participant JobOrchestrator
+activate JobOrchestrator
+participant AASTransferProcessManager
+activate AASTransferProcessManager
+activate AASRecursiveJobHandler
+participant PersistentJobStore
+activate PersistentJobStore
+participant ExecutorService
+activate ExecutorService
+
+IrsApiConsumer -> IrsAPI : POST /irs/jobs/
+IrsAPI -> IrsController :  registerJobForGlobalAssetId
+IrsController -> IrsItemGraphQueryService :  registerItemJob
+IrsItemGraphQueryService -> JobOrchestrator: startJob
+JobOrchestrator -> PersistentJobStore: create(Job)
+JobOrchestrator <-- PersistentJobStore:
+
+JobOrchestrator -> AASRecursiveJobHandler: initiate(Job)
+JobOrchestrator -> JobOrchestrator: startTransfers(MultiTransferJob)
+JobOrchestrator -> AASTransferProcessManager : initiateRequest
+AASTransferProcessManager -->> ExecutorService : execute()
+ref over ExecutorService
+see process
+"job execution"
+end ref
+
+IrsItemGraphQueryService <-- JobOrchestrator : success jobID (UUID)
+IrsController <-- IrsItemGraphQueryService : success jobID (UUID)
+IrsAPI <-- IrsController : success jobID (UUID)
+IrsApiConsumer <-- IrsController : success jobID (UUID)
+
+
+@enduml

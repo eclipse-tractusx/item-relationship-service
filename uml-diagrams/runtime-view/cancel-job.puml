@@ -1,0 +1,37 @@
+@startuml
+skinparam shadowing false
+autonumber "<b>[000]"
+
+actor IrsApiConsumer
+activate IrsApiConsumer
+
+
+box "IRSApplication" #LightGrey
+participant IrsAPI
+activate IrsAPI
+participant IrsController
+activate IrsController
+participant IrsItemGraphQueryService
+activate IrsItemGraphQueryService
+participant PersistentJobStore
+activate PersistentJobStore
+
+IrsApiConsumer -> IrsAPI : PUT /irs/jobs/:jobId
+IrsAPI -> IrsController :  cancelJobByJobId
+IrsController -> IrsItemGraphQueryService :  cancelJobById
+IrsItemGraphQueryService -> PersistentJobStore: find
+opt jobNotFound
+    IrsController <-- IrsItemGraphQueryService : error - not found
+    IrsAPI <-- IrsController : error - not found
+    IrsApiConsumer <-- IrsAPI : 404 - not found
+else jobFound
+    PersistentJobStore -> PersistentJobStore: transition job to CANCELED
+    IrsItemGraphQueryService <-- PersistentJobStore: return job details
+    IrsItemGraphQueryService -> IrsItemGraphQueryService : build job response
+    IrsController <-- IrsItemGraphQueryService : job details
+    IrsAPI <-- IrsController : job details
+    IrsApiConsumer <-- IrsAPI : job details
+end opt
+
+
+@enduml
