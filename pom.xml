@@ -27,9 +27,6 @@
 
         <sonar.organization>catenax-ng</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.coverage.jacoco.xmlReportPaths>
-            ${project.basedir}/irs-report-aggregate/target/site/jacoco-aggregate/jacoco.xml
-        </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- Dependencies -->
         <springboot.version>2.7.0</springboot.version>
