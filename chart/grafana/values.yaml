@@ -114,3 +114,11 @@ readinessProbe:
 
 username: <path:traceability-irs/data/dev/grafana#username>
 password: <path:traceability-irs/data/dev/grafana#password>
+
+config:
+  apiVersion: 1
+  datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus:9090
+      isDefault: true

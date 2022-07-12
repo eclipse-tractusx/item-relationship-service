@@ -38,8 +38,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
-            - name: tmp
-              mountPath: /tmp
+            - name: {{ include "grafana.fullname" . }}-config
+              mountPath: /etc/grafana/provisioning/datasources
           ports:
             - name: http
               containerPort: 3000
@@ -78,8 +78,9 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-        - name: tmp
-          emptyDir: {}
+        - name: {{ include "grafana.fullname" . }}-config
+          configMap:
+            name: {{ include "grafana.fullname" . }}-configmap
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
