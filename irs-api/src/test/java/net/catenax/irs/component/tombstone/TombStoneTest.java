@@ -1,4 +1,4 @@
-package net.catenax.irs.dto.tombstone;
+package net.catenax.irs.component.tombstone;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
