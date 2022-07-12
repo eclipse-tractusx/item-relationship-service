@@ -45,7 +45,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          path: 'report-aggregate/target/site/jacoco-aggregate/jacoco.xml'
+          path: 'irs-report-aggregate/target/site/jacoco-aggregate/jacoco.xml'
 
   build_images:
     strategy:
