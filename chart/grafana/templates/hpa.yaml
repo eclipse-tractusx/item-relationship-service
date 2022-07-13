@@ -3,6 +3,7 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "grafana.fullname" . }}
+  namespace: {{ .Values.namespace }}
   labels:
     {{- include "grafana.labels" . | nindent 4 }}
 spec:
