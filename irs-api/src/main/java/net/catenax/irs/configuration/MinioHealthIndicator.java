@@ -28,7 +28,7 @@ import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
 
 /**
- * Health Actuator for Minio
+ * Minio health indicator for Spring actuator
  */
 @Component
 @RequiredArgsConstructor

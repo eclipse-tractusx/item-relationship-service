@@ -25,7 +25,7 @@ import org.springframework.boot.actuate.health.Status;
 class MinioHealthIndicatorTest {
 
     @Test
-    void shouldReturnStatusUpWhenMinioBlobPersistencePresent() throws Exception {
+    void shouldReturnStatusUpWhenMinioBlobPersistencePresentAndBucketExists() throws Exception {
         // given
         final MinioBlobPersistence blobPersistence = mock(MinioBlobPersistence.class);
         when(blobPersistence.bucketExists("bucketName")).thenReturn(Boolean.TRUE);
