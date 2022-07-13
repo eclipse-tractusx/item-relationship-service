@@ -70,7 +70,7 @@ public class MinioBlobPersistence implements BlobPersistence {
         this.minioClient = client;
 
         try {
-            if (!bucketExists(bucketName)) {
+            if (!this.bucketExists(bucketName)) {
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
             }
 
@@ -80,7 +80,7 @@ public class MinioBlobPersistence implements BlobPersistence {
         }
     }
 
-    public boolean bucketExists(final String bucketName)
+    public final boolean bucketExists(final String bucketName)
             throws ErrorResponseException, InsufficientDataException, InternalException, InvalidKeyException,
             InvalidResponseException, IOException, NoSuchAlgorithmException, ServerException, XmlParserException {
         return minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
