@@ -40,6 +40,8 @@ spec:
           volumeMounts:
             - name: {{ include "grafana.fullname" . }}-config
               mountPath: /etc/grafana/provisioning/datasources
+            - name: {{ include "grafana.fullname" . }}-filesystem
+              mountPath: /var/lib/grafana
           ports:
             - name: http
               containerPort: 3000
@@ -81,6 +83,8 @@ spec:
         - name: {{ include "grafana.fullname" . }}-config
           configMap:
             name: {{ include "grafana.fullname" . }}-configmap
+        - name: {{ include "grafana.fullname" . }}-filesystem
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
