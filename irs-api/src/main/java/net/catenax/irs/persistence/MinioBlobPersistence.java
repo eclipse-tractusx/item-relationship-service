@@ -7,7 +7,6 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-
 package net.catenax.irs.persistence;
 
 import java.io.ByteArrayInputStream;
