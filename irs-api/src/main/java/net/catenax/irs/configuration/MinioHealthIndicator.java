@@ -40,7 +40,7 @@ class MinioHealthIndicator implements HealthIndicator {
     /**
      * Verifies if blobPersistence is instance of {@link MinioBlobPersistence}.
      * If yes that means that there is {@link io.minio.MinioClient} configured and bucket exists.
-     * @return true if {@link MinioBlobPersistence, false otherwise}
+     * @return true if {@link MinioBlobPersistence}, false otherwise
      */
     private boolean thereIsMinioConnection() {
         return blobPersistence instanceof MinioBlobPersistence;
