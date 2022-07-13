@@ -1,9 +1,8 @@
 {
 	"info": {
-		"_postman_id": "3d037b30-c643-470e-9e13-841717771afe",
+		"_postman_id": "659f9afa-d2ff-4d7e-865d-33a1b872e18d",
 		"name": "IRS DEMO Collection",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "19870399"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
@@ -240,7 +239,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"query\": {\r\n    \"assetIds\": [\r\n      {\r\n        \"value\" : \"OMA-TGFAYUHXFLHHUQQMPLTE\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-TGETGMWPZFMNWOSFSUTB\",\r\n                    \"key\" : \"VAN\"\r\n            }\r\n            ,\r\n            {\r\n                \"value\" : \"OMA-LFVTNWIDZPPRXGZEFEMN\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-TYFEAJPWMOXNDYYJTHOB\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-NRWQMZQXSKSZCRWDMWHF\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-FUQTIGXCVPVLRJAZXXYZ\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-DDGCCSBNEIVZDMXEMMTH\",\r\n        \"key\" : \"VAN\"\r\n            },\r\n            {\r\n                \"value\" : \"OMA-VXXHAGYPPYCLXANZCZXX\",\r\n        \"key\" : \"VAN\"\r\n            }\r\n    ]\r\n  }\r\n}",
+							"raw": "{\r\n  \"query\": {\r\n    \"assetIds\": [\r\n        {\r\n            \"value\" : \"OMA-TGFAYUHXFLHHUQQMPLTE\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-TGETGMWPZFMNWOSFSUTB\",\r\n            \"key\" : \"VAN\"\r\n        }\r\n        ,\r\n        {\r\n            \"value\" : \"OMA-LFVTNWIDZPPRXGZEFEMN\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-TYFEAJPWMOXNDYYJTHOB\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-NRWQMZQXSKSZCRWDMWHF\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-FUQTIGXCVPVLRJAZXXYZ\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-DDGCCSBNEIVZDMXEMMTH\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-VXXHAGYPPYCLXANZCZXX\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-TGFAYUHXFLHHUQQMPLTE\",\r\n            \"key\" : \"VAN\"\r\n        }\r\n    ]\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -264,808 +263,1127 @@
 			]
 		},
 		{
-			"name": "1.0.0 [Register Job] https://irs.int.demo.catena-x.net/irs/jobs",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb\"\r\n}"
-				},
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "1.1.0 [Register Job globalAssetId <Unknown>] https://irs.int.demo.catena-x.net/irs/jobs",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fcabcdef\"\r\n}"
-				},
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "1.1.1 [Register Job globalAssetId <Unknown>] https://irs.int.demo.catena-x.net/irs/jobs",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:6c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b\"\r\n}"
-				},
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "1.2.0 [Register Job with depth and bomLifecycle] https://irs.int.demo.catena-x.net/irs/jobs",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\",\r\n  \"bomLifecycle\": \"asBuilt\",\r\n  \"depth\": 2\r\n}"
-				},
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "1.3.0 [Register Job with aspect SerialPartTypization] https://irs.int.demo.catena-x.net/irs/jobs",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
-				},
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "1.3.1 [Register Job with aspect SerialPartTypization and AssemblyPartRelationship] https://irs.int.demo.catena-x.net/irs/jobs",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\",\r\n    \"AssemblyPartRelationship\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
-				},
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "1.3.2 [Register Job with aspect MaterialAspect and BatteryPass] https://irs.int.demo.catena-x.net/irs/jobs",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
-				},
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "1.3.3 [Register Job with aspect type Address and Contact] https://irs.int.demo.catena-x.net/irs/jobs",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"aspects\": [\r\n    \"Address\",\r\n    \"Contact\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
-				},
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "1.3.4 [Register Job with aspect SerialPartTypization and ContactInformation ] https://irs.int.demo.catena-x.net/irs/jobs",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
-				},
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "1.3.5 [Register Job with aspect *] https://irs.int.demo.catena-x.net/irs/jobs",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"aspects\": [ \"SerialPartTypization\", \"AssemblyPartRelationship\", \"PartDimension\", \"SupplyRelationData\", \"PCFCoreData\", \"PCFTechnicalData\", \"MarketPlaceOffer\", \"MaterialAspect\", \"BatteryPass\", \"ProductDescriptionVehicle\", \"ProductDescriptionBattery\", \"ReturnRequest\", \"CertificateOfDestruction\", \"CertificateOfDismantler\", \"Address\", \"Contact\" ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
-				},
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "1.4.0 [Register Job with invalid or not exisiting aspect type] https://irs.int.demo.catena-x.net/irs/jobs",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"aspects\": [\r\n    \"PartSerialTypization\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
-				},
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "1.4.1 [Register Job with invalid or not exisiting aspect type] https://irs.int.demo.catena-x.net/irs/jobs",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"aspects\": [\r\n    \"\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
-				},
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "2.0.0 [Search for completed Jobs]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=COMPLETED",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs?jobStates=COMPLETED",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					],
-					"query": [
-						{
-							"key": "jobStates",
-							"value": "COMPLETED"
+			"name": "Relase 1 Demo",
+			"item": [
+				{
+					"name": "1.0.0 [Register Job] https://irs.int.demo.catena-x.net/irs/jobs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb\"\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "2.0.1 [Search for Jobs in error state]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=ERROR",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
 					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs?jobStates=ERROR",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					],
-					"query": [
-						{
-							"key": "jobStates",
-							"value": "ERROR"
+					"response": []
+				},
+				{
+					"name": "1.1.0 [Register Job globalAssetId <Unknown>] https://irs.int.demo.catena-x.net/irs/jobs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fcabcdef\"\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "2.0.2 [Search for Jobs in initial state]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=INITIAL",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
 					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs?jobStates=INITIAL",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					],
-					"query": [
-						{
-							"key": "jobStates",
-							"value": "INITIAL"
+					"response": []
+				},
+				{
+					"name": "1.1.1 [Register Job globalAssetId <Unknown>] https://irs.int.demo.catena-x.net/irs/jobs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:6c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b\"\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "2.0.3 [Search for all Jobs in JobStore]  http://irs.int.demo.catena-x.net/irs/jobs",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
 					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "2.1.0 [Search for completed Jobs]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=COMPLETED",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+					"response": []
+				},
+				{
+					"name": "1.2.0 [Register Job with depth and bomLifecycle] https://irs.int.demo.catena-x.net/irs/jobs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\",\r\n  \"bomLifecycle\": \"asBuilt\",\r\n  \"depth\": 2\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs?jobStates=COMPLETED",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					],
-					"query": [
-						{
-							"key": "jobStates",
-							"value": "COMPLETED"
+					"response": []
+				},
+				{
+					"name": "1.3.0 [Register Job with aspect SerialPartTypization] https://irs.int.demo.catena-x.net/irs/jobs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "3.0.0 [Search for given jobId] http://irs.int.demo.catena-x.net/irs/jobs/:jobId?returnUncompletedJob=true",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
 					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs/:jobId?returnUncompletedJob=true",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs",
-						":jobId"
-					],
-					"query": [
-						{
-							"key": "returnUncompletedJob",
-							"value": "true"
+					"response": []
+				},
+				{
+					"name": "1.3.1 [Register Job with aspect SerialPartTypization and AssemblyPartRelationship] https://irs.int.demo.catena-x.net/irs/jobs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\",\r\n    \"AssemblyPartRelationship\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
 						}
-					],
-					"variable": [
-						{
-							"key": "jobId",
-							"value": null
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "3.1.0 [Search for given jobId] http://irs.int.demo.catena-x.net/irs/jobs/:jobId",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
 					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs/:jobId",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs",
-						":jobId"
-					],
-					"variable": [
-						{
-							"key": "jobId",
-							"value": ""
+					"response": []
+				},
+				{
+					"name": "1.3.2 [Register Job with aspect MaterialAspect and BatteryPass] https://irs.int.demo.catena-x.net/irs/jobs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "3.1.1 [Search for invalid jobId] http://irs.int.demo.catena-x.net/irs/jobs/:jobId",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
 					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs/:jobId",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs",
-						":jobId"
-					],
-					"variable": [
-						{
-							"key": "jobId",
-							"value": "\"bc1b4f4f-aa00-4296-8738-e7913c95f2d9"
+					"response": []
+				},
+				{
+					"name": "1.3.3 [Register Job with aspect type Address and Contact] https://irs.int.demo.catena-x.net/irs/jobs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"aspects\": [\r\n    \"Address\",\r\n    \"Contact\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "4.0.0 [Search for error Jobs]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=ERROR",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
 					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs?jobStates=ERROR",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs"
-					],
-					"query": [
-						{
-							"key": "jobStates",
-							"value": "ERROR"
+					"response": []
+				},
+				{
+					"name": "1.3.4 [Register Job with aspect SerialPartTypization and ContactInformation ] https://irs.int.demo.catena-x.net/irs/jobs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
 						}
-					]
+					},
+					"response": []
+				},
+				{
+					"name": "1.3.5 [Register Job with aspect *] https://irs.int.demo.catena-x.net/irs/jobs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"aspects\": [ \"SerialPartTypization\", \"AssemblyPartRelationship\", \"PartDimension\", \"SupplyRelationData\", \"PCFCoreData\", \"PCFTechnicalData\", \"MarketPlaceOffer\", \"MaterialAspect\", \"BatteryPass\", \"ProductDescriptionVehicle\", \"ProductDescriptionBattery\", \"ReturnRequest\", \"CertificateOfDestruction\", \"CertificateOfDismantler\", \"Address\", \"Contact\" ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.4.0 [Register Job with invalid or not exisiting aspect type] https://irs.int.demo.catena-x.net/irs/jobs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"aspects\": [\r\n    \"PartSerialTypization\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.4.1 [Register Job with invalid or not exisiting aspect type] https://irs.int.demo.catena-x.net/irs/jobs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"aspects\": [\r\n    \"\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.0.0 [Search for completed Jobs]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=COMPLETED",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs?jobStates=COMPLETED",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							],
+							"query": [
+								{
+									"key": "jobStates",
+									"value": "COMPLETED"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.0.1 [Search for Jobs in error state]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=ERROR",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs?jobStates=ERROR",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							],
+							"query": [
+								{
+									"key": "jobStates",
+									"value": "ERROR"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.0.2 [Search for Jobs in initial state]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=INITIAL",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs?jobStates=INITIAL",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							],
+							"query": [
+								{
+									"key": "jobStates",
+									"value": "INITIAL"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.0.3 [Search for all Jobs in JobStore]  http://irs.int.demo.catena-x.net/irs/jobs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.1.0 [Search for completed Jobs]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=COMPLETED",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs?jobStates=COMPLETED",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							],
+							"query": [
+								{
+									"key": "jobStates",
+									"value": "COMPLETED"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.0.0 [Search for given jobId] http://irs.int.demo.catena-x.net/irs/jobs/:jobId?returnUncompletedJob=true",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs/:jobId?returnUncompletedJob=true",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs",
+								":jobId"
+							],
+							"query": [
+								{
+									"key": "returnUncompletedJob",
+									"value": "true"
+								}
+							],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.1.0 [Search for given jobId] http://irs.int.demo.catena-x.net/irs/jobs/:jobId",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs/:jobId",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs",
+								":jobId"
+							],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.1.1 [Search for invalid jobId] http://irs.int.demo.catena-x.net/irs/jobs/:jobId",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs/:jobId",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs",
+								":jobId"
+							],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": "\"bc1b4f4f-aa00-4296-8738-e7913c95f2d9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.0.0 [Search for error Jobs]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=ERROR",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs?jobStates=ERROR",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							],
+							"query": [
+								{
+									"key": "jobStates",
+									"value": "ERROR"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5.0.0 [Authenticate with Keycloak]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();\r",
+									"pm.environment.set(\"ACCESS_TOKEN\", jsonResponse.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "default"
+								},
+								{
+									"key": "client_id",
+									"value": "{{CLIENT_ID}}",
+									"type": "default"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{CLIENT_SECRET}}",
+									"type": "default"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{KEYCLOAK_HOST}}/auth/realms/CX-Central/protocol/openid-connect/token",
+							"host": [
+								"{{KEYCLOAK_HOST}}"
+							],
+							"path": [
+								"auth",
+								"realms",
+								"CX-Central",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6.0.0 [Cancel Job for given jobId] /irs/jobs/:jobid",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs/:jobid",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs",
+								":jobid"
+							],
+							"variable": [
+								{
+									"key": "jobid",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "5.0.0 [Authenticate with Keycloak]",
+			"name": "IRS Basic API Calls",
+			"item": [
+				{
+					"name": "Register Job",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"aspects\": [\r\n         \"AssemblyPartRelationship\",\r\n         \"SerialPartTypization\"\r\n     ],\r\n     \"bomlLifecycle\":\"asBuilt\",\r\n     \"collectAspects\": true,\r\n     \"direction\":\"downward\",\r\n     \"depth\":10,\r\n     \"globalAssetId\": \"urn:uuid:2cc970dc-ebb4-4ddf-b218-eb307aa45ecf\"\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search for all Jobs in JobStore",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search for Jobs for given state",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs?jobStates=CANCELED,COMPLETED",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							],
+							"query": [
+								{
+									"key": "jobStates",
+									"value": "ERROR",
+									"disabled": true
+								},
+								{
+									"key": "jobStates",
+									"value": "CANCELED,COMPLETED"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search for given jobId",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs/:jobId?returnUncompletedJob=true",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs",
+								":jobId"
+							],
+							"query": [
+								{
+									"key": "returnUncompletedJob",
+									"value": "true"
+								}
+							],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Job for given jobId",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs/:jobid",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs",
+								":jobid"
+							],
+							"variable": [
+								{
+									"key": "jobid",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
 			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var CLIENT_ID = pm.environment.get(\"CLIENT_ID\");",
+							"var CLIENT_SECRET = pm.environment.get(\"CLIENT_SECRET\");",
+							"var KEYCLOAK_HOST = pm.environment.get(\"KEYCLOAK_HOST\");",
+							"var KEYCLOAK_HOST_FULL = KEYCLOAK_HOST +\"/auth/realms/CX-Central/protocol/openid-connect/token\"",
+							"",
+							"var bodyString = \"grant_type=client_credentials&client_id=\"+CLIENT_ID+\"&client_secret=\"+CLIENT_SECRET",
+							"",
+							"const echoPostRequest = {",
+							"  url: KEYCLOAK_HOST_FULL,",
+							"  method: 'POST',",
+							"  header: 'Content-Type:application/x-www-form-urlencoded',",
+							"  body: {",
+							"    mode: 'application/x-www-form-urlencoded',",
+							"    raw: bodyString",
+							"  }",
+							"};",
+							"",
+							"var getToken = true;",
+							"",
+							"if (!pm.environment.get('ACCESS_TOKEN_EXPIRY') || ",
+							"    !pm.environment.get('ACCESS_TOKEN')) {",
+							"    console.log('Token or expiry date are missing')",
+							"} else if (pm.environment.get('ACCESS_TOKEN_EXPIRY') <= (new Date()).getTime()) {",
+							"    console.log('Token is expired')",
+							"} else {",
+							"    getToken = false;",
+							"    console.log('Token and expiry date are all good');",
+							"}",
+							"",
+							"if (getToken === true) {",
+							"    pm.sendRequest(echoPostRequest, function (err, res) {",
+							"    console.log(err ? err : res.json());",
+							"        if (err === null) {",
+							"            console.log('Saving the token and expiry date')",
+							"            var responseJson = res.json();",
+							"            pm.environment.set('ACCESS_TOKEN', responseJson.access_token)",
+							"    ",
+							"            var expiryDate = new Date();",
+							"            expiryDate.setSeconds(expiryDate.getSeconds() + responseJson.expires_in);",
+							"            pm.environment.set('ACCESS_TOKEN_EXPIRY', expiryDate.getTime());",
+							"        }",
+							"    });",
+							"}",
+							""
+						]
+					}
+				},
 				{
 					"listen": "test",
 					"script": {
+						"type": "text/javascript",
 						"exec": [
-							"const jsonResponse = pm.response.json();\r",
-							"pm.environment.set(\"ACCESS_TOKEN\", jsonResponse.access_token);"
-						],
-						"type": "text/javascript"
+							""
+						]
 					}
 				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "grant_type",
-							"value": "client_credentials",
-							"type": "default"
-						},
-						{
-							"key": "client_id",
-							"value": "{{CLIENT_ID}}",
-							"type": "default"
-						},
-						{
-							"key": "client_secret",
-							"value": "{{CLIENT_SECRET}}",
-							"type": "default"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{KEYCLOAK_HOST}}/auth/realms/CX-Central/protocol/openid-connect/token",
-					"host": [
-						"{{KEYCLOAK_HOST}}"
-					],
-					"path": [
-						"auth",
-						"realms",
-						"CX-Central",
-						"protocol",
-						"openid-connect",
-						"token"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "6.0.0 [Cancel Job for given jobId] /irs/jobs/:jobid",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{ACCESS_TOKEN}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{IRS_HOST}}/irs/jobs/:jobid",
-					"host": [
-						"{{IRS_HOST}}"
-					],
-					"path": [
-						"irs",
-						"jobs",
-						":jobid"
-					],
-					"variable": [
-						{
-							"key": "jobid",
-							"value": null
-						}
-					]
-				}
-			},
-			"response": []
+			]
 		}
 	]
 }
