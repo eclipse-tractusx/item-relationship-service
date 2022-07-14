@@ -64,7 +64,7 @@ class MinioHealthIndicator implements HealthIndicator {
                     return true;
                 }
             } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
-                log.error("Lost connection to Minio");
+                log.error("Lost connection to Minio", e);
             }
         }
 
