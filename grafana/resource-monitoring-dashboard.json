@@ -43,8 +43,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -136,8 +135,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -146,7 +144,20 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"system_cpu_usage\", application=\"item-relationship-service\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "CPU"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -226,8 +237,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -249,30 +259,10 @@
                   "fixedColor": "orange",
                   "mode": "fixed"
                 }
-              }
-            ]
-          },
-          {
-            "__systemRef": "hideSeriesFrom",
-            "matcher": {
-              "id": "byNames",
-              "options": {
-                "mode": "exclude",
-                "names": [
-                  "{__name__=\"system_load_average_1m\", application=\"item-relationship-service\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
-                ],
-                "prefix": "All except:",
-                "readOnly": true
-              }
-            },
-            "properties": [
+              },
               {
-                "id": "custom.hideFrom",
-                "value": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": true
-                }
+                "id": "displayName",
+                "value": "Average Load"
               }
             ]
           }
@@ -355,8 +345,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -367,16 +356,109 @@
         },
         "overrides": [
           {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"heap\", id=\"Eden Space\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Eden Space"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"heap\", id=\"Survivor Space\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Survivor Space"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"heap\", id=\"Tenured Gen\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Tenured Gen"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"nonheap\", id=\"CodeHeap 'non-nmethods'\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "CodeHeap"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"nonheap\", id=\"CodeHeap 'non-profiled nmethods'\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Non-profile nmethod"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"nonheap\", id=\"CodeHeap 'profiled nmethods'\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Profile nmethod"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"nonheap\", id=\"Compressed Class Space\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Compressed Class Space"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"nonheap\", id=\"Metaspace\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Metaspace"
+              }
+            ]
+          },
+          {
             "__systemRef": "hideSeriesFrom",
             "matcher": {
               "id": "byNames",
               "options": {
                 "mode": "exclude",
                 "names": [
-                  "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"heap\", id=\"Eden Space\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}",
-                  "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"heap\", id=\"Survivor Space\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}",
-                  "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"heap\", id=\"Tenured Gen\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}",
-                  "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"nonheap\", id=\"CodeHeap 'non-nmethods'\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+                  "Eden Space"
                 ],
                 "prefix": "All except:",
                 "readOnly": true
@@ -419,7 +501,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "editorMode": "builder",
+          "editorMode": "explain",
           "expr": "jvm_memory_used_bytes",
           "legendFormat": "__auto",
           "range": true,
@@ -444,8 +526,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -549,8 +630,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -559,7 +639,32 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"process_cpu_usage\", application=\"item-relationship-service\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Process"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{instance=\"127.0.0.1:9090\", job=\"prometheus\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Process Usage Second"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
@@ -650,8 +755,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -660,7 +764,44 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jvm_threads_live_threads\", application=\"item-relationship-service\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Live Threads"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jvm_threads_peak_threads\", application=\"item-relationship-service\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Peak Threads"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jvm_threads_daemon_threads\", application=\"item-relationship-service\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Daemon Threads"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
@@ -735,6 +876,6 @@
   "timezone": "",
   "title": "Resource Monitoring",
   "uid": "XuMrTRR4z",
-  "version": 4,
+  "version": 7,
   "weekStart": ""
 }
