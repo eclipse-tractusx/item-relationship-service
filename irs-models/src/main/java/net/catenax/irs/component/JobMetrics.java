@@ -69,5 +69,5 @@ public class JobMetrics {
      * aggregated Exception count
      */
     Integer exception;
-    
+
 }
