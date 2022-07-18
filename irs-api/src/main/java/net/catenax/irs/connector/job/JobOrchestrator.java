@@ -70,14 +70,18 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      */
     private final SecurityHelperService securityHelperService;
 
+    /**
+     * Record different type of metrics
+     */
     private final MeterRegistryService meterRegistryService;
 
     /**
      * Create a new instance of {@link JobOrchestrator}.
      *
-     * @param processManager the process manager
-     * @param jobStore       Job store.
-     * @param handler        Recursive job handler.
+     * @param processManager       the process manager
+     * @param jobStore             Job store.
+     * @param handler              Recursive job handler.
+     * @param meterRegistryService record job metrics
      */
     public JobOrchestrator(final TransferProcessManager<T, P> processManager, final JobStore jobStore,
             final RecursiveJobHandler<T, P> handler, final MeterRegistryService meterRegistryService) {

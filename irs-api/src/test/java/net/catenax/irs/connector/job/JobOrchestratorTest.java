@@ -33,7 +33,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class JobOrchestratorTest {
+class JobJobErrorDetailst {
 
     @Mock
     TransferProcessManager<DataRequest, TransferProcess> processManager;
@@ -172,7 +172,8 @@ class JobOrchestratorTest {
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
-        verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), JOB_EXECUTION_FAILED, "java.lang.RuntimeException");
+        verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), JOB_EXECUTION_FAILED,
+                "java.lang.RuntimeException");
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
 
@@ -255,7 +256,8 @@ class JobOrchestratorTest {
         callCompleteAndReturnNextTransfers(Stream.empty());
 
         // Assert
-        verify(jobStore).markJobInError(job.getJobIdString(), JOB_EXECUTION_FAILED, "net.catenax.irs.connector.job.JobException");
+        verify(jobStore).markJobInError(job.getJobIdString(), JOB_EXECUTION_FAILED,
+                "net.catenax.irs.connector.job.JobException");
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
     }
