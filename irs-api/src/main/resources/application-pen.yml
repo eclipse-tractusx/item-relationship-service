@@ -1,0 +1,9 @@
+irs:
+  apiUrl: https://irs-pen.int.demo.catena-x.net
+
+server:
+  port: 8081
+
+management:
+  server:
+    port: 4005
