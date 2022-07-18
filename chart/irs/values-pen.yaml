@@ -37,3 +37,9 @@ service:
   type: ClusterIP
   port: 8081
   actuatorPort: 4005
+
+aasWrapper:
+  host: http://aaswrapper-pen:9196/api/service
+
+digitalTwinRegistry:
+  url: https://semantics.int.demo.catena-x.net/registry
