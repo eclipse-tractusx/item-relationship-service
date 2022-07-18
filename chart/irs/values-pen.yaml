@@ -1,7 +1,7 @@
 springprofile: pen
 
 image:
-  tag: $ARGOCD_APP_REVISION
+  tag: main
 
 ingress:
   hosts:
