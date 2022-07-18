@@ -30,5 +30,11 @@ aasProxy:
 minio:
   url: http://app-minio-pen:9000
 
+aasWrapper:
+  host: http://aaswrapper-pen:9191/api/service
+
+digitalTwinRegistry:
+  url: https://semantics.int.demo.catena-x.net/registry
+
 rootUser: <path:traceability-irs/data/int/minio#minioUser>
 rootPassword: <path:traceability-irs/data/int/minio#minioPassword>
