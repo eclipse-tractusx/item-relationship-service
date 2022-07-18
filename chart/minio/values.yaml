@@ -162,3 +162,8 @@ tls:
 ## When using self-signed certificates, remember to include MinIO's own certificate in the bundle with key public.crt.
 ## If certSecret is left empty and tls is enabled, this chart installs the public certificate from .Values.tls.certSecret.
 trustedCertsSecret: ""
+
+prometheus:
+  authType: public
+  jobId: minio-actuator
+  url: http://prometheus:9090
