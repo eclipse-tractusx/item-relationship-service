@@ -85,6 +85,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
             return JobHandle.builder().jobId(UUID.fromString(jobId)).build();
         } else {
+            meterRegistryService.incremenException();
             throw new IllegalArgumentException("Could not start job: " + jobInitiateResponse.getError());
         }
     }
@@ -98,10 +99,9 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         final Optional<List<AspectType>> aspectTypes = Optional.ofNullable(request.getAspects());
 
-        final List<String> aspectTypeValues = aspectTypes.map(types -> types.stream()
-                                                                      .map(AspectType::toString)
-                                                                      .collect(Collectors.toList()))
-                                                   .orElse(List.of(defaultAspect));
+        final List<String> aspectTypeValues = aspectTypes.map(
+                                                                 types -> types.stream().map(AspectType::toString).collect(Collectors.toList()))
+                                                         .orElse(List.of(defaultAspect));
         if (aspectTypeValues.isEmpty()) {
             aspectTypeValues.add(defaultAspect);
         }
@@ -139,6 +139,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
             return job.getJob();
         } else {
+            meterRegistryService.incremenException();
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
     }

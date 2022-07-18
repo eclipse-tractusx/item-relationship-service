@@ -9,6 +9,8 @@
 //
 package net.catenax.irs.component;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Gauge;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
@@ -23,51 +25,41 @@ public class JobMetrics {
     /**
      * Jobs processing per time unit (jobs/min, jobs/hour)
      */
-    Integer jobProcessed;
+    Counter jobProcessed;
 
     /**
      * Jobs in job store
      */
-    Integer jobInJobStore;
+    Counter jobInJobStore;
 
     /**
      * Number of jobs with completed state since the start of IRS
      */
-    Integer jobSuccessful;
+    Counter jobSuccessful;
 
     /**
      * Number of jobs with error state since the start of IRS
      */
-    Integer jobFailed;
+    Counter jobFailed;
 
     /**
      * Number of jobs with cancel state since the start of IRS
      */
-    Integer jobCancelled;
-
-    /**
-     * avg, median, min, max
-     */
-    Integer jobAverageProcessingTime;
+    Counter jobCancelled;
 
     /**
      * Average -> Gauge (without DT registry or submodel calls)
      */
-    Integer jobExecutionNetTime;
+    Gauge jobExecutionNetTime;
 
     /**
      * Running, Completed, Error, timeout
      */
-    Integer jobPerStateSnapshot;
-
-    /**
-     * Jobs per State Aggregated (total, per hour, days, week)
-     */
-    Integer jobPerStateAggregate;
+    Counter jobPerStateSnapshot;
 
     /**
      * aggregated Exception count
      */
-    Integer exception;
+    Counter exception;
 
 }

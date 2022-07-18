@@ -11,6 +11,8 @@ package net.catenax.irs.configuration;
 
 import java.util.concurrent.Executors;
 
+import io.micrometer.core.aop.TimedAspect;
+import io.micrometer.core.instrument.MeterRegistry;
 import net.catenax.irs.aaswrapper.job.AASHandler;
 import net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
@@ -25,7 +27,9 @@ import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.persistence.MinioBlobPersistence;
+import net.catenax.irs.services.MeterRegistryService;
 import net.catenax.irs.util.JsonUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -39,14 +43,15 @@ public class JobConfiguration {
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
             final DigitalTwinRegistryFacade registryFacade, final SubmodelFacade submodelFacade,
-            final BlobPersistence blobStore, final JobStore jobStore) {
+            final BlobPersistence blobStore, final JobStore jobStore,
+            @Autowired MeterRegistryService meterRegistryService) {
 
         final var aasHandler = new AASHandler(registryFacade, submodelFacade);
         final var manager = new AASTransferProcessManager(aasHandler, Executors.newCachedThreadPool(), blobStore);
         final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);
 
-        return new JobOrchestrator<>(manager, jobStore, handler);
+        return new JobOrchestrator<>(manager, jobStore, handler, meterRegistryService);
     }
 
     @Profile("!test")
@@ -59,5 +64,10 @@ public class JobConfiguration {
     @Bean
     public JsonUtil jsonUtil() {
         return new JsonUtil();
+    }
+
+    @Bean
+    public TimedAspect timedAspect(MeterRegistry registry) {
+        return new TimedAspect(registry);
     }
 }
