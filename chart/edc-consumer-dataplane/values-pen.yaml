@@ -20,58 +20,26 @@ ingress:
             service:
               name: edc-consumer-dataplane-pen
               port:
-                number: 8186
+                number: 8185
   tls:
     - hosts:
         - "irs-consumer-dataplane-pen.int.demo.catena-x.net"
       # Default secret for certificate creation already provided to your namespace
       secretName: tls-secret
 
-service:
-  type: ClusterIP
-  port: 8186
-
 configuration:
   # -- EDC configuration.properties configuring aspects of the [eclipse-dataspaceconnector](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector)
   properties: |-
     edc.api.auth.key=123456
-    edc.controlplane.validation-endpoint=http://edc-consumer-controlplane:8183/validation/token
+    edc.controlplane.validation-endpoint=http://edc-consumer-controlplane-pen:8182/validation/token
     edc.oauth.client.id=D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09:keyid:D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09
     edc.oauth.private.key.alias=irs-int-daps-key
     edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
     edc.oauth.provider.jwks.url=https://daps.int.demo.catena-x.net/.well-known/jwks.json
     edc.oauth.public.key.alias=irs-int-daps-cert
     edc.oauth.token.url=https://daps.int.demo.catena-x.net/token
-    edc.receiver.http.endpoint=http://aaswrapper-pen:9197/callback
+    edc.receiver.http.endpoint=http://aaswrapper-pen:9192/callback
     edc.vault.clientid=c1778e7d-db16-4404-9080-26d2280d2f63
     edc.vault.clientsecret=<path:traceability-irs/data/int/controlplane#vaultClientSecret>
     edc.vault.name=cxtsi-dev001-vault
     edc.vault.tenantid=495463c3-0991-4659-9cc5-94b4a3f7b1d6
-
-## EDC endpoints exposed by the data-plane
-edc:
-  endpoints:
-    ## Default api exposing health checks etc
-    default:
-      # -- The network port, which the "default" api is going to be exposed by the container, pod and service
-      port: "8080"
-      # -- The path mapping the "default" api is going to be exposed by
-      path: /api
-    ## Public endpoint for data transfer
-    public:
-      # -- The network port, which the "public" api is going to be exposed by the container, pod and service
-      port: "8186"
-      # -- The path mapping the "public" api is going to be exposed by
-      path: /api/public
-    ## Control API
-    control:
-      # -- The network port, which the "control" api is going to be exposed by the container, pod and service
-      port: "9999"
-      # -- The path mapping the "control" api is going to be exposed by
-      path: /api/dataplane/control
-    ## Prometheus endpoint
-    metrics:
-      # -- The network port, which the prometheus metrics are going to be exposed by the container, pod and service
-      port: "9090"
-      # -- The path mapping the prometheus metrics are going to be exposed at
-      path: /metrics

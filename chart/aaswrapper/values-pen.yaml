@@ -5,14 +5,6 @@ image:
   repository: ghcr.io/catenax-ng/catenax-at-home/consumer-api-wrapper
   tag: "0.0.4"
 
-service:
-  type: ClusterIP
-  port: 9196
-
-serviceCallback:
-  type: ClusterIP
-  port: 9197
-
 ingress:
   enabled: true
   className: "nginx"
@@ -29,7 +21,7 @@ ingress:
             service:
               name: aaswrapper-pen
               port:
-                number: 9196
+                number: 9191
   tls:
     - hosts:
         - "irs-aas-wrapper-pen.int.demo.catena-x.net"
@@ -38,12 +30,12 @@ ingress:
 
 configuration:
   properties: |-
-    web.http.port=9196
+    web.http.port=9191
     web.http.path=/api
-    web.http.callback.port=9197
+    web.http.callback.port=9192
     web.http.callback.path=/callback
     # wrapper.auth.basic.someuser=somepassword
-    wrapper.consumer.edc.datamanagement.url=http://edc-consumer-controlplane:8181/data
-    wrapper.consumer.edc.control.url=http://edc-consumer-controlplane:9999/api/controlplane/control
+    wrapper.consumer.edc.datamanagement.url=http://edc-consumer-controlplane-pen:8181/data
+    wrapper.consumer.edc.control.url=http://edc-consumer-controlplane-pen:9999/api/controlplane/control
     wrapper.consumer.edc.apikey.name=X-Api-Key
     wrapper.consumer.edc.apikey.value=123456
