@@ -55,7 +55,7 @@ public class JobMetrics {
     /**
      * Running, Completed, Error, timeout
      */
-    private Counter jobPerStateSnapshot;
+    private Counter jobRunning;
 
     /**
      * aggregated Exception count

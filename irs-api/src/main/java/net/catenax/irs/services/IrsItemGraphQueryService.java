@@ -82,9 +82,9 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final var params = buildJobData(request);
 
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
+        meterRegistryService.incrementNumberOfCreatedJobs();
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
-            meterRegistryService.incrementNumberOfCreatedJobs();
             final String jobId = jobInitiateResponse.getJobId();
             recordJobStateMetrics();
             return JobHandle.builder().jobId(UUID.fromString(jobId)).build();
@@ -272,12 +272,14 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     private void recordJobStateMetrics() {
         final List<JobState> states = List.of(JobState.COMPLETED, JobState.ERROR, JobState.CANCELED, JobState.RUNNING);
         jobStore.findByStates(states).stream().forEach(job -> recordJobStateMetric(job.getJob().getJobState()));
+        meterRegistryService.incrementJobInJobStore(Double.valueOf(states.size()));
     }
 
     private void recordJobStateMetric(final JobState state) {
         switch (state) {
             case COMPLETED:
                 meterRegistryService.incrementJobSuccessful();
+                meterRegistryService.incrementJobsProcessed();
                 break;
             case ERROR:
                 meterRegistryService.incrementJobFailed();
@@ -286,6 +288,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 meterRegistryService.incrementJobCancelled();
                 break;
             case RUNNING:
+                meterRegistryService.incrementJobRunning();
                 break;
             default:
         }

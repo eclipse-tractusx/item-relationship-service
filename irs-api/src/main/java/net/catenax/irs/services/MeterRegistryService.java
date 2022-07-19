@@ -45,9 +45,9 @@ public class MeterRegistryService {
                                     .jobCancelled(Counter.builder("jobs.jobstate.cancelled")
                                                          .description("The number jobs cancelled")
                                                          .register(meterRegistry))
-                                    .jobCancelled(Counter.builder("jobs.jobstate.cancelled")
-                                                         .description("The number jobs cancelled")
-                                                         .register(meterRegistry))
+                                    .jobRunning(Counter.builder("jobs.jobstate.running")
+                                                       .description("The number jobs running")
+                                                       .register(meterRegistry))
                                     .exception(Counter.builder("jobs.exception")
                                                       .description("The number exceptions in jobs")
                                                       .register(meterRegistry))
@@ -62,8 +62,8 @@ public class MeterRegistryService {
         jobMetrics.getJobProcessed().increment();
     }
 
-    public void incrementJobInJobStore() {
-        jobMetrics.getJobInJobStore().increment();
+    public void incrementJobInJobStore(final Double count) {
+        jobMetrics.getJobInJobStore().increment(count);
     }
 
     public void incrementJobSuccessful() {
@@ -78,8 +78,8 @@ public class MeterRegistryService {
         jobMetrics.getJobInJobStore().increment();
     }
 
-    public void incremenJobSnapShot() {
-        jobMetrics.getJobPerStateSnapshot().increment();
+    public void incrementJobRunning() {
+        jobMetrics.getJobRunning().increment();
     }
 
     public void incremenException() {
