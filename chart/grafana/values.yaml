@@ -131,3 +131,18 @@ config:
       type: prometheus
       url: http://prometheus:9090
       isDefault: true
+
+dashboardProviders:
+  apiVersion: 1
+  providers:
+    - name: 'default'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: false
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/default
+
+dashboards:
+  minio: dashboards/minio-dashboard.json
