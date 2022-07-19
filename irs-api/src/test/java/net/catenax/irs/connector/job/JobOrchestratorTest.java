@@ -188,6 +188,25 @@ class JobJobErrorDetailst {
     }
 
     @Test
+    void startJob_WhenHandlerJobExceptioWithParamter_StopJob() {
+        // Arrange
+        when(handler.initiate(any(MultiTransferJob.class))).thenThrow(new JobException("Cannot process the request"));
+
+        // Act
+        var response = sut.startJob(job.getJobParameter());
+
+        // Assert
+        verify(jobStore).create(jobCaptor.capture());
+        verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), JOB_EXECUTION_FAILED,
+                "net.catenax.irs.connector.job.JobException");
+        verifyNoMoreInteractions(jobStore);
+        assertThat(response).isEqualTo(JobInitiateResponse.builder()
+                                                          .jobId(jobCaptor.getValue().getJobIdString())
+                                                          .status(ResponseStatus.FATAL_ERROR)
+                                                          .build());
+    }
+
+    @Test
     void transferProcessCompleted_WhenCalledBackForCompletedTransfer_RunsNextTransfers() {
         // Arrange
         when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(okResponse);

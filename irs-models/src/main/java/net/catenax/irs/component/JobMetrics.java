@@ -25,41 +25,41 @@ public class JobMetrics {
     /**
      * Jobs processing per time unit (jobs/min, jobs/hour)
      */
-    Counter jobProcessed;
+    private Counter jobProcessed;
 
     /**
      * Jobs in job store
      */
-    Counter jobInJobStore;
+    private Counter jobInJobStore;
 
     /**
      * Number of jobs with completed state since the start of IRS
      */
-    Counter jobSuccessful;
+    private Counter jobSuccessful;
 
     /**
      * Number of jobs with error state since the start of IRS
      */
-    Counter jobFailed;
+    private Counter jobFailed;
 
     /**
      * Number of jobs with cancel state since the start of IRS
      */
-    Counter jobCancelled;
+    private Counter jobCancelled;
 
     /**
      * Average -> Gauge (without DT registry or submodel calls)
      */
-    Gauge jobExecutionNetTime;
+    private Gauge jobExecutionNetTime;
 
     /**
      * Running, Completed, Error, timeout
      */
-    Counter jobPerStateSnapshot;
+    private Counter jobPerStateSnapshot;
 
     /**
      * aggregated Exception count
      */
-    Counter exception;
+    private Counter exception;
 
 }
