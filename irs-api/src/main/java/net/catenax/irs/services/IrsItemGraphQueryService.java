@@ -60,7 +60,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({ "PMD.ExcessiveImports",
+                    "PMD.TooManyMethods"
+})
 public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final JobOrchestrator<ItemDataRequest, AASTransferProcess> orchestrator;
