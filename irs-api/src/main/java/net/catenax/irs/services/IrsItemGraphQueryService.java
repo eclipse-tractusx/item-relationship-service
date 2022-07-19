@@ -268,11 +268,11 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     private void recordJobStateMetrics() {
-        List<JobState> states = List.of(JobState.COMPLETED, JobState.ERROR, JobState.CANCELED, JobState.RUNNING);
+        final List<JobState> states = List.of(JobState.COMPLETED, JobState.ERROR, JobState.CANCELED, JobState.RUNNING);
         jobStore.findByStates(states).stream().forEach(job -> recordJobStateMetric(job.getJob().getJobState()));
     }
 
-    private void recordJobStateMetric(JobState state) {
+    private void recordJobStateMetric(final JobState state) {
         switch (state) {
             case COMPLETED:
                 meterRegistryService.incrementJobSuccessful();

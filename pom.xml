@@ -156,6 +156,7 @@
                     <excludes>
                         <exclude>**/*Application.class</exclude>
                         <exclude>**/*EntityNotFoundException.class</exclude>
+                        <exclude>**/*JobException.class</exclude>
                         <exclude>**/*IrsApiConstants.class</exclude>
                         <exclude>**/*ApiErrorsConstants.class</exclude>
                     </excludes>
