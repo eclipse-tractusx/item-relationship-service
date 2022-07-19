@@ -18,6 +18,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +75,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     private String defaultAspect;
 
     @Override
+    @Timed(value = "jobs.processed.complete.time", description = "Amount of time require to process job complete")
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
         final var params = buildJobData(request);
 
@@ -82,7 +84,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
             meterRegistryService.incrementNumberOfCreatedJobs();
             final String jobId = jobInitiateResponse.getJobId();
-
+            recordJobStateMetrics();
             return JobHandle.builder().jobId(UUID.fromString(jobId)).build();
         } else {
             meterRegistryService.incremenException();
@@ -263,6 +265,28 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private Stream<Relationship> convert(final AssemblyPartRelationshipDTO dto) {
         return dto.getChildParts().stream().map(child -> child.toRelationship(dto.getCatenaXId()));
+    }
+
+    private void recordJobStateMetrics() {
+        List<JobState> states = List.of(JobState.COMPLETED, JobState.ERROR, JobState.CANCELED, JobState.RUNNING);
+        jobStore.findByStates(states).stream().forEach(job -> recordJobStateMetric(job.getJob().getJobState()));
+    }
+
+    private void recordJobStateMetric(JobState state) {
+        switch (state) {
+            case COMPLETED:
+                meterRegistryService.incrementJobSuccessful();
+                break;
+            case ERROR:
+                meterRegistryService.incrementJobFailed();
+                break;
+            case CANCELED:
+                meterRegistryService.incrementJobCancelled();
+                break;
+            case RUNNING:
+                break;
+            default:
+        }
     }
 
 }

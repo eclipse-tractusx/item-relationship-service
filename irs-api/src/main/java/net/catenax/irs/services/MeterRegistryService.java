@@ -70,8 +70,8 @@ public class MeterRegistryService {
         jobMetrics.getJobSuccessful().increment();
     }
 
-    public void incrementJobFailed(int count) {
-        jobMetrics.getJobFailed().increment((Double.valueOf(String.valueOf(count))));
+    public void incrementJobFailed() {
+        jobMetrics.getJobFailed().increment();
     }
 
     public void incrementJobCancelled() {

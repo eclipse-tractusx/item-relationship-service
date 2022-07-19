@@ -51,7 +51,7 @@ public class JobConfiguration {
         final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);
 
-        return new JobOrchestrator<>(manager, jobStore, handler, meterRegistryService);
+        return new JobOrchestrator<>(manager, jobStore, handler);
     }
 
     @Profile("!test")

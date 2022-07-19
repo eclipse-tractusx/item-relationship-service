@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.services.MeterRegistryService;
 import net.catenax.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,6 +50,9 @@ class JobJobErrorDetailst {
 
     @Captor
     ArgumentCaptor<MultiTransferJob> jobCaptor;
+
+    @Captor
+    ArgumentCaptor<MeterRegistryService> meterCaptor;
 
     Pattern uuid = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
 

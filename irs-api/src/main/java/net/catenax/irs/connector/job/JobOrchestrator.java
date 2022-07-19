@@ -20,7 +20,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
@@ -29,7 +28,6 @@ import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.dto.JobParameter;
-import net.catenax.irs.services.MeterRegistryService;
 import net.catenax.irs.services.SecurityHelperService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -71,26 +69,19 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     private final SecurityHelperService securityHelperService;
 
     /**
-     * Record different type of metrics
-     */
-    private final MeterRegistryService meterRegistryService;
-
-    /**
      * Create a new instance of {@link JobOrchestrator}.
      *
-     * @param processManager       the process manager
-     * @param jobStore             Job store.
-     * @param handler              Recursive job handler.
-     * @param meterRegistryService record job metrics
+     * @param processManager the process manager
+     * @param jobStore       Job store.
+     * @param handler        Recursive job handler.
      */
     public JobOrchestrator(final TransferProcessManager<T, P> processManager, final JobStore jobStore,
-            final RecursiveJobHandler<T, P> handler, final MeterRegistryService meterRegistryService) {
+            final RecursiveJobHandler<T, P> handler) {
 
         this.processManager = processManager;
         this.jobStore = jobStore;
         this.handler = handler;
         this.securityHelperService = new SecurityHelperService();
-        this.meterRegistryService = meterRegistryService;
     }
 
     /**
@@ -138,7 +129,6 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      *
      * @param process the process that has completed
      */
-    @Timed(value = "jobs.processed.complete.time", description = "Amount of time require to process job complete")
     /* package */ void transferProcessCompleted(final P process) {
         final var jobEntry = jobStore.findByProcessId(process.getId());
         if (jobEntry.isEmpty()) {
@@ -190,12 +180,13 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     @Scheduled(cron = "${irs.job.cleanup.scheduler.failed}")
     public void findAndCleanupFailedJobs() {
         log.info("Running cleanup of failed jobs");
+
         final ZonedDateTime currentDateMinusSeconds = ZonedDateTime.now(ZoneOffset.UTC)
                                                                    .minus(TTL_CLEANUP_FAILED_JOBS_HOURS,
                                                                            ChronoUnit.HOURS);
         final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR,
                 currentDateMinusSeconds);
-        meterRegistryService.incrementJobFailed(failedJobs.size());
+
         final List<MultiTransferJob> multiTransferJobs = deleteJobs(failedJobs);
         log.info("Deleted {} failed jobs", multiTransferJobs.size());
     }
