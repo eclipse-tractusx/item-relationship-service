@@ -68,7 +68,7 @@ spec:
           livenessProbe:
             httpGet:
               path: "/minio/health/live"
-              port: 9000
+              port: {{ .Values.minioAPIPort }}
               scheme: HTTP
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -79,7 +79,7 @@ spec:
           readinessProbe:
             httpGet:
               path: "/minio/health/live"
-              port: 9000
+              port: {{ .Values.minioAPIPort }}
               scheme: HTTP
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
