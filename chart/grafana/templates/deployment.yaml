@@ -40,11 +40,11 @@ spec:
           volumeMounts:
             - name: { { include "grafana.fullname" . } }-config
               mountPath: /etc/grafana/provisioning/datasources
-            - name: { { include "grafana.fullname" . } }-config-dashboards-providers
+            - name: {{ include "grafana.fullname" . }}-config-dashboards-providers
               mountPath: /etc/grafana/provisioning/dashboards
-            - name: { { include "grafana.fullname" . } }-config-dashboards
+            - name: {{ include "grafana.fullname" . }}-config-dashboards
               mountPath: /var/lib/grafana/dashboards/default
-            - name: { { include "grafana.fullname" . } }-filesystem
+            - name: {{ include "grafana.fullname" . }}-filesystem
               mountPath: /var/lib/grafana
           ports:
             - name: http
@@ -86,16 +86,16 @@ spec:
       volumes:
         - name: { { include "grafana.fullname" . } }-config
           configMap:
-            name: { { include "grafana.fullname" . } }-configmap
-        - name: { { include "grafana.fullname" . } }-config-dashboards-providers
-        configMap:
-          name: { { include "grafana.fullname" . } }-configmap-dashboards-providers
-        - name: { { include "grafana.fullname" . } }-config-dashboards
-        configMap:
-          name: { { include "grafana.fullname" . } }-configmap-dashboards
-        - name: { { include "grafana.fullname" . } }-filesystem
-        emptyDir: { }
-      { { - with .Values.nodeSelector } }
+            name: {{ include "grafana.fullname" . }}-configmap
+        - name: {{ include "grafana.fullname" . }}-config-dashboards-providers
+          configMap:
+            name: {{ include "grafana.fullname" . }}-configmap-dashboards-providers
+        - name: {{ include "grafana.fullname" . }}-config-dashboards
+          configMap:
+            name: {{ include "grafana.fullname" . }}-configmap-dashboards
+        - name: {{ include "grafana.fullname" . }}-filesystem
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
       nodeSelector:
         { { - toYaml . | nindent 8 } }
       { { - end } }
