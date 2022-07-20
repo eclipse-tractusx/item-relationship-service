@@ -42,4 +42,8 @@
         <gav regex="true">org\.apache\.logging\.log4j:log4j.*</gav>
         <vulnerabilityName>CVE-2022-33915</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes>Irrelvant for IRS, see discussion here: https://github.com/github/securitylab/issues/669</notes>
+        <vulnerabilityName>CVE-2022-31514</vulnerabilityName>
+    </suppress>
 </suppressions>
