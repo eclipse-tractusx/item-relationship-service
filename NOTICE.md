@@ -32,7 +32,7 @@ in the GitHub organization https://github.com/catenax-ng:
 
 This project leverages the following third party content.
 
-See [DEPENDENCIES](https://github.com/catenax-ng/product-item-relationship-service/blob/main/DEPENDENCIES.md) file.
+See [DEPENDENCIES](https://github.com/catenax-ng/product-item-relationship-service/blob/main/DEPENDENCIES) file.
 
 ## Cryptography
 
