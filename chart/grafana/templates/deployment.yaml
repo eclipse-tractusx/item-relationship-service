@@ -4,37 +4,37 @@ metadata:
   name: {{ include "grafana.fullname" . }}
   namespace: {{ .Values.namespace }}
   labels:
-    {{ - include "grafana.labels" . | nindent 4 }}
+    {{- include "grafana.labels" . | nindent 4 }}
   annotations:
     checkov.io/skip1: CKV_K8S_35=Secrets are handled by vault and need to be passed as environment variables
 spec:
-  {{ - if not .Values.autoscaling.enabled }}
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{ - end }}
+  {{- end }}
   selector:
     matchLabels:
-      {{ - include "grafana.selectorLabels" . | nindent 6 }}
+      {{- include "grafana.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{ - with .Values.podAnnotations }}
+      {{- with .Values.podAnnotations }}
       annotations:
-        {{ - toYaml . | nindent 8 }}
-      {{ - end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        {{ - include "grafana.selectorLabels" . | nindent 8 }}
+        {{- include "grafana.selectorLabels" . | nindent 8 }}
     spec:
-      {{ - with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{ - toYaml . | nindent 8 }}
-      {{ - end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       # @url: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server
       automountServiceAccountToken: false
       securityContext:
-        {{ - toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{ - toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
@@ -82,7 +82,7 @@ spec:
             successThreshold: {{ .Values.readinessProbe.successThreshold }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           resources:
-            {{ - toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: {{ include "grafana.fullname" . }}-config
           configMap:
@@ -97,13 +97,13 @@ spec:
           emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
-        {{ - toYaml . | nindent 8 }}
-      {{ - end }}
-      {{ - with .Values.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
       affinity:
-        {{ - toYaml . | nindent 8 }}
-      {{ - end }}
-      {{ - with .Values.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
-        {{ - toYaml . | nindent 8 }}
-      {{ - end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
