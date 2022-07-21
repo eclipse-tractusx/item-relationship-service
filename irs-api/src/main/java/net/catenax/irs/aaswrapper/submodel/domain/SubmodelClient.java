@@ -11,16 +11,20 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 
 import static net.catenax.irs.configuration.RestTemplateConfig.BASIC_AUTH_REST_TEMPLATE;
 
+import java.net.SocketTimeoutException;
 import java.net.URI;
+import java.util.function.Supplier;
 
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.services.OutboundMeterRegistryService;
 import net.catenax.irs.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -90,16 +94,19 @@ class SubmodelClientImpl implements SubmodelClient {
     private final RestTemplate restTemplate;
     private final AASWrapperUriAddressRewritePolicy aasWrapperUriAddressRewritePolicy;
     private final JsonUtil jsonUtil;
+    private final OutboundMeterRegistryService meterRegistryService;
 
     /* package */ SubmodelClientImpl(@Qualifier(BASIC_AUTH_REST_TEMPLATE) final RestTemplate restTemplate,
-            @Value("${aasWrapper.host}") final String aasWrapperHost, final JsonUtil jsonUtil) {
+            @Value("${aasWrapper.host}") final String aasWrapperHost, final JsonUtil jsonUtil,
+            final OutboundMeterRegistryService meterRegistryService) {
         this.restTemplate = restTemplate;
         this.aasWrapperUriAddressRewritePolicy = new AASWrapperUriAddressRewritePolicy(aasWrapperHost);
         this.jsonUtil = jsonUtil;
+        this.meterRegistryService = meterRegistryService;
     }
 
     @Override
-    @Retry(name = "exponentialBackoff")
+    @Retry(name = "submodel")
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
         final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
                 String.class);
@@ -107,15 +114,28 @@ class SubmodelClientImpl implements SubmodelClient {
     }
 
     @Override
-    @Retry(name = "exponentialBackoff")
+    @Retry(name = "submodel")
     public String getSubmodel(final String submodelEndpointAddress) {
-        final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
-                String.class);
-        return entity.getBody();
+        return execute(() -> {
+            final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
+                    String.class);
+            return entity.getBody();
+        });
     }
 
     private URI buildUri(final String submodelEndpointAddress) {
-        return this.aasWrapperUriAddressRewritePolicy.rewriteToAASWrapperUri(submodelEndpointAddress);
+        return execute(() -> this.aasWrapperUriAddressRewritePolicy.rewriteToAASWrapperUri(submodelEndpointAddress));
+    }
+
+    private <T> T execute(Supplier<T> supplier) {
+        try {
+            return supplier.get();
+        } catch (ResourceAccessException e) {
+            if (e.getCause() instanceof SocketTimeoutException) {
+                meterRegistryService.incrementSubmodelTimeoutCounter();
+            }
+            throw e;
+        }
     }
 
 }

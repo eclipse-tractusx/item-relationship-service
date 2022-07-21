@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CustomUriTagProvider implements RestTemplateExchangeTagsProvider {
+    private static final String GLOBAL_ASSET_ID_REGEX = "urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
     @Override
     public Iterable<Tag> getTags(final String urlTemplate, final HttpRequest request,
@@ -38,7 +39,12 @@ public class CustomUriTagProvider implements RestTemplateExchangeTagsProvider {
         tags.add(RestTemplateExchangeTags.status(response));
 
         // only include path in the URI tag, not the query string
-        tags.add(RestTemplateExchangeTags.uri(request.getURI().getPath()));
+        String path = request.getURI()
+                             .getPath()
+                             .replaceAll(GLOBAL_ASSET_ID_REGEX,
+                                     "{uuid}");
+        tags.add(RestTemplateExchangeTags.uri(path));
+
         return tags;
     }
 }

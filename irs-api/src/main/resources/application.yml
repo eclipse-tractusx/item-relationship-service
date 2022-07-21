@@ -92,7 +92,9 @@ resilience4j:
         enableExponentialBackoff: true
         exponentialBackoffMultiplier: 2
     instances:
-      exponentialBackoff:
+      registry:
+        baseConfig: default
+      submodel:
         baseConfig: default
 
 aasWrapper:
