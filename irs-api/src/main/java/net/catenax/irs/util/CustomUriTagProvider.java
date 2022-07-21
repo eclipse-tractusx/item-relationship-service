@@ -1,3 +1,12 @@
+//
+// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)
+//
+// See the AUTHORS file(s) distributed with this work for additional
+// information regarding authorship.
+//
+// See the LICENSE file(s) distributed with this work for
+// additional information regarding license terms.
+//
 package net.catenax.irs.util;
 
 import java.util.ArrayList;
@@ -10,17 +19,25 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Service;
 
+/**
+ * This class provides a custom prometheus tag configuration for the request buckets.
+ * The default configuration includes the query string in the URI tag. This leads
+ * to lots of metric entries for each different call.
+ */
 @Service
-public class MetricsRestTemplateExchangeTagsProvider implements RestTemplateExchangeTagsProvider {
+public class CustomUriTagProvider implements RestTemplateExchangeTagsProvider {
 
     @Override
     public Iterable<Tag> getTags(final String urlTemplate, final HttpRequest request,
             final ClientHttpResponse response) {
         List<Tag> tags = new ArrayList<>();
+        // build default tags
         tags.add(RestTemplateExchangeTags.clientName(request));
         tags.add(RestTemplateExchangeTags.outcome(response));
         tags.add(RestTemplateExchangeTags.method(request));
         tags.add(RestTemplateExchangeTags.status(response));
+
+        // only include path in the URI tag, not the query string
         tags.add(RestTemplateExchangeTags.uri(request.getURI().getPath()));
         return tags;
     }
