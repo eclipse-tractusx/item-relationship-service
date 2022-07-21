@@ -30,7 +30,7 @@ public class CustomUriTagProvider implements RestTemplateExchangeTagsProvider {
     @Override
     public Iterable<Tag> getTags(final String urlTemplate, final HttpRequest request,
             final ClientHttpResponse response) {
-        List<Tag> tags = new ArrayList<>();
+        final List<Tag> tags = new ArrayList<>();
         // build default tags
         tags.add(RestTemplateExchangeTags.clientName(request));
         tags.add(RestTemplateExchangeTags.outcome(response));
