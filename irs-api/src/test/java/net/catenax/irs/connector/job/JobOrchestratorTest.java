@@ -56,6 +56,9 @@ class JobOrchestratorTest {
 
     Pattern uuid = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
 
+    @Mock
+    MeterRegistryService meterRegistryService;
+
     TestMother generate = new TestMother();
     MultiTransferJob job = generate.job(JobState.RUNNING);
     DataRequest dataRequest = generate.dataRequest();

@@ -73,6 +73,9 @@ irs:
         #          │ │ │ │ │ │
         completed: 0 0 * * * *
         failed: 0 0 * * * *
+    jobstore:
+      fixedrate: 10000
+      fixeddelay: 10000
 
 blobstore:
   endpoint: "${MINIO_URL}"

@@ -33,6 +33,7 @@ import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.dto.JobParameter;
+import net.catenax.irs.services.MeterRegistryService;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -69,6 +70,10 @@ public class MultiTransferJob {
     @Getter
     @Singular
     private List<TransferProcess> completedTransfers;
+
+    @Getter
+    @JsonIgnore
+    private MeterRegistryService meterRegistryService;
 
     public Collection<String> getTransferProcessIds() {
         return Collections.unmodifiableSet(this.transferProcessIds);
@@ -124,6 +129,7 @@ public class MultiTransferJob {
          */
         /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail,
                 final String exceptionClassName) {
+            meterRegistryService.incrementJobFailed();
             this.job = this.job.toBuilder()
                                .jobState(JobState.ERROR)
                                .jobCompleted(ZonedDateTime.now(ZoneOffset.UTC))
@@ -145,6 +151,7 @@ public class MultiTransferJob {
         }
 
         private MultiTransferJobBuilder transition(final JobState end, final JobState... starts) {
+            meterRegistryService.recordJobStateMetric(end);
             if (Arrays.stream(starts).noneMatch(s -> s == job.getJobState())) {
                 throw new IllegalStateException(
                         format("Cannot transition from state %s to %s", job.getJobState(), end));

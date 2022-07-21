@@ -11,8 +11,7 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import net.catenax.irs.component.enums.BomLifecycle;
-import net.datafaker.Faker;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
@@ -27,6 +26,8 @@ import net.catenax.irs.connector.job.TransferProcess;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.JobParameter;
+import net.catenax.irs.services.MeterRegistryService;
+import net.datafaker.Faker;
 
 /**
  * Base object mother class to create objects for testing.
@@ -49,13 +50,14 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<AspectType> aspectTypes) {
-        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", depth,
-                aspectTypes, false);
+        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", depth, aspectTypes,
+                false);
     }
 
-    public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth, final List<AspectType> aspectTypes) {
-        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", depth,
-                aspectTypes, true);
+    public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth,
+            final List<AspectType> aspectTypes) {
+        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", depth, aspectTypes,
+                true);
     }
 
     public static RegisterJob registerJobWithGlobalAssetIdAndDepth(final String globalAssetId, final Integer depth,
@@ -87,7 +89,7 @@ public class TestMother {
                            .treeDepth(0)
                            .bomLifecycle("AsBuilt")
                            .aspectTypes(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(),
-                                 AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()))
+                                   AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()))
                            .build();
     }
 
@@ -107,6 +109,10 @@ public class TestMother {
                            .bomLifecycle("AsRequired")
                            .aspectTypes(List.of())
                            .build();
+    }
+
+    public static MeterRegistryService fakeMeterRegistryService() {
+        return new MeterRegistryService(new SimpleMeterRegistry());
     }
 
     public AASTransferProcess aasTransferProcess() {
@@ -134,6 +140,7 @@ public class TestMother {
                                .job(fakeJob(jobState))
                                .jobParameter(jobParameter())
                                .jobParameter(jobParameter())
+                               .meterRegistryService(fakeMeterRegistryService())
                                .build();
     }
 

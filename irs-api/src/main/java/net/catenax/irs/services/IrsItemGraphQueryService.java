@@ -86,10 +86,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
             final String jobId = jobInitiateResponse.getJobId();
-            recordJobStateMetrics();
             return JobHandle.builder().jobId(UUID.fromString(jobId)).build();
         } else {
-            meterRegistryService.incremenException();
             throw new IllegalArgumentException("Could not start job: " + jobInitiateResponse.getError());
         }
     }
@@ -193,6 +191,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                        .submodels(submodels)
                        .build();
         } else {
+            meterRegistryService.incremenException();
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
     }
@@ -230,6 +229,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 });
 
             } catch (BlobPersistenceException e) {
+                meterRegistryService.incremenException();
                 log.error("Unable to read transfer result", e);
             }
         }
@@ -253,6 +253,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             return toItemContainer(bytes);
         } catch (BlobPersistenceException e) {
             log.error("Unable to read blob", e);
+            meterRegistryService.incremenException();
             throw new EntityNotFoundException("Could not load stored data for multiJob with id " + jobId, e);
         }
     }
@@ -267,31 +268,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private Stream<Relationship> convert(final AssemblyPartRelationshipDTO dto) {
         return dto.getChildParts().stream().map(child -> child.toRelationship(dto.getCatenaXId()));
-    }
-
-    private void recordJobStateMetrics() {
-        final List<JobState> states = List.of(JobState.COMPLETED, JobState.ERROR, JobState.CANCELED, JobState.RUNNING);
-        jobStore.findByStates(states).stream().forEach(job -> recordJobStateMetric(job.getJob().getJobState()));
-        meterRegistryService.incrementJobInJobStore(Double.valueOf(states.size()));
-    }
-
-    private void recordJobStateMetric(final JobState state) {
-        switch (state) {
-            case COMPLETED:
-                meterRegistryService.incrementJobSuccessful();
-                meterRegistryService.incrementJobsProcessed();
-                break;
-            case ERROR:
-                meterRegistryService.incrementJobFailed();
-                break;
-            case CANCELED:
-                meterRegistryService.incrementJobCancelled();
-                break;
-            case RUNNING:
-                meterRegistryService.incrementJobRunning();
-                break;
-            default:
-        }
     }
 
 }

@@ -17,6 +17,7 @@ import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.persistence.BlobPersistence;
+import net.catenax.irs.services.MeterRegistryService;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,9 @@ class IrsApplicationTests {
     @Autowired
     private JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator;
 
+    @Autowired
+    private MeterRegistryService meterRegistryService;
+
     @Test
     void generatedOpenApiMatchesContract() throws Exception {
         final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
@@ -60,7 +64,11 @@ class IrsApplicationTests {
 
     @Test
     void shouldStoreBlobResultWhenRunningJob() throws Exception {
-        final JobParameter jobParameter = JobParameter.builder().rootItemId("rootitemid").treeDepth(5).aspectTypes(List.of()).build();
+        final JobParameter jobParameter = JobParameter.builder()
+                                                      .rootItemId("rootitemid")
+                                                      .treeDepth(5)
+                                                      .aspectTypes(List.of())
+                                                      .build();
 
         final JobInitiateResponse response = jobOrchestrator.startJob(jobParameter);
 

@@ -11,7 +11,8 @@ package net.catenax.irs.services;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import net.catenax.irs.component.JobMetrics;
+import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.util.JobMetrics;
 import org.springframework.stereotype.Service;
 
 /**
@@ -24,7 +25,9 @@ public class MeterRegistryService {
 
     private final JobMetrics jobMetrics;
 
-    /* package */ MeterRegistryService(final MeterRegistry meterRegistry) {
+    private Integer lastJobInJobStoreCount = 0;
+
+    public MeterRegistryService(final MeterRegistry meterRegistry) {
         this.counterCreatedJobs = Counter.builder("jobs.created")
                                          .description("The number of jobs ever created")
                                          .register(meterRegistry);
@@ -84,5 +87,34 @@ public class MeterRegistryService {
 
     public void incremenException() {
         jobMetrics.getException().increment();
+    }
+
+    public void recordJobStateMetric(final JobState state) {
+        switch (state) {
+            case COMPLETED:
+                incrementJobSuccessful();
+                break;
+            case TRANSFERS_FINISHED:
+                incrementJobsProcessed();
+                break;
+            case ERROR:
+                incrementJobFailed();
+                break;
+            case CANCELED:
+                incrementJobCancelled();
+                break;
+            case RUNNING:
+                incrementJobRunning();
+                break;
+            default:
+        }
+    }
+
+    public void setJobsInJobStore(Integer count) {
+        lastJobInJobStoreCount = lastJobInJobStoreCount == 0
+                ? count
+                : count > lastJobInJobStoreCount ? count - lastJobInJobStoreCount : lastJobInJobStoreCount;
+
+        incrementJobInJobStore(Double.valueOf(lastJobInJobStoreCount));
     }
 }
