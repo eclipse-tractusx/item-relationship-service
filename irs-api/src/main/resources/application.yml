@@ -38,6 +38,9 @@ management:
     readinessstate:
       enabled: true
   metrics:
+    distribution:
+      percentiles-histogram:
+        http: true
     tags:
       application: ${spring.application.name}
   server:
