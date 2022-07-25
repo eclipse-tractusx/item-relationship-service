@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "659f9afa-d2ff-4d7e-865d-33a1b872e18d",
+		"_postman_id": "72a41376-3de5-4696-a264-c569476f59d1",
 		"name": "IRS DEMO Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -283,7 +283,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb\"\r\n}"
+							"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -316,7 +316,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fcabcdef\"\r\n}"
+							"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -382,7 +382,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\",\r\n  \"bomLifecycle\": \"asBuilt\",\r\n  \"depth\": 2\r\n}"
+							"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\",\r\n  \"bomLifecycle\": \"asBuilt\",\r\n  \"depth\": 2\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -415,7 +415,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -448,7 +448,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\",\r\n    \"AssemblyPartRelationship\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\",\r\n    \"AssemblyPartRelationship\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -481,7 +481,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -514,7 +514,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"Address\",\r\n    \"Contact\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"Address\",\r\n    \"Contact\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -547,7 +547,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -580,7 +580,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [ \"SerialPartTypization\", \"AssemblyPartRelationship\", \"PartDimension\", \"SupplyRelationData\", \"PCFCoreData\", \"PCFTechnicalData\", \"MarketPlaceOffer\", \"MaterialAspect\", \"BatteryPass\", \"ProductDescriptionVehicle\", \"ProductDescriptionBattery\", \"ReturnRequest\", \"CertificateOfDestruction\", \"CertificateOfDismantler\", \"Address\", \"Contact\" ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [ \"SerialPartTypization\", \"AssemblyPartRelationship\", \"PartDimension\", \"SupplyRelationData\", \"PCFCoreData\", \"PCFTechnicalData\", \"MarketPlaceOffer\", \"MaterialAspect\", \"BatteryPass\", \"ProductDescriptionVehicle\", \"ProductDescriptionBattery\", \"ReturnRequest\", \"CertificateOfDestruction\", \"CertificateOfDismantler\", \"Address\", \"Contact\" ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -613,7 +613,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"PartSerialTypization\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"PartSerialTypization\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -646,7 +646,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -1114,7 +1114,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n     \"aspects\": [\r\n         \"AssemblyPartRelationship\",\r\n         \"SerialPartTypization\"\r\n     ],\r\n     \"bomlLifecycle\":\"asBuilt\",\r\n     \"collectAspects\": true,\r\n     \"direction\":\"downward\",\r\n     \"depth\":10,\r\n     \"globalAssetId\": \"urn:uuid:2cc970dc-ebb4-4ddf-b218-eb307aa45ecf\"\r\n}"
+							"raw": "{\r\n     \"aspects\": [\r\n         \"AssemblyPartRelationship\",\r\n         \"SerialPartTypization\"\r\n     ],\r\n     \"bomlLifecycle\":\"asBuilt\",\r\n     \"collectAspects\": true,\r\n     \"direction\":\"downward\",\r\n     \"depth\":10,\r\n     \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
