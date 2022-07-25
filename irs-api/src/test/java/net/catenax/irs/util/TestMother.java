@@ -140,7 +140,6 @@ public class TestMother {
                                .job(fakeJob(jobState))
                                .jobParameter(jobParameter())
                                .jobParameter(jobParameter())
-                               .meterRegistryService(fakeMeterRegistryService())
                                .build();
     }
 

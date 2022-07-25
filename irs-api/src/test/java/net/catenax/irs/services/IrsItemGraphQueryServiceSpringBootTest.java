@@ -31,7 +31,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = { "test", "stubtest" })
+@ActiveProfiles(profiles = { "test",
+                             "stubtest"
+})
 @Import(TestConfig.class)
 class IrsItemGraphQueryServiceSpringBootTest {
 
@@ -138,6 +140,26 @@ class IrsItemGraphQueryServiceSpringBootTest {
         assertThat(multiTransferJob).isPresent();
         assertThat(multiTransferJob.get().getJobParameter().getAspectTypes()).contains(defaultAspectType);
         assertThat(multiTransferJob.get().getJobParameter().isCollectAspects()).isFalse();
+    }
+
+    @Test
+    void letTransistJobFromOneStateToAnother() {
+        final String idAsString = String.valueOf(jobId);
+        final MultiTransferJob multiTransferJob = MultiTransferJob.builder()
+                                                                  .job(Job.builder()
+                                                                          .jobId(UUID.fromString(idAsString))
+                                                                          .jobState(JobState.INITIAL)
+                                                                          .exception(JobErrorDetails.builder()
+                                                                                                    .errorDetail(
+                                                                                                            "Job should be canceled")
+                                                                                                    .exceptionDate(
+                                                                                                            ZonedDateTime.now())
+                                                                                                    .build())
+                                                                          .build())
+                                                                  .build();
+
+        MultiTransferJob newJob = multiTransferJob.toBuilder().transitionInProgress().build();
+        assertThat(newJob.getJob().getJobState()).isEqualTo(JobState.RUNNING);
     }
 
     private int getRelationshipsSize(final UUID jobId) {

@@ -19,9 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
-import net.catenax.irs.services.MeterRegistryService;
 import net.catenax.irs.util.JsonUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -41,9 +39,6 @@ public class PersistentJobStore extends BaseJobStore {
 
     private final JsonUtil json = new JsonUtil();
 
-    @Autowired
-    MeterRegistryService meterRegistryService;
-
     @Override
     protected Optional<MultiTransferJob> get(final String jobId) {
         try {
@@ -52,13 +47,6 @@ public class PersistentJobStore extends BaseJobStore {
             log.error("Error while trying to get job from blobstore", e);
             return Optional.empty();
         }
-    }
-
-    // @Scheduled(fixedRateString = "${irs.job.jobstore.fixedrate}", fixedDelayString = "${irs.job.jobstore.fixeddelay}")
-    protected void recordJobStateMetrics() {
-        log.info("Running cleanup of failed jobs");
-        Collection<MultiTransferJob> jobInStore = getAll();
-        meterRegistryService.setJobsInJobStore(jobInStore.size());
     }
 
     @Override
@@ -72,6 +60,7 @@ public class PersistentJobStore extends BaseJobStore {
         }
     }
 
+    @IRSMetrics
     @Override
     protected void put(final String jobId, final MultiTransferJob job) {
         final byte[] blob = toBlob(job);
