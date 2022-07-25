@@ -48,7 +48,7 @@ public class OutboundMeterRegistryService {
         retryRegistry.retry(ENDPOINT_REGISTRY).getEventPublisher().onRetry(event -> counterRetriesRegistry.increment());
 
         retryRegistry.getAllRetries()
-                     .filter(retry -> !retry.getName().equals(ENDPOINT_REGISTRY))
+                     .filter(retry -> !ENDPOINT_REGISTRY.equals(retry.getName()))
                      .forEach(retry -> retry.getEventPublisher()
                                             .onRetry(event -> incrementSubmodelRetryCounter(retry.getName())));
 
