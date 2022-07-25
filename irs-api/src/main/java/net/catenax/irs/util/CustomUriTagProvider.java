@@ -39,7 +39,7 @@ public class CustomUriTagProvider implements RestTemplateExchangeTagsProvider {
         tags.add(RestTemplateExchangeTags.status(response));
 
         // only include path in the URI tag, not the query string
-        String path = request.getURI()
+        final String path = request.getURI()
                              .getPath()
                              .replaceAll(GLOBAL_ASSET_ID_REGEX,
                                      "{uuid}");

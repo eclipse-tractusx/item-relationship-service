@@ -127,7 +127,7 @@ class SubmodelClientImpl implements SubmodelClient {
         return execute(() -> this.aasWrapperUriAddressRewritePolicy.rewriteToAASWrapperUri(submodelEndpointAddress));
     }
 
-    private <T> T execute(Supplier<T> supplier) {
+    private <T> T execute(final Supplier<T> supplier) {
         try {
             return supplier.get();
         } catch (ResourceAccessException e) {

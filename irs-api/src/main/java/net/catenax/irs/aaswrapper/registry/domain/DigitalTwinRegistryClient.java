@@ -115,7 +115,7 @@ class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient {
         return execute(() -> restTemplate.getForObject(uriBuilder.build().toUri(), List.class));
     }
 
-    private <T> T execute(Supplier<T> supplier) {
+    private <T> T execute(final Supplier<T> supplier) {
         try {
             return supplier.get();
         } catch (ResourceAccessException e) {
