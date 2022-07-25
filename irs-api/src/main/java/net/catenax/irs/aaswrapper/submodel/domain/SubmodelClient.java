@@ -108,9 +108,11 @@ class SubmodelClientImpl implements SubmodelClient {
     @Override
     @Retry(name = "submodel")
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
-        final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
-                String.class);
-        return jsonUtil.fromString(entity.getBody(), submodelClass);
+        return execute(() -> {
+            final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
+                    String.class);
+            return jsonUtil.fromString(entity.getBody(), submodelClass);
+        });
     }
 
     @Override

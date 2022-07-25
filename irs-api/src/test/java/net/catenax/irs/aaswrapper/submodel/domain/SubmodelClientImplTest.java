@@ -12,12 +12,19 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.catenax.irs.services.OutboundMeterRegistryService;
@@ -27,6 +34,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -78,10 +86,21 @@ class SubmodelClientImplTest {
         final ResponseEntity<String> responseEntity = new ResponseEntity<>(data, HttpStatus.OK);
         doReturn(responseEntity).when(restTemplate).getForEntity(any(), any());
 
-        final Object submodelResponse = submodelClient.getSubmodel(url,
-                Object.class);
+        final Object submodelResponse = submodelClient.getSubmodel(url, Object.class);
 
         assertThat(submodelResponse).isNotNull();
         assertThat(objectMapper.writeValueAsString(submodelResponse)).isEqualTo(data);
+    }
+
+    @Test
+    void shouldCallExternalServiceOnceAndRunIntoTimeout() {
+        final SocketTimeoutException timeoutException = new SocketTimeoutException("UnitTestTimeout");
+        Throwable ex = new ResourceAccessException("UnitTest", timeoutException);
+        doThrow(ex).when(restTemplate).getForEntity(any(), any());
+
+        assertThrows(ResourceAccessException.class, () -> submodelClient.getSubmodel(url, Object.class));
+
+        verify(this.restTemplate, times(1)).getForEntity(any(), any());
+        verify(meterRegistry).incrementSubmodelTimeoutCounter();
     }
 }
