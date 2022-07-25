@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import net.catenax.irs.services.OutboundMeterRegistryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,7 +21,9 @@ class DigitalTwinRegistryClientImplTest {
 
     private final RestTemplate restTemplate = mock(RestTemplate.class);
 
-    private final DigitalTwinRegistryClientImpl digitalTwinRegistryClient = new DigitalTwinRegistryClientImpl(restTemplate, "url");
+    private final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
+
+    private final DigitalTwinRegistryClientImpl digitalTwinRegistryClient = new DigitalTwinRegistryClientImpl(restTemplate, "url", meterRegistry);
 
     @Test
     void shouldCallExternalServiceOnceAndGetAssetAdministrationShellDescriptor() {
