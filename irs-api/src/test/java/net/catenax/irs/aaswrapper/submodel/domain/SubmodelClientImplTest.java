@@ -104,6 +104,6 @@ class SubmodelClientImplTest {
         assertThrows(ResourceAccessException.class, () -> submodelClient.getSubmodel(url, Object.class));
 
         verify(this.restTemplate, times(3)).getForEntity(any(), any());
-        verify(meterRegistry, times(3)).incrementSubmodelTimeoutCounter(url);
+        verify(meterRegistry, times(3)).incrementSubmodelTimeoutCounter(any());
     }
 }

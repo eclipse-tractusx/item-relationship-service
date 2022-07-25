@@ -110,18 +110,18 @@ class SubmodelClientImpl implements SubmodelClient {
 
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
-        final URI uri = buildUri(submodelEndpointAddress);
-        return execute(uri.getHost(), () -> {
-            final ResponseEntity<String> entity = restTemplate.getForEntity(uri, String.class);
+        return execute(submodelEndpointAddress, () -> {
+            final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
+                    String.class);
             return jsonUtil.fromString(entity.getBody(), submodelClass);
         });
     }
 
     @Override
     public String getSubmodel(final String submodelEndpointAddress) {
-        final URI uri = buildUri(submodelEndpointAddress);
-        return execute(uri.getHost(), () -> {
-            final ResponseEntity<String> entity = restTemplate.getForEntity(uri, String.class);
+        return execute(submodelEndpointAddress, () -> {
+            final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
+                    String.class);
             return entity.getBody();
         });
     }
@@ -131,7 +131,8 @@ class SubmodelClientImpl implements SubmodelClient {
     }
 
     private <T> T execute(final String endpointAddress, final Supplier<T> supplier) {
-        final Retry retry = retryRegistry.retry(endpointAddress, "default");
+        final String host = URI.create(endpointAddress).getHost();
+        final Retry retry = retryRegistry.retry(host, "default");
         return Retry.decorateSupplier(retry, () -> {
             try {
                 return supplier.get();
