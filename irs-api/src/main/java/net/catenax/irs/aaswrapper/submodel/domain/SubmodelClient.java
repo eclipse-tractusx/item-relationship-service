@@ -110,24 +110,24 @@ class SubmodelClientImpl implements SubmodelClient {
 
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
-        return execute(submodelEndpointAddress, () -> {
-            final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
-                    String.class);
+        final URI uri = buildUri(submodelEndpointAddress);
+        return execute(uri.getHost(), () -> {
+            final ResponseEntity<String> entity = restTemplate.getForEntity(uri, String.class);
             return jsonUtil.fromString(entity.getBody(), submodelClass);
         });
     }
 
     @Override
     public String getSubmodel(final String submodelEndpointAddress) {
-        return execute(submodelEndpointAddress, () -> {
-            final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
-                    String.class);
+        final URI uri = buildUri(submodelEndpointAddress);
+        return execute(uri.getHost(), () -> {
+            final ResponseEntity<String> entity = restTemplate.getForEntity(uri, String.class);
             return entity.getBody();
         });
     }
 
     private URI buildUri(final String submodelEndpointAddress) {
-        return execute(submodelEndpointAddress, () -> this.aasWrapperUriAddressRewritePolicy.rewriteToAASWrapperUri(submodelEndpointAddress));
+        return this.aasWrapperUriAddressRewritePolicy.rewriteToAASWrapperUri(submodelEndpointAddress);
     }
 
     private <T> T execute(final String endpointAddress, final Supplier<T> supplier) {
