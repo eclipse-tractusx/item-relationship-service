@@ -131,7 +131,7 @@ class SubmodelClientImpl implements SubmodelClient {
     }
 
     private <T> T execute(final String endpointAddress, final Supplier<T> supplier) {
-        Retry retry = retryRegistry.retry(endpointAddress, "submodel");
+        Retry retry = retryRegistry.retry(endpointAddress, "default");
         return Retry.decorateSupplier(retry, () -> {
             try {
                 return supplier.get();

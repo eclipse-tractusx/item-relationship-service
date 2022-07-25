@@ -46,7 +46,7 @@ class SubmodelFacadeTest {
     private final JsonUtil jsonUtil = new JsonUtil();
 
     private final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
-    private final RetryRegistry retryRegistry = mock(RetryRegistry.class);
+    private final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
 
     @Mock
     RestTemplate restTemplate;
