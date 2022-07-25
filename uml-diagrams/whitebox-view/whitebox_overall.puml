@@ -5,12 +5,11 @@ Component Diagram
 @startuml
 skinparam monochrome true
 skinparam shadowing false
-
+skinparam spacing 50
 
 
 component [**IRSApplication**] <<System>> {
 	component [**IRS**] <<System>> as IRS
-	component [**AAS Proxy**] <<System>> as AAS_P
 	component [**AAS Wrapper**] <<System>> as AAS_W
 	component [**EDC Consumer**] <<System>> as EDC
 
@@ -37,13 +36,12 @@ component [**Tier/OEM**] <<Tier/OEM-Environment>> {
 
 actor IrsApiConsumer
 
-IrsApiConsumer -left(0- IRS
-IRS <..>AAS_P
+IrsApiConsumer -right(0- IRS
 IrsApiConsumer <.r.> IAM_IRS
-AAS_P <.d.> AAS_W
+IRS <.d.> AAS_W
 IRS <.l.> IAM_IRS
-AAS_W <.l.> EDC
-AAS_W <.> DT_REG
+AAS_W <..> EDC
+IRS <.> DT_REG
 EDC <..> IAM_DAPS
 EDC <..> EDCProviderOEM
 EDC <...> EDCProviderTier1
