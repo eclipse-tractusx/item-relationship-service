@@ -46,7 +46,7 @@
 
         <!-- Plugins -->
         <tidy.version>1.1.0</tidy.version>
-        <spotbugs-plugin.version>4.7.1.1</spotbugs-plugin.version>
+        <spotbugs-plugin.version>4.7.1.0</spotbugs-plugin.version>
         <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
         <checkstyle-plugin.version>3.1.2</checkstyle-plugin.version>
         <checkstyle.version>10.3.1</checkstyle.version>
@@ -57,7 +57,7 @@
         <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
         <jar-plugin.version>3.2.2</jar-plugin.version>
         <flatten-plugin.version>1.2.7</flatten-plugin.version>
-        <install-plugin.version>3.0.1</install-plugin.version>
+        <install-plugin.version>3.0.0</install-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -179,7 +179,6 @@
                     <excludes>
                         <exclude>**/*Application.class</exclude>
                         <exclude>**/*EntityNotFoundException.class</exclude>
-                        <exclude>**/*JobException.class</exclude>
                         <exclude>**/*IrsApiConstants.class</exclude>
                         <exclude>**/*ApiErrorsConstants.class</exclude>
                     </excludes>
