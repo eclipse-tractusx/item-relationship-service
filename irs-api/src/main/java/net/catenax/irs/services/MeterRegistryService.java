@@ -25,7 +25,7 @@ public class MeterRegistryService {
 
     private final JobMetrics jobMetrics;
 
-    private Integer lastJobInJobStoreCount = 0;
+    private final Integer lastJobInJobStoreCount = 0;
 
     public MeterRegistryService(final MeterRegistry meterRegistry) {
         this.counterCreatedJobs = Counter.builder("jobs.created")
@@ -111,8 +111,7 @@ public class MeterRegistryService {
     }
 
     public void setJobsInJobStore(final Integer count) {
-        lastJobInJobStoreCount = count > lastJobInJobStoreCount ? count - lastJobInJobStoreCount : count;
-        incrementJobInJobStore(Double.valueOf(lastJobInJobStoreCount));
+        incrementJobInJobStore(Double.valueOf(count));
     }
 
     public JobMetrics getJobMetric() {
