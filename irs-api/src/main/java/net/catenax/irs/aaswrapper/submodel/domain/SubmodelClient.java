@@ -15,7 +15,8 @@ import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.util.function.Supplier;
 
-import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.services.OutboundMeterRegistryService;
 import net.catenax.irs.util.JsonUtil;
@@ -95,20 +96,21 @@ class SubmodelClientImpl implements SubmodelClient {
     private final AASWrapperUriAddressRewritePolicy aasWrapperUriAddressRewritePolicy;
     private final JsonUtil jsonUtil;
     private final OutboundMeterRegistryService meterRegistryService;
+    private final RetryRegistry retryRegistry;
 
     /* package */ SubmodelClientImpl(@Qualifier(BASIC_AUTH_REST_TEMPLATE) final RestTemplate restTemplate,
             @Value("${aasWrapper.host}") final String aasWrapperHost, final JsonUtil jsonUtil,
-            final OutboundMeterRegistryService meterRegistryService) {
+            final OutboundMeterRegistryService meterRegistryService, final RetryRegistry retryRegistry) {
         this.restTemplate = restTemplate;
         this.aasWrapperUriAddressRewritePolicy = new AASWrapperUriAddressRewritePolicy(aasWrapperHost);
         this.jsonUtil = jsonUtil;
         this.meterRegistryService = meterRegistryService;
+        this.retryRegistry = retryRegistry;
     }
 
     @Override
-    @Retry(name = "submodel")
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
-        return execute(() -> {
+        return execute(submodelEndpointAddress, () -> {
             final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
                     String.class);
             return jsonUtil.fromString(entity.getBody(), submodelClass);
@@ -116,9 +118,8 @@ class SubmodelClientImpl implements SubmodelClient {
     }
 
     @Override
-    @Retry(name = "submodel")
     public String getSubmodel(final String submodelEndpointAddress) {
-        return execute(() -> {
+        return execute(submodelEndpointAddress, () -> {
             final ResponseEntity<String> entity = restTemplate.getForEntity(buildUri(submodelEndpointAddress),
                     String.class);
             return entity.getBody();
@@ -126,18 +127,21 @@ class SubmodelClientImpl implements SubmodelClient {
     }
 
     private URI buildUri(final String submodelEndpointAddress) {
-        return execute(() -> this.aasWrapperUriAddressRewritePolicy.rewriteToAASWrapperUri(submodelEndpointAddress));
+        return execute(submodelEndpointAddress, () -> this.aasWrapperUriAddressRewritePolicy.rewriteToAASWrapperUri(submodelEndpointAddress));
     }
 
-    private <T> T execute(final Supplier<T> supplier) {
-        try {
-            return supplier.get();
-        } catch (ResourceAccessException e) {
-            if (e.getCause() instanceof SocketTimeoutException) {
-                meterRegistryService.incrementSubmodelTimeoutCounter();
+    private <T> T execute(final String endpointAddress, final Supplier<T> supplier) {
+        Retry retry = retryRegistry.retry(endpointAddress, "submodel");
+        return Retry.decorateSupplier(retry, () -> {
+            try {
+                return supplier.get();
+            } catch (ResourceAccessException e) {
+                if (e.getCause() instanceof SocketTimeoutException) {
+                    meterRegistryService.incrementSubmodelTimeoutCounter(endpointAddress);
+                }
+                throw e;
             }
-            throw e;
-        }
+        }).get();
     }
 
 }

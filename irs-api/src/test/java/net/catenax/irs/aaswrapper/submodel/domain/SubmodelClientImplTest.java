@@ -27,6 +27,7 @@ import java.net.SocketTimeoutException;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.resilience4j.retry.RetryRegistry;
 import net.catenax.irs.services.OutboundMeterRegistryService;
 import net.catenax.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
@@ -44,18 +45,19 @@ class SubmodelClientImplTest {
     private final RestTemplate restTemplate = mock(RestTemplate.class);
 
     private final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
+    private final RetryRegistry retryRegistry = mock(RetryRegistry.class);
 
     private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
     private final JsonUtil jsonUtil = new JsonUtil();
     private final SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate,
-            "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry);
+            "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
     private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
     @Test
     void shouldThrowExceptionWhenSubmodelNotFound() {
         final String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(),
-                "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry);
+                "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
                 () -> submodelClient.getSubmodel(url, AssemblyPartRelationship.class));
@@ -101,6 +103,6 @@ class SubmodelClientImplTest {
         assertThrows(ResourceAccessException.class, () -> submodelClient.getSubmodel(url, Object.class));
 
         verify(this.restTemplate, times(1)).getForEntity(any(), any());
-        verify(meterRegistry).incrementSubmodelTimeoutCounter();
+        verify(meterRegistry).incrementSubmodelTimeoutCounter(url);
     }
 }

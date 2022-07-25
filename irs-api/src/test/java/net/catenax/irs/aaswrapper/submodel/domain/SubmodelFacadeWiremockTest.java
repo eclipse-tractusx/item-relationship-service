@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import io.github.resilience4j.retry.RetryRegistry;
 import net.catenax.irs.services.OutboundMeterRegistryService;
 import net.catenax.irs.util.JsonUtil;
 import org.assertj.core.api.ThrowableAssert;
@@ -36,6 +37,7 @@ class SubmodelFacadeWiremockTest {
     private final JsonUtil jsonUtil = new JsonUtil();
 
     private final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
+    private final RetryRegistry retryRegistry = mock(RetryRegistry.class);
 
     private final RestTemplate restTemplate = new RestTemplate();
     private WireMockServer wireMockServer;
@@ -47,7 +49,7 @@ class SubmodelFacadeWiremockTest {
         this.wireMockServer.start();
         configureFor(this.wireMockServer.port());
         SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate, buildApiMethodUrl() + "/api/service",
-                jsonUtil, meterRegistry);
+                jsonUtil, meterRegistry, retryRegistry);
         this.submodelFacade = new SubmodelFacade(submodelClient);
     }
 

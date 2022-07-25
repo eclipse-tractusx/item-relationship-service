@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.github.resilience4j.retry.RetryRegistry;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.JobParameter;
@@ -45,6 +46,7 @@ class SubmodelFacadeTest {
     private final JsonUtil jsonUtil = new JsonUtil();
 
     private final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
+    private final RetryRegistry retryRegistry = mock(RetryRegistry.class);
 
     @Mock
     RestTemplate restTemplate;
@@ -62,7 +64,7 @@ class SubmodelFacadeTest {
         final JobParameter jobParameter = jobParameter();
         final String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(),
-                "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry);
+                "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
         final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
@@ -102,7 +104,7 @@ class SubmodelFacadeTest {
     void shouldReturnAssemblyPartRelationshipDTOWhenRequestingOnRealClient() {
         final String endpointUrl = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(restTemplate,
-                "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry);
+                "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
         SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
         final AssemblyPartRelationship assemblyPartRelationship = new AssemblyPartRelationship();
