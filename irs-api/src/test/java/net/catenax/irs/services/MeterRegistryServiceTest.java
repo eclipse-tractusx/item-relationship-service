@@ -41,4 +41,9 @@ class MeterRegistryServiceTest {
 
     }
 
+    @Test
+    void testIfJobMetricsProcessedIsCalled() {
+
+    }
+
 }

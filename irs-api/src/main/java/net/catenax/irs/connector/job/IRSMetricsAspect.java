@@ -34,15 +34,16 @@ public class IRSMetricsAspect {
      * Record the metrics base on annotation
      */
     @Autowired
-    MeterRegistryService registryService;
+    private MeterRegistryService registryService;
 
     // execution(* net.catenax.irs.*.*(..)) &&
-    @Before(value = "@annotation(net.catenax.irs.connector.job.IRSMetrics)")
-    public final void setMetricsBaseOnState(JoinPoint jp) throws Throwable {
+    @Before("@annotation(net.catenax.irs.connector.job.IRSMetrics)")
+    public final void setMetricsBaseOnState(final JoinPoint joinPoint) throws Throwable {
 
-        IRSMetrics metrics = ((MethodSignature) jp.getSignature()).getMethod().getAnnotation(IRSMetrics.class);
+        final IRSMetrics metrics = ((MethodSignature) joinPoint.getSignature()).getMethod()
+                                                                               .getAnnotation(IRSMetrics.class);
         if (metrics.value().length == 0) {
-            tryMetricsThroughMethodArgumentParameter(jp);
+            tryMetricsThroughMethodArgumentParameter(joinPoint);
         } else {
             Arrays.stream(metrics.value()).forEach(m -> {
                 log.info("Record metrics for JobState: {}", m);
@@ -52,16 +53,17 @@ public class IRSMetricsAspect {
 
     }
 
-    private void tryMetricsThroughMethodArgumentParameter(JoinPoint jp) {
-        Optional<Class[]> optClazz = Optional.of(((MethodSignature) jp.getSignature()).getMethod().getParameterTypes());
+    private void tryMetricsThroughMethodArgumentParameter(final JoinPoint joinPoint) {
+        final Optional<Class[]> optClazz = Optional.of(
+                ((MethodSignature) joinPoint.getSignature()).getMethod().getParameterTypes());
         if (optClazz.isPresent()) {
             return;
         }
 
-        Class[] clazzTypes = optClazz.get();
+        final Class[] clazzTypes = optClazz.get();
         Arrays.stream(clazzTypes).forEach(c -> {
             if (c.isAssignableFrom(MultiTransferJob.class)) {
-                Arrays.stream(jp.getArgs()).forEach(p -> {
+                Arrays.stream(joinPoint.getArgs()).forEach(p -> {
                     if (p instanceof MultiTransferJob) {
                         registryService.recordJobStateMetric(((MultiTransferJob) p).getJob().getJobState());
                     }

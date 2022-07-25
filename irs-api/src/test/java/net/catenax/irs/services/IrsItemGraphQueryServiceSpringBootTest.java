@@ -24,6 +24,7 @@ import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.exceptions.EntityNotFoundException;
+import net.catenax.irs.util.JobMetrics;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -44,6 +45,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
     @Autowired
     private IrsItemGraphQueryService service;
+
+    @Autowired
+    private MeterRegistryService meterRegistryService;
 
     @Test
     void registerItemJobWithoutDepthShouldBuildFullTree() {
@@ -168,6 +172,27 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
     private int getSubmodelsSize(final UUID jobId) {
         return service.getJobForJobId(jobId, false).getSubmodels().size();
+    }
+
+    @Test
+    public void checkMetricsRecordingTest() {
+        final double jobCount = 4;
+        meterRegistryService.incrementJobFailed();
+        meterRegistryService.incrementJobRunning();
+        meterRegistryService.incrementJobSuccessful();
+        meterRegistryService.incrementJobCancelled();
+        meterRegistryService.incrementJobsProcessed();
+        meterRegistryService.incrementJobInJobStore(jobCount);
+        meterRegistryService.setJobsInJobStore(2);
+
+        JobMetrics metrics = meterRegistryService.getJobMetric();
+        assertThat(metrics.getJobFailed().count()).isEqualTo(1.0);
+        assertThat(metrics.getJobRunning().count()).isEqualTo(1.0);
+        assertThat(metrics.getJobSuccessful().count()).isEqualTo(1.0);
+        assertThat(metrics.getJobCancelled().count()).isEqualTo(1.0);
+        assertThat(metrics.getJobProcessed().count()).isEqualTo(1.0);
+        assertThat(metrics.getJobInJobStore().count()).isEqualTo(6.0);
+
     }
 
 }

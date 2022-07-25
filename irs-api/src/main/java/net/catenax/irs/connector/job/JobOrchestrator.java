@@ -90,7 +90,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      * @param jobData additional data for the job to be managed by the {@link JobStore}.
      * @return response.
      */
-    @IRSMetrics(value = "RUNNING")
+    @IRSMetrics("RUNNING")
     public JobInitiateResponse startJob(final JobParameter jobData) {
         final Job job = createJob(jobData.getRootItemId(), jobData);
         final var multiJob = MultiTransferJob.builder().job(job).jobParameter(jobData).build();
@@ -130,7 +130,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      *
      * @param process the process that has completed
      */
-    @IRSMetrics(value = "COMPLETED")
+    @IRSMetrics("COMPLETED")
     /* package */ void transferProcessCompleted(final P process) {
         final var jobEntry = jobStore.findByProcessId(process.getId());
         if (jobEntry.isEmpty()) {

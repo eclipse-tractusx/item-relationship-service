@@ -78,7 +78,7 @@ public class MeterRegistryService {
     }
 
     public void incrementJobCancelled() {
-        jobMetrics.getJobInJobStore().increment();
+        jobMetrics.getJobCancelled().increment();
     }
 
     public void incrementJobRunning() {
@@ -110,11 +110,15 @@ public class MeterRegistryService {
         }
     }
 
-    public void setJobsInJobStore(Integer count) {
+    public void setJobsInJobStore(final Integer count) {
         lastJobInJobStoreCount = lastJobInJobStoreCount == 0
                 ? count
                 : count > lastJobInJobStoreCount ? count - lastJobInJobStoreCount : lastJobInJobStoreCount;
 
         incrementJobInJobStore(Double.valueOf(lastJobInJobStoreCount));
+    }
+
+    public JobMetrics getJobMetric() {
+        return jobMetrics;
     }
 }

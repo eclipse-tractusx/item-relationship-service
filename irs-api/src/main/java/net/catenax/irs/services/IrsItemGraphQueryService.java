@@ -134,7 +134,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                    .collect(Collectors.toList());
     }
 
-    @IRSMetrics(value = "CANCELED")
+    @IRSMetrics("CANCELED")
     @Override
     public Job cancelJobById(final @NonNull UUID jobId) {
         final String idAsString = String.valueOf(jobId);

@@ -111,7 +111,7 @@ public class TestMother {
                            .build();
     }
 
-    public static MeterRegistryService fakeMeterRegistryService() {
+    public static MeterRegistryService simpleMeterRegistryService() {
         return new MeterRegistryService(new SimpleMeterRegistry());
     }
 
