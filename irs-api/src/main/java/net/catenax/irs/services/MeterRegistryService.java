@@ -25,8 +25,6 @@ public class MeterRegistryService {
 
     private final JobMetrics jobMetrics;
 
-    private final Integer lastJobInJobStoreCount = 0;
-
     public MeterRegistryService(final MeterRegistry meterRegistry) {
         this.counterCreatedJobs = Counter.builder("jobs.created")
                                          .description("The number of jobs ever created")
