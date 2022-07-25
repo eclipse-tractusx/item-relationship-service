@@ -111,10 +111,7 @@ public class MeterRegistryService {
     }
 
     public void setJobsInJobStore(final Integer count) {
-        lastJobInJobStoreCount = lastJobInJobStoreCount == 0
-                ? count
-                : count > lastJobInJobStoreCount ? count - lastJobInJobStoreCount : lastJobInJobStoreCount;
-
+        lastJobInJobStoreCount = count > lastJobInJobStoreCount ? count - lastJobInJobStoreCount : count;
         incrementJobInJobStore(Double.valueOf(lastJobInJobStoreCount));
     }
 
