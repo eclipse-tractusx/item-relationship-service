@@ -15,12 +15,14 @@ import java.util.Map;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 /**
  * Registering outbound connections metrics for the IRS
  */
 @Service
+@Getter
 public class OutboundMeterRegistryService {
 
     private static final String ENDPOINT_SUBMODEL = "submodel";
@@ -31,6 +33,7 @@ public class OutboundMeterRegistryService {
     private final Counter counterTimeoutsRegistry;
     private final MeterRegistry meterRegistry;
     private final Map<String, Counter> counterTimeoutsSubmodel;
+    private final Map<String, Counter> counterRetriesSubmodel;
 
     /* package */ OutboundMeterRegistryService(final MeterRegistry meterRegistry, final RetryRegistry retryRegistry) {
         this.counterRetriesRegistry = Counter.builder("http.requests.retries")
@@ -44,6 +47,7 @@ public class OutboundMeterRegistryService {
         this.meterRegistry = meterRegistry;
 
         counterTimeoutsSubmodel = new HashMap<>();
+        counterRetriesSubmodel = new HashMap<>();
 
         retryRegistry.retry(ENDPOINT_REGISTRY).getEventPublisher().onRetry(event -> counterRetriesRegistry.increment());
 
@@ -69,7 +73,7 @@ public class OutboundMeterRegistryService {
     }
 
     public void incrementSubmodelRetryCounter(final String target) {
-        final Counter counter = counterTimeoutsSubmodel.computeIfAbsent(target,
+        final Counter counter = counterRetriesSubmodel.computeIfAbsent(target,
                 key -> Counter.builder("http.requests.retries")
                               .tag("host", key)
                               .description("The total number of retries.")
@@ -78,5 +82,4 @@ public class OutboundMeterRegistryService {
         counter.increment();
 
     }
-
 }
