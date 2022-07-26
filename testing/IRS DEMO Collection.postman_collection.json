@@ -208,7 +208,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells?assetIds=[{\"key\":\"globalAssetId\",\"value\":\"urn:uuid:866b8c6f-8e59-4b9c-9e1d-61900bff91ce\"}]",
+							"raw": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells?assetIds=[{\"key\":\"globalAssetId\",\"value\":\"{{GLOBAL_ASSET_ID}}\"]",
 							"host": [
 								"{{DIGITAL_TWIN_REGISTRY}}"
 							],
@@ -219,7 +219,7 @@
 							"query": [
 								{
 									"key": "assetIds",
-									"value": "[{\"key\":\"globalAssetId\",\"value\":\"urn:uuid:866b8c6f-8e59-4b9c-9e1d-61900bff91ce\"}]"
+									"value": "[{\"key\":\"globalAssetId\",\"value\":\"{{GLOBAL_ASSET_ID}}\"}]"
 								}
 							]
 						}
@@ -266,7 +266,18 @@
 			"name": "Relase 1 Demo",
 			"item": [
 				{
-					"name": "1.0.0 [Register Job] https://irs.int.demo.catena-x.net/irs/jobs",
+					"name": "1.0.0 [Register Job] https://${environment}/irs/jobs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -283,7 +294,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
+							"raw": "{\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -299,7 +310,18 @@
 					"response": []
 				},
 				{
-					"name": "1.1.0 [Register Job globalAssetId <Unknown>] https://irs.int.demo.catena-x.net/irs/jobs",
+					"name": "1.1.0 [Register Job globalAssetId <Unknown>] https://${environment}/irs/jobs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -316,7 +338,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
+							"raw": "{\r\n  \"globalAssetId\":\"{{GLOBAL_ASSET_ID}}\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -332,7 +354,18 @@
 					"response": []
 				},
 				{
-					"name": "1.1.1 [Register Job globalAssetId <Unknown>] https://irs.int.demo.catena-x.net/irs/jobs",
+					"name": "1.1.1 [Register Job globalAssetId <Unknown>] https://${environment}/irs/jobs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -365,7 +398,18 @@
 					"response": []
 				},
 				{
-					"name": "1.2.0 [Register Job with depth and bomLifecycle] https://irs.int.demo.catena-x.net/irs/jobs",
+					"name": "1.2.0 [Register Job with depth and bomLifecycle] https://${environment}/irs/jobs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -382,7 +426,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\",\r\n  \"bomLifecycle\": \"asBuilt\",\r\n  \"depth\": 2\r\n}"
+							"raw": "{\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\",\r\n  \"bomLifecycle\": \"asBuilt\",\r\n  \"depth\": 2\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -398,7 +442,18 @@
 					"response": []
 				},
 				{
-					"name": "1.3.0 [Register Job with aspect SerialPartTypization] https://irs.int.demo.catena-x.net/irs/jobs",
+					"name": "1.3.0 [Register Job with aspect SerialPartTypization] https://${environment}/irs/jobs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -415,7 +470,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -431,7 +486,18 @@
 					"response": []
 				},
 				{
-					"name": "1.3.1 [Register Job with aspect SerialPartTypization and AssemblyPartRelationship] https://irs.int.demo.catena-x.net/irs/jobs",
+					"name": "1.3.1 [Register Job with aspect SerialPartTypization and AssemblyPartRelationship] https://${environment}/irs/jobs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -448,7 +514,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\",\r\n    \"AssemblyPartRelationship\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\",\r\n    \"AssemblyPartRelationship\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -464,7 +530,18 @@
 					"response": []
 				},
 				{
-					"name": "1.3.2 [Register Job with aspect MaterialAspect and BatteryPass] https://irs.int.demo.catena-x.net/irs/jobs",
+					"name": "1.3.2 [Register Job with aspect MaterialAspect and BatteryPass] https://${environment}/irs/jobs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -481,7 +558,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -497,7 +574,18 @@
 					"response": []
 				},
 				{
-					"name": "1.3.3 [Register Job with aspect type Address and Contact] https://irs.int.demo.catena-x.net/irs/jobs",
+					"name": "1.3.3 [Register Job with aspect type Address and Contact] https://${environment}/irs/jobs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -514,7 +602,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"Address\",\r\n    \"Contact\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"Address\",\r\n    \"Contact\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -530,7 +618,18 @@
 					"response": []
 				},
 				{
-					"name": "1.3.4 [Register Job with aspect SerialPartTypization and ContactInformation ] https://irs.int.demo.catena-x.net/irs/jobs",
+					"name": "1.3.4 [Register Job with aspect SerialPartTypization and ContactInformation ] https://${environment}/irs/jobs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -547,7 +646,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -563,7 +662,18 @@
 					"response": []
 				},
 				{
-					"name": "1.3.5 [Register Job with aspect *] https://irs.int.demo.catena-x.net/irs/jobs",
+					"name": "1.3.5 [Register Job with aspect *] https://${environment}/irs/jobs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -580,7 +690,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [ \"SerialPartTypization\", \"AssemblyPartRelationship\", \"PartDimension\", \"SupplyRelationData\", \"PCFCoreData\", \"PCFTechnicalData\", \"MarketPlaceOffer\", \"MaterialAspect\", \"BatteryPass\", \"ProductDescriptionVehicle\", \"ProductDescriptionBattery\", \"ReturnRequest\", \"CertificateOfDestruction\", \"CertificateOfDismantler\", \"Address\", \"Contact\" ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [ \"SerialPartTypization\", \"AssemblyPartRelationship\", \"PartDimension\", \"SupplyRelationData\", \"PCFCoreData\", \"PCFTechnicalData\", \"MarketPlaceOffer\", \"MaterialAspect\", \"BatteryPass\", \"ProductDescriptionVehicle\", \"ProductDescriptionBattery\", \"ReturnRequest\", \"CertificateOfDestruction\", \"CertificateOfDismantler\", \"Address\", \"Contact\" ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -596,7 +706,18 @@
 					"response": []
 				},
 				{
-					"name": "1.4.0 [Register Job with invalid or not exisiting aspect type] https://irs.int.demo.catena-x.net/irs/jobs",
+					"name": "1.4.0 [Register Job with invalid or not exisiting aspect type] https://${environment}/irs/jobs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -613,7 +734,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"PartSerialTypization\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"PartSerialTypization\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -629,7 +750,18 @@
 					"response": []
 				},
 				{
-					"name": "1.4.1 [Register Job with invalid or not exisiting aspect type] https://irs.int.demo.catena-x.net/irs/jobs",
+					"name": "1.4.1 [Register Job with invalid or not exisiting aspect type] https://${environment}/irs/jobs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -646,7 +778,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"\"\r\n  ],\r\n  \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -662,7 +794,62 @@
 					"response": []
 				},
 				{
-					"name": "2.0.0 [Search for completed Jobs]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=COMPLETED",
+					"name": "1.5.0 [Register Job with all  aspect type] https://{environment}/irs/jobs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"aspects\": [\n    \"SerialPartTypization\",\n    \"AssemblyPartRelationship\",\n    \"ProductDescription\",\n    \"IdConversion\",\n    \"MarketplaceOffer\",\n    \"MaterialForRecycling\",\n    \"PhysicalDimension\",\n    \"ReturnRequest\",\n    \"CertificateOfDestruction\",\n    \"CertificateOfDismantler\",\n    \"EndOfLife\",\n    \"PcfCore\",\n    \"PcfSupplyRelation\",\n    \"PcfTechnical\",\n    \"AddressAspect\",\n    \"ContactInformation\",\n    \"BatteryPass\",\n    \"VehicleDiagnosticDataQuality\"\n  ],\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.0.0 [Search for completed Jobs]  http://${environment}/irs/jobs?jobStates=COMPLETED",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -697,7 +884,18 @@
 					"response": []
 				},
 				{
-					"name": "2.0.1 [Search for Jobs in error state]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=ERROR",
+					"name": "2.0.1 [Search for Jobs in error state]  http://${environment}/irs/jobs?jobStates=ERROR",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -732,7 +930,18 @@
 					"response": []
 				},
 				{
-					"name": "2.0.2 [Search for Jobs in initial state]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=INITIAL",
+					"name": "2.0.2 [Search for Jobs in initial state]  http://${environment}/irs/jobs?jobStates=INITIAL",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -767,7 +976,18 @@
 					"response": []
 				},
 				{
-					"name": "2.0.3 [Search for all Jobs in JobStore]  http://irs.int.demo.catena-x.net/irs/jobs",
+					"name": "2.0.3 [Search for all Jobs in JobStore]  http://${environment}/irs/jobs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -796,7 +1016,18 @@
 					"response": []
 				},
 				{
-					"name": "2.1.0 [Search for completed Jobs]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=COMPLETED",
+					"name": "2.1.0 [Search for completed Jobs]  http://${environment}/irs/jobs?jobStates=COMPLETED",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -831,7 +1062,18 @@
 					"response": []
 				},
 				{
-					"name": "3.0.0 [Search for given jobId] http://irs.int.demo.catena-x.net/irs/jobs/:jobId?returnUncompletedJob=true",
+					"name": "3.0.0 [Search for given jobId] http://${environment}/irs/jobs/:jobId?returnUncompletedJob=true",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -873,7 +1115,18 @@
 					"response": []
 				},
 				{
-					"name": "3.1.0 [Search for given jobId] http://irs.int.demo.catena-x.net/irs/jobs/:jobId",
+					"name": "3.1.0 [Search for given jobId] http://${environment}/irs/jobs/:jobId",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -909,7 +1162,18 @@
 					"response": []
 				},
 				{
-					"name": "3.1.1 [Search for invalid jobId] http://irs.int.demo.catena-x.net/irs/jobs/:jobId",
+					"name": "3.1.1 [Search for invalid jobId] http://${environment}/irs/jobs/:jobId",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -945,7 +1209,18 @@
 					"response": []
 				},
 				{
-					"name": "4.0.0 [Search for error Jobs]  http://irs.int.demo.catena-x.net/irs/jobs?jobStates=ERROR",
+					"name": "4.0.0 [Search for error Jobs]  http://${environment}/irs/jobs?jobStates=ERROR",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1080,6 +1355,69 @@
 					},
 					"response": []
 				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var CLIENT_ID = pm.environment.get(\"CLIENT_ID\");",
+							"var CLIENT_SECRET = pm.environment.get(\"CLIENT_SECRET\");",
+							"var KEYCLOAK_HOST = pm.environment.get(\"KEYCLOAK_HOST\");",
+							"var KEYCLOAK_HOST_FULL = KEYCLOAK_HOST +\"/auth/realms/CX-Central/protocol/openid-connect/token\"",
+							"",
+							"var bodyString = \"grant_type=client_credentials&client_id=\"+CLIENT_ID+\"&client_secret=\"+CLIENT_SECRET",
+							"",
+							"const echoPostRequest = {",
+							"  url: KEYCLOAK_HOST_FULL,",
+							"  method: 'POST',",
+							"  header: 'Content-Type:application/x-www-form-urlencoded',",
+							"  body: {",
+							"    mode: 'application/x-www-form-urlencoded',",
+							"    raw: bodyString",
+							"  }",
+							"};",
+							"",
+							"var getToken = true;",
+							"",
+							"if (!pm.environment.get('ACCESS_TOKEN_EXPIRY') || ",
+							"    !pm.environment.get('ACCESS_TOKEN')) {",
+							"    console.log('Token or expiry date are missing')",
+							"} else if (pm.environment.get('ACCESS_TOKEN_EXPIRY') <= (new Date()).getTime()) {",
+							"    console.log('Token is expired')",
+							"} else {",
+							"    getToken = false;",
+							"    console.log('Token and expiry date are all good');",
+							"}",
+							"",
+							"if (getToken === true) {",
+							"    pm.sendRequest(echoPostRequest, function (err, res) {",
+							"    console.log(err ? err : res.json());",
+							"        if (err === null) {",
+							"            console.log('Saving the token and expiry date')",
+							"            var responseJson = res.json();",
+							"            pm.environment.set('ACCESS_TOKEN', responseJson.access_token)",
+							"    ",
+							"            var expiryDate = new Date();",
+							"            expiryDate.setSeconds(expiryDate.getSeconds() + responseJson.expires_in);",
+							"            pm.environment.set('ACCESS_TOKEN_EXPIRY', expiryDate.getTime());",
+							"        }",
+							"    });",
+							"}",
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
 			]
 		},
 		{
@@ -1105,7 +1443,7 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},
+							},	
 							{
 								"key": "Authorization",
 								"value": "Bearer {{ACCESS_TOKEN}}",
@@ -1114,7 +1452,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n     \"aspects\": [\r\n         \"AssemblyPartRelationship\",\r\n         \"SerialPartTypization\"\r\n     ],\r\n     \"bomlLifecycle\":\"asBuilt\",\r\n     \"collectAspects\": true,\r\n     \"direction\":\"downward\",\r\n     \"depth\":10,\r\n     \"globalAssetId\": \"urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf\"\r\n}"
+							"raw": "{\r\n     \"aspects\": [\r\n         \"AssemblyPartRelationship\",\r\n         \"SerialPartTypization\"\r\n     ],\r\n     \"bomlLifecycle\":\"asBuilt\",\r\n     \"collectAspects\": true,\r\n     \"direction\":\"downward\",\r\n     \"depth\":10,\r\n     \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
