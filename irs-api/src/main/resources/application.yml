@@ -38,6 +38,9 @@ management:
     readinessstate:
       enabled: true
   metrics:
+    distribution:
+      percentiles-histogram:
+        http: true
     tags:
       application: ${spring.application.name}
   server:
@@ -89,7 +92,9 @@ resilience4j:
         enableExponentialBackoff: true
         exponentialBackoffMultiplier: 2
     instances:
-      exponentialBackoff:
+      registry:
+        baseConfig: default
+      submodel:
         baseConfig: default
 
 aasWrapper:
