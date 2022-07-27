@@ -43,8 +43,6 @@ public class PersistentJobStore extends BaseJobStore {
 
     private final MeterRegistryService meterService;
 
-    private static final Integer lastCount = 0;
-
     @Override
     protected Optional<MultiTransferJob> get(final String jobId) {
         try {
