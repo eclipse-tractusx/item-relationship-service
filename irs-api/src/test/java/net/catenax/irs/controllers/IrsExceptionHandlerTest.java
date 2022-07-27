@@ -34,9 +34,9 @@ class IrsExceptionHandlerTest {
     void handleAll() throws Exception {
         when(service.registerItemJob(any())).thenThrow(InternalServerError.class);
 
-        this.mockMvc.perform(post("/irs/jobs")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(new ObjectMapper().writeValueAsString(registerJobWithoutDepthAndAspect())))
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(new ObjectMapper().writeValueAsString(
+                                                      registerJobWithoutDepthAndAspect())))
                     .andExpect(status().is5xxServerError());
     }
 }

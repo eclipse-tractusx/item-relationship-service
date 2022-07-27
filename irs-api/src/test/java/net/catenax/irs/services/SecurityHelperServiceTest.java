@@ -48,13 +48,8 @@ class SecurityHelperServiceTest {
     }
 
     Jwt jwt() {
-        return new Jwt(
-            "token",
-            Instant.now(),
-            Instant.now().plusSeconds(30),
-            Map.of("alg", "none"),
-            Map.of(SUB, CLIENT_ID, "clientId", CLIENT_ID)
-        );
+        return new Jwt("token", Instant.now(), Instant.now().plusSeconds(30), Map.of("alg", "none"),
+                Map.of(SUB, CLIENT_ID, "clientId", CLIENT_ID));
     }
 
 }

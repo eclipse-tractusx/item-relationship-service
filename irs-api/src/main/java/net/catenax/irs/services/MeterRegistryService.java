@@ -85,7 +85,7 @@ public class MeterRegistryService {
         jobMetrics.getJobRunning().increment();
     }
 
-    public void incremenException() {
+    public void incrementException() {
         jobMetrics.getException().increment();
     }
 
