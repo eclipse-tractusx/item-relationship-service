@@ -494,10 +494,11 @@ class PersistentJobStoreTest {
 
     @Test
     void shouldGetMetricsJobsInJobStore() {
+        int jobCount = sut.getAll().size();
         sut.create(job);
 
         sut.getMetricsForJobsInJobStore();
-        assertThat(sut.getAll().size()).isEqualTo(1);
+        assertThat(sut.getAll().size()).isEqualTo(jobCount + 1);
     }
 
 }
