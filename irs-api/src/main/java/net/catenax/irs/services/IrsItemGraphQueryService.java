@@ -50,7 +50,6 @@ import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -71,7 +70,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final BlobPersistence blobStore;
 
-    @Autowired
     private final MeterRegistryService meterRegistryService;
 
     @Value("${aspectTypes.default}")
