@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
+import net.catenax.irs.services.MeterRegistryService;
 import net.catenax.irs.util.JsonUtil;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -38,6 +40,10 @@ public class PersistentJobStore extends BaseJobStore {
     private final BlobPersistence blobStore;
 
     private final JsonUtil json = new JsonUtil();
+
+    private final MeterRegistryService meterService;
+
+    private static final Integer lastCount = 0;
 
     @Override
     protected Optional<MultiTransferJob> get(final String jobId) {
@@ -60,12 +66,12 @@ public class PersistentJobStore extends BaseJobStore {
         }
     }
 
-    @IRSMetrics
     @Override
     protected void put(final String jobId, final MultiTransferJob job) {
         final byte[] blob = toBlob(job);
         try {
             blobStore.putBlob(toBlobId(jobId), blob);
+            meterService.recordJobStateMetric(job.getJob().getJobState());
         } catch (BlobPersistenceException e) {
             log.error("Cannot create job in BlobStore", e);
         }
@@ -93,6 +99,11 @@ public class PersistentJobStore extends BaseJobStore {
 
     private String toBlobId(final String jobId) {
         return JOB_PREFIX + jobId;
+    }
+
+    @Scheduled(cron = "${irs.job.jobstore.cron.expression}")
+    public void getMetricsForJobsInJobStore() {
+        meterService.setJobsInJobStore(getAll().size());
     }
 
 }

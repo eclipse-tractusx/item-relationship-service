@@ -1,48 +1,43 @@
 package net.catenax.irs.services;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.util.TestMother;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 class MeterRegistryServiceTest {
 
-    @Mock
-    MeterRegistryService meterRegistryService; // = TestMother.fakeMeterRegistryService();
+    static MeterRegistryService meterRegistryService; // = TestMother.fakeMeterRegistryService();
+
+    @BeforeAll
+    static void setup() {
+        meterRegistryService = TestMother.simpleMeterRegistryService();
+    }
 
     @Test
     void recordJobStateMetricTest() {
         meterRegistryService.recordJobStateMetric(JobState.RUNNING);
-        verify(meterRegistryService, times(1)).recordJobStateMetric(any());
+        assertThat(meterRegistryService.getJobMetric().getJobRunning().count()).isEqualTo(1);
 
-        meterRegistryService.incrementJobsProcessed();
-        verify(meterRegistryService, times(1)).incrementJobsProcessed();
+        meterRegistryService.recordJobStateMetric(JobState.TRANSFERS_FINISHED);
+        assertThat(meterRegistryService.getJobMetric().getJobProcessed().count()).isEqualTo(1);
 
-        meterRegistryService.incrementJobSuccessful();
-        verify(meterRegistryService, times(1)).incrementJobSuccessful();
+        meterRegistryService.recordJobStateMetric(JobState.COMPLETED);
+        assertThat(meterRegistryService.getJobMetric().getJobSuccessful().count()).isEqualTo(1);
 
-        meterRegistryService.incrementJobRunning();
-        verify(meterRegistryService, times(1)).incrementJobRunning();
+        meterRegistryService.recordJobStateMetric(JobState.RUNNING);
+        assertThat(meterRegistryService.getJobMetric().getJobRunning().count()).isEqualTo(2);
 
-        meterRegistryService.incrementJobFailed();
-        verify(meterRegistryService, times(1)).incrementJobFailed();
+        meterRegistryService.recordJobStateMetric(JobState.ERROR);
+        assertThat(meterRegistryService.getJobMetric().getJobProcessed().count()).isEqualTo(1);
 
-        meterRegistryService.incrementJobCancelled();
-        verify(meterRegistryService, times(1)).incrementJobCancelled();
+        meterRegistryService.recordJobStateMetric(JobState.CANCELED);
+        assertThat(meterRegistryService.getJobMetric().getJobCancelled().count()).isEqualTo(1);
 
-        meterRegistryService.incrementJobInJobStore(4.0);
-        verify(meterRegistryService, times(1)).incrementJobInJobStore(any());
-
-    }
-
-    @Test
-    void testIfJobMetricsProcessedIsCalled() {
+        meterRegistryService.setJobsInJobStore(4);
+        assertThat(meterRegistryService.getJobMetric().getJobInJobStore().count()).isEqualTo(4);
 
     }
 

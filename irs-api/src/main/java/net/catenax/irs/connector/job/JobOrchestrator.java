@@ -20,6 +20,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
@@ -90,7 +91,6 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      * @param jobData additional data for the job to be managed by the {@link JobStore}.
      * @return response.
      */
-    @IRSMetrics("RUNNING")
     public JobInitiateResponse startJob(final JobParameter jobData) {
         final Job job = createJob(jobData.getRootItemId(), jobData);
         final var multiJob = MultiTransferJob.builder().job(job).jobParameter(jobData).build();
@@ -130,7 +130,6 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      *
      * @param process the process that has completed
      */
-    @IRSMetrics("COMPLETED")
     /* package */ void transferProcessCompleted(final P process) {
         final var jobEntry = jobStore.findByProcessId(process.getId());
         if (jobEntry.isEmpty()) {
@@ -166,6 +165,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         callCompleteHandlerIfFinished(job.getJobIdString());
     }
 
+    @Timed(value = "jobs.processed.complete.time", description = "Amount of time require to process job complete")
     @Scheduled(cron = "${irs.job.cleanup.scheduler.completed}")
     public void findAndCleanupCompletedJobs() {
         log.info("Running cleanup of completed jobs");
@@ -179,6 +179,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         log.info("Deleted {} completed jobs", multiTransferJobs.size());
     }
 
+    @Timed(value = "jobs.processed.complete.time", description = "Amount of time require to process job complete")
     @Scheduled(cron = "${irs.job.cleanup.scheduler.failed}")
     public void findAndCleanupFailedJobs() {
         log.info("Running cleanup of failed jobs");

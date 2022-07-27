@@ -24,6 +24,7 @@ import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.exceptions.EntityNotFoundException;
+import net.catenax.irs.testing.containers.MinioContainer;
 import net.catenax.irs.util.JobMetrics;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,10 @@ import org.springframework.test.context.ActiveProfiles;
 class IrsItemGraphQueryServiceSpringBootTest {
 
     private final UUID jobId = UUID.randomUUID();
+    private static final String ACCESS_KEY = "accessKey";
+    private static final String SECRET_KEY = "secretKey";
+    private static final MinioContainer minioContainer = new MinioContainer(
+            new MinioContainer.CredentialsProvider(ACCESS_KEY, SECRET_KEY)).withReuse(true);
 
     @Autowired
     private JobStore jobStore;

@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -51,7 +50,7 @@ class PersistentJobStoreTest {
     String errorDetail = faker.lorem().sentence();
     MinioBlobPersistence blobStoreSpy;
 
-    MeterRegistryService meterRegistryService = mock(MeterRegistryService.class);
+    MeterRegistryService meterRegistryService = TestMother.simpleMeterRegistryService(); // mock(MeterRegistryService.class);
 
     @BeforeAll
     static void startContainer() {
@@ -68,7 +67,7 @@ class PersistentJobStoreTest {
         final MinioBlobPersistence blobStore = new MinioBlobPersistence("http://" + minioContainer.getHostAddress(),
                 ACCESS_KEY, SECRET_KEY, "testbucket");
         blobStoreSpy = Mockito.spy(blobStore);
-        sut = new PersistentJobStore(blobStoreSpy);
+        sut = new PersistentJobStore(blobStoreSpy, meterRegistryService);
     }
 
     @Test
@@ -491,6 +490,14 @@ class PersistentJobStoreTest {
 
         // Assert
         assertThat(job2.getJob().getLastModifiedOn()).isAfter(job1.getJob().getLastModifiedOn());
+    }
+
+    @Test
+    void shouldGetMetricsJobsInJobStore() {
+        sut.create(job);
+
+        sut.getMetricsForJobsInJobStore();
+        assertThat(sut.getAll().size()).isEqualTo(1);
     }
 
 }

@@ -11,6 +11,7 @@ package net.catenax.irs.services;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.util.JobMetrics;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
  * Registering customer metrics for application
  */
 @Service
+@Slf4j
 public class MeterRegistryService {
 
     private final Counter counterCreatedJobs;
@@ -106,6 +108,7 @@ public class MeterRegistryService {
                 break;
             default:
         }
+        log.info("Increment metric for {} state ", state);
     }
 
     public void setJobsInJobStore(final Integer count) {

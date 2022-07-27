@@ -75,7 +75,7 @@ irs:
         failed: 0 0 * * * *
     jobstore:
       cron:
-        expression: "*/10 * * * * ?"
+        expression: "*/20 * * * * ?"
 
 blobstore:
   endpoint: "${MINIO_URL}"
