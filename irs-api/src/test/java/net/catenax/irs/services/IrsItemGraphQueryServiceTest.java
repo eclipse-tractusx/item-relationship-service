@@ -45,9 +45,6 @@ class IrsItemGraphQueryServiceTest {
     @InjectMocks
     private IrsItemGraphQueryService testee;
 
-    @Mock
-    MeterRegistryService meterRegistryService;
-
     @Test
     void registerItemJobWithoutDepthShouldBuildFullTree() throws Exception {
         // given
