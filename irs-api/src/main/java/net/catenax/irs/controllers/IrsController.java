@@ -18,6 +18,7 @@ import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 
+import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.Explode;
@@ -33,10 +34,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.IrsApplication;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.springdoc.api.annotations.ParameterObject;
@@ -84,6 +85,7 @@ public class IrsController {
                                                                                         ref = "#/components/examples/error-response"))
                                          }),
     })
+    @Timed(value = "jobs.processed.register.time", description = "Amount of time require to register a job")
     @PostMapping("/jobs")
     @ResponseStatus(HttpStatus.CREATED)
     public JobHandle registerJobForGlobalAssetId(final @Valid @RequestBody RegisterJob request) {
@@ -117,6 +119,7 @@ public class IrsController {
                                          }),
     })
     @GetMapping("/jobs/{jobId}")
+    @Timed(value = "jobs.processed.getjob.time", description = "Amount of time require to process job complete")
     public Jobs getJobById(
             @Parameter(description = "JobId of the job.", schema = @Schema(implementation = UUID.class), name = "jobId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
@@ -141,6 +144,7 @@ public class IrsController {
                                          }),
     })
     @PutMapping("/jobs/{jobId}")
+    @Timed(value = "jobs.processed.cancel.time", description = "Amount of time require to process cancel job")
     public Job cancelJobByJobId(
             @Parameter(description = "JobId of the job.", schema = @Schema(implementation = UUID.class), name = "jobId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
@@ -169,6 +173,7 @@ public class IrsController {
                                          }),
     })
     @GetMapping("/jobs")
+    @Timed(value = "jobs.processed.jobbystate.time", description = "Amount of time require to process job by state")
     public List<JobStatusResult> getJobsByJobState(
             @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
                                                explode = Explode.FALSE, array = @ArraySchema(
