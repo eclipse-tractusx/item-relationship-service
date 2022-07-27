@@ -11,9 +11,6 @@ package net.catenax.irs.semanticshub;
 
 import static net.catenax.irs.configuration.RestTemplateConfig.OAUTH_REST_TEMPLATE;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -31,7 +28,7 @@ interface SemanticsHubClient {
      * @param urn of the model
      * @return Json Schema
      */
-    Map<String, Object> getModelJsonSchema(String urn);
+    String getModelJsonSchema(String urn);
 
 }
 
@@ -43,12 +40,11 @@ interface SemanticsHubClient {
 class SemanticsHubClientLocalStub implements SemanticsHubClient {
 
     @Override
-    public Map<String, Object> getModelJsonSchema(final String urn) {
-        final Map<String, Object> schemaMap = new HashMap<>();
-        schemaMap.put("$schema", "http://json-schema.org/draft-07/schema#");
-        schemaMap.put("type", "integer");
-
-        return schemaMap;
+    public String getModelJsonSchema(final String urn) {
+        return "{"
+                + "  \"$schema\": \"http://json-schema.org/draft-07/schema#\","
+                + "  \"type\": \"integer\""
+                + "}";
     }
 }
 
@@ -69,10 +65,10 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
     }
 
     @Override
-    public Map<String, Object> getModelJsonSchema(final String urn) {
+    public String getModelJsonSchema(final String urn) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(semanticsHubUrl);
         uriBuilder.path("/models/").path(urn).path("/json-schema");
 
-        return restTemplate.getForObject(uriBuilder.build().toUri(), Map.class);
+        return restTemplate.getForObject(uriBuilder.build().toUri(), String.class);
     }
 }

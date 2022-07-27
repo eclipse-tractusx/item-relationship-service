@@ -47,7 +47,7 @@ class SemanticsHubCacheInitializer {
      * Cleaning up Semantics Hub cache after scheduled time, and reinitializing it once again.
      */
     @Scheduled(cron = "${semanticsHub.cleanup.scheduler}")
-    void reinitializeAllCacheInterval() {
+    /* package */ void reinitializeAllCacheInterval() {
         log.debug("Reinitializing Semantics Hub Cache with new values.");
 
         semanticsHubFacade.evictAllCacheValues();

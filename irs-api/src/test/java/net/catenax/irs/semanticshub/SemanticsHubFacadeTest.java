@@ -2,8 +2,6 @@ package net.catenax.irs.semanticshub;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 
 class SemanticsHubFacadeTest {
@@ -12,11 +10,11 @@ class SemanticsHubFacadeTest {
 
     @Test
     void shouldReturnModelJsonSchema() {
-        final String modelUrn = SchemaModel.SerialPartTypization.getUrn();
+        final String modelUrn = SchemaModel.SERIAL_PART_TYPIZATION.getUrn();
 
-        final Map<String, Object> modelJsonSchema = semanticsHubFacade.getModelJsonSchema(modelUrn);
+        final String modelJsonSchema = semanticsHubFacade.getModelJsonSchema(modelUrn);
 
-        assertThat(modelJsonSchema).isNotEmpty();
+        assertThat(modelJsonSchema).isNotBlank();
     }
 
 }

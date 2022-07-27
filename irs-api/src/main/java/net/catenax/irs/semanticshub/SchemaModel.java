@@ -17,9 +17,11 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
+@SuppressWarnings("PMD.CommentSize")
 enum SchemaModel {
-//    AssemblyPartRelationship("urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"), TODO(kmassalski): currently returning 500 status
-    SerialPartTypization("urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization");
+//    TODO(kmassalski): currently returning 500 status
+//    ASSEMBLY_PART_RELATIONSHIP("urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"),
+    SERIAL_PART_TYPIZATION("urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization");
 
     private final String urn;
 

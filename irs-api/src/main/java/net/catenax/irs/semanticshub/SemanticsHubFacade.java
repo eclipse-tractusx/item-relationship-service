@@ -9,8 +9,6 @@
 //
 package net.catenax.irs.semanticshub;
 
-import java.util.Map;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -35,13 +33,14 @@ public class SemanticsHubFacade {
      * @return Json Schema
      */
     @Cacheable(value = SEMANTICS_HUB_CACHE_NAME, key = "#urn")
-    public Map<String, Object> getModelJsonSchema(final String urn) {
+    public String getModelJsonSchema(final String urn) {
         return this.semanticsHubClient.getModelJsonSchema(urn);
     }
 
     /**
      * Clearing cache from all values
      */
+    @SuppressWarnings("PMD.UncommentedEmptyMethodBody")
     @CacheEvict(value = SEMANTICS_HUB_CACHE_NAME, allEntries = true)
     public void evictAllCacheValues() { }
 
