@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "components": {
+    "schemas": {
+      "urn_bamm_io.catenax.serial_part_typization_1.0.0_CatenaXIdTrait": {
+        "type": "string",
+        "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      },
+      "urn_bamm_io.catenax.serial_part_typization_1.0.0_KeyCharacteristic": {
+        "type": "string"
+      },
+      "urn_bamm_io.catenax.serial_part_typization_1.0.0_ValueCharacteristic": {
+        "type": "string"
+      },
+      "urn_bamm_io.catenax.serial_part_typization_1.0.0_LocalIdentifierCharacteristic": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "$ref": "#/components/schemas/urn_bamm_io.catenax.serial_part_typization_1.0.0_KeyCharacteristic"
+            },
+            "value": {
+              "$ref": "#/components/schemas/urn_bamm_io.catenax.serial_part_typization_1.0.0_ValueCharacteristic"
+            }
+          },
+          "required": [
+            "key",
+            "value"
+          ]
+        },
+        "uniqueItems": true
+      },
+      "urn_bamm_io.openmanufacturing_characteristic_1.0.0_Timestamp": {
+        "type": "string",
+        "pattern": "-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?|(24:00:00(\\.0+)?))(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+      },
+      "urn_bamm_io.catenax.serial_part_typization_1.0.0_ProductionCountryCodeTrait": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z][A-Z]$"
+      },
+      "urn_bamm_io.catenax.serial_part_typization_1.0.0_ManufacturingCharacteristic": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "$ref": "#/components/schemas/urn_bamm_io.openmanufacturing_characteristic_1.0.0_Timestamp"
+          },
+          "country": {
+            "$ref": "#/components/schemas/urn_bamm_io.catenax.serial_part_typization_1.0.0_ProductionCountryCodeTrait"
+          }
+        },
+        "required": [
+          "date"
+        ]
+      },
+      "urn_bamm_io.catenax.serial_part_typization_1.0.0_PartIdCharacteristic": {
+        "type": "string"
+      },
+      "urn_bamm_io.catenax.serial_part_typization_1.0.0_PartNameCharacteristic": {
+        "type": "string"
+      },
+      "urn_bamm_io.catenax.serial_part_typization_1.0.0_ClassificationCharacteristic": {
+        "type": "string",
+        "enum": [
+          "product",
+          "raw material",
+          "software",
+          "assembly",
+          "tool",
+          "component"
+        ]
+      },
+      "urn_bamm_io.catenax.serial_part_typization_1.0.0_PartTypeInformationCharacteristic": {
+        "type": "object",
+        "properties": {
+          "manufacturerPartId": {
+            "$ref": "#/components/schemas/urn_bamm_io.catenax.serial_part_typization_1.0.0_PartIdCharacteristic"
+          },
+          "customerPartId": {
+            "$ref": "#/components/schemas/urn_bamm_io.catenax.serial_part_typization_1.0.0_PartIdCharacteristic"
+          },
+          "nameAtManufacturer": {
+            "$ref": "#/components/schemas/urn_bamm_io.catenax.serial_part_typization_1.0.0_PartNameCharacteristic"
+          },
+          "nameAtCustomer": {
+            "$ref": "#/components/schemas/urn_bamm_io.catenax.serial_part_typization_1.0.0_PartNameCharacteristic"
+          },
+          "classification": {
+            "$ref": "#/components/schemas/urn_bamm_io.catenax.serial_part_typization_1.0.0_ClassificationCharacteristic"
+          }
+        },
+        "required": [
+          "manufacturerPartId",
+          "nameAtManufacturer",
+          "classification"
+        ]
+      }
+    }
+  },
+  "properties": {
+
+}
