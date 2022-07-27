@@ -151,26 +151,6 @@ class IrsItemGraphQueryServiceSpringBootTest {
         assertThat(multiTransferJob.get().getJobParameter().isCollectAspects()).isFalse();
     }
 
-    @Test
-    void letTransistJobFromOneStateToAnother() {
-        final String idAsString = String.valueOf(jobId);
-        final MultiTransferJob multiTransferJob = MultiTransferJob.builder()
-                                                                  .job(Job.builder()
-                                                                          .jobId(UUID.fromString(idAsString))
-                                                                          .jobState(JobState.INITIAL)
-                                                                          .exception(JobErrorDetails.builder()
-                                                                                                    .errorDetail(
-                                                                                                            "Job should be canceled")
-                                                                                                    .exceptionDate(
-                                                                                                            ZonedDateTime.now())
-                                                                                                    .build())
-                                                                          .build())
-                                                                  .build();
-
-        MultiTransferJob newJob = multiTransferJob.toBuilder().transitionInProgress().build();
-        assertThat(newJob.getJob().getJobState()).isEqualTo(JobState.RUNNING);
-    }
-
     private int getRelationshipsSize(final UUID jobId) {
         return service.getJobForJobId(jobId, false).getRelationships().size();
     }
@@ -191,6 +171,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         meterRegistryService.setJobsInJobStore(2);
 
         JobMetrics metrics = meterRegistryService.getJobMetric();
+        
         assertThat(metrics.getJobFailed().count()).isEqualTo(1.0);
         assertThat(metrics.getJobRunning().count()).isEqualTo(1.0);
         assertThat(metrics.getJobSuccessful().count()).isEqualTo(1.0);
