@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class SemanticsHubFacade {
 
-    private final static String SEMANTICS_HUB_CACHE_NAME = "schema_cache";
+    private static final String SEMANTICS_HUB_CACHE_NAME = "schema_cache";
 
     private final SemanticsHubClient semanticsHubClient;
 
@@ -43,6 +43,6 @@ public class SemanticsHubFacade {
      * Clearing cache from all values
      */
     @CacheEvict(value = SEMANTICS_HUB_CACHE_NAME, allEntries = true)
-    public void evictAllCacheValues() {}
+    public void evictAllCacheValues() { }
 
 }
