@@ -100,7 +100,7 @@ public class PersistentJobStore extends BaseJobStore {
     }
 
     @Scheduled(cron = "${irs.job.jobstore.cron.expression}")
-    public void getMetricsForJobsInJobStore() {
+    public void recordMetricsForJobsInJobStore() {
         meterService.setJobsInJobStore(getAll().size());
     }
 
