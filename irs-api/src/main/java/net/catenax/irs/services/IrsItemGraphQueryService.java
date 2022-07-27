@@ -141,7 +141,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
             return job.getJob();
         } else {
-            meterRegistryService.incremenException();
+            meterRegistryService.incrementException();
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
     }
@@ -191,7 +191,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                        .submodels(submodels)
                        .build();
         } else {
-            meterRegistryService.incremenException();
+            meterRegistryService.incrementException();
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
     }
@@ -229,7 +229,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 });
 
             } catch (BlobPersistenceException e) {
-                meterRegistryService.incremenException();
+                meterRegistryService.incrementException();
                 log.error("Unable to read transfer result", e);
             }
         }
@@ -253,7 +253,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             return toItemContainer(bytes);
         } catch (BlobPersistenceException e) {
             log.error("Unable to read blob", e);
-            meterRegistryService.incremenException();
+            meterRegistryService.incrementException();
             throw new EntityNotFoundException("Could not load stored data for multiJob with id " + jobId, e);
         }
     }
