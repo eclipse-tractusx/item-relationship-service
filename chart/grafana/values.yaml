@@ -146,3 +146,4 @@ dashboardProviders:
 
 dashboards:
   minio: dashboards/minio-dashboard.json
+  outbound: dashboards/irs-outbound-requests.json

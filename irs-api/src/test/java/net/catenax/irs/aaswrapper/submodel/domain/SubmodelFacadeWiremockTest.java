@@ -18,8 +18,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.givenThat;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import io.github.resilience4j.retry.RetryRegistry;
+import net.catenax.irs.services.OutboundMeterRegistryService;
 import net.catenax.irs.util.JsonUtil;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.AfterEach;
@@ -32,6 +35,10 @@ class SubmodelFacadeWiremockTest {
 
     private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
     private final JsonUtil jsonUtil = new JsonUtil();
+
+    private final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
+    private final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
+
     private final RestTemplate restTemplate = new RestTemplate();
     private WireMockServer wireMockServer;
     private SubmodelFacade submodelFacade;
@@ -42,7 +49,7 @@ class SubmodelFacadeWiremockTest {
         this.wireMockServer.start();
         configureFor(this.wireMockServer.port());
         SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate, buildApiMethodUrl() + "/api/service",
-                jsonUtil);
+                jsonUtil, meterRegistry, retryRegistry);
         this.submodelFacade = new SubmodelFacade(submodelClient);
     }
 

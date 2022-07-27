@@ -108,17 +108,32 @@ enum JobState {
 }
 
 entity Relationship {
-   * catenaXId : String (UUID) (parentId)
+   * catenaXId : String (urn:uuid:uuid4)
 --
-  * childItem : ChildItem
+  * linkedItem : LinkedItem
  }
 
-entity ChildItem {
+entity LinkedItem {
     quantity : Quanity
-    lifecycleContext: BomLifecycle
     assembledOn: Date
     lastModifiedOn : Date
-    childCatenaXId  : String (UUID)
+}
+
+entity SingleLevelBomAsPlanned {
+    * catenaXId : String (urn:uuid:uuid4)
+    ---
+    lifecycleContext: BomLifecycle
+}
+
+entity AssemblyPartRelationship  {
+    * catenaXId : String (urn:uuid:uuid4)
+    --
+    lifecycleContext: BomLifecycle
+}
+
+entity SingleLevelUsageAsBuilt  {
+    * catenaXId : String (urn:uuid:uuid4)
+    --
 }
 
 entity Quantity {
@@ -133,7 +148,7 @@ entity MeasurementUnit {
 }
 
 Quantity  ||-- MeasurementUnit
-ChildItem ||-- Quantity
+LinkedItem ||-- Quantity
 
 entity Shells {
     shell : Collection<Shell>
@@ -187,8 +202,12 @@ Shell ||-- GlobalAssetId
 GenericDescriptor <|-- Shell
 GenericDescriptor <|-- SubmodelDescriptor
 Endpoint ||--  ProtocolInformation
-Relationship }o-- ChildItem
+Relationship }o-- LinkedItem
 SubmodelDescriptor }o-- Endpoint
 Exception ||-- StatusCodeEnum
+
+LinkedItem <|-- AssemblyPartRelationship
+LinkedItem <|-- SingleLevelUsageAsBuilt
+LinkedItem <|-- SingleLevelBomAsPlanned
 
 @enduml
