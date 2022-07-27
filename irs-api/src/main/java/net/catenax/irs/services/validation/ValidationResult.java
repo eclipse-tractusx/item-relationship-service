@@ -23,8 +23,8 @@ import lombok.Value;
 @Builder
 public class ValidationResult {
 
-    boolean valid;
+    private boolean valid;
 
     @Singular
-    List<String> validationErrors;
+    private List<String> validationErrors;
 }

@@ -46,16 +46,16 @@ public class JsonValidatorService {
      * @param jsonPayload the JSON payload to validate
      * @return the validation result, containing the validation errors if applicable
      */
-    public ValidationResult validate(String jsonSchema, String jsonPayload) throws InvalidSchemaException {
+    public ValidationResult validate(final String jsonSchema, final String jsonPayload) throws InvalidSchemaException {
         log.debug("Trying to validate JSON ({}) with schema ({})", jsonPayload, jsonSchema);
 
-        Schema schema = loadSchema(jsonSchema);
+        final Schema schema = loadSchema(jsonSchema);
 
-        Validator validator = new Validator();
+        final Validator validator = new Validator();
         try {
             final Object payload = parser.fromString(jsonPayload, Object.class);
 
-            List<String> errors = new ArrayList<>();
+            final List<String> errors = new ArrayList<>();
             validator.validate(schema, payload, validationError -> errors.add(validationError.getMessage()));
             return createValidationResult(errors);
 
