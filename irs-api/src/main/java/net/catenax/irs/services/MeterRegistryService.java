@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class MeterRegistryService {
 
+    private final String JOB_STATE_TAG = "JOB_STATE";
     private final Counter counterCreatedJobs;
 
     private final JobMetrics jobMetrics;
@@ -35,31 +36,31 @@ public class MeterRegistryService {
         this.jobMetrics = JobMetrics.builder()
                                     .jobProcessed(Counter.builder("jobs.processed")
                                                          .description("The number jobs processed")
-                                                         .tags("job_status_process", "processed")
+                                                         .tags("JOB_STATE_TAG", "processed")
                                                          .register(meterRegistry))
                                     .jobInJobStore(Counter.builder("jobs.jobstore")
                                                           .description("The number jobs in jobstore")
-                                                          .tags("job.status_instore", "jobs_in_store")
+                                                          .tags("JOB_STATE_TAG", "jobs_in_store")
                                                           .register(meterRegistry))
                                     .jobSuccessful(Counter.builder("jobs.jobstate.sucessful")
                                                           .description("The number jobs successful")
-                                                          .tags("job.status_successful", "successful")
+                                                          .tags("JOB_STATE_TAG", "successful")
                                                           .register(meterRegistry))
                                     .jobFailed(Counter.builder("jobs.jobstate.failed")
                                                       .description("The number jobs failed")
-                                                      .tags("job.status_failed", "failed")
+                                                      .tags("JOB_STATE_TAG", "failed")
                                                       .register(meterRegistry))
                                     .jobCancelled(Counter.builder("jobs.jobstate.cancelled")
                                                          .description("The number jobs cancelled")
-                                                         .tags("job.status_cancelled", "cancelled")
+                                                         .tags("JOB_STATE_TAG", "cancelled")
                                                          .register(meterRegistry))
                                     .jobRunning(Counter.builder("jobs.jobstate.running")
                                                        .description("The number jobs running")
-                                                       .tags("job.status_running", "running")
+                                                       .tags("JOB_STATE_TAG", "running")
                                                        .register(meterRegistry))
                                     .exception(Counter.builder("jobs.exception")
                                                       .description("The number exceptions in jobs")
-                                                      .tags("job.status_exception", "exception")
+                                                      .tags("JOB_STATE_TAG", "exception")
                                                       .register(meterRegistry))
                                     .build();
     }
