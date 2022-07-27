@@ -36,7 +36,7 @@ interface SemanticsHubClient {
  * Semantics Hub Rest Client Stub used in local environment
  */
 @Service
-@Profile({ "local", "stubtest" })
+@Profile({ "local", "test" })
 class SemanticsHubClientLocalStub implements SemanticsHubClient {
 
     @Override
@@ -52,7 +52,7 @@ class SemanticsHubClientLocalStub implements SemanticsHubClient {
  * Semantics Hub Rest Client Implementation
  */
 @Service
-@Profile({ "!local && !stubtest" })
+@Profile({ "!local && !test" })
 class SemanticsHubClientImpl implements SemanticsHubClient {
 
     private final RestTemplate restTemplate;
