@@ -27,11 +27,11 @@ class SemanticHubCacheInitializerTests {
 
     private Optional<String> getJsonSchemaFromCache() {
         return ofNullable(cacheManager.getCache("schema_cache")).map(
-                c -> c.get(SchemaModel.SERIAL_PART_TYPIZATION.getUrn(), String.class));
+                cache -> cache.get(SchemaModel.SERIAL_PART_TYPIZATION.getUrn(), String.class));
     }
 
     @Test
-    void shouldFindJsonSchemaInCacheAfterSprintContextStartup() {
+    void shouldFindJsonSchemaInCacheAfterSpringContextStartup() {
         final Optional<String> jsonSchemaFromCache = getJsonSchemaFromCache();
 
         assertThat(jsonSchemaFromCache).isNotEmpty();
