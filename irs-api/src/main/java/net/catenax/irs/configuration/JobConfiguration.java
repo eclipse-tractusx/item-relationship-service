@@ -27,6 +27,7 @@ import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.persistence.MinioBlobPersistence;
+import net.catenax.irs.services.MeterRegistryService;
 import net.catenax.irs.util.JsonUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,14 +42,14 @@ public class JobConfiguration {
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
             final DigitalTwinRegistryFacade registryFacade, final SubmodelFacade submodelFacade,
-            final BlobPersistence blobStore, final JobStore jobStore) {
+            final BlobPersistence blobStore, final JobStore jobStore, final MeterRegistryService meterService) {
 
         final var aasHandler = new AASHandler(registryFacade, submodelFacade);
         final var manager = new AASTransferProcessManager(aasHandler, Executors.newCachedThreadPool(), blobStore);
         final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);
 
-        return new JobOrchestrator<>(manager, jobStore, handler);
+        return new JobOrchestrator<>(manager, jobStore, handler, meterService);
     }
 
     @Profile("!test")

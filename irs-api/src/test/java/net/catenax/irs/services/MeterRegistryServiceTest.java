@@ -17,7 +17,7 @@ class MeterRegistryServiceTest {
     }
 
     @Test
-    void recordJobStateMetricTest() {
+    void checkJobStateMetricsIfCorrectlyIncremented() {
         meterRegistryService.recordJobStateMetric(JobState.RUNNING);
         assertThat(meterRegistryService.getJobMetric().getJobRunning().count()).isEqualTo(1);
 
@@ -36,8 +36,16 @@ class MeterRegistryServiceTest {
         meterRegistryService.recordJobStateMetric(JobState.CANCELED);
         assertThat(meterRegistryService.getJobMetric().getJobCancelled().count()).isEqualTo(1);
 
-        meterRegistryService.setJobsInJobStore(4);
-        assertThat(meterRegistryService.getJobMetric().getJobInJobStore().count()).isEqualTo(4);
+        meterRegistryService.incrementNumberOfJobsInJobStore();
+        assertThat(meterRegistryService.getJobMetric().getJobInJobStore().value()).isEqualTo(1);
+
+        meterRegistryService.incrementNumberOfJobsInJobStore();
+        meterRegistryService.incrementNumberOfJobsInJobStore();
+        meterRegistryService.incrementNumberOfJobsInJobStore();
+        assertThat(meterRegistryService.getJobMetric().getJobInJobStore().value()).isEqualTo(4);
+
+        meterRegistryService.decrementNumberOfJobsInJobStore();
+        assertThat(meterRegistryService.getJobMetric().getJobInJobStore().value()).isEqualTo(3);
 
     }
 

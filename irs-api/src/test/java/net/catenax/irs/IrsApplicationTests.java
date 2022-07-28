@@ -17,7 +17,6 @@ import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.persistence.BlobPersistence;
-import net.catenax.irs.services.MeterRegistryService;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +49,6 @@ class IrsApplicationTests {
 
     @Autowired
     private JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator;
-
-    @Autowired
-    private MeterRegistryService meterRegistryService;
 
     @Test
     void generatedOpenApiMatchesContract() throws Exception {

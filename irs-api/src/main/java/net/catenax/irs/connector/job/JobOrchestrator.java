@@ -28,6 +28,7 @@ import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.dto.JobParameter;
+import net.catenax.irs.services.MeterRegistryService;
 import net.catenax.irs.services.SecurityHelperService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -69,19 +70,26 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     private final SecurityHelperService securityHelperService;
 
     /**
+     * Use to collect metrics
+     */
+    private final MeterRegistryService meterService;
+
+    /**
      * Create a new instance of {@link JobOrchestrator}.
      *
      * @param processManager the process manager
      * @param jobStore       Job store.
      * @param handler        Recursive job handler.
+     * @param meterService   Collect metrics for monitoring
      */
     public JobOrchestrator(final TransferProcessManager<T, P> processManager, final JobStore jobStore,
-            final RecursiveJobHandler<T, P> handler) {
+            final RecursiveJobHandler<T, P> handler, final MeterRegistryService meterService) {
 
         this.processManager = processManager;
         this.jobStore = jobStore;
         this.handler = handler;
         this.securityHelperService = new SecurityHelperService();
+        this.meterService = meterService;
     }
 
     /**
@@ -94,12 +102,14 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         final Job job = createJob(jobData.getRootItemId(), jobData);
         final var multiJob = MultiTransferJob.builder().job(job).jobParameter(jobData).build();
         jobStore.create(multiJob);
+        meterService.incrementNumberOfJobsInJobStore();
 
         final Stream<T> requests;
         try {
             requests = handler.initiate(multiJob);
         } catch (RuntimeException e) {
             markJobInError(multiJob, e, JOB_EXECUTION_FAILED);
+            meterService.incrementJobFailed();
             return JobInitiateResponse.builder()
                                       .jobId(multiJob.getJobIdString())
                                       .status(ResponseStatus.FATAL_ERROR)
@@ -193,9 +203,17 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     private List<MultiTransferJob> deleteJobs(final List<MultiTransferJob> jobs) {
         return jobs.stream()
-                   .map(job -> jobStore.deleteJob(job.getJobIdString()))
+                   .map(job -> deleteJobsAndDecreaseJobsInJobStoreMetrics(job.getJobIdString()))
                    .flatMap(Optional::stream)
                    .collect(Collectors.toList());
+    }
+
+    private Optional<MultiTransferJob> deleteJobsAndDecreaseJobsInJobStoreMetrics(final String jobId) {
+        final Optional<MultiTransferJob> optJob = jobStore.deleteJob(jobId);
+        if (optJob.isPresent()) {
+            meterService.decrementNumberOfJobsInJobStore();
+        }
+        return optJob;
     }
 
     private void callCompleteHandlerIfFinished(final String jobId) {
@@ -206,6 +224,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         try {
             handler.complete(job);
         } catch (RuntimeException e) {
+            meterService.incrementJobFailed();
             markJobInError(job, e, JOB_EXECUTION_FAILED);
         }
     }

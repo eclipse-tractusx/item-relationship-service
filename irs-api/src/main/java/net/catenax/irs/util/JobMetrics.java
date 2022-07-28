@@ -30,7 +30,12 @@ public class JobMetrics {
     /**
      * Jobs in job store
      */
-    private Counter jobInJobStore;
+    private Gauge jobInJobStore;
+
+    /**
+     * Number of job create within a time frame
+     */
+    private final Counter counterCreatedJobs;
 
     /**
      * Number of jobs with completed state since the start of IRS

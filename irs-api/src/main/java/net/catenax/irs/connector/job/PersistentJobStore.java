@@ -21,7 +21,6 @@ import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.services.MeterRegistryService;
 import net.catenax.irs.util.JsonUtil;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -97,11 +96,6 @@ public class PersistentJobStore extends BaseJobStore {
 
     private String toBlobId(final String jobId) {
         return JOB_PREFIX + jobId;
-    }
-
-    @Scheduled(cron = "${irs.job.jobstore.cron.expression}")
-    public void recordMetricsForJobsInJobStore() {
-        meterService.setJobsInJobStore(getAll().size());
     }
 
 }

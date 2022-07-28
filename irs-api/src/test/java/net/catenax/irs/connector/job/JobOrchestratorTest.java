@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.services.MeterRegistryService;
 import net.catenax.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,6 +44,9 @@ class JobOrchestratorTest {
 
     @Mock
     RecursiveJobHandler<DataRequest, TransferProcess> handler;
+
+    @Mock
+    MeterRegistryService meterRegistryService;
 
     @InjectMocks
     JobOrchestrator<DataRequest, TransferProcess> sut;

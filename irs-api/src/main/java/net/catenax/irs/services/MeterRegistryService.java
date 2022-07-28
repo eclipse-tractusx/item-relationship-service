@@ -9,7 +9,11 @@
 //
 package net.catenax.irs.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.enums.JobState;
@@ -24,24 +28,24 @@ import org.springframework.stereotype.Service;
 public class MeterRegistryService {
 
     private static final String JOB_STATE_TAG = "jobstate";
-    private final Counter counterCreatedJobs;
+
+    private final List<Integer> numbersOfJobsInJobStore = new ArrayList<>();
 
     private final JobMetrics jobMetrics;
 
     public MeterRegistryService(final MeterRegistry meterRegistry) {
-        this.counterCreatedJobs = Counter.builder("jobs.created")
-                                         .description("The number of jobs ever created")
-                                         .register(meterRegistry);
-
         this.jobMetrics = JobMetrics.builder()
+                                    .counterCreatedJobs(Counter.builder("jobs.created")
+                                                               .description("The number of jobs ever created")
+                                                               .register(meterRegistry))
                                     .jobProcessed(Counter.builder("jobs.processed")
                                                          .description("The number jobs processed")
                                                          .tags(JOB_STATE_TAG, "processed")
                                                          .register(meterRegistry))
-                                    .jobInJobStore(Counter.builder("jobs.jobstore")
-                                                          .description("The number jobs in jobstore")
-                                                          .tags(JOB_STATE_TAG, "jobs_in_store")
-                                                          .register(meterRegistry))
+                                    .jobInJobStore(Gauge.builder("jobs.jobstore", numbersOfJobsInJobStore, List::size)
+                                                        .description("The number jobs in jobstore")
+                                                        .tags(JOB_STATE_TAG, "jobs_in_store")
+                                                        .register(meterRegistry))
                                     .jobSuccessful(Counter.builder("jobs.jobstate.sucessful")
                                                           .description("The number jobs successful")
                                                           .tags(JOB_STATE_TAG, "successful")
@@ -65,16 +69,12 @@ public class MeterRegistryService {
                                     .build();
     }
 
-    /* package */ void incrementNumberOfCreatedJobs() {
-        counterCreatedJobs.increment();
+    public void incrementNumberOfCreatedJobs() {
+        jobMetrics.getCounterCreatedJobs().increment();
     }
 
     public void incrementJobsProcessed() {
         jobMetrics.getJobProcessed().increment();
-    }
-
-    public void incrementJobInJobStore(final Double count) {
-        jobMetrics.getJobInJobStore().increment(count);
     }
 
     public void incrementJobSuccessful() {
@@ -119,8 +119,14 @@ public class MeterRegistryService {
         log.info("Increment metric for {} state ", state);
     }
 
-    public void setJobsInJobStore(final Integer count) {
-        incrementJobInJobStore(Double.valueOf(count));
+    public void incrementNumberOfJobsInJobStore() {
+        numbersOfJobsInJobStore.add(1);
+    }
+
+    public void decrementNumberOfJobsInJobStore() {
+        if (!numbersOfJobsInJobStore.isEmpty()) {
+            numbersOfJobsInJobStore.remove(0);
+        }
     }
 
     public JobMetrics getJobMetric() {

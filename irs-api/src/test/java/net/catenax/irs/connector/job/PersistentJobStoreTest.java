@@ -492,13 +492,4 @@ class PersistentJobStoreTest {
         assertThat(job2.getJob().getLastModifiedOn()).isAfter(job1.getJob().getLastModifiedOn());
     }
 
-    @Test
-    void shouldGetMetricsJobsInJobStore() {
-        int jobCount = sut.getAll().size();
-        sut.create(job);
-
-        sut.recordMetricsForJobsInJobStore();
-        assertThat(sut.getAll().size()).isEqualTo(jobCount + 1);
-    }
-
 }
