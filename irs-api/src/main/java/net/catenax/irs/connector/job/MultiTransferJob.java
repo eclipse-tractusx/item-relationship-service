@@ -100,8 +100,7 @@ public class MultiTransferJob {
         /**
          * Transition the job to the {@link JobState#RUNNING} state.
          */
-        /* package */
-        public MultiTransferJobBuilder transitionInProgress() {
+        /* package */ MultiTransferJobBuilder transitionInProgress() {
             return transition(JobState.RUNNING, JobState.INITIAL, JobState.RUNNING);
         }
 
@@ -125,7 +124,6 @@ public class MultiTransferJob {
          */
         /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail,
                 final String exceptionClassName) {
-            // meterRegistryService.incrementJobFailed();
             this.job = this.job.toBuilder()
                                .jobState(JobState.ERROR)
                                .jobCompleted(ZonedDateTime.now(ZoneOffset.UTC))

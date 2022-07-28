@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class MeterRegistryService {
 
-    private static final String JOB_STATE_TAG = "JOB_STATE";
+    private static final String JOB_STATE_TAG = "jobstate";
     private final Counter counterCreatedJobs;
 
     private final JobMetrics jobMetrics;
