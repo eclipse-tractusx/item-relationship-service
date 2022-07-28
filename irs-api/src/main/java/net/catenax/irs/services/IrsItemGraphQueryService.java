@@ -139,7 +139,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
             return job.getJob();
         } else {
-            meterRegistryService.incrementException();
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
     }
@@ -189,7 +188,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                        .submodels(submodels)
                        .build();
         } else {
-            meterRegistryService.incrementException();
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
     }
