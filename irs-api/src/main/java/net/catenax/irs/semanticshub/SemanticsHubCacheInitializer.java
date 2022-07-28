@@ -27,7 +27,7 @@ import org.springframework.web.client.HttpServerErrorException;
 @Slf4j
 class SemanticsHubCacheInitializer {
 
-    private final SemanticsHubFacade semanticsHubFacade;
+    private final SemanticsHubFgiacade semanticsHubFacade;
 
     /**
      * Initializing Semantics Hub cache with values, initially after application starts.

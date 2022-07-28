@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 class SemanticsHubFacadeTest {
 
-    private SemanticsHubFacade semanticsHubFacade = new SemanticsHubFacade(new SemanticsHubClientLocalStub());
+    private final SemanticsHubFacade semanticsHubFacade = new SemanticsHubFacade(new SemanticsHubClientLocalStub());
 
     @Test
     void shouldReturnModelJsonSchema() {
