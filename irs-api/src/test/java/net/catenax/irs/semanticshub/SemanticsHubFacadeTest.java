@@ -10,9 +10,9 @@ class SemanticsHubFacadeTest {
 
     @Test
     void shouldReturnModelJsonSchema() {
-        final String modelUrn = SchemaModel.SERIAL_PART_TYPIZATION.getUrn();
+        final String defaultUrn = "urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization";
 
-        final String modelJsonSchema = semanticsHubFacade.getModelJsonSchema(modelUrn);
+        final String modelJsonSchema = semanticsHubFacade.getModelJsonSchema(defaultUrn);
 
         assertThat(modelJsonSchema).isNotBlank();
     }

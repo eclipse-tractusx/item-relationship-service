@@ -9,10 +9,10 @@
 //
 package net.catenax.irs.semanticshub;
 
-import java.util.stream.Stream;
+import java.util.List;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,11 +23,17 @@ import org.springframework.web.client.HttpServerErrorException;
  * Initializing Semantics Hub cache with values
  */
 @Service
-@RequiredArgsConstructor
 @Slf4j
 class SemanticsHubCacheInitializer {
 
     private final SemanticsHubFacade semanticsHubFacade;
+    private final List<String> defaultUrns;
+
+    SemanticsHubCacheInitializer(final SemanticsHubFacade semanticsHubFacade,
+            @Value("${semanticsHub.defaultUrns:}") final List<String> defaultUrns) {
+        this.semanticsHubFacade = semanticsHubFacade;
+        this.defaultUrns = defaultUrns;
+    }
 
     /**
      * Initializing Semantics Hub cache with values, initially after application starts.
@@ -37,7 +43,7 @@ class SemanticsHubCacheInitializer {
         log.debug("Initializing Semantics Hub Cache with values.");
 
         try {
-            Stream.of(SchemaModel.values()).forEach(model -> semanticsHubFacade.getModelJsonSchema(model.getUrn()));
+            defaultUrns.forEach(semanticsHubFacade::getModelJsonSchema);
         } catch (final HttpServerErrorException ex) {
             log.error("Initialization of Semantics Hub Cache failed", ex);
         }

@@ -40,8 +40,9 @@ public class SemanticsHubFacade {
     /**
      * Clearing cache from all values
      */
-    @SuppressWarnings("PMD.UncommentedEmptyMethodBody")
     @CacheEvict(value = SEMANTICS_HUB_CACHE_NAME, allEntries = true)
-    public void evictAllCacheValues() { }
+    public void evictAllCacheValues() {
+        log.debug("Clearing Semantics Hub Cache.");
+    }
 
 }

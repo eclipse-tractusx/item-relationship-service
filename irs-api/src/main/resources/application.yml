@@ -120,3 +120,6 @@ semanticsHub:
     #          │ │ │  │ │ │          (or MON-SUN -- 0 or 7 is Sunday)
     #          │ │ │  │ │ │
     scheduler: 0 0 23 * * *
+  defaultUrns: >
+    urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship,
+    urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
