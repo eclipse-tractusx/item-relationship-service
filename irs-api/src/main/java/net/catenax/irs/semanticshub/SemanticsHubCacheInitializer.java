@@ -29,7 +29,7 @@ class SemanticsHubCacheInitializer {
     private final SemanticsHubFacade semanticsHubFacade;
     private final List<String> defaultUrns;
 
-    SemanticsHubCacheInitializer(final SemanticsHubFacade semanticsHubFacade,
+    /* package */ SemanticsHubCacheInitializer(final SemanticsHubFacade semanticsHubFacade,
             @Value("${semanticsHub.defaultUrns:}") final List<String> defaultUrns) {
         this.semanticsHubFacade = semanticsHubFacade;
         this.defaultUrns = defaultUrns;
