@@ -23,7 +23,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, threaddump, loggers, prometheus, info
+        include: health, threaddump, loggers, prometheus, info, metric
   endpoint:
     health:
       probes:
