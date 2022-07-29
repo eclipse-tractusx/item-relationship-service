@@ -110,3 +110,20 @@ aspectTypes:
 
 digitalTwinRegistry:
   url: https://semantics.int.demo.catena-x.net/registry
+
+semanticsHub:
+  url: https://semantics.int.demo.catena-x.net/hub/api/v1
+  cleanup:
+    #          ┌───────────── second (0-59)
+    #          │ ┌───────────── minute (0 - 59)
+    #          │ │ ┌───────────── hour (0 - 23)
+    #          │ │ │  ┌───────────── day of the month (1 - 31)
+    #          │ │ │  │ ┌───────────── month (1 - 12) (or JAN-DEC)
+    #          │ │ │  │ │ ┌───────────── day of the week (0 - 7)
+    #          │ │ │  │ │ │          (or MON-SUN -- 0 or 7 is Sunday)
+    #          │ │ │  │ │ │
+    scheduler: 0 0 23 * * *
+  defaultUrns: >
+    urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
+#    ,urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship
+
