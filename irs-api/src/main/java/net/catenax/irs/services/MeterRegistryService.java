@@ -41,11 +41,11 @@ public class MeterRegistryService {
                                                          .description("Number of jobs processed")
                                                          .tags(JOB_STATE_TAG, "processed")
                                                          .register(meterRegistry))
-                                    .jobInJobStore(Gauge.builder("jobs.jobstore", numbersOfJobsInJobStore,
-                                                                value -> Long.valueOf(value.get()).doubleValue())
-                                                        .description("Number of jobs in jobstore")
-                                                        .tags(JOB_STATE_TAG, "jobs_in_store")
-                                                        .register(meterRegistry))
+                                    .jobInJobStore(
+                                            Gauge.builder("jobs.jobstore", numbersOfJobsInJobStore, AtomicLong::get)
+                                                 .description("Number of jobs in jobstore")
+                                                 .tags(JOB_STATE_TAG, "jobs_in_store")
+                                                 .register(meterRegistry))
                                     .jobSuccessful(Counter.builder("jobs.jobstate.sucessful")
                                                           .description("Number of successful jobs")
                                                           .tags(JOB_STATE_TAG, "successful")
