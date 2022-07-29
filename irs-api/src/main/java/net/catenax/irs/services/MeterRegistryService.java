@@ -127,7 +127,7 @@ public class MeterRegistryService {
     public void decrementNumberOfJobsInJobStore() {
         if (!numbersOfJobsInJobStore.isEmpty()) {
             numbersOfJobsInJobStore.remove(0);
-            log.info("Incrementing Job in JobStore...");
+            log.info("decrementing Job in JobStore...");
         }
     }
 
