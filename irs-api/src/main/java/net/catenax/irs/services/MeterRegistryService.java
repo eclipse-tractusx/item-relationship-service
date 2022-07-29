@@ -9,8 +9,7 @@
 //
 package net.catenax.irs.services;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
@@ -29,7 +28,7 @@ public class MeterRegistryService {
 
     private static final String JOB_STATE_TAG = "jobstate";
 
-    private final List<Integer> numbersOfJobsInJobStore = new ArrayList<>();
+    private final AtomicLong numbersOfJobsInJobStore = new AtomicLong();
 
     private final JobMetrics jobMetrics;
 
@@ -42,7 +41,8 @@ public class MeterRegistryService {
                                                          .description("Number of jobs processed")
                                                          .tags(JOB_STATE_TAG, "processed")
                                                          .register(meterRegistry))
-                                    .jobInJobStore(Gauge.builder("jobs.jobstore", numbersOfJobsInJobStore, List::size)
+                                    .jobInJobStore(Gauge.builder("jobs.jobstore", numbersOfJobsInJobStore,
+                                                                value -> Long.valueOf(value.get()).doubleValue())
                                                         .description("Number of jobs in jobstore")
                                                         .tags(JOB_STATE_TAG, "jobs_in_store")
                                                         .register(meterRegistry))
@@ -119,16 +119,9 @@ public class MeterRegistryService {
         log.info("Increment metric for {} state ", state);
     }
 
-    public void incrementNumberOfJobsInJobStore() {
-        numbersOfJobsInJobStore.add(1);
-        log.info("Incrementing Job in JobStore...");
-    }
-
-    public void decrementNumberOfJobsInJobStore() {
-        if (!numbersOfJobsInJobStore.isEmpty()) {
-            numbersOfJobsInJobStore.remove(0);
-            log.info("decrementing Job in JobStore...");
-        }
+    public void setNumberOfJobsInJobStore(final Long size) {
+        this.numbersOfJobsInJobStore.set(size);
+        log.info("Current size of Job in JobStore is {}", size);
     }
 
     public JobMetrics getJobMetric() {

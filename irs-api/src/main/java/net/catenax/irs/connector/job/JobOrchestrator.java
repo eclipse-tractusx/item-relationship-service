@@ -102,7 +102,6 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         final Job job = createJob(jobData.getRootItemId(), jobData);
         final var multiJob = MultiTransferJob.builder().job(job).jobParameter(jobData).build();
         jobStore.create(multiJob);
-        meterService.incrementNumberOfJobsInJobStore();
 
         final Stream<T> requests;
         try {
@@ -211,7 +210,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     private Optional<MultiTransferJob> deleteJobsAndDecreaseJobsInJobStoreMetrics(final String jobId) {
         final Optional<MultiTransferJob> optJob = jobStore.deleteJob(jobId);
         if (optJob.isPresent()) {
-            meterService.decrementNumberOfJobsInJobStore();
+            meterService.setNumberOfJobsInJobStore(Long.valueOf(jobStore.findAll().size()));
         }
         return optJob;
     }

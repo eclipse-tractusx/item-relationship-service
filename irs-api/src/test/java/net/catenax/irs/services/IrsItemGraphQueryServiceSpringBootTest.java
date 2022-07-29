@@ -161,9 +161,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
         meterRegistryService.incrementJobSuccessful();
         meterRegistryService.incrementJobCancelled();
         meterRegistryService.incrementJobsProcessed();
-        meterRegistryService.incrementNumberOfJobsInJobStore();
-        meterRegistryService.incrementNumberOfJobsInJobStore();
-        meterRegistryService.incrementNumberOfJobsInJobStore();
+        meterRegistryService.setNumberOfJobsInJobStore(7L);
+        meterRegistryService.setNumberOfJobsInJobStore(12L);
+        meterRegistryService.setNumberOfJobsInJobStore(5L);
 
         JobMetrics metrics = meterRegistryService.getJobMetric();
 
@@ -172,10 +172,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         assertThat(metrics.getJobSuccessful().count()).isEqualTo(1.0);
         assertThat(metrics.getJobCancelled().count()).isEqualTo(1.0);
         assertThat(metrics.getJobProcessed().count()).isEqualTo(1.0);
-        assertThat(metrics.getJobInJobStore().value()).isEqualTo(3.0);
-
-        meterRegistryService.decrementNumberOfJobsInJobStore();
-        assertThat(metrics.getJobInJobStore().value()).isEqualTo(2.0);
+        assertThat(metrics.getJobInJobStore().value()).isEqualTo(5.0);
 
     }
 
