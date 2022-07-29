@@ -48,7 +48,6 @@ class DigitalTwinRegistryFacadeTest {
 
         final AssetAdministrationShellDescriptor aasShellDescriptor = digitalTwinRegistryFacade.getAAShellDescriptor(
                 catenaXId, jobParameter());
-        System.out.println(aasShellDescriptor);
         final List<SubmodelDescriptor> shellEndpoints = aasShellDescriptor.getSubmodelDescriptors();
 
         assertThat(shellEndpoints).isNotNull().hasSize(2);
