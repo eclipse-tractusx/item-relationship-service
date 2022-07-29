@@ -121,11 +121,13 @@ public class MeterRegistryService {
 
     public void incrementNumberOfJobsInJobStore() {
         numbersOfJobsInJobStore.add(1);
+        log.info("Incrementing Job in JobStore...");
     }
 
     public void decrementNumberOfJobsInJobStore() {
         if (!numbersOfJobsInJobStore.isEmpty()) {
             numbersOfJobsInJobStore.remove(0);
+            log.info("Incrementing Job in JobStore...");
         }
     }
 

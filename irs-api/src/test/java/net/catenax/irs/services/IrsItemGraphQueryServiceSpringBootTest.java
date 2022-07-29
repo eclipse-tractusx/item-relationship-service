@@ -161,7 +161,6 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
     @Test
     public void checkMetricsRecordingTest() {
-        final int jobCount = 4;
         meterRegistryService.incrementJobFailed();
         meterRegistryService.incrementJobRunning();
         meterRegistryService.incrementJobSuccessful();

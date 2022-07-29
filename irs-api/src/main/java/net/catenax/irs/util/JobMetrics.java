@@ -13,13 +13,11 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
 import lombok.Builder;
 import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
 
 /**
  * Store jobs metrics data
  */
 @Value
-@Jacksonized
 @Builder(toBuilder = true)
 public class JobMetrics {
     /**
