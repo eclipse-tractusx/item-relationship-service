@@ -18,6 +18,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -119,6 +120,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     @Override
+    @Timed(value = "jobs.processed.jobstate.time", description = "Amount of time required to process job by job id")
     public List<JobStatusResult> getJobsByJobState(final @NonNull List<JobState> jobStates) {
         final List<MultiTransferJob> jobs = jobStates.isEmpty() ? jobStore.findAll() : jobStore.findByStates(jobStates);
         return jobs.stream()
@@ -143,6 +145,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         }
     }
 
+    @Timed(value = "jobs.processed.jobid.time", description = "Amount of time required to process job by job id")
     @Override
     public Jobs getJobForJobId(final UUID jobId, final boolean includePartialResults) {
         log.info("Retrieving job with id {} (includePartialResults: {})", jobId, includePartialResults);
