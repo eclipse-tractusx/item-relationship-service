@@ -13,6 +13,7 @@ import java.util.Map;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
@@ -22,6 +23,7 @@ import lombok.Value;
  */
 @Value
 @Builder(toBuilder = true)
+@AllArgsConstructor
 public class JobMetrics {
     /**
      * Jobs processing per time unit (jobs/min, jobs/hour)
