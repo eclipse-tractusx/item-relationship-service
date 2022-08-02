@@ -116,12 +116,9 @@ keycloak:
   oauth2:
     clientId:
 
-aasProxy:
-  submodel:
-    username:
-
 aasWrapper:
   host: http://aaswrapper:9191/api/service
+  username:
 
 digitalTwinRegistry:
   url: https://semantics.int.demo.catena-x.net/registry
