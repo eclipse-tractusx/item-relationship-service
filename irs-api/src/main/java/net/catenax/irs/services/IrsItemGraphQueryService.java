@@ -208,8 +208,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     public void updateStateSnapshortMetrics() {
         final List<MultiTransferJob> jobs = jobStore.findAll();
         jobs.stream().forEach(job -> {
-
-            meterRegistryService.setStateSnapShot(job.getJob().getJobState().toString(),
+            meterRegistryService.setStateSnapShot(job.getJob().getJobState(),
                     jobs.stream().filter(job1 -> job.getJob().getJobState() == job1.getJob().getJobState()).count());
         });
     }

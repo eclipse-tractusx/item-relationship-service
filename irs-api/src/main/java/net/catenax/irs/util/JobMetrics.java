@@ -71,10 +71,24 @@ public class JobMetrics {
     private Counter exception;
 
     /**
-     * Map table that stores snapshot of different state of the job process
+     * take snapshot of successful job
      */
-    @Singular
-    private Map<String, Gauge> jobStateSnapShots;
+    private Gauge jobSuccessSnapshot;
+
+    /**
+     * take snapshot of failed job
+     */
+    private Gauge jobFailedSnapshot;
+
+    /**
+     * take snapshot of running job
+     */
+    private Gauge jobRunningSnapshot;
+
+    /**
+     * take snapshot of cancelled job
+     */
+    private Gauge jobCancelledSnapshot;
 
     /**
      * Record measured execution time

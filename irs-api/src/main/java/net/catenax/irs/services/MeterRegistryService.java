@@ -30,12 +30,15 @@ public class MeterRegistryService {
 
     private static final String JOB_STATE_TAG = "jobstate";
     private static final String JOB_TIMER_TAG = "jobtimer";
+    private static final String JOB_SNAPSHOT_TAG = "jobsnapshot";
 
     private final AtomicLong numbersOfJobsInJobStore = new AtomicLong();
     private final AtomicLong jobExecutionDuration = new AtomicLong();
-    private final AtomicLong valueJobStateSnapShot = new AtomicLong();
+    private final AtomicLong snapshotCompletedValue = new AtomicLong();
+    private final AtomicLong snapshotRunningValue = new AtomicLong();
+    private final AtomicLong snapshotFailedValue = new AtomicLong();
+    private final AtomicLong snapshotCancelledValue = new AtomicLong();
     private final Map<String, Gauge> executionTimeMap = new ConcurrentHashMap<>();
-    private final Map<String, Gauge> stateSnapshotMap = new ConcurrentHashMap<>();
 
     private JobMetrics jobMetrics;
     private final MeterRegistry meterRegistry;
@@ -75,6 +78,33 @@ public class MeterRegistryService {
                                                       .description("Number of jobs exceptions")
                                                       .tags(JOB_STATE_TAG, "exception")
                                                       .register(meterRegistry))
+                                    .jobSuccessSnapshot(Gauge.builder("jobs.snapshot.success", snapshotCompletedValue,
+                                                                     AtomicLong::get)
+                                                             .description("Snapshot of completed jobs")
+                                                             .tags(JOB_SNAPSHOT_TAG, "job_completed_snapshot")
+                                                             .register(meterRegistry))
+                                    .jobRunningSnapshot(Gauge.builder("jobs.snapshot.running", snapshotRunningValue,
+                                                                     AtomicLong::get)
+                                                             .description("Snapshot of running jobs")
+                                                             .tags(JOB_SNAPSHOT_TAG, "job_running_snapshot")
+                                                             .register(meterRegistry))
+                                    .jobFailedSnapshot(
+                                            Gauge.builder("jobs.snapshot.failed", snapshotFailedValue, AtomicLong::get)
+                                                 .description("Snapshot of failed jobs")
+                                                 .tags(JOB_SNAPSHOT_TAG, "job_failed_snapshot")
+                                                 .register(meterRegistry))
+                                    .jobCancelledSnapshot(
+                                            Gauge.builder("jobs.snapshot.cancelled", snapshotCancelledValue,
+                                                         AtomicLong::get)
+                                                 .description("Snapshot of cancelled jobs")
+                                                 .tags(JOB_SNAPSHOT_TAG, "job_cancelled_snapshot")
+                                                 .register(meterRegistry))
+                                    .jobCancelledSnapshot(
+                                            Gauge.builder("jobs.snapshot.cancelled", snapshotCancelledValue,
+                                                         AtomicLong::get)
+                                                 .description("Snapshot of cancelled jobs")
+                                                 .tags(JOB_SNAPSHOT_TAG, "job_cancelled_snapshot")
+                                                 .register(meterRegistry))
                                     .build();
     }
 
@@ -146,15 +176,25 @@ public class MeterRegistryService {
 
     }
 
-    public void setStateSnapShot(final String tag, final long value) {
-        final Gauge gauge = stateSnapshotMap.computeIfAbsent(tag,
-                key -> Gauge.builder("job.state.snapshot", valueJobStateSnapShot, AtomicLong::get)
-                            .description("Snapshot of job states")
-                            .tag(JOB_STATE_TAG, tag)
-                            .register(meterRegistry));
-        this.valueJobStateSnapShot.set(value);
-        this.jobMetrics = jobMetrics.toBuilder().jobStateSnapShot(tag, gauge).build();
-        log.info("Update State {} snapshot to {} ", tag, value);
+    public void setStateSnapShot(final JobState state, final long value) {
+        log.info("Update State {} snapshot to {} ", state, value);
+        switch (state) {
+            case COMPLETED:
+                snapshotCompletedValue.set(value);
+                break;
+            case RUNNING:
+                snapshotRunningValue.set(value);
+                break;
+            case CANCELED:
+                snapshotCancelledValue.set(value);
+                break;
+            case ERROR:
+                snapshotFailedValue.set(value);
+                break;
+            default:
+                log.info("Unused State {} value {} ", state, value);
+                break;
+        }
     }
 
     public JobMetrics getJobMetric() {
