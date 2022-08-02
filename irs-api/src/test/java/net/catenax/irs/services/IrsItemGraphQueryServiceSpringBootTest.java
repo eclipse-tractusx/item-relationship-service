@@ -6,6 +6,8 @@ import static net.catenax.irs.util.TestMother.registerJobWithoutDepth;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -24,9 +26,13 @@ import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.exceptions.EntityNotFoundException;
+import net.catenax.irs.services.validation.InvalidSchemaException;
+import net.catenax.irs.services.validation.JsonValidatorService;
+import net.catenax.irs.services.validation.ValidationResult;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -43,8 +49,11 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @Autowired
     private IrsItemGraphQueryService service;
 
+    @MockBean
+    private JsonValidatorService jsonValidatorService;
+
     @Test
-    void registerItemJobWithoutDepthShouldBuildFullTree() {
+    void registerJobWithoutDepthShouldBuildFullTree() {
         // given
         final RegisterJob registerJob = registerJobWithoutDepth();
         final int expectedRelationshipsSizeFullTree = 6; // stub
@@ -60,8 +69,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
     }
 
     @Test
-    void registerItemJobWithCollectAspectsShouldIncludeSubmodels() {
+    void registerJobWithCollectAspectsShouldIncludeSubmodels() throws InvalidSchemaException {
         // given
+        when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
         final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
                 List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP));
         final int expectedRelationshipsSizeFullTree = 5; // stub
@@ -77,7 +87,25 @@ class IrsItemGraphQueryServiceSpringBootTest {
     }
 
     @Test
-    void registerItemJobWithDepthShouldBuildTreeUntilGivenDepth() {
+    void registerJobShouldCreateTombstonesWhenNotPassingJsonSchemaValidation() throws InvalidSchemaException {
+        // given
+        when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(false).build());
+        final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
+                List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP));
+        final int expectedTombstonesSizeFullTree = 9; // stub
+
+        // when
+        final JobHandle registeredJob = service.registerItemJob(registerJob);
+
+        // then
+        given().ignoreException(EntityNotFoundException.class)
+               .await()
+               .atMost(10, TimeUnit.SECONDS)
+               .until(() -> getTombstonesSize(registeredJob.getJobId()), equalTo(expectedTombstonesSizeFullTree));
+    }
+
+    @Test
+    void registerJobWithDepthShouldBuildTreeUntilGivenDepth() {
         // given
         final RegisterJob registerJob = registerJobWithDepthAndAspect(0, null);
         final int expectedRelationshipsSizeFirstDepth = 3; // stub
@@ -146,6 +174,10 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
     private int getSubmodelsSize(final UUID jobId) {
         return service.getJobForJobId(jobId, false).getSubmodels().size();
+    }
+
+    private int getTombstonesSize(final UUID jobId) {
+        return service.getJobForJobId(jobId, false).getTombstones().size();
     }
 
 }
