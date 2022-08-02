@@ -30,6 +30,7 @@ import net.catenax.irs.exceptions.JsonParseException;
 import net.catenax.irs.semanticshub.SemanticsHubFacade;
 import net.catenax.irs.services.validation.InvalidSchemaException;
 import net.catenax.irs.services.validation.JsonValidatorService;
+import net.catenax.irs.services.validation.ValidationResult;
 import org.springframework.web.client.RestClientException;
 
 /**
@@ -109,10 +110,17 @@ public class AASHandler {
                 final String jsonSchema = semanticsHubFacade.getModelJsonSchema(submodelDescriptor.getAspectType());
                 final String submodelRawPayload = requestSubmodelAsString(endpoint);
 
-                if (jsonValidatorService.validate(jsonSchema, submodelRawPayload).isValid()) {
+                final ValidationResult validationResult = jsonValidatorService.validate(jsonSchema, submodelRawPayload);
+
+                if (validationResult.isValid()) {
                     final Submodel submodel = Submodel.from(submodelDescriptor.getIdentification(),
                             submodelDescriptor.getAspectType(), submodelRawPayload);
                     submodels.add(submodel);
+                } else {
+                    final String errors = String.join(", ", validationResult.getValidationErrors());
+                    itemContainerBuilder.tombstone(
+                            Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(),
+                                    new IllegalArgumentException("Submodel payload validation failed, found errors: " + errors), 0));
                 }
             } catch (JsonParseException e) {
                 itemContainerBuilder.tombstone(
