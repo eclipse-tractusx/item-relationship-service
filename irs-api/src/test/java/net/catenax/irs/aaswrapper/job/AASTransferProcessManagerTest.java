@@ -15,6 +15,8 @@ import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
+import net.catenax.irs.semanticshub.SemanticsHubFacade;
+import net.catenax.irs.services.validation.JsonValidatorService;
 import net.catenax.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,9 +31,13 @@ class AASTransferProcessManagerTest {
 
     SubmodelFacade submodelFacade = mock(SubmodelFacade.class);
 
+    SemanticsHubFacade semanticsHubFacade = mock(SemanticsHubFacade.class);
+
+    JsonValidatorService jsonValidatorService = mock(JsonValidatorService.class);
+
     ExecutorService pool = mock(ExecutorService.class);
 
-    AASHandler aasHandler = new AASHandler(digitalTwinRegistryFacade, submodelFacade);
+    AASHandler aasHandler = new AASHandler(digitalTwinRegistryFacade, submodelFacade, semanticsHubFacade, jsonValidatorService);
 
     final AASTransferProcessManager manager = new AASTransferProcessManager(aasHandler, pool, new InMemoryBlobStore());
 

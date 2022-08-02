@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.github.resilience4j.retry.RetryRegistry;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
@@ -26,6 +27,9 @@ import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.exceptions.JsonParseException;
+import net.catenax.irs.semanticshub.SemanticsHubFacade;
+import net.catenax.irs.services.validation.InvalidSchemaException;
+import net.catenax.irs.services.validation.JsonValidatorService;
 import org.springframework.web.client.RestClientException;
 
 /**
@@ -33,14 +37,13 @@ import org.springframework.web.client.RestClientException;
  * Tombstones and Submodels.
  */
 @Slf4j
+@RequiredArgsConstructor
 public class AASHandler {
+
     private final DigitalTwinRegistryFacade registryFacade;
     private final SubmodelFacade submodelFacade;
-
-    public AASHandler(final DigitalTwinRegistryFacade registryFacade, final SubmodelFacade submodelFacade) {
-        this.registryFacade = registryFacade;
-        this.submodelFacade = submodelFacade;
-    }
+    private final SemanticsHubFacade semanticsHubFacade;
+    private final JsonValidatorService jsonValidatorService;
 
     /**
      * @param jobData            The job parameters used for filtering
@@ -103,14 +106,23 @@ public class AASHandler {
         final List<Submodel> submodels = new ArrayList<>();
         submodelDescriptor.getEndpoints().forEach(endpoint -> {
             try {
-                final String payload = requestSubmodelAsString(endpoint);
-                submodels.add(Submodel.from(submodelDescriptor.getIdentification(), submodelDescriptor.getAspectType(),
-                        payload));
+                final String jsonSchema = semanticsHubFacade.getModelJsonSchema(submodelDescriptor.getAspectType());
+                final String submodelRawPayload = requestSubmodelAsString(endpoint);
+
+                if (jsonValidatorService.validate(jsonSchema, submodelRawPayload).isValid()) {
+                    final Submodel submodel = Submodel.from(submodelDescriptor.getIdentification(),
+                            submodelDescriptor.getAspectType(), submodelRawPayload);
+                    submodels.add(submodel);
+                }
             } catch (JsonParseException e) {
                 itemContainerBuilder.tombstone(
                         Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e,
                                 RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts()));
                 log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
+            } catch (InvalidSchemaException | RestClientException e) {
+                itemContainerBuilder.tombstone(
+                        Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e, 0));
+                log.info("Cannot load JSON schema for validation. Creating Tombstone.");
             }
         });
         return submodels;

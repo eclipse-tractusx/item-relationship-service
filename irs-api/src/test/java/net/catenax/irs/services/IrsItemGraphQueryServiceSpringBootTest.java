@@ -6,6 +6,8 @@ import static net.catenax.irs.util.TestMother.registerJobWithoutDepth;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -24,9 +26,13 @@ import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.exceptions.EntityNotFoundException;
+import net.catenax.irs.services.validation.InvalidSchemaException;
+import net.catenax.irs.services.validation.JsonValidatorService;
+import net.catenax.irs.services.validation.ValidationResult;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -42,6 +48,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
     @Autowired
     private IrsItemGraphQueryService service;
+
+    @MockBean
+    private JsonValidatorService jsonValidatorService;
 
     @Test
     void registerItemJobWithoutDepthShouldBuildFullTree() {
@@ -60,8 +69,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
     }
 
     @Test
-    void registerItemJobWithCollectAspectsShouldIncludeSubmodels() {
+    void registerItemJobWithCollectAspectsShouldIncludeSubmodels() throws InvalidSchemaException {
         // given
+        when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
         final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
                 List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP));
         final int expectedRelationshipsSizeFullTree = 5; // stub

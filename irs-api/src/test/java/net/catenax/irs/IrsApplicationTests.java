@@ -22,17 +22,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = { "local",
-                             "test"
-})
+@ActiveProfiles(profiles = { "local", "test" })
+@Import(TestConfig.class)
 class IrsApplicationTests {
 
     @LocalServerPort
@@ -77,12 +74,4 @@ class IrsApplicationTests {
         assertThat(inMemoryBlobStore.getBlob(response.getJobId())).isNotEmpty();
     }
 
-    @TestConfiguration
-    static class TestConfig {
-        @Primary
-        @Bean
-        public BlobPersistence inMemoryBlobStore() {
-            return new InMemoryBlobStore();
-        }
-    }
 }
