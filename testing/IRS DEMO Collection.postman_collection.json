@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "72a41376-3de5-4696-a264-c569476f59d1",
+		"_postman_id": "d653f5d4-fc84-40ac-9376-0b067ac9ad0a",
 		"name": "IRS DEMO Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -208,7 +208,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells?assetIds=[{\"key\":\"globalAssetId\",\"value\":\"{{GLOBAL_ASSET_ID}}\"]",
+							"raw": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells?assetIds=[{\"key\":\"globalAssetId\",\"value\":\"{{GLOBAL_ASSET_ID}}\"}]",
 							"host": [
 								"{{DIGITAL_TWIN_REGISTRY}}"
 							],
@@ -1443,7 +1443,7 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							},	
+							},
 							{
 								"key": "Authorization",
 								"value": "Bearer {{ACCESS_TOKEN}}",
@@ -1720,6 +1720,113 @@
 							""
 						]
 					}
+				}
+			]
+		},
+		{
+			"name": "Semantics Hub",
+			"item": [
+				{
+					"name": "Get all models",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://semantics.int.demo.catena-x.net/hub/api/v1/models?pageSize=100",
+							"protocol": "https",
+							"host": [
+								"semantics",
+								"int",
+								"demo",
+								"catena-x",
+								"net"
+							],
+							"path": [
+								"hub",
+								"api",
+								"v1",
+								"models"
+							],
+							"query": [
+								{
+									"key": "pageSize",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get SerialPartTypization",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://semantics.int.demo.catena-x.net/hub/api/v1/models/urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization",
+							"protocol": "https",
+							"host": [
+								"semantics",
+								"int",
+								"demo",
+								"catena-x",
+								"net"
+							],
+							"path": [
+								"hub",
+								"api",
+								"v1",
+								"models",
+								"urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get SerialPartTypization Json Schema",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://semantics.int.demo.catena-x.net/hub/api/v1/models/urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization/json-schema",
+							"protocol": "https",
+							"host": [
+								"semantics",
+								"int",
+								"demo",
+								"catena-x",
+								"net"
+							],
+							"path": [
+								"hub",
+								"api",
+								"v1",
+								"models",
+								"urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization",
+								"json-schema"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
