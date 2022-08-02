@@ -102,8 +102,8 @@ resilience4j:
 
 aasWrapper:
   host: "${AASWRAPPER_HOST:}"
-  username: ${AAS_PROXY_SUBMODEL_USERNAME:}
-  password: ${AAS_PROXY_SUBMODEL_PASSWORD:}
+  username: ${AASWRAPPER_USERNAME:}
+  password: ${AASWRAPPER_PASSWORD:}
 
 aspectTypes:
   default: SerialPartTypization

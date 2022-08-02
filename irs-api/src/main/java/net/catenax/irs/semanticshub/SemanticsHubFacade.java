@@ -34,6 +34,7 @@ public class SemanticsHubFacade {
      */
     @Cacheable(value = SEMANTICS_HUB_CACHE_NAME, key = "#urn")
     public String getModelJsonSchema(final String urn) {
+        log.info("Retrieving json schema for urn {}", urn);
         return this.semanticsHubClient.getModelJsonSchema(urn);
     }
 

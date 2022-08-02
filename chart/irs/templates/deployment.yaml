@@ -69,16 +69,16 @@ spec:
               value: {{ .Values.keycloak.oauth2.clientTokenUri }}
             - name: KEYCLOAK_OAUTH2_JWK_SET_URI
               value: {{ .Values.keycloak.oauth2.jwkSetUri }}
-            - name: AAS_PROXY_SUBMODEL_USERNAME
+            - name: AASWRAPPER_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
-                  key: aasProxyUsername
-            - name: AAS_PROXY_SUBMODEL_PASSWORD
+                  key: aasWrapperUsername
+            - name: AASWRAPPER_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
-                  key: aasProxyPassword
+                  key: aasWrapperPassword
             - name: AASWRAPPER_HOST
               value: {{ .Values.aasWrapper.host }}
             - name: DIGITALTWINREGISTRY_URL
