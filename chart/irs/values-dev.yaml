@@ -11,8 +11,8 @@ keycloak:
     jwkSetUri: <path:traceability-irs/data/dev/keycloak/oauth2#jwkSetUri>
 
 aasWrapper:
-    username: <path:traceability-irs/data/dev/aasProxy/submodel#username>
-    password: <path:traceability-irs/data/dev/aasProxy/submodel#password>
+  username: <path:traceability-irs/data/dev/aasProxy/submodel#username>
+  password: <path:traceability-irs/data/dev/aasProxy/submodel#password>
 
 minio:
   url: http://app-minio-dev:9000
