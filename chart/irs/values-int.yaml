@@ -22,8 +22,7 @@ keycloak:
     clientTokenUri: <path:traceability-irs/data/int/keycloak/oauth2#tokenUri>
     jwkSetUri: <path:traceability-irs/data/int/keycloak/oauth2#jwkSetUri>
 
-aasProxy:
-  submodel:
+aasWrapper:
     username: <path:traceability-irs/data/int/aasProxy/submodel#username>
     password: <path:traceability-irs/data/int/aasProxy/submodel#password>
 
