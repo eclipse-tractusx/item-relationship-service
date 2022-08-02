@@ -53,7 +53,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     private JsonValidatorService jsonValidatorService;
 
     @Test
-    void registerItemJobWithoutDepthShouldBuildFullTree() {
+    void registerJobWithoutDepthShouldBuildFullTree() {
         // given
         final RegisterJob registerJob = registerJobWithoutDepth();
         final int expectedRelationshipsSizeFullTree = 6; // stub
@@ -69,7 +69,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     }
 
     @Test
-    void registerItemJobWithCollectAspectsShouldIncludeSubmodels() throws InvalidSchemaException {
+    void registerJobWithCollectAspectsShouldIncludeSubmodels() throws InvalidSchemaException {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
         final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
@@ -87,7 +87,25 @@ class IrsItemGraphQueryServiceSpringBootTest {
     }
 
     @Test
-    void registerItemJobWithDepthShouldBuildTreeUntilGivenDepth() {
+    void registerJobShouldCreateTombstonesWhenNotPassingJsonSchemaValidation() throws InvalidSchemaException {
+        // given
+        when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(false).build());
+        final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
+                List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP));
+        final int expectedTombstonesSizeFullTree = 9; // stub
+
+        // when
+        final JobHandle registeredJob = service.registerItemJob(registerJob);
+
+        // then
+        given().ignoreException(EntityNotFoundException.class)
+               .await()
+               .atMost(10, TimeUnit.SECONDS)
+               .until(() -> getTombstonesSize(registeredJob.getJobId()), equalTo(expectedTombstonesSizeFullTree));
+    }
+
+    @Test
+    void registerJobWithDepthShouldBuildTreeUntilGivenDepth() {
         // given
         final RegisterJob registerJob = registerJobWithDepthAndAspect(0, null);
         final int expectedRelationshipsSizeFirstDepth = 3; // stub
@@ -156,6 +174,10 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
     private int getSubmodelsSize(final UUID jobId) {
         return service.getJobForJobId(jobId, false).getSubmodels().size();
+    }
+
+    private int getTombstonesSize(final UUID jobId) {
+        return service.getJobForJobId(jobId, false).getTombstones().size();
     }
 
 }
