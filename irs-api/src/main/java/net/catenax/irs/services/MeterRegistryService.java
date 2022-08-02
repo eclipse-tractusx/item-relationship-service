@@ -9,6 +9,8 @@
 //
 package net.catenax.irs.services;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import io.micrometer.core.instrument.Counter;
@@ -27,12 +29,19 @@ import org.springframework.stereotype.Service;
 public class MeterRegistryService {
 
     private static final String JOB_STATE_TAG = "jobstate";
+    private static final String JOB_TIMER_TAG = "jobtimer";
 
     private final AtomicLong numbersOfJobsInJobStore = new AtomicLong();
+    private final AtomicLong jobExecutionDuration = new AtomicLong();
+    private final AtomicLong valueJobStateSnapShot = new AtomicLong();
+    private final Map<String, Gauge> executionTimeMap = new ConcurrentHashMap<>();
+    private final Map<String, Gauge> stateSnapshotMap = new ConcurrentHashMap<>();
 
-    private final JobMetrics jobMetrics;
+    private JobMetrics jobMetrics;
+    private final MeterRegistry meterRegistry;
 
     public MeterRegistryService(final MeterRegistry meterRegistry) {
+        this.meterRegistry = meterRegistry;
         this.jobMetrics = JobMetrics.builder()
                                     .counterCreatedJobs(Counter.builder("jobs.created")
                                                                .description("Number of jobs ever created")
@@ -122,6 +131,30 @@ public class MeterRegistryService {
     public void setNumberOfJobsInJobStore(final Long size) {
         this.numbersOfJobsInJobStore.set(size);
         log.info("Current size of Job in JobStore is {}", size);
+    }
+
+    public void setMeasuredMethodExecutionTime(final String tag, final long duration) {
+        final Gauge gauge = executionTimeMap.computeIfAbsent(tag,
+                key -> Gauge.builder("job.execution.time", jobExecutionDuration, AtomicLong::get)
+                            .description("Measure time to execute a job")
+                            .tag(JOB_TIMER_TAG, tag)
+                            .register(meterRegistry));
+
+        this.jobExecutionDuration.set(duration);
+        this.jobMetrics = jobMetrics.toBuilder().jobExecutionTime(tag, gauge).build();
+        log.info("Execution time measured for {} is {}", tag, duration);
+
+    }
+
+    public void setStateSnapShot(final String tag, final long value) {
+        final Gauge gauge = stateSnapshotMap.computeIfAbsent(tag,
+                key -> Gauge.builder("job.state.snapshot", valueJobStateSnapShot, AtomicLong::get)
+                            .description("Snapshot of job states")
+                            .tag(JOB_STATE_TAG, tag)
+                            .register(meterRegistry));
+        this.valueJobStateSnapShot.set(value);
+        this.jobMetrics = jobMetrics.toBuilder().jobStateSnapShot(tag, gauge).build();
+        log.info("Update State {} snapshot to {} ", tag, value);
     }
 
     public JobMetrics getJobMetric() {

@@ -18,7 +18,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.micrometer.core.annotation.Timed;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +38,7 @@ import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShe
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
+import net.catenax.irs.connector.job.IrsTimer;
 import net.catenax.irs.connector.job.JobInitiateResponse;
 import net.catenax.irs.connector.job.JobOrchestrator;
 import net.catenax.irs.connector.job.JobStore;
@@ -52,6 +52,7 @@ import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -75,6 +76,18 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     @Value("${aspectTypes.default}")
     private String defaultAspect;
+
+    @IrsTimer("get_job_by_jobstate")
+    @Override
+    public List<JobStatusResult> getJobsByJobState(final @NonNull List<JobState> jobStates) {
+        final List<MultiTransferJob> jobs = jobStates.isEmpty() ? jobStore.findAll() : jobStore.findByStates(jobStates);
+        return jobs.stream()
+                   .map(job -> JobStatusResult.builder()
+                                              .jobId(job.getJob().getJobId())
+                                              .status(job.getJob().getJobState())
+                                              .build())
+                   .collect(Collectors.toList());
+    }
 
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
@@ -119,18 +132,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                            .build();
     }
 
-    @Override
-    @Timed(value = "jobs.processed.jobstate.time", description = "Amount of time required to process job by job id")
-    public List<JobStatusResult> getJobsByJobState(final @NonNull List<JobState> jobStates) {
-        final List<MultiTransferJob> jobs = jobStates.isEmpty() ? jobStore.findAll() : jobStore.findByStates(jobStates);
-        return jobs.stream()
-                   .map(job -> JobStatusResult.builder()
-                                              .jobId(job.getJob().getJobId())
-                                              .status(job.getJob().getJobState())
-                                              .build())
-                   .collect(Collectors.toList());
-    }
-
+    @IrsTimer("cancel_by_job_id")
     @Override
     public Job cancelJobById(final @NonNull UUID jobId) {
         final String idAsString = String.valueOf(jobId);
@@ -145,7 +147,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         }
     }
 
-    @Timed(value = "jobs.processed.jobid.time", description = "Amount of time required to process job by job id")
+    @IrsTimer("get_job_by_job_id")
     @Override
     public Jobs getJobForJobId(final UUID jobId, final boolean includePartialResults) {
         log.info("Retrieving job with id {} (includePartialResults: {})", jobId, includePartialResults);
@@ -193,6 +195,23 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         } else {
             throw new EntityNotFoundException("No job exists with id " + jobId);
         }
+    }
+
+    @Scheduled(cron = "${irs.job.jobstore.cron.expression}")
+    public void updateJobsInJobStoreMetrics() {
+        final long value = jobStore.findAll().size();
+        log.info("Number(s) of job in JobStore: {}", value);
+        meterRegistryService.setNumberOfJobsInJobStore(value);
+    }
+
+    @Scheduled(cron = "${irs.job.jobstore.cron.expression}")
+    public void updateStateSnapshortMetrics() {
+        final List<MultiTransferJob> jobs = jobStore.findAll();
+        jobs.stream().forEach(job -> {
+
+            meterRegistryService.setStateSnapShot(job.getJob().getJobState().toString(),
+                    jobs.stream().filter(job1 -> job.getJob().getJobState() == job1.getJob().getJobState()).count());
+        });
     }
 
     private Summary buildSummary(final int completedTransfersSize, final int runningSize, final int tombstonesSize) {

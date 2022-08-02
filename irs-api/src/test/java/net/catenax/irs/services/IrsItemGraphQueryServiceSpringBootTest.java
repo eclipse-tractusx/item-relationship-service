@@ -7,7 +7,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.given;
 import static org.hamcrest.Matchers.equalTo;
 
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +47,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
     @Autowired
     private MeterRegistryService meterRegistryService;
+
+    @Autowired
+    private IrsTimerAspect aspect;
 
     @Test
     void registerItemJobWithoutDepthShouldBuildFullTree() {
@@ -126,7 +128,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         assertThat(state).isEqualTo(JobState.CANCELED);
 
         final ZonedDateTime lastModifiedOn = fetchedJob.get().getJob().getLastModifiedOn();
-        assertThat(lastModifiedOn).isNotNull().isBefore(ZonedDateTime.now(ZoneOffset.UTC));
+        assertThat(lastModifiedOn).isNotNull().isBefore(ZonedDateTime.now());
     }
 
     @Test

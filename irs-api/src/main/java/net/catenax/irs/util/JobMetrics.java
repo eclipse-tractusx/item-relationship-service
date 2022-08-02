@@ -9,9 +9,12 @@
 //
 package net.catenax.irs.util;
 
+import java.util.Map;
+
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
 import lombok.Builder;
+import lombok.Singular;
 import lombok.Value;
 
 /**
@@ -64,5 +67,17 @@ public class JobMetrics {
      * aggregated Exception count
      */
     private Counter exception;
+
+    /**
+     * Map table that stores snapshot of different state of the job process
+     */
+    @Singular
+    private Map<String, Gauge> jobStateSnapShots;
+
+    /**
+     * Record measured execution time
+     */
+    @Singular
+    private Map<String, Gauge> jobExecutionTimes;
 
 }
