@@ -38,7 +38,6 @@ import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShe
 import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.connector.job.IrsTimer;
 import net.catenax.irs.connector.job.JobInitiateResponse;
 import net.catenax.irs.connector.job.JobOrchestrator;
 import net.catenax.irs.connector.job.JobStore;
@@ -77,7 +76,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     @Value("${aspectTypes.default}")
     private String defaultAspect;
 
-    @IrsTimer("get_job_by_jobstate")
     @Override
     public List<JobStatusResult> getJobsByJobState(final @NonNull List<JobState> jobStates) {
         final List<MultiTransferJob> jobs = jobStates.isEmpty() ? jobStore.findAll() : jobStore.findByStates(jobStates);
@@ -132,7 +130,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                            .build();
     }
 
-    @IrsTimer("cancel_by_job_id")
     @Override
     public Job cancelJobById(final @NonNull UUID jobId) {
         final String idAsString = String.valueOf(jobId);
@@ -147,7 +144,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         }
     }
 
-    @IrsTimer("get_job_by_job_id")
     @Override
     public Jobs getJobForJobId(final UUID jobId, final boolean includePartialResults) {
         log.info("Retrieving job with id {} (includePartialResults: {})", jobId, includePartialResults);

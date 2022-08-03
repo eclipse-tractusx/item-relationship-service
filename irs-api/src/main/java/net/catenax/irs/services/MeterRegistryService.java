@@ -99,12 +99,6 @@ public class MeterRegistryService {
                                                  .description("Snapshot of cancelled jobs")
                                                  .tags(JOB_SNAPSHOT_TAG, "job_cancelled_snapshot")
                                                  .register(meterRegistry))
-                                    .jobCancelledSnapshot(
-                                            Gauge.builder("jobs.snapshot.cancelled", snapshotCancelledValue,
-                                                         AtomicLong::get)
-                                                 .description("Snapshot of cancelled jobs")
-                                                 .tags(JOB_SNAPSHOT_TAG, "job_cancelled_snapshot")
-                                                 .register(meterRegistry))
                                     .build();
     }
 
