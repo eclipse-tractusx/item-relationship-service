@@ -7,10 +7,10 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.services;
+package net.catenax.irs.connector.job;
 
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.connector.job.IrsTimer;
+import net.catenax.irs.services.MeterRegistryService;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
