@@ -1,0 +1,1008 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 5,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", client_name=\"irs-aas-registry.dev.demo.catena-x.net\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", method=\"GET\", outcome=\"CLIENT_ERROR\", status=\"404\", uri=\"/registry/shell-descriptors/{uuid}\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "status=200"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "http_server_requests_seconds_max{application=\"item-relationship-service\", exception=\"None\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", method=\"GET\", outcome=\"SUCCESS\", status=\"200\", uri=\"/irs/jobs\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "irs/jobs get 2xx"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"http_server_requests_seconds_max\", application=\"item-relationship-service\", exception=\"None\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", method=\"POST\", outcome=\"SUCCESS\", status=\"201\", uri=\"/irs/jobs\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "irs/jobs post 2xx"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "id": 9,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(http_server_requests_seconds_count{uri=\"/irs/jobs\", status=\"200\"}[100y]))",
+          "hide": false,
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Total Successful Request to /irs/job",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "description": "Total Request",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", client_name=\"irs-aas-registry.dev.demo.catena-x.net\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", method=\"GET\", outcome=\"CLIENT_ERROR\", status=\"404\", uri=\"/registry/shell-descriptors/{uuid}\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "status=200"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "http_server_requests_seconds_max{application=\"item-relationship-service\", exception=\"None\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", method=\"GET\", outcome=\"SUCCESS\", status=\"200\", uri=\"/irs/jobs\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "irs/jobs get 2xx"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"http_server_requests_seconds_max\", application=\"item-relationship-service\", exception=\"None\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", method=\"POST\", outcome=\"SUCCESS\", status=\"201\", uri=\"/irs/jobs\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "irs/jobs post 2xx"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "id": 14,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(http_server_requests_seconds_count{method=\"POST\", outcome=\"SUCCESS\"}[100y]))",
+          "hide": false,
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Total Post Request to application",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum(increase(http_requests_retries_total{}[100y]))"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Aggregated Total Retries"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum(increase(http_requests_retries_total{}[24h]))"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total Retries Per Day"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-BlPu"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum(increase(http_requests_retries_total{}[1h]))"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total Retries Per Hour"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-YlBl"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum(increase(http_requests_retries_total{}[1m]))"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total Retries Per Min"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 8,
+        "y": 0
+      },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(http_requests_retries_total{}[100y]))",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(http_requests_retries_total{}[24h]))",
+          "hide": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "sum(increase(http_requests_retries_total{}[1h]))",
+          "hide": false,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "sum(increase(http_requests_retries_total{}[1m]))",
+          "hide": false,
+          "refId": "D"
+        }
+      ],
+      "title": "Retry Request",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "description": "Total Request to /irs/jobs",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", client_name=\"irs-aas-registry.dev.demo.catena-x.net\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", method=\"GET\", outcome=\"CLIENT_ERROR\", status=\"404\", uri=\"/registry/shell-descriptors/{uuid}\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "status=200"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "http_server_requests_seconds_max{application=\"item-relationship-service\", exception=\"None\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", method=\"GET\", outcome=\"SUCCESS\", status=\"200\", uri=\"/irs/jobs\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "irs/jobs get 2xx"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"http_server_requests_seconds_max\", application=\"item-relationship-service\", exception=\"None\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", method=\"POST\", outcome=\"SUCCESS\", status=\"201\", uri=\"/irs/jobs\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "irs/jobs post 2xx"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 6,
+        "x": 16,
+        "y": 0
+      },
+      "id": 15,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(http_server_requests_seconds_count{uri=\"/irs/jobs\"}[100y]))",
+          "hide": false,
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Total Request to /irs/jobs",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "http_server_requests_seconds_sum{application=\"item-relationship-service\", exception=\"HttpMessageNotReadableException\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", method=\"POST\", outcome=\"CLIENT_ERROR\", status=\"400\", uri=\"/irs/jobs\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "HttpMessageNotReadableException"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "http_server_requests_seconds_sum{application=\"item-relationship-service\", exception=\"MethodArgumentNotValidException\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", method=\"POST\", outcome=\"CLIENT_ERROR\", status=\"400\", uri=\"/irs/jobs\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "MethodArgumentNotValidException"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum(http_server_requests_seconds_sum{outcome=\"CLIENT_ERROR\", uri=\"/irs/jobs\"})"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total Error"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum(increase(http_server_requests_seconds_sum{outcome=\"CLIENT_ERROR\", uri=\"/irs/jobs\"}[100y]))"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Client-Error 4xx"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum(increase(http_server_requests_seconds_sum{outcome=\"SERVER_ERROR\", uri=\"/irs/jobs\"}[100y]))"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Server-Error 5xx"
+              }
+            ]
+          },
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "Client-Error 4xx"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 0,
+        "y": 10
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(http_server_requests_seconds_sum{outcome=\"CLIENT_ERROR\", uri=\"/irs/jobs\"}[100y]))",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(http_server_requests_seconds_sum{outcome=\"SERVER_ERROR\", uri=\"/irs/jobs\"}[100y]))",
+          "hide": false,
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Total Error Response",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "Timeout",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", client_name=\"irs-aas-registry.dev.demo.catena-x.net\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", method=\"GET\", outcome=\"CLIENT_ERROR\", status=\"404\", uri=\"/registry/shell-descriptors/{uuid}\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "status=200"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 7,
+        "x": 8,
+        "y": 10
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "increase(http_requests_timeouts_total{}[100y])",
+          "hide": false,
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Number of Timeout",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "http_client_requests_seconds_max{application=\"item-relationship-service\", client_name=\"irs-aas-registry.dev.demo.catena-x.net\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", method=\"GET\", outcome=\"SUCCESS\", status=\"200\", uri=\"/lookup/shells\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Status-200"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "http_client_requests_seconds_max{application=\"item-relationship-service\", client_name=\"irs-aas-registry.dev.demo.catena-x.net\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", method=\"GET\", outcome=\"CLIENT_ERROR\", status=\"404\", uri=\"/registry/shell-descriptors/{uuid}\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Status-404"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "avg(http_client_requests_seconds_sum{client_name=\"irs-aas-registry.dev.demo.catena-x.net\"})"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "average clients"
+              }
+            ]
+          },
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "http_client_requests_seconds_max{application=\"item-relationship-service\", client_name=\"semantics.int.demo.catena-x.net\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", method=\"GET\", outcome=\"SERVER_ERROR\", status=\"500\", uri=\"/hub/api/v1/models/urn:bamm:com.catenax.assembly_part_relationship:1.0.0/json-schema\"}"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum(increase(http_server_requests_seconds_sum{outcome!=\"SUCCESS\", uri=\"/irs/jobs\"}[24h]))"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Exception per Day"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum(increase(http_server_requests_seconds_sum{outcome!=\"SUCCESS\", uri=\"/irs/jobs\"}[1h]))"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Exception per Hour"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum(increase(http_server_requests_seconds_sum{outcome!=\"SUCCESS\", uri=\"/irs/jobs\"}[1m]))"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Exception per Minute"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 7,
+        "x": 15,
+        "y": 10
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(http_server_requests_seconds_sum{outcome!=\"SUCCESS\", uri=\"/irs/jobs\"}[24h]))",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "sum(increase(http_server_requests_seconds_sum{outcome!=\"SUCCESS\", uri=\"/irs/jobs\"}[1h]))",
+          "hide": false,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "sum(increase(http_server_requests_seconds_sum{outcome!=\"SUCCESS\", uri=\"/irs/jobs\"}[1m]))",
+          "hide": false,
+          "refId": "C"
+        }
+      ],
+      "title": "Exception",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "IRS-API",
+  "uid": "GPQ0I4k4z",
+  "version": 25,
+  "weekStart": ""
+}

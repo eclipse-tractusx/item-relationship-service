@@ -53,7 +53,22 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-BlPu"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 6,
@@ -85,7 +100,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "jobs_created_total{}",
+          "expr": "increase(jobs_created_total[100y])",
           "instant": false,
           "interval": "",
           "range": true,
@@ -120,7 +135,22 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobstate=\"successful\"}"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-YlBl"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 6,
@@ -151,11 +181,13 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "jobs_jobstate_sucessful_total{}",
+          "editorMode": "code",
+          "expr": "increase(jobs_jobstate_sucessful_total[100y])",
+          "range": true,
           "refId": "A"
         }
       ],
-      "title": "Completed Job",
+      "title": "Total Completed Job",
       "type": "stat"
     },
     {
@@ -163,21 +195,23 @@
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "light-yellow",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "light-blue",
+                "color": "green",
                 "value": null
               },
               {
-                "color": "light-blue",
+                "color": "red",
                 "value": 80
               }
             ]
@@ -191,12 +225,12 @@
         "x": 12,
         "y": 0
       },
-      "id": 6,
+      "id": 8,
       "options": {
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "center",
-        "orientation": "horizontal",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -216,11 +250,11 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "jobs_jobstate_sucessful_total{}",
+          "expr": "{jobstate=\"running\"}",
           "refId": "A"
         }
       ],
-      "title": "Job Successful",
+      "title": "Total Running Job",
       "type": "stat"
     },
     {
@@ -430,7 +464,35 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "mappings": [],
           "thresholds": {
@@ -447,7 +509,154 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jobs_created_total\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total create jobs"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobstate=\"successful\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Successful"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobstate=\"running\"}"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "palette-classic"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Running"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobstate=\"cancelled\"}"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-BlPu"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Cancelled"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobstate=\"failed\"}"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "palette-classic"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Failed"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jobs_snapshot_success\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobsnapshot=\"job_completed_snapshot\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "completed"
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "auto"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 16
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jobs_snapshot_running\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobsnapshot=\"job_running_snapshot\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "running"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 17
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jobs_snapshot_cancelled\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobsnapshot=\"job_cancelled_snapshot\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "cancelled"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 16
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jobs_snapshot_failed\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobsnapshot=\"job_failed_snapshot\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "failed"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 15
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -455,23 +664,17 @@
         "x": 0,
         "y": 12
       },
-      "id": 8,
+      "id": 2,
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
         },
-        "text": {
-          "valueSize": 130
-        },
-        "textMode": "auto"
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "pluginVersion": "9.0.2",
       "targets": [
@@ -480,12 +683,52 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "{jobstate=\"running\"}",
+          "editorMode": "code",
+          "expr": "jobs_snapshot_success",
+          "legendFormat": "__auto",
+          "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "jobs_snapshot_running",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{label_name}}",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "jobs_snapshot_cancelled",
+          "hide": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "jobs_snapshot_failed",
+          "hide": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "D"
         }
       ],
-      "title": "Running Job",
-      "type": "stat"
+      "title": "Snapshot",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -556,7 +799,6 @@
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -567,7 +809,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 9,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -609,12 +851,32 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"jobs_created_total\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\"}"
+              "options": "job_execution_time{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"getjobbystate\"}"
             },
             "properties": [
               {
                 "id": "displayName",
-                "value": "Total create jobs"
+                "value": "Get Job"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 29
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"job_execution_time\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"registerjob\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Register Job"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 20
               }
             ]
           }
@@ -626,7 +888,7 @@
         "x": 12,
         "y": 12
       },
-      "id": 2,
+      "id": 19,
       "options": {
         "legend": {
           "calcs": [],
@@ -638,6 +900,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "datasource": {
@@ -645,14 +908,255 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "builder",
-          "expr": "jobs_created_total",
+          "expr": "job_execution_time{jobtimer=\"getjobbystate\"}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "builder",
+          "expr": "job_execution_time{jobtimer=\"registerjob\"}",
+          "hide": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Process time (Milliseconds)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jobs_created_total\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total create jobs"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobstate=\"successful\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Successful"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobstate=\"running\"}"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "palette-classic"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Running"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobstate=\"cancelled\"}"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-BlPu"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Cancelled"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobstate=\"failed\"}"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "palette-classic"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Failed"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jobs_snapshot_success\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobsnapshot=\"job_completed_snapshot\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "completed"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jobs_snapshot_running\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobsnapshot=\"job_running_snapshot\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "running"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jobs_snapshot_cancelled\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobsnapshot=\"job_cancelled_snapshot\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "cancelled"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"jobs_snapshot_failed\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobsnapshot=\"job_failed_snapshot\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "failed"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 18,
+        "x": 0,
+        "y": 20
+      },
+      "id": 20,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "jobs_snapshot_success",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "jobs_snapshot_running",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{label_name}}",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "jobs_snapshot_cancelled",
+          "hide": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "jobs_snapshot_failed",
+          "hide": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "D"
         }
       ],
-      "title": "Create Jobs",
-      "type": "timeseries"
+      "title": "Snapshot Stat",
+      "type": "stat"
     }
   ],
   "refresh": "10s",
@@ -663,13 +1167,13 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "IRS-Jobs",
   "uid": "YbpWKmk4k",
-  "version": 9,
+  "version": 23,
   "weekStart": ""
 }
