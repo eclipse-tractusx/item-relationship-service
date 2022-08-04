@@ -106,7 +106,7 @@ public class MeterRegistryService {
         jobMetrics.getCounterCreatedJobs().increment();
     }
 
-    public void incrementJobsProcessed() {
+    public void incrementJobProcessed() {
         jobMetrics.getJobProcessed().increment();
     }
 
@@ -136,7 +136,7 @@ public class MeterRegistryService {
                 incrementJobSuccessful();
                 break;
             case TRANSFERS_FINISHED:
-                incrementJobsProcessed();
+                incrementJobProcessed();
                 break;
             case ERROR:
                 incrementJobFailed();
