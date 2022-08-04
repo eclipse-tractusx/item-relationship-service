@@ -1,0 +1,27 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam spacing 50
+
+
+component [**IRS**] <<System>> {
+	component [**REST Controller**] <<Component>> as RestController
+	component [**IRS Core**] <<Component>> as Core
+	component [**MinioBlobPersistence**] <<Component>> as BlobStore
+	component [**AAS Consumer**] <<Component>> as AAS
+	component [**EDC Consumer**] <<Component>> as EDC
+
+RestController ---( IIrsItemGraphQueryService
+Core -- IIrsItemGraphQueryService
+
+BlobStore --( BlobPersistence
+Core -- BlobPersistence
+
+AAS --- DigitalTwinRegistryClient
+Core ---( DigitalTwinRegistryClient
+
+EDC -- SubmodelClient
+Core ---( SubmodelClient
+}
+
+@enduml
