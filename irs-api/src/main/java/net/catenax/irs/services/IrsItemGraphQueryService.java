@@ -203,12 +203,12 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         meterRegistryService.setNumberOfJobsInJobStore(numberOfJobs);
 
         final Map<JobState, Long> stateCount = jobs.stream()
-                                                .map(MultiTransferJob::getJob)
-                                                .map(Job::getJobState)
-                                                .collect(Collectors.groupingBy(Function.identity(),
-                                                        Collectors.counting()));
+                                                   .map(MultiTransferJob::getJob)
+                                                   .map(Job::getJobState)
+                                                   .collect(Collectors.groupingBy(Function.identity(),
+                                                           Collectors.counting()));
 
-        for (JobState state : JobState.values()){
+        for (JobState state : JobState.values()) {
             meterRegistryService.setStateSnapShot(state, stateCount.getOrDefault(state, 0L));
         }
 
