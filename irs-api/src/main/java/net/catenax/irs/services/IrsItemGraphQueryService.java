@@ -208,7 +208,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                                                    .collect(Collectors.groupingBy(Function.identity(),
                                                            Collectors.counting()));
 
-        for (JobState state : JobState.values()) {
+        for (final JobState state : JobState.values()) {
             meterRegistryService.setStateSnapShot(state, stateCount.getOrDefault(state, 0L));
         }
 
