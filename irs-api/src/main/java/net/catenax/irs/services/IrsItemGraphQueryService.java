@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -201,11 +202,15 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         log.info("Number(s) of job in JobStore: {}", numberOfJobs);
         meterRegistryService.setNumberOfJobsInJobStore(numberOfJobs);
 
-        jobs.stream()
-            .map(MultiTransferJob::getJob)
-            .map(Job::getJobState)
-            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-            .forEach(meterRegistryService::setStateSnapShot);
+        final Map<JobState, Long> stateCount = jobs.stream()
+                                                .map(MultiTransferJob::getJob)
+                                                .map(Job::getJobState)
+                                                .collect(Collectors.groupingBy(Function.identity(),
+                                                        Collectors.counting()));
+
+        for (JobState state : JobState.values()){
+            meterRegistryService.setStateSnapShot(state, stateCount.getOrDefault(state, 0L));
+        }
 
     }
 
