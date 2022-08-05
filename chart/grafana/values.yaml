@@ -159,16 +159,6 @@ configEnvs:
     value: ''
   - name: GF_AUTH_GITHUB_ALLOWED_ORGANIZATIONS
     value: 'catenax-ng'
-  - name: GF_AUTH_GITHUB_CLIENT_ID
-    valueFrom:
-      secretKeyRef:
-        name: {{ include "grafana.fullname" . }}
-        key: oauthClientId
-  - name: GF_AUTH_GITHUB_CLIENT_SECRET
-    valueFrom:
-      secretKeyRef:
-        name: {{ include "grafana.fullname" . }}
-        key: oauthClientSecret
   - name: GF_AUTH_GITHUB_SCOPES
     value: 'user:email,read:org'
   - name: GF_AUTH_GITHUB_AUTH_URL
