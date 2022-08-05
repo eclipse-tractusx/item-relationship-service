@@ -152,9 +152,9 @@ dashboards:
 
 configEnvs:
   - name: GF_AUTH_GITHUB_ENABLED
-    value: true
+    value: 'true'
   - name: GF_AUTH_GITHUB_ALLOW_SIGN_UP
-    value: true
+    value: 'true'
   - name: GF_AUTH_GITHUB_ALLOWED_ORGANIZATIONS
     value: 'catenax-ng'
   - name: GF_AUTH_GITHUB_SCOPES
