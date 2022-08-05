@@ -157,8 +157,8 @@ configEnvs:
     value: 'true'
   - name: GF_AUTH_GITHUB_ALLOW_SIGN_UP
     value: 'true'
-  - name: GF_AUTH_GITHUB_ALLOWED_ORGANIZATIONS
-    value: 'catenax-ng'
+  - name: GF_AUTH_GITHUB_TEAM_IDS
+    value: '5783013'
   - name: GF_AUTH_GITHUB_SCOPES
     value: 'user:email,read:org'
   - name: GF_AUTH_GITHUB_AUTH_URL
