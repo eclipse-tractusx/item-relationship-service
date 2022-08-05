@@ -12,3 +12,25 @@ ingress:
         - "irs-grafana.int.demo.catena-x.net"
       # Default secret for certificate creation already provided to your namespace
       secretName: tls-secret
+
+configEnvs:
+  - name: GF_AUTH_GITHUB_ENABLED
+    value: true
+  - name: GF_AUTH_GITHUB_ALLOW_SIGN_UP
+    value: true
+  - name: GF_AUTH_GITHUB_TEAM_IDS
+    value: ''
+  - name: GF_AUTH_GITHUB_ALLOWED_ORGANIZATIONS
+    value: 'catenax-ng'
+  - name: GF_AUTH_GITHUB_CLIENT_ID
+    value: '<path:traceability-irs/data/int/grafana#oauthClientId>'
+  - name: GF_AUTH_GITHUB_CLIENT_SECRET
+    value: '<path:traceability-irs/data/int/grafana#oauthClientSecret>'
+  - name: GF_AUTH_GITHUB_SCOPES
+    value: 'user:email,read:org'
+  - name: GF_AUTH_GITHUB_AUTH_URL
+    value: 'https://github.com/login/oauth/authorize'
+  - name: GF_AUTH_GITHUB_TOKEN_URL
+    value: 'https://github.com/login/oauth/access_token'
+  - name: GF_AUTH_GITHUB_API_URL
+    value: 'https://api.github.com/user'
