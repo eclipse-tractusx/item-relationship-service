@@ -1,11 +1,12 @@
 #!/usr/bin/python
 
+import argparse
 import json
 import math
 import time
 import uuid
+
 import requests
-import argparse
 
 
 def create_submodel_payload(json_payload):
@@ -200,7 +201,7 @@ if __name__ == "__main__":
 
                 dict_aas[part_bpn].append(aas)
 
-        if aas and part_bpn and serial_part and assembly_part is not None:
+        if aas and part_bpn and (serial_part or assembly_part) is not None:
             digital_twin_id = aas.get("globalAssetId")["value"][0]
             aas["identification"] = digital_twin_id
 
@@ -219,7 +220,7 @@ if __name__ == "__main__":
                     else:
                         submodel_url = submodel_server_3_address
 
-                    generated_address = internal_control_plane_submodel_url + "/" + part_bpn + "/" + digital_twin_id + \
+                    generated_address = internal_control_plane_submodel_url + "/" + digital_twin_id + \
                         "-" + digital_twin_submodel_id + "/submodel?content=value&extent=withBlobValue"
                     endpoint["protocolInformation"]["endpointAddress"] = generated_address
                     submodel_descriptor["identification"] = digital_twin_submodel_id
