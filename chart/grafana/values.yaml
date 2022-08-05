@@ -123,6 +123,8 @@ readinessProbe:
 
 username: <path:traceability-irs/data/dev/grafana#username>
 password: <path:traceability-irs/data/dev/grafana#password>
+oauthClientId: <path:traceability-irs/data/dev/grafana#oauthClientId>
+oauthClientSecret: <path:traceability-irs/data/dev/grafana#oauthClientSecret>
 
 config:
   apiVersion: 1
@@ -158,9 +160,15 @@ configEnvs:
   - name: GF_AUTH_GITHUB_ALLOWED_ORGANIZATIONS
     value: 'catenax-ng'
   - name: GF_AUTH_GITHUB_CLIENT_ID
-    value: '<path:traceability-irs/data/dev/grafana#oauthClientId>'
+    valueFrom:
+      secretKeyRef:
+        name: {{ include "grafana.fullname" . }}
+        key: oauthClientId
   - name: GF_AUTH_GITHUB_CLIENT_SECRET
-    value: '<path:traceability-irs/data/dev/grafana#oauthClientSecret>'
+    valueFrom:
+      secretKeyRef:
+        name: {{ include "grafana.fullname" . }}
+        key: oauthClientSecret
   - name: GF_AUTH_GITHUB_SCOPES
     value: 'user:email,read:org'
   - name: GF_AUTH_GITHUB_AUTH_URL
