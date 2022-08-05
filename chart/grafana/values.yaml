@@ -151,6 +151,8 @@ dashboards:
   outbound: dashboards/irs-outbound-requests.json
 
 configEnvs:
+  - name: GF_SERVER_ROOT_URL
+    value: 'https://irs-grafana.dev.demo.catena-x.net'
   - name: GF_AUTH_GITHUB_ENABLED
     value: 'true'
   - name: GF_AUTH_GITHUB_ALLOW_SIGN_UP
