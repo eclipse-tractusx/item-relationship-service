@@ -61,6 +61,9 @@ spec:
                 secretKeyRef:
                   name: {{ include "grafana.fullname" . }}
                   key: password
+            {{- with .Values.configEnvs }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: "/api/health"
