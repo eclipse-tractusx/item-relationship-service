@@ -149,8 +149,9 @@ dashboardProviders:
 dashboards:
   minio: dashboards/minio-dashboard.json
   outbound: dashboards/irs-outbound-requests.json
-  irsmonitoring: resource-monitoring-dashboard.json
-  irsapi: irs-jobs-dashboard.json
+  irsmonitoring: dashboards/resource-monitoring-dashboard.json
+  irsjobs: dashboards/irs-jobs-dashboard.json
+  irsapi: dashboards/irs-api-dashboard.json
 
 configEnvs:
   - name: GF_SERVER_ROOT_URL
