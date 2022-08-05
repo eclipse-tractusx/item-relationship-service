@@ -155,8 +155,6 @@ configEnvs:
     value: true
   - name: GF_AUTH_GITHUB_ALLOW_SIGN_UP
     value: true
-  - name: GF_AUTH_GITHUB_TEAM_IDS
-    value: ''
   - name: GF_AUTH_GITHUB_ALLOWED_ORGANIZATIONS
     value: 'catenax-ng'
   - name: GF_AUTH_GITHUB_SCOPES
