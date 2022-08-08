@@ -24,7 +24,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -265,7 +264,35 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "mappings": [],
           "thresholds": {
@@ -282,31 +309,62 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "avg(increase(job_execution_time[100y]))"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Average Process Time"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "min(increase(job_execution_time[100y]))"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Minimum Process Time"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "max(increase(job_execution_time[100y]))"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Max Process Time"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 6,
+        "h": 8,
         "w": 6,
-        "x": 0,
-        "y": 6
+        "x": 18,
+        "y": 0
       },
-      "id": 16,
+      "id": 22,
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
         },
-        "text": {
-          "valueSize": 130
-        },
-        "textMode": "auto"
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "pluginVersion": "9.0.2",
       "targets": [
@@ -315,12 +373,36 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "{jobstate=\"exception\"}",
+          "editorMode": "code",
+          "expr": "avg(increase(job_execution_time[100y]))",
+          "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "min(increase(job_execution_time[100y]))",
+          "hide": false,
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "max(increase(job_execution_time[100y]))",
+          "hide": false,
+          "range": true,
+          "refId": "C"
         }
       ],
-      "title": "Job Exception",
-      "type": "stat"
+      "title": "Process Time",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -350,9 +432,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
+        "h": 8,
         "w": 6,
-        "x": 6,
+        "x": 0,
         "y": 6
       },
       "id": 4,
@@ -380,15 +462,79 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "editorMode": "code",
-          "expr": "jobs_jobstate_cancelled_total{jobstate=\"cancelled\"}",
+          "editorMode": "builder",
+          "expr": "round(increase(jobs_jobstate_cancelled_total{jobstate=\"cancelled\"}[100y]), 1)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Cancelled Job",
+      "title": "Total Cancelled Jobs",
       "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "displayName": "Jobs In JobStore",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 6
+      },
+      "id": 18,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "jobs_jobstore{jobstate=\"jobs_in_store\"}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Jobs currently in JobStore",
+      "type": "gauge"
     },
     {
       "datasource": {
@@ -418,7 +564,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
+        "h": 8,
         "w": 6,
         "x": 12,
         "y": 6
@@ -448,11 +594,13 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "{jobstate=\"failed\"}",
+          "editorMode": "builder",
+          "expr": "round(increase({jobstate=\"failed\"}[100y]), 1)",
+          "range": true,
           "refId": "A"
         }
       ],
-      "title": "Failed Job",
+      "title": "Total Failed Jobs",
       "type": "stat"
     },
     {
@@ -662,7 +810,7 @@
         "h": 8,
         "w": 6,
         "x": 0,
-        "y": 12
+        "y": 14
       },
       "id": 2,
       "options": {
@@ -735,13 +883,39 @@
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
-          "displayName": "Jobs In JobStore",
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -757,26 +931,102 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"canceljob\"}"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 29
+              },
+              {
+                "id": "displayName",
+                "value": "Get Cancel per Minute"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"cleancompletedjobs\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Clean Completed Job per Minute"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"cleanfailedjobs\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Clean Failed Job per Minute"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"getjob\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Get Job per Minute"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"getjobbystate\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Get Job by State per Minute"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"registerjob\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Register Job per Minute"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
         "w": 6,
         "x": 6,
-        "y": 12
+        "y": 14
       },
-      "id": 18,
+      "id": 19,
       "options": {
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "pluginVersion": "9.0.2",
       "targets": [
@@ -786,13 +1036,13 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "jobs_jobstore{jobstate=\"jobs_in_store\"}",
+          "expr": "increase(job_execution_time[1m])",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Job in JobStore",
-      "type": "gauge"
+      "title": "Process Time per Minute",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -851,32 +1101,76 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "job_execution_time{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"getjobbystate\"}"
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"canceljob\"}"
             },
             "properties": [
               {
-                "id": "displayName",
-                "value": "Get Job"
-              },
-              {
                 "id": "custom.fillOpacity",
                 "value": 29
+              },
+              {
+                "id": "displayName",
+                "value": "Get Cancel per Hour"
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"job_execution_time\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"registerjob\"}"
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"cleancompletedjobs\"}"
             },
             "properties": [
               {
                 "id": "displayName",
-                "value": "Register Job"
-              },
+                "value": "Clean Completed Job per Hour"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"cleanfailedjobs\"}"
+            },
+            "properties": [
               {
-                "id": "custom.fillOpacity",
-                "value": 20
+                "id": "displayName",
+                "value": "Clean Failed Job per Hour"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"getjob\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Get Job per Hour"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"getjobbystate\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Get Job by State per Hour"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\", jobtimer=\"registerjob\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Register Job per Hour"
               }
             ]
           }
@@ -886,9 +1180,9 @@
         "h": 8,
         "w": 6,
         "x": 12,
-        "y": 12
+        "y": 14
       },
-      "id": 19,
+      "id": 21,
       "options": {
         "legend": {
           "calcs": [],
@@ -907,25 +1201,13 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "editorMode": "builder",
-          "expr": "job_execution_time{jobtimer=\"getjobbystate\"}",
+          "editorMode": "code",
+          "expr": "increase(job_execution_time[1h])",
           "range": true,
           "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "builder",
-          "expr": "job_execution_time{jobtimer=\"registerjob\"}",
-          "hide": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "B"
         }
       ],
-      "title": "Process time (Milliseconds)",
+      "title": "Process Time per Hour",
       "type": "timeseries"
     },
     {
@@ -1087,7 +1369,7 @@
         "h": 10,
         "w": 18,
         "x": 0,
-        "y": 20
+        "y": 22
       },
       "id": 20,
       "options": {
@@ -1174,6 +1456,6 @@
   "timezone": "",
   "title": "IRS-Jobs",
   "uid": "YbpWKmk4k",
-  "version": 23,
+  "version": 1,
   "weekStart": ""
 }
