@@ -318,7 +318,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Average Process Time"
+                "value": "Average Processing Time"
               }
             ]
           },
@@ -330,7 +330,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Minimum Process Time"
+                "value": "Minimum Processing Time"
               }
             ]
           },
@@ -342,7 +342,19 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Max Process Time"
+                "value": "Max Processing Time"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "avg(quantile(0.5, job_execution_time))"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Median Processing Time"
               }
             ]
           }
@@ -399,6 +411,17 @@
           "hide": false,
           "range": true,
           "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "avg(quantile(0.5, job_execution_time))",
+          "hide": false,
+          "range": true,
+          "refId": "D"
         }
       ],
       "title": "Process Time",
