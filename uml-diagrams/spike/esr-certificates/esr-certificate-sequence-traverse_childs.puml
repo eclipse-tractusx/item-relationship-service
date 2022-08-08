@@ -1,0 +1,78 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+autonumber "<b>[000]"
+
+actor User
+
+box "OEM" #LightGrey
+User --> IRS: globalAssetId
+IRS -> DTRegistry: getAAS(globalAssetId)
+IRS <-- DTRegistry: AAShell
+participant OEMSubmodelServer
+
+loop for each SubmodelDescriptor()
+ref over IRS, OEMSubmodelServer
+    extract BPNL number of Requestor from SerialPartTypization
+end ref
+ref over IRS, OEMSubmodelServer
+    get children via AssemblyPartRelationshipAspectPayload
+    semanticId == urn:bamm:*AssemblyPartRelationShip
+end ref
+alt no AssemblyPartRelationshipAspect
+       User <-- IRS: jobResponse  
+   else
+ref over IRS,DTRegistry
+    DTRegistry: getAAS for C-X ID
+    Source: AssemblyPartRelationShip
+end ref
+end opt
+ref over IRS, SubmodelServer_Tier_1
+    extract BPNL number of Supplier from SerialPartTypization
+end ref
+ref over IRS, IRS_Tier_1
+    ESRCertificateStatistic endpoint to IRS Tier +1
+    call IRS (Tier+1)
+end ref
+    IRS -> IRS_Tier_1 : (globalAssetId)
+    IRS_Tier_1 -> DTRegistry: getAAS(globalAssetId)
+    ref over IRS_Tier_1, IRS_Tier_2
+        Process next tier level
+        << return result
+    end ref
+ref over IRS, OnSupplyAPI
+    OnSupplyAPI call
+    call OnSupplyAPI http//supplyOn/BPML/BPML/submodels/ISO14001
+end ref
+ref over IRS
+    aggregate results or child IRS
+end ref
+ref over IRS
+    User approval process
+end ref
+end loop
+
+
+end box
+
+participant "EDC" as EDC1 #99FF99
+
+box "Tier 1_1" #LightGrey
+participant SubmodelServer_Tier_1
+participant IRS_Tier_1
+end box
+
+box "Shared Service" #LightGrey
+participant DTRegistry
+participant OnSupplyAPI
+end box
+
+box "Tier 2_1" #DarkGrey
+participant SubmodelServer_Tier_2
+participant IRS_Tier_2
+end box
+
+User <-- IRS: jobResponse
+
+@enduml
