@@ -156,7 +156,7 @@
                         {
                             "semanticId": [
                                 {
-                                    "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0"
+                                    "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
                                 }
                             ],
                             "endpoints": [
@@ -171,6 +171,20 @@
                             ],
                             "identification": "assemblyPartRelationship",
                             "idShort": "assembly-part-relationship"
+                        }, {
+                            "semanticId" : [ {
+                                "value" : "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                            } ],
+                            "endpoints" : [ {
+                                "interface" : "https://BPNL00000003B2OM.connector",
+                                "protocolInformation" : {
+                                    "endpointAddress" : "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                                    "endpointProtocolVersion" : "1.0RC02",
+                                    "endpointProtocol" : "AAS/SUBMODEL"
+                                }
+                            } ],
+                            "identification" : "serialPartTypization",
+                            "idShort" : "serial-part-typization"
                         }
                     ],
                     "globalAssetId": {
@@ -471,7 +485,7 @@
                     "idShort" : "material-for-recycling"
                 }, {
                     "semanticId" : [ {
-                        "value" : "urn:bamm:com.catenax.assembly_part_relationship:1.0.0"
+                        "value" : "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
                     } ],
                     "endpoints" : [ {
                         "interface" : "https://BPNL00000003B2OM.connector",
@@ -483,6 +497,20 @@
                     } ],
                     "identification" : "assemblyPartRelationship",
                     "idShort" : "assembly-part-relationship"
+                }, {
+                    "semanticId" : [ {
+                        "value" : "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                    } ],
+                    "endpoints" : [ {
+                        "interface" : "https://BPNL00000003B2OM.connector",
+                        "protocolInformation" : {
+                            "endpointAddress" : "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                            "endpointProtocolVersion" : "1.0RC02",
+                            "endpointProtocol" : "AAS/SUBMODEL"
+                        }
+                    } ],
+                    "identification" : "serialPartTypization",
+                    "idShort" : "serial-part-typization"
                 } ],
                 "globalAssetId" : {
                     "value" : [ "urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562" ]
@@ -631,6 +659,20 @@
                     } ],
                     "identification" : "materialForRecycling",
                     "idShort" : "material-for-recycling"
+                }, {
+                    "semanticId" : [ {
+                        "value" : "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                    } ],
+                    "endpoints" : [ {
+                        "interface" : "https://BPNL00000003B2OM.connector",
+                        "protocolInformation" : {
+                            "endpointAddress" : "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:16bb1a7e-8ed8-48ca-a839-5f38b704fcae-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                            "endpointProtocolVersion" : "1.0RC02",
+                            "endpointProtocol" : "AAS/SUBMODEL"
+                        }
+                    } ],
+                    "identification" : "serialPartTypization",
+                    "idShort" : "serial-part-typization"
                 } ],
                 "globalAssetId" : {
                     "value" : [ "urn:uuid:16bb1a7e-8ed8-48ca-a839-5f38b704fcae" ]
@@ -710,7 +752,7 @@
                 } ],
                 "submodelDescriptors" : [ {
                     "semanticId" : [ {
-                        "value" : "urn:bamm:com.catenax.assembly_part_relationship:1.0.0"
+                        "value" : "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
                     } ],
                     "endpoints" : [ {
                         "interface" : "https://BPNL00000003B3NX.connector",
@@ -722,6 +764,20 @@
                     } ],
                     "identification" : "assemblyPartRelationship",
                     "idShort" : "assembly-part-relationship"
+                }, {
+                    "semanticId" : [ {
+                        "value" : "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                    } ],
+                    "endpoints" : [ {
+                        "interface" : "https://BPNL00000003B2OM.connector",
+                        "protocolInformation" : {
+                            "endpointAddress" : "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                            "endpointProtocolVersion" : "1.0RC02",
+                            "endpointProtocol" : "AAS/SUBMODEL"
+                        }
+                    } ],
+                    "identification" : "serialPartTypization",
+                    "idShort" : "serial-part-typization"
                 } ],
                 "globalAssetId" : {
                     "value" : [ "urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2" ]
@@ -797,6 +853,20 @@
                     } ],
                     "identification" : "materialForRecycling",
                     "idShort" : "material-for-recycling"
+                }, {
+                    "semanticId" : [ {
+                        "value" : "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                    } ],
+                    "endpoints" : [ {
+                        "interface" : "https://BPNL00000003B2OM.connector",
+                        "protocolInformation" : {
+                            "endpointAddress" : "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:f7cf62fe-9e25-472b-9148-66ebcc291f31-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                            "endpointProtocolVersion" : "1.0RC02",
+                            "endpointProtocol" : "AAS/SUBMODEL"
+                        }
+                    } ],
+                    "identification" : "serialPartTypization",
+                    "idShort" : "serial-part-typization"
                 } ],
                 "globalAssetId" : {
                     "value" : [ "urn:uuid:f7cf62fe-9e25-472b-9148-66ebcc291f31" ]
@@ -876,7 +946,7 @@
                 } ],
                 "submodelDescriptors" : [ {
                     "semanticId" : [ {
-                        "value" : "urn:bamm:com.catenax.assembly_part_relationship:1.0.0"
+                        "value" : "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
                     } ],
                     "endpoints" : [ {
                         "interface" : "https://BPNL00000003AXS3.connector",
@@ -888,6 +958,20 @@
                     } ],
                     "identification" : "assemblyPartRelationship",
                     "idShort" : "assembly-part-relationship"
+                }, {
+                    "semanticId" : [ {
+                        "value" : "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                    } ],
+                    "endpoints" : [ {
+                        "interface" : "https://BPNL00000003B2OM.connector",
+                        "protocolInformation" : {
+                            "endpointAddress" : "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                            "endpointProtocolVersion" : "1.0RC02",
+                            "endpointProtocol" : "AAS/SUBMODEL"
+                        }
+                    } ],
+                    "identification" : "serialPartTypization",
+                    "idShort" : "serial-part-typization"
                 } ],
                 "globalAssetId" : {
                     "value" : [ "urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef" ]
@@ -968,7 +1052,7 @@
                     "idShort" : "material-for-recycling"
                 }, {
                     "semanticId" : [ {
-                        "value" : "urn:bamm:com.catenax.assembly_part_relationship:1.0.0"
+                        "value" : "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
                     } ],
                     "endpoints" : [ {
                         "interface" : "https://BPNL00000003B5MJ.connector",
@@ -980,6 +1064,20 @@
                     } ],
                     "identification" : "assemblyPartRelationship",
                     "idShort" : "assembly-part-relationship"
+                }, {
+                    "semanticId" : [ {
+                        "value" : "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                    } ],
+                    "endpoints" : [ {
+                        "interface" : "https://BPNL00000003B2OM.connector",
+                        "protocolInformation" : {
+                            "endpointAddress" : "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                            "endpointProtocolVersion" : "1.0RC02",
+                            "endpointProtocol" : "AAS/SUBMODEL"
+                        }
+                    } ],
+                    "identification" : "serialPartTypization",
+                    "idShort" : "serial-part-typization"
                 } ],
                 "globalAssetId" : {
                     "value" : [ "urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc" ]
@@ -1095,6 +1193,20 @@
                     } ],
                     "identification" : "materialForRecycling",
                     "idShort" : "material-for-recycling"
+                }, {
+                    "semanticId" : [ {
+                        "value" : "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                    } ],
+                    "endpoints" : [ {
+                        "interface" : "https://BPNL00000003B2OM.connector",
+                        "protocolInformation" : {
+                            "endpointAddress" : "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:b931e9e8-614d-494c-a8e6-548ee8b6ef34-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                            "endpointProtocolVersion" : "1.0RC02",
+                            "endpointProtocol" : "AAS/SUBMODEL"
+                        }
+                    } ],
+                    "identification" : "serialPartTypization",
+                    "idShort" : "serial-part-typization"
                 } ],
                 "globalAssetId" : {
                     "value" : [ "urn:uuid:b931e9e8-614d-494c-a8e6-548ee8b6ef34" ]
@@ -1174,7 +1286,7 @@
                 } ],
                 "submodelDescriptors" : [ {
                     "semanticId" : [ {
-                        "value" : "urn:bamm:com.catenax.assembly_part_relationship:1.0.0"
+                        "value" : "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
                     } ],
                     "endpoints" : [ {
                         "interface" : "https://BPNL00000003B3NX.connector",
@@ -1186,6 +1298,20 @@
                     } ],
                     "identification" : "assemblyPartRelationship",
                     "idShort" : "assembly-part-relationship"
+                }, {
+                    "semanticId" : [ {
+                        "value" : "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                    } ],
+                    "endpoints" : [ {
+                        "interface" : "https://BPNL00000003B2OM.connector",
+                        "protocolInformation" : {
+                            "endpointAddress" : "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                            "endpointProtocolVersion" : "1.0RC02",
+                            "endpointProtocol" : "AAS/SUBMODEL"
+                        }
+                    } ],
+                    "identification" : "serialPartTypization",
+                    "idShort" : "serial-part-typization"
                 } ],
                 "globalAssetId" : {
                     "value" : [ "urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640" ]
@@ -1261,6 +1387,20 @@
                     } ],
                     "identification" : "materialForRecycling",
                     "idShort" : "material-for-recycling"
+                }, {
+                    "semanticId" : [ {
+                        "value" : "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                    } ],
+                    "endpoints" : [ {
+                        "interface" : "https://BPNL00000003B2OM.connector",
+                        "protocolInformation" : {
+                            "endpointAddress" : "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:186359fb-4584-40e4-a59b-ed842d3d80d9-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                            "endpointProtocolVersion" : "1.0RC02",
+                            "endpointProtocol" : "AAS/SUBMODEL"
+                        }
+                    } ],
+                    "identification" : "serialPartTypization",
+                    "idShort" : "serial-part-typization"
                 } ],
                 "globalAssetId" : {
                     "value" : [ "urn:uuid:186359fb-4584-40e4-a59b-ed842d3d80d9" ]
@@ -1352,6 +1492,20 @@
                     } ],
                     "identification" : "materialForRecycling",
                     "idShort" : "material-for-recycling"
+                }, {
+                    "semanticId" : [ {
+                        "value" : "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                    } ],
+                    "endpoints" : [ {
+                        "interface" : "https://BPNL00000003B2OM.connector",
+                        "protocolInformation" : {
+                            "endpointAddress" : "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:8b59e2ec-d76a-49a7-a795-c4bea4a02d87-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                            "endpointProtocolVersion" : "1.0RC02",
+                            "endpointProtocol" : "AAS/SUBMODEL"
+                        }
+                    } ],
+                    "identification" : "serialPartTypization",
+                    "idShort" : "serial-part-typization"
                 } ],
                 "globalAssetId" : {
                     "value" : [ "urn:uuid:8b59e2ec-d76a-49a7-a795-c4bea4a02d87" ]
@@ -1459,7 +1613,7 @@
                     "idShort" : "return-request"
                 }, {
                     "semanticId" : [ {
-                        "value" : "urn:bamm:com.catenax.assembly_part_relationship:1.0.0"
+                        "value" : "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
                     } ],
                     "endpoints" : [ {
                         "interface" : "https://BPNL00000003AYRE.connector",
@@ -1471,6 +1625,20 @@
                     } ],
                     "identification" : "assemblyPartRelationship",
                     "idShort" : "assembly-part-relationship"
+                }, {
+                    "semanticId" : [ {
+                        "value" : "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                    } ],
+                    "endpoints" : [ {
+                        "interface" : "https://BPNL00000003B2OM.connector",
+                        "protocolInformation" : {
+                            "endpointAddress" : "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                            "endpointProtocolVersion" : "1.0RC02",
+                            "endpointProtocol" : "AAS/SUBMODEL"
+                        }
+                    } ],
+                    "identification" : "serialPartTypization",
+                    "idShort" : "serial-part-typization"
                 } ],
                 "globalAssetId" : {
                     "value" : [ "urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a" ]
@@ -1532,66 +1700,6 @@
                     "assembledOn" : "2022-02-03T14:48:54.709Z",
                     "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
                     "childCatenaXId" : "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978"
-                }, {
-                    "quantity" : {
-                        "quantityNumber" : 1,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                            "lexicalValue" : "piece"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:1096af0a-4b4f-4da0-98f7-ad0d7b37994b"
-                }, {
-                    "quantity" : {
-                        "quantityNumber" : 1,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                            "lexicalValue" : "piece"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:ebddf072-05a0-4134-96e7-1f07d768c4d9"
-                }, {
-                    "quantity" : {
-                        "quantityNumber" : 1,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                            "lexicalValue" : "piece"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:9d9534ee-3c1a-4728-a0aa-d488548ac59e"
-                }, {
-                    "quantity" : {
-                        "quantityNumber" : 1,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                            "lexicalValue" : "piece"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:62cc4e11-d7f0-4972-8a6a-25f9b9e98d20"
-                }, {
-                    "quantity" : {
-                        "quantityNumber" : 1,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                            "lexicalValue" : "piece"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:7659e202-428a-4678-a028-4ac94352d94c"
                 } ]
             } ],
             "https://catenax.io/schema/ReturnRequest/0.1.1" : [ {
@@ -1661,7 +1769,7 @@
                     "idShort" : "material-for-recycling"
                 }, {
                     "semanticId" : [ {
-                        "value" : "urn:bamm:com.catenax.assembly_part_relationship:1.0.0"
+                        "value" : "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
                     } ],
                     "endpoints" : [ {
                         "interface" : "https://BPNL00000003AYRE.connector",
@@ -1673,6 +1781,20 @@
                     } ],
                     "identification" : "assemblyPartRelationship",
                     "idShort" : "assembly-part-relationship"
+                }, {
+                    "semanticId" : [ {
+                        "value" : "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                    } ],
+                    "endpoints" : [ {
+                        "interface" : "https://BPNL00000003B2OM.connector",
+                        "protocolInformation" : {
+                            "endpointAddress" : "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                            "endpointProtocolVersion" : "1.0RC02",
+                            "endpointProtocol" : "AAS/SUBMODEL"
+                        }
+                    } ],
+                    "identification" : "serialPartTypization",
+                    "idShort" : "serial-part-typization"
                 } ],
                 "globalAssetId" : {
                     "value" : [ "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978" ]
@@ -1722,139 +1844,7 @@
             } ],
             "https://catenax.io/schema/AssemblyPartRelationship/1.0.0" : [ {
                 "catenaXId" : "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978",
-                "childParts" : [ {
-                    "quantity" : {
-                        "quantityNumber" : 0.11,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                            "lexicalValue" : "kilogram"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:3d9a60bc-e2ce-4ca4-bcae-6ff898963468"
-                }, {
-                    "quantity" : {
-                        "quantityNumber" : 0.1204,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                            "lexicalValue" : "kilogram"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:e37454bd-e021-4fbc-b506-a08406b64621"
-                }, {
-                    "quantity" : {
-                        "quantityNumber" : 1,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                            "lexicalValue" : "piece"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:4c124b27-8aaa-4465-af6a-1e3cbd2cc4f6"
-                }, {
-                    "quantity" : {
-                        "quantityNumber" : 1,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                            "lexicalValue" : "piece"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:904354f9-cd58-4d24-827d-a74929adf1ee"
-                }, {
-                    "quantity" : {
-                        "quantityNumber" : 1,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                            "lexicalValue" : "piece"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:81aba9c4-f1b7-4fa8-833a-78ccf3fbcf14"
-                }, {
-                    "quantity" : {
-                        "quantityNumber" : 1,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                            "lexicalValue" : "piece"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:2cb15176-c7e8-4b12-a26a-67c948781aaa"
-                }, {
-                    "quantity" : {
-                        "quantityNumber" : 1,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                            "lexicalValue" : "piece"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:32f1f75d-ef76-41ee-a466-56e06872943b"
-                }, {
-                    "quantity" : {
-                        "quantityNumber" : 1,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                            "lexicalValue" : "piece"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:e2f04725-0462-4f13-a224-c043cab38269"
-                }, {
-                    "quantity" : {
-                        "quantityNumber" : 1,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                            "lexicalValue" : "piece"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:bd961cdc-b0fb-462c-b4a2-7a673b6829ef"
-                }, {
-                    "quantity" : {
-                        "quantityNumber" : 1,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                            "lexicalValue" : "piece"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:b81f3616-32b6-45f7-b560-53d3a310a7af"
-                }, {
-                    "quantity" : {
-                        "quantityNumber" : 1,
-                        "measurementUnit" : {
-                            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                            "lexicalValue" : "piece"
-                        }
-                    },
-                    "lifecycleContext" : "AsBuilt",
-                    "assembledOn" : "2022-02-03T14:48:54.709Z",
-                    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                    "childCatenaXId" : "urn:uuid:84c6d1b3-89b5-4979-99f2-fbfbf55be601"
-                } ]
+                "childParts" : []
             } ]
         }, {
             "catenaXId": "urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa",

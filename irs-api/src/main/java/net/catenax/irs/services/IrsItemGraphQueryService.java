@@ -13,8 +13,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -195,18 +197,21 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     @Scheduled(cron = "${irs.job.jobstore.cron.expression}")
     public void updateJobsInJobStoreMetrics() {
-        final long value = jobStore.findAll().size();
-        log.info("Number(s) of job in JobStore: {}", value);
-        meterRegistryService.setNumberOfJobsInJobStore(value);
-    }
-
-    @Scheduled(cron = "${irs.job.jobstore.cron.expression}")
-    public void updateStateSnapshortMetrics() {
         final List<MultiTransferJob> jobs = jobStore.findAll();
-        jobs.stream().forEach(job -> {
-            meterRegistryService.setStateSnapShot(job.getJob().getJobState(),
-                    jobs.stream().filter(job1 -> job.getJob().getJobState() == job1.getJob().getJobState()).count());
-        });
+        final long numberOfJobs = jobs.size();
+        log.info("Number(s) of job in JobStore: {}", numberOfJobs);
+        meterRegistryService.setNumberOfJobsInJobStore(numberOfJobs);
+
+        final Map<JobState, Long> stateCount = jobs.stream()
+                                                   .map(MultiTransferJob::getJob)
+                                                   .map(Job::getJobState)
+                                                   .collect(Collectors.groupingBy(Function.identity(),
+                                                           Collectors.counting()));
+
+        for (final JobState state : JobState.values()) {
+            meterRegistryService.setStateSnapShot(state, stateCount.getOrDefault(state, 0L));
+        }
+
     }
 
     private Summary buildSummary(final int completedTransfersSize, final int runningSize, final int tombstonesSize) {

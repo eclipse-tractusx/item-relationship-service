@@ -187,7 +187,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         meterRegistryService.incrementJobRunning();
         meterRegistryService.incrementJobSuccessful();
         meterRegistryService.incrementJobCancelled();
-        meterRegistryService.incrementJobsProcessed();
+        meterRegistryService.incrementJobProcessed();
         meterRegistryService.setNumberOfJobsInJobStore(7L);
         meterRegistryService.setNumberOfJobsInJobStore(12L);
         meterRegistryService.setNumberOfJobsInJobStore(5L);
