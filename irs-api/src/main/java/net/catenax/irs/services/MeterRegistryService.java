@@ -149,12 +149,12 @@ public class MeterRegistryService {
                 break;
             default:
         }
-        log.info("Increment metric for {} state ", state);
+        log.debug("Increment metric for {} state ", state);
     }
 
     public void setNumberOfJobsInJobStore(final Long size) {
         this.numbersOfJobsInJobStore.set(size);
-        log.info("Current size of Job in JobStore is {}", size);
+        log.debug("Current size of Job in JobStore is {}", size);
     }
 
     public void setMeasuredMethodExecutionTime(final String tag, final long duration) {
@@ -166,12 +166,12 @@ public class MeterRegistryService {
 
         this.jobExecutionDuration.set(duration);
         this.jobMetrics = jobMetrics.toBuilder().jobExecutionTime(tag, gauge).build();
-        log.info("Execution time measured for {} is {}", tag, duration);
+        log.debug("Execution time measured for {} is {}", tag, duration);
 
     }
 
     public void setStateSnapShot(final JobState state, final long value) {
-        log.info("Update State {} snapshot to {} ", state, value);
+        log.debug("Update State {} snapshot to {} ", state, value);
         switch (state) {
             case COMPLETED:
                 snapshotCompletedValue.set(value);
