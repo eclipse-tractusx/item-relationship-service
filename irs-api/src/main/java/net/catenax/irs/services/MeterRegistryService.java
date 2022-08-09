@@ -186,7 +186,7 @@ public class MeterRegistryService {
                 snapshotFailedValue.set(value);
                 break;
             default:
-                log.info("Unused State {} value {} ", state, value);
+                log.debug("Unused State {} value {} ", state, value);
                 break;
         }
     }

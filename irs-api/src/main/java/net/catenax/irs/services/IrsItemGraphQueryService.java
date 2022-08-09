@@ -199,7 +199,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     public void updateJobsInJobStoreMetrics() {
         final List<MultiTransferJob> jobs = jobStore.findAll();
         final long numberOfJobs = jobs.size();
-        log.info("Number(s) of job in JobStore: {}", numberOfJobs);
+        log.debug("Number(s) of job in JobStore: {}", numberOfJobs);
         meterRegistryService.setNumberOfJobsInJobStore(numberOfJobs);
 
         final Map<JobState, Long> stateCount = jobs.stream()
