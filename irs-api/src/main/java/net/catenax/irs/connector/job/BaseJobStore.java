@@ -140,7 +140,8 @@ public abstract class BaseJobStore implements JobStore {
     }
 
     @Override
-    public void markJobInError(final String jobId, @Nullable final String errorDetail, final String exceptionClassName) {
+    public void markJobInError(final String jobId, @Nullable final String errorDetail,
+            final String exceptionClassName) {
         modifyJob(jobId, job -> job.toBuilder().transitionError(errorDetail, exceptionClassName).build());
     }
 

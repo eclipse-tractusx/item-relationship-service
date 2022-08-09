@@ -37,7 +37,6 @@ class OutboundMeterRegistryServiceTest {
         when(retryRegistry.getAllRetries()).thenReturn(seq);
         testee = new OutboundMeterRegistryService(meterRegistry, retryRegistry);
 
-
     }
 
     @Test

@@ -15,10 +15,10 @@ import java.util.UUID;
 import lombok.NonNull;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.component.JobStatusResult;
 
 /**
  * IIrsItemGraphQueryService interface
