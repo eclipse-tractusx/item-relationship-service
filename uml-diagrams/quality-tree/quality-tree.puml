@@ -1,0 +1,82 @@
+@startmindmap
+skinparam monochrome true
+skinparam shadowing false
+
+* Quality
+** Compatibility
+*** Interoperability
+*** Backward compatibility
+*** Forward compatibility/Upper compatibility
+*** Versioning
+** Maintainability
+*** Analyzability
+*** Extensibility
+**** Extensibility of IRS
+**** Database and Persistence
+*** Understandability
+*** Diagnostic and Analysis
+** Transparency/Traceability
+*** Monitoring/Analyzability
+*** Auditing (Analytics / user/client behavior)
+*** Auditing (Security / Traceability)
+*** Traceability of requirements
+** Interactivity
+*** Controlling the lifecycle of a job
+*** Jobs are processed in a prioritised manner.
+** Modifiability
+** Stability
+*** Appropriateness
+*** Accuracy
+*** Compliance
+** Reliability
+*** Code Reliability
+*** Idempotency
+*** Robustness
+*** HW failures
+*** SW failures
+*** Stability
+*** Repeated
+*** Prevent data loss
+*** Fault tolerance
+*** Recoverability
+**** Disaster Recovery
+*** Compliance
+*** Availability
+**** Uptime
+** Performance /Efficiency
+*** Time behavior
+*** Utilization
+*** Compliance
+*** Throughput
+*** Latency
+** Usability
+*** Appropriateness-recognizability
+*** Learnability
+*** Ease-of-use
+*** Helpfulness
+*** Attractivity
+*** Operability
+*** Compliance
+*** Metric based feedback
+*** Event-base communication
+*** API design and standard
+*** Data Streaming
+*** Error prevention
+** Security
+*** Secure by Design
+*** Confidentiality
+*** Integrity
+*** Access/Authentication
+** Transferability
+** Functional suitability
+** Portability
+*** Cloud-agnostic
+*** Adaptability
+** Scalability
+*** Horizontal scaling/ Scaling out
+** Good documentation
+*** Configurability
+*** API documentation
+*** Living documentation for software achitecture purpose
+** Low-cost / Cost-effectiveness
+@endmindmap

@@ -14,14 +14,14 @@ participant OEMSubmodelServer
 
 loop for each SubmodelDescriptor()
 ref over IRS, OEMSubmodelServer
-    extract BPNL number of Requestor from SerialPartTypization
+    extract BPNL number of Requestor from AAShell
 end ref
 ref over IRS, OEMSubmodelServer
     get children via AssemblyPartRelationshipAspectPayload
     semanticId == urn:bamm:*AssemblyPartRelationShip
 end ref
 alt no AssemblyPartRelationshipAspect
-       User <-- IRS: jobResponse  
+       User <-- IRS: jobResponse
    else
 ref over IRS,DTRegistry
     DTRegistry: getAAS for C-X ID
@@ -29,7 +29,7 @@ ref over IRS,DTRegistry
 end ref
 end opt
 ref over IRS, SubmodelServer_Tier_1
-    extract BPNL number of Supplier from SerialPartTypization
+    extract BPNL number of Supplier from AAS shell
 end ref
 ref over IRS, IRS_Tier_1
     ESRCertificateStatistic endpoint to IRS Tier +1
