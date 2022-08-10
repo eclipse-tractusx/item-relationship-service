@@ -10,8 +10,8 @@
 package net.catenax.irs.aaswrapper.job;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import io.github.resilience4j.retry.RetryRegistry;
@@ -117,7 +117,7 @@ public class AASHandler {
 
                 if (validationResult.isValid()) {
                     final Submodel submodel = Submodel.from(submodelDescriptor.getIdentification(),
-                            submodelDescriptor.getAspectType(), jsonUtil.fromString(submodelRawPayload, HashMap.class));
+                            submodelDescriptor.getAspectType(), jsonUtil.fromString(submodelRawPayload, Map.class));
                     submodels.add(submodel);
                 } else {
                     final String errors = String.join(", ", validationResult.getValidationErrors());
