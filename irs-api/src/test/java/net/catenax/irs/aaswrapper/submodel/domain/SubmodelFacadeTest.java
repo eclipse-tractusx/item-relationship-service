@@ -75,7 +75,8 @@ class SubmodelFacadeTest {
     void shouldReturnAssemblyPartRelationshipWithChildDataWhenRequestingWithCatenaXId() {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
-        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getAssemblyPartRelationshipSubmodel(catenaXId, jobParameter());
+        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getAssemblyPartRelationshipSubmodel(
+                catenaXId, jobParameter());
 
         assertThat(submodelResponse.getCatenaXId()).isEqualTo(catenaXId);
 
@@ -93,8 +94,8 @@ class SubmodelFacadeTest {
     void shouldReturnFilteredAssemblyPartRelationshipWithoutChildrenWhenRequestingWithCatenaXId() {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
-        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getAssemblyPartRelationshipSubmodel(catenaXId,
-                jobParameterFilter());
+        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getAssemblyPartRelationshipSubmodel(
+                catenaXId, jobParameterFilter());
 
         assertThat(submodelResponse.getCatenaXId()).isEqualTo(catenaXId);
         assertThat(submodelResponse.getChildParts()).isEmpty();
@@ -116,7 +117,8 @@ class SubmodelFacadeTest {
         final ResponseEntity<String> responseEntity = new ResponseEntity<>(jsonObject, HttpStatus.OK);
         doReturn(responseEntity).when(restTemplate).getForEntity(any(URI.class), any());
 
-        final AssemblyPartRelationshipDTO submodel = submodelFacade.getAssemblyPartRelationshipSubmodel(endpointUrl, jobParameter());
+        final AssemblyPartRelationshipDTO submodel = submodelFacade.getAssemblyPartRelationshipSubmodel(endpointUrl,
+                jobParameter());
 
         assertThat(submodel.getCatenaXId()).isEqualTo(catenaXId);
         final Set<ChildDataDTO> childParts = submodel.getChildParts();

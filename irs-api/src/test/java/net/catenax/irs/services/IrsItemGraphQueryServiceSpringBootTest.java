@@ -9,7 +9,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +28,7 @@ import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.services.validation.InvalidSchemaException;
 import net.catenax.irs.services.validation.JsonValidatorService;
 import net.catenax.irs.services.validation.ValidationResult;
+import net.catenax.irs.util.JobMetrics;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,7 +37,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = { "test", "stubtest" })
+@ActiveProfiles(profiles = { "test",
+                             "stubtest"
+})
 @Import(TestConfig.class)
 class IrsItemGraphQueryServiceSpringBootTest {
 
@@ -48,6 +50,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
     @Autowired
     private IrsItemGraphQueryService service;
+
+    @Autowired
+    private MeterRegistryService meterRegistryService;
 
     @MockBean
     private JsonValidatorService jsonValidatorService;
@@ -148,7 +153,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         assertThat(state).isEqualTo(JobState.CANCELED);
 
         final ZonedDateTime lastModifiedOn = fetchedJob.get().getJob().getLastModifiedOn();
-        assertThat(lastModifiedOn).isNotNull().isBefore(ZonedDateTime.now(ZoneOffset.UTC));
+        assertThat(lastModifiedOn).isNotNull().isBefore(ZonedDateTime.now());
     }
 
     @Test
@@ -174,6 +179,28 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
     private int getSubmodelsSize(final UUID jobId) {
         return service.getJobForJobId(jobId, false).getSubmodels().size();
+    }
+
+    @Test
+    public void checkMetricsRecordingTest() {
+        meterRegistryService.incrementJobFailed();
+        meterRegistryService.incrementJobRunning();
+        meterRegistryService.incrementJobSuccessful();
+        meterRegistryService.incrementJobCancelled();
+        meterRegistryService.incrementJobProcessed();
+        meterRegistryService.setNumberOfJobsInJobStore(7L);
+        meterRegistryService.setNumberOfJobsInJobStore(12L);
+        meterRegistryService.setNumberOfJobsInJobStore(5L);
+
+        JobMetrics metrics = meterRegistryService.getJobMetric();
+
+        assertThat(metrics.getJobFailed().count()).isEqualTo(1.0);
+        assertThat(metrics.getJobRunning().count()).isEqualTo(1.0);
+        assertThat(metrics.getJobSuccessful().count()).isEqualTo(1.0);
+        assertThat(metrics.getJobCancelled().count()).isEqualTo(1.0);
+        assertThat(metrics.getJobProcessed().count()).isEqualTo(1.0);
+        assertThat(metrics.getJobInJobStore().value()).isEqualTo(5.0);
+
     }
 
     private int getTombstonesSize(final UUID jobId) {

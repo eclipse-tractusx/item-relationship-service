@@ -13,8 +13,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,6 +53,7 @@ import net.catenax.irs.persistence.BlobPersistence;
 import net.catenax.irs.persistence.BlobPersistenceException;
 import net.catenax.irs.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -59,7 +62,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({ "PMD.ExcessiveImports",
+                    "PMD.TooManyMethods"
+})
 public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final JobOrchestrator<ItemDataRequest, AASTransferProcess> orchestrator;
@@ -74,15 +79,25 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     private String defaultAspect;
 
     @Override
+    public List<JobStatusResult> getJobsByJobState(final @NonNull List<JobState> jobStates) {
+        final List<MultiTransferJob> jobs = jobStates.isEmpty() ? jobStore.findAll() : jobStore.findByStates(jobStates);
+        return jobs.stream()
+                   .map(job -> JobStatusResult.builder()
+                                              .jobId(job.getJob().getJobId())
+                                              .status(job.getJob().getJobState())
+                                              .build())
+                   .collect(Collectors.toList());
+    }
+
+    @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
         final var params = buildJobData(request);
 
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
+        meterRegistryService.incrementNumberOfCreatedJobs();
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
-            meterRegistryService.incrementNumberOfCreatedJobs();
             final String jobId = jobInitiateResponse.getJobId();
-
             return JobHandle.builder().jobId(UUID.fromString(jobId)).build();
         } else {
             throw new IllegalArgumentException("Could not start job: " + jobInitiateResponse.getError());
@@ -98,10 +113,9 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         final Optional<List<AspectType>> aspectTypes = Optional.ofNullable(request.getAspects());
 
-        final List<String> aspectTypeValues = aspectTypes.map(types -> types.stream()
-                                                                      .map(AspectType::toString)
-                                                                      .collect(Collectors.toList()))
-                                                   .orElse(List.of(defaultAspect));
+        final List<String> aspectTypeValues = aspectTypes.map(
+                                                                 types -> types.stream().map(AspectType::toString).collect(Collectors.toList()))
+                                                         .orElse(List.of(defaultAspect));
         if (aspectTypeValues.isEmpty()) {
             aspectTypeValues.add(defaultAspect);
         }
@@ -116,17 +130,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                            .aspectTypes(aspectTypeValues)
                            .collectAspects(collectAspects)
                            .build();
-    }
-
-    @Override
-    public List<JobStatusResult> getJobsByJobState(final @NonNull List<JobState> jobStates) {
-        final List<MultiTransferJob> jobs = jobStates.isEmpty() ? jobStore.findAll() : jobStore.findByStates(jobStates);
-        return jobs.stream()
-                   .map(job -> JobStatusResult.builder()
-                                              .jobId(job.getJob().getJobId())
-                                              .status(job.getJob().getJobState())
-                                              .build())
-                   .collect(Collectors.toList());
     }
 
     @Override
@@ -192,6 +195,25 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         }
     }
 
+    @Scheduled(cron = "${irs.job.jobstore.cron.expression}")
+    public void updateJobsInJobStoreMetrics() {
+        final List<MultiTransferJob> jobs = jobStore.findAll();
+        final long numberOfJobs = jobs.size();
+        log.debug("Number(s) of job in JobStore: {}", numberOfJobs);
+        meterRegistryService.setNumberOfJobsInJobStore(numberOfJobs);
+
+        final Map<JobState, Long> stateCount = jobs.stream()
+                                                   .map(MultiTransferJob::getJob)
+                                                   .map(Job::getJobState)
+                                                   .collect(Collectors.groupingBy(Function.identity(),
+                                                           Collectors.counting()));
+
+        for (final JobState state : JobState.values()) {
+            meterRegistryService.setStateSnapShot(state, stateCount.getOrDefault(state, 0L));
+        }
+
+    }
+
     private Summary buildSummary(final int completedTransfersSize, final int runningSize, final int tombstonesSize) {
         return Summary.builder()
                       .asyncFetchedItems(AsyncFetchedItems.builder()
@@ -225,6 +247,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 });
 
             } catch (BlobPersistenceException e) {
+                meterRegistryService.incrementException();
                 log.error("Unable to read transfer result", e);
             }
         }
@@ -248,6 +271,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             return toItemContainer(bytes);
         } catch (BlobPersistenceException e) {
             log.error("Unable to read blob", e);
+            meterRegistryService.incrementException();
             throw new EntityNotFoundException("Could not load stored data for multiJob with id " + jobId, e);
         }
     }

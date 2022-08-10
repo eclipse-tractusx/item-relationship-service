@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 3,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -43,7 +43,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -135,7 +136,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -148,7 +150,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"system_cpu_usage\", application=\"item-relationship-service\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+              "options": "{__name__=\"system_cpu_usage\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\"}"
             },
             "properties": [
               {
@@ -209,7 +211,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 22,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -237,7 +239,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -250,7 +253,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"system_load_average_1m\", application=\"item-relationship-service\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+              "options": "{__name__=\"system_load_average_1m\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\"}"
             },
             "properties": [
               {
@@ -282,7 +285,7 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single",
+          "mode": "none",
           "sort": "none"
         }
       },
@@ -345,7 +348,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -358,96 +362,24 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"heap\", id=\"Eden Space\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+              "options": "sum(jvm_memory_used_bytes{area=\"heap\"}) / 1024"
             },
             "properties": [
               {
                 "id": "displayName",
-                "value": "Eden Space"
+                "value": "Heap Area"
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"heap\", id=\"Survivor Space\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+              "options": "sum(jvm_memory_used_bytes{area=\"nonheap\"}) / 1024"
             },
             "properties": [
               {
                 "id": "displayName",
-                "value": "Survivor Space"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"heap\", id=\"Tenured Gen\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Tenured Gen"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"nonheap\", id=\"CodeHeap 'non-nmethods'\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "CodeHeap"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"nonheap\", id=\"CodeHeap 'non-profiled nmethods'\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Non-profile nmethod"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"nonheap\", id=\"CodeHeap 'profiled nmethods'\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Profile nmethod"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"nonheap\", id=\"Compressed Class Space\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Compressed Class Space"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "{__name__=\"jvm_memory_used_bytes\", application=\"item-relationship-service\", area=\"nonheap\", id=\"Metaspace\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Metaspace"
+                "value": "Non-Heap Area"
               }
             ]
           },
@@ -458,7 +390,7 @@
               "options": {
                 "mode": "exclude",
                 "names": [
-                  "Eden Space"
+                  "Heap Area"
                 ],
                 "prefix": "All except:",
                 "readOnly": true
@@ -501,14 +433,25 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "editorMode": "explain",
-          "expr": "jvm_memory_used_bytes",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_used_bytes{area=\"heap\"}) / 1024",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "builder",
+          "expr": "sum(jvm_memory_used_bytes{area=\"nonheap\"}) / 1024",
+          "hide": false,
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Memory Usage in Byte",
+      "title": "Memory Usage in MByte",
       "type": "timeseries"
     },
     {
@@ -526,7 +469,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -630,7 +574,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -660,7 +605,19 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Process Usage Second"
+                "value": "Total Process Usage Second"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Process CPU Usage (10s)"
               }
             ]
           }
@@ -690,8 +647,8 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "editorMode": "builder",
-          "expr": "process_cpu_usage",
+          "editorMode": "code",
+          "expr": "increase(process_cpu_usage[10s])",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -755,7 +712,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -768,7 +726,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"jvm_threads_live_threads\", application=\"item-relationship-service\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+              "options": "{__name__=\"jvm_threads_live_threads\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\"}"
             },
             "properties": [
               {
@@ -780,7 +738,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"jvm_threads_peak_threads\", application=\"item-relationship-service\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+              "options": "{__name__=\"jvm_threads_peak_threads\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\"}"
             },
             "properties": [
               {
@@ -792,7 +750,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "{__name__=\"jvm_threads_daemon_threads\", application=\"item-relationship-service\", instance=\"app-irs-int:4004\", job=\"spring-actuator\"}"
+              "options": "{__name__=\"jvm_threads_daemon_threads\", application=\"item-relationship-service\", instance=\"app-irs-dev:4004\", job=\"spring-actuator\"}"
             },
             "properties": [
               {
@@ -827,7 +785,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "editorMode": "builder",
+          "editorMode": "code",
           "expr": "jvm_threads_live_threads",
           "legendFormat": "__auto",
           "range": true,
@@ -876,6 +834,6 @@
   "timezone": "",
   "title": "Resource Monitoring",
   "uid": "XuMrTRR4z",
-  "version": 7,
+  "version": 5,
   "weekStart": ""
 }

@@ -23,7 +23,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, threaddump, loggers, prometheus, info
+        include: health, threaddump, loggers, prometheus, info, metrics
   endpoint:
     health:
       probes:
@@ -76,6 +76,9 @@ irs:
         #          │ │ │ │ │ │
         completed: 0 0 * * * * # every hour
         failed: 0 0 * * * * # every hour
+    jobstore:
+      cron:
+        expression: "*/10 * * * * ?"
 
 blobstore:
   endpoint: "${MINIO_URL}"

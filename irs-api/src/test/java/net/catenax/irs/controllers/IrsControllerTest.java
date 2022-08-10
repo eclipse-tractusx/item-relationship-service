@@ -53,7 +53,8 @@ class IrsControllerTest {
     private static Stream<RegisterJob> corruptedJobs() {
         return Stream.of(registerJobWithDepthAndAspect(110, null),
                 registerJobWithGlobalAssetIdAndDepth("invalidGlobalAssetId", 0, null, false),
-                registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0, null, false));
+                registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0, null,
+                        false));
     }
 
     @Test
@@ -121,8 +122,7 @@ class IrsControllerTest {
     void getJobWithMalformedIdShouldReturnBadRequest() throws Exception {
         final String jobIdMalformed = UUID.randomUUID() + "MALFORMED";
 
-        this.mockMvc.perform(get("/irs/jobs/" + jobIdMalformed))
-                    .andExpect(status().isBadRequest());
+        this.mockMvc.perform(get("/irs/jobs/" + jobIdMalformed)).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -130,8 +130,7 @@ class IrsControllerTest {
     void shouldReturnBadRequestWhenRegisterJobWithMalformedAspectJson() throws Exception {
         final String requestBody = "{ \"aspects\": [ \"MALFORMED\" ], \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\" }";
 
-        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
-                                              .content(requestBody))
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON).content(requestBody))
                     .andExpect(status().isBadRequest());
     }
 

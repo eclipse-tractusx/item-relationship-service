@@ -31,10 +31,7 @@ public final class SecurityHelperService {
         if (authentication instanceof JwtAuthenticationToken) {
             final Jwt token = ((JwtAuthenticationToken) authentication).getToken();
 
-            return Optional
-                    .ofNullable(token.getClaim(claimName))
-                    .map(Object::toString)
-                    .orElse(UNKNOWN);
+            return Optional.ofNullable(token.getClaim(claimName)).map(Object::toString).orElse(UNKNOWN);
         }
 
         return UNKNOWN;

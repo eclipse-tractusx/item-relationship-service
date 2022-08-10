@@ -33,10 +33,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.IrsApplication;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
+import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.component.Jobs;
 import net.catenax.irs.component.RegisterJob;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.component.JobStatusResult;
+import net.catenax.irs.connector.job.IrsTimer;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.services.IrsItemGraphQueryService;
 import org.springdoc.api.annotations.ParameterObject;
@@ -84,6 +85,7 @@ public class IrsController {
                                                                                         ref = "#/components/examples/error-response"))
                                          }),
     })
+    @IrsTimer("registerjob")
     @PostMapping("/jobs")
     @ResponseStatus(HttpStatus.CREATED)
     public JobHandle registerJobForGlobalAssetId(final @Valid @RequestBody RegisterJob request) {
@@ -116,6 +118,7 @@ public class IrsController {
                                                                                         ref = "#/components/examples/error-response"))
                                          }),
     })
+    @IrsTimer("getjob")
     @GetMapping("/jobs/{jobId}")
     public Jobs getJobById(
             @Parameter(description = "JobId of the job.", schema = @Schema(implementation = UUID.class), name = "jobId",
@@ -140,6 +143,7 @@ public class IrsController {
                                                                                         ref = "#/components/examples/error-response"))
                                          }),
     })
+    @IrsTimer("canceljob")
     @PutMapping("/jobs/{jobId}")
     public Job cancelJobByJobId(
             @Parameter(description = "JobId of the job.", schema = @Schema(implementation = UUID.class), name = "jobId",
@@ -168,6 +172,7 @@ public class IrsController {
                                                                                         ref = "#/components/examples/error-response"))
                                          }),
     })
+    @IrsTimer("getjobbystate")
     @GetMapping("/jobs")
     public List<JobStatusResult> getJobsByJobState(
             @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
