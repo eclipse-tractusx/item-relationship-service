@@ -17,6 +17,7 @@ import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.semanticshub.SemanticsHubFacade;
 import net.catenax.irs.services.validation.JsonValidatorService;
+import net.catenax.irs.util.JsonUtil;
 import net.catenax.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +38,7 @@ class AASTransferProcessManagerTest {
 
     ExecutorService pool = mock(ExecutorService.class);
 
-    AASHandler aasHandler = new AASHandler(digitalTwinRegistryFacade, submodelFacade, semanticsHubFacade, jsonValidatorService);
+    AASHandler aasHandler = new AASHandler(digitalTwinRegistryFacade, submodelFacade, semanticsHubFacade, jsonValidatorService, new JsonUtil());
 
     final AASTransferProcessManager manager = new AASTransferProcessManager(aasHandler, pool, new InMemoryBlobStore());
 

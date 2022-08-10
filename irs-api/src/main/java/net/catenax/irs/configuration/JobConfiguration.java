@@ -47,7 +47,7 @@ public class JobConfiguration {
             final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService,
             final BlobPersistence blobStore, final JobStore jobStore, final MeterRegistryService meterService) {
 
-        final var aasHandler = new AASHandler(registryFacade, submodelFacade, semanticsHubFacade, jsonValidatorService);
+        final var aasHandler = new AASHandler(registryFacade, submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil());
         final var manager = new AASTransferProcessManager(aasHandler, Executors.newCachedThreadPool(), blobStore);
         final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);

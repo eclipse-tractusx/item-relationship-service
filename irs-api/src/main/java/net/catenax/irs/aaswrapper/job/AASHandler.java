@@ -10,6 +10,7 @@
 package net.catenax.irs.aaswrapper.job;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,7 @@ import net.catenax.irs.semanticshub.SemanticsHubFacade;
 import net.catenax.irs.services.validation.InvalidSchemaException;
 import net.catenax.irs.services.validation.JsonValidatorService;
 import net.catenax.irs.services.validation.ValidationResult;
+import net.catenax.irs.util.JsonUtil;
 import org.springframework.web.client.RestClientException;
 
 /**
@@ -45,6 +47,7 @@ public class AASHandler {
     private final SubmodelFacade submodelFacade;
     private final SemanticsHubFacade semanticsHubFacade;
     private final JsonValidatorService jsonValidatorService;
+    private final JsonUtil jsonUtil;
 
     /**
      * @param jobData            The job parameters used for filtering
@@ -114,13 +117,13 @@ public class AASHandler {
 
                 if (validationResult.isValid()) {
                     final Submodel submodel = Submodel.from(submodelDescriptor.getIdentification(),
-                            submodelDescriptor.getAspectType(), submodelRawPayload);
+                            submodelDescriptor.getAspectType(), jsonUtil.fromString(submodelRawPayload, HashMap.class));
                     submodels.add(submodel);
                 } else {
                     final String errors = String.join(", ", validationResult.getValidationErrors());
                     itemContainerBuilder.tombstone(
                             Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(),
-                                    new IllegalArgumentException("Submodel payload validation failed, found errors: " + errors), 0));
+                                    new IllegalArgumentException("Submodel payload validation failed. " + errors), 0));
                 }
             } catch (JsonParseException e) {
                 itemContainerBuilder.tombstone(
