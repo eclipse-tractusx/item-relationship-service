@@ -5,6 +5,7 @@ import static net.catenax.irs.util.TestMother.jobParameter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.lenient;
@@ -15,6 +16,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -348,9 +350,32 @@ class JobOrchestratorTest {
         verifyNoInteractions(processManager);
     }
 
+    private void letJobStoreCallCancelAction() {
+        doAnswer(i -> {
+            ((Consumer<MultiTransferJob>) i.getArgument(1)).accept(job);
+            return i;
+        }).when(jobStore).completeJob(any(), any());
+    }
+
+    @Test
+    void findAndCleanupCancelledJobs_verifyAllJobsWereDelete() {
+        MultiTransferJob job2 = startJob();
+        when(jobStore.findByStateAndCompletionDateOlderThan(any(), any())).thenReturn(List.of(job2));
+
+        sut.findAndCleanupCancelledJobs();
+
+        verify(jobStore).deleteJob(anyString());
+    }
+
     private Object byCompletingJob() {
         job = job.toBuilder().transitionTransfersFinished().build();
         lenient().when(jobStore.find(job.getJobIdString())).thenReturn(Optional.of(job));
+        return null;
+    }
+
+    private Object byCancelledJob(MultiTransferJob multiJob) {
+        multiJob = multiJob.toBuilder().transitionCancel().build();
+        lenient().when(jobStore.find(multiJob.getJobIdString())).thenReturn(Optional.of(multiJob));
         return null;
     }
 
