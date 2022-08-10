@@ -10,6 +10,9 @@ skinparam shadowing false
 *** Versioning
 ** Maintainability
 *** Analyzability
+*** Modularity
+*** Reusability
+*** Testability
 *** Extensibility
 **** Extensibility of IRS
 **** Database and Persistence
@@ -66,9 +69,9 @@ skinparam shadowing false
 *** Secure by Design
 *** Confidentiality
 *** Integrity
+*** Accountability
 *** Access/Authentication
 ** Transferability
-** Functional suitability
 ** Portability
 *** Cloud-agnostic
 *** Adaptability
