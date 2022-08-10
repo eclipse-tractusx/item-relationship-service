@@ -78,7 +78,7 @@ irs:
         failed: 0 0 * * * * # every hour
     jobstore:
       cron:
-        expression: "*/10 * * * * ?"
+        expression: "*/10 * * * * ?" # every 10 seconds
 
 blobstore:
   endpoint: "${MINIO_URL}"
