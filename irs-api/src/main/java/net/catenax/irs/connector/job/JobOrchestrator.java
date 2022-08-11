@@ -46,8 +46,6 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     private static final int TTL_CLEANUP_COMPLETED_JOBS_HOURS = 1;
 
-    private static final int TTL_CLEANUP_CANCELLED_JOBS_HOURS = 1;
-
     private static final int TTL_CLEANUP_FAILED_JOBS_HOURS = 24;
 
     /**
