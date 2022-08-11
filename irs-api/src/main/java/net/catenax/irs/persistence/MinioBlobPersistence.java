@@ -159,7 +159,7 @@ public class MinioBlobPersistence implements BlobPersistence {
     @Override
     public boolean delete(final String sourceBlobName, final List<String> processIds) throws BlobPersistenceException {
         try {
-            deleteRelatedJobsByProcessId(processIds);
+            deleteRelatedBlobs(processIds);
             minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(sourceBlobName).build());
             return true;
         } catch (ErrorResponseException e) {
@@ -173,7 +173,7 @@ public class MinioBlobPersistence implements BlobPersistence {
         }
     }
 
-    private void deleteRelatedJobsByProcessId(final List<String> processIds) throws BlobPersistenceException {
+    private void deleteRelatedBlobs(final List<String> processIds) throws BlobPersistenceException {
         processIds.stream().forEach(processId -> {
             try {
                 minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(processId).build());

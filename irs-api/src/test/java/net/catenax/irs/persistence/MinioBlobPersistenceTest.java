@@ -83,7 +83,7 @@ class MinioBlobPersistenceTest {
     void shouldDeleteBlobWithRelatedBlobByProcessId() throws Exception {
         final List<String> processIds = List.of("testBlobName_process_1", "testBlobName_process_2");
         testee.putBlob(processIds.get(0), "testContent".getBytes(StandardCharsets.UTF_8));
-        testee.putBlob(processIds.get(0), "testContent".getBytes(StandardCharsets.UTF_8));
+        testee.putBlob(processIds.get(1), "testContent".getBytes(StandardCharsets.UTF_8));
 
         // act
         testee.delete("testBlobName", processIds);

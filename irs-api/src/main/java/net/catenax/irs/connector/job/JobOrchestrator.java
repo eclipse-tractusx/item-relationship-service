@@ -204,20 +204,6 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         log.info("Deleted {} failed jobs", multiTransferJobs.size());
     }
 
-    @IrsTimer("cleancancelledjobs")
-    @Scheduled(cron = "${irs.job.cleanup.scheduler.completed}")
-    public void findAndCleanupCancelledJobs() {
-        log.info("Running cleanup of cancelled jobs");
-        final ZonedDateTime currentDateMinusSeconds = ZonedDateTime.now(ZoneOffset.UTC)
-                                                                   .minus(TTL_CLEANUP_CANCELLED_JOBS_HOURS,
-                                                                           ChronoUnit.HOURS);
-        final List<MultiTransferJob> cancelledJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.CANCELED,
-                currentDateMinusSeconds);
-
-        final List<MultiTransferJob> multiTransferJobs = deleteJobs(cancelledJobs);
-        log.info("Deleted {} cancelled jobs", multiTransferJobs.size());
-    }
-
     private List<MultiTransferJob> deleteJobs(final List<MultiTransferJob> jobs) {
         return jobs.stream()
                    .map(job -> deleteJobsAndDecreaseJobsInJobStoreMetrics(job.getJobIdString()))
