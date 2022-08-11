@@ -122,8 +122,7 @@ public class TestMother {
     public Job fakeJob(JobState state) {
         return Job.builder()
                   .jobId(UUID.randomUUID())
-                  .globalAssetId(
-                          GlobalAssetIdentification.builder().globalAssetId(UUID.randomUUID().toString()).build())
+                  .globalAssetId(GlobalAssetIdentification.of(UUID.randomUUID().toString()))
                   .jobState(state)
                   .createdOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .owner(faker.lorem().characters())

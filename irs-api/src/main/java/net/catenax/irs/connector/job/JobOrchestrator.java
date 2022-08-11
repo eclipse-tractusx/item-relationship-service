@@ -261,7 +261,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
         return Job.builder()
                   .jobId(UUID.randomUUID())
-                  .globalAssetId(GlobalAssetIdentification.builder().globalAssetId(globalAssetId).build())
+                  .globalAssetId(GlobalAssetIdentification.of(globalAssetId))
                   .createdOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .jobState(JobState.UNSAVED)

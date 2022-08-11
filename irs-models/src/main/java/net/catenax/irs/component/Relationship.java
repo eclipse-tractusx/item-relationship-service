@@ -29,8 +29,8 @@ public class Relationship {
     @JsonUnwrapped
     private GlobalAssetIdentification catenaXId;
 
-    private ChildItem childItem;
+    private LinkedItem linkedItem;
 
-    private ChildItem parentItem;
+    private String  aspectType;
 
 }

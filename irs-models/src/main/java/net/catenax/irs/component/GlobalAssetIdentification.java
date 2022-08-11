@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
@@ -26,6 +27,7 @@ import lombok.Value;
 @Schema(description = "CATENA-X global asset id in the format urn:uuid:uuid4.")
 @Value
 @Builder(toBuilder = true)
+@AllArgsConstructor(staticName = "of")
 @JsonSerialize(using = ToStringSerializer.class)
 @JsonDeserialize(builder = GlobalAssetIdentification.GlobalAssetIdentificationBuilder.class)
 public class GlobalAssetIdentification {
