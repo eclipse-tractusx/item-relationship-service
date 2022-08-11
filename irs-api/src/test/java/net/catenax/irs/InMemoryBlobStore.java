@@ -1,6 +1,7 @@
 package net.catenax.irs;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,7 +35,8 @@ public class InMemoryBlobStore implements BlobPersistence {
     }
 
     @Override
-    public boolean delete(final String jobId) {
+    public boolean delete(final String jobId, final List<String> processIds) {
+        processIds.stream().forEach(pid -> store.remove(pid));
         return store.remove(jobId) != null;
     }
 }

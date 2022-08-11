@@ -11,6 +11,7 @@
 package net.catenax.irs.persistence;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -24,5 +25,5 @@ public interface BlobPersistence {
 
     Collection<byte[]> findBlobByPrefix(String prefix) throws BlobPersistenceException;
 
-    boolean delete(String jobId) throws BlobPersistenceException;
+    boolean delete(String jobId, List<String> processIds) throws BlobPersistenceException;
 }

@@ -157,8 +157,9 @@ public class MinioBlobPersistence implements BlobPersistence {
     }
 
     @Override
-    public boolean delete(final String sourceBlobName) throws BlobPersistenceException {
+    public boolean delete(final String sourceBlobName, final List<String> processIds) throws BlobPersistenceException {
         try {
+            deleteRelatedJobsByProcessId(processIds);
             minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(sourceBlobName).build());
             return true;
         } catch (ErrorResponseException e) {
@@ -170,6 +171,16 @@ public class MinioBlobPersistence implements BlobPersistence {
         } catch (ServerException | InsufficientDataException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
             throw new BlobPersistenceException("Encountered error while trying to delete blob", e);
         }
+    }
+
+    private void deleteRelatedJobsByProcessId(final List<String> processIds) throws BlobPersistenceException {
+        processIds.stream().forEach(processId -> {
+            try {
+                minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(processId).build());
+            } catch (ServerException | InsufficientDataException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException | ErrorResponseException e) {
+                log.debug("No object data with process Id {} found", processId);
+            }
+        });
     }
 
     private Stream<byte[]> getBlobIfPresent(final String sourceBlobName) {
