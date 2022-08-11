@@ -116,9 +116,9 @@ configuration:
     edc.oauth.private.key.alias=irs-int-daps-key
     edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
     # edc.oauth.provider.jwks.refresh=
-    edc.oauth.provider.jwks.url=https://daps.int.demo.catena-x.net/.well-known/jwks.json
+    edc.oauth.provider.jwks.url=https://daps1.int.demo.catena-x.net/.well-known/jwks.json
     edc.oauth.public.key.alias=irs-int-daps-cert
-    edc.oauth.token.url=https://daps.int.demo.catena-x.net/token
+    edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
     # edc.oauth.validation.nbf.leeway=
     # edc.receiver.http.auth-code=
     # edc.receiver.http.auth-key=

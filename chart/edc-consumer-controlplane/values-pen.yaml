@@ -38,9 +38,9 @@ configuration:
     edc.oauth.client.id=D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09:keyid:D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09
     edc.oauth.private.key.alias=irs-int-daps-key
     edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
-    edc.oauth.provider.jwks.url=https://daps.int.demo.catena-x.net/.well-known/jwks.json
+    edc.oauth.provider.jwks.url=https://daps1.int.demo.catena-x.net/.well-known/jwks.json
     edc.oauth.public.key.alias=irs-int-daps-cert
-    edc.oauth.token.url=https://daps.int.demo.catena-x.net/token
+    edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
     edc.receiver.http.endpoint=http://aaswrapper-pen:9192/callback/endpoint-data-reference
     edc.transfer.proxy.endpoint=https://irs-consumer-dataplane-pen.int.demo.catena-x.net/api/public
     edc.transfer.proxy.token.signer.privatekey.alias=azure-vault-token-signer-private-key
