@@ -74,11 +74,11 @@ irs:
         #          │ │ │ │ │ ┌───────────── day of the week (0 - 7)
         #          │ │ │ │ │ │          (or MON-SUN -- 0 or 7 is Sunday)
         #          │ │ │ │ │ │
-        completed: 0 0 * * * *
-        failed: 0 0 * * * *
+        completed: 0 0 * * * * # every hour
+        failed: 0 0 * * * * # every hour
     jobstore:
       cron:
-        expression: "*/10 * * * * ?"
+        expression: "*/10 * * * * ?" # every 10 seconds
 
 blobstore:
   endpoint: "${MINIO_URL}"
@@ -122,7 +122,7 @@ semanticsHub:
     #          │ │ │  │ │ ┌───────────── day of the week (0 - 7)
     #          │ │ │  │ │ │          (or MON-SUN -- 0 or 7 is Sunday)
     #          │ │ │  │ │ │
-    scheduler: 0 0 23 * * *
+    scheduler: 0 0 23 * * * # every day at 23:00
   defaultUrns: >
     urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
 #    ,urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship

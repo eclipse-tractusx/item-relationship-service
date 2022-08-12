@@ -9,6 +9,8 @@
 //
 package net.catenax.irs.component;
 
+import java.util.Map;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
@@ -22,9 +24,9 @@ import lombok.extern.jackson.Jacksonized;
 public class Submodel {
     private String identification;
     private String aspectType;
-    private String payload;
+    private Map<String, Object> payload;
 
-    public static Submodel from(final String identification, final String aspectType, final String payload) {
+    public static Submodel from(final String identification, final String aspectType, final Map<String, Object> payload) {
         return Submodel.builder()
                        .identification(identification)
                        .aspectType(aspectType)
