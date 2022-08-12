@@ -492,4 +492,21 @@ class PersistentJobStoreTest {
         assertThat(job2.getJob().getLastModifiedOn()).isAfter(job1.getJob().getLastModifiedOn());
     }
 
+    @Test
+    void deleteJobsAndRelatedDataInStorage() {
+        sut.create(job);
+
+        sut.addTransferProcess(job.getJobId().toString(), processId1);
+        sut.completeTransferProcess(job.getJobIdString(), process1);
+        sut.completeJob(job.getJobIdString(), this::doNothing);
+
+        final int sizeAfterCreation = blobStoreSpy.findBlobByPrefix("job:").size();
+        assertThat(sizeAfterCreation).isGreaterThan(0);
+
+        sut.deleteJob(job.getJobIdString());
+        final int sizeAfterDeletion = blobStoreSpy.findBlobByPrefix("job:").size();
+        assertThat(sizeAfterDeletion).isLessThan(sizeAfterCreation);
+
+    }
+
 }

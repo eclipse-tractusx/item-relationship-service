@@ -12,6 +12,7 @@ package net.catenax.irs.connector.job;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -82,7 +83,13 @@ public class PersistentJobStore extends BaseJobStore {
         try {
             final Optional<byte[]> blob = blobStore.getBlob(toBlobId(jobId));
             final MultiTransferJob job = blob.map(this::toJob).get();
-            blobStore.delete(toBlobId(jobId), job.getTransferProcessIds().stream().collect(Collectors.toList()));
+
+            final List<String> ids = job.getCompletedTransfers()
+                                        .stream()
+                                        .map(transferProcess -> transferProcess.getId())
+                                        .collect(Collectors.toList());
+
+            blobStore.delete(toBlobId(jobId), ids);
             return blob.map(this::toJob);
         } catch (BlobPersistenceException e) {
             throw new JobException("Blob persistence error", e);
