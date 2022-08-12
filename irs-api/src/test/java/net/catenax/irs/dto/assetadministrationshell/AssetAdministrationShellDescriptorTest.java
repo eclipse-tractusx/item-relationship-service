@@ -33,7 +33,7 @@ class AssetAdministrationShellDescriptorTest {
         final AssetAdministrationShellDescriptor shellDescriptor = createShellDescriptor(
                 List.of(createSubmodelDescriptorWithoutEndpoint(assemblyPartRelationshipIdWithAspectName)));
         // Act
-        final List<SubmodelDescriptor> result = shellDescriptor.filterDescriptorsByAssemblyPartRelationship();
+        final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of()).getSubmodelDescriptors();
 
         // Assert
         assertThat(result).hasSize(1);
@@ -46,7 +46,7 @@ class AssetAdministrationShellDescriptorTest {
         final AssetAdministrationShellDescriptor shellDescriptor = createShellDescriptor(
                 List.of(createSubmodelDescriptorWithoutEndpoint(assemblyPartRelationshipId)));
         // Act
-        final List<SubmodelDescriptor> result = shellDescriptor.filterDescriptorsByAssemblyPartRelationship();
+        final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of()).getSubmodelDescriptors();
 
         // Assert
         assertThat(result).hasSize(1);

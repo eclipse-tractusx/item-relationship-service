@@ -315,7 +315,7 @@ components:
                         ,\"datatypeURI\":\"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\"\
                         }},\"lastModifiedOn\":\"2022-02-03T14:48:54.709Z\",\"lifecycleContext\"\
                         :\"AsBuilt\",\"childCatenaXId\":\"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\"\
-                        }]}"
+                        }],\"relationshipAspect\":\"AssemblyPartRelationship\"}"
         tombstones:
           - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
             endpointURL: https://catena-x.net/vehicle/partdetails/
@@ -453,7 +453,7 @@ components:
                     ,\"datatypeURI\":\"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\"\
                     }},\"lastModifiedOn\":\"2022-02-03T14:48:54.709Z\",\"lifecycleContext\"\
                     :\"AsBuilt\",\"childCatenaXId\":\"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\"\
-                    }]}"
+                    }],\"relationshipAspect\":\"AssemblyPartRelationship\"}"
         tombstones:
           - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
             endpointURL: https://catena-x.net/vehicle/partdetails/

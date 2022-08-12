@@ -40,7 +40,7 @@ public class ChildDataDTO {
 
     private String childCatenaXId;
 
-    public Relationship toRelationship(final String catenaXId) {
+    public Relationship toRelationship(final String catenaXId, final RelationshipAspect relationshipAspect) {
         final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
                                                                 .childCatenaXId(GlobalAssetIdentification.of(getChildCatenaXId()))
                                                                 .lifecycleContext(
@@ -64,7 +64,7 @@ public class ChildDataDTO {
         return Relationship.builder()
                            .catenaXId(GlobalAssetIdentification.of(catenaXId))
                            .linkedItem(linkedItem.build())
-                           .aspectType("X")
+                           .aspectType(relationshipAspect.name())
                            .build();
     }
 

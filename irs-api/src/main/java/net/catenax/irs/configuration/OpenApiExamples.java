@@ -46,6 +46,7 @@ import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.QuantityDTO;
+import net.catenax.irs.dto.RelationshipAspect;
 import net.catenax.irs.dtos.ErrorResponse;
 import net.catenax.irs.util.JsonUtil;
 import org.springframework.http.HttpStatus;
@@ -215,6 +216,7 @@ public class OpenApiExamples {
         return AssemblyPartRelationshipDTO.builder()
                                           .catenaXId(relationship.getCatenaXId().getGlobalAssetId())
                                           .childParts(Set.of(childData))
+                                          .relationshipAspect(RelationshipAspect.AssemblyPartRelationship)
                                           .build();
     }
 

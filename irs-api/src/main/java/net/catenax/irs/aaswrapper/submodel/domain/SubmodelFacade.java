@@ -20,6 +20,7 @@ import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.dto.QuantityDTO;
+import net.catenax.irs.dto.RelationshipAspect;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -76,7 +77,8 @@ public class SubmodelFacade {
         final Set<ChildDataDTO> childParts = new HashSet<>();
         submodelParts.forEach(childData -> childParts.add(mapToChildDataChildDataDTO(childData)));
 
-        return AssemblyPartRelationshipDTO.builder().catenaXId(catenaXId).childParts(childParts).build();
+        return AssemblyPartRelationshipDTO.builder().catenaXId(catenaXId).childParts(childParts).relationshipAspect(
+                RelationshipAspect.AssemblyPartRelationship).build();
     }
 
     private ChildDataDTO mapToChildDataChildDataDTO(final ChildData childData) {
