@@ -506,7 +506,6 @@ class PersistentJobStoreTest {
         sut.deleteJob(job.getJobIdString());
         final int sizeAfterDeletion = blobStoreSpy.findBlobByPrefix("job:").size();
         assertThat(sizeAfterDeletion).isLessThan(sizeAfterCreation);
-
     }
 
 }
