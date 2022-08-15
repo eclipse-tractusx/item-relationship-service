@@ -11,13 +11,16 @@ package net.catenax.irs.configuration;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
 import net.catenax.irs.component.AsyncFetchedItems;
-import net.catenax.irs.component.LinkedItem;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
@@ -25,6 +28,7 @@ import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.JobParameter;
 import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.component.Jobs;
+import net.catenax.irs.component.LinkedItem;
 import net.catenax.irs.component.MeasurementUnit;
 import net.catenax.irs.component.ProcessingError;
 import net.catenax.irs.component.Quantity;
@@ -46,9 +50,7 @@ import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.QuantityDTO;
-import net.catenax.irs.dto.RelationshipAspect;
 import net.catenax.irs.dtos.ErrorResponse;
-import net.catenax.irs.util.JsonUtil;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -64,7 +66,6 @@ public class OpenApiExamples {
     private static final String SUBMODEL_IDENTIFICATION = "urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff";
     private static final String JOB_HANDLE_ID_1 = "6c311d29-5753-46d4-b32c-19b918ea93b0";
     private static final int DEFAULT_DEPTH = 4;
-    private final JsonUtil jsonUtil = new JsonUtil();
 
     public void createExamples(final Components components) {
         components.addExamples("job-handle", toExample(createJobHandle(JOB_HANDLE_ID_1)));
@@ -178,10 +179,14 @@ public class OpenApiExamples {
     }
 
     private Submodel createSubmodel() {
+        final ObjectMapper objectMapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
         return Submodel.builder()
                        .aspectType("urn:bamm:io.catenax.assembly_part_relationship:1.0.0")
                        .identification(SUBMODEL_IDENTIFICATION)
-                       .payload(jsonUtil.asString(createAssemblyPartRelationship()))
+                       .payload(objectMapper.convertValue(createAssemblyPartRelationship(), Map.class))
                        .build();
     }
 
@@ -216,7 +221,6 @@ public class OpenApiExamples {
         return AssemblyPartRelationshipDTO.builder()
                                           .catenaXId(relationship.getCatenaXId().getGlobalAssetId())
                                           .childParts(Set.of(childData))
-                                          .relationshipAspect(RelationshipAspect.AssemblyPartRelationship)
                                           .build();
     }
 
