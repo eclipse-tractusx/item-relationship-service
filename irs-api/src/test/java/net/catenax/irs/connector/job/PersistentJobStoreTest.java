@@ -493,18 +493,21 @@ class PersistentJobStoreTest {
     }
 
     @Test
-    void deleteJobsAndRelatedDataInStorage() {
+    void deleteJobsAndRelatedDataInStorage() throws Exception {
         sut.create(job);
 
         sut.addTransferProcess(job.getJobId().toString(), processId1);
         sut.completeTransferProcess(job.getJobIdString(), process1);
         sut.completeJob(job.getJobIdString(), this::doNothing);
 
-        final int sizeAfterCreation = blobStoreSpy.findBlobByPrefix("job:").size();
+        // Get total count of item from the bucket
+        final int sizeAfterCreation = blobStoreSpy.findBlobByPrefix("").size();
+        final int allItems = sut.getAll().size();
         assertThat(sizeAfterCreation).isGreaterThan(0);
 
         sut.deleteJob(job.getJobIdString());
-        final int sizeAfterDeletion = blobStoreSpy.findBlobByPrefix("job:").size();
+
+        final int sizeAfterDeletion = blobStoreSpy.findBlobByPrefix("").size();
         assertThat(sizeAfterDeletion).isLessThan(sizeAfterCreation);
     }
 

@@ -114,6 +114,7 @@ public class MinioBlobPersistence implements BlobPersistence {
                                                .object(targetBlobName)
                                                .stream(byteArrayInputStream, byteArrayInputStream.available(), -1)
                                                .build());
+            log.debug("Saving to bucket name {} with object name {}", bucketName, targetBlobName);
         } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
             throw new BlobPersistenceException("Encountered error while trying to store blob", e);
         }
