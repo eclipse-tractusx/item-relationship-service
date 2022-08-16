@@ -179,7 +179,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         log.info("Running cleanup of completed jobs");
         final ZonedDateTime currentDateMinusSeconds = ZonedDateTime.now(ZoneOffset.UTC)
                                                                    .minus(TTL_CLEANUP_COMPLETED_JOBS_HOURS,
-                                                                           ChronoUnit.MINUTES);
+                                                                           ChronoUnit.HOURS);
         final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
                 currentDateMinusSeconds);
 
