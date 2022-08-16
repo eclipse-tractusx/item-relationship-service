@@ -348,13 +348,6 @@ class JobOrchestratorTest {
         verifyNoInteractions(processManager);
     }
 
-    private void letJobStoreCallCancelAction() {
-        doAnswer(i -> {
-            ((Consumer<MultiTransferJob>) i.getArgument(1)).accept(job);
-            return i;
-        }).when(jobStore).completeJob(any(), any());
-    }
-
     private Object byCompletingJob() {
         job = job.toBuilder().transitionTransfersFinished().build();
         lenient().when(jobStore.find(job.getJobIdString())).thenReturn(Optional.of(job));

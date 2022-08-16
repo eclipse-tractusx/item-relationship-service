@@ -36,7 +36,7 @@ public class InMemoryBlobStore implements BlobPersistence {
 
     @Override
     public boolean delete(final String jobId, final List<String> processIds) {
-        processIds.stream().forEach(pid -> store.remove(pid));
+        processIds.forEach(store::remove);
         return store.remove(jobId) != null;
     }
 }

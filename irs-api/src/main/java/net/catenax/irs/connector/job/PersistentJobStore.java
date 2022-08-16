@@ -82,15 +82,17 @@ public class PersistentJobStore extends BaseJobStore {
     @Override
     protected Optional<MultiTransferJob> remove(final String jobId) {
         try {
-            final Optional<byte[]> blob = blobStore.getBlob(toBlobId(jobId));
-            final MultiTransferJob job = blob.map(this::toJob).get();
+            final Optional<MultiTransferJob> job = this.get(jobId);
 
-            final List<String> ids = Stream.concat(job.getTransferProcessIds().stream().map(p -> String.valueOf(p)),
-                                                   job.getCompletedTransfers().stream().map(transferProcess -> transferProcess.getId()))
-                                           .collect(Collectors.toList());
+            if (job.isPresent()) {
+                final List<String> ids = Stream.concat(job.get().getTransferProcessIds().stream(),
+                                                       job.get().getCompletedTransfers().stream().map(TransferProcess::getId))
+                                               .collect(Collectors.toList());
+                ids.add(jobId);
 
-            blobStore.delete(toBlobId(jobId), ids);
-            return blob.map(this::toJob);
+                blobStore.delete(toBlobId(jobId), ids);
+            }
+            return job;
         } catch (BlobPersistenceException e) {
             throw new JobException("Blob persistence error", e);
         }
