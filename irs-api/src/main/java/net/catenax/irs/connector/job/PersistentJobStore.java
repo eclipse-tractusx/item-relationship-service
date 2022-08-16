@@ -82,7 +82,7 @@ public class PersistentJobStore extends BaseJobStore {
     @Override
     protected Optional<MultiTransferJob> remove(final String jobId) {
         try {
-            final Optional<MultiTransferJob> job = this.get(jobId);
+            final Optional<MultiTransferJob> job = blobStore.getBlob(toBlobId(jobId)).map(this::toJob);
 
             if (job.isPresent()) {
                 final List<String> ids = Stream.concat(job.get().getTransferProcessIds().stream(),

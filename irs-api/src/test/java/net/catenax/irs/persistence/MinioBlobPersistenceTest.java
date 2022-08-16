@@ -39,7 +39,6 @@ class MinioBlobPersistenceTest {
 
     @Test
     void shouldStoreBlobWithClient() throws Exception {
-
         // act
         testee.putBlob("testBlobName", "testContent".getBytes(StandardCharsets.UTF_8));
 
