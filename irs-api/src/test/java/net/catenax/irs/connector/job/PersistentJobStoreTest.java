@@ -6,11 +6,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
+import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
 import net.catenax.irs.component.enums.JobState;
@@ -29,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+@Slf4j
 @Testcontainers
 class PersistentJobStoreTest {
     private static final String ACCESS_KEY = "accessKey";
@@ -502,13 +505,65 @@ class PersistentJobStoreTest {
 
         // Get total count of item from the bucket
         final int sizeAfterCreation = blobStoreSpy.findBlobByPrefix("").size();
-        final int allItems = sut.getAll().size();
+
+        int allItems = sut.getAll().size();
+        log.info("AllItem size before deletion " + allItems);
         assertThat(sizeAfterCreation).isGreaterThan(0);
 
         sut.deleteJob(job.getJobIdString());
 
+        allItems = sut.getAll().size();
+        log.info("AllItem size after deletion " + allItems);
+
         final int sizeAfterDeletion = blobStoreSpy.findBlobByPrefix("").size();
         assertThat(sizeAfterDeletion).isLessThan(sizeAfterCreation);
+
+        // Intentional check if we can access any Item that related to this job
+        // from the bucket.
+        boolean foundItem = checkIfThereAreAccessibleItemInStorageForThisJob(job);
+        assertThat(foundItem).isFalse();
+    }
+
+    private boolean checkIfThereAreAccessibleItemInStorageForThisJob(MultiTransferJob multiJob) {
+        final JsonUtil jsonUtil = new JsonUtil();
+        multiJob.getTransferProcessIds().stream().peek(blobName -> log.info(blobName)).map(blobName -> {
+            try {
+                Optional<byte[]> blob = blobStoreSpy.getBlob(blobName);
+                MultiTransferJob mjob = jsonUtil.fromString(new String(blob.get(), StandardCharsets.UTF_8),
+                        MultiTransferJob.class);
+                log.info("Found Item with {}", mjob.getJobIdString());
+                return blob.isPresent();
+            } catch (BlobPersistenceException e) {
+                e.printStackTrace();
+            }
+            return false;
+        });
+
+        multiJob.getCompletedTransfers().stream().peek(tranfer -> log.info(tranfer.getId())).map(tranfer -> {
+            try {
+                Optional<byte[]> blob = blobStoreSpy.getBlob(tranfer.getId());
+                MultiTransferJob mjob = jsonUtil.fromString(new String(blob.get(), StandardCharsets.UTF_8),
+                        MultiTransferJob.class);
+                log.info("Found Item with {}", mjob.getJobIdString());
+                return blob.isPresent();
+            } catch (BlobPersistenceException e) {
+                e.printStackTrace();
+            }
+            return false;
+        });
+
+        try {
+            Optional<byte[]> optBlob = blobStoreSpy.getBlob(multiJob.getJobIdString());
+            optBlob.ifPresent(blob -> {
+                MultiTransferJob mjob = jsonUtil.fromString(new String(blob, StandardCharsets.UTF_8),
+                        MultiTransferJob.class);
+                log.info("Found Item with {}", mjob.getJobIdString());
+            });
+            return optBlob.isPresent();
+        } catch (BlobPersistenceException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

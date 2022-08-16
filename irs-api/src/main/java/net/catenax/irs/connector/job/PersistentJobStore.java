@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -84,10 +85,9 @@ public class PersistentJobStore extends BaseJobStore {
             final Optional<byte[]> blob = blobStore.getBlob(toBlobId(jobId));
             final MultiTransferJob job = blob.map(this::toJob).get();
 
-            final List<String> ids = job.getCompletedTransfers()
-                                        .stream()
-                                        .map(transferProcess -> transferProcess.getId())
-                                        .collect(Collectors.toList());
+            final List<String> ids = Stream.concat(job.getTransferProcessIds().stream().map(p -> String.valueOf(p)),
+                                                   job.getCompletedTransfers().stream().map(transferProcess -> transferProcess.getId()))
+                                           .collect(Collectors.toList());
 
             blobStore.delete(toBlobId(jobId), ids);
             return blob.map(this::toJob);
