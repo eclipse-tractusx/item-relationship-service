@@ -285,7 +285,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     private Stream<Relationship> convert(final AssemblyPartRelationshipDTO dto) {
-        return dto.getChildParts().stream().map(child -> child.toRelationship(dto.getCatenaXId()));
+        return dto.getChildParts().stream().map(child -> child.toRelationship(dto.getCatenaXId(), dto.getRelationshipAspect()));
     }
 
 }

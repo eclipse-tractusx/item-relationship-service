@@ -26,6 +26,7 @@ import net.catenax.irs.connector.job.TransferProcess;
 import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.JobParameter;
+import net.catenax.irs.dto.RelationshipAspect;
 import net.catenax.irs.services.MeterRegistryService;
 import net.datafaker.Faker;
 
@@ -80,6 +81,7 @@ public class TestMother {
         return AssemblyPartRelationshipDTO.builder()
                                           .childParts(childParts)
                                           .catenaXId(faker.lorem().characters(GLOBAL_ASSET_ID_SIZE))
+                                          .relationshipAspect(RelationshipAspect.AssemblyPartRelationship)
                                           .build();
     }
 
@@ -122,8 +124,7 @@ public class TestMother {
     public Job fakeJob(JobState state) {
         return Job.builder()
                   .jobId(UUID.randomUUID())
-                  .globalAssetId(
-                          GlobalAssetIdentification.builder().globalAssetId(UUID.randomUUID().toString()).build())
+                  .globalAssetId(GlobalAssetIdentification.of(UUID.randomUUID().toString()))
                   .jobState(state)
                   .createdOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .owner(faker.lorem().characters())

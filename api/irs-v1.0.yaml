@@ -255,7 +255,7 @@ components:
               running: 0
         relationships:
           - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
-            childItem:
+            linkedItem:
               assembledOn: 2022-02-03T14:48:54.709Z
               childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
               lastModifiedOn: 2022-02-03T14:48:54.709Z
@@ -398,7 +398,7 @@ components:
               running: 0
         relationships:
           - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
-            childItem:
+            linkedItem:
               assembledOn: 2022-02-03T14:48:54.709Z
               childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
               lastModifiedOn: 2022-02-03T14:48:54.709Z
@@ -550,29 +550,6 @@ components:
           type: integer
           format: int32
           description: Number of running item transfers.
-    ChildItem:
-      type: object
-      description: Set of child parts the parent object is assembled by (one structural
-        level down).
-      properties:
-        assembledOn:
-          type: string
-          format: date-time
-          description: Datetime of assembly.
-        childCatenaXId:
-          $ref: '#/components/schemas/GlobalAssetIdentification'
-        lastModifiedOn:
-          type: string
-          format: date-time
-          description: Last datetime item was modified.
-        lifecycleContext:
-          type: string
-          description: The lifecycle context in which the child part was assembled
-            into the parent part.
-          enum:
-            - asBuilt
-        quantity:
-          $ref: '#/components/schemas/Quantity'
     Endpoint:
       type: object
       properties:
@@ -846,6 +823,29 @@ components:
           type: string
         text:
           type: string
+    LinkedItem:
+      type: object
+      description: Set of child parts the parent object is assembled by (one structural
+        level down).
+      properties:
+        assembledOn:
+          type: string
+          format: date-time
+          description: Datetime of assembly.
+        childCatenaXId:
+          $ref: '#/components/schemas/GlobalAssetIdentification'
+        lastModifiedOn:
+          type: string
+          format: date-time
+          description: Last datetime item was modified.
+        lifecycleContext:
+          type: string
+          description: The lifecycle context in which the child part was assembled
+            into the parent part.
+          enum:
+            - asBuilt
+        quantity:
+          $ref: '#/components/schemas/Quantity'
     MeasurementUnit:
       type: object
       properties:
@@ -958,12 +958,12 @@ components:
       type: object
       description: Relationships between parent and child items.
       properties:
+        aspectType:
+          type: string
         catenaXId:
           $ref: '#/components/schemas/GlobalAssetIdentification'
-        childItem:
-          $ref: '#/components/schemas/ChildItem'
-        parentItem:
-          $ref: '#/components/schemas/ChildItem'
+        linkedItem:
+          $ref: '#/components/schemas/LinkedItem'
     Submodel:
       type: object
       description: Collection of requested Submodels

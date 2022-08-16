@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
-import net.catenax.irs.component.ChildItem;
+import net.catenax.irs.component.LinkedItem;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.MeasurementUnit;
 import net.catenax.irs.component.Quantity;
@@ -40,18 +40,17 @@ public class ChildDataDTO {
 
     private String childCatenaXId;
 
-    public Relationship toRelationship(final String catenaXId) {
-        final ChildItem.ChildItemBuilder childItem = ChildItem.builder()
-                                                        .childCatenaXId(
-                                                                withGlobalAssetIdentification(getChildCatenaXId()))
-                                                        .lifecycleContext(
+    public Relationship toRelationship(final String catenaXId, final RelationshipAspect relationshipAspect) {
+        final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
+                                                                .childCatenaXId(GlobalAssetIdentification.of(getChildCatenaXId()))
+                                                                .lifecycleContext(
                                                                 BomLifecycle.fromLifecycleContextCharacteristic(
                                                                         getLifecycleContext()))
-                                                        .assembledOn(getAssembledOn())
-                                                        .lastModifiedOn(getLastModifiedOn());
+                                                                .assembledOn(getAssembledOn())
+                                                                .lastModifiedOn(getLastModifiedOn());
 
         if (this.getQuantity() != null) {
-            childItem.quantity(Quantity.builder()
+            linkedItem.quantity(Quantity.builder()
                                        .quantityNumber(getQuantity().getQuantityNumber())
                                        .measurementUnit(MeasurementUnit.builder()
                                                                        .datatypeURI(getQuantity().getMeasurementUnit()
@@ -63,12 +62,10 @@ public class ChildDataDTO {
         }
 
         return Relationship.builder()
-                           .catenaXId(withGlobalAssetIdentification(catenaXId))
-                           .childItem(childItem.build())
+                           .catenaXId(GlobalAssetIdentification.of(catenaXId))
+                           .linkedItem(linkedItem.build())
+                           .aspectType(relationshipAspect.name())
                            .build();
     }
 
-    private GlobalAssetIdentification withGlobalAssetIdentification(final String catenaXId) {
-        return GlobalAssetIdentification.builder().globalAssetId(catenaXId).build();
-    }
 }

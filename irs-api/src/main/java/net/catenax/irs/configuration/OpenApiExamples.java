@@ -21,7 +21,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
 import net.catenax.irs.component.AsyncFetchedItems;
-import net.catenax.irs.component.ChildItem;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
@@ -29,6 +28,7 @@ import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.JobParameter;
 import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.component.Jobs;
+import net.catenax.irs.component.LinkedItem;
 import net.catenax.irs.component.MeasurementUnit;
 import net.catenax.irs.component.ProcessingError;
 import net.catenax.irs.component.Quantity;
@@ -194,28 +194,28 @@ public class OpenApiExamples {
         final Relationship relationship = createRelationship();
         final QuantityDTO.MeasurementUnitDTO measurementUnit = QuantityDTO.MeasurementUnitDTO.builder()
                                                                                              .datatypeURI(
-                                                                                                     relationship.getChildItem()
+                                                                                                     relationship.getLinkedItem()
                                                                                                                  .getQuantity()
                                                                                                                  .getMeasurementUnit()
                                                                                                                  .getDatatypeURI())
                                                                                              .lexicalValue(
-                                                                                                     relationship.getChildItem()
+                                                                                                     relationship.getLinkedItem()
                                                                                                                  .getQuantity()
                                                                                                                  .getMeasurementUnit()
                                                                                                                  .getLexicalValue())
                                                                                              .build();
         final QuantityDTO quantity = QuantityDTO.builder()
                                                 .quantityNumber(
-                                                        relationship.getChildItem().getQuantity().getQuantityNumber())
+                                                        relationship.getLinkedItem().getQuantity().getQuantityNumber())
                                                 .measurementUnit(measurementUnit)
                                                 .build();
         final ChildDataDTO childData = ChildDataDTO.builder()
                                                    .childCatenaXId(relationship.getCatenaXId().getGlobalAssetId())
-                                                   .assembledOn(relationship.getChildItem().getAssembledOn())
-                                                   .lifecycleContext(relationship.getChildItem()
+                                                   .assembledOn(relationship.getLinkedItem().getAssembledOn())
+                                                   .lifecycleContext(relationship.getLinkedItem()
                                                                                  .getLifecycleContext()
                                                                                  .getLifecycleContextCharacteristicValue())
-                                                   .lastModifiedOn(relationship.getChildItem().getLastModifiedOn())
+                                                   .lastModifiedOn(relationship.getLinkedItem().getLastModifiedOn())
                                                    .quantity(quantity)
                                                    .build();
         return AssemblyPartRelationshipDTO.builder()
@@ -260,19 +260,19 @@ public class OpenApiExamples {
     private Relationship createRelationship() {
         return Relationship.builder()
                            .catenaXId(createGAID("d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447"))
-                           .childItem(ChildItem.builder()
-                                               .quantity(createQuantity())
-                                               .childCatenaXId(createGAID("a45a2246-f6e1-42da-b47d-5c3b58ed62e9"))
-                                               .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
-                                               .assembledOn(EXAMPLE_ZONED_DATETIME)
-                                               .lifecycleContext(BomLifecycle.AS_BUILT)
-                                               .build())
+                           .linkedItem(LinkedItem.builder()
+                                                 .quantity(createQuantity())
+                                                 .childCatenaXId(createGAID("a45a2246-f6e1-42da-b47d-5c3b58ed62e9"))
+                                                 .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
+                                                 .assembledOn(EXAMPLE_ZONED_DATETIME)
+                                                 .lifecycleContext(BomLifecycle.AS_BUILT)
+                                                 .build())
                            .build();
     }
 
     private GlobalAssetIdentification createGAID(final String globalAssetId) {
         final String prefixedId = globalAssetId.startsWith("urn:uuid:") ? globalAssetId : "urn:uuid:" + globalAssetId;
-        return GlobalAssetIdentification.builder().globalAssetId(prefixedId).build();
+        return GlobalAssetIdentification.of(prefixedId);
     }
 
     private Quantity createQuantity() {

@@ -13,13 +13,13 @@ package net.catenax.irs.dto;
 import java.util.Set;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 /**
  * AssemblyPartRelationshipDTO model used for internal application use
  */
-@Data
+@Value
 @Builder(toBuilder = true)
 @Jacksonized
 public class AssemblyPartRelationshipDTO {
@@ -27,5 +27,7 @@ public class AssemblyPartRelationshipDTO {
     private String catenaXId;
 
     private Set<ChildDataDTO> childParts;
+
+    private RelationshipAspect relationshipAspect;
 
 }
