@@ -4,7 +4,12 @@ import static net.catenax.irs.util.TestMother.jobParameter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -490,6 +495,25 @@ class PersistentJobStoreTest {
 
         // Assert
         assertThat(job2.getJob().getLastModifiedOn()).isAfter(job1.getJob().getLastModifiedOn());
+    }
+
+    @Test
+    void shouldRemoveJobAndExecuteDeleteMethodWithFoundCompletedTransferIds() throws BlobPersistenceException {
+        // Arrange
+        sut.create(job);
+        sut.addTransferProcess(job.getJobIdString(), processId1);
+        sut.completeTransferProcess(job.getJobIdString(), process1);
+        sut.completeJob(job.getJobIdString(), this::doNothing);
+
+        // Act
+        sut.remove(job.getJobIdString());
+
+        // Assert
+        verify(blobStoreSpy).delete(
+            argThat(s -> s.contains(job.getJobIdString())), // jobId
+            argThat(s -> s.size() == 2) // jobId + processId
+        );
+        verify(blobStoreSpy, times(1)).delete(anyString(), anyList());
     }
 
 }

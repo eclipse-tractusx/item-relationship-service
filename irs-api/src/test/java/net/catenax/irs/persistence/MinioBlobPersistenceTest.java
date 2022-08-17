@@ -5,11 +5,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 
 import io.minio.GetObjectResponse;
@@ -47,7 +49,7 @@ class MinioBlobPersistenceTest {
     @Test
     void shouldDeleteBlobWithClient() throws Exception {
         // act
-        testee.delete("testBlobName");
+        testee.delete("testBlobName", List.of());
 
         // assert
         verify(client).removeObject(any());
@@ -59,7 +61,7 @@ class MinioBlobPersistenceTest {
         doThrow(new IOException("Test")).when(client).removeObject(any());
 
         // act+assert
-        assertThatThrownBy(() -> testee.delete("testBlobName")).isInstanceOf(BlobPersistenceException.class);
+        assertThatThrownBy(() -> testee.delete("testBlobName", List.of())).isInstanceOf(BlobPersistenceException.class);
     }
 
     @Test
@@ -69,11 +71,24 @@ class MinioBlobPersistenceTest {
         doThrow(new ErrorResponseException(errorResponse, null, "")).when(client).removeObject(any());
 
         // act
-        final boolean success = testee.delete("testBlobName");
+        final boolean success = testee.delete("testBlobName", List.of());
 
         // assert
         verify(client).removeObject(any());
         assertThat(success).isFalse();
+    }
+
+    @Test
+    void shouldDeleteBlobWithRelatedBlobByProcessId() throws Exception {
+        final List<String> processIds = List.of("testBlobName_process_1", "testBlobName_process_2");
+        testee.putBlob(processIds.get(0), "testContent".getBytes(StandardCharsets.UTF_8));
+        testee.putBlob(processIds.get(1), "testContent".getBytes(StandardCharsets.UTF_8));
+
+        // act
+        testee.delete("testBlobName", processIds);
+
+        // assert
+        verify(client, times(3)).removeObject(any());
     }
 
     @Test
