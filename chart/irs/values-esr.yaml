@@ -5,13 +5,13 @@ image:
 
 ingress:
   hosts:
-    - host: "irs-esr.int.demo.catena-x.net"
+    - host: "irs-esr.dev.demo.catena-x.net"
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
     - hosts:
-        - "irs-esr.int.demo.catena-x.net"
+        - "irs-esr.dev.demo.catena-x.net"
       # Default secret for certificate creation already provided to your namespace
       secretName: tls-secret
 

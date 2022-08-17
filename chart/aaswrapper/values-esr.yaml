@@ -13,7 +13,7 @@ ingress:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
   hosts:
-    - host: "irs-aas-wrapper-esr.int.demo.catena-x.net"
+    - host: "irs-aas-wrapper-esr.dev.demo.catena-x.net"
       paths:
         - path: /
           pathType: Prefix
@@ -24,7 +24,7 @@ ingress:
                 number: 9191
   tls:
     - hosts:
-        - "irs-aas-wrapper-esr.int.demo.catena-x.net"
+        - "irs-aas-wrapper-esr.dev.demo.catena-x.net"
       # Default secret for certificate creation already provided to your namespace
       secretName: tls-secret
 
