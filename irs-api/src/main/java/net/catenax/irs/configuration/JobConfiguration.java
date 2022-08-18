@@ -22,6 +22,7 @@ import net.catenax.irs.aaswrapper.job.ItemTreesAssembler;
 import net.catenax.irs.aaswrapper.job.TreeRecursiveLogic;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
+import net.catenax.irs.bpdm.BpdmFacade;
 import net.catenax.irs.connector.job.JobOrchestrator;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.persistence.BlobPersistence;
@@ -44,10 +45,11 @@ public class JobConfiguration {
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
             final DigitalTwinRegistryFacade registryFacade, final SubmodelFacade submodelFacade,
-            final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService,
-            final BlobPersistence blobStore, final JobStore jobStore, final MeterRegistryService meterService) {
+            final SemanticsHubFacade semanticsHubFacade, final BpdmFacade bpdmFacade,
+            final JsonValidatorService jsonValidatorService, final BlobPersistence blobStore,
+            final JobStore jobStore, final MeterRegistryService meterService) {
 
-        final var aasHandler = new AASHandler(registryFacade, submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil());
+        final var aasHandler = new AASHandler(registryFacade, submodelFacade, semanticsHubFacade, bpdmFacade, jsonValidatorService, jsonUtil());
         final var manager = new AASTransferProcessManager(aasHandler, Executors.newCachedThreadPool(), blobStore);
         final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);

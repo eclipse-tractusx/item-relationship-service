@@ -10,6 +10,7 @@
 package net.catenax.irs.component;
 
 import java.util.List;
+import java.util.Set;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -47,5 +48,9 @@ public class Jobs {
     @Schema(description = "Collection of requested Submodels")
     @Singular
     private List<Submodel> submodels;
+
+    @Schema(description = "Collection of bpn mappings")
+    @Singular
+    private Set<Bpn> bpns;
 
 }

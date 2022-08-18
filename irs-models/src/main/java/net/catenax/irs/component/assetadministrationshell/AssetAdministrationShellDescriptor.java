@@ -64,6 +64,13 @@ public class AssetAdministrationShellDescriptor {
     private List<SubmodelDescriptor> submodelDescriptors;
 
     /**
+     * @return ManufacturerId value from Specific Asset Ids
+     */
+    public Optional<String> findManufacturerId() {
+        return this.specificAssetIds.stream().filter(assetId -> "ManufacturerId".equalsIgnoreCase(assetId.getKey())).map(IdentifierKeyValuePair::getValue).findFirst();
+    }
+
+    /**
      * @param aspectTypes        the aspect types which should be filtered by
      * @return AssetAdministrationShellDescriptor with filtered submodel descriptors
      */

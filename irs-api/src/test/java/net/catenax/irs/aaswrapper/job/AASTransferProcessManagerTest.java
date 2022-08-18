@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import net.catenax.irs.InMemoryBlobStore;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
+import net.catenax.irs.bpdm.BpdmFacade;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.semanticshub.SemanticsHubFacade;
@@ -29,16 +30,13 @@ class AASTransferProcessManagerTest {
     private final TestMother generate = new TestMother();
 
     DigitalTwinRegistryFacade digitalTwinRegistryFacade = mock(DigitalTwinRegistryFacade.class);
-
     SubmodelFacade submodelFacade = mock(SubmodelFacade.class);
-
     SemanticsHubFacade semanticsHubFacade = mock(SemanticsHubFacade.class);
-
+    BpdmFacade bpdmFacade = mock(BpdmFacade.class);
     JsonValidatorService jsonValidatorService = mock(JsonValidatorService.class);
-
     ExecutorService pool = mock(ExecutorService.class);
 
-    AASHandler aasHandler = new AASHandler(digitalTwinRegistryFacade, submodelFacade, semanticsHubFacade, jsonValidatorService, new JsonUtil());
+    AASHandler aasHandler = new AASHandler(digitalTwinRegistryFacade, submodelFacade, semanticsHubFacade, bpdmFacade, jsonValidatorService, new JsonUtil());
 
     final AASTransferProcessManager manager = new AASTransferProcessManager(aasHandler, pool, new InMemoryBlobStore());
 
