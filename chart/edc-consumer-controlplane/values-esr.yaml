@@ -32,8 +32,8 @@ configuration:
   properties: |-
     edc.api.auth.key=123456
     edc.ids.catalog.id=urn:catalog:default
-    edc.ids.endpoint=https://irs-consumer-controlplane-esr.int.demo.catena-x.net/api/v1/ids
-    ids.webhook.address=https://irs-consumer-controlplane-esr.int.demo.catena-x.net
+    edc.ids.endpoint=https://irs-consumer-controlplane-esr.dev.demo.catena-x.net/api/v1/ids
+    ids.webhook.address=https://irs-consumer-controlplane-esr.dev.demo.catena-x.net
     edc.ids.id=urn:connector:edc-consumer-controlplane-esr
     edc.oauth.client.id=D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09:keyid:D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09
     edc.oauth.private.key.alias=irs-int-daps-key
@@ -42,7 +42,7 @@ configuration:
     edc.oauth.public.key.alias=irs-int-daps-cert
     edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
     edc.receiver.http.endpoint=http://aaswrapper-esr:9192/callback/endpoint-data-reference
-    edc.transfer.proxy.endpoint=https://irs-consumer-dataplane-esr.int.demo.catena-x.net/api/public
+    edc.transfer.proxy.endpoint=https://irs-consumer-dataplane-esr.dev.demo.catena-x.net/api/public
     edc.transfer.proxy.token.signer.privatekey.alias=azure-vault-token-signer-private-key
     edc.transfer.proxy.token.verifier.publickey.alias=azure-vault-token-signer-private-key-pub
     edc.vault.clientid=c1778e7d-db16-4404-9080-26d2280d2f63
