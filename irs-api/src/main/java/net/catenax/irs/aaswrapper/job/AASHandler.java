@@ -101,7 +101,7 @@ public class AASHandler {
 
             aasShell.findManufacturerId().ifPresent(manufacturerId -> {
                 final Optional<String> manufacturerName = bpdmFacade.findManufacturerName(manufacturerId);
-                manufacturerName.ifPresent(name -> itemContainerBuilder.bpn(Bpn.of(manufacturerId, name)).build());
+                manufacturerName.ifPresent(name -> itemContainerBuilder.bpn(Bpn.of(manufacturerId, name)));
             });
 
         } catch (RestClientException e) {
