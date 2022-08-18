@@ -17,15 +17,15 @@ ingress:
 
 keycloak:
   oauth2:
-    clientId: <path:traceability-irs/data/int/keycloak/oauth2#clientId>
-    clientSecret: <path:traceability-irs/data/int/keycloak/oauth2#clientSecret>
-    clientTokenUri: <path:traceability-irs/data/int/keycloak/oauth2#tokenUri>
-    jwkSetUri: <path:traceability-irs/data/int/keycloak/oauth2#jwkSetUri>
+    clientId: <path:traceability-irs/data/dev/keycloak/oauth2#clientId>
+    clientSecret: <path:traceability-irs/data/dev/keycloak/oauth2#clientSecret>
+    clientTokenUri: <path:traceability-irs/data/dev/keycloak/oauth2#tokenUri>
+    jwkSetUri: <path:traceability-irs/data/dev/keycloak/oauth2#jwkSetUri>
 
 aasProxy:
   submodel:
-    username: <path:traceability-irs/data/int/aasProxy/submodel#username>
-    password: <path:traceability-irs/data/int/aasProxy/submodel#password>
+    username: <path:traceability-irs/data/dev/aasProxy/submodel#username>
+    password: <path:traceability-irs/data/dev/aasProxy/submodel#password>
 
 minio:
   url: http://app-minio-esr:9000
@@ -36,5 +36,5 @@ aasWrapper:
 digitalTwinRegistry:
   url: https://semantics.int.demo.catena-x.net/registry
 
-rootUser: <path:traceability-irs/data/int/minio#minioUser>
-rootPassword: <path:traceability-irs/data/int/minio#minioPassword>
+rootUser: <path:traceability-irs/data/dev/minio#minioUser>
+rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>

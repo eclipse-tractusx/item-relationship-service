@@ -13,18 +13,18 @@ ingress:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
   hosts:
-    - host: "irs-aas-wrapper-esr.dev.demo.catena-x.net"
+    - host: "irs-aas-wrapper-spike.dev.demo.catena-x.net"
       paths:
         - path: /
           pathType: Prefix
           backend:
             service:
-              name: aaswrapper-esr
+              name: aaswrapper-spike
               port:
                 number: 9191
   tls:
     - hosts:
-        - "irs-aas-wrapper-esr.dev.demo.catena-x.net"
+        - "irs-aas-wrapper-spike.dev.demo.catena-x.net"
       # Default secret for certificate creation already provided to your namespace
       secretName: tls-secret
 
@@ -35,7 +35,7 @@ configuration:
     web.http.callback.port=9192
     web.http.callback.path=/callback
     # wrapper.auth.basic.someuser=somepassword
-    wrapper.consumer.edc.datamanagement.url=http://edc-consumer-controlplane-esr:8181/data
-    wrapper.consumer.edc.control.url=http://edc-consumer-controlplane-esr:9999/api/controlplane/control
+    wrapper.consumer.edc.datamanagement.url=http://irs-consumer-controlplane-spike:8181/data
+    wrapper.consumer.edc.control.url=http://irs-consumer-controlplane-spike:9999/api/controlplane/control
     wrapper.consumer.edc.apikey.name=X-Api-Key
     wrapper.consumer.edc.apikey.value=123456
