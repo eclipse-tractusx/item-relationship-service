@@ -15,6 +15,7 @@ import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.ItemContainer;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.Jobs;
+import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
@@ -73,8 +74,9 @@ class IrsItemGraphQueryServiceTest {
     }
 
     private void givenTransferResultIsStored(final AASTransferProcess transfer1) throws BlobPersistenceException {
-        final AssemblyPartRelationshipDTO relationship1 = generate.assemblyPartRelationshipDTO();
-        final ItemContainer itemContainer1 = ItemContainer.builder().assemblyPartRelationship(relationship1).build();
+//        final AssemblyPartRelationshipDTO relationship1 = generate.assemblyPartRelationshipDTO();
+        final Relationship relationship1 = new Relationship(null, null, null);
+        final ItemContainer itemContainer1 = ItemContainer.builder().relationship(relationship1).build();
         when(blobStore.getBlob(transfer1.getId())).thenReturn(Optional.of(toBlob(itemContainer1)));
     }
 

@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 import net.catenax.irs.component.enums.BomLifecycle;
 
 /*** API type for LinkedItem name/url entry. */
@@ -23,6 +24,7 @@ import net.catenax.irs.component.enums.BomLifecycle;
 @Value
 @Builder(toBuilder = true)
 @AllArgsConstructor
+@Jacksonized
 public class LinkedItem {
 
     @Schema(description = "Quantity component.", implementation = Quantity.class)

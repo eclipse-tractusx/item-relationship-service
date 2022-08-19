@@ -9,15 +9,18 @@
 //
 package net.catenax.irs.component;
 
+import java.io.IOException;
+
 import javax.validation.Valid;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Value;
 
 /**
@@ -26,10 +29,9 @@ import lombok.Value;
 
 @Schema(description = "CATENA-X global asset id in the format urn:uuid:uuid4.")
 @Value
-@Builder(toBuilder = true)
 @AllArgsConstructor(staticName = "of")
 @JsonSerialize(using = ToStringSerializer.class)
-@JsonDeserialize(builder = GlobalAssetIdentification.GlobalAssetIdentificationBuilder.class)
+@JsonDeserialize(using = GlobalAssetIdentification.DefinitionDeserializer.class)
 public class GlobalAssetIdentification {
 
     private static final int GLOBAL_ASSET_ID_LENGTH = 45;
@@ -45,10 +47,14 @@ public class GlobalAssetIdentification {
     }
 
     /**
-     * Builder for GlobalAssetIdBuilder class
+     * Custom deserializer from string
      */
-    @JsonPOJOBuilder(withPrefix = "")
-    public static class GlobalAssetIdentificationBuilder {
+    /* package */  static class DefinitionDeserializer extends JsonDeserializer<GlobalAssetIdentification> {
+        @Override
+        public GlobalAssetIdentification deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext)
+                throws IOException {
+            return GlobalAssetIdentification.of(jsonParser.readValueAs(String.class));
+        }
     }
 
 }
