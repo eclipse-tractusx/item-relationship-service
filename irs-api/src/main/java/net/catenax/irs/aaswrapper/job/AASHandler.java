@@ -12,6 +12,7 @@ package net.catenax.irs.aaswrapper.job;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.github.resilience4j.retry.RetryRegistry;
@@ -19,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
+import net.catenax.irs.bpdm.BpdmFacade;
+import net.catenax.irs.component.Bpn;
 import net.catenax.irs.component.Submodel;
 import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -46,6 +49,7 @@ public class AASHandler {
     private final DigitalTwinRegistryFacade registryFacade;
     private final SubmodelFacade submodelFacade;
     private final SemanticsHubFacade semanticsHubFacade;
+    private final BpdmFacade bpdmFacade;
     private final JsonValidatorService jsonValidatorService;
     private final JsonUtil jsonUtil;
 
@@ -59,8 +63,10 @@ public class AASHandler {
      */
     public ItemContainer collectShellAndSubmodels(final JobParameter jobData,
             final AASTransferProcess aasTransferProcess, final String itemId) {
+
         final ItemContainer.ItemContainerBuilder itemContainerBuilder = ItemContainer.builder();
         final int retryCount = RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts();
+
         try {
             final AssetAdministrationShellDescriptor aasShell = registryFacade.getAAShellDescriptor(itemId, jobData);
             final List<SubmodelDescriptor> aasSubmodelDescriptors = aasShell.getSubmodelDescriptors();
@@ -92,6 +98,12 @@ public class AASHandler {
 
             itemContainerBuilder.shell(
                     aasShell.toBuilder().submodelDescriptors(filteredSubmodelDescriptorsByAspectType).build());
+
+            aasShell.findManufacturerId().ifPresent(manufacturerId -> {
+                final Optional<String> manufacturerName = bpdmFacade.findManufacturerName(manufacturerId);
+                manufacturerName.ifPresent(name -> itemContainerBuilder.bpn(Bpn.of(manufacturerId, name)));
+            });
+
         } catch (RestClientException e) {
             log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
             itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount));

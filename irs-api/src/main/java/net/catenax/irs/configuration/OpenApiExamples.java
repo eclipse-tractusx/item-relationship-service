@@ -21,6 +21,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
 import net.catenax.irs.component.AsyncFetchedItems;
+import net.catenax.irs.component.Bpn;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
@@ -175,6 +176,7 @@ public class OpenApiExamples {
                              .shells(List.of(createShell()))
                              .tombstone(createTombstone())
                              .submodel(createSubmodel())
+                             .bpn(Bpn.of("BPNL00000003AYRE", "OEM A"))
                              .build());
     }
 

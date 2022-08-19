@@ -10,12 +10,15 @@
 package net.catenax.irs.aaswrapper.job;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.component.Bpn;
 import net.catenax.irs.component.Submodel;
 import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -40,6 +43,7 @@ public class ItemTreesAssembler {
         final ArrayList<Tombstone> tombstones = new ArrayList<>();
         final ArrayList<AssetAdministrationShellDescriptor> shells = new ArrayList<>();
         final ArrayList<Submodel> submodels = new ArrayList<>();
+        final Set<Bpn> bpns = new HashSet<>();
 
         partialGraph.forEachOrdered(itemGraph -> {
             relationships.addAll(itemGraph.getAssemblyPartRelationships());
@@ -47,6 +51,7 @@ public class ItemTreesAssembler {
             tombstones.addAll(itemGraph.getTombstones());
             shells.addAll(itemGraph.getShells());
             submodels.addAll(itemGraph.getSubmodels());
+            bpns.addAll(itemGraph.getBpns());
         });
 
         log.info("Assembled item graph from {} partial graphs", numberOfPartialTrees);
@@ -56,6 +61,7 @@ public class ItemTreesAssembler {
                             .tombstones(tombstones)
                             .shells(shells)
                             .submodels(submodels)
+                            .bpns(bpns)
                             .build();
     }
 }

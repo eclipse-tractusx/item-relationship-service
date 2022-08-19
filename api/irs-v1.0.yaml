@@ -192,6 +192,7 @@ components:
   examples:
     canceled-job-result:
       value:
+        bpns: []
         job:
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
@@ -227,6 +228,9 @@ components:
         status: COMPLETED
     complete-job-result:
       value:
+        bpns:
+        - manufacturerId: BPNL00000003AYRE
+          manufacturerName: OEM A
         job:
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
@@ -337,6 +341,7 @@ components:
         statusCode: 500 INTERNAL_SERVER_ERROR
     failed-job-result:
       value:
+        bpns: []
         job:
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
@@ -370,6 +375,9 @@ components:
         jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
     job-result-without-uncompleted-result-tree:
       value:
+        bpns:
+        - manufacturerId: BPNL00000003AYRE
+          manufacturerName: OEM A
         job:
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
@@ -473,6 +481,7 @@ components:
               retryCounter: 0
     partial-job-result:
       value:
+        bpns: []
         job:
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
@@ -550,6 +559,14 @@ components:
           type: integer
           format: int32
           description: Number of running item transfers.
+    Bpn:
+      type: object
+      description: Collection of bpn mappings
+      properties:
+        manufacturerId:
+          type: string
+        manufacturerName:
+          type: string
     Endpoint:
       type: object
       properties:
@@ -793,6 +810,12 @@ components:
       type: object
       description: Container for a job with item graph.
       properties:
+        bpns:
+          type: array
+          description: Collection of bpn mappings
+          items:
+            $ref: '#/components/schemas/Bpn'
+          uniqueItems: true
         job:
           $ref: '#/components/schemas/Job'
         relationships:

@@ -27,6 +27,7 @@ import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.ItemContainer;
 import net.catenax.irs.aaswrapper.job.ItemDataRequest;
 import net.catenax.irs.component.AsyncFetchedItems;
+import net.catenax.irs.component.Bpn;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.JobStatusResult;
@@ -159,6 +160,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             final var tombstones = new ArrayList<Tombstone>();
             final var shells = new ArrayList<AssetAdministrationShellDescriptor>();
             final var submodels = new ArrayList<Submodel>();
+            final var bpns = new ArrayList<Bpn>();
 
             if (jobIsCompleted(multiJob)) {
                 final var container = retrieveJobResultRelationships(multiJob.getJob().getJobId());
@@ -166,6 +168,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 tombstones.addAll(container.getTombstones());
                 shells.addAll(container.getShells());
                 submodels.addAll(container.getSubmodels());
+                bpns.addAll(container.getBpns());
             } else {
                 if (includePartialResults) {
                     final var container = retrievePartialResults(multiJob);
@@ -173,6 +176,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                     tombstones.addAll(container.getTombstones());
                     shells.addAll(container.getShells());
                     submodels.addAll(container.getSubmodels());
+                    bpns.addAll(container.getBpns());
                 }
             }
 
@@ -189,6 +193,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                        .tombstones(tombstones)
                        .shells(shells)
                        .submodels(submodels)
+                       .bpns(bpns)
                        .build();
         } else {
             throw new EntityNotFoundException("No job exists with id " + jobId);
