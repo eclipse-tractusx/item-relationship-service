@@ -1,12 +1,10 @@
 package net.catenax.irs.util;
 
-import static net.catenax.irs.controllers.IrsAppConstants.GLOBAL_ASSET_ID_SIZE;
 import static net.catenax.irs.controllers.IrsAppConstants.UUID_SIZE;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -23,10 +21,7 @@ import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.connector.job.TransferProcess;
-import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
-import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.JobParameter;
-import net.catenax.irs.dto.RelationshipAspect;
 import net.catenax.irs.services.MeterRegistryService;
 import net.datafaker.Faker;
 
@@ -70,19 +65,6 @@ public class TestMother {
         registerJob.setCollectAspects(collectAspects);
 
         return registerJob;
-    }
-
-    public AssemblyPartRelationshipDTO assemblyPartRelationshipDTO() {
-        final ChildDataDTO childPart = ChildDataDTO.builder()
-                                                   .childCatenaXId(faker.lorem().characters(GLOBAL_ASSET_ID_SIZE))
-                                                   .lifecycleContext(AS_BUILT)
-                                                   .build();
-        final Set<ChildDataDTO> childParts = Set.of(childPart);
-        return AssemblyPartRelationshipDTO.builder()
-                                          .childParts(childParts)
-                                          .catenaXId(faker.lorem().characters(GLOBAL_ASSET_ID_SIZE))
-                                          .relationshipAspect(RelationshipAspect.AssemblyPartRelationship)
-                                          .build();
     }
 
     public static JobParameter jobParameter() {

@@ -12,12 +12,8 @@ package net.catenax.irs.configuration;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
 import net.catenax.irs.component.AsyncFetchedItems;
@@ -48,10 +44,8 @@ import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
-import net.catenax.irs.dto.ChildDataDTO;
-import net.catenax.irs.dto.QuantityDTO;
 import net.catenax.irs.dtos.ErrorResponse;
+import net.catenax.irs.util.JsonUtil;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -181,49 +175,20 @@ public class OpenApiExamples {
     }
 
     private Submodel createSubmodel() {
-        final ObjectMapper objectMapper = new ObjectMapper()
-                .registerModule(new JavaTimeModule())
-                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-
         return Submodel.builder()
                        .aspectType("urn:bamm:io.catenax.assembly_part_relationship:1.0.0")
                        .identification(SUBMODEL_IDENTIFICATION)
-                       .payload(objectMapper.convertValue(createAssemblyPartRelationship(), Map.class))
+                       .payload(createAssemblyPartRelationshipPayloadMap())
                        .build();
     }
 
-    private AssemblyPartRelationshipDTO createAssemblyPartRelationship() {
-        final Relationship relationship = createRelationship();
-        final QuantityDTO.MeasurementUnitDTO measurementUnit = QuantityDTO.MeasurementUnitDTO.builder()
-                                                                                             .datatypeURI(
-                                                                                                     relationship.getLinkedItem()
-                                                                                                                 .getQuantity()
-                                                                                                                 .getMeasurementUnit()
-                                                                                                                 .getDatatypeURI())
-                                                                                             .lexicalValue(
-                                                                                                     relationship.getLinkedItem()
-                                                                                                                 .getQuantity()
-                                                                                                                 .getMeasurementUnit()
-                                                                                                                 .getLexicalValue())
-                                                                                             .build();
-        final QuantityDTO quantity = QuantityDTO.builder()
-                                                .quantityNumber(
-                                                        relationship.getLinkedItem().getQuantity().getQuantityNumber())
-                                                .measurementUnit(measurementUnit)
-                                                .build();
-        final ChildDataDTO childData = ChildDataDTO.builder()
-                                                   .childCatenaXId(relationship.getCatenaXId().getGlobalAssetId())
-                                                   .assembledOn(relationship.getLinkedItem().getAssembledOn())
-                                                   .lifecycleContext(relationship.getLinkedItem()
-                                                                                 .getLifecycleContext()
-                                                                                 .getLifecycleContextCharacteristicValue())
-                                                   .lastModifiedOn(relationship.getLinkedItem().getLastModifiedOn())
-                                                   .quantity(quantity)
-                                                   .build();
-        return AssemblyPartRelationshipDTO.builder()
-                                          .catenaXId(relationship.getCatenaXId().getGlobalAssetId())
-                                          .childParts(Set.of(childData))
-                                          .build();
+    private Map<String, Object> createAssemblyPartRelationshipPayloadMap() {
+        final String assemblyPartRelationshipPayload = "{\"catenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
+                + "\"childParts\": [ { \"assembledOn\": \"2022-02-03T14:48:54.709Z\", \"childCatenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
+                + "\"lastModifiedOn\": \"2022-02-03T14:48:54.709Z\", \"lifecycleContext\": \"AsBuilt\", \"quantity\": "
+                + "{\"measurementUnit\": {\"datatypeURI\": \"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\",\"lexicalValue\": \"piece\"},\"quantityNumber\": 1}}]}";
+
+        return new JsonUtil().fromString(assemblyPartRelationshipPayload, Map.class);
     }
 
     private Tombstone createTombstone() {
