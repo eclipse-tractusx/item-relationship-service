@@ -31,7 +31,9 @@ minio:
   url: http://app-minio-esr:9000
 
 aasWrapper:
-  host: http://aaswrapper-esr:9191/api/service
+  host: http://aaswrapper-spike:9191/api/service
+  username: <path:traceability-irs/data/dev/aasProxy/submodel#username>
+  password: <path:traceability-irs/data/dev/aasProxy/submodel#password>
 
 digitalTwinRegistry:
   url: https://semantics.int.demo.catena-x.net/registry
