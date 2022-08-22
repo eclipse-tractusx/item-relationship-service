@@ -11,8 +11,9 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 
 import java.time.ZonedDateTime;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
+import lombok.NoArgsConstructor;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.LinkedItem;
 import net.catenax.irs.component.MeasurementUnit;
@@ -24,7 +25,8 @@ import net.catenax.irs.dto.RelationshipAspect;
  *
  */
 @Data
-@Jacksonized
+@AllArgsConstructor
+@NoArgsConstructor
 class ChildData {
 
     private ZonedDateTime assembledOn;
