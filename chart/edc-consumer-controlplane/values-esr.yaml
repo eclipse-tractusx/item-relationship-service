@@ -58,7 +58,7 @@ configuration:
     edc.vault.hashicorp.health.check.enabled=true
     edc.vault.hashicorp.health.check.standby.ok=true
     edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
-    edc.vault.hashicorp.clientsecret=<path:traceability-irs/data/dev/controlplane#devVaultClientSecret>
+
     edc.vault.hashicorp.clientid=c1778e7d-db16-4404-9080-26d2280d2f63
     edc.vault.hashicorp.clientsecret=<path:traceability-irs/data/dev/controlplane#devVaultClientSecret>
     edc.vault.hashicorp.name=cxtsi-dev001-vault
@@ -84,3 +84,6 @@ configuration:
     edc.datasource.transferprocess.url=jdbc:postgresql://irs-edc-postgres-consumer-postgresql-hl:5432/edc
     edc.datasource.transferprocess.user=edc
     edc.datasource.transferprocess.password=databasepassword    
+
+    # edc.vault.hashicorp.tenantid=495463c3-0991-4659-9cc5-94b4a3f7b1d6
+
