@@ -74,8 +74,7 @@ class IrsItemGraphQueryServiceTest {
     }
 
     private void givenTransferResultIsStored(final AASTransferProcess transfer1) throws BlobPersistenceException {
-//        final AssemblyPartRelationshipDTO relationship1 = generate.assemblyPartRelationshipDTO();
-        final Relationship relationship1 = new Relationship(null, null, null);
+        final Relationship relationship1 = generate.relationship();
         final ItemContainer itemContainer1 = ItemContainer.builder().relationship(relationship1).build();
         when(blobStore.getBlob(transfer1.getId())).thenReturn(Optional.of(toBlob(itemContainer1)));
     }

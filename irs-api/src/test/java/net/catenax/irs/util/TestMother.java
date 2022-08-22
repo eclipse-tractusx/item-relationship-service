@@ -1,5 +1,6 @@
 package net.catenax.irs.util;
 
+import static net.catenax.irs.controllers.IrsAppConstants.GLOBAL_ASSET_ID_SIZE;
 import static net.catenax.irs.controllers.IrsAppConstants.UUID_SIZE;
 
 import java.time.ZoneId;
@@ -13,8 +14,11 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
+import net.catenax.irs.component.LinkedItem;
 import net.catenax.irs.component.RegisterJob;
+import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.enums.AspectType;
+import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.DataRequest;
 import net.catenax.irs.connector.job.MultiTransferJob;
@@ -22,6 +26,7 @@ import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.connector.job.TransferProcess;
 import net.catenax.irs.dto.JobParameter;
+import net.catenax.irs.dto.RelationshipAspect;
 import net.catenax.irs.services.MeterRegistryService;
 import net.datafaker.Faker;
 
@@ -148,4 +153,14 @@ public class TestMother {
         return IntStream.range(0, count).mapToObj(i -> dataRequest());
     }
 
+    public Relationship relationship() {
+        final LinkedItem linkedItem = LinkedItem.builder()
+                .childCatenaXId(GlobalAssetIdentification.of(UUID.randomUUID().toString()))
+                .lifecycleContext(BomLifecycle.AS_BUILT)
+                .build();
+
+        return new Relationship(GlobalAssetIdentification.of(UUID.randomUUID().toString()),
+                linkedItem,
+                RelationshipAspect.AssemblyPartRelationship.name());
+    }
 }
