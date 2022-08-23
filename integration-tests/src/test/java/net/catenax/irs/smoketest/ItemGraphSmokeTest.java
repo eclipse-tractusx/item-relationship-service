@@ -152,6 +152,7 @@ class ItemGraphSmokeTest {
         assertThat(completedJobs.getRelationships().size()).isNotNegative();
         assertThat(completedJobs.getShells()).isNotEmpty();
         assertThat(completedJobs.getTombstones().size()).isNotNegative();
+        assertThat(completedJobs.getBpns()).isNotEmpty();
 
         final AssetAdministrationShellDescriptor assDescriptor = completedJobs.getShells().get(0);
         final List<SubmodelDescriptor> submodelDescriptors = assDescriptor.getSubmodelDescriptors();

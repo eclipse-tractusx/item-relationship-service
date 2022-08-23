@@ -12,6 +12,7 @@ package net.catenax.irs.aaswrapper.job;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.github.resilience4j.retry.RetryRegistry;
@@ -19,13 +20,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
+import net.catenax.irs.bpdm.BpdmFacade;
+import net.catenax.irs.component.Bpn;
+import net.catenax.irs.component.GlobalAssetIdentification;
+import net.catenax.irs.component.LinkedItem;
+import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.Submodel;
 import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import net.catenax.irs.component.assetadministrationshell.Endpoint;
 import net.catenax.irs.component.assetadministrationshell.SubmodelDescriptor;
-import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
-import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.exceptions.JsonParseException;
 import net.catenax.irs.semanticshub.SemanticsHubFacade;
@@ -46,6 +50,7 @@ public class AASHandler {
     private final DigitalTwinRegistryFacade registryFacade;
     private final SubmodelFacade submodelFacade;
     private final SemanticsHubFacade semanticsHubFacade;
+    private final BpdmFacade bpdmFacade;
     private final JsonValidatorService jsonValidatorService;
     private final JsonUtil jsonUtil;
 
@@ -59,8 +64,10 @@ public class AASHandler {
      */
     public ItemContainer collectShellAndSubmodels(final JobParameter jobData,
             final AASTransferProcess aasTransferProcess, final String itemId) {
+
         final ItemContainer.ItemContainerBuilder itemContainerBuilder = ItemContainer.builder();
         final int retryCount = RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts();
+
         try {
             final AssetAdministrationShellDescriptor aasShell = registryFacade.getAAShellDescriptor(itemId, jobData);
             final List<SubmodelDescriptor> aasSubmodelDescriptors = aasShell.getSubmodelDescriptors();
@@ -69,9 +76,8 @@ public class AASHandler {
 
             aasShell.findAssemblyPartRelationshipEndpointAddresses().forEach(address -> {
                 try {
-                    final AssemblyPartRelationshipDTO submodel = submodelFacade.getAssemblyPartRelationshipSubmodel(
-                            address, jobData);
-                    processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
+                    final List<Relationship> relationships = submodelFacade.getRelationships(address, jobData);
+                    processEndpoint(aasTransferProcess, itemContainerBuilder, relationships);
                 } catch (RestClientException | IllegalArgumentException e) {
                     log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.", address);
                     itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount));
@@ -92,6 +98,12 @@ public class AASHandler {
 
             itemContainerBuilder.shell(
                     aasShell.toBuilder().submodelDescriptors(filteredSubmodelDescriptorsByAspectType).build());
+
+            aasShell.findManufacturerId().ifPresent(manufacturerId -> {
+                final Optional<String> manufacturerName = bpdmFacade.findManufacturerName(manufacturerId);
+                manufacturerName.ifPresent(name -> itemContainerBuilder.bpn(Bpn.of(manufacturerId, name)));
+            });
+
         } catch (RestClientException e) {
             log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
             itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount));
@@ -144,14 +156,15 @@ public class AASHandler {
     }
 
     private void processEndpoint(final AASTransferProcess aasTransferProcess,
-            final ItemContainer.ItemContainerBuilder itemContainer, final AssemblyPartRelationshipDTO relationship) {
-        final List<String> childIds = relationship.getChildParts()
-                                                  .stream()
-                                                  .map(ChildDataDTO::getChildCatenaXId)
-                                                  .collect(Collectors.toList());
-        log.info("Processing AssemblyPartRelationship with {} children", childIds.size());
+            final ItemContainer.ItemContainerBuilder itemContainer, final List<Relationship> relationships) {
+        final List<String> childIds = relationships.stream()
+                                          .map(Relationship::getLinkedItem)
+                                          .map(LinkedItem::getChildCatenaXId)
+                                          .map(GlobalAssetIdentification::getGlobalAssetId)
+                                          .collect(Collectors.toList());
+        log.info("Processing Relationships with {} children", childIds.size());
 
         aasTransferProcess.addIdsToProcess(childIds);
-        itemContainer.assemblyPartRelationship(relationship);
+        itemContainer.relationships(relationships);
     }
 }

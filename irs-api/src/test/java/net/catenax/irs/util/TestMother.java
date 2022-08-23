@@ -6,7 +6,6 @@ import static net.catenax.irs.controllers.IrsAppConstants.UUID_SIZE;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -15,17 +14,19 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
+import net.catenax.irs.component.LinkedItem;
 import net.catenax.irs.component.RegisterJob;
+import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.enums.AspectType;
+import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.JobState;
 import net.catenax.irs.connector.job.DataRequest;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.connector.job.TransferProcess;
-import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
-import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.JobParameter;
+import net.catenax.irs.dto.RelationshipAspect;
 import net.catenax.irs.services.MeterRegistryService;
 import net.datafaker.Faker;
 
@@ -71,18 +72,6 @@ public class TestMother {
         return registerJob;
     }
 
-    public AssemblyPartRelationshipDTO assemblyPartRelationshipDTO() {
-        final ChildDataDTO childPart = ChildDataDTO.builder()
-                                                   .childCatenaXId(faker.lorem().characters(GLOBAL_ASSET_ID_SIZE))
-                                                   .lifecycleContext(AS_BUILT)
-                                                   .build();
-        final Set<ChildDataDTO> childParts = Set.of(childPart);
-        return AssemblyPartRelationshipDTO.builder()
-                                          .childParts(childParts)
-                                          .catenaXId(faker.lorem().characters(GLOBAL_ASSET_ID_SIZE))
-                                          .build();
-    }
-
     public static JobParameter jobParameter() {
         return JobParameter.builder()
                            .rootItemId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")
@@ -122,8 +111,7 @@ public class TestMother {
     public Job fakeJob(JobState state) {
         return Job.builder()
                   .jobId(UUID.randomUUID())
-                  .globalAssetId(
-                          GlobalAssetIdentification.builder().globalAssetId(UUID.randomUUID().toString()).build())
+                  .globalAssetId(GlobalAssetIdentification.of(UUID.randomUUID().toString()))
                   .jobState(state)
                   .createdOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .owner(faker.lorem().characters())
@@ -165,4 +153,14 @@ public class TestMother {
         return IntStream.range(0, count).mapToObj(i -> dataRequest());
     }
 
+    public Relationship relationship() {
+        final LinkedItem linkedItem = LinkedItem.builder()
+                .childCatenaXId(GlobalAssetIdentification.of(UUID.randomUUID().toString()))
+                .lifecycleContext(BomLifecycle.AS_BUILT)
+                .build();
+
+        return new Relationship(GlobalAssetIdentification.of(UUID.randomUUID().toString()),
+                linkedItem,
+                RelationshipAspect.AssemblyPartRelationship.name());
+    }
 }

@@ -21,12 +21,12 @@ import static org.mockito.Mockito.mock;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.github.resilience4j.retry.RetryRegistry;
-import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
-import net.catenax.irs.dto.ChildDataDTO;
+import net.catenax.irs.component.GlobalAssetIdentification;
+import net.catenax.irs.component.LinkedItem;
+import net.catenax.irs.component.Relationship;
 import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.services.OutboundMeterRegistryService;
 import net.catenax.irs.util.JsonUtil;
@@ -68,23 +68,23 @@ class SubmodelFacadeTest {
         final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
-                () -> submodelFacade.getAssemblyPartRelationshipSubmodel(url, jobParameter));
+                () -> submodelFacade.getRelationships(url, jobParameter));
     }
 
     @Test
     void shouldReturnAssemblyPartRelationshipWithChildDataWhenRequestingWithCatenaXId() {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
-        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getAssemblyPartRelationshipSubmodel(
+        final List<Relationship> submodelResponse = submodelFacade.getRelationships(
                 catenaXId, jobParameter());
 
-        assertThat(submodelResponse.getCatenaXId()).isEqualTo(catenaXId);
+        assertThat(submodelResponse.get(0).getCatenaXId().getGlobalAssetId()).isEqualTo(catenaXId);
+        assertThat(submodelResponse).hasSize(3);
 
-        final Set<ChildDataDTO> childParts = submodelResponse.getChildParts();
-        assertThat(childParts).hasSize(3);
-
-        final List<String> childIds = childParts.stream()
-                                                .map(ChildDataDTO::getChildCatenaXId)
+        final List<String> childIds = submodelResponse.stream()
+                                                .map(Relationship::getLinkedItem)
+                                                .map(LinkedItem::getChildCatenaXId)
+                                                .map(GlobalAssetIdentification::getGlobalAssetId)
                                                 .collect(Collectors.toList());
         assertThat(childIds).containsAnyOf("urn:uuid:09b48bcc-8993-4379-a14d-a7740e1c61d4",
                 "urn:uuid:5ce49656-5156-4c8a-b93e-19422a49c0bc", "urn:uuid:9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d");
@@ -94,11 +94,10 @@ class SubmodelFacadeTest {
     void shouldReturnFilteredAssemblyPartRelationshipWithoutChildrenWhenRequestingWithCatenaXId() {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
-        final AssemblyPartRelationshipDTO submodelResponse = submodelFacade.getAssemblyPartRelationshipSubmodel(
+        final List<Relationship> submodelResponse = submodelFacade.getRelationships(
                 catenaXId, jobParameterFilter());
 
-        assertThat(submodelResponse.getCatenaXId()).isEqualTo(catenaXId);
-        assertThat(submodelResponse.getChildParts()).isEmpty();
+        assertThat(submodelResponse).isEmpty();
     }
 
     @Test
@@ -117,12 +116,10 @@ class SubmodelFacadeTest {
         final ResponseEntity<String> responseEntity = new ResponseEntity<>(jsonObject, HttpStatus.OK);
         doReturn(responseEntity).when(restTemplate).getForEntity(any(URI.class), any());
 
-        final AssemblyPartRelationshipDTO submodel = submodelFacade.getAssemblyPartRelationshipSubmodel(endpointUrl,
+        final List<Relationship> submodelResponse = submodelFacade.getRelationships(endpointUrl,
                 jobParameter());
 
-        assertThat(submodel.getCatenaXId()).isEqualTo(catenaXId);
-        final Set<ChildDataDTO> childParts = submodel.getChildParts();
-        assertThat(childParts).isEmpty();
+        assertThat(submodelResponse).isEmpty();
     }
 
     @Test

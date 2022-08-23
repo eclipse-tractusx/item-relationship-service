@@ -12,21 +12,20 @@ package net.catenax.irs.component;
 import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 import net.catenax.irs.component.enums.BomLifecycle;
 
-/*** API type for ChildItem name/url entry. */
+/*** API type for LinkedItem name/url entry. */
 @Schema(description = "Set of child parts the parent object is assembled by (one structural level down).")
 @Value
 @Builder(toBuilder = true)
-@JsonDeserialize(builder = ChildItem.ChildItemBuilder.class)
 @AllArgsConstructor
-public class ChildItem {
+@Jacksonized
+public class LinkedItem {
 
     @Schema(description = "Quantity component.", implementation = Quantity.class)
     private Quantity quantity;
@@ -45,11 +44,4 @@ public class ChildItem {
     @JsonUnwrapped
     private GlobalAssetIdentification childCatenaXId;
 
-    /**
-     * Builder for ChildItem class
-     */
-    @Schema(description = "Builder to to build child items")
-    @JsonPOJOBuilder(withPrefix = "")
-    public static class ChildItemBuilder {
-    }
 }

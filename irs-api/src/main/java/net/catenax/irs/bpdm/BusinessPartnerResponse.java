@@ -7,21 +7,23 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.submodel.domain;
+package net.catenax.irs.bpdm;
 
-import java.util.Set;
+import java.util.List;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * AssemblyPartRelationship
+ * Bpn Response
  */
-@Data
+@Value
+@Builder
 @Jacksonized
-class AssemblyPartRelationship {
+class BusinessPartnerResponse {
 
-    private String catenaXId;
-    private Set<ChildData> childParts;
+    private String bpn;
+    private List<NameResponse> names;
 
 }

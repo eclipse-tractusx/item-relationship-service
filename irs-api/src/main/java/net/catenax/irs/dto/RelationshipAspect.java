@@ -7,21 +7,15 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.submodel.domain;
-
-import java.util.Set;
-
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
+//
+package net.catenax.irs.dto;
 
 /**
- * AssemblyPartRelationship
+ * Relationship aspect types
  */
-@Data
-@Jacksonized
-class AssemblyPartRelationship {
-
-    private String catenaXId;
-    private Set<ChildData> childParts;
-
+@SuppressWarnings("PMD.FieldNamingConventions")
+public enum RelationshipAspect {
+    SingleLevelBomAsPlanned,
+    AssemblyPartRelationship,
+    SingleLevelUsageAsBuilt;
 }

@@ -19,14 +19,7 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 class Quantity {
 
-    /**
-     * quantityNumber
-     */
     private Double quantityNumber;
-
-    /**
-     * measurementUnit
-     */
     private MeasurementUnit measurementUnit;
 
     /**

@@ -11,15 +11,16 @@ package net.catenax.irs.aaswrapper.submodel.domain;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
-import net.catenax.irs.dto.ChildDataDTO;
+import net.catenax.irs.component.Relationship;
 import net.catenax.irs.dto.JobParameter;
-import net.catenax.irs.dto.QuantityDTO;
+import net.catenax.irs.dto.RelationshipAspect;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -38,22 +39,29 @@ public class SubmodelFacade {
      * @param jobData                 relevant job data values
      * @return The Aspect Model for the given submodel
      */
-    public AssemblyPartRelationshipDTO getAssemblyPartRelationshipSubmodel(final String submodelEndpointAddress, final JobParameter jobData) {
+    public List<Relationship> getRelationships(final String submodelEndpointAddress, final JobParameter jobData) {
         final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
                 AssemblyPartRelationship.class);
 
         log.info("Submodel: {}, childParts {}", submodel.getCatenaXId(), submodel.getChildParts());
 
-        final Set<ChildData> submodelParts = thereAreChildParts(submodel)
+        final Set<ChildData> childParts = thereAreChildParts(submodel)
                 ? new HashSet<>(submodel.getChildParts())
                 : Collections.emptySet();
 
         final String lifecycleContext = jobData.getBomLifecycle();
         if (shouldFilterByLifecycleContext(lifecycleContext)) {
-            filterSubmodelPartsByLifecycleContext(submodelParts, lifecycleContext);
+            filterSubmodelPartsByLifecycleContext(childParts, lifecycleContext);
         }
 
-        return buildAssemblyPartRelationshipResponse(submodelParts, submodel.getCatenaXId());
+        return buildRelationships(childParts, submodel.getCatenaXId());
+    }
+
+    private List<Relationship> buildRelationships(final Set<ChildData> submodelParts, final String catenaXId) {
+        return submodelParts.stream()
+                            .map(childData -> childData.toRelationship(catenaXId,
+                                    RelationshipAspect.AssemblyPartRelationship))
+                            .collect(Collectors.toList());
     }
 
     /**
@@ -68,52 +76,6 @@ public class SubmodelFacade {
 
     private boolean thereAreChildParts(final AssemblyPartRelationship submodel) {
         return submodel.getChildParts() != null;
-    }
-
-    @SuppressWarnings("PMD.NullAssignment")
-    private AssemblyPartRelationshipDTO buildAssemblyPartRelationshipResponse(final Set<ChildData> submodelParts,
-            final String catenaXId) {
-        final Set<ChildDataDTO> childParts = new HashSet<>();
-        submodelParts.forEach(childData -> childParts.add(mapToChildDataChildDataDTO(childData)));
-
-        return AssemblyPartRelationshipDTO.builder().catenaXId(catenaXId).childParts(childParts).build();
-    }
-
-    private ChildDataDTO mapToChildDataChildDataDTO(final ChildData childData) {
-        final String datatypeURI = thereIsMeasurementUnit(childData) ? childData.getQuantity()
-                                                                                .getMeasurementUnit()
-                                                                                .getDatatypeURI() : null;
-        final String lexicalValue = thereIsMeasurementUnit(childData) ? childData.getQuantity()
-                                                                                 .getMeasurementUnit()
-                                                                                 .getLexicalValue() : null;
-        final QuantityDTO.MeasurementUnitDTO measurementUnitDTO = QuantityDTO.MeasurementUnitDTO.builder()
-                                                                                                .datatypeURI(
-                                                                                                        datatypeURI)
-                                                                                                .lexicalValue(
-                                                                                                        lexicalValue)
-                                                                                                .build();
-        final QuantityDTO quantityDTO = QuantityDTO.builder()
-                                                   .quantityNumber(thereIsQuantity(childData)
-                                                           ? childData.getQuantity()
-                                                                      .getQuantityNumber()
-                                                           : null)
-                                                   .measurementUnit(measurementUnitDTO)
-                                                   .build();
-        return ChildDataDTO.builder()
-                           .childCatenaXId(childData.getChildCatenaXId())
-                           .lifecycleContext(childData.getLifecycleContext().getValue())
-                           .assembledOn(childData.getAssembledOn())
-                           .lastModifiedOn(childData.getLastModifiedOn())
-                           .quantity(quantityDTO)
-                           .build();
-    }
-
-    private boolean thereIsMeasurementUnit(final ChildData childData) {
-        return childData.getQuantity() != null && childData.getQuantity().getMeasurementUnit() != null;
-    }
-
-    private boolean thereIsQuantity(final ChildData childData) {
-        return childData.getQuantity() != null;
     }
 
     private void filterSubmodelPartsByLifecycleContext(final Set<ChildData> submodelParts,

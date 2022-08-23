@@ -46,18 +46,15 @@ class SubmodelTestdataCreator {
 
         final Set<ChildData> childData = new HashSet<>();
         childIds.forEach(childId -> {
-            final ChildData child = new ChildData();
-            child.setChildCatenaXId(childId);
-            child.setLifecycleContext(LifecycleContextCharacteristic.ASBUILT);
-            child.setAssembledOn(ZonedDateTime.now(ZoneOffset.UTC));
-            child.setLastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC));
             final Quantity quantity = new Quantity();
             quantity.setQuantityNumber(1d);
             final Quantity.MeasurementUnit measurementUnit = new Quantity.MeasurementUnit();
             measurementUnit.setDatatypeURI("urn:bamm:io.openmanufacturing:meta-model:1.0.0#sth");
             measurementUnit.setLexicalValue("sth");
             quantity.setMeasurementUnit(measurementUnit);
-            child.setQuantity(quantity);
+            final ChildData child = new ChildData(ZonedDateTime.now(ZoneOffset.UTC),
+                    quantity, ZonedDateTime.now(ZoneOffset.UTC),
+                    LifecycleContextCharacteristic.ASBUILT, childId);
             childData.add(child);
         });
         assemblyPartRelationship.setChildParts(childData);

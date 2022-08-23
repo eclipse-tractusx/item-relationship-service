@@ -9,6 +9,7 @@
 //
 package net.catenax.irs.component.assetadministrationshell;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -63,6 +64,29 @@ public class AssetAdministrationShellDescriptor {
     private List<SubmodelDescriptor> submodelDescriptors;
 
     /**
+     * @return ManufacturerId value from Specific Asset Ids
+     */
+    public Optional<String> findManufacturerId() {
+        return this.specificAssetIds.stream().filter(assetId -> "ManufacturerId".equals(assetId.getKey())).map(IdentifierKeyValuePair::getValue).findFirst();
+    }
+
+    /**
+     * @param aspectTypes        the aspect types which should be filtered by
+     * @return AssetAdministrationShellDescriptor with filtered submodel descriptors
+     */
+    public AssetAdministrationShellDescriptor withFilteredSubmodelDescriptors(final List<String> aspectTypes) {
+        final List<String> filterAspectTypes = new ArrayList<>(aspectTypes);
+
+        if (notContainsAssemblyPartRelationship(filterAspectTypes)) {
+            filterAspectTypes.add(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString());
+            log.info("Adjusted Aspect Type Filter '{}'", filterAspectTypes);
+        }
+
+        this.setSubmodelDescriptors(this.filterDescriptorsByAspectTypes(filterAspectTypes));
+        return this;
+    }
+
+    /**
      * @return The filtered list containing only SubmodelDescriptors which are AssemblyPartRelationship
      */
     public List<String> findAssemblyPartRelationshipEndpointAddresses() {
@@ -92,14 +116,13 @@ public class AssetAdministrationShellDescriptor {
     /**
      * @return The SubmodelDescriptors which are of AspectType AssemblyPartRelationship
      */
-    public List<SubmodelDescriptor> filterDescriptorsByAssemblyPartRelationship() {
+    private List<SubmodelDescriptor> filterDescriptorsByAssemblyPartRelationship() {
         return filterDescriptorsByAspectTypes(List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()));
     }
 
     private boolean isMatching(final SubmodelDescriptor submodelDescriptor, final String aspectTypeFilter) {
         final Optional<String> submodelAspectType = submodelDescriptor.getSemanticId().getValue().stream().findFirst();
-        return submodelAspectType.map(
-                                         semanticId -> semanticId.endsWith("#" + aspectTypeFilter) || contains(semanticId, aspectTypeFilter))
+        return submodelAspectType.map(semanticId -> semanticId.endsWith("#" + aspectTypeFilter) || contains(semanticId, aspectTypeFilter))
                                  .orElse(false);
     }
 
@@ -109,5 +132,9 @@ public class AssetAdministrationShellDescriptor {
         final String join = String.join("_", split).toLowerCase(Locale.ROOT);
         log.debug("lower case aspect: '{}'", join);
         return semanticId.contains(join);
+    }
+
+    private boolean notContainsAssemblyPartRelationship(final List<String> filterAspectTypes) {
+        return !filterAspectTypes.contains(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString());
     }
 }

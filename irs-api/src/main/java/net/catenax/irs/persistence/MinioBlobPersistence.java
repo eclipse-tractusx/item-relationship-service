@@ -114,6 +114,7 @@ public class MinioBlobPersistence implements BlobPersistence {
                                                .object(targetBlobName)
                                                .stream(byteArrayInputStream, byteArrayInputStream.available(), -1)
                                                .build());
+            log.debug("Saving to bucket name {} with object name {}", bucketName, targetBlobName);
         } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
             throw new BlobPersistenceException("Encountered error while trying to store blob", e);
         }
@@ -157,8 +158,9 @@ public class MinioBlobPersistence implements BlobPersistence {
     }
 
     @Override
-    public boolean delete(final String sourceBlobName) throws BlobPersistenceException {
+    public boolean delete(final String sourceBlobName, final List<String> processIds) throws BlobPersistenceException {
         try {
+            deleteConnectedProcessesBlobs(processIds);
             minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(sourceBlobName).build());
             return true;
         } catch (ErrorResponseException e) {
@@ -170,6 +172,16 @@ public class MinioBlobPersistence implements BlobPersistence {
         } catch (ServerException | InsufficientDataException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
             throw new BlobPersistenceException("Encountered error while trying to delete blob", e);
         }
+    }
+
+    private void deleteConnectedProcessesBlobs(final List<String> processIds) {
+        processIds.forEach(processId -> {
+            try {
+                minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(processId).build());
+            } catch (ServerException | InsufficientDataException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException | ErrorResponseException e) {
+                log.info("No object data with process Id {} found", processId);
+            }
+        });
     }
 
     private Stream<byte[]> getBlobIfPresent(final String sourceBlobName) {

@@ -12,16 +12,12 @@ package net.catenax.irs.configuration;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
 import net.catenax.irs.component.AsyncFetchedItems;
-import net.catenax.irs.component.ChildItem;
+import net.catenax.irs.component.Bpn;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.Job;
 import net.catenax.irs.component.JobErrorDetails;
@@ -29,6 +25,7 @@ import net.catenax.irs.component.JobHandle;
 import net.catenax.irs.component.JobParameter;
 import net.catenax.irs.component.JobStatusResult;
 import net.catenax.irs.component.Jobs;
+import net.catenax.irs.component.LinkedItem;
 import net.catenax.irs.component.MeasurementUnit;
 import net.catenax.irs.component.ProcessingError;
 import net.catenax.irs.component.Quantity;
@@ -47,10 +44,8 @@ import net.catenax.irs.component.enums.AspectType;
 import net.catenax.irs.component.enums.BomLifecycle;
 import net.catenax.irs.component.enums.Direction;
 import net.catenax.irs.component.enums.JobState;
-import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
-import net.catenax.irs.dto.ChildDataDTO;
-import net.catenax.irs.dto.QuantityDTO;
 import net.catenax.irs.dtos.ErrorResponse;
+import net.catenax.irs.util.JsonUtil;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -175,53 +170,25 @@ public class OpenApiExamples {
                              .shells(List.of(createShell()))
                              .tombstone(createTombstone())
                              .submodel(createSubmodel())
+                             .bpn(Bpn.of("BPNL00000003AYRE", "OEM A"))
                              .build());
     }
 
     private Submodel createSubmodel() {
-        final ObjectMapper objectMapper = new ObjectMapper()
-                .registerModule(new JavaTimeModule())
-                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-
         return Submodel.builder()
                        .aspectType("urn:bamm:io.catenax.assembly_part_relationship:1.0.0")
                        .identification(SUBMODEL_IDENTIFICATION)
-                       .payload(objectMapper.convertValue(createAssemblyPartRelationship(), Map.class))
+                       .payload(createAssemblyPartRelationshipPayloadMap())
                        .build();
     }
 
-    private AssemblyPartRelationshipDTO createAssemblyPartRelationship() {
-        final Relationship relationship = createRelationship();
-        final QuantityDTO.MeasurementUnitDTO measurementUnit = QuantityDTO.MeasurementUnitDTO.builder()
-                                                                                             .datatypeURI(
-                                                                                                     relationship.getChildItem()
-                                                                                                                 .getQuantity()
-                                                                                                                 .getMeasurementUnit()
-                                                                                                                 .getDatatypeURI())
-                                                                                             .lexicalValue(
-                                                                                                     relationship.getChildItem()
-                                                                                                                 .getQuantity()
-                                                                                                                 .getMeasurementUnit()
-                                                                                                                 .getLexicalValue())
-                                                                                             .build();
-        final QuantityDTO quantity = QuantityDTO.builder()
-                                                .quantityNumber(
-                                                        relationship.getChildItem().getQuantity().getQuantityNumber())
-                                                .measurementUnit(measurementUnit)
-                                                .build();
-        final ChildDataDTO childData = ChildDataDTO.builder()
-                                                   .childCatenaXId(relationship.getCatenaXId().getGlobalAssetId())
-                                                   .assembledOn(relationship.getChildItem().getAssembledOn())
-                                                   .lifecycleContext(relationship.getChildItem()
-                                                                                 .getLifecycleContext()
-                                                                                 .getLifecycleContextCharacteristicValue())
-                                                   .lastModifiedOn(relationship.getChildItem().getLastModifiedOn())
-                                                   .quantity(quantity)
-                                                   .build();
-        return AssemblyPartRelationshipDTO.builder()
-                                          .catenaXId(relationship.getCatenaXId().getGlobalAssetId())
-                                          .childParts(Set.of(childData))
-                                          .build();
+    private Map<String, Object> createAssemblyPartRelationshipPayloadMap() {
+        final String assemblyPartRelationshipPayload = "{\"catenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
+                + "\"childParts\": [ { \"assembledOn\": \"2022-02-03T14:48:54.709Z\", \"childCatenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
+                + "\"lastModifiedOn\": \"2022-02-03T14:48:54.709Z\", \"lifecycleContext\": \"AsBuilt\", \"quantity\": "
+                + "{\"measurementUnit\": {\"datatypeURI\": \"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\",\"lexicalValue\": \"piece\"},\"quantityNumber\": 1}}]}";
+
+        return new JsonUtil().fromString(assemblyPartRelationshipPayload, Map.class);
     }
 
     private Tombstone createTombstone() {
@@ -260,19 +227,19 @@ public class OpenApiExamples {
     private Relationship createRelationship() {
         return Relationship.builder()
                            .catenaXId(createGAID("d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447"))
-                           .childItem(ChildItem.builder()
-                                               .quantity(createQuantity())
-                                               .childCatenaXId(createGAID("a45a2246-f6e1-42da-b47d-5c3b58ed62e9"))
-                                               .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
-                                               .assembledOn(EXAMPLE_ZONED_DATETIME)
-                                               .lifecycleContext(BomLifecycle.AS_BUILT)
-                                               .build())
+                           .linkedItem(LinkedItem.builder()
+                                                 .quantity(createQuantity())
+                                                 .childCatenaXId(createGAID("a45a2246-f6e1-42da-b47d-5c3b58ed62e9"))
+                                                 .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
+                                                 .assembledOn(EXAMPLE_ZONED_DATETIME)
+                                                 .lifecycleContext(BomLifecycle.AS_BUILT)
+                                                 .build())
                            .build();
     }
 
     private GlobalAssetIdentification createGAID(final String globalAssetId) {
         final String prefixedId = globalAssetId.startsWith("urn:uuid:") ? globalAssetId : "urn:uuid:" + globalAssetId;
-        return GlobalAssetIdentification.builder().globalAssetId(prefixedId).build();
+        return GlobalAssetIdentification.of(prefixedId);
     }
 
     private Quantity createQuantity() {
