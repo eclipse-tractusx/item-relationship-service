@@ -11,14 +11,12 @@ package net.catenax.irs.services;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +45,6 @@ import net.catenax.irs.connector.job.JobStore;
 import net.catenax.irs.connector.job.MultiTransferJob;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferProcess;
-import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.exceptions.EntityNotFoundException;
 import net.catenax.irs.persistence.BlobPersistence;
@@ -164,7 +161,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
             if (jobIsCompleted(multiJob)) {
                 final var container = retrieveJobResultRelationships(multiJob.getJob().getJobId());
-                relationships.addAll(convert(container.getAssemblyPartRelationships()));
+                relationships.addAll(container.getRelationships());
                 tombstones.addAll(container.getTombstones());
                 shells.addAll(container.getShells());
                 submodels.addAll(container.getSubmodels());
@@ -172,7 +169,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             } else {
                 if (includePartialResults) {
                     final var container = retrievePartialResults(multiJob);
-                    relationships.addAll(convert(container.getAssemblyPartRelationships()));
+                    relationships.addAll(container.getRelationships());
                     tombstones.addAll(container.getTombstones());
                     shells.addAll(container.getShells());
                     submodels.addAll(container.getSubmodels());
@@ -235,7 +232,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                                                            .map(TransferProcess::getId)
                                                            .collect(Collectors.toList());
 
-        final var relationships = new ArrayList<AssemblyPartRelationshipDTO>();
+        final var relationships = new ArrayList<Relationship>();
         final var tombstones = new ArrayList<Tombstone>();
         final var shells = new ArrayList<AssetAdministrationShellDescriptor>();
         final var submodels = new ArrayList<Submodel>();
@@ -245,7 +242,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 final Optional<byte[]> blob = blobStore.getBlob(id);
                 blob.ifPresent(bytes -> {
                     final ItemContainer itemContainer = toItemContainer(bytes);
-                    relationships.addAll(itemContainer.getAssemblyPartRelationships());
+                    relationships.addAll(itemContainer.getRelationships());
                     tombstones.addAll(itemContainer.getTombstones());
                     shells.addAll(itemContainer.getShells());
                     submodels.addAll(itemContainer.getSubmodels());
@@ -257,7 +254,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             }
         }
         return ItemContainer.builder()
-                            .assemblyPartRelationships(relationships)
+                            .relationships(relationships)
                             .tombstones(tombstones)
                             .shells(shells)
                             .submodels(submodels)
@@ -283,14 +280,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private boolean jobIsCompleted(final MultiTransferJob multiJob) {
         return multiJob.getJob().getJobState().equals(JobState.COMPLETED);
-    }
-
-    private Collection<Relationship> convert(final Collection<AssemblyPartRelationshipDTO> assemblyPartRelationships) {
-        return assemblyPartRelationships.stream().flatMap(this::convert).collect(Collectors.toList());
-    }
-
-    private Stream<Relationship> convert(final AssemblyPartRelationshipDTO dto) {
-        return dto.getChildParts().stream().map(child -> child.toRelationship(dto.getCatenaXId(), dto.getRelationshipAspect()));
     }
 
 }

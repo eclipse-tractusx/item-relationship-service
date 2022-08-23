@@ -22,13 +22,14 @@ import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.bpdm.BpdmFacade;
 import net.catenax.irs.component.Bpn;
+import net.catenax.irs.component.GlobalAssetIdentification;
+import net.catenax.irs.component.LinkedItem;
+import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.Submodel;
 import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import net.catenax.irs.component.assetadministrationshell.Endpoint;
 import net.catenax.irs.component.assetadministrationshell.SubmodelDescriptor;
-import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
-import net.catenax.irs.dto.ChildDataDTO;
 import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.exceptions.JsonParseException;
 import net.catenax.irs.semanticshub.SemanticsHubFacade;
@@ -75,9 +76,8 @@ public class AASHandler {
 
             aasShell.findAssemblyPartRelationshipEndpointAddresses().forEach(address -> {
                 try {
-                    final AssemblyPartRelationshipDTO submodel = submodelFacade.getAssemblyPartRelationshipSubmodel(
-                            address, jobData);
-                    processEndpoint(aasTransferProcess, itemContainerBuilder, submodel);
+                    final List<Relationship> relationships = submodelFacade.getRelationships(address, jobData);
+                    processEndpoint(aasTransferProcess, itemContainerBuilder, relationships);
                 } catch (RestClientException | IllegalArgumentException e) {
                     log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.", address);
                     itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount));
@@ -156,14 +156,15 @@ public class AASHandler {
     }
 
     private void processEndpoint(final AASTransferProcess aasTransferProcess,
-            final ItemContainer.ItemContainerBuilder itemContainer, final AssemblyPartRelationshipDTO relationship) {
-        final List<String> childIds = relationship.getChildParts()
-                                                  .stream()
-                                                  .map(ChildDataDTO::getChildCatenaXId)
-                                                  .collect(Collectors.toList());
-        log.info("Processing AssemblyPartRelationship with {} children", childIds.size());
+            final ItemContainer.ItemContainerBuilder itemContainer, final List<Relationship> relationships) {
+        final List<String> childIds = relationships.stream()
+                                          .map(Relationship::getLinkedItem)
+                                          .map(LinkedItem::getChildCatenaXId)
+                                          .map(GlobalAssetIdentification::getGlobalAssetId)
+                                          .collect(Collectors.toList());
+        log.info("Processing Relationships with {} children", childIds.size());
 
         aasTransferProcess.addIdsToProcess(childIds);
-        itemContainer.assemblyPartRelationship(relationship);
+        itemContainer.relationships(relationships);
     }
 }

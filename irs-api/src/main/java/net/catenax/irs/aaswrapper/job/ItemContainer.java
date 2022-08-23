@@ -17,10 +17,10 @@ import lombok.Getter;
 import lombok.Singular;
 import lombok.extern.jackson.Jacksonized;
 import net.catenax.irs.component.Bpn;
+import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.Submodel;
 import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
-import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 
 /**
  * Container class to store item data
@@ -31,7 +31,7 @@ import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 public class ItemContainer {
 
     @Singular
-    private List<AssemblyPartRelationshipDTO> assemblyPartRelationships;
+    private List<Relationship> relationships;
 
     @Singular
     private List<Tombstone> tombstones;

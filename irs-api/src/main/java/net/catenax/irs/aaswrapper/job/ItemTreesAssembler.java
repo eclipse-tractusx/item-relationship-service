@@ -19,10 +19,10 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.Bpn;
+import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.Submodel;
 import net.catenax.irs.component.Tombstone;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
-import net.catenax.irs.dto.AssemblyPartRelationshipDTO;
 
 /**
  * Assembles multiple partial item graphs into one overall item graph.
@@ -38,7 +38,7 @@ public class ItemTreesAssembler {
      * @return An item graph containing all the items from {@code partialGraph}, with deduplication.
      */
     /* package */ ItemContainer retrieveItemGraph(final Stream<ItemContainer> partialGraph) {
-        final var relationships = new LinkedHashSet<AssemblyPartRelationshipDTO>();
+        final var relationships = new LinkedHashSet<Relationship>();
         final var numberOfPartialTrees = new AtomicInteger();
         final ArrayList<Tombstone> tombstones = new ArrayList<>();
         final ArrayList<AssetAdministrationShellDescriptor> shells = new ArrayList<>();
@@ -46,7 +46,7 @@ public class ItemTreesAssembler {
         final Set<Bpn> bpns = new HashSet<>();
 
         partialGraph.forEachOrdered(itemGraph -> {
-            relationships.addAll(itemGraph.getAssemblyPartRelationships());
+            relationships.addAll(itemGraph.getRelationships());
             numberOfPartialTrees.incrementAndGet();
             tombstones.addAll(itemGraph.getTombstones());
             shells.addAll(itemGraph.getShells());
@@ -57,7 +57,7 @@ public class ItemTreesAssembler {
         log.info("Assembled item graph from {} partial graphs", numberOfPartialTrees);
 
         return ItemContainer.builder()
-                            .assemblyPartRelationships(relationships)
+                            .relationships(relationships)
                             .tombstones(tombstones)
                             .shells(shells)
                             .submodels(submodels)

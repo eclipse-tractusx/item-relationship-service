@@ -21,13 +21,7 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 class AssemblyPartRelationship {
 
-    /**
-     * catenaXId
-     */
     private String catenaXId;
-
-    /**
-     * childParts
-     */
     private Set<ChildData> childParts;
+
 }
