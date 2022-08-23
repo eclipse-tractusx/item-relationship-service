@@ -28,7 +28,7 @@ aasProxy:
     password: <path:traceability-irs/data/dev/aasProxy/submodel#password>
 
 minio:
-  url: http://app-minio-esr:9000
+  url: http://app-minio-spike:9000
 
 aasWrapper:
   host: http://aaswrapper-spike:9191/api/service

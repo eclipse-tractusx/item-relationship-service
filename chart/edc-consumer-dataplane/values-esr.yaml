@@ -38,7 +38,7 @@ configuration:
     edc.oauth.provider.jwks.url=https://daps1.dev.demo.catena-x.net/.well-known/jwks.json
     edc.oauth.public.key.alias=irs-int-daps-cert
     edc.oauth.token.url=https://daps1.dev.demo.catena-x.net/token
-    edc.receiver.http.endpoint=http://aaswrapper-esr:9192/callback
+    edc.receiver.http.endpoint=http://aaswrapper-spike:9192/callback
     edc.vault.clientid=c1778e7d-db16-4404-9080-26d2280d2f63
     edc.vault.clientsecret=<path:traceability-irs/data/dev/controlplane#vaultClientSecret>
     edc.vault.name=cxtsi-dev001-vault
