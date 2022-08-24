@@ -64,12 +64,17 @@ public class OpenApiExamples {
 
     public void createExamples(final Components components) {
         components.addExamples("job-handle", toExample(createJobHandle(JOB_HANDLE_ID_1)));
-        components.addExamples("error-response", toExample(ErrorResponse.builder()
-                                                                        .withErrors(List.of("TimeoutException",
-                                                                                "ParsingException"))
-                                                                        .withMessage("Some errors occurred")
+        components.addExamples("error-response-400", toExample(ErrorResponse.builder()
+                                                                        .withErrors(List.of("BadRequestException"))
+                                                                        .withMessage("Bad request")
                                                                         .withStatusCode(
-                                                                                HttpStatus.INTERNAL_SERVER_ERROR)
+                                                                                HttpStatus.BAD_REQUEST)
+                                                                        .build()));
+        components.addExamples("error-response-404", toExample(ErrorResponse.builder()
+                                                                        .withErrors(List.of("NotFoundException"))
+                                                                        .withMessage("Not found")
+                                                                        .withStatusCode(
+                                                                                HttpStatus.NOT_FOUND)
                                                                         .build()));
         components.addExamples("complete-job-result", createCompleteJobResult());
         components.addExamples("job-result-without-uncompleted-result-tree", createJobResultWithoutTree());
