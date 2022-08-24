@@ -4,6 +4,7 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "edc-controlplane.fullname" . }}
+  namespace: {{ .Release.Namespace | default "default" | quote }}
   labels:
     {{- include "edc-controlplane.labels" . | nindent 4 }}
 spec:
@@ -26,4 +27,4 @@ spec:
         name: memory
         targetAverageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
-{{- end }}
+  {{- end }}

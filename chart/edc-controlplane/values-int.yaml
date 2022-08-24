@@ -1,0 +1,159 @@
+---
+# Default values for edc-controlplane.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  tag: "0.0.3"
+
+## Ingress declaration to expose the network service.
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+  hosts:
+    - host: "irs-consumer-controlplane.int.demo.catena-x.net"
+      paths:
+        - path: /api/v1/ids
+          pathType: Prefix
+          backend:
+            service:
+              name: edc-consumer-controlplane
+              port:
+                number: 8282
+  tls:
+    - hosts:
+        - "irs-consumer-controlplane.int.demo.catena-x.net"
+      # Default secret for certificate creation already provided to your namespace
+      secretName: tls-secret
+
+configuration:
+  # -- EDC configuration.properties configuring aspects of the [eclipse-dataspaceconnector](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector)
+  properties: |-
+    edc.api.auth.key=123456
+    
+    ids.webhook.address=https://irs-consumer-controlplane.int.demo.catena-x.net
+    
+    edc.ids.id=urn:connector:edc-consumer-controlplane
+    edc.ids.catalog.id=urn:catalog:default
+    edc.ids.endpoint=https://irs-consumer-controlplane.int.demo.catena-x.net/api/v1/ids
+    
+    edc.oauth.client.id=D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09:keyid:D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09
+    edc.oauth.private.key.alias=irs-int-daps-key
+    edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
+    edc.oauth.provider.jwks.url=https://daps1.int.demo.catena-x.net/.well-known/jwks.json
+    edc.oauth.public.key.alias=irs-int-daps-cert
+    edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
+    
+    edc.receiver.http.endpoint=http://aaswrapper:9192/callback/endpoint-data-reference
+    
+    edc.transfer.proxy.endpoint=https://irs-consumer-dataplane.int.demo.catena-x.net/api/public
+    edc.transfer.proxy.token.signer.privatekey.alias=azure-vault-token-signer-private-key
+    edc.transfer.proxy.token.verifier.publickey.alias=azure-vault-token-signer-private-key-pub
+    
+    edc.vault.clientid=c1778e7d-db16-4404-9080-26d2280d2f63
+    edc.vault.clientsecret=<path:traceability-irs/data/int/controlplane#vaultClientSecret>
+    edc.vault.name=cxtsi-dev001-vault
+    edc.vault.tenantid=495463c3-0991-4659-9cc5-94b4a3f7b1d6
+        
+    # edc.assetindex.cosmos.account-name=
+    # edc.assetindex.cosmos.container-name=
+    # edc.assetindex.cosmos.database-name=
+    # edc.assetindex.cosmos.preferred-region=
+    # edc.atomikos.checkpoint.interval=
+    # edc.atomikos.directory=
+    # edc.atomikos.logging=
+    # edc.atomikos.threaded2pc=
+    # edc.atomikos.timeout=
+    # edc.aws.access.key=
+    # edc.aws.provision.retry.retries.max=
+    # edc.aws.provision.role.duration.session.max=
+    # edc.aws.secret.access.key=
+    # edc.blobstore.endpoint=
+    # edc.contractdefinitionstore.cosmos.account-name=
+    # edc.contractdefinitionstore.cosmos.container-name=
+    # edc.contractdefinitionstore.cosmos.database-name=
+    # edc.contractdefinitionstore.cosmos.preferred-region=
+    # edc.contractnegotiationstore.cosmos.account-name=
+    # edc.contractnegotiationstore.cosmos.container-name=
+    # edc.contractnegotiationstore.cosmos.database-name=
+    # edc.contractnegotiationstore.cosmos.preferred-region=
+    # edc.controlplane.validation-endpoint=
+    # edc.core.retry.backoff.max=
+    # edc.core.retry.backoff.min=
+    # edc.core.retry.retries.max=
+    # edc.core.system.health.check.liveness-period=
+    # edc.core.system.health.check.readiness-period=
+    # edc.core.system.health.check.startup-period=
+    # edc.core.system.health.check.threadpool-size=
+    # edc.cosmos.partition-key=
+    # edc.cosmos.query-metrics-enabled=
+    # edc.dataplane.queue.capacity=
+    # edc.dataplane.wait=
+    # edc.dataplane.workers=
+    # edc.datasource.asset.name="default"
+    # edc.datasource.contractdefinition.name="default"
+    # edc.datasource.contractnegotiation.name="default"
+    # edc.datasource.policy.name="default"
+    # edc.datasource.transferprocess.name="default"
+    # edc.datasource.default.pool.maxIdleConnections=
+    # edc.datasource.default.pool.maxTotalConnections=
+    # edc.datasource.default.pool.minIdleConnections=
+    # edc.datasource.default.pool.testConnectionOnBorrow=
+    # edc.datasource.default.pool.testConnectionOnCreate=
+    # edc.datasource.default.pool.testConnectionOnReturn=
+    # edc.datasource.default.pool.testConnectionWhileIdle=
+    # edc.datasource.default.pool.testQuery=
+    # edc.datasource.default.url=
+    # edc.datasource.default.user=
+    # edc.datasource.default.password=
+    # edc.dpf.selector.url=
+    # edc.events.topic.endpoint=
+    # edc.events.topic.name=
+    # edc.fs.config=
+    # edc.hostname=
+    # edc.identity.did.url=
+    # edc.ids.curator=
+    # edc.ids.description=
+    # edc.ids.maintainer=
+    # edc.ids.security.profile=
+    # edc.ids.title=
+    # edc.ids.validation.referringconnector=
+    # edc.ion.crawler.did-type=
+    # edc.ion.crawler.interval-minutes=
+    # edc.ion.crawler.ion.url=
+    # edc.metrics.enabled=
+    # edc.metrics.executor.enabled=
+    # edc.metrics.jersey.enabled=
+    # edc.metrics.jetty.enabled=
+    # edc.metrics.okhttp.enabled=
+    # edc.metrics.system.enabled=
+    # edc.negotiation.consumer.state-machine.batch-size=
+    # edc.negotiation.provider.state-machine.batch-size=
+    # edc.node.directory.cosmos.account.name=
+    # edc.node.directory.cosmos.container.name=
+    # edc.node.directory.cosmos.database.name=
+    # edc.node.directory.cosmos.preferred.region=
+    # edc.oauth.provider.jwks.refresh=
+    # edc.oauth.validation.nbf.leeway=
+    # edc.receiver.http.auth-code=
+    # edc.receiver.http.auth-key=
+    # edc.transfer.dataplane.sync.token.validity=
+    # edc.transfer.functions.check.endpoint=
+    # edc.transfer.functions.enabled.protocols=
+    # edc.transfer.functions.transfer.endpoint=
+    # edc.transfer-process-store.cosmos.account.name=
+    # edc.transfer-process-store.cosmos.container-name=
+    # edc.transfer-process-store.cosmos.preferred-region=
+    # edc.transfer-process-store.database.name=
+    # edc.transfer.state-machine.batch-size=
+    # edc.vault=
+    # edc.vault.certificate=
+    # edc.webdid.doh.url=
+    # edc.web.rest.cors.enabled=
+    # edc.web.rest.cors.headers=
+    # edc.web.rest.cors.methods=
+    # edc.web.rest.cors.origins=
