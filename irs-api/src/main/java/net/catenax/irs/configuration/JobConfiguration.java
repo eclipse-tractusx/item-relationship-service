@@ -17,8 +17,12 @@ import net.catenax.irs.aaswrapper.job.AASHandler;
 import net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.AASTransferProcessManager;
+import net.catenax.irs.aaswrapper.job.BpdmProcessor;
+import net.catenax.irs.aaswrapper.job.DigitalTwinProcessor;
 import net.catenax.irs.aaswrapper.job.ItemDataRequest;
 import net.catenax.irs.aaswrapper.job.ItemTreesAssembler;
+import net.catenax.irs.aaswrapper.job.RelationshipProcessor;
+import net.catenax.irs.aaswrapper.job.SubmodelProcessor;
 import net.catenax.irs.aaswrapper.job.TreeRecursiveLogic;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
@@ -73,4 +77,30 @@ public class JobConfiguration {
     public TimedAspect timedAspect(final MeterRegistry registry) {
         return new TimedAspect(registry);
     }
+
+    @Bean
+    public DigitalTwinProcessor digitalTwinProcessor(
+            final SubmodelProcessor submodelProcessor, final DigitalTwinRegistryFacade digitalTwinRegistryFacade) {
+        return new DigitalTwinProcessor(submodelProcessor, digitalTwinRegistryFacade);
+    }
+
+    @Bean
+    public RelationshipProcessor relationshipProcessor(
+            final SubmodelProcessor submodelProcessor, final SubmodelFacade submodelFacade) {
+        return new RelationshipProcessor(submodelProcessor, submodelFacade);
+    }
+
+    @Bean
+    public SubmodelProcessor submodelProcessor(
+            final BpdmProcessor bpdmProcessor, final SubmodelFacade submodelFacade,
+            final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService) {
+        return new SubmodelProcessor(bpdmProcessor, submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil());
+    }
+
+    @Bean
+    public BpdmProcessor bpdmProcessor(
+            final BpdmFacade bpdmFacade) {
+        return new BpdmProcessor(bpdmFacade);
+    }
+
 }
