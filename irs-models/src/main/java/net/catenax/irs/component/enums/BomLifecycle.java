@@ -29,18 +29,18 @@ import lombok.Getter;
 public enum BomLifecycle {
     @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") AS_BUILT("asBuilt", "AsBuilt");
 
-    private final String value;
+    private final String name;
     private final String lifecycleContextCharacteristicValue;
 
-    BomLifecycle(final String value, final String lifecycleContextCharacteristicValue) {
-        this.value = value;
+    BomLifecycle(final String name, final String lifecycleContextCharacteristicValue) {
+        this.name = name;
         this.lifecycleContextCharacteristicValue = lifecycleContextCharacteristicValue;
     }
 
     /**
      * of as a substitute/alias for valueOf handling the default value
      *
-     * @param value see {@link #value}
+     * @param value see {@link #name}
      * @return the corresponding BomLifecycle
      */
     public static BomLifecycle value(final String value) {
@@ -50,14 +50,14 @@ public enum BomLifecycle {
     @JsonCreator
     public static BomLifecycle fromValue(final String value) {
         return Stream.of(BomLifecycle.values())
-                     .filter(bomLifecycle -> bomLifecycle.value.equals(value))
+                     .filter(bomLifecycle -> bomLifecycle.name.equals(value))
                      .findFirst()
                      .orElseThrow(() -> new NoSuchElementException("Unsupported BomLifecycle: " + value
                              + ". Must be one of: " + supportedBomLifecycles()));
     }
 
     private static String supportedBomLifecycles() {
-        return Stream.of(BomLifecycle.values()).map(bomLifecycle -> bomLifecycle.value).collect(Collectors.joining(", "));
+        return Stream.of(BomLifecycle.values()).map(bomLifecycle -> bomLifecycle.name).collect(Collectors.joining(", "));
     }
 
     public static BomLifecycle fromLifecycleContextCharacteristic(final String value) {
@@ -72,6 +72,6 @@ public enum BomLifecycle {
      */
     @Override
     public String toString() {
-        return value;
+        return name;
     }
 }
