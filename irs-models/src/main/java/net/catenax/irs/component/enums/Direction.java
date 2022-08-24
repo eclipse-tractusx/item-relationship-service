@@ -27,16 +27,16 @@ public enum Direction {
     //@Schema(description = "The tree is traversed in upward direction.") UPWARD("upward"),
     @Schema(description = "The tree is traversed in downward direction.") DOWNWARD(DirectionConstants.DOWNWARD);
 
-    private final String value;
+    private final String name;
 
-    Direction(final String value) {
-        this.value = value;
+    Direction(final String name) {
+        this.name = name;
     }
 
     /**
      * of as a substitute/alias for valueOf handling the default value
      *
-     * @param value see {@link #value}
+     * @param value see {@link #name}
      * @return the corresponding Direction
      */
     public static Direction value(final String value) {
@@ -46,7 +46,7 @@ public enum Direction {
     @JsonCreator
     public static Direction fromValue(final String value) {
         return Stream.of(Direction.values())
-                     .filter(direction -> direction.value.equals(value))
+                     .filter(direction -> direction.name.equals(value))
                      .findFirst()
                      .orElseThrow();
     }
@@ -56,7 +56,7 @@ public enum Direction {
      */
     @Override
     public String toString() {
-        return value;
+        return name;
     }
 
     /**

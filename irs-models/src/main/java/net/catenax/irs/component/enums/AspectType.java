@@ -44,16 +44,16 @@ public enum AspectType {
     BATTERY_PASS(AspectTypesConstants.BATTERY_PASS),
     VEHICLE_DIAGNOSTIC_DATA_QUALITY(AspectTypesConstants.VEHICLE_DIAGNOSTIC_DATA_QUALITY);
 
-    private final String value;
+    private final String name;
 
-    AspectType(final String value) {
-        this.value = value;
+    AspectType(final String name) {
+        this.name = name;
     }
 
     /**
      * of as a substitute/alias for valueOf handling the default value
      *
-     * @param value see {@link #value}
+     * @param value see {@link #name}
      * @return the corresponding AspectType
      */
     public static AspectType value(final String value) {
@@ -63,14 +63,14 @@ public enum AspectType {
     @JsonCreator
     public static AspectType fromValue(final String value) {
         return Stream.of(AspectType.values())
-                     .filter(aspectType -> aspectType.value.equals(value))
+                     .filter(aspectType -> aspectType.name.equals(value))
                      .findFirst()
                      .orElseThrow(() -> new NoSuchElementException("Unsupported AspectType: " + value
                              + ". Must be one of: " + supportedAspectTypes()));
     }
 
     private static String supportedAspectTypes() {
-        return Stream.of(AspectType.values()).map(aspect -> aspect.value).collect(Collectors.joining(", "));
+        return Stream.of(AspectType.values()).map(aspect -> aspect.name).collect(Collectors.joining(", "));
     }
 
     /**
@@ -78,7 +78,7 @@ public enum AspectType {
      */
     @Override
     public String toString() {
-        return value;
+        return name;
     }
 
     /**
