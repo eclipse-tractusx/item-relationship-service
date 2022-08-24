@@ -80,8 +80,8 @@ public class JobConfiguration {
 
     @Bean
     public DigitalTwinProcessor digitalTwinProcessor(
-            final SubmodelProcessor submodelProcessor, final DigitalTwinRegistryFacade digitalTwinRegistryFacade) {
-        return new DigitalTwinProcessor(submodelProcessor, digitalTwinRegistryFacade);
+            final RelationshipProcessor relationshipProcessor, final DigitalTwinRegistryFacade digitalTwinRegistryFacade) {
+        return new DigitalTwinProcessor(relationshipProcessor, digitalTwinRegistryFacade);
     }
 
     @Bean

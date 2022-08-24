@@ -29,7 +29,7 @@ public abstract class AbstractProcessor {
     protected ItemContainer next(final ItemContainer.ItemContainerBuilder itemContainerBuilder, final JobParameter jobData,
             final AASTransferProcess aasTransferProcess, final String itemId) {
         if (this.nextStep != null) {
-            this.nextStep.process(itemContainerBuilder, jobData, aasTransferProcess, itemId);
+            return this.nextStep.process(itemContainerBuilder, jobData, aasTransferProcess, itemId);
         }
 
         return itemContainerBuilder.build();
