@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
+@SuppressWarnings("PMD.TooManyMethods")
 public class MeterRegistryService {
 
     private static final String JOB_STATE_TAG = "jobstate";
