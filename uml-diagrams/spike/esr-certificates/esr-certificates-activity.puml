@@ -3,34 +3,46 @@ skinparam monochrome true
 skinparam shadowing false
 
 
-|IRS 1|
+|ESRCertificateStatistics SubmodelServer|
 start
 :Start search **(globalAssetId)**;
 note
-    IRS API is requested
-    POST http://Tier1_333/irs/jobs
-    mode: aggregation
-    aspects:ESRCertificatesStatistics
-    globalAssetID: 3333
+    API is requested
+    GET http://Tier1_333/esr-certificate-statistics
+    globalAssetId: urn:uuid4:3333
     bomLifecycle: asBuilt
+    certificateName: ISO14001
 end note
-:Get AAS **(globalAssetId))**;
+:Register JobResponse for **(globalAssetId, bomLifecycle, depth)**;
 note
-    Request AAS Shell in
-    DT Registry for globalAssetId
+    POST ../irs/jobs;
+        {globalAssetId: urn:uuid4:3333,
+        bomLifecycle: asBuilt,
+        depth: 1}
 end note
-|#AntiqueWhite|DT Registry|
-:Lookup AAS **(globalAssetId))**;
-|IRS 1|
-:Get Childs via AssemblyPartRelationship;
-note
-    Extract endpoints for each
-    Child (AssemblyPartRelationShip)
-end note
-:Get AAS shells for Children;
+|#AntiqueWhite|IRS|
+: Register Job in JobStore;
+: Response jobid for registered job;
+|ESRCertificateStatistics SubmodelServer|
+
+repeat
+    : Poll for job;
+|IRS|
+:Check JobState;
+|ESRCertificateStatistics SubmodelServer|
+repeat while (jobStatus == COMPLETED?)
+:GET JobResponse /irs/jobs/{jobId};
+
+|IRS|
+: Return JobResponse;
+|ESRCertificateStatistics SubmodelServer|
+: Extract BPNL number from requestor AAS shell;
+repeat
+: Extract BPNL number from supplier AAS shell;
+repeat while (hasChildren?)
 
 partition lookopCertificate {
-:Get BPNL number of requestor and supplier;
+:Get BPNL number of each requestor and supplier;
 note
     BPNL number of requestor AAS shell
     BPNL number of supplier AAS shell
@@ -39,55 +51,46 @@ end note
  for each child;
 |SupplyOnAPI|
 :Lookup ISO14001 Certificate;
-|IRS 1|
-:Add ISO14001 Certificate
-to Jobs#submodels[];
-if (!EsrCertificateStatistics.exists()) then
-:createEsrCertificateStatistics;
-endif
-:Add ISO14001 Certificate state
- to EsrCertificateStatistics;
+
+
+|ESRCertificateStatistics SubmodelServer|
+:Merge ISO14001 Response to EsrCertificateStatistics;
 note
     EsrCertificateStatistics attributes are incremented
     according to returned status
 end note
+:Persist ISO14001 Certificate;
 }
-partition lookopEsrCertificateStatisitcsPayload {
+
+partition callEsrCertificateStatisticsEndpoint {
 if(hasEsrCertificateStatistics?) then (yes)
 :Call EsrCertificateStatistics endpoint;
 note
     in case an endpoint is available it points to the
     IRS instance on next level
 end note
-|IRS 2|
-:Start Search (globalAssetId);
-:Get AAS (globalAssetId));
-note
- Similar procedure like call on IRS1
-end note
-|#AntiqueWhite|DT Registry|
-:Lookup AAS;
-|IRS 2|
-:Get Childs via AssemblyPartRelationship;
-: ....;
-note
-    same procedure like IRS1
-end note
-: ....;
-note
-    same procedure like IRS1
-end note
-:Receive JobResponse with
-EsrCertificateStatistics;
-:Aggregate EsrCertificateStatistics into JobResponse;
-:Filter ISO14001 Payload from JobResponse;
 
-endif;
-|IRS 1|
-:Receive JobResponse with
+
+
+|ESRCertificateStatistics SubmodelServer 2|
+:Start Search (globalAssetId);
+note
+ Similar procedure as on IRS
+end note
+:return  EsrCertificateStatistics;
+|ESRCertificateStatistics SubmodelServer|
+:Receive
 EsrCertificateStatistics;
-:Aggregate EsrCertificateStatistics into JobResponse;
-:Filter ISO14001 Payload from JobResponse;
-}
+:Merge  EsrCertificateStatistic;
+endif;
+|ESRCertificateStatistics SubmodelServer|
+:Job set to approval required;
+repeat
+:Sleep;
+repeat while (approval?)
+
+:return EsrCertificateStatistic;
+
 stop
+
 @enduml
