@@ -1,41 +1,13 @@
 version: '3.8'
 
 services:
-  irs:
-    build:
-      context: .
-      target: irs-api
-      args:
-        BUILD_TARGET: irs-api
-    profiles:
-      - irs
-    container_name: irs
-    ports:
-      - "8080:8080"
-      - "4004:4004"
-    environment:
-      MINIO_URL: "http://minio:9000"
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin
-
-  prometheus:
-    image: prom/prometheus:v2.30.3
-    container_name: prometheus
-    volumes:
-      - ./dev/prometheus/:/etc/prometheus/
-    profiles:
-      - debug
-    ports:
-      - "9091:9090"
-
-
   minio:
     image: quay.io/minio/minio:RELEASE.2022-04-01T03-41-39Z
     command: server --address 0.0.0.0:9000 --console-address ":9001" /data
     ports:
       # Bind explicitly to 127.0.0.1
       - "127.0.0.1:9000:9000"
-      - "9001:9001"
+      - "127.0.0.1:9001:9001"
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
@@ -47,6 +19,19 @@ services:
     hostname: minio
     volumes:
       - miniodata:/data
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: "512M"
+        reservations:
+          cpus: "0.25"
+          memory: "128M"
+    networks:
+      - irsnetwork
 
 volumes:
   miniodata:
+
+networks:
+  irsnetwork:
