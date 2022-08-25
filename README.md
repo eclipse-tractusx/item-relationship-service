@@ -118,16 +118,6 @@ This setup uses the docker images provided by [the EDC team](https://github.com/
 
 Check the Helm charts at ./chart for the configuration. 
 
-## Contribution
-### Commit messages
-The commit messages have to match a pattern in the form of:  
-< type >(optional scope):[<Ticket_ID>] < description >
-
-Example:  
-chore(api):[TRI-123] some text
-
-Detailed pattern can be found here: [commit-msg](dev/commit-msg)
-
 #### Installation
 ```shell
 cp dev/commit-msg .git/hooks/commit-msg && chmod 500 .git/hooks/commit-msg
