@@ -9,6 +9,7 @@ on:
     paths-ignore:
       - "**/*.md"
       - "**/*.txt"
+      - "**/irs-v1.0.yaml" # FIXME
   schedule:
     - cron: "0 0 * * *"
 
