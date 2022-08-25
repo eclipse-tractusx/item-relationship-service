@@ -7,8 +7,17 @@ autonumber "<b>[000]"
 actor User
 
 box "OEM" #LightGrey
-participant ESRCertificateStatisticSubmodelServer as ESRSubServer
+participant ESRCertificateStatisticSubmodelServerOEM as ESRSubServer
 participant IRS as IRS
+participant MinIO as MinIO
+participant "EDCConsumer" as EDCConsumer #99FF99
+end box
+
+box "Tier1" #Grey
+participant "EDCProvider" as EDCProvider #99FF99
+participant ESRCertificateStatisticSubmodelServerTier1 as ESRSubServerTier1
+end box
+
 User --> ESRSubServer: ../esr-certificate
 note left
 params: {globalAssetId, bomLifecycle, certificateName}
@@ -17,76 +26,73 @@ ESRSubServer -> IRS : POST /irs/jobs
 note left
 params: {globalAssetId, bomLifecycle, depth=1}
 end note
-ref over IRS
+ref over IRS, DTRegistry, DAPS, "SubmodelServer AssemblyPartRelationship)"
     Process JobResponse for given params
 end ref
 ESRSubServer <-- IRS : return JobResponse
 
 
-IRS --> IRS: extract BPNL number from AAShell
+ESRSubServer --> ESRSubServer: extract BPNL number from AAShell
 note left
     BPNL of Requestor
 end note
 
-loop for each SubmodelDescriptor()
+loop for each shell()
+opt  shell is not parent shell
+   ESRSubServer --> ESRSubServer : extract BPNL number from AAShell
+   note left
+       BPNL of Supplier
+   end note
 
-ref over IRS
-    get children via AssemblyPartRelationshipAspectPayload
-    semanticId == urn:bamm:*AssemblyPartRelationShip
-end ref
-alt no AssemblyPartRelationshipAspect
-       User <-- IRS: jobResponse
-   else
-ref over IRS,DTRegistry
-    DTRegistry: getAAS for C-X ID
-    Source: AssemblyPartRelationShip
-end ref
+ESRSubServer -->  OnSupplyAPI : call OnSupplyAPI 
+note left
+    http//supplyOn/BPML_R/BPML_S/submodels/ISO14001
+    BPML_R : Requestor
+    BPML_S : Supplier
+end note
+ESRSubServer <--  OnSupplyAPI : ISO14001 Response
+ESRSubServer --> MinIO : Persist ISO14001 Response
+ESRSubServer --> MinIO : Load ESRCertificateStatistic aspect
+opt ! ESRCertificateStatistic exists
+    ESRSubServer --> MinIO : Persist new ESRCertificateStatistic aspect
 end opt
-ref over IRS, SubmodelServer_Tier_1
-    extract BPNL number of Supplier from AAS shell
-end ref
-ref over IRS, IRS_Tier_1
-    ESRCertificateStatistic endpoint to IRS Tier +1
-    call IRS (Tier+1)
-end ref
-    IRS -> IRS_Tier_1 : (globalAssetId)
-    IRS_Tier_1 -> DTRegistry: getAAS(globalAssetId)
-    ref over IRS_Tier_1, IRS_Tier_2
-        Process next tier level
-        << return result
+ESRSubServer --> ESRSubServer : Merge ISO14001 certificateState to ESRCertificateStatistic aspect
+
+opt shell contains ESRCertificateStatistic endpoint
+    ESRSubServer --> EDCConsumer :  callEndpoint url
+    EDCConsumer --> EDCProvider
+    EDCProvider --> ESRSubServerTier1
+    ref over ESRSubServerTier1
+        ESRCertificateStatistic job processing
     end ref
-ref over IRS, OnSupplyAPI
-    OnSupplyAPI call
-    call OnSupplyAPI http//supplyOn/BPML/BPML/submodels/ISO14001
-end ref
-ref over IRS
-    aggregate results or child IRS
-end ref
-ref over IRS
-    User approval process
-end ref
+    EDCProvider <-- ESRSubServerTier1
+    EDCConsumer <-- EDCProvider
+    ESRSubServer <-- EDCConsumer
+    ESRSubServer --> ESRSubServer : Merge ESRCertificateStatistic
+    ESRSubServer --> MinIO : Persist ESRCertificateStatistic
+    ESRSubServer <-- MinIO : ok
+end opt
+
+
+
 end loop
 
+ESRSubServer --> ESRSubServer : Request for User approval
+User -->  ESRSubServer: Grant User approval
 
-end box
-
-participant "EDC" as EDC1 #99FF99
-
-box "Tier 1_1" #LightGrey
-participant SubmodelServer_Tier_1
-participant IRS_Tier_1
-end box
-
-box "Shared Service" #LightGrey
-participant DTRegistry
+box "SupplyOn ecosystem" #DarkGrey
 participant OnSupplyAPI
 end box
 
-box "Tier 2_1" #DarkGrey
-participant SubmodelServer_Tier_2
-participant IRS_Tier_2
+box "Shared Service" #LightGrey
+
+participant DTRegistry
+participant DAPS
+participant Vault
+participant "SubmodelServer AssemblyPartRelationship)"
 end box
 
-User <-- IRS: jobResponse
+
+User <-- ESRSubServer: ESRCertificateStatistic Response
 
 @enduml
