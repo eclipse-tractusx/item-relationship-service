@@ -7,16 +7,30 @@ autonumber "<b>[000]"
 actor User
 
 box "OEM" #LightGrey
-User --> IRS: globalAssetId
-IRS -> DTRegistry: getAAS(globalAssetId)
-IRS <-- DTRegistry: AAShell
-participant OEMSubmodelServer
+participant ESRCertificateStatisticSubmodelServer as ESRSubServer
+participant IRS as IRS
+User --> ESRSubServer: ../esr-certificate
+note left
+params: {globalAssetId, bomLifecycle, certificateName}
+end note
+ESRSubServer -> IRS : POST /irs/jobs
+note left
+params: {globalAssetId, bomLifecycle, depth=1}
+end note
+ref over IRS
+    Process JobResponse for given params
+end ref
+ESRSubServer <-- IRS : return JobResponse
+
+
+IRS --> IRS: extract BPNL number from AAShell
+note left
+    BPNL of Requestor
+end note
 
 loop for each SubmodelDescriptor()
-ref over IRS, OEMSubmodelServer
-    extract BPNL number of Requestor from AAShell
-end ref
-ref over IRS, OEMSubmodelServer
+
+ref over IRS
     get children via AssemblyPartRelationshipAspectPayload
     semanticId == urn:bamm:*AssemblyPartRelationShip
 end ref
