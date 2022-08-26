@@ -52,14 +52,15 @@ class MinioHealthIndicator implements HealthIndicator {
     /**
      * Verifies if blobPersistence is instance of {@link MinioBlobPersistence} and if bucket exists.
      * If yes it means that there is Minio connection.
+     * If bucket does not exist, method tries to recreate it.
      * @return true if bucket exists, false otherwise
      */
     private boolean thereIsMinioConnection() {
-        if (blobPersistence instanceof MinioBlobPersistence) {
-
-            final MinioBlobPersistence minioBlobPersistence = (MinioBlobPersistence) blobPersistence;
+        if (blobPersistence instanceof final MinioBlobPersistence minioBlobPersistence) {
 
             try {
+                minioBlobPersistence.createBucketIfNotExists(blobstoreConfiguration.getBucketName());
+
                 if (minioBlobPersistence.bucketExists(blobstoreConfiguration.getBucketName())) {
                     return true;
                 }
