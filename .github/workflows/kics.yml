@@ -9,7 +9,6 @@ on:
     paths-ignore:
       - "**/*.md"
       - "**/*.txt"
-      - "**/irs-v1.0.yaml" # FIXME
   schedule:
     - cron: "0 0 * * *"
 
@@ -30,6 +29,8 @@ jobs:
         with:
           # Scanning directory .
           path: "."
+          exclude-paths:
+            - "api/irs-v1.0.yaml"
           # Fail on HIGH severity results
           fail_on: high
           # when provided with a directory on output_path
