@@ -29,8 +29,8 @@ jobs:
         with:
           # Scanning directory .
           path: "."
-          exclude-paths:
-            - "api/irs-v1.0.yaml"
+          # Exclude paths or files from scan
+          exclude-paths: "api/irs-v1.0.yaml"
           # Fail on HIGH severity results
           fail_on: high
           # when provided with a directory on output_path
