@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 public enum AspectType {
     SERIAL_PART_TYPIZATION(AspectTypesConstants.SERIAL_PART_TYPIZATION),
     ASSEMBLY_PART_RELATIONSHIP(AspectTypesConstants.ASSEMBLY_PART_RELATIONSHIP),
+    BATCH(AspectTypesConstants.BATCH),
     PRODUCT_DESCRIPTION(AspectTypesConstants.PRODUCT_DESCRIPTION),
     ID_CONVERSION(AspectTypesConstants.ID_CONVERSION),
     MARKETPLACE_OFFER(AspectTypesConstants.MARKETPLACE_OFFER),
@@ -88,6 +89,7 @@ public enum AspectType {
     public static final class AspectTypesConstants {
         public static final String SERIAL_PART_TYPIZATION = "SerialPartTypization";
         public static final String ASSEMBLY_PART_RELATIONSHIP = "AssemblyPartRelationship";
+        public static final String BATCH = "Batch";
         public static final String PRODUCT_DESCRIPTION = "ProductDescription";
         public static final String ID_CONVERSION = "IdConversion";
         public static final String MARKETPLACE_OFFER = "MarketplaceOffer";

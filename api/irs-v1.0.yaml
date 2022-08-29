@@ -754,6 +754,7 @@ components:
           enum:
             - SerialPartTypization
             - AssemblyPartRelationship
+            - Batch
             - ProductDescription
             - IdConversion
             - MarketplaceOffer
@@ -925,6 +926,7 @@ components:
             enum:
               - SerialPartTypization
               - AssemblyPartRelationship
+              - Batch
               - ProductDescription
               - IdConversion
               - MarketplaceOffer
