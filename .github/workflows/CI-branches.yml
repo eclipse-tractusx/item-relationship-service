@@ -39,8 +39,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn --batch-mode --update-snapshots verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=catenax-ng_product-item-relationship-service
+          mvn --batch-mode --update-snapshots \
+          verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          -Dsonar.projectKey=catenax-ng_product-item-relationship-service \
+          -Ddash.fail=true
 
+      - name: upload results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          path: 'target/dash/summary'
 
   build_images:
     strategy:
