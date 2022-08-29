@@ -4,6 +4,8 @@
 
 replicaCount: 1
 
+namespace: product-traceability-irs
+
 image:
   repository: ghcr.io/catenax-ng/catenax-at-home/registry
   pullPolicy: Always
@@ -25,17 +27,21 @@ serviceAccount:
 
 podAnnotations: { }
 
-podSecurityContext: { }
-# fsGroup: 2000
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
 
 # Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
 securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
   allowPrivilegeEscalation: false
   runAsNonRoot: true
   runAsUser: 1000
   runAsGroup: 3000
-
 
 service:
   type: ClusterIP
