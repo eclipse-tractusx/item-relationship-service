@@ -1,4 +1,4 @@
-name: IRS CI feature branch
+name: "Eclipse Dash"
 
 on:
   workflow_dispatch:
