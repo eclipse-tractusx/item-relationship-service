@@ -19,6 +19,9 @@ services:
     hostname: minio
     volumes:
       - miniodata:/data
+    security_opt:
+      - label:user:testuser
+      - no-new-privileges:true
     deploy:
       resources:
         limits:
