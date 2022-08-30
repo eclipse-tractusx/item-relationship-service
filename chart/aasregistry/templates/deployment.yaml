@@ -49,7 +49,21 @@ spec:
             {{- range .Values.env }}
             - name: {{ .name }}
               value: {{ .value }}
-            {{- end }}    
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 4243
+            initialDelaySeconds: 100
+            periodSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 4243
+            initialDelaySeconds: 60
+            periodSeconds: 3
+            failureThreshold: 3
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

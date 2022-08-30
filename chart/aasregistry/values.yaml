@@ -47,7 +47,6 @@ service:
   type: ClusterIP
   port: 4243
 
-
 ingress:
   enabled: true
   className: "nginx"
