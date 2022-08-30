@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "edc-dataplane.fullname" . }}
+  namespace: {{ .Release.Namespace | default "default" | quote }}
   labels:
     {{- include "edc-dataplane.labels" . | nindent 4 }}
 spec:
@@ -33,6 +34,7 @@ spec:
       {{- end }}
       {{- end }}
       serviceAccountName: {{ include "edc-dataplane.serviceAccountName" . }}
+      automountServiceAccountToken: {{ if .Values.automountServiceAccountToken }}true{{ else }}false{{ end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -47,6 +49,9 @@ spec:
               protocol: TCP
             - name: public
               containerPort: {{ .Values.edc.endpoints.public.port }}
+              protocol: TCP
+            - name: control
+              containerPort: {{ .Values.edc.endpoints.control.port }}
               protocol: TCP
             - name: metrics
               containerPort: {{ .Values.edc.endpoints.metrics.port }}
@@ -68,12 +73,16 @@ spec:
             httpGet:
               path: {{ .Values.edc.endpoints.default.path }}/check/startup
               port: default
-            failureThreshold: 12
-            initialDelaySeconds: 10
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
           {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ include "edc-dataplane.fullname" . }}-env
+            {{- if .Values.envSecretName }}
+            - secretRef:
+            name: {{ .Values.envSecretName | quote }}
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
@@ -86,6 +95,8 @@ spec:
             - name: configuration
               mountPath: /app/logging.properties
               subPath: logging.properties
+            - name: tmp
+              mountPath: /tmp
       volumes:
         - name: configuration
           configMap:
@@ -97,6 +108,8 @@ spec:
                 path: opentelemetry.properties
               - key: logging.properties
                 path: logging.properties
+        - name: tmp
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

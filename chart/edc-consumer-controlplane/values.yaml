@@ -12,7 +12,7 @@ namespace: product-traceability-irs
 image:
   # -- Which derivate of the edc controlplane to use.
   # One of: [ghcr.io/catenax-ng/product-edc/edc-controlplane-memory, , ghcr.io/catenax-ng/product-edc/edc-controlplane-postgresql, ghcr.io/catenax-ng/product-edc/edc-controlplane-cosmosdb]
-  repository: ghcr.io/catenax-ng/product-edc/edc-controlplane-memory
+  repository: ghcr.io/catenax-ng/product-edc/edc-controlplane-postgresql-hashicorp-vault
   # -- [Kubernetes image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) to use
   pullPolicy: Always
   # -- Overrides the image tag whose default is the chart appVersion.
@@ -170,10 +170,10 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: 1.5
+    cpu: 0.75
     memory: 1.5Gi
   requests:
-    cpu: 500m
+    cpu: 250m
     memory: 512Mi
 
 autoscaling:

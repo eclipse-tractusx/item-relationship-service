@@ -1,0 +1,45 @@
+---
+# Default values for edc-dataplane.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## Ingress declaration to expose the network service.
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+  hosts:
+    - host: "irs-consumer-dataplane-spike.dev.demo.catena-x.net"
+      paths:
+        - path: /api/public
+          pathType: Prefix
+          backend:
+            service:
+              name: edc-consumer-dataplane-esr
+              port:
+                number: 8185
+  tls:
+    - hosts:
+        - "irs-consumer-dataplane-spike.dev.demo.catena-x.net"
+      # Default secret for certificate creation already provided to your namespace
+      secretName: tls-secret
+
+configuration:
+  # -- EDC configuration.properties configuring aspects of the [eclipse-dataspaceconnector](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector)
+  properties: |-
+    edc.api.auth.key=123456
+    edc.controlplane.validation-endpoint=http://edc-consumer-controlplane-spike:8182/validation/token
+    edc.oauth.client.id=D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09:keyid:D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09
+    edc.oauth.private.key.alias=irs-int-daps-key
+    edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
+    edc.oauth.provider.jwks.url=https://daps1.dev.demo.catena-x.net/.well-known/jwks.json
+    edc.oauth.public.key.alias=irs-int-daps-cert
+    edc.oauth.token.url=https://daps1.dev.demo.catena-x.net/token
+    edc.receiver.http.endpoint=http://aaswrapper-spike:9192/callback
+    edc.vault.clientid=c1778e7d-db16-4404-9080-26d2280d2f63
+    edc.vault.clientsecret=<path:traceability-irs/data/dev/controlplane#vaultClientSecret>
+    edc.vault.name=cxtsi-dev001-vault
+    edc.vault.tenantid=495463c3-0991-4659-9cc5-94b4a3f7b1d6
