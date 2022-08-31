@@ -42,7 +42,7 @@ configuration:
   properties: |-
     edc.api.auth.key=123456
     
-    edc.controlplane.validation-endpoint=http://irs-consumer-controlplane-spike:8182/validation/token
+    edc.dataplane.token.validation.endpoint=http://irs-consumer-controlplane-spike:8182/validation/token
     
     edc.receiver.http.endpoint=http://aaswrapper-spike:9192/callback
     

@@ -8,46 +8,6 @@ nameOverride: "irs-provider-controlplane-spike"
 # -- Overrides the releases full name
 fullnameOverride: "irs-provider-controlplane-spike"
 
-## EDC endpoints exposed by the control-plane
-edc:
-  endpoints:
-    ## Default api exposing health checks etc
-    default:
-      # -- The network port, which the "default" api is going to be exposed by the container, pod and service
-      port: "8080"
-      # -- The path mapping the "default" api is going to be exposed at
-      path: /api
-    ## Data management API
-    data:
-      # -- The network port, which the "data" management api is going to be exposed by the container, pod and service
-      port: "8181"
-      # -- The path mapping the "data" management api is going to be exposed at
-      path: /data
-    ## Validation API
-    validation:
-      # -- The network port, which the "validation" api is going to be exposed by the container, pod and service
-      port: "8182"
-      # -- The path mapping the "validation" api is going to be exposed at
-      path: /validation
-    ## Control API
-    control:
-      # -- The network port, which the "control" api is going to be exposed by the container, pod and service
-      port: "9999"
-      # -- The path mapping the "control" api is going to be exposed at
-      path: /api/controlplane/control
-    ## IDS endpoints
-    ids:
-      # -- The network port, which the "ids" multipart api is going to be exposed by the container, pod and service
-      port: "8282"
-      # -- The path mapping the "ids" multipart api is going to be exposed at
-      path: /api/v1/ids
-    ## Prometheus endpoint
-    metrics:
-      # -- The network port, which the prometheus metrics are going to be exposed by the container, pod and service
-      port: "9090"
-      # -- The path mapping the prometheus metrics are going to be exposed at
-      path: /metrics
-
 ## Ingress declaration to expose the network service.
 ingresses:
   ## Public / Internet facing Ingress
@@ -83,17 +43,22 @@ configuration:
   properties: |-
     edc.api.auth.key=123456
     
-    ids.webhook.address=http://irs-provider-controlplane-spike:8282
+    ids.webhook.address=https://irs-provider-controlplane-spike.dev.demo.catena-x.net
     
     edc.ids.id=urn:connector:edc-provider-controlplane-spike
     edc.ids.catalog.id=urn:catalog:default
-    edc.ids.endpoint=https://irs-provider-controlplane-spike.dev.demo.catena-x.net/BPNL00000003AYRE/api/v1/ids
+    edc.ids.endpoint=https://irs-provider-controlplane-spike.dev.demo.catena-x.net/api/v1/ids
     
     edc.receiver.http.endpoint=http://irs-provider-controlplane-spike:8080/api/service/pull
     
     edc.transfer.proxy.endpoint=https://irs-provider-dataplane-spike.dev.demo.catena-x.net/api/public
     edc.transfer.proxy.token.signer.privatekey.alias=irs-dev-daps-cert-provider-key
     edc.transfer.proxy.token.verifier.publickey.alias=irs-dev-daps-cert-provider
+    
+    edc.dataplane.selector.providerspike.url=http://irs-provider-dataplane-spike:9999/api/dataplane/control
+    edc.dataplane.selector.providerspike.sourcetypes=HttpData
+    edc.dataplane.selector.providerspike.destinationtypes=HttpProxy
+    edc.dataplane.selector.providerspike.properties={ "publicApiUrl": "http://irs-provider-dataplane-spike:8185/api/public" }
     
     edc.oauth.client.id=B9:7B:1A:54:74:DC:C7:45:6E:A2:24:DC:3F:6D:A7:4A:DD:D2:26:6A:keyid:B9:7B:1A:54:74:DC:C7:45:6E:A2:24:DC:3F:6D:A7:4A:DD:D2:26:6A
     edc.oauth.private.key.alias=irs-dev-daps-cert-provider-key
@@ -108,25 +73,28 @@ configuration:
     edc.vault.hashicorp.health.check.enabled=true
     edc.vault.hashicorp.health.check.standby.ok=true
     edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
+    
+    edc.data.encryption.keys.alias=irs-dev-daps-cert-consumer-key
+    edc.data.encryption.algorithm=NONE
 
     # Postgresql related configuration
     edc.datasource.asset.name=asset
-    edc.datasource.asset.url=jdbc:postgresql://irs-edc-postgres-postgresql-hl:5432/edc
-    edc.datasource.asset.user=edc
-    edc.datasource.asset.password=databasepassword
+    edc.datasource.asset.url=jdbc:postgresql://irs-edc-postgres-spike-postgresql-hl:5432/edc
+    edc.datasource.asset.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
+    edc.datasource.asset.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
     edc.datasource.contractdefinition.name=contractdefinition
-    edc.datasource.contractdefinition.url=jdbc:postgresql://irs-edc-postgres-postgresql-hl:5432/edc
-    edc.datasource.contractdefinition.user=edc
-    edc.datasource.contractdefinition.password=databasepassword
+    edc.datasource.contractdefinition.url=jdbc:postgresql://irs-edc-postgres-spike-postgresql-hl:5432/edc
+    edc.datasource.contractdefinition.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
+    edc.datasource.contractdefinition.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
     edc.datasource.contractnegotiation.name=contractnegotiation
-    edc.datasource.contractnegotiation.url=jdbc:postgresql://irs-edc-postgres-postgresql-hl:5432/edc
-    edc.datasource.contractnegotiation.user=edc
-    edc.datasource.contractnegotiation.password=databasepassword
+    edc.datasource.contractnegotiation.url=jdbc:postgresql://irs-edc-postgres-spike-postgresql-hl:5432/edc
+    edc.datasource.contractnegotiation.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
+    edc.datasource.contractnegotiation.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
     edc.datasource.policy.name=policy
-    edc.datasource.policy.url=jdbc:postgresql://irs-edc-postgres-postgresql-hl:5432/edc
-    edc.datasource.policy.user=edc
-    edc.datasource.policy.password=databasepassword
+    edc.datasource.policy.url=jdbc:postgresql://irs-edc-postgres-spike-postgresql-hl:5432/edc
+    edc.datasource.policy.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
+    edc.datasource.policy.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
     edc.datasource.transferprocess.name=transferprocess
-    edc.datasource.transferprocess.url=jdbc:postgresql://irs-edc-postgres-postgresql-hl:5432/edc
-    edc.datasource.transferprocess.user=edc
-    edc.datasource.transferprocess.password=databasepassword
+    edc.datasource.transferprocess.url=jdbc:postgresql://irs-edc-postgres-spike-postgresql-hl:5432/edc
+    edc.datasource.transferprocess.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
+    edc.datasource.transferprocess.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
