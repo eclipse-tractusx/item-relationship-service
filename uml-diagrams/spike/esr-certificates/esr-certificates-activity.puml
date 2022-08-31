@@ -59,18 +59,16 @@ note
     EsrCertificateStatistics attributes are incremented
     according to returned status
 end note
-:Persist ISO14001 Certificate;
 }
 
 partition callEsrCertificateStatisticsEndpoint {
-if(hasEsrCertificateStatistics?) then (yes)
+if(hasEsrCertificateStatisticsEndpoint?) then (yes)
 :Call EsrCertificateStatistics endpoint;
 note
-    in case an endpoint is available it points to the
+    in case an AAS contains an ESR CertificateStatistics
+    endpoint is available it points to the
     IRS instance on next level
 end note
-
-
 
 |ESRCertificateStatistics SubmodelServer 2|
 :Start Search (globalAssetId);

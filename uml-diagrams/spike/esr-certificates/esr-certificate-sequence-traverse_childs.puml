@@ -4,10 +4,10 @@ skinparam shadowing false
 
 autonumber "<b>[000]"
 
-actor User
+actor "ESRCertificateRequestor" as User
 
-box "OEM" #LightGrey
-participant ESRCertificateStatisticSubmodelServerOEM as ESRSubServer
+box "Tier" #LightGrey
+participant ESRCertificateStatisticSubmodelServer as ESRSubServer
 participant IRS as IRS
 participant MinIO as MinIO
 participant "EDCConsumer" as EDCConsumer #99FF99
@@ -23,14 +23,27 @@ note left
 params: {globalAssetId, bomLifecycle, certificateName}
 end note
 ESRSubServer -> IRS : POST /irs/jobs
+ESRSubServer <-- IRS : 200
 note left
 params: {globalAssetId, bomLifecycle, depth=1}
 end note
 ref over IRS, DTRegistry, DAPS, "SubmodelServer AssemblyPartRelationship)"
     Process JobResponse for given params
 end ref
-ESRSubServer <-- IRS : return JobResponse
-
+loop 100 times
+    ESRSubServer --> IRS: GET /irs/jobs?jobStates=COMPLETED
+    ESRSubServer <-- IRS: jobList
+    alt jobId is in jobList
+        ESRSubServer --> IRS: GET /irs/jobs{jobId}
+        ESRSubServer <-- IRS: return JobResponse
+        ESRSubServer --> ESRSubServer: break loop
+     else
+        ESRSubServer -> ESRSubServer : wait 5000
+    end alt
+end loop
+opt not hasCompleted(job)
+    User <--  ESRSubServer : 4xx
+end opt
 
 ESRSubServer --> ESRSubServer: extract BPNL number from AAShell
 note left
@@ -51,7 +64,7 @@ note left
     BPML_S : Supplier
 end note
 ESRSubServer <--  OnSupplyAPI : ISO14001 Response
-ESRSubServer --> MinIO : Persist ISO14001 Response
+ESRSubServer --> MinIO : Persist ISO14001 Response (optional)
 ESRSubServer --> MinIO : Load ESRCertificateStatistic aspect
 opt ! ESRCertificateStatistic exists
     ESRSubServer --> MinIO : Persist new ESRCertificateStatistic aspect
@@ -77,7 +90,7 @@ end opt
 
 end loop
 
-ESRSubServer --> ESRSubServer : Request for User approval
+ESRSubServer --> ESRSubServer : Request for User approval (optional))
 User -->  ESRSubServer: Grant User approval
 
 box "SupplyOn ecosystem" #DarkGrey
@@ -91,7 +104,6 @@ participant DAPS
 participant Vault
 participant "SubmodelServer AssemblyPartRelationship)"
 end box
-
 
 User <-- ESRSubServer: ESRCertificateStatistic Response
 
