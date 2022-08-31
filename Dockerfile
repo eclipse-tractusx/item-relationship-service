@@ -28,7 +28,7 @@ ARG GID=1000
 
 WORKDIR /app
 
-COPY --chown=${UID}:${GID} --from=maven /build/irs-api/target/irs-api-*-exec.jar app.jar
+COPY --chmod=755 --from=maven /build/irs-api/target/irs-api-*-exec.jar app.jar
 
 USER ${UID}:${GID}
 
