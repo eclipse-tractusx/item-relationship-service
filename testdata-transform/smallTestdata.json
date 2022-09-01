@@ -1,2205 +1,1592 @@
 {
-    "https://catenax.io/schema/TestDataContainer/1.0.0": [
+  "https://catenax.io/schema/TestDataContainer/1.0.0": [
+    {
+      "catenaXId": "urn:uuid:72589775-f8eb-48cc-ad5c-3cfe9122134b",
+      "PlainObject": [
         {
-            "catenaXId": "urn:uuid:72589775-f8eb-48cc-ad5c-3cfe9122134b",
-            "PlainObject": [
-                {
-                    "BPN_OEM_C": "BPNL00000003AZQP",
-                    "BPN_SUB_TIER_B": "BPNL00000003AXS3",
-                    "BPN_SUB_TIER_A": "BPNL00000003B3NX",
-                    "BATCH_CATHODE_1": "urn:uuid:3dcdf443-0fe7-44db-aae1-c3fcb9735535",
-                    "BPN_OEM_A": "BPNL00000003AYRE",
-                    "BATCH_CATHODE_2": "urn:uuid:8ebfca3b-9364-40e6-bb66-ffec2db34059",
-                    "BPN_OEM_B": "BPNL00000003AVTH",
-                    "BPN_IRS_TEST": "BPNL00000003AWSS",
-                    "BPN_N_TIER_A": "BPNL00000003B0Q0",
-                    "BATCH_SEALANT_1": "urn:uuid:749e3f34-5cd1-41a7-a44e-f24df1dba796",
-                    "CREATION_DATE": "2022-05-13T16:29:16.037Z",
-                    "BATCH_SEALANT_2": "urn:uuid:f0f677ac-b6d8-4423-9716-95825dba1b0e",
-                    "AUTHOR": "christian.kabelin@partner.bmw.de",
-                    "BATCH_GLUE_2": "urn:uuid:d4676d63-7151-4341-b4a1-3275a4bf99f4",
-                    "BATCH_GLUE_1": "urn:uuid:62c1530c-accd-42a4-972d-0a7eb2740181",
-                    "BPN_DISMANTLER": "BPNL00000003B6LU",
-                    "BPN_TIER_A": "BPNL00000003B2OM",
-                    "BATCH_POLYAMID_1": "urn:uuid:f77e079e-5cd4-4747-bd8c-23ee8fe03d06",
-                    "BPN_TIER_B": "BPNL00000003B5MJ",
-                    "BATCH_POLYAMID_2": "urn:uuid:c84977d5-d6dd-452a-9030-06aeba53a21e"
-                }
-            ]
-        },
-        {
-            "https://catenax.io/schema/CertificateOfDestruction/1.0.0": [
-                {
-                    "productConditions": "at least 1990 model",
-                    "catenaXId": "urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb",
-                    "desiredPrice": {
-                        "cost": 6.770644E37,
-                        "currency": "EUR"
-                    },
-                    "returnConditions": "Wishes to buy",
-                    "requestDate": "2022-01-01",
-                    "needsReturn": true,
-                    "latestReturnDate": "2025-01-01"
-                }
-            ],
-            "catenaXId": "urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb",
-            "https://catenax.io/schema/SerialPartTypization/1.0.0": [
-                {
-                    "localIdentifiers": [
-                        {
-                            "value": "BPNL00000003AYRE",
-                            "key": "ManufacturerID"
-                        },
-                        {
-                            "value": "KR-09",
-                            "key": "ManufacturerPartID"
-                        },
-                        {
-                            "value": "OMA-TGFAYUHXFLHHUQQMPLTE",
-                            "key": "PartInstanceID"
-                        },
-                        {
-                            "value": "OMA-TGFAYUHXFLHHUQQMPLTE",
-                            "key": "VAN"
-                        }
-                    ],
-                    "manufacturingInformation": {
-                        "date": "2014-11-18T09:23:55.000Z",
-                        "country": "DEU"
-                    },
-                    "catenaXId": "urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb",
-                    "partTypeInformation": {
-                        "manufacturerPartID": "KR-09",
-                        "classification": "product",
-                        "nameAtManufacturer": "Vehicle Hybrid"
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AAS/3.0": [
-                {
-                    "identification": "urn:uuid:e4040df4-0163-4235-96eb-a369beed51e6",
-                    "idShort": "vehicle_hybrid.asm",
-                    "specificAssetIds": [
-                        {
-                            "value": "OMA-TGFAYUHXFLHHUQQMPLTE",
-                            "key": "http://pwc.t-systems.com/datamodel/common"
-                        },
-                        {
-                            "value": "KR-09",
-                            "key": "urn:VR:wt.part.WTPart#"
-                        }
-                    ],
-                    "description": [
-                        {
-                            "language": "en",
-                            "text": "Vehicle Hybrid"
-                        }
-                    ],
-                    "submodelDescriptors": [
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003AYRE.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003AYRE/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "assemblyPartRelationship",
-                            "idShort": "assembly-part-relationship"
-                        },
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B2OM.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "serialPartTypization",
-                            "idShort": "serial-part-typization"
-                        }
-                    ],
-                    "globalAssetId": {
-                        "value": [
-                            "urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb"
-                        ]
-                    }
-                }
-            ],
-            "https://catenax.io/schema/MaterialForRecycling/1.1.0": [
-                {
-                    "component": [
-                        {
-                            "materialName": "Iron",
-                            "recycledContent": 0,
-                            "materialClass": "1.1",
-                            "quantity": {
-                                "materialValue": 327.6,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "IR334"
-                        },
-                        {
-                            "materialName": "Polyethylen",
-                            "recycledContent": 0,
-                            "materialClass": "5.5.1",
-                            "quantity": {
-                                "materialValue": 163.8,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "PE221"
-                        },
-                        {
-                            "materialName": "Polyamid6",
-                            "recycledContent": 0,
-                            "materialClass": "5.5.1",
-                            "quantity": {
-                                "materialValue": 40.95,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "POL6"
-                        },
-                        {
-                            "materialName": "Aluminium",
-                            "recycledContent": 0,
-                            "materialClass": "2.1",
-                            "quantity": {
-                                "materialValue": 286.65,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "ALU331"
-                        },
-                        {
-                            "materialName": "Kerosene waxes and hydrocarbon waxes, oxidized, lithium salts",
-                            "recycledContent": 0,
-                            "materialClass": "0.7",
-                            "quantity": {
-                                "materialValue": 109.2,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "W123"
-                        },
-                        {
-                            "materialName": "Glue",
-                            "recycledContent": 0,
-                            "materialClass": "6.2",
-                            "quantity": {
-                                "materialValue": 54.6,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "GL338"
-                        },
-                        {
-                            "materialName": "Carbon Steel",
-                            "recycledContent": 0,
-                            "materialClass": "1.1.2",
-                            "quantity": {
-                                "materialValue": 382.2,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "CS2"
-                        },
-                        {
-                            "materialName": "Cooper",
-                            "recycledContent": 0,
-                            "materialClass": "3.1",
-                            "quantity": {
-                                "materialValue": 250.2,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "CO7"
-                        },
-                        {
-                            "materialName": "Rubber",
-                            "recycledContent": 0,
-                            "materialClass": "5.3",
-                            "quantity": {
-                                "materialValue": 7.8,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "R22"
-                        },
-                        {
-                            "materialName": "Textiles",
-                            "recycledContent": 0,
-                            "materialClass": "5.5.2",
-                            "quantity": {
-                                "materialValue": 5.12,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "TEX1"
-                        }
-                    ]
-                }
-            ],
-            "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
-                {
-                    "catenaXId": "urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb",
-                    "childParts": [
-                        {
-                            "quantity": {
-                                "quantityNumber": 1,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                                    "lexicalValue": "piece"
-                                }
-                            },
-                            "lifecycleContext": "AsBuilt",
-                            "assembledOn": "2022-02-03T14:48:54.709Z",
-                            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                            "childCatenaXId": "urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562"
-                        },
-                        {
-                            "quantity": {
-                                "quantityNumber": 1,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                                    "lexicalValue": "piece"
-                                }
-                            },
-                            "lifecycleContext": "AsBuilt",
-                            "assembledOn": "2022-02-03T14:48:54.709Z",
-                            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                            "childCatenaXId": "urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc"
-                        },
-                        {
-                            "quantity": {
-                                "quantityNumber": 1,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                                    "lexicalValue": "piece"
-                                }
-                            },
-                            "lifecycleContext": "AsBuilt",
-                            "assembledOn": "2022-02-03T14:48:54.709Z",
-                            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                            "childCatenaXId": "urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a"
-                        }
-                    ]
-                }
-            ],
-            "https://catenax.io/schema/VehicleProductDescription/1.0.0": [
-                {
-                    "bodyVariant": "Sedan",
-                    "catenaXId": "urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb",
-                    "engine": {
-                        "size": 2998,
-                        "power": 45
-                    },
-                    "emptyWeight": 1.7976931348623155E308,
-                    "fuel": "hybrid petrol/electric",
-                    "vehicleModel": "Vehicle Hybrid",
-                    "productionDateGMT": "2010-01-01",
-                    "equipmentVariants": [
-                        {
-                            "code": "A248B",
-                            "description": "steering wheel heating",
-                            "group": "special equipment"
-                        }
-                    ],
-                    "anonymisedIdentifier": "sOMtThyhVNDWUZNRcBaQXXI",
-                    "mileage": [
-                        {
-                            "mileagePhase": "as maintained by workshop",
-                            "mileageTimestamp": "2022-04-01T20:09:59.976Z",
-                            "mileageDistance": 120000
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "catenaXId": "urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562",
-            "https://catenax.io/schema/SerialPartTypization/1.0.0": [
-                {
-                    "localIdentifiers": [
-                        {
-                            "value": "BPNL00000003B2OM",
-                            "key": "ManufacturerID"
-                        },
-                        {
-                            "value": "1O222E8-43",
-                            "key": "ManufacturerPartID"
-                        },
-                        {
-                            "value": "NO-733616531805581150452604",
-                            "key": "PartInstanceID"
-                        }
-                    ],
-                    "manufacturingInformation": {
-                        "date": "2022-02-04T14:48:54",
-                        "country": "DEU"
-                    },
-                    "catenaXId": "urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562",
-                    "partTypeInformation": {
-                        "manufacturerPartID": "1O222E8-43",
-                        "customerPartId": "1O222E8-43",
-                        "classification": "component",
-                        "nameAtManufacturer": "Transmission",
-                        "nameAtCustomer": "Transmission"
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AAS/3.0": [
-                {
-                    "identification": "urn:uuid:e7f913e3-cc08-42e6-a8b4-20aa5562b2a3",
-                    "idShort": "transmission.asm",
-                    "specificAssetIds": [
-                        {
-                            "value": "NO-733616531805581150452604",
-                            "key": "http://pwc.t-systems.com/datamodel/common"
-                        },
-                        {
-                            "value": "1O222E8-43",
-                            "key": "urn:VR:wt.part.WTPart#"
-                        }
-                    ],
-                    "description": [
-                        {
-                            "language": "en",
-                            "text": "Transmission"
-                        }
-                    ],
-                    "submodelDescriptors": [
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B2OM.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "assemblyPartRelationship",
-                            "idShort": "assembly-part-relationship"
-                        },
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B2OM.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "serialPartTypization",
-                            "idShort": "serial-part-typization"
-                        }
-                    ],
-                    "globalAssetId": {
-                        "value": [
-                            "urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562"
-                        ]
-                    }
-                }
-            ],
-            "https://catenax.io/schema/MaterialForRecycling/1.1.0": [
-                {
-                    "component": [
-                        {
-                            "materialName": "Carbon Steel",
-                            "recycledContent": 0,
-                            "materialClass": "1.1.2",
-                            "quantity": {
-                                "materialValue": 72.843,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "CS2"
-                        },
-                        {
-                            "materialName": "Oil",
-                            "recycledContent": 0,
-                            "materialClass": "9.2",
-                            "quantity": {
-                                "materialValue": 6.9,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "liquid",
-                            "materialAbbreviation": "SAE40"
-                        },
-                        {
-                            "materialName": "Copper",
-                            "recycledContent": 0,
-                            "materialClass": "3.1",
-                            "quantity": {
-                                "materialValue": 1.2,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "CO7"
-                        }
-                    ]
-                }
-            ],
-            "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
-                {
-                    "catenaXId": "urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562",
-                    "childParts": [
-                        {
-                            "quantity": {
-                                "quantityNumber": "0.2014",
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "lifecycleContext": "AsBuilt",
-                            "assembledOn": "2022-02-03T14:48:54.709Z",
-                            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                            "childCatenaXId": "urn:uuid:16bb1a7e-8ed8-48ca-a839-5f38b704fcae"
-                        },
-                        {
-                            "quantity": {
-                                "quantityNumber": 1,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                                    "lexicalValue": "piece"
-                                }
-                            },
-                            "lifecycleContext": "AsBuilt",
-                            "assembledOn": "2022-02-03T14:48:54.709Z",
-                            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                            "childCatenaXId": "urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2"
-                        },
-                        {
-                            "quantity": {
-                                "quantityNumber": "0.2341",
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "lifecycleContext": "AsBuilt",
-                            "assembledOn": "2022-02-03T14:48:54.709Z",
-                            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                            "childCatenaXId": "urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef"
-                        }
-                    ]
-                }
-            ],
-            "https://catenax.io/schema/PhysicalDimension/1.0.0": [
-                {
-                    "diameter": 29488.857192215386,
-                    "length": "810",
-                    "width": "590",
-                    "weight": "85",
-                    "height": "610"
-                }
-            ]
-        },
-        {
-            "catenaXId": "urn:uuid:16bb1a7e-8ed8-48ca-a839-5f38b704fcae",
-            "https://catenax.io/schema/SerialPartTypization/1.0.0": [
-                {
-                    "localIdentifiers": [
-                        {
-                            "value": "BPNL00000003B0Q0",
-                            "key": "ManufacturerID"
-                        },
-                        {
-                            "value": "01697F7-65",
-                            "key": "ManufacturerPartID"
-                        },
-                        {
-                            "value": "NO-947880349904267845729159",
-                            "key": "PartInstanceID"
-                        }
-                    ],
-                    "manufacturingInformation": {
-                        "date": "2022-02-04T14:48:54",
-                        "country": "DEU"
-                    },
-                    "catenaXId": "urn:uuid:16bb1a7e-8ed8-48ca-a839-5f38b704fcae",
-                    "partTypeInformation": {
-                        "manufacturerPartID": "01697F7-65",
-                        "customerPartId": "01697F7-65",
-                        "classification": "component",
-                        "nameAtManufacturer": "Engineering Plastics",
-                        "nameAtCustomer": "Engineering Plastics"
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AAS/3.0": [
-                {
-                    "identification": "urn:uuid:af63a726-bc49-47e5-b9f0-d1f42f000791",
-                    "idShort": "engineering_plastics.asm",
-                    "specificAssetIds": [
-                        {
-                            "value": "NO-947880349904267845729159",
-                            "key": "http://pwc.t-systems.com/datamodel/common"
-                        },
-                        {
-                            "value": "01697F7-65",
-                            "key": "urn:VR:wt.part.WTPart#"
-                        }
-                    ],
-                    "description": [
-                        {
-                            "language": "en",
-                            "text": "Engineering Plastics"
-                        }
-                    ],
-                    "submodelDescriptors": [
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B2OM.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:16bb1a7e-8ed8-48ca-a839-5f38b704fcae-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "serialPartTypization",
-                            "idShort": "serial-part-typization"
-                        }
-                    ],
-                    "globalAssetId": {
-                        "value": [
-                            "urn:uuid:16bb1a7e-8ed8-48ca-a839-5f38b704fcae"
-                        ]
-                    }
-                }
-            ],
-            "https://catenax.io/schema/MaterialForRecycling/1.1.0": [
-                {
-                    "materialName": "Engineering Plastics",
-                    "materialClass": "5.1",
-                    "component": [
-                        {
-                            "materialName": "PA66",
-                            "recycledContent": 0,
-                            "materialClass": "5.1",
-                            "quantity": {
-                                "unit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#percent",
-                                    "lexicalValue": "percent"
-                                },
-                                "value": 70
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "PA66"
-                        },
-                        {
-                            "materialName": "GF-Faser",
-                            "recycledContent": 0,
-                            "materialClass": "5.1",
-                            "quantity": {
-                                "unit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#percent",
-                                    "lexicalValue": "percent"
-                                },
-                                "value": 30
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "GF30"
-                        }
-                    ],
-                    "recycledContent": 0
-                }
-            ]
-        },
-        {
-            "catenaXId": "urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2",
-            "https://catenax.io/schema/SerialPartTypization/1.0.0": [
-                {
-                    "localIdentifiers": [
-                        {
-                            "value": "BPNL00000003B3NX",
-                            "key": "ManufacturerID"
-                        },
-                        {
-                            "value": "37754B7-76",
-                            "key": "ManufacturerPartID"
-                        },
-                        {
-                            "value": "NO-159040131155901488695376",
-                            "key": "PartInstanceID"
-                        }
-                    ],
-                    "manufacturingInformation": {
-                        "date": "2022-02-04T14:48:54",
-                        "country": "DEU"
-                    },
-                    "catenaXId": "urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2",
-                    "partTypeInformation": {
-                        "manufacturerPartID": "37754B7-76",
-                        "customerPartId": "37754B7-76",
-                        "classification": "component",
-                        "nameAtManufacturer": "Sensor",
-                        "nameAtCustomer": "Sensor"
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AAS/3.0": [
-                {
-                    "identification": "urn:uuid:ed6f38ce-2c96-458d-a15a-3966e05de942",
-                    "idShort": "sensor.asm",
-                    "specificAssetIds": [
-                        {
-                            "value": "NO-159040131155901488695376",
-                            "key": "http://pwc.t-systems.com/datamodel/common"
-                        },
-                        {
-                            "value": "37754B7-76",
-                            "key": "urn:VR:wt.part.WTPart#"
-                        }
-                    ],
-                    "description": [
-                        {
-                            "language": "en",
-                            "text": "Sensor"
-                        }
-                    ],
-                    "submodelDescriptors": [
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B3NX.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B3NX/urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "assemblyPartRelationship",
-                            "idShort": "assembly-part-relationship"
-                        },
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B2OM.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "serialPartTypization",
-                            "idShort": "serial-part-typization"
-                        }
-                    ],
-                    "globalAssetId": {
-                        "value": [
-                            "urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2"
-                        ]
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
-                {
-                    "catenaXId": "urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2",
-                    "childParts": [
-                        {
-                            "quantity": {
-                                "quantityNumber": "0.1908",
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "lifecycleContext": "AsBuilt",
-                            "assembledOn": "2022-02-03T14:48:54.709Z",
-                            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                            "childCatenaXId": "urn:uuid:f7cf62fe-9e25-472b-9148-66ebcc291f31"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "catenaXId": "urn:uuid:f7cf62fe-9e25-472b-9148-66ebcc291f31",
-            "https://catenax.io/schema/SerialPartTypization/1.0.0": [
-                {
-                    "localIdentifiers": [
-                        {
-                            "value": "BPNL00000003B0Q0",
-                            "key": "ManufacturerID"
-                        },
-                        {
-                            "value": "98801V5-17",
-                            "key": "ManufacturerPartID"
-                        },
-                        {
-                            "value": "NO-056604022229087145032390",
-                            "key": "PartInstanceID"
-                        }
-                    ],
-                    "manufacturingInformation": {
-                        "date": "2022-02-04T14:48:54",
-                        "country": "DEU"
-                    },
-                    "catenaXId": "urn:uuid:f7cf62fe-9e25-472b-9148-66ebcc291f31",
-                    "partTypeInformation": {
-                        "manufacturerPartID": "98801V5-17",
-                        "customerPartId": "98801V5-17",
-                        "classification": "component",
-                        "nameAtManufacturer": "NTIER Product",
-                        "nameAtCustomer": "NTIER Product"
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AAS/3.0": [
-                {
-                    "identification": "urn:uuid:367922d4-ee3a-40a3-b0f9-8e34c5a2ab51",
-                    "idShort": "ntier_product.asm",
-                    "specificAssetIds": [
-                        {
-                            "value": "NO-056604022229087145032390",
-                            "key": "http://pwc.t-systems.com/datamodel/common"
-                        },
-                        {
-                            "value": "98801V5-17",
-                            "key": "urn:VR:wt.part.WTPart#"
-                        }
-                    ],
-                    "description": [
-                        {
-                            "language": "en",
-                            "text": "NTIER Product"
-                        }
-                    ],
-                    "submodelDescriptors": [
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B2OM.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:f7cf62fe-9e25-472b-9148-66ebcc291f31-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "serialPartTypization",
-                            "idShort": "serial-part-typization"
-                        }
-                    ],
-                    "globalAssetId": {
-                        "value": [
-                            "urn:uuid:f7cf62fe-9e25-472b-9148-66ebcc291f31"
-                        ]
-                    }
-                }
-            ],
-            "https://catenax.io/schema/MaterialForRecycling/1.1.0": [
-                {
-                    "materialName": "NTIER Product",
-                    "materialClass": "5.5",
-                    "component": [
-                        {
-                            "materialName": "Aluminium oxide",
-                            "recycledContent": 0,
-                            "materialClass": "5.5.1",
-                            "quantity": {
-                                "unit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#percent",
-                                    "lexicalValue": "percent"
-                                },
-                                "value": 60
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": ""
-                        },
-                        {
-                            "materialName": "Other",
-                            "recycledContent": 0,
-                            "materialClass": "5.5.2",
-                            "quantity": {
-                                "unit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#percent",
-                                    "lexicalValue": "percent"
-                                },
-                                "value": 40
-                            },
-                            "aggregateState": "",
-                            "materialAbbreviation": ""
-                        }
-                    ],
-                    "recycledContent": 0
-                }
-            ]
-        },
-        {
-            "catenaXId": "urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef",
-            "https://catenax.io/schema/SerialPartTypization/1.0.0": [
-                {
-                    "localIdentifiers": [
-                        {
-                            "value": "BPNL00000003AXS3",
-                            "key": "ManufacturerID"
-                        },
-                        {
-                            "value": "31008B0-49",
-                            "key": "ManufacturerPartID"
-                        },
-                        {
-                            "value": "NO-825423826078402432465664",
-                            "key": "PartInstanceID"
-                        }
-                    ],
-                    "manufacturingInformation": {
-                        "date": "2022-02-04T14:48:54",
-                        "country": "DEU"
-                    },
-                    "catenaXId": "urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef",
-                    "partTypeInformation": {
-                        "manufacturerPartID": "31008B0-49",
-                        "customerPartId": "31008B0-49",
-                        "classification": "component",
-                        "nameAtManufacturer": "Glue",
-                        "nameAtCustomer": "Glue"
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AAS/3.0": [
-                {
-                    "identification": "urn:uuid:48af44a2-e853-4b4f-a311-95794f542696",
-                    "idShort": "glue.asm",
-                    "specificAssetIds": [
-                        {
-                            "value": "NO-825423826078402432465664",
-                            "key": "http://pwc.t-systems.com/datamodel/common"
-                        },
-                        {
-                            "value": "31008B0-49",
-                            "key": "urn:VR:wt.part.WTPart#"
-                        }
-                    ],
-                    "description": [
-                        {
-                            "language": "en",
-                            "text": "Glue"
-                        }
-                    ],
-                    "submodelDescriptors": [
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003AXS3.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003AXS3/urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "assemblyPartRelationship",
-                            "idShort": "assembly-part-relationship"
-                        },
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B2OM.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "serialPartTypization",
-                            "idShort": "serial-part-typization"
-                        }
-                    ],
-                    "globalAssetId": {
-                        "value": [
-                            "urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef"
-                        ]
-                    }
-                }
-            ],
-            "https://catenax.io/schema/MaterialForRecycling/1.1.0": [
-                {
-                    "component": [
-                        {
-                            "materialName": "Glue",
-                            "materialClass": "6.2",
-                            "quantity": {
-                                "materialValue": 0,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "weight": "0.2341",
-                            "materialAbbreviation": "GL338"
-                        }
-                    ]
-                }
-            ],
-            "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
-                {
-                    "catenaXId": "urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef",
-                    "childParts": []
-                }
-            ]
-        },
-        {
-            "catenaXId": "urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc",
-            "https://catenax.io/schema/SerialPartTypization/1.0.0": [
-                {
-                    "localIdentifiers": [
-                        {
-                            "value": "BPNL00000003B5MJ",
-                            "key": "ManufacturerID"
-                        },
-                        {
-                            "value": "83238F4-36",
-                            "key": "ManufacturerPartID"
-                        },
-                        {
-                            "value": "NO-354879221683258717359442",
-                            "key": "PartInstanceID"
-                        }
-                    ],
-                    "manufacturingInformation": {
-                        "date": "2022-02-04T14:48:54",
-                        "country": "DEU"
-                    },
-                    "catenaXId": "urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc",
-                    "partTypeInformation": {
-                        "manufacturerPartID": "83238F4-36",
-                        "customerPartId": "83238F4-36",
-                        "classification": "component",
-                        "nameAtManufacturer": "ECU",
-                        "nameAtCustomer": "ECU"
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AAS/3.0": [
-                {
-                    "identification": "urn:uuid:8f2b558a-62f8-44f1-b2e4-6b5ad4bbbfd9",
-                    "idShort": "ecu.asm",
-                    "specificAssetIds": [
-                        {
-                            "value": "NO-354879221683258717359442",
-                            "key": "http://pwc.t-systems.com/datamodel/common"
-                        },
-                        {
-                            "value": "83238F4-36",
-                            "key": "urn:VR:wt.part.WTPart#"
-                        }
-                    ],
-                    "description": [
-                        {
-                            "language": "en",
-                            "text": "ECU"
-                        }
-                    ],
-                    "submodelDescriptors": [
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B5MJ.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B5MJ/urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "assemblyPartRelationship",
-                            "idShort": "assembly-part-relationship"
-                        },
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B2OM.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "serialPartTypization",
-                            "idShort": "serial-part-typization"
-                        }
-                    ],
-                    "globalAssetId": {
-                        "value": [
-                            "urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc"
-                        ]
-                    }
-                }
-            ],
-            "https://catenax.io/schema/MaterialForRecycling/1.1.0": [
-                {
-                    "component": [
-                        {
-                            "materialName": "Glue",
-                            "recycledContent": 0,
-                            "materialClass": "6.2",
-                            "quantity": {
-                                "materialValue": 0.3301,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "GL338"
-                        }
-                    ]
-                }
-            ],
-            "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
-                {
-                    "catenaXId": "urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc",
-                    "childParts": [
-                        {
-                            "quantity": {
-                                "quantityNumber": "0.3301",
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "lifecycleContext": "AsBuilt",
-                            "assembledOn": "2022-02-03T14:48:54.709Z",
-                            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                            "childCatenaXId": "urn:uuid:b931e9e8-614d-494c-a8e6-548ee8b6ef34"
-                        },
-                        {
-                            "quantity": {
-                                "quantityNumber": 1,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                                    "lexicalValue": "piece"
-                                }
-                            },
-                            "lifecycleContext": "AsBuilt",
-                            "assembledOn": "2022-02-03T14:48:54.709Z",
-                            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                            "childCatenaXId": "urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640"
-                        },
-                        {
-                            "quantity": {
-                                "quantityNumber": "0.2001",
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "lifecycleContext": "AsBuilt",
-                            "assembledOn": "2022-02-03T14:48:54.709Z",
-                            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                            "childCatenaXId": "urn:uuid:8b59e2ec-d76a-49a7-a795-c4bea4a02d87"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "catenaXId": "urn:uuid:b931e9e8-614d-494c-a8e6-548ee8b6ef34",
-            "https://catenax.io/schema/SerialPartTypization/1.0.0": [
-                {
-                    "localIdentifiers": [
-                        {
-                            "value": "BPNL00000003AXS3",
-                            "key": "ManufacturerID"
-                        },
-                        {
-                            "value": "91471Z0-84",
-                            "key": "ManufacturerPartID"
-                        },
-                        {
-                            "value": "NO-182660425740222655242543",
-                            "key": "PartInstanceID"
-                        }
-                    ],
-                    "manufacturingInformation": {
-                        "date": "2022-02-04T14:48:54",
-                        "country": "DEU"
-                    },
-                    "catenaXId": "urn:uuid:b931e9e8-614d-494c-a8e6-548ee8b6ef34",
-                    "partTypeInformation": {
-                        "manufacturerPartID": "91471Z0-84",
-                        "customerPartId": "91471Z0-84",
-                        "classification": "component",
-                        "nameAtManufacturer": "Glue",
-                        "nameAtCustomer": "Glue"
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AAS/3.0": [
-                {
-                    "identification": "urn:uuid:918f8caa-d613-4f4a-8711-8c86bf0989ab",
-                    "idShort": "glue.asm",
-                    "specificAssetIds": [
-                        {
-                            "value": "NO-182660425740222655242543",
-                            "key": "http://pwc.t-systems.com/datamodel/common"
-                        },
-                        {
-                            "value": "91471Z0-84",
-                            "key": "urn:VR:wt.part.WTPart#"
-                        }
-                    ],
-                    "description": [
-                        {
-                            "language": "en",
-                            "text": "Glue"
-                        }
-                    ],
-                    "submodelDescriptors": [
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B2OM.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:b931e9e8-614d-494c-a8e6-548ee8b6ef34-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "serialPartTypization",
-                            "idShort": "serial-part-typization"
-                        }
-                    ],
-                    "globalAssetId": {
-                        "value": [
-                            "urn:uuid:b931e9e8-614d-494c-a8e6-548ee8b6ef34"
-                        ]
-                    }
-                }
-            ],
-            "https://catenax.io/schema/MaterialForRecycling/1.1.0": [
-                {
-                    "materialName": "Glue",
-                    "materialClass": "5.5",
-                    "component": [
-                        {
-                            "materialName": "Aluminium oxide",
-                            "recycledContent": 0,
-                            "materialClass": "5.5.1",
-                            "quantity": {
-                                "unit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#percent",
-                                    "lexicalValue": "percent"
-                                },
-                                "value": 70
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "AL7"
-                        },
-                        {
-                            "materialName": "Other",
-                            "recycledContent": 0,
-                            "materialClass": "5.5.2",
-                            "quantity": {
-                                "unit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#percent",
-                                    "lexicalValue": "percent"
-                                },
-                                "value": 30
-                            },
-                            "aggregateState": "",
-                            "materialAbbreviation": ""
-                        }
-                    ],
-                    "recycledContent": 0
-                }
-            ]
-        },
-        {
-            "catenaXId": "urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640",
-            "https://catenax.io/schema/SerialPartTypization/1.0.0": [
-                {
-                    "localIdentifiers": [
-                        {
-                            "value": "BPNL00000003B3NX",
-                            "key": "ManufacturerID"
-                        },
-                        {
-                            "value": "65847F9-69",
-                            "key": "ManufacturerPartID"
-                        },
-                        {
-                            "value": "NO-628797496367807957077265",
-                            "key": "PartInstanceID"
-                        }
-                    ],
-                    "manufacturingInformation": {
-                        "date": "2022-02-04T14:48:54",
-                        "country": "DEU"
-                    },
-                    "catenaXId": "urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640",
-                    "partTypeInformation": {
-                        "manufacturerPartID": "65847F9-69",
-                        "customerPartId": "65847F9-69",
-                        "classification": "component",
-                        "nameAtManufacturer": "Sensor",
-                        "nameAtCustomer": "Sensor"
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AAS/3.0": [
-                {
-                    "identification": "urn:uuid:f8a3a7f6-6817-41fa-8f0b-8dc4d6db003f",
-                    "idShort": "sensor.asm",
-                    "specificAssetIds": [
-                        {
-                            "value": "NO-628797496367807957077265",
-                            "key": "http://pwc.t-systems.com/datamodel/common"
-                        },
-                        {
-                            "value": "65847F9-69",
-                            "key": "urn:VR:wt.part.WTPart#"
-                        }
-                    ],
-                    "description": [
-                        {
-                            "language": "en",
-                            "text": "Sensor"
-                        }
-                    ],
-                    "submodelDescriptors": [
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B3NX.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B3NX/urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "assemblyPartRelationship",
-                            "idShort": "assembly-part-relationship"
-                        },
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B2OM.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "serialPartTypization",
-                            "idShort": "serial-part-typization"
-                        }
-                    ],
-                    "globalAssetId": {
-                        "value": [
-                            "urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640"
-                        ]
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
-                {
-                    "catenaXId": "urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640",
-                    "childParts": [
-                        {
-                            "quantity": {
-                                "quantityNumber": "0.1908",
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "lifecycleContext": "AsBuilt",
-                            "assembledOn": "2022-02-03T14:48:54.709Z",
-                            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                            "childCatenaXId": "urn:uuid:186359fb-4584-40e4-a59b-ed842d3d80d9"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "catenaXId": "urn:uuid:186359fb-4584-40e4-a59b-ed842d3d80d9",
-            "https://catenax.io/schema/SerialPartTypization/1.0.0": [
-                {
-                    "localIdentifiers": [
-                        {
-                            "value": "BPNL00000003B0Q0",
-                            "key": "ManufacturerID"
-                        },
-                        {
-                            "value": "74268H5-13",
-                            "key": "ManufacturerPartID"
-                        },
-                        {
-                            "value": "NO-565359302028822441908953",
-                            "key": "PartInstanceID"
-                        }
-                    ],
-                    "manufacturingInformation": {
-                        "date": "2022-02-04T14:48:54",
-                        "country": "DEU"
-                    },
-                    "catenaXId": "urn:uuid:186359fb-4584-40e4-a59b-ed842d3d80d9",
-                    "partTypeInformation": {
-                        "manufacturerPartID": "74268H5-13",
-                        "customerPartId": "74268H5-13",
-                        "classification": "component",
-                        "nameAtManufacturer": "Engineering Plastics",
-                        "nameAtCustomer": "Engineering Plastics"
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AAS/3.0": [
-                {
-                    "identification": "urn:uuid:e51ac8ed-f7b3-49fd-a781-b5c5d16b623e",
-                    "idShort": "engineering_plastics.asm",
-                    "specificAssetIds": [
-                        {
-                            "value": "NO-565359302028822441908953",
-                            "key": "http://pwc.t-systems.com/datamodel/common"
-                        },
-                        {
-                            "value": "74268H5-13",
-                            "key": "urn:VR:wt.part.WTPart#"
-                        }
-                    ],
-                    "description": [
-                        {
-                            "language": "en",
-                            "text": "Engineering Plastics"
-                        }
-                    ],
-                    "submodelDescriptors": [
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B2OM.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:186359fb-4584-40e4-a59b-ed842d3d80d9-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "serialPartTypization",
-                            "idShort": "serial-part-typization"
-                        }
-                    ],
-                    "globalAssetId": {
-                        "value": [
-                            "urn:uuid:186359fb-4584-40e4-a59b-ed842d3d80d9"
-                        ]
-                    }
-                }
-            ],
-            "https://catenax.io/schema/MaterialForRecycling/1.1.0": [
-                {
-                    "materialName": "Engineering Plastics",
-                    "materialClass": "5.1",
-                    "component": [
-                        {
-                            "materialName": "PA66",
-                            "recycledContent": 0,
-                            "materialClass": "5.1",
-                            "quantity": {
-                                "unit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#percent",
-                                    "lexicalValue": "percent"
-                                },
-                                "value": 70
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "PA66"
-                        },
-                        {
-                            "materialName": "GF-Faser",
-                            "recycledContent": 0,
-                            "materialClass": "5.1",
-                            "quantity": {
-                                "unit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#percent",
-                                    "lexicalValue": "percent"
-                                },
-                                "value": 30
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "GF30"
-                        }
-                    ],
-                    "recycledContent": 0
-                }
-            ]
-        },
-        {
-            "catenaXId": "urn:uuid:8b59e2ec-d76a-49a7-a795-c4bea4a02d87",
-            "https://catenax.io/schema/SerialPartTypization/1.0.0": [
-                {
-                    "localIdentifiers": [
-                        {
-                            "value": "BPNL00000003B0Q0",
-                            "key": "ManufacturerID"
-                        },
-                        {
-                            "value": "55269I8-71",
-                            "key": "ManufacturerPartID"
-                        },
-                        {
-                            "value": "NO-340460948192054950891951",
-                            "key": "PartInstanceID"
-                        }
-                    ],
-                    "manufacturingInformation": {
-                        "date": "2022-02-04T14:48:54",
-                        "country": "DEU"
-                    },
-                    "catenaXId": "urn:uuid:8b59e2ec-d76a-49a7-a795-c4bea4a02d87",
-                    "partTypeInformation": {
-                        "manufacturerPartID": "55269I8-71",
-                        "customerPartId": "55269I8-71",
-                        "classification": "component",
-                        "nameAtManufacturer": "Engineering Plastics",
-                        "nameAtCustomer": "Engineering Plastics"
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AAS/3.0": [
-                {
-                    "identification": "urn:uuid:2b47d838-4bbe-4867-951a-83192e3f4e2f",
-                    "idShort": "engineering_plastics.asm",
-                    "specificAssetIds": [
-                        {
-                            "value": "NO-340460948192054950891951",
-                            "key": "http://pwc.t-systems.com/datamodel/common"
-                        },
-                        {
-                            "value": "55269I8-71",
-                            "key": "urn:VR:wt.part.WTPart#"
-                        }
-                    ],
-                    "description": [
-                        {
-                            "language": "en",
-                            "text": "Engineering Plastics"
-                        }
-                    ],
-                    "submodelDescriptors": [
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B2OM.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:8b59e2ec-d76a-49a7-a795-c4bea4a02d87-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "serialPartTypization",
-                            "idShort": "serial-part-typization"
-                        }
-                    ],
-                    "globalAssetId": {
-                        "value": [
-                            "urn:uuid:8b59e2ec-d76a-49a7-a795-c4bea4a02d87"
-                        ]
-                    }
-                }
-            ],
-            "https://catenax.io/schema/MaterialForRecycling/1.1.0": [
-                {
-                    "materialName": "Engineering Plastics",
-                    "materialClass": "5.1",
-                    "component": [
-                        {
-                            "materialName": "PA66",
-                            "recycledContent": 0,
-                            "materialClass": "5.1",
-                            "quantity": {
-                                "unit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#percent",
-                                    "lexicalValue": "percent"
-                                },
-                                "value": 70
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "PA66"
-                        },
-                        {
-                            "materialName": "GF-Faser",
-                            "recycledContent": 0,
-                            "materialClass": "5.1",
-                            "quantity": {
-                                "unit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#percent",
-                                    "lexicalValue": "percent"
-                                },
-                                "value": 30
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "GF30"
-                        }
-                    ],
-                    "recycledContent": 0
-                }
-            ]
-        },
-        {
-            "catenaXId": "urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a",
-            "https://catenax.io/schema/SerialPartTypization/1.0.0": [
-                {
-                    "localIdentifiers": [
-                        {
-                            "value": "BPNL00000003AYRE",
-                            "key": "ManufacturerID"
-                        },
-                        {
-                            "value": "95657362-83",
-                            "key": "ManufacturerPartID"
-                        },
-                        {
-                            "value": "NO-369202025208677072946181",
-                            "key": "PartInstanceID"
-                        }
-                    ],
-                    "manufacturingInformation": {
-                        "date": "2022-02-04T14:48:54",
-                        "country": "DEU"
-                    },
-                    "catenaXId": "urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a",
-                    "partTypeInformation": {
-                        "manufacturerPartID": "95657362-83",
-                        "customerPartId": "95657362-83",
-                        "classification": "component",
-                        "nameAtManufacturer": "Battery",
-                        "nameAtCustomer": "Battery"
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AAS/3.0": [
-                {
-                    "identification": "urn:uuid:80d060c6-4f79-490a-8a8c-ec230bff786c",
-                    "idShort": "battery.asm",
-                    "specificAssetIds": [
-                        {
-                            "value": "NO-369202025208677072946181",
-                            "key": "http://pwc.t-systems.com/datamodel/common"
-                        },
-                        {
-                            "value": "95657362-83",
-                            "key": "urn:VR:wt.part.WTPart#"
-                        }
-                    ],
-                    "description": [
-                        {
-                            "language": "en",
-                            "text": "Battery"
-                        }
-                    ],
-                    "submodelDescriptors": [
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003AYRE.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003AYRE/urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "assemblyPartRelationship",
-                            "idShort": "assembly-part-relationship"
-                        },
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B2OM.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "serialPartTypization",
-                            "idShort": "serial-part-typization"
-                        }
-                    ],
-                    "globalAssetId": {
-                        "value": [
-                            "urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a"
-                        ]
-                    }
-                }
-            ],
-            "https://catenax.io/schema/MaterialForRecycling/1.1.0": [
-                {
-                    "component": [
-                        {
-                            "materialName": "Cooper",
-                            "recycledContent": 0,
-                            "materialClass": "3.1",
-                            "quantity": {
-                                "materialValue": 5.4,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "CO7"
-                        },
-                        {
-                            "materialName": "Polyamid6",
-                            "recycledContent": 0,
-                            "materialClass": "5.5.1",
-                            "quantity": {
-                                "materialValue": 11.75,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "POL6"
-                        },
-                        {
-                            "materialName": "Carbon Steel",
-                            "recycledContent": 0,
-                            "materialClass": "1.1.2",
-                            "quantity": {
-                                "materialValue": 1.23,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "CS2"
-                        }
-                    ]
-                }
-            ],
-            "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
-                {
-                    "catenaXId": "urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a",
-                    "childParts": [
-                        {
-                            "quantity": {
-                                "quantityNumber": 1,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-                                    "lexicalValue": "piece"
-                                }
-                            },
-                            "lifecycleContext": "AsBuilt",
-                            "assembledOn": "2022-02-03T14:48:54.709Z",
-                            "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                            "childCatenaXId": "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978"
-                        }
-                    ]
-                }
-            ],
-            "https://catenax.io/schema/ReturnRequest/0.1.1": [
-                {
-                    "productConditions": "at least 1990 model",
-                    "desiredPrice": {
-                        "cost": 6.770644E37,
-                        "currency": "EUR"
-                    },
-                    "returnConditions": "Wishes to buy",
-                    "requestDate": "2022-01-01",
-                    "needsReturn": true,
-                    "latestReturnDate": "2025-01-01"
-                }
-            ]
-        },
-        {
-            "catenaXId": "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978",
-            "https://catenax.io/schema/SerialPartTypization/1.0.0": [
-                {
-                    "localIdentifiers": [
-                        {
-                            "value": "BPNL00000003AYRE",
-                            "key": "ManufacturerID"
-                        },
-                        {
-                            "value": "8840838-04",
-                            "key": "ManufacturerPartID"
-                        },
-                        {
-                            "value": "NO-397646649734958738335866",
-                            "key": "PartInstanceID"
-                        }
-                    ],
-                    "manufacturingInformation": {
-                        "date": "2022-02-04T14:48:54",
-                        "country": "DEU"
-                    },
-                    "catenaXId": "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978",
-                    "partTypeInformation": {
-                        "manufacturerPartID": "8840838-04",
-                        "customerPartId": "8840838-04",
-                        "classification": "component",
-                        "nameAtManufacturer": "HV MODUL",
-                        "nameAtCustomer": "HV MODUL"
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AAS/3.0": [
-                {
-                    "identification": "urn:uuid:9ec14d43-c009-464a-9717-86cf28d4df28",
-                    "idShort": "hv_modul.asm",
-                    "specificAssetIds": [
-                        {
-                            "value": "NO-397646649734958738335866",
-                            "key": "http://pwc.t-systems.com/datamodel/common"
-                        },
-                        {
-                            "value": "8840838-04",
-                            "key": "urn:VR:wt.part.WTPart#"
-                        }
-                    ],
-                    "description": [
-                        {
-                            "language": "en",
-                            "text": "HV MODUL"
-                        }
-                    ],
-                    "submodelDescriptors": [
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003AYRE.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003AYRE/urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "assemblyPartRelationship",
-                            "idShort": "assembly-part-relationship"
-                        },
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003B2OM.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "serialPartTypization",
-                            "idShort": "serial-part-typization"
-                        }
-                    ],
-                    "globalAssetId": {
-                        "value": [
-                            "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978"
-                        ]
-                    }
-                }
-            ],
-            "https://catenax.io/schema/MaterialForRecycling/1.1.0": [
-                {
-                    "component": [
-                        {
-                            "materialName": "Cooper",
-                            "recycledContent": 0,
-                            "materialClass": "3.1",
-                            "quantity": {
-                                "materialValue": 1.2,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "CO7"
-                        },
-                        {
-                            "materialName": "Polyamid6",
-                            "recycledContent": 0,
-                            "materialClass": "5.5.1",
-                            "quantity": {
-                                "materialValue": 2.5,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "POL6"
-                        },
-                        {
-                            "materialName": "Carbon Steel",
-                            "recycledContent": 0,
-                            "materialClass": "1.1.2",
-                            "quantity": {
-                                "materialValue": 0.23,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "CS2"
-                        }
-                    ]
-                }
-            ],
-            "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
-                {
-                    "catenaXId": "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978",
-                    "childParts": []
-                }
-            ]
-        },
-        {
-            "catenaXId": "urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa",
-            "https://catenax.io/schema/SerialPartTypization/1.0.0": [
-                {
-                    "localIdentifiers": [
-                        {
-                            "value": "BPNL00000003AYRE",
-                            "key": "ManufacturerID"
-                        },
-                        {
-                            "value": "8840838-04",
-                            "key": "ManufacturerPartID"
-                        },
-                        {
-                            "value": "NO-397646649734958738335866",
-                            "key": "PartInstanceID"
-                        }
-                    ],
-                    "manufacturingInformation": {
-                        "date": "2022-02-04T14:48:54",
-                        "country": "DEU"
-                    },
-                    "catenaXId": "urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa",
-                    "partTypeInformation": {
-                        "manufacturerPartID": "8840838-04",
-                        "customerPartId": "8840838-04",
-                        "classification": "component",
-                        "nameAtManufacturer": "HV MODUL",
-                        "nameAtCustomer": "HV MODUL"
-                    }
-                }
-            ],
-            "https://catenax.io/schema/AAS/3.0": [
-                {
-                    "description": [
-                        {
-                            "language": "en",
-                            "text": "HV MODUL"
-                        }
-                    ],
-                    "globalAssetId": {
-                        "value": [
-                            "urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa"
-                        ]
-                    },
-                    "idShort": "hv_modul.asm",
-                    "identification": "urn:uuid:9ec14d43-c009-464a-9717-86cf28d4df28",
-                    "specificAssetIds": [
-                        {
-                            "key": "http://pwc.t-systems.com/datamodel/common",
-                            "value": "NO-397646649734958738335866"
-                        },
-                        {
-                            "key": "urn:VR:wt.part.WTPart#",
-                            "value": "8840838-04"
-                        }
-                    ],
-                    "submodelDescriptors": [
-                        {
-                            "semanticId": [
-                                {
-                                    "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
-                                }
-                            ],
-                            "endpoints": [
-                                {
-                                    "interface": "https://BPNL00000003AYRE.connector",
-                                    "protocolInformation": {
-                                        "endpointAddress": "http://provider-control-plane:8282/BPNL00000003AYRE/urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa-urn:uuid:3064f87d-5e4a-496b-9685-c1cf3e113198/submodel?content=value&extent=WithBLOBValue",
-                                        "endpointProtocolVersion": "1.0RC02",
-                                        "endpointProtocol": "AAS/SUBMODEL"
-                                    }
-                                }
-                            ],
-                            "identification": "urn:uuid:3064f87d-5e4a-496b-9685-c1cf3e113198",
-                            "idShort": "assembly-part-relationship"
-                        }
-                    ]
-                }
-            ],
-            "https://catenax.io/schema/MaterialForRecycling/1.1.0": [
-                {
-                    "component": [
-                        {
-                            "materialName": "Cooper",
-                            "recycledContent": 0,
-                            "materialClass": "3.1",
-                            "quantity": {
-                                "materialValue": 1.2,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "CO7"
-                        },
-                        {
-                            "materialName": "Polyamid6",
-                            "recycledContent": 0,
-                            "materialClass": "5.5.1",
-                            "quantity": {
-                                "materialValue": 2.5,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "POL6"
-                        },
-                        {
-                            "materialName": "Carbon Steel",
-                            "recycledContent": 0,
-                            "materialClass": "1.1.2",
-                            "quantity": {
-                                "materialValue": 0.23,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "CS2"
-                        }
-                    ]
-                }
-            ],
-            "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
-                {
-                    "catenaXId": "urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa",
-                    "component": [
-                        {
-                            "materialName": "Cooper",
-                            "recycledContent": 0,
-                            "materialClass": "3.1",
-                            "quantity": {
-                                "materialValue": 1.2,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "CO7"
-                        },
-                        {
-                            "materialName": "Polyamid6",
-                            "recycledContent": 0,
-                            "materialClass": "5.5.1",
-                            "quantity": {
-                                "materialValue": 2.5,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "POL6"
-                        },
-                        {
-                            "materialName": "Carbon Steel",
-                            "recycledContent": 0,
-                            "materialClass": "1.1.2",
-                            "quantity": {
-                                "materialValue": 0.23,
-                                "measurementUnit": {
-                                    "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
-                                    "lexicalValue": "kilogram"
-                                }
-                            },
-                            "aggregateState": "solid",
-                            "materialAbbreviation": "CS2"
-                        }
-                    ]
-                }
-            ]
+          "BPN_OEM_C": "BPNL00000003AZQP",
+          "BPN_SUB_TIER_B": "BPNL00000003AXS3",
+          "BPN_SUB_TIER_A": "BPNL00000003B3NX",
+          "BATCH_CATHODE_1": "urn:uuid:3dcdf443-0fe7-44db-aae1-c3fcb9735535",
+          "BPN_OEM_A": "BPNL00000003AYRE",
+          "BATCH_CATHODE_2": "urn:uuid:8ebfca3b-9364-40e6-bb66-ffec2db34059",
+          "BPN_OEM_B": "BPNL00000003AVTH",
+          "BPN_IRS_TEST": "BPNL00000003AWSS",
+          "BPN_N_TIER_A": "BPNL00000003B0Q0",
+          "BATCH_SEALANT_1": "urn:uuid:749e3f34-5cd1-41a7-a44e-f24df1dba796",
+          "CREATION_DATE": "2022-05-13T16:29:16.037Z",
+          "BATCH_SEALANT_2": "urn:uuid:f0f677ac-b6d8-4423-9716-95825dba1b0e",
+          "AUTHOR": "christian.kabelin@partner.bmw.de",
+          "BATCH_GLUE_2": "urn:uuid:d4676d63-7151-4341-b4a1-3275a4bf99f4",
+          "BATCH_GLUE_1": "urn:uuid:62c1530c-accd-42a4-972d-0a7eb2740181",
+          "BPN_DISMANTLER": "BPNL00000003B6LU",
+          "BPN_TIER_A": "BPNL00000003B2OM",
+          "BATCH_POLYAMID_1": "urn:uuid:f77e079e-5cd4-4747-bd8c-23ee8fe03d06",
+          "BPN_TIER_B": "BPNL00000003B5MJ",
+          "BATCH_POLYAMID_2": "urn:uuid:c84977d5-d6dd-452a-9030-06aeba53a21e"
         }
-    ]
+      ]
+    },
+    {
+      "https://catenax.io/schema/CertificateOfDestruction/1.0.0": [
+        {
+          "productConditions": "at least 1990 model",
+          "catenaXId": "urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb",
+          "desiredPrice": {
+            "cost": 6.770644E37,
+            "currency": "EUR"
+          },
+          "returnConditions": "Wishes to buy",
+          "requestDate": "2022-01-01",
+          "needsReturn": true,
+          "latestReturnDate": "2025-01-01"
+        }
+      ],
+      "catenaXId": "urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003AYRE",
+              "key": "ManufacturerID"
+            },
+            {
+              "value": "KR-09",
+              "key": "ManufacturerPartID"
+            },
+            {
+              "value": "OMA-TGFAYUHXFLHHUQQMPLTE",
+              "key": "PartInstanceID"
+            },
+            {
+              "value": "OMA-TGFAYUHXFLHHUQQMPLTE",
+              "key": "VAN"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2014-11-18T09:23:55.000Z",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb",
+          "partTypeInformation": {
+            "manufacturerPartID": "KR-09",
+            "classification": "product",
+            "nameAtManufacturer": "Vehicle Hybrid"
+          }
+        }
+      ],
+      "https://catenax.io/schema/AAS/3.0": [
+        {
+          "identification": "urn:uuid:e4040df4-0163-4235-96eb-a369beed51e6",
+          "idShort": "vehicle_hybrid.asm",
+          "specificAssetIds": [
+            {
+              "value": "OMA-TGFAYUHXFLHHUQQMPLTE",
+              "key": "http://pwc.t-systems.com/datamodel/common"
+            },
+            {
+              "value": "KR-09",
+              "key": "urn:VR:wt.part.WTPart#"
+            }
+          ],
+          "description": [
+            {
+              "language": "en",
+              "text": "Vehicle Hybrid"
+            }
+          ],
+          "submodelDescriptors": [
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003AYRE.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003AYRE/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "assemblyPartRelationship",
+              "idShort": "assembly-part-relationship"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "serialPartTypization",
+              "idShort": "serial-part-typization"
+            }
+          ],
+          "globalAssetId": {
+            "value": [
+              "urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb"
+            ]
+          }
+        }
+      ],
+      "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
+        {
+          "catenaXId": "urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb",
+          "childParts": [
+            {
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+                  "lexicalValue": "piece"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562"
+            },
+            {
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+                  "lexicalValue": "piece"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc"
+            },
+            {
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+                  "lexicalValue": "piece"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003B2OM",
+              "key": "ManufacturerID"
+            },
+            {
+              "value": "1O222E8-43",
+              "key": "ManufacturerPartID"
+            },
+            {
+              "value": "NO-733616531805581150452604",
+              "key": "PartInstanceID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562",
+          "partTypeInformation": {
+            "manufacturerPartID": "1O222E8-43",
+            "customerPartId": "1O222E8-43",
+            "classification": "component",
+            "nameAtManufacturer": "Transmission",
+            "nameAtCustomer": "Transmission"
+          }
+        }
+      ],
+      "https://catenax.io/schema/AAS/3.0": [
+        {
+          "identification": "urn:uuid:e7f913e3-cc08-42e6-a8b4-20aa5562b2a3",
+          "idShort": "transmission.asm",
+          "specificAssetIds": [
+            {
+              "value": "NO-733616531805581150452604",
+              "key": "http://pwc.t-systems.com/datamodel/common"
+            },
+            {
+              "value": "1O222E8-43",
+              "key": "urn:VR:wt.part.WTPart#"
+            }
+          ],
+          "description": [
+            {
+              "language": "en",
+              "text": "Transmission"
+            }
+          ],
+          "submodelDescriptors": [
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "assemblyPartRelationship",
+              "idShort": "assembly-part-relationship"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "serialPartTypization",
+              "idShort": "serial-part-typization"
+            }
+          ],
+          "globalAssetId": {
+            "value": [
+              "urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562"
+            ]
+          }
+        }
+      ],
+      "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
+        {
+          "catenaXId": "urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562",
+          "childParts": [
+            {
+              "quantity": {
+                "quantityNumber": "0.2014",
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+                  "lexicalValue": "kilogram"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:16bb1a7e-8ed8-48ca-a839-5f38b704fcae"
+            },
+            {
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+                  "lexicalValue": "piece"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2"
+            },
+            {
+              "quantity": {
+                "quantityNumber": "0.2341",
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+                  "lexicalValue": "kilogram"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:16bb1a7e-8ed8-48ca-a839-5f38b704fcae",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003B0Q0",
+              "key": "ManufacturerID"
+            },
+            {
+              "value": "01697F7-65",
+              "key": "ManufacturerPartID"
+            },
+            {
+              "value": "NO-947880349904267845729159",
+              "key": "PartInstanceID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:16bb1a7e-8ed8-48ca-a839-5f38b704fcae",
+          "partTypeInformation": {
+            "manufacturerPartID": "01697F7-65",
+            "customerPartId": "01697F7-65",
+            "classification": "component",
+            "nameAtManufacturer": "Engineering Plastics",
+            "nameAtCustomer": "Engineering Plastics"
+          }
+        }
+      ],
+      "https://catenax.io/schema/AAS/3.0": [
+        {
+          "identification": "urn:uuid:af63a726-bc49-47e5-b9f0-d1f42f000791",
+          "idShort": "engineering_plastics.asm",
+          "specificAssetIds": [
+            {
+              "value": "NO-947880349904267845729159",
+              "key": "http://pwc.t-systems.com/datamodel/common"
+            },
+            {
+              "value": "01697F7-65",
+              "key": "urn:VR:wt.part.WTPart#"
+            }
+          ],
+          "description": [
+            {
+              "language": "en",
+              "text": "Engineering Plastics"
+            }
+          ],
+          "submodelDescriptors": [
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:16bb1a7e-8ed8-48ca-a839-5f38b704fcae-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "serialPartTypization",
+              "idShort": "serial-part-typization"
+            }
+          ],
+          "globalAssetId": {
+            "value": [
+              "urn:uuid:16bb1a7e-8ed8-48ca-a839-5f38b704fcae"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003B3NX",
+              "key": "ManufacturerID"
+            },
+            {
+              "value": "37754B7-76",
+              "key": "ManufacturerPartID"
+            },
+            {
+              "value": "NO-159040131155901488695376",
+              "key": "PartInstanceID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2",
+          "partTypeInformation": {
+            "manufacturerPartID": "37754B7-76",
+            "customerPartId": "37754B7-76",
+            "classification": "component",
+            "nameAtManufacturer": "Sensor",
+            "nameAtCustomer": "Sensor"
+          }
+        }
+      ],
+      "https://catenax.io/schema/AAS/3.0": [
+        {
+          "identification": "urn:uuid:ed6f38ce-2c96-458d-a15a-3966e05de942",
+          "idShort": "sensor.asm",
+          "specificAssetIds": [
+            {
+              "value": "NO-159040131155901488695376",
+              "key": "http://pwc.t-systems.com/datamodel/common"
+            },
+            {
+              "value": "37754B7-76",
+              "key": "urn:VR:wt.part.WTPart#"
+            }
+          ],
+          "description": [
+            {
+              "language": "en",
+              "text": "Sensor"
+            }
+          ],
+          "submodelDescriptors": [
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B3NX.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B3NX/urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "assemblyPartRelationship",
+              "idShort": "assembly-part-relationship"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "serialPartTypization",
+              "idShort": "serial-part-typization"
+            }
+          ],
+          "globalAssetId": {
+            "value": [
+              "urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2"
+            ]
+          }
+        }
+      ],
+      "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
+        {
+          "catenaXId": "urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2",
+          "childParts": [
+            {
+              "quantity": {
+                "quantityNumber": "0.1908",
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+                  "lexicalValue": "kilogram"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:f7cf62fe-9e25-472b-9148-66ebcc291f31"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:f7cf62fe-9e25-472b-9148-66ebcc291f31",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003B0Q0",
+              "key": "ManufacturerID"
+            },
+            {
+              "value": "98801V5-17",
+              "key": "ManufacturerPartID"
+            },
+            {
+              "value": "NO-056604022229087145032390",
+              "key": "PartInstanceID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:f7cf62fe-9e25-472b-9148-66ebcc291f31",
+          "partTypeInformation": {
+            "manufacturerPartID": "98801V5-17",
+            "customerPartId": "98801V5-17",
+            "classification": "component",
+            "nameAtManufacturer": "NTIER Product",
+            "nameAtCustomer": "NTIER Product"
+          }
+        }
+      ],
+      "https://catenax.io/schema/AAS/3.0": [
+        {
+          "identification": "urn:uuid:367922d4-ee3a-40a3-b0f9-8e34c5a2ab51",
+          "idShort": "ntier_product.asm",
+          "specificAssetIds": [
+            {
+              "value": "NO-056604022229087145032390",
+              "key": "http://pwc.t-systems.com/datamodel/common"
+            },
+            {
+              "value": "98801V5-17",
+              "key": "urn:VR:wt.part.WTPart#"
+            }
+          ],
+          "description": [
+            {
+              "language": "en",
+              "text": "NTIER Product"
+            }
+          ],
+          "submodelDescriptors": [
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:f7cf62fe-9e25-472b-9148-66ebcc291f31-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "serialPartTypization",
+              "idShort": "serial-part-typization"
+            }
+          ],
+          "globalAssetId": {
+            "value": [
+              "urn:uuid:f7cf62fe-9e25-472b-9148-66ebcc291f31"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003AXS3",
+              "key": "ManufacturerID"
+            },
+            {
+              "value": "31008B0-49",
+              "key": "ManufacturerPartID"
+            },
+            {
+              "value": "NO-825423826078402432465664",
+              "key": "PartInstanceID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef",
+          "partTypeInformation": {
+            "manufacturerPartID": "31008B0-49",
+            "customerPartId": "31008B0-49",
+            "classification": "component",
+            "nameAtManufacturer": "Glue",
+            "nameAtCustomer": "Glue"
+          }
+        }
+      ],
+      "https://catenax.io/schema/AAS/3.0": [
+        {
+          "identification": "urn:uuid:48af44a2-e853-4b4f-a311-95794f542696",
+          "idShort": "glue.asm",
+          "specificAssetIds": [
+            {
+              "value": "NO-825423826078402432465664",
+              "key": "http://pwc.t-systems.com/datamodel/common"
+            },
+            {
+              "value": "31008B0-49",
+              "key": "urn:VR:wt.part.WTPart#"
+            }
+          ],
+          "description": [
+            {
+              "language": "en",
+              "text": "Glue"
+            }
+          ],
+          "submodelDescriptors": [
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003AXS3.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003AXS3/urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "assemblyPartRelationship",
+              "idShort": "assembly-part-relationship"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "serialPartTypization",
+              "idShort": "serial-part-typization"
+            }
+          ],
+          "globalAssetId": {
+            "value": [
+              "urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef"
+            ]
+          }
+        }
+      ],
+      "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
+        {
+          "catenaXId": "urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef",
+          "childParts": []
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003B5MJ",
+              "key": "ManufacturerID"
+            },
+            {
+              "value": "83238F4-36",
+              "key": "ManufacturerPartID"
+            },
+            {
+              "value": "NO-354879221683258717359442",
+              "key": "PartInstanceID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc",
+          "partTypeInformation": {
+            "manufacturerPartID": "83238F4-36",
+            "customerPartId": "83238F4-36",
+            "classification": "component",
+            "nameAtManufacturer": "ECU",
+            "nameAtCustomer": "ECU"
+          }
+        }
+      ],
+      "https://catenax.io/schema/AAS/3.0": [
+        {
+          "identification": "urn:uuid:8f2b558a-62f8-44f1-b2e4-6b5ad4bbbfd9",
+          "idShort": "ecu.asm",
+          "specificAssetIds": [
+            {
+              "value": "NO-354879221683258717359442",
+              "key": "http://pwc.t-systems.com/datamodel/common"
+            },
+            {
+              "value": "83238F4-36",
+              "key": "urn:VR:wt.part.WTPart#"
+            }
+          ],
+          "description": [
+            {
+              "language": "en",
+              "text": "ECU"
+            }
+          ],
+          "submodelDescriptors": [
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B5MJ.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B5MJ/urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "assemblyPartRelationship",
+              "idShort": "assembly-part-relationship"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "serialPartTypization",
+              "idShort": "serial-part-typization"
+            }
+          ],
+          "globalAssetId": {
+            "value": [
+              "urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc"
+            ]
+          }
+        }
+      ],
+      "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
+        {
+          "catenaXId": "urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc",
+          "childParts": [
+            {
+              "quantity": {
+                "quantityNumber": "0.3301",
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+                  "lexicalValue": "kilogram"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:b931e9e8-614d-494c-a8e6-548ee8b6ef34"
+            },
+            {
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+                  "lexicalValue": "piece"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640"
+            },
+            {
+              "quantity": {
+                "quantityNumber": "0.2001",
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+                  "lexicalValue": "kilogram"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:8b59e2ec-d76a-49a7-a795-c4bea4a02d87"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:b931e9e8-614d-494c-a8e6-548ee8b6ef34",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003AXS3",
+              "key": "ManufacturerID"
+            },
+            {
+              "value": "91471Z0-84",
+              "key": "ManufacturerPartID"
+            },
+            {
+              "value": "NO-182660425740222655242543",
+              "key": "PartInstanceID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:b931e9e8-614d-494c-a8e6-548ee8b6ef34",
+          "partTypeInformation": {
+            "manufacturerPartID": "91471Z0-84",
+            "customerPartId": "91471Z0-84",
+            "classification": "component",
+            "nameAtManufacturer": "Glue",
+            "nameAtCustomer": "Glue"
+          }
+        }
+      ],
+      "https://catenax.io/schema/AAS/3.0": [
+        {
+          "identification": "urn:uuid:918f8caa-d613-4f4a-8711-8c86bf0989ab",
+          "idShort": "glue.asm",
+          "specificAssetIds": [
+            {
+              "value": "NO-182660425740222655242543",
+              "key": "http://pwc.t-systems.com/datamodel/common"
+            },
+            {
+              "value": "91471Z0-84",
+              "key": "urn:VR:wt.part.WTPart#"
+            }
+          ],
+          "description": [
+            {
+              "language": "en",
+              "text": "Glue"
+            }
+          ],
+          "submodelDescriptors": [
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:b931e9e8-614d-494c-a8e6-548ee8b6ef34-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "serialPartTypization",
+              "idShort": "serial-part-typization"
+            }
+          ],
+          "globalAssetId": {
+            "value": [
+              "urn:uuid:b931e9e8-614d-494c-a8e6-548ee8b6ef34"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003B3NX",
+              "key": "ManufacturerID"
+            },
+            {
+              "value": "65847F9-69",
+              "key": "ManufacturerPartID"
+            },
+            {
+              "value": "NO-628797496367807957077265",
+              "key": "PartInstanceID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640",
+          "partTypeInformation": {
+            "manufacturerPartID": "65847F9-69",
+            "customerPartId": "65847F9-69",
+            "classification": "component",
+            "nameAtManufacturer": "Sensor",
+            "nameAtCustomer": "Sensor"
+          }
+        }
+      ],
+      "https://catenax.io/schema/AAS/3.0": [
+        {
+          "identification": "urn:uuid:f8a3a7f6-6817-41fa-8f0b-8dc4d6db003f",
+          "idShort": "sensor.asm",
+          "specificAssetIds": [
+            {
+              "value": "NO-628797496367807957077265",
+              "key": "http://pwc.t-systems.com/datamodel/common"
+            },
+            {
+              "value": "65847F9-69",
+              "key": "urn:VR:wt.part.WTPart#"
+            }
+          ],
+          "description": [
+            {
+              "language": "en",
+              "text": "Sensor"
+            }
+          ],
+          "submodelDescriptors": [
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B3NX.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B3NX/urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "assemblyPartRelationship",
+              "idShort": "assembly-part-relationship"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "serialPartTypization",
+              "idShort": "serial-part-typization"
+            }
+          ],
+          "globalAssetId": {
+            "value": [
+              "urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640"
+            ]
+          }
+        }
+      ],
+      "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
+        {
+          "catenaXId": "urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640",
+          "childParts": [
+            {
+              "quantity": {
+                "quantityNumber": "0.1908",
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+                  "lexicalValue": "kilogram"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:186359fb-4584-40e4-a59b-ed842d3d80d9"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:186359fb-4584-40e4-a59b-ed842d3d80d9",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003B0Q0",
+              "key": "ManufacturerID"
+            },
+            {
+              "value": "74268H5-13",
+              "key": "ManufacturerPartID"
+            },
+            {
+              "value": "NO-565359302028822441908953",
+              "key": "PartInstanceID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:186359fb-4584-40e4-a59b-ed842d3d80d9",
+          "partTypeInformation": {
+            "manufacturerPartID": "74268H5-13",
+            "customerPartId": "74268H5-13",
+            "classification": "component",
+            "nameAtManufacturer": "Engineering Plastics",
+            "nameAtCustomer": "Engineering Plastics"
+          }
+        }
+      ],
+      "https://catenax.io/schema/AAS/3.0": [
+        {
+          "identification": "urn:uuid:e51ac8ed-f7b3-49fd-a781-b5c5d16b623e",
+          "idShort": "engineering_plastics.asm",
+          "specificAssetIds": [
+            {
+              "value": "NO-565359302028822441908953",
+              "key": "http://pwc.t-systems.com/datamodel/common"
+            },
+            {
+              "value": "74268H5-13",
+              "key": "urn:VR:wt.part.WTPart#"
+            }
+          ],
+          "description": [
+            {
+              "language": "en",
+              "text": "Engineering Plastics"
+            }
+          ],
+          "submodelDescriptors": [
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:186359fb-4584-40e4-a59b-ed842d3d80d9-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "serialPartTypization",
+              "idShort": "serial-part-typization"
+            }
+          ],
+          "globalAssetId": {
+            "value": [
+              "urn:uuid:186359fb-4584-40e4-a59b-ed842d3d80d9"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:8b59e2ec-d76a-49a7-a795-c4bea4a02d87",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003B0Q0",
+              "key": "ManufacturerID"
+            },
+            {
+              "value": "55269I8-71",
+              "key": "ManufacturerPartID"
+            },
+            {
+              "value": "NO-340460948192054950891951",
+              "key": "PartInstanceID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:8b59e2ec-d76a-49a7-a795-c4bea4a02d87",
+          "partTypeInformation": {
+            "manufacturerPartID": "55269I8-71",
+            "customerPartId": "55269I8-71",
+            "classification": "component",
+            "nameAtManufacturer": "Engineering Plastics",
+            "nameAtCustomer": "Engineering Plastics"
+          }
+        }
+      ],
+      "https://catenax.io/schema/AAS/3.0": [
+        {
+          "identification": "urn:uuid:2b47d838-4bbe-4867-951a-83192e3f4e2f",
+          "idShort": "engineering_plastics.asm",
+          "specificAssetIds": [
+            {
+              "value": "NO-340460948192054950891951",
+              "key": "http://pwc.t-systems.com/datamodel/common"
+            },
+            {
+              "value": "55269I8-71",
+              "key": "urn:VR:wt.part.WTPart#"
+            }
+          ],
+          "description": [
+            {
+              "language": "en",
+              "text": "Engineering Plastics"
+            }
+          ],
+          "submodelDescriptors": [
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:8b59e2ec-d76a-49a7-a795-c4bea4a02d87-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "serialPartTypization",
+              "idShort": "serial-part-typization"
+            }
+          ],
+          "globalAssetId": {
+            "value": [
+              "urn:uuid:8b59e2ec-d76a-49a7-a795-c4bea4a02d87"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003AYRE",
+              "key": "ManufacturerID"
+            },
+            {
+              "value": "95657362-83",
+              "key": "ManufacturerPartID"
+            },
+            {
+              "value": "NO-369202025208677072946181",
+              "key": "PartInstanceID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a",
+          "partTypeInformation": {
+            "manufacturerPartID": "95657362-83",
+            "customerPartId": "95657362-83",
+            "classification": "component",
+            "nameAtManufacturer": "Battery",
+            "nameAtCustomer": "Battery"
+          }
+        }
+      ],
+      "https://catenax.io/schema/AAS/3.0": [
+        {
+          "identification": "urn:uuid:80d060c6-4f79-490a-8a8c-ec230bff786c",
+          "idShort": "battery.asm",
+          "specificAssetIds": [
+            {
+              "value": "NO-369202025208677072946181",
+              "key": "http://pwc.t-systems.com/datamodel/common"
+            },
+            {
+              "value": "95657362-83",
+              "key": "urn:VR:wt.part.WTPart#"
+            }
+          ],
+          "description": [
+            {
+              "language": "en",
+              "text": "Battery"
+            }
+          ],
+          "submodelDescriptors": [
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003AYRE.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003AYRE/urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "assemblyPartRelationship",
+              "idShort": "assembly-part-relationship"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "serialPartTypization",
+              "idShort": "serial-part-typization"
+            }
+          ],
+          "globalAssetId": {
+            "value": [
+              "urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a"
+            ]
+          }
+        }
+      ],
+      "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
+        {
+          "catenaXId": "urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a",
+          "childParts": [
+            {
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+                  "lexicalValue": "piece"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003AYRE",
+              "key": "ManufacturerID"
+            },
+            {
+              "value": "8840838-04",
+              "key": "ManufacturerPartID"
+            },
+            {
+              "value": "NO-397646649734958738335866",
+              "key": "PartInstanceID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978",
+          "partTypeInformation": {
+            "manufacturerPartID": "8840838-04",
+            "customerPartId": "8840838-04",
+            "classification": "component",
+            "nameAtManufacturer": "HV MODUL",
+            "nameAtCustomer": "HV MODUL"
+          }
+        }
+      ],
+      "https://catenax.io/schema/AAS/3.0": [
+        {
+          "identification": "urn:uuid:9ec14d43-c009-464a-9717-86cf28d4df28",
+          "idShort": "hv_modul.asm",
+          "specificAssetIds": [
+            {
+              "value": "NO-397646649734958738335866",
+              "key": "http://pwc.t-systems.com/datamodel/common"
+            },
+            {
+              "value": "8840838-04",
+              "key": "urn:VR:wt.part.WTPart#"
+            }
+          ],
+          "description": [
+            {
+              "language": "en",
+              "text": "HV MODUL"
+            }
+          ],
+          "submodelDescriptors": [
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003AYRE.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003AYRE/urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "assemblyPartRelationship",
+              "idShort": "assembly-part-relationship"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "serialPartTypization",
+              "idShort": "serial-part-typization"
+            }
+          ],
+          "globalAssetId": {
+            "value": [
+              "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978"
+            ]
+          }
+        }
+      ],
+      "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
+        {
+          "catenaXId": "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978",
+          "childParts": []
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003AYRE",
+              "key": "ManufacturerID"
+            },
+            {
+              "value": "8840838-04",
+              "key": "ManufacturerPartID"
+            },
+            {
+              "value": "NO-397646649734958738335866",
+              "key": "PartInstanceID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa",
+          "partTypeInformation": {
+            "manufacturerPartID": "8840838-04",
+            "customerPartId": "8840838-04",
+            "classification": "component",
+            "nameAtManufacturer": "HV MODUL",
+            "nameAtCustomer": "HV MODUL"
+          }
+        }
+      ],
+      "https://catenax.io/schema/AAS/3.0": [
+        {
+          "description": [
+            {
+              "language": "en",
+              "text": "HV MODUL"
+            }
+          ],
+          "globalAssetId": {
+            "value": [
+              "urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa"
+            ]
+          },
+          "idShort": "hv_modul.asm",
+          "identification": "urn:uuid:9ec14d43-c009-464a-9717-86cf28d4df28",
+          "specificAssetIds": [
+            {
+              "key": "http://pwc.t-systems.com/datamodel/common",
+              "value": "NO-397646649734958738335866"
+            },
+            {
+              "key": "urn:VR:wt.part.WTPart#",
+              "value": "8840838-04"
+            }
+          ],
+          "submodelDescriptors": [
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.assembly_part_relationship:1.0.0"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003AYRE.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider-control-plane:8282/BPNL00000003AYRE/urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa-urn:uuid:3064f87d-5e4a-496b-9685-c1cf3e113198/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "urn:uuid:3064f87d-5e4a-496b-9685-c1cf3e113198",
+              "idShort": "assembly-part-relationship"
+            }
+          ]
+        }
+      ],
+      "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
+        {
+          "catenaXId": "urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa",
+          "component": [
+            {
+              "materialName": "Cooper",
+              "recycledContent": 0,
+              "materialClass": "3.1",
+              "quantity": {
+                "materialValue": 1.2,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+                  "lexicalValue": "kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "CO7"
+            },
+            {
+              "materialName": "Polyamid6",
+              "recycledContent": 0,
+              "materialClass": "5.5.1",
+              "quantity": {
+                "materialValue": 2.5,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+                  "lexicalValue": "kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "POL6"
+            },
+            {
+              "materialName": "Carbon Steel",
+              "recycledContent": 0,
+              "materialClass": "1.1.2",
+              "quantity": {
+                "materialValue": 0.23,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+                  "lexicalValue": "kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "CS2"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

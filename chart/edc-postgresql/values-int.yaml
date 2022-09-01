@@ -1,0 +1,5 @@
+auth:
+  postgresPassword: <path:traceability-irs/data/int/controlplane#databasepassword>
+  username: <path:traceability-irs/data/int/controlplane#databaseuser>
+  password: <path:traceability-irs/data/int/controlplane#databasepassword>
+  database: "edc"

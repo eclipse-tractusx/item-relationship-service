@@ -8,46 +8,6 @@ nameOverride: "irs-consumer-controlplane"
 # -- Overrides the releases full name
 fullnameOverride: "irs-consumer-controlplane"
 
-## EDC endpoints exposed by the control-plane
-edc:
-  endpoints:
-    ## Default api exposing health checks etc
-    default:
-      # -- The network port, which the "default" api is going to be exposed by the container, pod and service
-      port: "8080"
-      # -- The path mapping the "default" api is going to be exposed at
-      path: /api
-    ## Data management API
-    data:
-      # -- The network port, which the "data" management api is going to be exposed by the container, pod and service
-      port: "8181"
-      # -- The path mapping the "data" management api is going to be exposed at
-      path: /data
-    ## Validation API
-    validation:
-      # -- The network port, which the "validation" api is going to be exposed by the container, pod and service
-      port: "8182"
-      # -- The path mapping the "validation" api is going to be exposed at
-      path: /validation
-    ## Control API
-    control:
-      # -- The network port, which the "control" api is going to be exposed by the container, pod and service
-      port: "9999"
-      # -- The path mapping the "control" api is going to be exposed at
-      path: /api/controlplane/control
-    ## IDS endpoints
-    ids:
-      # -- The network port, which the "ids" multipart api is going to be exposed by the container, pod and service
-      port: "8282"
-      # -- The path mapping the "ids" multipart api is going to be exposed at
-      path: /api/v1/ids
-    ## Prometheus endpoint
-    metrics:
-      # -- The network port, which the prometheus metrics are going to be exposed by the container, pod and service
-      port: "9090"
-      # -- The path mapping the prometheus metrics are going to be exposed at
-      path: /metrics
-
 ## Ingress declaration to expose the network service.
 ingresses:
   ## Public / Internet facing Ingress
@@ -63,7 +23,11 @@ ingresses:
     # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
     className: ""
     # -- Enables TLS on the ingress resource
-    tls: false
+    tls:
+      - hosts:
+          - "irs-consumer-controlplane.dev.demo.catena-x.net"
+        # Default secret for certificate creation already provided to your namespace
+        secretName: tls-secret
     ## Adds [cert-manager](https://cert-manager.io/docs/) annotations to the ingress resource
     certManager:
       # -- If preset enables certificate generation via cert-manager namespace scoped issuer
@@ -80,7 +44,7 @@ configuration:
     
     edc.ids.id=urn:connector:edc-consumer-controlplane
     edc.ids.catalog.id=urn:catalog:default
-    edc.ids.endpoint=https://irs-consumer-controlplane.dev.demo.catena-x.net/BPNL00000003AWSS/api/v1/ids
+    edc.ids.endpoint=https://irs-consumer-controlplane.dev.demo.catena-x.net/api/v1/ids
     
     edc.receiver.http.endpoint=http://aaswrapper:9192/callback/endpoint-data-reference
     
@@ -88,6 +52,11 @@ configuration:
     edc.transfer.proxy.endpoint=https://irs-consumer-dataplane.dev.demo.catena-x.net/api/public
     edc.transfer.proxy.token.signer.privatekey.alias=irs-dev-daps-cert-consumer-key
     edc.transfer.proxy.token.verifier.publickey.alias=irs-dev-daps-cert-consumer
+    
+    edc.dataplane.selector.consumer.url=http://irs-consumer-dataplane:9999/api/dataplane/control
+    edc.dataplane.selector.consumer.sourcetypes=HttpData
+    edc.dataplane.selector.consumer.destinationtypes=HttpProxy
+    edc.dataplane.selector.consumer.properties={ "publicApiUrl": "http://irs-consumer-dataplane:8185/api/public" }
     
     edc.oauth.client.id=4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90:keyid:4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90
     edc.oauth.private.key.alias=irs-dev-daps-cert-consumer-key
@@ -102,6 +71,9 @@ configuration:
     edc.vault.hashicorp.health.check.enabled=true
     edc.vault.hashicorp.health.check.standby.ok=true
     edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
+    
+    edc.data.encryption.keys.alias=irs-dev-daps-cert-consumer-key
+    edc.data.encryption.algorithm=NONE
     
     # Postgresql related configuration
     edc.datasource.asset.name=asset
