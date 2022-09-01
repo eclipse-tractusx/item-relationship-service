@@ -57,6 +57,7 @@ jobs:
           
       - name: Archive results
         uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: kicsResults.json
           path: kicsResults/results.json
