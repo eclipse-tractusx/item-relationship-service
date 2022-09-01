@@ -52,16 +52,8 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-passthrough: "false"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-  hosts:
-    - host: "irs.dev.demo.catena-x.net"
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls:
-    - hosts:
-        - "irs.dev.demo.catena-x.net"
-      # Default secret for certificate creation already provided to your namespace
-      secretName: tls-secret
+  hosts: [ ]
+  tls: [ ]
 
 # Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-resource-requests-and-limits
