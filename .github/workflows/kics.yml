@@ -46,17 +46,16 @@ jobs:
           # token: ${{ secrets.GITHUB_TOKEN }}
           # enable_comments: true
           # Exclude accepted results from the build
-          exclude_results: >
-            dda6420c385b33bef69f4db723fee4f469c93e851370c868a15af9bce5b3ec44,
-            03df1ef13c69b0ada26fc5bbf35eabca288c5c3c93c0f5d918e41f4951ca8795,
-            cd97103ed4e69cbeea5097168f744fdeffade5f6a5bf0b0f0b6bdaaa91b6815e,
-            724d6b5be1557dd1a6a2fb0e5c10ec0bcca20092c02fafad544c19a0b6d0e38f,
-            b8f92f3e5419d7e0bdefd956549b372fec72affbb25b735cbc59f0e9762f6943,
-            9cc9972d007cadc1b17d7ff64eb9aa66648c32997279c5b80c411abbcfbf3c5a,
-            663dfa114d46fb8eebf7e98ff0ba3f60f80b8059f8c170c12b07feb909b36f19,
-            edc4c9ac9ee139c0d7947410439b66e3c6290cb97a37d97a7519d3d5e56a5a84,
-            7f3e9461a3abdb7a281fdc736fb0827e69e9278ccd6b929bd32fc2d84336f68c,
-            10e4fff1f26f0a765423e35a7d8952363a6e8961a58e20b3017cd7818745eb36
+          exclude_results: "dda6420c385b33bef69f4db723fee4f469c93e851370c868a15af9bce5b3ec44,\
+            03df1ef13c69b0ada26fc5bbf35eabca288c5c3c93c0f5d918e41f4951ca8795,\
+            cd97103ed4e69cbeea5097168f744fdeffade5f6a5bf0b0f0b6bdaaa91b6815e,\
+            724d6b5be1557dd1a6a2fb0e5c10ec0bcca20092c02fafad544c19a0b6d0e38f,\
+            b8f92f3e5419d7e0bdefd956549b372fec72affbb25b735cbc59f0e9762f6943,\
+            9cc9972d007cadc1b17d7ff64eb9aa66648c32997279c5b80c411abbcfbf3c5a,\
+            663dfa114d46fb8eebf7e98ff0ba3f60f80b8059f8c170c12b07feb909b36f19,\
+            edc4c9ac9ee139c0d7947410439b66e3c6290cb97a37d97a7519d3d5e56a5a84,\
+            7f3e9461a3abdb7a281fdc736fb0827e69e9278ccd6b929bd32fc2d84336f68c,\
+            10e4fff1f26f0a765423e35a7d8952363a6e8961a58e20b3017cd7818745eb36"
 
       # Upload findings to GitHub Advanced Security Dashboard
       - name: Upload SARIF file for GitHub Advanced Security Dashboard
