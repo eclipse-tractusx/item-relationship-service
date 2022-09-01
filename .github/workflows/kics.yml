@@ -46,7 +46,7 @@ jobs:
           # token: ${{ secrets.GITHUB_TOKEN }}
           # enable_comments: true
           # Exclude accepted results from the build
-          exclude-results: >
+          exclude_results: >
             dda6420c385b33bef69f4db723fee4f469c93e851370c868a15af9bce5b3ec44,
             03df1ef13c69b0ada26fc5bbf35eabca288c5c3c93c0f5d918e41f4951ca8795,
             cd97103ed4e69cbeea5097168f744fdeffade5f6a5bf0b0f0b6bdaaa91b6815e,
