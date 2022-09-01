@@ -14,15 +14,21 @@ node "Kubernetes Cluster" as k8s {
     component "DT Registry" as dtr
     component "EDC Consumer" as consumer
     component "EDC Provider" as provider
+    database "Consumer DB" as cdb
+    database "Provider DB" as pdb
+    component "DAPS" as daps
     collections "Submodel Provider" as submodel
 
 
     IRS --> Minio
     IRS --> aasw
     IRS --> dtr
+    IRS --> daps
     aasw -- consumer
     consumer -- provider
     provider -- submodel
+    consumer - cdb
+    provider - pdb
 
 }
 
