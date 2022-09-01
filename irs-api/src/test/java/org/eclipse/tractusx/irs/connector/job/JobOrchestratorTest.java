@@ -198,7 +198,7 @@ class JobOrchestratorTest {
         // Assert
         verify(jobStore).create(jobCaptor.capture());
         verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), JOB_EXECUTION_FAILED,
-                "job.connector.org.eclipse.tractusx.irs.JobException");
+                "org.eclipse.tractusx.irs.connector.job.JobException");
         verifyNoMoreInteractions(jobStore);
         assertThat(response).isEqualTo(JobInitiateResponse.builder()
                                                           .jobId(jobCaptor.getValue().getJobIdString())
@@ -280,7 +280,7 @@ class JobOrchestratorTest {
 
         // Assert
         verify(jobStore).markJobInError(job.getJobIdString(), JOB_EXECUTION_FAILED,
-                "job.connector.org.eclipse.tractusx.irs.JobException");
+                "org.eclipse.tractusx.irs.connector.job.JobException");
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
     }
@@ -329,7 +329,7 @@ class JobOrchestratorTest {
 
         // temporarily created job should be deleted
         verify(jobStore).markJobInError(job.getJobIdString(), "Failed to start a transfer",
-                "job.connector.org.eclipse.tractusx.irs.JobException");
+                "org.eclipse.tractusx.irs.connector.job.JobException");
         verifyNoMoreInteractions(jobStore);
     }
 
