@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.aaswrapper.job.delegate.AbstractDelegate;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.connector.job.TransferProcessManager;
@@ -34,11 +35,11 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     private final BlobPersistence blobStore;
 
-    private final AbstractProcessor abstractProcessor;
+    private final AbstractDelegate abstractDelegate;
 
-    public AASTransferProcessManager(final AbstractProcessor abstractProcessor, final ExecutorService executor,
+    public AASTransferProcessManager(final AbstractDelegate abstractDelegate, final ExecutorService executor,
             final BlobPersistence blobStore) {
-        this.abstractProcessor = abstractProcessor;
+        this.abstractDelegate = abstractDelegate;
         this.executor = executor;
         this.blobStore = blobStore;
     }
@@ -66,7 +67,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             final String itemId = dataRequest.getItemId();
 
             log.info("Starting processing Digital Twin Registry with itemId {}", itemId);
-            final ItemContainer itemContainer = abstractProcessor.process(ItemContainer.builder(), jobData, aasTransferProcess, itemId);
+            final ItemContainer itemContainer = abstractDelegate.process(ItemContainer.builder(), jobData, aasTransferProcess, itemId);
             storeItemContainer(processId, itemContainer);
 
             transferProcessCompleted.accept(aasTransferProcess);

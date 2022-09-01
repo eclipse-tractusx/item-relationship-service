@@ -7,27 +7,30 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.job;
+package net.catenax.irs.aaswrapper.job.delegate;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
+import net.catenax.irs.aaswrapper.job.AASTransferProcess;
+import net.catenax.irs.aaswrapper.job.ItemContainer;
 import net.catenax.irs.dto.JobParameter;
 
 /**
- * Class to process Shells and Submodels and fill a ItemContainer with Relationships, Shells, Tombstones and Submodels.
+ * Class to process Shells and Submodels and fill a ItemContainer with Relationships,
+ * Shells, Tombstones and Submodels.
  */
 @RequiredArgsConstructor
-public abstract class AbstractProcessor {
+public abstract class AbstractDelegate {
 
-    protected final AbstractProcessor nextStep;
+    protected final AbstractDelegate nextStep;
 
     protected final int retryCount = RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts();
 
     /**
-     *
      * @param itemContainerBuilder Collecting data from processors
      * @param jobData The job parameters used for filtering
-     * @param aasTransferProcess The transfer process which will be filled with childIds for further processing
+     * @param aasTransferProcess The transfer process which will be filled with childIds
+     *                           for further processing
      * @param itemId The id of the current item
      * @return The ItemContainer filled with Relationships, Shells, Submodels (if requested in jobData)
      *         and Tombstones (if requests fail).

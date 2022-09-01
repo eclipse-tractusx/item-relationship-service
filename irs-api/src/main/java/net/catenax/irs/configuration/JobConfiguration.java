@@ -16,12 +16,12 @@ import io.micrometer.core.instrument.MeterRegistry;
 import net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.AASTransferProcessManager;
-import net.catenax.irs.aaswrapper.job.BpdmProcessor;
-import net.catenax.irs.aaswrapper.job.DigitalTwinProcessor;
+import net.catenax.irs.aaswrapper.job.delegate.BpdmDelegate;
+import net.catenax.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
 import net.catenax.irs.aaswrapper.job.ItemDataRequest;
 import net.catenax.irs.aaswrapper.job.ItemTreesAssembler;
-import net.catenax.irs.aaswrapper.job.RelationshipProcessor;
-import net.catenax.irs.aaswrapper.job.SubmodelProcessor;
+import net.catenax.irs.aaswrapper.job.delegate.RelationshipDelegate;
+import net.catenax.irs.aaswrapper.job.delegate.SubmodelDelegate;
 import net.catenax.irs.aaswrapper.job.TreeRecursiveLogic;
 import net.catenax.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
@@ -47,7 +47,7 @@ public class JobConfiguration {
 
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
-            final DigitalTwinProcessor digitalTwinProcessor, final BlobPersistence blobStore,
+            final DigitalTwinDelegate digitalTwinProcessor, final BlobPersistence blobStore,
             final JobStore jobStore, final MeterRegistryService meterService) {
 
         final var manager = new AASTransferProcessManager(digitalTwinProcessor, Executors.newCachedThreadPool(), blobStore);
@@ -75,28 +75,28 @@ public class JobConfiguration {
     }
 
     @Bean
-    public DigitalTwinProcessor digitalTwinProcessor(
-            final RelationshipProcessor relationshipProcessor, final DigitalTwinRegistryFacade digitalTwinRegistryFacade) {
-        return new DigitalTwinProcessor(relationshipProcessor, digitalTwinRegistryFacade);
+    public DigitalTwinDelegate digitalTwinProcessor(
+            final RelationshipDelegate relationshipProcessor, final DigitalTwinRegistryFacade digitalTwinRegistryFacade) {
+        return new DigitalTwinDelegate(relationshipProcessor, digitalTwinRegistryFacade);
     }
 
     @Bean
-    public RelationshipProcessor relationshipProcessor(
-            final SubmodelProcessor submodelProcessor, final SubmodelFacade submodelFacade) {
-        return new RelationshipProcessor(submodelProcessor, submodelFacade);
+    public RelationshipDelegate relationshipProcessor(
+            final SubmodelDelegate submodelProcessor, final SubmodelFacade submodelFacade) {
+        return new RelationshipDelegate(submodelProcessor, submodelFacade);
     }
 
     @Bean
-    public SubmodelProcessor submodelProcessor(
-            final BpdmProcessor bpdmProcessor, final SubmodelFacade submodelFacade,
+    public SubmodelDelegate submodelProcessor(
+            final BpdmDelegate bpdmProcessor, final SubmodelFacade submodelFacade,
             final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService) {
-        return new SubmodelProcessor(bpdmProcessor, submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil());
+        return new SubmodelDelegate(bpdmProcessor, submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil());
     }
 
     @Bean
-    public BpdmProcessor bpdmProcessor(
+    public BpdmDelegate bpdmProcessor(
             final BpdmFacade bpdmFacade) {
-        return new BpdmProcessor(bpdmFacade);
+        return new BpdmDelegate(bpdmFacade);
     }
 
 }

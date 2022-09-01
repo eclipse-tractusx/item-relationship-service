@@ -7,11 +7,13 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.job;
+package net.catenax.irs.aaswrapper.job.delegate;
 
 import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.aaswrapper.job.AASTransferProcess;
+import net.catenax.irs.aaswrapper.job.ItemContainer;
 import net.catenax.irs.bpdm.BpdmFacade;
 import net.catenax.irs.component.Bpn;
 import net.catenax.irs.component.Tombstone;
@@ -20,14 +22,15 @@ import net.catenax.irs.dto.JobParameter;
 import org.springframework.web.client.RestClientException;
 
 /**
- * Builds bpns array from AAShell
+ * Builds bpns array for AAShell from previous step.
+ * To build bpns Business Partner service is called.
  */
 @Slf4j
-public class BpdmProcessor extends AbstractProcessor {
+public class BpdmDelegate extends AbstractDelegate {
 
     private final BpdmFacade bpdmFacade;
 
-    public BpdmProcessor(final BpdmFacade bpdmFacade) {
+    public BpdmDelegate(final BpdmFacade bpdmFacade) {
         super(null); // no next step
         this.bpdmFacade = bpdmFacade;
     }

@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
 import net.catenax.irs.InMemoryBlobStore;
+import net.catenax.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
 import net.catenax.irs.connector.job.ResponseStatus;
 import net.catenax.irs.connector.job.TransferInitiateResponse;
 import net.catenax.irs.util.TestMother;
@@ -23,7 +24,7 @@ class AASTransferProcessManagerTest {
 
     private final TestMother generate = new TestMother();
 
-    DigitalTwinProcessor digitalTwinProcessor = mock(DigitalTwinProcessor.class);
+    DigitalTwinDelegate digitalTwinProcessor = mock(DigitalTwinDelegate.class);
     ExecutorService pool = mock(ExecutorService.class);
 
     final AASTransferProcessManager manager = new AASTransferProcessManager(digitalTwinProcessor, pool, new InMemoryBlobStore());

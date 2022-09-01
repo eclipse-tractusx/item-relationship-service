@@ -7,31 +7,33 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.job;
+package net.catenax.irs.aaswrapper.job.delegate;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.aaswrapper.job.AASTransferProcess;
+import net.catenax.irs.aaswrapper.job.ItemContainer;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.component.GlobalAssetIdentification;
 import net.catenax.irs.component.LinkedItem;
 import net.catenax.irs.component.Relationship;
 import net.catenax.irs.component.Tombstone;
-import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import net.catenax.irs.dto.JobParameter;
 import net.catenax.irs.exceptions.JsonParseException;
 import org.springframework.web.client.RestClientException;
 
 /**
- * Builds relationship array from AAShell
+ * Builds relationship array for AAShell from previous step.
+ * To build relationships AssemblyPartRelationship submodels are being retrieved from EDC.
  */
 @Slf4j
-public class RelationshipProcessor extends AbstractProcessor {
+public class RelationshipDelegate extends AbstractDelegate {
 
     private final SubmodelFacade submodelFacade;
 
-    public RelationshipProcessor(final AbstractProcessor nextStep,
+    public RelationshipDelegate(final AbstractDelegate nextStep,
             final SubmodelFacade submodelFacade) {
         super(nextStep);
         this.submodelFacade = submodelFacade;

@@ -7,7 +7,7 @@
 // See the LICENSE file(s) distributed with this work for
 // additional information regarding license terms.
 //
-package net.catenax.irs.aaswrapper.job;
+package net.catenax.irs.aaswrapper.job.delegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +15,11 @@ import java.util.Map;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
+import net.catenax.irs.aaswrapper.job.AASTransferProcess;
+import net.catenax.irs.aaswrapper.job.ItemContainer;
 import net.catenax.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import net.catenax.irs.component.Submodel;
 import net.catenax.irs.component.Tombstone;
-import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import net.catenax.irs.component.assetadministrationshell.Endpoint;
 import net.catenax.irs.component.assetadministrationshell.SubmodelDescriptor;
 import net.catenax.irs.dto.JobParameter;
@@ -31,17 +32,19 @@ import net.catenax.irs.util.JsonUtil;
 import org.springframework.web.client.RestClientException;
 
 /**
- * Builds submodels array from AAShell (and some filtering - move?)
+ * Builds submodels array for AAShell from previous step.
+ * All submodels are being retrieved from EDC.
+ * Additionally submodel descriptors from shell are being filtered to requested aspect types.
  */
 @Slf4j
-public class SubmodelProcessor extends AbstractProcessor {
+public class SubmodelDelegate extends AbstractDelegate {
 
     private final SubmodelFacade submodelFacade;
     private final SemanticsHubFacade semanticsHubFacade;
     private final JsonValidatorService jsonValidatorService;
     private final JsonUtil jsonUtil;
 
-    public SubmodelProcessor(final AbstractProcessor nextStep,
+    public SubmodelDelegate(final AbstractDelegate nextStep,
             final SubmodelFacade submodelFacade,
             final SemanticsHubFacade semanticsHubFacade,
             final JsonValidatorService jsonValidatorService,
@@ -80,7 +83,8 @@ public class SubmodelProcessor extends AbstractProcessor {
                     log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
                     itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount));
                 }
-        });
+            }
+        );
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
     }
