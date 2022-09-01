@@ -12,7 +12,7 @@
             <AppenderRef ref="Console"/>
         </Root>
 
-        <Logger name="net.catenax.irs" level="debug"/>
+        <Logger name="org.eclipse.tractusx.irs" level="debug"/>
         <Logger name="org.springframework.boot.actuate.endpoint.jmx" level="warn"/>
         <Logger name="org.springframework.web" level="info"/>
         <Logger name="org.springframework.web.client.RestTemplate" level="debug"/>

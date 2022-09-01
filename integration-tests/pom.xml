@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.catenax.irs</groupId>
+        <groupId>org.eclipse.tractusx.irs</groupId>
         <artifactId>irs-parent-spring-boot</artifactId>
         <version>${revision}</version>
         <relativePath>../irs-parent-spring-boot</relativePath>
@@ -21,7 +21,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.catenax.irs</groupId>
+            <groupId>org.eclipse.tractusx.irs</groupId>
             <artifactId>irs-models</artifactId>
             <version>${revision}</version>
         </dependency>
