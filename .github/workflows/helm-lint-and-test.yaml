@@ -1,5 +1,6 @@
 name: Lint and Test Charts
 
+# Run chart linting and tests on each pull request
 on: pull_request
 
 jobs:
@@ -16,6 +17,7 @@ jobs:
         with:
           version: v3.9.3
 
+      # Setup python as a prerequisite for chart linting
       - uses: actions/setup-python@v2
         with:
           python-version: 3.7
@@ -31,12 +33,26 @@ jobs:
             echo "::set-output name=changed::true"
           fi
 
+      # run chart linting
       - name: Run chart-testing (lint)
-        run: ct lint --target-branch ${{ github.event.repository.default_branch }} --config charts/chart-testing-config.yaml
+        run: ct lint --target-branch ${{ github.event.repository.default_branch }} --config ci/chart-testing-config.yaml
 
+      # Preparing a kind cluster to install and test charts on
       - name: Create kind cluster
         uses: helm/kind-action@v1.2.0
         if: steps.list-changed.outputs.changed == 'true'
 
+      # install the chart to the kind cluster and run helm test
+      # define charts to test with the --charts parameter
       - name: Run chart-testing (install)
-        run: ct install --charts charts/k8s-helm-example --config charts/chart-testing-config.yaml
+        run: | 
+          ct install \
+          --charts charts/core/irs \
+          --charts charts/core/minio \
+          --charts charts/core/aaswrapper \
+          --charts charts/additional/edc-controlplane \
+          --charts charts/additional/edc-dataplane \
+          --charts charts/additional/edc-postgresql \
+          --charts charts/additional/grafana \
+          --charts charts/additional/prometheus \
+          --config ci/chart-testing-config.yaml
