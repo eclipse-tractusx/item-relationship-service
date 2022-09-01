@@ -45,6 +45,8 @@ jobs:
           # GITHUB_TOKEN enables this github action to access github API and post comments in a pull request
           # token: ${{ secrets.GITHUB_TOKEN }}
           # enable_comments: true
+          # Exclude accepted results from the build
+          #exclude-results: "exclude results by providing a list of similarity IDs of a result"
 
       # Upload findings to GitHub Advanced Security Dashboard
       - name: Upload SARIF file for GitHub Advanced Security Dashboard
@@ -53,3 +55,8 @@ jobs:
         with:
           sarif_file: kicsResults/results.sarif
           
+      - name: Archive results
+        uses: actions/upload-artifact@v3
+        with:
+          name: kicsResults.json
+          path: kicsResults/results.json
