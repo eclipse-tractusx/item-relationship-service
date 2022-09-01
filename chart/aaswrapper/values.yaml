@@ -7,10 +7,10 @@ replicaCount: 1
 namespace: product-traceability-irs
 
 image:
-  repository: ghcr.io/catenax-ng/catenax-at-home/api-wrapper
+  repository: ghcr.io/catenax-ng/catenax-at-home/consumer-api-wrapper
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.0.1"
+  tag: "0.0.5"
 
 imagePullSecrets: []
 
@@ -53,10 +53,10 @@ serviceCallback:
 
 resources:
   limits:
-    cpu: 1.5
-    memory: 1.5Gi
+    cpu: 600m
+    memory: 1Gi
   requests:
-    cpu: 500m
+    cpu: 300m
     memory: 512Mi
 
 autoscaling:
@@ -113,3 +113,4 @@ configuration:
     wrapper.consumer.edc.apikey.name=X-Api-Key
     wrapper.consumer.edc.apikey.value=123456
     wrapper.callback.timeout=60
+    # wrapper.auth.basic.someuser=somepassword

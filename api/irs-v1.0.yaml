@@ -45,15 +45,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/JobStatusResult'
           description: List of job ids and status for requested job states.
-        "404":
-          content:
-            application/json:
-              examples:
-                complete:
-                  $ref: '#/components/examples/error-response'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: No jobIds found for requested job states.
       security:
         - OAuth2:
             - read
@@ -83,8 +74,8 @@ paths:
           content:
             application/json:
               examples:
-                complete:
-                  $ref: '#/components/examples/error-response'
+                error:
+                  $ref: '#/components/examples/error-response-400'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job registration failed.
@@ -141,8 +132,8 @@ paths:
           content:
             application/json:
               examples:
-                complete:
-                  $ref: '#/components/examples/error-response'
+                error:
+                  $ref: '#/components/examples/error-response-404'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job with the requested jobId not found.
@@ -177,8 +168,8 @@ paths:
           content:
             application/json:
               examples:
-                complete:
-                  $ref: '#/components/examples/error-response'
+                error:
+                  $ref: '#/components/examples/error-response-404'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job for requested jobId not found.
@@ -332,13 +323,18 @@ components:
               errorDetail: Details to reason of Failure
               lastAttempt: 2022-02-03T14:48:54.709Z
               retryCounter: 0
-    error-response:
+    error-response-400:
       value:
         errors:
-          - TimeoutException
-          - ParsingException
-        message: Some errors occurred
-        statusCode: 500 INTERNAL_SERVER_ERROR
+          - BadRequestException
+        message: Bad request
+        statusCode: 400 BAD_REQUEST
+    error-response-404:
+      value:
+        errors:
+          - NotFoundException
+        message: Not found
+        statusCode: 404 NOT_FOUND
     failed-job-result:
       value:
         bpns: []
@@ -758,6 +754,7 @@ components:
           enum:
             - SerialPartTypization
             - AssemblyPartRelationship
+            - Batch
             - ProductDescription
             - IdConversion
             - MarketplaceOffer
@@ -929,6 +926,7 @@ components:
             enum:
               - SerialPartTypization
               - AssemblyPartRelationship
+              - Batch
               - ProductDescription
               - IdConversion
               - MarketplaceOffer

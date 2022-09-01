@@ -112,7 +112,6 @@ spec:
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
             successThreshold: {{ .Values.readinessProbe.successThreshold }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
-
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:

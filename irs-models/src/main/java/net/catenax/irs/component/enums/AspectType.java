@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 public enum AspectType {
     SERIAL_PART_TYPIZATION(AspectTypesConstants.SERIAL_PART_TYPIZATION),
     ASSEMBLY_PART_RELATIONSHIP(AspectTypesConstants.ASSEMBLY_PART_RELATIONSHIP),
+    BATCH(AspectTypesConstants.BATCH),
     PRODUCT_DESCRIPTION(AspectTypesConstants.PRODUCT_DESCRIPTION),
     ID_CONVERSION(AspectTypesConstants.ID_CONVERSION),
     MARKETPLACE_OFFER(AspectTypesConstants.MARKETPLACE_OFFER),
@@ -44,16 +45,16 @@ public enum AspectType {
     BATTERY_PASS(AspectTypesConstants.BATTERY_PASS),
     VEHICLE_DIAGNOSTIC_DATA_QUALITY(AspectTypesConstants.VEHICLE_DIAGNOSTIC_DATA_QUALITY);
 
-    private final String value;
+    private final String name;
 
-    AspectType(final String value) {
-        this.value = value;
+    AspectType(final String name) {
+        this.name = name;
     }
 
     /**
      * of as a substitute/alias for valueOf handling the default value
      *
-     * @param value see {@link #value}
+     * @param value see {@link #name}
      * @return the corresponding AspectType
      */
     public static AspectType value(final String value) {
@@ -63,14 +64,14 @@ public enum AspectType {
     @JsonCreator
     public static AspectType fromValue(final String value) {
         return Stream.of(AspectType.values())
-                     .filter(aspectType -> aspectType.value.equals(value))
+                     .filter(aspectType -> aspectType.name.equals(value))
                      .findFirst()
                      .orElseThrow(() -> new NoSuchElementException("Unsupported AspectType: " + value
                              + ". Must be one of: " + supportedAspectTypes()));
     }
 
     private static String supportedAspectTypes() {
-        return Stream.of(AspectType.values()).map(aspect -> aspect.value).collect(Collectors.joining(", "));
+        return Stream.of(AspectType.values()).map(aspect -> aspect.name).collect(Collectors.joining(", "));
     }
 
     /**
@@ -78,7 +79,7 @@ public enum AspectType {
      */
     @Override
     public String toString() {
-        return value;
+        return name;
     }
 
     /**
@@ -88,6 +89,7 @@ public enum AspectType {
     public static final class AspectTypesConstants {
         public static final String SERIAL_PART_TYPIZATION = "SerialPartTypization";
         public static final String ASSEMBLY_PART_RELATIONSHIP = "AssemblyPartRelationship";
+        public static final String BATCH = "Batch";
         public static final String PRODUCT_DESCRIPTION = "ProductDescription";
         public static final String ID_CONVERSION = "IdConversion";
         public static final String MARKETPLACE_OFFER = "MarketplaceOffer";

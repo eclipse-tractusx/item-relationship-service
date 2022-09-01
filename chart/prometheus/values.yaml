@@ -73,10 +73,10 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: 1.5
+    cpu: 0.75
     memory: 1.5Gi
   requests:
-    cpu: 500m
+    cpu: 250m
     memory: 512Mi
 
 autoscaling:

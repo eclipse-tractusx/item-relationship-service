@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "d653f5d4-fc84-40ac-9376-0b067ac9ad0a",
+		"_postman_id": "4a0223c9-c855-48e4-b754-775035ec88a6",
 		"name": "IRS DEMO Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -382,7 +382,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:6c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b\"\r\n, \"collectAspects\": true}"
+							"raw": "{\r\n  \"globalAssetId\": \"urn:uuid:6c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b\", \r\n  \"collectAspects\": true\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -426,7 +426,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\",\r\n  \"bomLifecycle\": \"asBuilt\",\r\n  \"depth\": 2\r\n, \"collectAspects\": true}"
+							"raw": "{\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\",\r\n  \"bomLifecycle\": \"asBuilt\",\r\n  \"depth\": 2,\r\n  \"collectAspects\": true\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -470,7 +470,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n, \"collectAspects\": true}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -514,7 +514,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\",\r\n    \"AssemblyPartRelationship\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n, \"collectAspects\": true}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\",\r\n    \"AssemblyPartRelationship\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -558,7 +558,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n, \"collectAspects\": true}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -602,7 +602,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"Address\",\r\n    \"Contact\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n, \"collectAspects\": true}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"Address\",\r\n    \"Contact\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -646,7 +646,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n, \"collectAspects\": true}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -690,7 +690,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [ \"SerialPartTypization\", \"AssemblyPartRelationship\", \"PartDimension\", \"SupplyRelationData\", \"PCFCoreData\", \"PCFTechnicalData\", \"MarketPlaceOffer\", \"MaterialAspect\", \"BatteryPass\", \"ProductDescriptionVehicle\", \"ProductDescriptionBattery\", \"ReturnRequest\", \"CertificateOfDestruction\", \"CertificateOfDismantler\", \"Address\", \"Contact\" ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n, \"collectAspects\": true}"
+							"raw": "{\r\n  \"aspects\": [ \"SerialPartTypization\", \"AssemblyPartRelationship\", \"PartDimension\", \"SupplyRelationData\", \"PCFCoreData\", \"PCFTechnicalData\", \"MarketPlaceOffer\", \"MaterialAspect\", \"BatteryPass\", \"ProductDescriptionVehicle\", \"ProductDescriptionBattery\", \"ReturnRequest\", \"CertificateOfDestruction\", \"CertificateOfDismantler\", \"Address\", \"Contact\" ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -734,7 +734,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"PartSerialTypization\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n, \"collectAspects\": true}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"PartSerialTypization\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -778,7 +778,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n, \"collectAspects\": true}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -822,7 +822,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"aspects\": [\n    \"SerialPartTypization\",\n    \"AssemblyPartRelationship\",\n    \"ProductDescription\",\n    \"IdConversion\",\n    \"MarketplaceOffer\",\n    \"MaterialForRecycling\",\n    \"PhysicalDimension\",\n    \"ReturnRequest\",\n    \"CertificateOfDestruction\",\n    \"CertificateOfDismantler\",\n    \"EndOfLife\",\n    \"PcfCore\",\n    \"PcfSupplyRelation\",\n    \"PcfTechnical\",\n    \"AddressAspect\",\n    \"ContactInformation\",\n    \"BatteryPass\",\n    \"VehicleDiagnosticDataQuality\"\n  ],\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\n, \"collectAspects\": true}"
+							"raw": "{\n  \"aspects\": [\n    \"SerialPartTypization\",\n    \"AssemblyPartRelationship\",\n    \"ProductDescription\",\n    \"IdConversion\",\n    \"MarketplaceOffer\",\n    \"MaterialForRecycling\",\n    \"PhysicalDimension\",\n    \"ReturnRequest\",\n    \"CertificateOfDestruction\",\n    \"CertificateOfDismantler\",\n    \"EndOfLife\",\n    \"PcfCore\",\n    \"PcfSupplyRelation\",\n    \"PcfTechnical\",\n    \"AddressAspect\",\n    \"ContactInformation\",\n    \"BatteryPass\",\n    \"VehicleDiagnosticDataQuality\",\n    \"Batch\"\n  ],\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \n  \"collectAspects\": true\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -1823,6 +1823,54 @@
 								"models",
 								"urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization",
 								"json-schema"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Business partner data management",
+			"item": [
+				{
+					"name": "Get business partner by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://catenax-bpdm-int.demo.catena-x.net/v2/api/catena/business-partner/:bpn?idType=BPN",
+							"protocol": "https",
+							"host": [
+								"catenax-bpdm-int",
+								"demo",
+								"catena-x",
+								"net"
+							],
+							"path": [
+								"v2",
+								"api",
+								"catena",
+								"business-partner",
+								":bpn"
+							],
+							"query": [
+								{
+									"key": "idType",
+									"value": "BPN"
+								}
+							],
+							"variable": [
+								{
+									"key": "bpn",
+									"value": "BPNL00000003AYRE"
+								}
 							]
 						}
 					},

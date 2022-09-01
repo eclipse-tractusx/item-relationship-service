@@ -1,9 +1,6 @@
 # INT values for aas wrapper.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-image:
-  repository: ghcr.io/catenax-ng/catenax-at-home/consumer-api-wrapper
-  tag: "0.0.4"
 
 ingress:
   enabled: true
@@ -34,8 +31,9 @@ configuration:
     web.http.path=/api
     web.http.callback.port=9192
     web.http.callback.path=/callback
-    # wrapper.auth.basic.someuser=somepassword
     wrapper.consumer.edc.datamanagement.url=http://edc-consumer-controlplane-pen:8181/data
     wrapper.consumer.edc.control.url=http://edc-consumer-controlplane-pen:9999/api/controlplane/control
     wrapper.consumer.edc.apikey.name=X-Api-Key
     wrapper.consumer.edc.apikey.value=123456
+    wrapper.callback.timeout=60
+    # wrapper.auth.basic.someuser=somepassword

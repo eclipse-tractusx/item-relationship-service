@@ -51,7 +51,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @Slf4j
 @SuppressWarnings({ "PMD.ExcessiveImports",
-                    "PMD.PreserveStackTrace"
+                    "PMD.PreserveStackTrace",
+                    "PMD.TooManyMethods"
 })
 public class MinioBlobPersistence implements BlobPersistence {
 
@@ -69,19 +70,26 @@ public class MinioBlobPersistence implements BlobPersistence {
         this.minioClient = client;
 
         try {
-            if (!this.bucketExists(bucketName)) {
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-            }
-
-            setExpirationLifecycle(bucketName);
+            createBucketIfNotExists(bucketName);
         } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
             throw new BlobPersistenceException("Encountered error while trying to create min.io client", e);
+        }
+    }
+
+    public final void createBucketIfNotExists(final String bucketName)
+            throws ErrorResponseException, InsufficientDataException, InternalException, InvalidKeyException,
+            InvalidResponseException, IOException, NoSuchAlgorithmException, ServerException, XmlParserException {
+
+        if (!this.bucketExists(bucketName)) {
+            this.minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+            this.setExpirationLifecycle(bucketName);
         }
     }
 
     public final boolean bucketExists(final String bucketName)
             throws ErrorResponseException, InsufficientDataException, InternalException, InvalidKeyException,
             InvalidResponseException, IOException, NoSuchAlgorithmException, ServerException, XmlParserException {
+
         return minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
     }
 
@@ -94,6 +102,7 @@ public class MinioBlobPersistence implements BlobPersistence {
     private void setExpirationLifecycle(final String bucketName)
             throws ErrorResponseException, InsufficientDataException, InternalException, InvalidKeyException,
             InvalidResponseException, IOException, NoSuchAlgorithmException, ServerException, XmlParserException {
+
         final Expiration expiration = new Expiration((ResponseDate) null, EXPIRE_AFTER_DAYS, null);
         final LifecycleRule rule = createExpirationRule(expiration);
         final LifecycleConfiguration lifecycleConfig = new LifecycleConfiguration(List.of(rule));
