@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import net.catenax.irs.dto.JobParameter;
 
 /**
- *
+ * Class to process Shells and Submodels and fill a ItemContainer with Relationships, Shells, Tombstones and Submodels.
  */
 @RequiredArgsConstructor
 public abstract class AbstractProcessor {
@@ -23,6 +23,15 @@ public abstract class AbstractProcessor {
 
     protected final int retryCount = RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts();
 
+    /**
+     *
+     * @param itemContainerBuilder Collecting data from processors
+     * @param jobData The job parameters used for filtering
+     * @param aasTransferProcess The transfer process which will be filled with childIds for further processing
+     * @param itemId The id of the current item
+     * @return The ItemContainer filled with Relationships, Shells, Submodels (if requested in jobData)
+     *         and Tombstones (if requests fail).
+     */
     public abstract ItemContainer process(ItemContainer.ItemContainerBuilder itemContainerBuilder, JobParameter jobData,
             AASTransferProcess aasTransferProcess, String itemId);
 

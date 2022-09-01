@@ -13,7 +13,6 @@ import java.util.concurrent.Executors;
 
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
-import net.catenax.irs.aaswrapper.job.AASHandler;
 import net.catenax.irs.aaswrapper.job.AASRecursiveJobHandler;
 import net.catenax.irs.aaswrapper.job.AASTransferProcess;
 import net.catenax.irs.aaswrapper.job.AASTransferProcessManager;
@@ -48,13 +47,10 @@ public class JobConfiguration {
 
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
-            final DigitalTwinRegistryFacade registryFacade, final SubmodelFacade submodelFacade,
-            final SemanticsHubFacade semanticsHubFacade, final BpdmFacade bpdmFacade,
-            final JsonValidatorService jsonValidatorService, final BlobPersistence blobStore,
+            final DigitalTwinProcessor digitalTwinProcessor, final BlobPersistence blobStore,
             final JobStore jobStore, final MeterRegistryService meterService) {
 
-        final var aasHandler = new AASHandler(registryFacade, submodelFacade, semanticsHubFacade, bpdmFacade, jsonValidatorService, jsonUtil());
-        final var manager = new AASTransferProcessManager(aasHandler, Executors.newCachedThreadPool(), blobStore);
+        final var manager = new AASTransferProcessManager(digitalTwinProcessor, Executors.newCachedThreadPool(), blobStore);
         final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);
 

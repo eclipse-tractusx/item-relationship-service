@@ -57,38 +57,32 @@ public class SubmodelProcessor extends AbstractProcessor {
     public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder, final JobParameter jobData,
             final AASTransferProcess aasTransferProcess, final String itemId) {
 
-        try {
-            final AssetAdministrationShellDescriptor aasShell = itemContainerBuilder.build().getShells().get(0);
-            final List<SubmodelDescriptor> aasSubmodelDescriptors = aasShell.getSubmodelDescriptors();
+        itemContainerBuilder.build().getShells().stream().findFirst().ifPresent(
+            shell -> {
+                try {
+                    final List<SubmodelDescriptor> aasSubmodelDescriptors = shell.getSubmodelDescriptors();
+                    log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
 
-            log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
+                    final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.filterDescriptorsByAspectTypes(
+                            jobData.getAspectTypes());
 
-            final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = aasShell.filterDescriptorsByAspectTypes(
-                    jobData.getAspectTypes());
+                    if (jobData.isCollectAspects()) {
+                        log.info("Collecting Submodels.");
+                        filteredSubmodelDescriptorsByAspectType.forEach(submodelDescriptor -> itemContainerBuilder.submodels(
+                                getSubmodels(submodelDescriptor, itemContainerBuilder, itemId)));
+                    }
+                    log.debug("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
+                    log.debug("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
 
-            if (jobData.isCollectAspects()) {
-                log.info("Collecting Submodels.");
-                collectSubmodels(filteredSubmodelDescriptorsByAspectType, itemContainerBuilder, itemId);
-            }
-            log.debug("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
-            log.debug("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
+                    shell.setSubmodelDescriptors(filteredSubmodelDescriptorsByAspectType);
 
-            itemContainerBuilder.shell(
-                    aasShell.toBuilder().submodelDescriptors(filteredSubmodelDescriptorsByAspectType).build());
-
-        } catch (RestClientException e) {
-            log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount));
-        }
+                } catch (RestClientException e) {
+                    log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
+                    itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount));
+                }
+        });
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
-    }
-
-    private void collectSubmodels(final List<SubmodelDescriptor> submodelDescriptors,
-        final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId) {
-
-        submodelDescriptors.forEach(submodelDescriptor -> itemContainerBuilder.submodels(
-                getSubmodels(submodelDescriptor, itemContainerBuilder, itemId)));
     }
 
     private List<Submodel> getSubmodels(final SubmodelDescriptor submodelDescriptor,

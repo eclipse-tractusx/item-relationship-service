@@ -25,7 +25,6 @@ import net.catenax.irs.util.JsonUtil;
 
 /**
  * Process manager for AAS Object transfers.
- * Communicates with the AAS Wrapper.
  */
 @Slf4j
 @SuppressWarnings("PMD.DoNotUseThreads") // We want to use threads at the moment ;-)
@@ -35,11 +34,11 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     private final BlobPersistence blobStore;
 
-    private final AASHandler aasHandler;
+    private final AbstractProcessor abstractProcessor;
 
-    public AASTransferProcessManager(final AASHandler aasHandler, final ExecutorService executor,
+    public AASTransferProcessManager(final AbstractProcessor abstractProcessor, final ExecutorService executor,
             final BlobPersistence blobStore) {
-        this.aasHandler = aasHandler;
+        this.abstractProcessor = abstractProcessor;
         this.executor = executor;
         this.blobStore = blobStore;
     }
@@ -67,8 +66,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             final String itemId = dataRequest.getItemId();
 
             log.info("Starting processing Digital Twin Registry with itemId {}", itemId);
-            final ItemContainer itemContainer = aasHandler.collectShellAndSubmodels(jobData, aasTransferProcess,
-                    itemId);
+            final ItemContainer itemContainer = abstractProcessor.process(ItemContainer.builder(), jobData, aasTransferProcess, itemId);
             storeItemContainer(processId, itemContainer);
 
             transferProcessCompleted.accept(aasTransferProcess);

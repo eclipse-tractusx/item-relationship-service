@@ -37,15 +37,17 @@ public class BpdmProcessor extends AbstractProcessor {
             final AASTransferProcess aasTransferProcess, final String itemId) {
 
         try {
-            final AssetAdministrationShellDescriptor aasShell = itemContainerBuilder.build().getShells().get(0);
-
-            aasShell.findManufacturerId().ifPresent(manufacturerId -> {
-                final Optional<String> manufacturerName = bpdmFacade.findManufacturerName(manufacturerId);
-                manufacturerName.ifPresent(name -> itemContainerBuilder.bpn(Bpn.of(manufacturerId, name)));
-            });
-
+            itemContainerBuilder.build()
+                .getShells()
+                .stream()
+                .findFirst()
+                .flatMap(AssetAdministrationShellDescriptor::findManufacturerId)
+                .ifPresent(manufacturerId -> {
+                    final Optional<String> manufacturerName = bpdmFacade.findManufacturerName(manufacturerId);
+                    manufacturerName.ifPresent(name -> itemContainerBuilder.bpn(Bpn.of(manufacturerId, name)));
+                });
         } catch (RestClientException e) {
-            log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
+            log.info("Business Partner endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
             itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount));
         }
 

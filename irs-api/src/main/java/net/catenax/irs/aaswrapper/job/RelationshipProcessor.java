@@ -41,20 +41,21 @@ public class RelationshipProcessor extends AbstractProcessor {
     public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder, final JobParameter jobData,
             final AASTransferProcess aasTransferProcess, final String itemId) {
 
-        final AssetAdministrationShellDescriptor aasShell = itemContainerBuilder.build().getShells().get(0);
-
-        aasShell.findAssemblyPartRelationshipEndpointAddresses().forEach(address -> {
-            try {
-                final List<Relationship> relationships = submodelFacade.getRelationships(address, jobData);
-                processEndpoint(aasTransferProcess, itemContainerBuilder, relationships);
-            } catch (RestClientException | IllegalArgumentException e) {
-                log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.", address);
-                itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount));
-            } catch (JsonParseException e) {
-                log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
-                itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount));
-            }
-        });
+        itemContainerBuilder.build().getShells().stream().findFirst().ifPresent(
+            shell -> shell.findAssemblyPartRelationshipEndpointAddresses().forEach(address -> {
+                try {
+                    final List<Relationship> relationships = submodelFacade.getRelationships(address, jobData);
+                    processEndpoint(aasTransferProcess, itemContainerBuilder, relationships);
+                } catch (RestClientException | IllegalArgumentException e) {
+                    log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
+                            address);
+                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount));
+                } catch (JsonParseException e) {
+                    log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
+                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount));
+                }
+            })
+        );
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
     }
