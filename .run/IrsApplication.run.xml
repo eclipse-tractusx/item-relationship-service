@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="IrsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="irs-api" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="net.catenax.irs.IrsApplication" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="org.eclipse.tractusx.irs.IrsApplication" />
     <option name="ACTIVE_PROFILES" value="local" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">
