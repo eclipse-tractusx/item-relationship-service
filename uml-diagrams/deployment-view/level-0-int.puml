@@ -7,7 +7,7 @@ skinparam ranksep 20
 cloud "Digital Twin Registry" as dtr
 cloud "EDC Providers" as providers
 cloud Keycloak
-cloud "Azure Vault" as azure
+cloud "HashiCorp Vault" as vault
 
 node "IRS Kubernetes Cluster" as k8s {
 
@@ -15,16 +15,18 @@ node "IRS Kubernetes Cluster" as k8s {
     component Minio
     component "AAS Wrapper" as aasw
     component "EDC Consumer" as consumer
+    database "Consumer DB" as cdb
 
     IRS --> Minio
     IRS --> aasw
     aasw -- consumer
+    cdb - consumer
 
 }
 
 IRS -> Keycloak
 IRS --> dtr
 consumer --> providers
-consumer -- azure
+consumer -- vault
 
 @enduml
