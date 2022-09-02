@@ -47,7 +47,12 @@ public class RelationshipDelegate extends AbstractDelegate {
             shell -> shell.findAssemblyPartRelationshipEndpointAddresses().forEach(address -> {
                 try {
                     final List<Relationship> relationships = submodelFacade.getRelationships(address, jobData);
-                    processEndpoint(aasTransferProcess, itemContainerBuilder, relationships);
+                    final List<String> childIds = getChildIds(relationships);
+
+                    log.info("Processing Relationships with {} children", childIds.size());
+
+                    aasTransferProcess.addIdsToProcess(childIds);
+                    itemContainerBuilder.relationships(relationships);
                 } catch (RestClientException | IllegalArgumentException e) {
                     log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                             address);
@@ -62,16 +67,11 @@ public class RelationshipDelegate extends AbstractDelegate {
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
     }
 
-    private void processEndpoint(final AASTransferProcess aasTransferProcess,
-            final ItemContainer.ItemContainerBuilder itemContainer, final List<Relationship> relationships) {
-        final List<String> childIds = relationships.stream()
-                                                   .map(Relationship::getLinkedItem)
-                                                   .map(LinkedItem::getChildCatenaXId)
-                                                   .map(GlobalAssetIdentification::getGlobalAssetId)
-                                                   .collect(Collectors.toList());
-        log.info("Processing Relationships with {} children", childIds.size());
-
-        aasTransferProcess.addIdsToProcess(childIds);
-        itemContainer.relationships(relationships);
+    private List<String> getChildIds(final List<Relationship> relationships) {
+        return relationships.stream()
+                           .map(Relationship::getLinkedItem)
+                           .map(LinkedItem::getChildCatenaXId)
+                           .map(GlobalAssetIdentification::getGlobalAssetId)
+                           .collect(Collectors.toList());
     }
 }

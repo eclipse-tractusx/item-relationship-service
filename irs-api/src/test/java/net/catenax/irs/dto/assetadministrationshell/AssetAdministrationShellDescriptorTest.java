@@ -9,14 +9,14 @@
 //
 package net.catenax.irs.dto.assetadministrationshell;
 
+import static net.catenax.irs.util.TestMother.shellDescriptor;
+import static net.catenax.irs.util.TestMother.submodelDescriptor;
+import static net.catenax.irs.util.TestMother.submodelDescriptorWithoutEndpoint;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
-import net.catenax.irs.component.assetadministrationshell.Endpoint;
-import net.catenax.irs.component.assetadministrationshell.ProtocolInformation;
-import net.catenax.irs.component.assetadministrationshell.Reference;
 import net.catenax.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.junit.jupiter.api.Test;
 
@@ -30,8 +30,8 @@ class AssetAdministrationShellDescriptorTest {
     @Test
     void shouldFilterByAssemblyPartRelationshipWhenEndingWithAspectName() {
         // Arrange
-        final AssetAdministrationShellDescriptor shellDescriptor = createShellDescriptor(
-                List.of(createSubmodelDescriptorWithoutEndpoint(assemblyPartRelationshipIdWithAspectName)));
+        final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
+                List.of(submodelDescriptorWithoutEndpoint(assemblyPartRelationshipIdWithAspectName)));
         // Act
         final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of()).getSubmodelDescriptors();
 
@@ -43,8 +43,8 @@ class AssetAdministrationShellDescriptorTest {
     @Test
     void shouldFilterByAssemblyPartRelationshipWhenNotEndingWithAspectName() {
         // Arrange
-        final AssetAdministrationShellDescriptor shellDescriptor = createShellDescriptor(
-                List.of(createSubmodelDescriptorWithoutEndpoint(assemblyPartRelationshipId)));
+        final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
+                List.of(submodelDescriptorWithoutEndpoint(assemblyPartRelationshipId)));
         // Act
         final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of()).getSubmodelDescriptors();
 
@@ -56,8 +56,8 @@ class AssetAdministrationShellDescriptorTest {
     @Test
     void shouldFilterByAspectTypeWhenEndingWithAspectName() {
         // Arrange
-        final AssetAdministrationShellDescriptor shellDescriptor = createShellDescriptor(
-                List.of(createSubmodelDescriptorWithoutEndpoint(assemblyPartRelationshipIdWithAspectName)));
+        final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
+                List.of(submodelDescriptorWithoutEndpoint(assemblyPartRelationshipIdWithAspectName)));
         final List<String> aspectTypeFilter = List.of("AssemblyPartRelationship");
 
         // Act
@@ -71,8 +71,8 @@ class AssetAdministrationShellDescriptorTest {
     @Test
     void shouldFilterByAspectTypeWhenNotEndingWithAspectName() {
         // Arrange
-        final AssetAdministrationShellDescriptor shellDescriptor = createShellDescriptor(
-                List.of(createSubmodelDescriptorWithoutEndpoint(serialPartTypizationId)));
+        final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
+                List.of(submodelDescriptorWithoutEndpoint(serialPartTypizationId)));
         final List<String> aspectTypeFilter = List.of("SerialPartTypization");
 
         // Act
@@ -86,9 +86,9 @@ class AssetAdministrationShellDescriptorTest {
     @Test
     void shouldFilterByAspectTypeWhenWithDifferentAspects() {
         // Arrange
-        final AssetAdministrationShellDescriptor shellDescriptor = createShellDescriptor(
-                List.of(createSubmodelDescriptorWithoutEndpoint(serialPartTypizationIdWithAspectName),
-                        createSubmodelDescriptorWithoutEndpoint(assemblyPartRelationshipId)));
+        final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
+                List.of(submodelDescriptorWithoutEndpoint(serialPartTypizationIdWithAspectName),
+                        submodelDescriptorWithoutEndpoint(assemblyPartRelationshipId)));
 
         final List<String> aspectTypeFilter = List.of("SerialPartTypization");
 
@@ -103,10 +103,10 @@ class AssetAdministrationShellDescriptorTest {
     @Test
     void shouldReturnEndpointAddressesForSubmodelDescriptors() {
         // Arrange
-        final AssetAdministrationShellDescriptor shellDescriptor = createShellDescriptor(
-                List.of(createSubmodelDescriptor(serialPartTypizationIdWithAspectName,
+        final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
+                List.of(submodelDescriptor(serialPartTypizationIdWithAspectName,
                                 "testSerialPartTypizationEndpoint"),
-                        createSubmodelDescriptor(assemblyPartRelationshipIdWithAspectName,
+                        submodelDescriptor(assemblyPartRelationshipIdWithAspectName,
                                 "testAssemblyPartRelationshipEndpoint")));
 
         // Act
@@ -117,24 +117,5 @@ class AssetAdministrationShellDescriptorTest {
         assertThat(result.get(0)).isEqualTo("testAssemblyPartRelationshipEndpoint");
     }
 
-    private Endpoint createEndpoint(String endpointAddress) {
-        return Endpoint.builder()
-                       .protocolInformation(ProtocolInformation.builder().endpointAddress(endpointAddress).build())
-                       .build();
-    }
 
-    private SubmodelDescriptor createSubmodelDescriptor(final String semanticId, final String endpointAddress) {
-        final Reference semanticIdSerial = Reference.builder().value(List.of(semanticId)).build();
-        final List<Endpoint> endpointSerial = List.of(createEndpoint(endpointAddress));
-        return SubmodelDescriptor.builder().semanticId(semanticIdSerial).endpoints(endpointSerial).build();
-    }
-
-    private SubmodelDescriptor createSubmodelDescriptorWithoutEndpoint(final String semanticId) {
-        return createSubmodelDescriptor(semanticId, null);
-    }
-
-    private AssetAdministrationShellDescriptor createShellDescriptor(
-            final List<SubmodelDescriptor> submodelDescriptors) {
-        return AssetAdministrationShellDescriptor.builder().submodelDescriptors(submodelDescriptors).build();
-    }
 }
