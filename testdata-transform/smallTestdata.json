@@ -87,6 +87,10 @@
             {
               "value": "KR-09",
               "key": "urn:VR:wt.part.WTPart#"
+            },
+            {
+              "key": "ManufacturerId",
+              "value": "BPNL00000003AYRE"
             }
           ],
           "description": [
@@ -233,6 +237,10 @@
             {
               "value": "1O222E8-43",
               "key": "urn:VR:wt.part.WTPart#"
+            },
+            {
+              "key": "ManufacturerId",
+              "value": "BPNL00000003B2OM"
             }
           ],
           "description": [
@@ -379,6 +387,10 @@
             {
               "value": "01697F7-65",
               "key": "urn:VR:wt.part.WTPart#"
+            },
+            {
+              "key": "ManufacturerId",
+              "value": "BPNL00000003B0Q0"
             }
           ],
           "description": [
@@ -460,6 +472,10 @@
             {
               "value": "37754B7-76",
               "key": "urn:VR:wt.part.WTPart#"
+            },
+            {
+              "key": "ManufacturerId",
+              "value": "BPNL00000003B3NX"
             }
           ],
           "description": [
@@ -580,6 +596,10 @@
             {
               "value": "98801V5-17",
               "key": "urn:VR:wt.part.WTPart#"
+            },
+            {
+              "key": "ManufacturerId",
+              "value": "BPNL00000003B0Q0"
             }
           ],
           "description": [
@@ -661,6 +681,10 @@
             {
               "value": "31008B0-49",
               "key": "urn:VR:wt.part.WTPart#"
+            },
+            {
+              "key": "ManufacturerId",
+              "value": "BPNL00000003AXS3"
             }
           ],
           "description": [
@@ -767,6 +791,10 @@
             {
               "value": "83238F4-36",
               "key": "urn:VR:wt.part.WTPart#"
+            },
+            {
+              "key": "ManufacturerId",
+              "value": "BPNL00000003B5MJ"
             }
           ],
           "description": [
@@ -913,6 +941,10 @@
             {
               "value": "91471Z0-84",
               "key": "urn:VR:wt.part.WTPart#"
+            },
+            {
+              "key": "ManufacturerId",
+              "value": "BPNL00000003AXS3"
             }
           ],
           "description": [
@@ -994,6 +1026,10 @@
             {
               "value": "65847F9-69",
               "key": "urn:VR:wt.part.WTPart#"
+            },
+            {
+              "key": "ManufacturerId",
+              "value": "BPNL00000003B3NX"
             }
           ],
           "description": [
@@ -1114,6 +1150,10 @@
             {
               "value": "74268H5-13",
               "key": "urn:VR:wt.part.WTPart#"
+            },
+            {
+              "key": "ManufacturerId",
+              "value": "BPNL00000003B0Q0"
             }
           ],
           "description": [
@@ -1195,6 +1235,10 @@
             {
               "value": "55269I8-71",
               "key": "urn:VR:wt.part.WTPart#"
+            },
+            {
+              "key": "ManufacturerId",
+              "value": "BPNL00000003B0Q0"
             }
           ],
           "description": [
@@ -1276,6 +1320,10 @@
             {
               "value": "95657362-83",
               "key": "urn:VR:wt.part.WTPart#"
+            },
+            {
+              "key": "ManufacturerId",
+              "value": "BPNL00000003AYRE"
             }
           ],
           "description": [
@@ -1396,6 +1444,10 @@
             {
               "value": "8840838-04",
               "key": "urn:VR:wt.part.WTPart#"
+            },
+            {
+              "key": "ManufacturerId",
+              "value": "BPNL00000003AYRE"
             }
           ],
           "description": [
@@ -1513,6 +1565,10 @@
             {
               "key": "urn:VR:wt.part.WTPart#",
               "value": "8840838-04"
+            },
+            {
+              "key": "ManufacturerId",
+              "value": "BPNL00000003AYRE"
             }
           ],
           "submodelDescriptors": [
