@@ -21,15 +21,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 
-<<<<<<< HEAD:irs-api/src/test/java/net/catenax/irs/aaswrapper/registry/domain/DigitalTwinRegistryFacadeTest.java
-import static net.catenax.irs.util.TestMother.jobParameter;
-=======
-import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
-import static org.eclipse.tractusx.irs.util.TestMother.jobParameterEmptyFilter;
-import static org.eclipse.tractusx.irs.util.TestMother.jobParameterFilter;
->>>>>>> main:irs-api/src/test/java/org/eclipse/tractusx/irs/aaswrapper/registry/domain/DigitalTwinRegistryFacadeTest.java
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
