@@ -1,3 +1,24 @@
+/********************************************************************************
+ * Copyright (c) 2021,2022
+ *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022: ZF Friedrichshafen AG
+ *       2022: ISTOS GmbH
+ * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Apache License, Version 2.0 which is available at
+ * https://www.apache.org/licenses/LICENSE-2.0. *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ ********************************************************************************/
 package org.eclipse.tractusx.irs.connector.job;
 
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
@@ -113,7 +134,7 @@ class PersistentJobStoreTest {
         sut.addTransferProcess(job.getJobIdString(), processId1);
         refreshJob();
         assertThat(job.getTransferProcessIds()).containsExactly(processId1);
-        Assertions.assertThat(job.getJob().getJobState()).isEqualTo(JobState.RUNNING);
+        assertThat(job.getJob().getJobState()).isEqualTo(JobState.RUNNING);
     }
 
     @Test
@@ -184,7 +205,7 @@ class PersistentJobStoreTest {
 
         // Assert
         refreshJob();
-        Assertions.assertThat(job.getJob().getJobState()).isEqualTo(JobState.RUNNING);
+        assertThat(job.getJob().getJobState()).isEqualTo(JobState.RUNNING);
     }
 
     @Test
@@ -200,7 +221,7 @@ class PersistentJobStoreTest {
 
         // Assert
         refreshJob();
-        Assertions.assertThat(job.getJob().getJobState()).isEqualTo(JobState.TRANSFERS_FINISHED);
+        assertThat(job.getJob().getJobState()).isEqualTo(JobState.TRANSFERS_FINISHED);
     }
 
     @Test
@@ -211,7 +232,7 @@ class PersistentJobStoreTest {
         sut.completeJob(otherJobId, this::doNothing);
         refreshJob();
         // Assert
-        Assertions.assertThat(job.getJob().getJobState()).isEqualTo(JobState.INITIAL);
+        assertThat(job.getJob().getJobState()).isEqualTo(JobState.INITIAL);
     }
 
     @Test
@@ -224,9 +245,9 @@ class PersistentJobStoreTest {
         // Assert
         refreshJob();
         refreshJob2();
-        Assertions.assertThat(job.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
-        Assertions.assertThat(Optional.of(job.getJob().getJobCompleted())).isPresent();
-        Assertions.assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
+        assertThat(job.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
+        assertThat(Optional.of(job.getJob().getJobCompleted())).isPresent();
+        assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
     }
 
     @Test
@@ -239,8 +260,8 @@ class PersistentJobStoreTest {
         sut.completeJob(job.getJobIdString(), this::doNothing);
         // Assert
         refreshJob();
-        Assertions.assertThat(job.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
-        Assertions.assertThat(Optional.of(job.getJob().getJobCompleted())).isPresent();
+        assertThat(job.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
+        assertThat(Optional.of(job.getJob().getJobCompleted())).isPresent();
     }
 
     @Test
@@ -254,7 +275,7 @@ class PersistentJobStoreTest {
 
         // Assert
         refreshJob();
-        Assertions.assertThat(job.getJob().getJobState()).isEqualTo(JobState.RUNNING);
+        assertThat(job.getJob().getJobState()).isEqualTo(JobState.RUNNING);
     }
 
     private void doNothing(final MultiTransferJob multiTransferJob) {
@@ -268,7 +289,7 @@ class PersistentJobStoreTest {
         sut.markJobInError(otherJobId, errorDetail, errorDetail);
         // Assert
         refreshJob();
-        Assertions.assertThat(job.getJob().getJobState()).isEqualTo(JobState.INITIAL);
+        assertThat(job.getJob().getJobState()).isEqualTo(JobState.INITIAL);
     }
 
     @Test
@@ -281,11 +302,11 @@ class PersistentJobStoreTest {
         // Assert
         refreshJob();
         refreshJob2();
-        Assertions.assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
-        Assertions.assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
-        Assertions.assertThat(job.getJob().getException().getErrorDetail()).isEqualTo(errorDetail);
-        Assertions.assertThat(job.getJob().getException().getException()).isEqualTo(errorDetail);
-        Assertions.assertThat(Optional.of(job.getJob().getJobCompleted())).isPresent();
+        assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
+        assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
+        assertThat(job.getJob().getException().getErrorDetail()).isEqualTo(errorDetail);
+        assertThat(job.getJob().getException().getException()).isEqualTo(errorDetail);
+        assertThat(Optional.of(job.getJob().getJobCompleted())).isPresent();
     }
 
     @Test
@@ -298,8 +319,8 @@ class PersistentJobStoreTest {
         sut.markJobInError(job.getJobIdString(), errorDetail, errorDetail);
         // Assert
         refreshJob();
-        Assertions.assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
-        Assertions.assertThat(Optional.of(job.getJob().getJobCompleted())).isPresent();
+        assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
+        assertThat(Optional.of(job.getJob().getJobCompleted())).isPresent();
     }
 
     @Test
@@ -311,8 +332,8 @@ class PersistentJobStoreTest {
         sut.markJobInError(job.getJobIdString(), errorDetail, errorDetail);
         // Assert
         refreshJob();
-        Assertions.assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
-        Assertions.assertThat(Optional.of(job.getJob().getJobCompleted())).isPresent();
+        assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
+        assertThat(Optional.of(job.getJob().getJobCompleted())).isPresent();
     }
 
     @Test
@@ -328,8 +349,8 @@ class PersistentJobStoreTest {
                 nowPlusFiveHours);
         // Assert
         assertThat(completedJobs).hasSize(1);
-        Assertions.assertThat(completedJobs.get(0).getJob().getJobState()).isEqualTo(JobState.COMPLETED);
-        Assertions.assertThat(Optional.of(completedJobs.get(0).getJob().getJobCompleted())).isPresent();
+        assertThat(completedJobs.get(0).getJob().getJobState()).isEqualTo(JobState.COMPLETED);
+        assertThat(Optional.of(completedJobs.get(0).getJob().getJobCompleted())).isPresent();
     }
 
     @Test
@@ -353,8 +374,8 @@ class PersistentJobStoreTest {
                                                                                                        .toString()))
                                                               .findFirst();
         assertThat(foundJob).isPresent();
-        Assertions.assertThat(foundJob.get().getJob().getJobState()).isEqualTo(JobState.ERROR);
-        Assertions.assertThat(Optional.of(foundJob.get().getJob().getJobCompleted())).isPresent();
+        assertThat(foundJob.get().getJob().getJobState()).isEqualTo(JobState.ERROR);
+        assertThat(Optional.of(foundJob.get().getJob().getJobCompleted())).isPresent();
     }
 
     @Test
@@ -481,7 +502,7 @@ class PersistentJobStoreTest {
         sut.addTransferProcess(job.getJobIdString(), processId1);
         final Optional<MultiTransferJob> multiTransferJob = sut.get(job.getJobIdString());
         assertThat(multiTransferJob).isPresent();
-        Assertions.assertThat(multiTransferJob.get().getJob().getJobState()).isEqualTo(JobState.RUNNING);
+        assertThat(multiTransferJob.get().getJob().getJobState()).isEqualTo(JobState.RUNNING);
     }
 
     @Test
@@ -495,7 +516,7 @@ class PersistentJobStoreTest {
         MultiTransferJob job2 = sut.find(job.getJob().getJobId().toString()).get();
 
         // Assert
-        Assertions.assertThat(job2.getJob().getLastModifiedOn()).isAfter(job1.getJob().getLastModifiedOn());
+        assertThat(job2.getJob().getLastModifiedOn()).isAfter(job1.getJob().getLastModifiedOn());
     }
 
     @Test

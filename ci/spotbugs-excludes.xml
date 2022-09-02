@@ -20,35 +20,35 @@
         <Bug pattern="EI_EXPOSE_REP2"/>
     </Match>
     <Match>
-        <Class name="component.org.eclipse.tractusx.irs.Shell$ShellBuilder"/>
+        <Class name="org.eclipse.tractusx.irs.component.Shell$ShellBuilder"/>
         <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
     </Match>
     <Match>
         <!-- CSRF protection turned off on purpose. -->
-        <Class name="configuration.org.eclipse.tractusx.irs.SecurityConfiguration"/>
+        <Class name="org.eclipse.tractusx.irs.configuration.SecurityConfiguration"/>
         <Method name="securityFilterChain"/>
         <Bug pattern="SPRING_CSRF_PROTECTION_DISABLED"/>
     </Match>
     <Match>
         <!-- We want to explicitly throw Exception in this method. -->
-        <Class name="configuration.org.eclipse.tractusx.irs.SecurityConfiguration"/>
+        <Class name="org.eclipse.tractusx.irs.configuration.SecurityConfiguration"/>
         <Method name="securityFilterChain"/>
         <Bug pattern="THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"/>
     </Match>
     <Match>
         <!-- This one is false-positive. -->
-        <Class name="controllers.org.eclipse.tractusx.irs.IrsExceptionHandler"/>
+        <Class name="org.eclipse.tractusx.irs.controllers.IrsExceptionHandler"/>
         <Method name="handleMethodArgumentTypeMismatchException"/>
         <Bug pattern="BC_UNCONFIRMED_CAST_OF_RETURN_VALUE"/>
     </Match>
     <Match>
         <!-- This one is false-positive. -->
-        <Class name="controllers.org.eclipse.tractusx.irs.IrsExceptionHandler"/>
+        <Class name="org.eclipse.tractusx.irs.controllers.IrsExceptionHandler"/>
         <Method name="handleMethodArgumentTypeMismatchException"/>
         <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
     </Match>
     <Match>
-        <Class name="util.org.eclipse.tractusx.irs.JobMetrics$JobMetricsBuilder"/>
+        <Class name="org.eclipse.tractusx.irs.util.JobMetrics$JobMetricsBuilder"/>
         <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
     </Match>
 </FindBugsFilter>

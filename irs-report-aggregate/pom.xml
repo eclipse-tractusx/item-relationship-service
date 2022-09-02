@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.catenax.irs</groupId>
+        <groupId>org.eclipse.tractusx.irs</groupId>
         <artifactId>item-relationship-service-root</artifactId>
         <version>${revision}</version>
     </parent>

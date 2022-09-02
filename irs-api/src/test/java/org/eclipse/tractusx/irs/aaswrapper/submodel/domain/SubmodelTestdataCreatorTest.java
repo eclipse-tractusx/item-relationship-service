@@ -1,13 +1,24 @@
-/*
- * Copyright (c) 2022. Copyright Holder (Catena-X Consortium)
+/********************************************************************************
+ * Copyright (c) 2021,2022
+ *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022: ZF Friedrichshafen AG
+ *       2022: ISTOS GmbH
+ * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
  *
- * See the AUTHORS file(s) distributed with this work for additional
- * information regarding authorship.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * See the LICENSE file(s) distributed with this work for
- * additional information regarding license terms.
+ * This program and the accompanying materials are made available under the
+ * terms of the Apache License, Version 2.0 which is available at
+ * https://www.apache.org/licenses/LICENSE-2.0. *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
  *
- */
+ * SPDX-License-Identifier: Apache-2.0
+ ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,7 +51,7 @@ class SubmodelTestdataCreatorTest {
                 catenaXId);
 
         final Set<ChildData> childParts = assemblyPartRelationship.getChildParts();
-        Assertions.assertThat(childParts).hasSize(3);
+        assertThat(childParts).hasSize(3);
         final List<String> childIDs = List.of("urn:uuid:5ce49656-5156-4c8a-b93e-19422a49c0bc",
                 "urn:uuid:09b48bcc-8993-4379-a14d-a7740e1c61d4", "urn:uuid:9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d");
         childParts.forEach(childData -> assertThat(childIDs).contains(childData.getChildCatenaXId()));
@@ -56,7 +67,7 @@ class SubmodelTestdataCreatorTest {
                 catenaXId, children);
 
         final Set<ChildData> childParts = assemblyPartRelationship.getChildParts();
-        Assertions.assertThat(childParts).hasSize(3);
+        assertThat(childParts).hasSize(3);
         final List<String> childIDs = List.of("abc", "def", "ghi");
         childParts.forEach(childData -> assertThat(childIDs).contains(childData.getChildCatenaXId()));
     }
