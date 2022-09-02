@@ -51,7 +51,7 @@ class SubmodelTestdataCreatorTest {
                 catenaXId);
 
         final Set<ChildData> childParts = assemblyPartRelationship.getChildParts();
-        Assertions.assertThat(childParts).hasSize(3);
+        assertThat(childParts).hasSize(3);
         final List<String> childIDs = List.of("urn:uuid:5ce49656-5156-4c8a-b93e-19422a49c0bc",
                 "urn:uuid:09b48bcc-8993-4379-a14d-a7740e1c61d4", "urn:uuid:9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d");
         childParts.forEach(childData -> assertThat(childIDs).contains(childData.getChildCatenaXId()));
@@ -67,7 +67,7 @@ class SubmodelTestdataCreatorTest {
                 catenaXId, children);
 
         final Set<ChildData> childParts = assemblyPartRelationship.getChildParts();
-        Assertions.assertThat(childParts).hasSize(3);
+        assertThat(childParts).hasSize(3);
         final List<String> childIDs = List.of("abc", "def", "ghi");
         childParts.forEach(childData -> assertThat(childIDs).contains(childData.getChildCatenaXId()));
     }

@@ -21,6 +21,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.util;
 
+import static org.eclipse.tractusx.irs.controllers.IrsAppConstants.UUID_SIZE;
+
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -47,7 +49,6 @@ import org.eclipse.tractusx.irs.dto.JobParameter;
 import org.eclipse.tractusx.irs.dto.RelationshipAspect;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import net.datafaker.Faker;
-import org.eclipse.tractusx.irs.controllers.IrsAppConstants;
 
 /**
  * Base object mother class to create objects for testing.
@@ -124,7 +125,7 @@ public class TestMother {
     }
 
     public AASTransferProcess aasTransferProcess() {
-        return new AASTransferProcess(faker.lorem().characters(IrsAppConstants.UUID_SIZE), faker.number().numberBetween(1, 100));
+        return new AASTransferProcess(faker.lorem().characters(UUID_SIZE), faker.number().numberBetween(1, 100));
     }
 
     public Job fakeJob(JobState state) {

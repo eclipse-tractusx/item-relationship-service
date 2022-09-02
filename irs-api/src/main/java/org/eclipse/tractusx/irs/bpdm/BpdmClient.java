@@ -21,10 +21,11 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.bpdm;
 
+import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.OAUTH_REST_TEMPLATE;
+
 import java.util.Collections;
 import java.util.UUID;
 
-import org.eclipse.tractusx.irs.configuration.RestTemplateConfig;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -73,7 +74,7 @@ class BpdmClientImpl implements BpdmClient {
     private final RestTemplate restTemplate;
     private final String bpdmUrl;
 
-    /* package */ BpdmClientImpl(@Qualifier(RestTemplateConfig.OAUTH_REST_TEMPLATE) final RestTemplate restTemplate,
+    /* package */ BpdmClientImpl(@Qualifier(OAUTH_REST_TEMPLATE) final RestTemplate restTemplate,
             @Value("${bpdm.url:}") final String bpdmUrl) {
         this.restTemplate = restTemplate;
         this.bpdmUrl = bpdmUrl;
