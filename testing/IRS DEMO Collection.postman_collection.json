@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4a0223c9-c855-48e4-b754-775035ec88a6",
+		"_postman_id": "63d1e95d-1b37-44a9-846e-eff28852bdf7",
 		"name": "IRS DEMO Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1845,7 +1845,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://catenax-bpdm-int.demo.catena-x.net/v2/api/catena/business-partner/:bpn?idType=BPN",
+							"raw": "https://catenax-bpdm-int.demo.catena-x.net/v1/api/catena/business-partner/:bpn?idType=BPN",
 							"protocol": "https",
 							"host": [
 								"catenax-bpdm-int",
@@ -1854,7 +1854,7 @@
 								"net"
 							],
 							"path": [
-								"v2",
+								"v1",
 								"api",
 								"catena",
 								"business-partner",

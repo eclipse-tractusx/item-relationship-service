@@ -128,5 +128,5 @@ semanticsHub:
 #    ,urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship
 
 bpdm:
-  url: https://catenax-bpdm-int.demo.catena-x.net/v2
+  url: https://catenax-bpdm-int.demo.catena-x.net/v1
 
