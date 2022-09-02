@@ -7,7 +7,7 @@ skinparam ranksep 20
 cloud "Digital Twin Registry" as dtr
 cloud "EDC Providers" as providers
 cloud Keycloak
-cloud "Azure Vault" as azure
+cloud "HashiCorp Vault" as vault
 
 node "IRS Kubernetes Cluster" as k8s {
 
@@ -27,6 +27,6 @@ node "IRS Kubernetes Cluster" as k8s {
 IRS -> Keycloak
 IRS --> dtr
 consumer --> providers
-consumer -- azure
+consumer -- vault
 
 @enduml
