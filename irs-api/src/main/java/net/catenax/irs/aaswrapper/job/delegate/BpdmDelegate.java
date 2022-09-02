@@ -22,7 +22,7 @@ import net.catenax.irs.dto.JobParameter;
 import org.springframework.web.client.RestClientException;
 
 /**
- * Builds bpns array for AAShell from previous step.
+ * Builds bpns array for AAShell from previous steps.
  * To build bpns Business Partner service is called.
  */
 @Slf4j

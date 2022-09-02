@@ -16,8 +16,7 @@ import net.catenax.irs.aaswrapper.job.ItemContainer;
 import net.catenax.irs.dto.JobParameter;
 
 /**
- * Class to process Shells and Submodels and fill a ItemContainer with Relationships,
- * Shells, Tombstones and Submodels.
+ * Abstract base class to process Shells, Submodels, Bpns and store them inside {@link ItemContainer}
  */
 @RequiredArgsConstructor
 public abstract class AbstractDelegate {
@@ -27,7 +26,7 @@ public abstract class AbstractDelegate {
     protected final int retryCount = RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts();
 
     /**
-     * @param itemContainerBuilder Collecting data from processors
+     * @param itemContainerBuilder Collecting data from delegates
      * @param jobData The job parameters used for filtering
      * @param aasTransferProcess The transfer process which will be filled with childIds
      *                           for further processing
@@ -38,6 +37,16 @@ public abstract class AbstractDelegate {
     public abstract ItemContainer process(ItemContainer.ItemContainerBuilder itemContainerBuilder, JobParameter jobData,
             AASTransferProcess aasTransferProcess, String itemId);
 
+    /**
+     * Delegates processing to next step if exists or returns filled {@link ItemContainer}
+     *
+     * @param itemContainerBuilder Collecting data from delegates
+     * @param jobData The job parameters used for filtering
+     * @param aasTransferProcess The transfer process which will be filled with childIds
+     *                           for further processing
+     * @param itemId The id of the current item
+     * @return item container with filled data
+     */
     protected ItemContainer next(final ItemContainer.ItemContainerBuilder itemContainerBuilder, final JobParameter jobData,
             final AASTransferProcess aasTransferProcess, final String itemId) {
         if (this.nextStep != null) {

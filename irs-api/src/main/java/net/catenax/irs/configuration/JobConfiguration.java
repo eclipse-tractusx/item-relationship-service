@@ -47,10 +47,10 @@ public class JobConfiguration {
 
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
-            final DigitalTwinDelegate digitalTwinProcessor, final BlobPersistence blobStore,
+            final DigitalTwinDelegate digitalTwinDelegate, final BlobPersistence blobStore,
             final JobStore jobStore, final MeterRegistryService meterService) {
 
-        final var manager = new AASTransferProcessManager(digitalTwinProcessor, Executors.newCachedThreadPool(), blobStore);
+        final var manager = new AASTransferProcessManager(digitalTwinDelegate, Executors.newCachedThreadPool(), blobStore);
         final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);
 
@@ -75,26 +75,26 @@ public class JobConfiguration {
     }
 
     @Bean
-    public DigitalTwinDelegate digitalTwinProcessor(
+    public DigitalTwinDelegate digitalTwinDelegate(
             final RelationshipDelegate relationshipProcessor, final DigitalTwinRegistryFacade digitalTwinRegistryFacade) {
         return new DigitalTwinDelegate(relationshipProcessor, digitalTwinRegistryFacade);
     }
 
     @Bean
-    public RelationshipDelegate relationshipProcessor(
+    public RelationshipDelegate relationshipDelegate(
             final SubmodelDelegate submodelProcessor, final SubmodelFacade submodelFacade) {
         return new RelationshipDelegate(submodelProcessor, submodelFacade);
     }
 
     @Bean
-    public SubmodelDelegate submodelProcessor(
+    public SubmodelDelegate submodelDelegate(
             final BpdmDelegate bpdmProcessor, final SubmodelFacade submodelFacade,
             final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService) {
         return new SubmodelDelegate(bpdmProcessor, submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil());
     }
 
     @Bean
-    public BpdmDelegate bpdmProcessor(
+    public BpdmDelegate bpdmDelegate(
             final BpdmFacade bpdmFacade) {
         return new BpdmDelegate(bpdmFacade);
     }

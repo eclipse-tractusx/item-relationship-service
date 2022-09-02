@@ -26,7 +26,7 @@ import org.springframework.web.client.RestClientException;
 
 /**
  * Builds relationship array for AAShell from previous step.
- * To build relationships AssemblyPartRelationship submodels are being retrieved from EDC.
+ * To build relationships AssemblyPartRelationship submodels are being retrieved from EDC's components.
  */
 @Slf4j
 public class RelationshipDelegate extends AbstractDelegate {

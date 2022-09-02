@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.catenax.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import net.catenax.irs.component.assetadministrationshell.IdentifierKeyValuePair;
-import net.catenax.irs.dto.JobParameter;
 import org.springframework.stereotype.Service;
 
 /**
@@ -30,19 +29,17 @@ public class DigitalTwinRegistryFacade {
     private final DigitalTwinRegistryClient digitalTwinRegistryClient;
 
     /**
-     * Combines required data from Digital Twin Registry Service
+     * Retrieves {@link AssetAdministrationShellDescriptor} from Digital Twin Registry Service.
+     * As a first step id of shell is being retrieved by globalAssetId.
      *
      * @param globalAssetId The Asset Administration Shell's global id
-     * @param jobData       the job data parameters
-     * @return list of submodel addresses
+     * @return AAShell
      */
-    public AssetAdministrationShellDescriptor getAAShellDescriptor(final String globalAssetId,
-            final JobParameter jobData) {
+    public AssetAdministrationShellDescriptor getAAShellDescriptor(final String globalAssetId) {
         final String aaShellIdentification = getAAShellIdentificationOrGlobalAssetId(globalAssetId);
         log.info("Retrieved AAS Identification {} for globalAssetId {}", aaShellIdentification, globalAssetId);
 
-        final AssetAdministrationShellDescriptor assetAdministrationShellDescriptor = digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aaShellIdentification);
-        return assetAdministrationShellDescriptor.withFilteredSubmodelDescriptors(jobData.getAspectTypes());
+        return digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aaShellIdentification);
     }
 
     private String getAAShellIdentificationOrGlobalAssetId(final String globalAssetId) {

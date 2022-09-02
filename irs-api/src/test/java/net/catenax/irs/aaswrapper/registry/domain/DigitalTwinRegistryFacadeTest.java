@@ -1,13 +1,9 @@
 package net.catenax.irs.aaswrapper.registry.domain;
 
 import static net.catenax.irs.util.TestMother.jobParameter;
-import static net.catenax.irs.util.TestMother.jobParameterEmptyFilter;
-import static net.catenax.irs.util.TestMother.jobParameterFilter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,7 +43,7 @@ class DigitalTwinRegistryFacadeTest {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
         final AssetAdministrationShellDescriptor aasShellDescriptor = digitalTwinRegistryFacade.getAAShellDescriptor(
-                catenaXId, jobParameter());
+                catenaXId);
         final List<SubmodelDescriptor> shellEndpoints = aasShellDescriptor.getSubmodelDescriptors();
 
         assertThat(shellEndpoints).isNotNull().hasSize(2);
@@ -66,7 +62,7 @@ class DigitalTwinRegistryFacadeTest {
                 new RestClientException("Dummy"));
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
-                () -> dtRegistryFacadeWithMock.getAAShellDescriptor(catenaXId, jobParameter));
+                () -> dtRegistryFacadeWithMock.getAAShellDescriptor(catenaXId));
     }
 
     @Test
@@ -77,8 +73,7 @@ class DigitalTwinRegistryFacadeTest {
 
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenReturn(shellDescriptor);
 
-        final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.getAAShellDescriptor(catenaXId,
-                jobParameter()).getSubmodelDescriptors();
+        final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.getAAShellDescriptor(catenaXId).getSubmodelDescriptors();
         assertThat(submodelEndpoints).isEmpty();
     }
 
@@ -90,7 +85,7 @@ class DigitalTwinRegistryFacadeTest {
 
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenReturn(shellDescriptor);
 
-        dtRegistryFacadeWithMock.getAAShellDescriptor(catenaXId, jobParameter());
+        dtRegistryFacadeWithMock.getAAShellDescriptor(catenaXId);
 
         verify(this.dtRegistryClientMock, times(1)).getAllAssetAdministrationShellIdsByAssetLink(anyList());
         verify(this.dtRegistryClientMock, times(1)).getAssetAdministrationShellDescriptor(catenaXId);
@@ -107,8 +102,7 @@ class DigitalTwinRegistryFacadeTest {
                 Collections.singletonList(identification));
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(identification)).thenReturn(shellDescriptor);
 
-        final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.getAAShellDescriptor(globalAssetId,
-                jobParameter()).getSubmodelDescriptors();
+        final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.getAAShellDescriptor(globalAssetId).getSubmodelDescriptors();
         assertThat(submodelEndpoints).isEmpty();
     }
 
@@ -122,33 +116,10 @@ class DigitalTwinRegistryFacadeTest {
     }
 
     @Test
-    void shouldReturnAssemblyPartRelationshipSubmodelEndpointsWhenFilteringByNotMatchingAspectType() {
-        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-
-        final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryFacade.getAAShellDescriptor(catenaXId,
-                jobParameterFilter()).getSubmodelDescriptors();
-
-        assertThat(shellEndpoints).hasSize(1);
-        assertThat(shellEndpoints.get(0).getSemanticId().getValue()).contains(assemblyPartRelationshipURN);
-    }
-
-    @Test
-    void shouldReturnAssemblyPartRelationshipSubmodelEndpointsWhenFilteringByNoAspectType() {
-        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-
-        final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryFacade.getAAShellDescriptor(catenaXId,
-                jobParameterEmptyFilter()).getSubmodelDescriptors();
-
-        assertThat(shellEndpoints).hasSize(1);
-        assertThat(shellEndpoints.get(0).getSemanticId().getValue()).contains(assemblyPartRelationshipURN);
-    }
-
-    @Test
     void shouldReturnSubmodelEndpointsWhenFilteringByAspectType() {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
-        final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryFacade.getAAShellDescriptor(catenaXId,
-                jobParameter()).getSubmodelDescriptors();
+        final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryFacade.getAAShellDescriptor(catenaXId).getSubmodelDescriptors();
 
         assertThat(shellEndpoints).isNotNull().hasSize(2);
         final SubmodelDescriptor endpoint = shellEndpoints.get(0);

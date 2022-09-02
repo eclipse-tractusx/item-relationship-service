@@ -19,7 +19,8 @@ import net.catenax.irs.dto.JobParameter;
 import org.springframework.web.client.RestClientException;
 
 /**
- * Retrieves AAShell from Digital Twin Registry service and storing it inside {@link ItemContainer}
+ * Retrieves AAShell from Digital Twin Registry service and storing it inside {@link ItemContainer}.
+ * This shell is later used in further processing by other delegates.
  */
 @Slf4j
 public class DigitalTwinDelegate extends AbstractDelegate {
@@ -37,7 +38,7 @@ public class DigitalTwinDelegate extends AbstractDelegate {
             final AASTransferProcess aasTransferProcess, final String itemId) {
 
         try {
-            final AssetAdministrationShellDescriptor aaShell = digitalTwinRegistryFacade.getAAShellDescriptor(itemId, jobData);
+            final AssetAdministrationShellDescriptor aaShell = digitalTwinRegistryFacade.getAAShellDescriptor(itemId);
 
             itemContainerBuilder.shell(aaShell);
         } catch (RestClientException e) {

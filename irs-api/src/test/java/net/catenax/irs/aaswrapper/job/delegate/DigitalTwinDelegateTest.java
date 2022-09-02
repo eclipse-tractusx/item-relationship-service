@@ -3,7 +3,6 @@ package net.catenax.irs.aaswrapper.job.delegate;
 import static net.catenax.irs.util.TestMother.shellDescriptor;
 import static net.catenax.irs.util.TestMother.submodelDescriptorWithoutEndpoint;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -24,7 +23,7 @@ class DigitalTwinDelegateTest {
     @Test
     void shouldFillItemContainerWithShell() {
         // given
-        when(digitalTwinRegistryFacade.getAAShellDescriptor(anyString(), any())).thenReturn(shellDescriptor(
+        when(digitalTwinRegistryFacade.getAAShellDescriptor(anyString())).thenReturn(shellDescriptor(
                 List.of(submodelDescriptorWithoutEndpoint("any"))));
 
         // when
