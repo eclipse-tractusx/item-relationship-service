@@ -46,4 +46,11 @@
         <notes>Irrelvant for IRS, see discussion here: https://github.com/github/securitylab/issues/669</notes>
         <vulnerabilityName>CVE-2022-31514</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Data Faker ships with a vulnerable version of snakeyaml, but is only used in tests.
+        ]]></notes>
+        <filePath regex="true">.*\bdatafaker.*</filePath>
+        <vulnerabilityName>CVE-2022-25857</vulnerabilityName>
+    </suppress>
 </suppressions>

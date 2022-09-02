@@ -6,7 +6,7 @@
 [![CodeQL](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml)  
 [![Kics](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/kics.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/kics.yml)
 [![Trivy](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/trivy.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/trivy.yml)
-[![VeraCode](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/VeraCode.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/VeraCode.yml)
+[![VeraCode](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/veracode.yaml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/veracode.yaml)
 [![OWASP Dependency Check](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml)
 [![Spotbugs](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/spotbugs.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/spotbugs.yml)
    
