@@ -39,7 +39,7 @@ class SubmodelDelegateTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getShells().get(0).getSubmodelDescriptors().size()).isZero();
+        assertThat(result.getShells().get(0).getSubmodelDescriptors()).isEmpty();
     }
 
 }

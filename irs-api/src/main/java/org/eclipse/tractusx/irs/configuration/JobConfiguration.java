@@ -88,21 +88,21 @@ public class JobConfiguration {
 
     @Bean
     public DigitalTwinDelegate digitalTwinDelegate(
-            final RelationshipDelegate relationshipProcessor, final DigitalTwinRegistryFacade digitalTwinRegistryFacade) {
-        return new DigitalTwinDelegate(relationshipProcessor, digitalTwinRegistryFacade);
+            final RelationshipDelegate relationshipDelegate, final DigitalTwinRegistryFacade digitalTwinRegistryFacade) {
+        return new DigitalTwinDelegate(relationshipDelegate, digitalTwinRegistryFacade);
     }
 
     @Bean
     public RelationshipDelegate relationshipDelegate(
-            final SubmodelDelegate submodelProcessor, final SubmodelFacade submodelFacade) {
-        return new RelationshipDelegate(submodelProcessor, submodelFacade);
+            final SubmodelDelegate submodelDelegate, final SubmodelFacade submodelFacade) {
+        return new RelationshipDelegate(submodelDelegate, submodelFacade);
     }
 
     @Bean
     public SubmodelDelegate submodelDelegate(
-            final BpdmDelegate bpdmProcessor, final SubmodelFacade submodelFacade,
+            final BpdmDelegate bpdmDelegate, final SubmodelFacade submodelFacade,
             final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService) {
-        return new SubmodelDelegate(bpdmProcessor, submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil());
+        return new SubmodelDelegate(bpdmDelegate, submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil());
     }
 
     @Bean
