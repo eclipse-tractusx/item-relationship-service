@@ -75,16 +75,33 @@ irs-aaswrapper:
 
 # Values for grafana subchart.
 irs-grafana:
-  ingress:
-    hosts:
-      - host: "irs-grafana-test.dev.demo.catena-x.net"
-    tls:
-      - hosts:
-          - "irs-grafana-test.dev.demo.catena-x.net"
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+  hosts:
+    - host: "irs-grafana-test.dev.demo.catena-x.net"
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - "irs-grafana-test.dev.demo.catena-x.net"
+      # Default secret for certificate creation already provided to your namespace
+      secretName: tls-secret
 
+# Values for prometheus subchart.
 irs-prometheus:
   config:
     scrape_configs:
+      # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+      - job_name: 'prometheus'
+        # metrics_path defaults to '/metrics'
+        # scheme defaults to 'http'.
+        static_configs:
+          - targets: [ '127.0.0.1:9090' ]
       - job_name: 'spring-actuator'
         metrics_path: '/actuator/prometheus'
         scrape_interval: 5s
