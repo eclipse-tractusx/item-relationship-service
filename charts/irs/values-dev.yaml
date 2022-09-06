@@ -1,7 +1,7 @@
 springprofile: dev
 
 image:
-  tag: latest
+  tag: $ARGOCD_APP_REVISION
 
 ingress:
   hosts:
@@ -17,20 +17,20 @@ ingress:
 
 keycloak:
   oauth2:
-    clientId: test
-    clientSecret: test
-    clientTokenUri: test
-    jwkSetUri: test
+    clientId: <path:traceability-irs/data/dev/keycloak/oauth2#clientId>
+    clientSecret: <path:traceability-irs/data/dev/keycloak/oauth2#clientSecret>
+    clientTokenUri: <path:traceability-irs/data/dev/keycloak/oauth2#tokenUri>
+    jwkSetUri: <path:traceability-irs/data/dev/keycloak/oauth2#jwkSetUri>
 
 aasWrapper:
-  username: test
-  password: test
+  username: <path:traceability-irs/data/dev/aasProxy/submodel#username>
+  password: <path:traceability-irs/data/dev/aasProxy/submodel#password>
 
 minio:
   url: http://irs-irs-minio:9000
 
-rootUser: test
-rootPassword: test
+rootUser: <path:traceability-irs/data/dev/minio#minioUser>
+rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
 
 digitalTwinRegistry:
   url: https://irs-aas-registry.dev.demo.catena-x.net
