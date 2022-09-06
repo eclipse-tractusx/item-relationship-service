@@ -5,13 +5,13 @@ image:
 
 ingress:
   hosts:
-    - host: "irs-test.dev.demo.catena-x.net"
+    - host: "irs.dev.demo.catena-x.net"
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
     - hosts:
-        - "irs-test.dev.demo.catena-x.net"
+        - "irs.dev.demo.catena-x.net"
       # Default secret for certificate creation already provided to your namespace
       secretName: tls-secret
 
@@ -46,7 +46,7 @@ irs-aaswrapper:
       nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
       nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
     hosts:
-      - host: "irs-aas-wrapper-test.dev.demo.catena-x.net"
+      - host: "irs-aas-wrapper.dev.demo.catena-x.net"
         paths:
           - path: /
             pathType: Prefix
@@ -57,7 +57,7 @@ irs-aaswrapper:
                   number: 9191
     tls:
       - hosts:
-          - "irs-aas-wrapper-test.dev.demo.catena-x.net"
+          - "irs-aas-wrapper.dev.demo.catena-x.net"
         # Default secret for certificate creation already provided to your namespace
         secretName: tls-secret
 
@@ -83,13 +83,13 @@ irs-grafana:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
   hosts:
-    - host: "irs-grafana-test.dev.demo.catena-x.net"
+    - host: "irs-grafana.dev.demo.catena-x.net"
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
     - hosts:
-        - "irs-grafana-test.dev.demo.catena-x.net"
+        - "irs-grafana.dev.demo.catena-x.net"
       # Default secret for certificate creation already provided to your namespace
       secretName: tls-secret
 
