@@ -173,7 +173,7 @@ edc-controlplane:
       edc.ids.catalog.id=urn:catalog:default
       edc.ids.endpoint=https://irs-consumer-controlplane.dev.demo.catena-x.net/api/v1/ids
 
-      edc.receiver.http.endpoint=http://aaswrapper:9192/callback/endpoint-data-reference
+      edc.receiver.http.endpoint=http://irs-irs-aaswrapper:9192/callback/endpoint-data-reference
 
       edc.transfer.dataplane.sync.endpoint=http://irs-consumer-dataplane:8185/api/public
       edc.transfer.proxy.endpoint=https://irs-consumer-dataplane.dev.demo.catena-x.net/api/public
@@ -267,7 +267,7 @@ edc-dataplane:
 
       edc.dataplane.token.validation.endpoint=http://irs-consumer-controlplane:8182/validation/token
 
-      edc.receiver.http.endpoint=http://aaswrapper:9192/callback
+      edc.receiver.http.endpoint=http://irs-irs-aaswrapper:9192/callback
 
       edc.oauth.client.id=4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90:keyid:4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90
       edc.oauth.private.key.alias=irs-dev-daps-cert-consumer-key
