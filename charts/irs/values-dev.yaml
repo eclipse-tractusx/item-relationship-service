@@ -76,22 +76,20 @@ irs-aaswrapper:
 
 # Values for grafana subchart.
 irs-grafana:
-  enabled: true
-  className: "nginx"
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-  hosts:
-    - host: "irs-grafana.dev.demo.catena-x.net"
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls:
-    - hosts:
-        - "irs-grafana.dev.demo.catena-x.net"
-      # Default secret for certificate creation already provided to your namespace
-      secretName: tls-secret
+  username: <path:traceability-irs/data/int/grafana#username>
+  password: <path:traceability-irs/data/int/grafana#password>
+
+  ingress:
+    hosts:
+      - host: "irs-grafana.dev.demo.catena-x.net"
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - "irs-grafana.dev.demo.catena-x.net"
+        # Default secret for certificate creation already provided to your namespace
+        secretName: tls-secret
   config:
     apiVersion: 1
     datasources:
@@ -100,9 +98,42 @@ irs-grafana:
         url: http://irs-irs-prometheus:9090
         isDefault: true
 
+  oauthClientId: <path:traceability-irs/data/dev/grafana#oauthClientId>
+  oauthClientSecret: <path:traceability-irs/data/dev/grafana#oauthClientSecret>
+
+  configEnvs:
+    - name: GF_SERVER_ROOT_URL
+      value: 'https://irs-grafana.dev.demo.catena-x.net'
+    - name: GF_AUTH_GITHUB_ENABLED
+      value: 'true'
+    - name: GF_AUTH_GITHUB_ALLOW_SIGN_UP
+      value: 'true'
+    - name: GF_AUTH_GITHUB_TEAM_IDS
+      value: '5783013'
+    - name: GF_AUTH_GITHUB_SCOPES
+      value: 'user:email,read:org'
+    - name: GF_AUTH_GITHUB_AUTH_URL
+      value: 'https://github.com/login/oauth/authorize'
+    - name: GF_AUTH_GITHUB_TOKEN_URL
+      value: 'https://github.com/login/oauth/access_token'
+    - name: GF_AUTH_GITHUB_API_URL
+      value: 'https://api.github.com/user'
+
 # Values for prometheus subchart.
 irs-prometheus:
   config:
+    global:
+      scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+      evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+      # scrape_timeout is set to the global default (10s).
+
+    # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+    rule_files:
+    # - "first_rules.yml"
+    # - "second_rules.yml"
+
+    # A scrape configuration containing exactly one endpoint to scrape:
+    # Here it's Prometheus itself.
     scrape_configs:
       # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
       - job_name: 'prometheus'
@@ -110,6 +141,7 @@ irs-prometheus:
         # scheme defaults to 'http'.
         static_configs:
           - targets: [ '127.0.0.1:9090' ]
+
       - job_name: 'spring-actuator'
         metrics_path: '/actuator/prometheus'
         scrape_interval: 5s
@@ -212,24 +244,24 @@ edc-controlplane:
       # Postgresql related configuration
       edc.datasource.asset.name=asset
       edc.datasource.asset.url=jdbc:postgresql://irs-postgresql-hl:5432/edc
-      edc.datasource.asset.user=edc
-      edc.datasource.asset.password=databasepassword
+      edc.datasource.asset.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
+      edc.datasource.asset.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
       edc.datasource.contractdefinition.name=contractdefinition
       edc.datasource.contractdefinition.url=jdbc:postgresql://irs-postgresql-hl:5432/edc
-      edc.datasource.contractdefinition.user=edc
-      edc.datasource.contractdefinition.password=databasepassword
+      edc.datasource.contractdefinition.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
+      edc.datasource.contractdefinition.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
       edc.datasource.contractnegotiation.name=contractnegotiation
       edc.datasource.contractnegotiation.url=jdbc:postgresql://irs-postgresql-hl:5432/edc
-      edc.datasource.contractnegotiation.user=edc
-      edc.datasource.contractnegotiation.password=databasepassword
+      edc.datasource.contractnegotiation.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
+      edc.datasource.contractnegotiation.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
       edc.datasource.policy.name=policy
       edc.datasource.policy.url=jdbc:postgresql://irs-postgresql-hl:5432/edc
-      edc.datasource.policy.user=edc
-      edc.datasource.policy.password=databasepassword
+      edc.datasource.policy.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
+      edc.datasource.policy.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
       edc.datasource.transferprocess.name=transferprocess
       edc.datasource.transferprocess.url=jdbc:postgresql://irs-postgresql-hl:5432/edc
-      edc.datasource.transferprocess.user=edc
-      edc.datasource.transferprocess.password=databasepassword
+      edc.datasource.transferprocess.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
+      edc.datasource.transferprocess.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
 
 # Values for consumer edc-dataplane.
 edc-dataplane:
@@ -297,5 +329,3 @@ postgresql:
     username: <path:traceability-irs/data/dev/controlplane#databaseuser>
     password: <path:traceability-irs/data/dev/controlplane#databasepassword>
     database: "edc"
-
-

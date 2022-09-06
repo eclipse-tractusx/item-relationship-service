@@ -22,24 +22,19 @@ keycloak:
     clientTokenUri: <path:traceability-irs/data/dev/keycloak/oauth2#tokenUri>
     jwkSetUri: <path:traceability-irs/data/dev/keycloak/oauth2#jwkSetUri>
 
-aasProxy:
-  submodel:
-    username: <path:traceability-irs/data/dev/aasProxy/submodel#username>
-    password: <path:traceability-irs/data/dev/aasProxy/submodel#password>
-
-minio:
-  url: http://app-minio-spike:9000
-
 aasWrapper:
-  host: http://aaswrapper-spike:9191/api/service
+  host: http://irs-spike-irs-aaswrapper:9191/api/service
   username: <path:traceability-irs/data/dev/aasProxy/submodel#username>
   password: <path:traceability-irs/data/dev/aasProxy/submodel#password>
 
-digitalTwinRegistry:
-  url: https://semantics.int.demo.catena-x.net/registry
+minio:
+  url: http://irs-spike-irs-minio:9000
 
 rootUser: <path:traceability-irs/data/dev/minio#minioUser>
 rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
+
+digitalTwinRegistry:
+  url: https://irs-aas-registry.dev.demo.catena-x.net
 
 # Values for aas wrapper subchart.
 irs-aaswrapper:
@@ -80,30 +75,51 @@ irs-aaswrapper:
       # wrapper.auth.basic.someuser=somepassword
 
 
+# Values for grafana subchart.
+irs-grafana:
+  enabled: false
+  config:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://irs-spike-irs-prometheus:9090
+        isDefault: true
+
+# Values for prometheus subchart.
+irs-prometheus:
+  config:
+    scrape_configs:
+      # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+      - job_name: 'prometheus'
+        # metrics_path defaults to '/metrics'
+        # scheme defaults to 'http'.
+        static_configs:
+          - targets: [ '127.0.0.1:9090' ]
+      - job_name: 'spring-actuator'
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 5s
+        static_configs:
+          - targets: [ 'irs-spike:4004' ]
+
+      - job_name: 'minio-actuator'
+        metrics_path: /minio/v2/metrics/cluster
+        static_configs:
+          - targets: [ 'irs-spike-irs-minio:9000' ]
+
 # Values for minio subchart.
 irs-minio:
-  ## Path where PV would be mounted on the MinIO Pod
-  mountPath: "/data"
-
-  ## Set default rootUser, rootPassword
-  ## AccessKey and secretKey is generated when not set
-  ## Distributed MinIO ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
-  ##
   rootUser: <path:traceability-irs/data/dev/minio#minioUser>
   rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
 
+  ## Path where PV would be mounted on the MinIO Pod
+  mountPath: "/data"
 
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
   persistence:
     enabled: false
-
-# Values for prometheus subchart.
-irs-prometheus:
-
-# Values for grafana subchart.
-irs-grafana:
 
 # Values for edc-controlplane subchart.
 edc-controlplane:
@@ -150,7 +166,7 @@ edc-controlplane:
       edc.ids.catalog.id=urn:catalog:default
       edc.ids.endpoint=https://irs-consumer-controlplane-spike.dev.demo.catena-x.net/api/v1/ids
 
-      edc.receiver.http.endpoint=http://aaswrapper-spike:9192/callback/endpoint-data-reference
+      edc.receiver.http.endpoint=http://irs-spike-irs-aaswrapper:9192/callback/endpoint-data-reference
 
       edc.transfer.dataplane.sync.endpoint=http://irs-consumer-dataplane-spike:8185/api/public
       edc.transfer.proxy.endpoint=https://irs-consumer-dataplane-spike.dev.demo.catena-x.net/api/public
@@ -181,23 +197,23 @@ edc-controlplane:
 
       # Postgresql related configuration
       edc.datasource.asset.name=asset
-      edc.datasource.asset.url=jdbc:postgresql://irs-edc-postgres-consumer-spike-postgresql-hl:5432/edc
+      edc.datasource.asset.url=jdbc:postgresql://irs-spike-postgresql-hl:5432/edc
       edc.datasource.asset.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
       edc.datasource.asset.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
       edc.datasource.contractdefinition.name=contractdefinition
-      edc.datasource.contractdefinition.url=jdbc:postgresql://irs-edc-postgres-consumer-spike-postgresql-hl:5432/edc
+      edc.datasource.contractdefinition.url=jdbc:postgresql://irs-spike-postgresql-hl:5432/edc
       edc.datasource.contractdefinition.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
       edc.datasource.contractdefinition.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
       edc.datasource.contractnegotiation.name=contractnegotiation
-      edc.datasource.contractnegotiation.url=jdbc:postgresql://irs-edc-postgres-consumer-spike-postgresql-hl:5432/edc
+      edc.datasource.contractnegotiation.url=jdbc:postgresql://irs-spike-postgresql-hl:5432/edc
       edc.datasource.contractnegotiation.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
       edc.datasource.contractnegotiation.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
       edc.datasource.policy.name=policy
-      edc.datasource.policy.url=jdbc:postgresql://irs-edc-postgres-consumer-spike-postgresql-hl:5432/edc
+      edc.datasource.policy.url=jdbc:postgresql://irs-spike-postgresql-hl:5432/edc
       edc.datasource.policy.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
       edc.datasource.policy.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
       edc.datasource.transferprocess.name=transferprocess
-      edc.datasource.transferprocess.url=jdbc:postgresql://irs-edc-postgres-consumer-spike-postgresql-hl:5432/edc
+      edc.datasource.transferprocess.url=jdbc:postgresql://irs-spike-postgresql-hl:5432/edc
       edc.datasource.transferprocess.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
       edc.datasource.transferprocess.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
 
@@ -244,7 +260,7 @@ edc-dataplane:
 
       edc.dataplane.token.validation.endpoint=http://irs-consumer-controlplane-spike:8182/validation/token
 
-      edc.receiver.http.endpoint=http://aaswrapper-spike:9192/callback
+      edc.receiver.http.endpoint=http://irs-spike-irs-aaswrapper:9192/callback
 
       edc.oauth.client.id=4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90:keyid:4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90
       edc.oauth.private.key.alias=irs-dev-daps-cert-consumer-key

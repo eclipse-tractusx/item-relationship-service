@@ -22,16 +22,13 @@ keycloak:
     clientTokenUri: <path:traceability-irs/data/int/keycloak/oauth2#tokenUri>
     jwkSetUri: <path:traceability-irs/data/int/keycloak/oauth2#jwkSetUri>
 
-aasProxy:
-  submodel:
-    username: <path:traceability-irs/data/int/aasProxy/submodel#username>
-    password: <path:traceability-irs/data/int/aasProxy/submodel#password>
+aasWrapper:
+  host: http://app-irs-pen-irs-aaswrapper:9191/api/service
+  username: <path:traceability-irs/data/int/aasProxy/submodel#username>
+  password: <path:traceability-irs/data/int/aasProxy/submodel#password>
 
 minio:
-  url: http://app-minio-pen:9000
-
-aasWrapper:
-  host: http://aaswrapper-pen:9191/api/service
+  url: http://app-irs-pen-irs-minio:9000
 
 digitalTwinRegistry:
   url: https://semantics.int.demo.catena-x.net/registry
@@ -42,27 +39,7 @@ rootPassword: <path:traceability-irs/data/int/minio#minioPassword>
 # Values for aas wrapper subchart.
 irs-aaswrapper:
   ingress:
-    enabled: true
-    className: "nginx"
-    annotations:
-      nginx.ingress.kubernetes.io/ssl-passthrough: "false"
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-    hosts:
-      - host: "irs-aas-wrapper-pen.int.demo.catena-x.net"
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: aaswrapper-pen
-                port:
-                  number: 9191
-    tls:
-      - hosts:
-          - "irs-aas-wrapper-pen.int.demo.catena-x.net"
-        # Default secret for certificate creation already provided to your namespace
-        secretName: tls-secret
+    enabled: false
 
   configuration:
     properties: |-
@@ -77,6 +54,47 @@ irs-aaswrapper:
       wrapper.callback.timeout=60
       # wrapper.auth.basic.someuser=somepassword
 
+# Values for grafana subchart.
+irs-grafana:
+  username: <path:traceability-irs/data/int/grafana#username>
+  password: <path:traceability-irs/data/int/grafana#password>
+
+  ingress:
+    enabled: false
+
+# Values for prometheus subchart.
+irs-prometheus:
+  config:
+    global:
+      scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+      evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+      # scrape_timeout is set to the global default (10s).
+
+    # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+    rule_files:
+    # - "first_rules.yml"
+    # - "second_rules.yml"
+
+    # A scrape configuration containing exactly one endpoint to scrape:
+    # Here it's Prometheus itself.
+    scrape_configs:
+      # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+      - job_name: 'prometheus'
+        # metrics_path defaults to '/metrics'
+        # scheme defaults to 'http'.
+        static_configs:
+          - targets: [ '127.0.0.1:9090' ]
+
+      - job_name: 'spring-actuator'
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 5s
+        static_configs:
+          - targets: [ 'app-irs-pen:4004' ]
+
+      - job_name: 'minio-actuator'
+        metrics_path: /minio/v2/metrics/cluster
+        static_configs:
+          - targets: [ 'app-irs-pen-irs-minio:9000' ]
 
 # Values for minio subchart.
 irs-minio:
@@ -98,13 +116,6 @@ irs-minio:
     enabled: true
     accessMode: ReadWriteOnce
     size: 500Mi
-
-
-# Values for prometheus subchart.
-irs-prometheus:
-
-# Values for grafana subchart.
-irs-grafana:
 
 # Values for edc-controlplane subchart.
 edc-controlplane:
@@ -153,8 +164,9 @@ edc-controlplane:
       edc.ids.catalog.id=urn:catalog:default
       edc.ids.endpoint=https://irs-consumer-controlplane-pen.int.demo.catena-x.net/api/v1/ids
 
-      edc.receiver.http.endpoint=http://aaswrapper-pen:9192/callback/endpoint-data-reference
+      edc.receiver.http.endpoint=http://app-irs-pen-irs-aaswrapper:9192/callback/endpoint-data-reference
 
+      edc.transfer.dataplane.sync.endpoint=http://edc-consumer-dataplane-pen:8185/api/public
       edc.transfer.proxy.endpoint=https://irs-consumer-dataplane-pen.int.demo.catena-x.net/api/public
       edc.transfer.proxy.token.signer.privatekey.alias=azure-vault-token-signer-private-key
       edc.transfer.proxy.token.verifier.publickey.alias=azure-vault-token-signer-private-key-pub
@@ -183,23 +195,23 @@ edc-controlplane:
 
       # Postgresql related configuration
       edc.datasource.asset.name=asset
-      edc.datasource.asset.url=jdbc:postgresql://irs-edc-postgres-pen-postgresql-hl:5432/edc
+      edc.datasource.asset.url=jdbc:postgresql://app-irs-pen-postgresql-hl:5432/edc
       edc.datasource.asset.user=<path:traceability-irs/data/int/controlplane#databaseuser>
       edc.datasource.asset.password=<path:traceability-irs/data/int/controlplane#databasepassword>
       edc.datasource.contractdefinition.name=contractdefinition
-      edc.datasource.contractdefinition.url=jdbc:postgresql://irs-edc-postgres-pen-postgresql-hl:5432/edc
+      edc.datasource.contractdefinition.url=jdbc:postgresql://app-irs-pen-postgresql-hl:5432/edc
       edc.datasource.contractdefinition.user=<path:traceability-irs/data/int/controlplane#databaseuser>
       edc.datasource.contractdefinition.password=<path:traceability-irs/data/int/controlplane#databasepassword>
       edc.datasource.contractnegotiation.name=contractnegotiation
-      edc.datasource.contractnegotiation.url=jdbc:postgresql://irs-edc-postgres-pen-postgresql-hl:5432/edc
+      edc.datasource.contractnegotiation.url=jdbc:postgresql://app-irs-pen-postgresql-hl:5432/edc
       edc.datasource.contractnegotiation.user=<path:traceability-irs/data/int/controlplane#databaseuser>
       edc.datasource.contractnegotiation.password=<path:traceability-irs/data/int/controlplane#databasepassword>
       edc.datasource.policy.name=policy
-      edc.datasource.policy.url=jdbc:postgresql://irs-edc-postgres-pen-postgresql-hl:5432/edc
+      edc.datasource.policy.url=jdbc:postgresql://app-irs-pen-postgresql-hl:5432/edc
       edc.datasource.policy.user=<path:traceability-irs/data/int/controlplane#databaseuser>
       edc.datasource.policy.password=<path:traceability-irs/data/int/controlplane#databasepassword>
       edc.datasource.transferprocess.name=transferprocess
-      edc.datasource.transferprocess.url=jdbc:postgresql://irs-edc-postgres-pen-postgresql-hl:5432/edc
+      edc.datasource.transferprocess.url=jdbc:postgresql://app-irs-pen-postgresql-hl:5432/edc
       edc.datasource.transferprocess.user=<path:traceability-irs/data/int/controlplane#databaseuser>
       edc.datasource.transferprocess.password=<path:traceability-irs/data/int/controlplane#databasepassword>
 
@@ -249,7 +261,7 @@ edc-dataplane:
 
       edc.dataplane.token.validation.endpoint=http://edc-consumer-controlplane-pen:8182/validation/token
 
-      edc.receiver.http.endpoint=http://aaswrapper-pen:9192/callback
+      edc.receiver.http.endpoint=http://app-irs-pen-irs-aaswrapper:9192/callback
 
       edc.oauth.client.id=D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09:keyid:D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09
       edc.oauth.private.key.alias=irs-int-daps-key
@@ -264,7 +276,6 @@ edc-dataplane:
       edc.vault.hashicorp.health.check.enabled=true
       edc.vault.hashicorp.health.check.standby.ok=true
       edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
-
 
 # Values for edc postgres subchart.
 postgresql:

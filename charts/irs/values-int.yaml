@@ -200,6 +200,7 @@ edc-controlplane:
 
       edc.receiver.http.endpoint=http://app-irs-int-irs-aaswrapper:9192/callback/endpoint-data-reference
 
+      edc.transfer.dataplane.sync.endpoint=http://edc-consumer-dataplane:8185/api/public
       edc.transfer.proxy.endpoint=https://irs-consumer-dataplane.int.demo.catena-x.net/api/public
       edc.transfer.proxy.token.signer.privatekey.alias=azure-vault-token-signer-private-key
       edc.transfer.proxy.token.verifier.publickey.alias=azure-vault-token-signer-private-key-pub
@@ -247,7 +248,6 @@ edc-controlplane:
       edc.datasource.transferprocess.url=jdbc:postgresql://app-irs-int-postgresql-hl:5432/edc
       edc.datasource.transferprocess.user=<path:traceability-irs/data/int/controlplane#databaseuser>
       edc.datasource.transferprocess.password=<path:traceability-irs/data/int/controlplane#databasepassword>
-
 
 # Values for edc-dataplane subchart.
 edc-dataplane:
