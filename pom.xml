@@ -12,6 +12,7 @@
     <description>Root module containing other modules.</description>
 
     <modules>
+        <module>irs-parent-spring-boot</module>
         <module>esr</module>
         <module>irs-testing</module>
         <module>irs-api</module>
