@@ -35,8 +35,8 @@ rootPassword: test
 digitalTwinRegistry:
   url: https://irs-aas-registry.dev.demo.catena-x.net
 
+# Values for aas wrapper subchart.
 irs-aaswrapper:
-  # DEV values for aas wrapper subchart.
   ingress:
     enabled: true
     className: "nginx"
@@ -73,8 +73,8 @@ irs-aaswrapper:
       wrapper.callback.timeout=60
       # wrapper.auth.basic.someuser=somepassword
 
+# Values for minio subchart.
 irs-minio:
-  # DEV values for minio subchart.
   rootUser: <path:traceability-irs/data/dev/minio#minioUser>
   rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
 
@@ -87,11 +87,8 @@ irs-minio:
   persistence:
     enabled: false
 
-irs-prometheus:
-
+# Values for consumer edc-controlplane.
 edc-controlplane:
-  # DEV values for consumer edc-controlplane.
-
   # -- Overrides the charts name
   nameOverride: "irs-consumer-controlplane"
   # -- Overrides the releases full name
@@ -186,9 +183,8 @@ edc-controlplane:
       edc.datasource.transferprocess.user=edc
       edc.datasource.transferprocess.password=databasepassword
 
+# Values for consumer edc-dataplane.
 edc-dataplane:
-  # DEV values for consumer edc-dataplane.
-
   # -- Overrides the charts name
   nameOverride: "irs-consumer-dataplane"
   # -- Overrides the releases full name
@@ -246,8 +242,8 @@ edc-dataplane:
       edc.vault.hashicorp.health.check.standby.ok=true
       edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
 
+# Values for consumer edc postgres
 postgresql:
-  # DEV values for consumer edc postgres
   auth:
     postgresPassword: <path:traceability-irs/data/dev/controlplane#databasepassword>
     username: <path:traceability-irs/data/dev/controlplane#databaseuser>
