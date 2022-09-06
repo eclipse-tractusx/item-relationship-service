@@ -92,6 +92,13 @@ irs-grafana:
         - "irs-grafana.dev.demo.catena-x.net"
       # Default secret for certificate creation already provided to your namespace
       secretName: tls-secret
+  config:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://irs-irs-prometheus:9090
+        isDefault: true
 
 # Values for prometheus subchart.
 irs-prometheus:
