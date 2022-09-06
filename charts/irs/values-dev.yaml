@@ -23,6 +23,7 @@ keycloak:
     jwkSetUri: <path:traceability-irs/data/dev/keycloak/oauth2#jwkSetUri>
 
 aasWrapper:
+  host: http://irs-irs-aaswrapper:9191/api/service
   username: <path:traceability-irs/data/dev/aasProxy/submodel#username>
   password: <path:traceability-irs/data/dev/aasProxy/submodel#password>
 
