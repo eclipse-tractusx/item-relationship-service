@@ -5,7 +5,7 @@ image:
 
 ingress:
   hosts:
-    - host: "irs.dev.demo.catena-x.net"
+    - host: "irs-test.dev.demo.catena-x.net"
       paths:
         - path: /
           pathType: ImplementationSpecific
