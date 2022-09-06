@@ -77,7 +77,8 @@ irs-aaswrapper:
 
 # Values for grafana subchart.
 irs-grafana:
-  enabled: false
+  ingress:
+    enabled: false
   config:
     apiVersion: 1
     datasources:
