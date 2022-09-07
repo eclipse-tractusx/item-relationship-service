@@ -25,6 +25,7 @@ import java.net.URI;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -35,9 +36,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 class AASWrapperUriAddressRewritePolicy {
 
     private final String aasWrapperHost;
+    private final UrlValidator urlValidator;
 
     /* package */ AASWrapperUriAddressRewritePolicy(final String aasWrapperHost) {
+//    /* package */ AASWrapperUriAddressRewritePolicy(final String aasWrapperHost, final UrlValidator urlValidator) {
         this.aasWrapperHost = aasWrapperHost;
+        this.urlValidator = new UrlValidator();
     }
 
     /**
@@ -46,6 +50,10 @@ class AASWrapperUriAddressRewritePolicy {
      * @return rewritten address
      */
     public URI rewriteToAASWrapperUri(final String endpointAddress) {
+        if (!urlValidator.isValid(endpointAddress)) {
+            throw new IllegalArgumentException(String.format("Invalid endpoint url '%s'", endpointAddress));
+        }
+
         final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(aasWrapperHost);
 
         final AASWrapperUri aasWrapperUri = new AASWrapperUri(endpointAddress);
