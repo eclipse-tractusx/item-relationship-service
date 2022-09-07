@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -112,9 +113,10 @@ class SubmodelClientImpl implements SubmodelClient {
 
     /* package */ SubmodelClientImpl(@Qualifier(BASIC_AUTH_REST_TEMPLATE) final RestTemplate restTemplate,
             @Value("${aasWrapper.host}") final String aasWrapperHost, final JsonUtil jsonUtil,
-            final OutboundMeterRegistryService meterRegistryService, final RetryRegistry retryRegistry) {
+            final OutboundMeterRegistryService meterRegistryService, final RetryRegistry retryRegistry, final
+            UrlValidator urlValidator) {
         this.restTemplate = restTemplate;
-        this.aasWrapperUriAddressRewritePolicy = new AASWrapperUriAddressRewritePolicy(aasWrapperHost);
+        this.aasWrapperUriAddressRewritePolicy = new AASWrapperUriAddressRewritePolicy(aasWrapperHost, urlValidator);
         this.jsonUtil = jsonUtil;
         this.meterRegistryService = meterRegistryService;
         this.retryRegistry = retryRegistry;

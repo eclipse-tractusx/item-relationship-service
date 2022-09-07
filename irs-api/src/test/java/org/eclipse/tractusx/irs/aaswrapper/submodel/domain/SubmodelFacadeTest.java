@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.github.resilience4j.retry.RetryRegistry;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
@@ -58,6 +59,7 @@ class SubmodelFacadeTest {
 
     private final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
     private final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
+    private final UrlValidator urlValidator = new UrlValidator();
 
     @Mock
     RestTemplate restTemplate;
@@ -75,7 +77,7 @@ class SubmodelFacadeTest {
         final JobParameter jobParameter = jobParameter();
         final String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(),
-                "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
+                "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry, urlValidator);
         final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
@@ -115,7 +117,7 @@ class SubmodelFacadeTest {
     void shouldReturnAssemblyPartRelationshipDTOWhenRequestingOnRealClient() {
         final String endpointUrl = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(restTemplate,
-                "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
+                "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry, urlValidator);
         SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
         final AssemblyPartRelationship assemblyPartRelationship = new AssemblyPartRelationship();

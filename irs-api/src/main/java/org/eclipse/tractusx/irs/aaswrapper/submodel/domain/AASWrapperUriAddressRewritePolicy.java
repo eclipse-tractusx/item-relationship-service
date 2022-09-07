@@ -38,10 +38,9 @@ class AASWrapperUriAddressRewritePolicy {
     private final String aasWrapperHost;
     private final UrlValidator urlValidator;
 
-    /* package */ AASWrapperUriAddressRewritePolicy(final String aasWrapperHost) {
-//    /* package */ AASWrapperUriAddressRewritePolicy(final String aasWrapperHost, final UrlValidator urlValidator) {
+    /* package */ AASWrapperUriAddressRewritePolicy(final String aasWrapperHost, final UrlValidator urlValidator) {
         this.aasWrapperHost = aasWrapperHost;
-        this.urlValidator = new UrlValidator();
+        this.urlValidator = urlValidator;
     }
 
     /**

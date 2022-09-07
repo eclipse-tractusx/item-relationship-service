@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASRecursiveJobHandler;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcessManager;
@@ -109,5 +110,10 @@ public class JobConfiguration {
     public BpdmDelegate bpdmDelegate(
             final BpdmFacade bpdmFacade) {
         return new BpdmDelegate(bpdmFacade);
+    }
+
+    @Bean
+    public UrlValidator urlValidator() {
+        return new UrlValidator();
     }
 }
