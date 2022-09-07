@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.aaswrapper.job.delegate.AbstractDelegate;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.TransferProcessManager;
@@ -37,7 +38,6 @@ import org.eclipse.tractusx.irs.util.JsonUtil;
 
 /**
  * Process manager for AAS Object transfers.
- * Communicates with the AAS Wrapper.
  */
 @Slf4j
 @SuppressWarnings("PMD.DoNotUseThreads") // We want to use threads at the moment ;-)
@@ -47,11 +47,11 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     private final BlobPersistence blobStore;
 
-    private final AASHandler aasHandler;
+    private final AbstractDelegate abstractDelegate;
 
-    public AASTransferProcessManager(final AASHandler aasHandler, final ExecutorService executor,
+    public AASTransferProcessManager(final AbstractDelegate abstractDelegate, final ExecutorService executor,
             final BlobPersistence blobStore) {
-        this.aasHandler = aasHandler;
+        this.abstractDelegate = abstractDelegate;
         this.executor = executor;
         this.blobStore = blobStore;
     }
@@ -79,8 +79,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             final String itemId = dataRequest.getItemId();
 
             log.info("Starting processing Digital Twin Registry with itemId {}", itemId);
-            final ItemContainer itemContainer = aasHandler.collectShellAndSubmodels(jobData, aasTransferProcess,
-                    itemId);
+            final ItemContainer itemContainer = abstractDelegate.process(ItemContainer.builder(), jobData, aasTransferProcess, itemId);
             storeItemContainer(processId, itemContainer);
 
             transferProcessCompleted.accept(aasTransferProcess);

@@ -37,6 +37,12 @@ import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInformation;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -173,7 +179,7 @@ public class TestMother {
         return IntStream.range(0, count).mapToObj(i -> dataRequest());
     }
 
-    public Relationship relationship() {
+    public static Relationship relationship() {
         final LinkedItem linkedItem = LinkedItem.builder()
                                                 .childCatenaXId(GlobalAssetIdentification.of(UUID.randomUUID().toString()))
                                                 .lifecycleContext(BomLifecycle.AS_BUILT)
@@ -182,5 +188,31 @@ public class TestMother {
         return new Relationship(GlobalAssetIdentification.of(UUID.randomUUID().toString()),
                 linkedItem,
                 RelationshipAspect.AssemblyPartRelationship.name());
+    }
+
+    public static Endpoint endpoint(String endpointAddress) {
+        return Endpoint.builder()
+                       .protocolInformation(ProtocolInformation.builder().endpointAddress(endpointAddress).build())
+                       .build();
+    }
+
+    public static SubmodelDescriptor submodelDescriptor(final String semanticId, final String endpointAddress) {
+        final Reference semanticIdSerial = Reference.builder().value(List.of(semanticId)).build();
+        final List<Endpoint> endpointSerial = List.of(endpoint(endpointAddress));
+        return SubmodelDescriptor.builder().semanticId(semanticIdSerial).endpoints(endpointSerial).build();
+    }
+
+    public static SubmodelDescriptor submodelDescriptorWithoutEndpoint(final String semanticId) {
+        return submodelDescriptor(semanticId, null);
+    }
+
+    public static AssetAdministrationShellDescriptor shellDescriptor(
+            final List<SubmodelDescriptor> submodelDescriptors) {
+        return AssetAdministrationShellDescriptor
+                .builder()
+                .specificAssetIds(List.of(
+                        IdentifierKeyValuePair.builder().key("ManufacturerId").value("BPNL00000003AYRE").build()))
+                .submodelDescriptors(submodelDescriptors)
+                .build();
     }
 }

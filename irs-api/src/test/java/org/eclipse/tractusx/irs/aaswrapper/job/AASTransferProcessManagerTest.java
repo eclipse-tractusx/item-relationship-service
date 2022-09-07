@@ -32,14 +32,9 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
 import org.eclipse.tractusx.irs.InMemoryBlobStore;
-import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
-import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.SubmodelFacade;
-import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
+import org.eclipse.tractusx.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
-import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
-import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
-import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.eclipse.tractusx.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,16 +45,10 @@ class AASTransferProcessManagerTest {
 
     private final TestMother generate = new TestMother();
 
-    DigitalTwinRegistryFacade digitalTwinRegistryFacade = mock(DigitalTwinRegistryFacade.class);
-    SubmodelFacade submodelFacade = mock(SubmodelFacade.class);
-    SemanticsHubFacade semanticsHubFacade = mock(SemanticsHubFacade.class);
-    BpdmFacade bpdmFacade = mock(BpdmFacade.class);
-    JsonValidatorService jsonValidatorService = mock(JsonValidatorService.class);
+    DigitalTwinDelegate digitalTwinProcessor = mock(DigitalTwinDelegate.class);
     ExecutorService pool = mock(ExecutorService.class);
 
-    AASHandler aasHandler = new AASHandler(digitalTwinRegistryFacade, submodelFacade, semanticsHubFacade, bpdmFacade, jsonValidatorService, new JsonUtil());
-
-    final AASTransferProcessManager manager = new AASTransferProcessManager(aasHandler, pool, new InMemoryBlobStore());
+    final AASTransferProcessManager manager = new AASTransferProcessManager(digitalTwinProcessor, pool, new InMemoryBlobStore());
 
     @Test
     void shouldExecuteThreadForProcessing() {

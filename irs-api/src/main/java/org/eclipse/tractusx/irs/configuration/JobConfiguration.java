@@ -25,13 +25,16 @@ import java.util.concurrent.Executors;
 
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.eclipse.tractusx.irs.aaswrapper.job.AASHandler;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASRecursiveJobHandler;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcessManager;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemTreesAssembler;
 import org.eclipse.tractusx.irs.aaswrapper.job.TreeRecursiveLogic;
+import org.eclipse.tractusx.irs.aaswrapper.job.delegate.BpdmDelegate;
+import org.eclipse.tractusx.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
+import org.eclipse.tractusx.irs.aaswrapper.job.delegate.RelationshipDelegate;
+import org.eclipse.tractusx.irs.aaswrapper.job.delegate.SubmodelDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
@@ -56,13 +59,10 @@ public class JobConfiguration {
 
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
-            final DigitalTwinRegistryFacade registryFacade, final SubmodelFacade submodelFacade,
-            final SemanticsHubFacade semanticsHubFacade, final BpdmFacade bpdmFacade,
-            final JsonValidatorService jsonValidatorService, final BlobPersistence blobStore,
+            final DigitalTwinDelegate digitalTwinDelegate, final BlobPersistence blobStore,
             final JobStore jobStore, final MeterRegistryService meterService) {
 
-        final var aasHandler = new AASHandler(registryFacade, submodelFacade, semanticsHubFacade, bpdmFacade, jsonValidatorService, jsonUtil());
-        final var manager = new AASTransferProcessManager(aasHandler, Executors.newCachedThreadPool(), blobStore);
+        final var manager = new AASTransferProcessManager(digitalTwinDelegate, Executors.newCachedThreadPool(), blobStore);
         final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);
 
@@ -84,5 +84,30 @@ public class JobConfiguration {
     @Bean
     public TimedAspect timedAspect(final MeterRegistry registry) {
         return new TimedAspect(registry);
+    }
+
+    @Bean
+    public DigitalTwinDelegate digitalTwinDelegate(
+            final RelationshipDelegate relationshipDelegate, final DigitalTwinRegistryFacade digitalTwinRegistryFacade) {
+        return new DigitalTwinDelegate(relationshipDelegate, digitalTwinRegistryFacade);
+    }
+
+    @Bean
+    public RelationshipDelegate relationshipDelegate(
+            final SubmodelDelegate submodelDelegate, final SubmodelFacade submodelFacade) {
+        return new RelationshipDelegate(submodelDelegate, submodelFacade);
+    }
+
+    @Bean
+    public SubmodelDelegate submodelDelegate(
+            final BpdmDelegate bpdmDelegate, final SubmodelFacade submodelFacade,
+            final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService) {
+        return new SubmodelDelegate(bpdmDelegate, submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil());
+    }
+
+    @Bean
+    public BpdmDelegate bpdmDelegate(
+            final BpdmFacade bpdmFacade) {
+        return new BpdmDelegate(bpdmFacade);
     }
 }
