@@ -26,7 +26,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.net.URI;
 
-import org.apache.commons.validator.routines.UrlValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -34,7 +33,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 class AASWrapperUriAddressRewritePolicyTest {
 
     final AASWrapperUriAddressRewritePolicy aasWrapperUriAddressRewritePolicy = new AASWrapperUriAddressRewritePolicy(
-            "http://aaswrapper:9191/api/service", new UrlValidator());
+            "http://aaswrapper:9191/api/service");
 
     /**
      * @param endpointAddress input to rewrite

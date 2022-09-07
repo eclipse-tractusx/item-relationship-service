@@ -63,7 +63,7 @@ class SubmodelExponentialRetryTest {
 
         // Act
         assertThrows(HttpServerErrorException.class,
-                () -> submodelClient.getSubmodel("http://test.com/urn:uuid:12345/submodel?content=value",
+                () -> submodelClient.getSubmodel("http://test.test/urn:uuid:12345/submodel?content=value",
                         Object.class));
 
         // Assert
@@ -77,7 +77,7 @@ class SubmodelExponentialRetryTest {
 
         // Act
         assertThrows(RuntimeException.class,
-                () -> submodelClient.getSubmodel("http://test.com/urn:uuid:12345/submodel?content=value",
+                () -> submodelClient.getSubmodel("http://test.test/urn:uuid:12345/submodel?content=value",
                         Object.class));
 
         // Assert
