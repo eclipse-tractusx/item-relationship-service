@@ -35,8 +35,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.resilience4j.retry.RetryRegistry;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
@@ -58,15 +60,16 @@ class SubmodelClientImplTest {
 
     private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
     private final JsonUtil jsonUtil = new JsonUtil();
+    private final UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
     private final SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate,
-            "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
+            "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry, urlValidator);
     private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
     @Test
     void shouldThrowExceptionWhenSubmodelNotFound() {
         final String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(),
-                "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
+                "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry, urlValidator);
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
                 () -> submodelClient.getSubmodel(url, AssemblyPartRelationship.class));
@@ -113,5 +116,25 @@ class SubmodelClientImplTest {
 
         verify(this.restTemplate, times(3)).getForEntity(any(), any());
         verify(meterRegistry, times(3)).incrementSubmodelTimeoutCounter(any());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenEndpointAddressIsMalformed() {
+        final String malformedAddress = "null/BPNL00000003AYRE/urn%3Auuid%3A0834c0ea-435e-4085-8a9b-ac46af75deae-urn%3Auuid%3A6972cc4c-e31e-438c-8b23-4f32331a73ba/submodel?content=value&extent=WithBLOBValue";
+        assertThrows(IllegalArgumentException.class, () -> submodelClient.getSubmodel(malformedAddress));
+    }
+
+    @Test
+    void shouldReturnSubmodelWhenCallingLocalService() {
+        final String localAddress = "http://irs-aaswrapper:9191/BPNL00000003AYRE/urn%3Auuid%3A0834c0ea-435e-4085-8a9b-ac46af75deae-urn%3Auuid%3A6972cc4c-e31e-438c-8b23-4f32331a73ba/submodel?content=value&extent=WithBLOBValue";
+        final String data = "testdata";
+
+        final ResponseEntity<String> responseEntity = new ResponseEntity<>(data, HttpStatus.OK);
+        doReturn(responseEntity).when(restTemplate).getForEntity(any(), any());
+
+        final String submodelResponse = submodelClient.getSubmodel(localAddress);
+
+        assertThat(submodelResponse).isNotNull();
+        assertThat(submodelResponse).isEqualTo(data);
     }
 }
