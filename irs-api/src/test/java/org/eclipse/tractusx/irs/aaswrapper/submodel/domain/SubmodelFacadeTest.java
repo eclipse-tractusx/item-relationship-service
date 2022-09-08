@@ -21,10 +21,11 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
 
-import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
-import static org.eclipse.tractusx.irs.util.TestMother.jobParameterFilter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
+import static org.eclipse.tractusx.irs.util.TestMother.jobParameterFilter;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
