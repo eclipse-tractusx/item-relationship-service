@@ -23,6 +23,13 @@
     </repositories>
 
     <dependencies>
+        <!-- To find spring components and expose controller endpoints -->
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>esr</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
