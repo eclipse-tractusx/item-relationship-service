@@ -27,9 +27,9 @@ ref over IRS,DTRegistry
     IRS --> DTRegistry: getAAS for child
 end ref
 IRS -> IRS : extract BPML from AAS shell
-IRS -> OnSupplyAPI : call OnSupplyAPI http//supplyOn/BPML/BPML/submodels/ISO14001
-IRS <-- OnSupplyAPI : OnSupplyPayload
-IRS -> IRS : append OnSupplyPayload
+IRS -> SupplyOnAPI : call SupplyOnAPI http//supplyOn/BPML/BPML/submodels/ISO14001
+IRS <-- SupplyOnAPI : SupplyOnPayload
+IRS -> IRS : append SupplyOnPayload
 IRS -> IRS : aggregate ESRCertificatesStatistic
 IRS -> IRS_1_1 : globalAssetId
 IRS <- IRS_1_1 : JobResponse
@@ -49,7 +49,7 @@ end box
 
 box "Shared Service" #LightGrey
 participant DTRegistry
-participant OnSupplyAPI
+participant SupplyOnAPI
 end box
 
 @enduml

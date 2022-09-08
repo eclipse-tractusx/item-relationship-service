@@ -57,13 +57,13 @@ opt  shell is not parent shell
        BPNL of Supplier
    end note
 
-ESRSubServer -->  OnSupplyAPI : call OnSupplyAPI 
+ESRSubServer -->  SupplyOnAPI : call SupplyOnAPI
 note left
     http//supplyOn/BPML_R/BPML_S/submodels/ISO14001
     BPML_R : Requestor
     BPML_S : Supplier
 end note
-ESRSubServer <--  OnSupplyAPI : ISO14001 Response
+ESRSubServer <--  SupplyOnAPI : ISO14001 Response
 ESRSubServer --> MinIO : Persist ISO14001 Response (optional)
 ESRSubServer --> MinIO : Load ESRCertificateStatistic aspect
 opt ! ESRCertificateStatistic exists
@@ -94,7 +94,7 @@ ESRSubServer --> ESRSubServer : Request for User approval (optional))
 User -->  ESRSubServer: Grant User approval
 
 box "SupplyOn ecosystem" #DarkGrey
-participant OnSupplyAPI
+participant SupplyOnAPI
 end box
 
 box "Shared Service" #LightGrey
