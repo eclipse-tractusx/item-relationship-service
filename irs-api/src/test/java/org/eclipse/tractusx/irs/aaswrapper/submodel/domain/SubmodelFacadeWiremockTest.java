@@ -33,10 +33,9 @@ import static org.mockito.Mockito.mock;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.github.resilience4j.retry.RetryRegistry;
-import org.apache.commons.validator.routines.UrlValidator;
+import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
-import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,7 +51,6 @@ class SubmodelFacadeWiremockTest {
     private final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
     private WireMockServer wireMockServer;
     private SubmodelFacade submodelFacade;
 
@@ -62,7 +60,7 @@ class SubmodelFacadeWiremockTest {
         this.wireMockServer.start();
         configureFor(this.wireMockServer.port());
         SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate, buildApiMethodUrl() + "/api/service",
-                jsonUtil, meterRegistry, retryRegistry, urlValidator);
+                jsonUtil, meterRegistry, retryRegistry);
         this.submodelFacade = new SubmodelFacade(submodelClient);
     }
 

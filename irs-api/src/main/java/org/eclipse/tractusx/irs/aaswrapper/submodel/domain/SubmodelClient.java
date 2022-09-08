@@ -114,10 +114,9 @@ class SubmodelClientImpl implements SubmodelClient {
 
     /* package */ SubmodelClientImpl(@Qualifier(BASIC_AUTH_REST_TEMPLATE) final RestTemplate restTemplate,
             @Value("${aasWrapper.host}") final String aasWrapperHost, final JsonUtil jsonUtil,
-            final OutboundMeterRegistryService meterRegistryService, final RetryRegistry retryRegistry,
-            final UrlValidator urlValidator) {
+            final OutboundMeterRegistryService meterRegistryService, final RetryRegistry retryRegistry) {
         this.restTemplate = restTemplate;
-        this.urlValidator = urlValidator;
+        this.urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
         this.aasWrapperUriAddressRewritePolicy = new AASWrapperUriAddressRewritePolicy(aasWrapperHost);
         this.jsonUtil = jsonUtil;
         this.meterRegistryService = meterRegistryService;

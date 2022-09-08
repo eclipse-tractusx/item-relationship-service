@@ -35,10 +35,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.resilience4j.retry.RetryRegistry;
-import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
@@ -60,16 +58,15 @@ class SubmodelClientImplTest {
 
     private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
     private final JsonUtil jsonUtil = new JsonUtil();
-    private final UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
     private final SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate,
-            "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry, urlValidator);
+            "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
     private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
     @Test
     void shouldThrowExceptionWhenSubmodelNotFound() {
         final String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(),
-                "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry, urlValidator);
+                "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
                 () -> submodelClient.getSubmodel(url, AssemblyPartRelationship.class));
