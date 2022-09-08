@@ -30,7 +30,7 @@ class SupplyOnFacadeTest {
     private final SupplyOnFacade supplyOnFacade = new SupplyOnFacade(new SupplyOnClientLocalStub());
 
     @Test
-    void shouldReturnEsrCertificate() {
+    void shouldReturnEsrCertificateData() {
         final String supplierBPN = "BPNL00000003XXX";
 
         final EsrCertificate esrCertificate = supplyOnFacade.getESRCertificate(supplierBPN);

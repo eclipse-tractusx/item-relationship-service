@@ -21,8 +21,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.esr.supplyon;
 
-import java.util.Random;
-
 import org.springframework.stereotype.Service;
 
 /**
@@ -51,12 +49,8 @@ class SupplyOnClientLocalStub implements SupplyOnClient {
     public EsrCertificate getESRCertificate(final String requestorBPN, final String supplierBPN, final String certificateType) {
         return EsrCertificate
                 .builder()
-                .certificateState(randomCertificateState())
+                .certificateState(CertificateState.VALID)
                 .build();
     }
 
-    private CertificateState randomCertificateState()  {
-        final int rndIndex = new Random().nextInt(CertificateState.values().length);
-        return CertificateState.values()[rndIndex];
-    }
 }
