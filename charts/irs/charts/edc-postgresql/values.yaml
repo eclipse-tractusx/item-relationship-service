@@ -435,7 +435,9 @@ primary:
   ## @param primary.resources.requests.cpu The requested cpu for the PostgreSQL Primary containers
   ##
   resources:
-    limits: {}
+    limits:
+      memory: 768Mi
+      cpu: 750m
     requests:
       memory: 256Mi
       cpu: 250m

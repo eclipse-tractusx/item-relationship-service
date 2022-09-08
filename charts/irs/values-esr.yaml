@@ -1,0 +1,288 @@
+springprofile: esr
+
+image:
+  tag: $ARGOCD_APP_REVISION
+
+ingress:
+  hosts:
+    - host: "irs-esr.dev.demo.catena-x.net"
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - "irs-esr.dev.demo.catena-x.net"
+      # Default secret for certificate creation already provided to your namespace
+      secretName: tls-secret
+
+keycloak:
+  oauth2:
+    clientId: <path:traceability-irs/data/dev/keycloak/oauth2#clientId>
+    clientSecret: <path:traceability-irs/data/dev/keycloak/oauth2#clientSecret>
+    clientTokenUri: <path:traceability-irs/data/dev/keycloak/oauth2#tokenUri>
+    jwkSetUri: <path:traceability-irs/data/dev/keycloak/oauth2#jwkSetUri>
+
+aasWrapper:
+  host: http://irs-spike-irs-aaswrapper:9191/api/service
+  username: <path:traceability-irs/data/dev/aasProxy/submodel#username>
+  password: <path:traceability-irs/data/dev/aasProxy/submodel#password>
+
+minio:
+  url: http://irs-spike-irs-minio:9000
+
+rootUser: <path:traceability-irs/data/dev/minio#minioUser>
+rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
+
+digitalTwinRegistry:
+  url: https://irs-aas-registry.dev.demo.catena-x.net
+
+# Values for aas wrapper subchart.
+irs-aaswrapper:
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    hosts:
+      - host: "irs-aas-wrapper-spike.dev.demo.catena-x.net"
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: aaswrapper-spike
+                port:
+                  number: 9191
+    tls:
+      - hosts:
+          - "irs-aas-wrapper-spike.dev.demo.catena-x.net"
+        # Default secret for certificate creation already provided to your namespace
+        secretName: tls-secret
+
+  configuration:
+    properties: |-
+      web.http.port=9191
+      web.http.path=/api
+      web.http.callback.port=9192
+      web.http.callback.path=/callback
+      wrapper.consumer.edc.datamanagement.url=http://irs-consumer-controlplane-spike:8181/data
+      wrapper.consumer.edc.control.url=http://irs-consumer-controlplane-spike:9999/api/controlplane/control
+      wrapper.consumer.edc.apikey.name=X-Api-Key
+      wrapper.consumer.edc.apikey.value=123456
+      wrapper.callback.timeout=60
+      # wrapper.auth.basic.someuser=somepassword
+
+
+# Values for grafana subchart.
+irs-grafana:
+  ingress:
+    enabled: false
+  config:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://irs-spike-irs-prometheus:9090
+        isDefault: true
+
+# Values for prometheus subchart.
+irs-prometheus:
+  config:
+    scrape_configs:
+      # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+      - job_name: 'prometheus'
+        # metrics_path defaults to '/metrics'
+        # scheme defaults to 'http'.
+        static_configs:
+          - targets: [ '127.0.0.1:9090' ]
+      - job_name: 'spring-actuator'
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 5s
+        static_configs:
+          - targets: [ 'irs-spike:4004' ]
+
+      - job_name: 'minio-actuator'
+        metrics_path: /minio/v2/metrics/cluster
+        static_configs:
+          - targets: [ 'irs-spike-irs-minio:9000' ]
+
+# Values for minio subchart.
+irs-minio:
+  rootUser: <path:traceability-irs/data/dev/minio#minioUser>
+  rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
+
+  ## Path where PV would be mounted on the MinIO Pod
+  mountPath: "/data"
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: false
+
+# Values for edc-controlplane subchart.
+edc-controlplane:
+  # -- Overrides the charts name
+  nameOverride: "irs-consumer-controlplane-spike"
+  # -- Overrides the releases full name
+  fullnameOverride: "irs-consumer-controlplane-spike"
+
+  ## Ingress declaration to expose the network service.
+  ingresses:
+    ## Public / Internet facing Ingress
+    - enabled: true
+      # -- The hostname to be used to precisely map incoming traffic onto the underlying network service
+      hostname: "irs-consumer-controlplane-spike.dev.demo.catena-x.net"
+      # -- Additional ingress annotations to add
+      annotations: { }
+      # -- EDC endpoints exposed by this ingress resource
+      endpoints:
+        - ids
+        - data
+      # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
+      className: ""
+      # -- Enables TLS on the ingress resource
+      tls:
+        - hosts:
+            - "irs-consumer-controlplane-spike.dev.demo.catena-x.net"
+          # Default secret for certificate creation already provided to your namespace
+          secretName: tls-secret
+      ## Adds [cert-manager](https://cert-manager.io/docs/) annotations to the ingress resource
+      certManager:
+        # -- If preset enables certificate generation via cert-manager namespace scoped issuer
+        issuer: ""
+        # -- If preset enables certificate generation via cert-manager cluster-wide issuer
+        clusterIssuer: ""
+
+  configuration:
+    # -- EDC configuration.properties configuring aspects of the [eclipse-dataspaceconnector](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector)
+    properties: |-
+      edc.api.auth.key=123456
+
+      ids.webhook.address=https://irs-consumer-controlplane-spike.dev.demo.catena-x.net
+
+      edc.ids.id=urn:connector:edc-consumer-controlplane-spike
+      edc.ids.catalog.id=urn:catalog:default
+      edc.ids.endpoint=https://irs-consumer-controlplane-spike.dev.demo.catena-x.net/api/v1/ids
+
+      edc.receiver.http.endpoint=http://irs-spike-irs-aaswrapper:9192/callback/endpoint-data-reference
+
+      edc.transfer.dataplane.sync.endpoint=http://irs-consumer-dataplane-spike:8185/api/public
+      edc.transfer.proxy.endpoint=https://irs-consumer-dataplane-spike.dev.demo.catena-x.net/api/public
+      edc.transfer.proxy.token.signer.privatekey.alias=irs-dev-daps-cert-consumer-key
+      edc.transfer.proxy.token.verifier.publickey.alias=irs-dev-daps-cert-consumer
+
+      edc.dataplane.selector.consumerspike.url=http://irs-consumer-dataplane-spike:9999/api/dataplane/control
+      edc.dataplane.selector.consumerspike.sourcetypes=HttpData
+      edc.dataplane.selector.consumerspike.destinationtypes=HttpProxy
+      edc.dataplane.selector.consumerspike.properties={ "publicApiUrl": "http://irs-consumer-dataplane-spike:8185/api/public" }
+
+      edc.oauth.client.id=4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90:keyid:4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90
+      edc.oauth.private.key.alias=irs-dev-daps-cert-consumer-key
+      edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
+      edc.oauth.provider.jwks.url=https://daps-irs.dev.demo.catena-x.net/.well-known/jwks.json
+      edc.oauth.public.key.alias=irs-dev-daps-cert-consumer
+      edc.oauth.token.url=https://daps-irs.dev.demo.catena-x.net/token
+
+      edc.vault.hashicorp.url=https://vault.demo.catena-x.net
+      edc.vault.hashicorp.token=<path:traceability-irs/data/dev/controlplane#vaultToken>
+      edc.vault.hashicorp.timeout.seconds=30
+      edc.vault.hashicorp.health.check.enabled=true
+      edc.vault.hashicorp.health.check.standby.ok=true
+      edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
+
+      edc.data.encryption.keys.alias=irs-dev-daps-cert-consumer-key
+      edc.data.encryption.algorithm=NONE
+
+      # Postgresql related configuration
+      edc.datasource.asset.name=asset
+      edc.datasource.asset.url=jdbc:postgresql://irs-spike-postgresql-hl:5432/edc
+      edc.datasource.asset.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
+      edc.datasource.asset.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
+      edc.datasource.contractdefinition.name=contractdefinition
+      edc.datasource.contractdefinition.url=jdbc:postgresql://irs-spike-postgresql-hl:5432/edc
+      edc.datasource.contractdefinition.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
+      edc.datasource.contractdefinition.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
+      edc.datasource.contractnegotiation.name=contractnegotiation
+      edc.datasource.contractnegotiation.url=jdbc:postgresql://irs-spike-postgresql-hl:5432/edc
+      edc.datasource.contractnegotiation.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
+      edc.datasource.contractnegotiation.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
+      edc.datasource.policy.name=policy
+      edc.datasource.policy.url=jdbc:postgresql://irs-spike-postgresql-hl:5432/edc
+      edc.datasource.policy.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
+      edc.datasource.policy.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
+      edc.datasource.transferprocess.name=transferprocess
+      edc.datasource.transferprocess.url=jdbc:postgresql://irs-spike-postgresql-hl:5432/edc
+      edc.datasource.transferprocess.user=<path:traceability-irs/data/dev/controlplane#databaseuser>
+      edc.datasource.transferprocess.password=<path:traceability-irs/data/dev/controlplane#databasepassword>
+
+# Values for edc-dataplane subchart.
+edc-dataplane:
+  # -- Overrides the charts name
+  nameOverride: "irs-consumer-dataplane-spike"
+  # -- Overrides the releases full name
+  fullnameOverride: "irs-consumer-dataplane-spike"
+
+  ## Ingress declaration to expose the network service.
+  ingresses:
+    ## Public / Internet facing Ingress
+    - enabled: true
+      # -- The hostname to be used to precisely map incoming traffic onto the underlying network service
+      hostname: "irs-consumer-dataplane-spike.dev.demo.catena-x.net"
+      # -- Additional ingress annotations to add
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+      # -- EDC endpoints exposed by this ingress resource
+      endpoints:
+        - public
+      # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
+      className: "nginx"
+      # -- Enables TLS on the ingress resource
+      tls:
+        - hosts:
+            - "irs-consumer-dataplane-spike.dev.demo.catena-x.net"
+          # Default secret for certificate creation already provided to your namespace
+          secretName: tls-secret
+      ## Adds [cert-manager](https://cert-manager.io/docs/) annotations to the ingress resource
+      certManager:
+        # -- If preset enables certificate generation via cert-manager namespace scoped issuer
+        issuer: ""
+        # -- If preset enables certificate generation via cert-manager cluster-wide issuer
+        clusterIssuer: ""
+
+  configuration:
+    # -- EDC configuration.properties configuring aspects of the [eclipse-dataspaceconnector](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector)
+    properties: |-
+      edc.api.auth.key=123456
+
+      edc.dataplane.token.validation.endpoint=http://irs-consumer-controlplane-spike:8182/validation/token
+
+      edc.receiver.http.endpoint=http://irs-spike-irs-aaswrapper:9192/callback
+
+      edc.oauth.client.id=4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90:keyid:4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90
+      edc.oauth.private.key.alias=irs-dev-daps-cert-consumer-key
+      edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
+      edc.oauth.provider.jwks.url=https://daps-irs.dev.demo.catena-x.net/.well-known/jwks.json
+      edc.oauth.public.key.alias=irs-dev-daps-cert-consumer
+      edc.oauth.token.url=https://daps-irs.dev.demo.catena-x.net/token
+
+      edc.vault.hashicorp.url=https://vault.demo.catena-x.net
+      edc.vault.hashicorp.token=<path:traceability-irs/data/dev/controlplane#vaultToken>
+      edc.vault.hashicorp.timeout.seconds=30
+      edc.vault.hashicorp.health.check.enabled=true
+      edc.vault.hashicorp.health.check.standby.ok=true
+      edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
+
+
+# Values for edc postgres subchart.
+postgresql:
+  auth:
+    postgresPassword: <path:traceability-irs/data/dev/controlplane#databasepassword>
+    username: <path:traceability-irs/data/dev/controlplane#databaseuser>
+    password: <path:traceability-irs/data/dev/controlplane#databasepassword>
+    database: "edc"
+

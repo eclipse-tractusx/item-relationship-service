@@ -59,6 +59,9 @@ resources:
     cpu: 300m
     memory: 512Mi
 
+ingress:
+  enabled: false
+
 autoscaling:
   enabled: false
   minReplicas: 1
