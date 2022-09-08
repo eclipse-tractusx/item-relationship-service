@@ -23,7 +23,6 @@ package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,7 +34,6 @@ import java.util.List;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
-import org.eclipse.tractusx.irs.dto.JobParameter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -78,7 +76,6 @@ class DigitalTwinRegistryFacadeTest {
     @Test
     void shouldThrowExceptionWhenRequestError() {
         final String catenaXId = "test";
-        final JobParameter jobParameter = jobParameter();
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenThrow(
                 new RestClientException("Dummy"));
 
