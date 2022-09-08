@@ -19,30 +19,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.dto;
+package org.eclipse.tractusx.esr.supplyon;
 
-import java.time.ZonedDateTime;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
+import org.junit.jupiter.api.Test;
 
-/**
- * ChildDataDTO model used for internal application use
- */
-@Data
-@Builder(toBuilder = true)
-@Jacksonized
-public class ChildDataDTO {
+class SupplyOnFacadeTest {
 
-    private ZonedDateTime assembledOn;
+    private final SupplyOnFacade supplyOnFacade = new SupplyOnFacade(new SupplyOnClientLocalStub());
 
-    private QuantityDTO quantity;
+    @Test
+    void shouldReturnEsrCertificate() {
+        final String supplierBPN = "BPNL00000003XXX";
 
-    private ZonedDateTime lastModifiedOn;
+        final EsrCertificate esrCertificate = supplyOnFacade.getESRCertificate(supplierBPN);
 
-    private String lifecycleContext;
-
-    private String childCatenaXId;
+        assertThat(esrCertificate).isNotNull();
+        assertThat(esrCertificate.getCertificateState()).isNotNull();
+    }
 
 }

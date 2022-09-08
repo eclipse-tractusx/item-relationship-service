@@ -19,32 +19,31 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.dto;
+package org.eclipse.tractusx.esr.supplyon;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
- * QuantityDTO model used for internal application use
+ * Public API Facade for SupplyOn domain
  */
-@Data
-@Builder
-@Jacksonized
-public class QuantityDTO {
-
-    private Double quantityNumber;
-
-    private MeasurementUnitDTO measurementUnit;
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class SupplyOnFacade {
 
     /**
-     * MeasurementUnitDTO
+     * Spike covers ISO14001 type only
      */
-    @Data
-    @Builder
-    @Jacksonized
-    public static class MeasurementUnitDTO {
-        private String lexicalValue;
-        private String datatypeURI;
+    private static final String DEFAULT_CERTIFICATE_TYPE = "ISO14001";
+
+    private static final String REQUESTOR_BPN = "BPNL00000003AYRE"; // TODO
+
+    private final SupplyOnClient supplyOnClient;
+
+    public EsrCertificate getESRCertificate(final String supplierBPN) {
+        return supplyOnClient.getESRCertificate(REQUESTOR_BPN, supplierBPN, DEFAULT_CERTIFICATE_TYPE);
     }
+
 }

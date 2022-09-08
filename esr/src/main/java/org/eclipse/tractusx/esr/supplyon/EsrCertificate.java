@@ -19,26 +19,19 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.dto;
-
-import java.util.Set;
+package org.eclipse.tractusx.esr.supplyon;
 
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * AssemblyPartRelationshipDTO model used for internal application use
+ * Esr certificate payload
  */
 @Value
-@Builder(toBuilder = true)
+@Builder
 @Jacksonized
-public class AssemblyPartRelationshipDTO {
+public class EsrCertificate {
 
-    private String catenaXId;
-
-    private Set<ChildDataDTO> childParts;
-
-    private RelationshipAspect relationshipAspect;
-
+    private CertificateState certificateState;
 }
