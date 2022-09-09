@@ -19,30 +19,31 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.dto;
+package org.eclipse.tractusx.esr.supplyon;
 
-import java.time.ZonedDateTime;
-
-import lombok.Builder;
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
- * ChildDataDTO model used for internal application use
+ * Public API Facade for SupplyOn domain
  */
-@Data
-@Builder(toBuilder = true)
-@Jacksonized
-public class ChildDataDTO {
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class SupplyOnFacade {
 
-    private ZonedDateTime assembledOn;
+    /**
+     * Spike covers ISO14001 type only
+     */
+    private static final String DEFAULT_CERTIFICATE_TYPE = "ISO14001";
 
-    private QuantityDTO quantity;
+    private static final String REQUESTOR_BPN = "BPNL00000003AYRE"; // TODO
 
-    private ZonedDateTime lastModifiedOn;
+    private final SupplyOnClient supplyOnClient;
 
-    private String lifecycleContext;
-
-    private String childCatenaXId;
+    public EsrCertificate getESRCertificate(final String supplierBPN) {
+        return supplyOnClient.getESRCertificate(REQUESTOR_BPN, supplierBPN, DEFAULT_CERTIFICATE_TYPE);
+    }
 
 }

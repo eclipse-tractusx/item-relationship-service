@@ -19,32 +19,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.dto;
+package org.eclipse.tractusx.esr.supplyon;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * QuantityDTO model used for internal application use
- */
-@Data
-@Builder
-@Jacksonized
-public class QuantityDTO {
+import org.junit.jupiter.api.Test;
 
-    private Double quantityNumber;
+class SupplyOnFacadeTest {
 
-    private MeasurementUnitDTO measurementUnit;
+    private final SupplyOnFacade supplyOnFacade = new SupplyOnFacade(new SupplyOnClientLocalStub());
 
-    /**
-     * MeasurementUnitDTO
-     */
-    @Data
-    @Builder
-    @Jacksonized
-    public static class MeasurementUnitDTO {
-        private String lexicalValue;
-        private String datatypeURI;
+    @Test
+    void shouldReturnEsrCertificateData() {
+        final String supplierBPN = "BPNL00000003XXX";
+
+        final EsrCertificate esrCertificate = supplyOnFacade.getESRCertificate(supplierBPN);
+
+        assertThat(esrCertificate).isNotNull();
+        assertThat(esrCertificate.getCertificateState()).isNotNull();
     }
+
 }
