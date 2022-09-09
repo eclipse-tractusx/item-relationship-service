@@ -8,29 +8,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v1.1.0] - 2022-09-12
 ### Added
-- **Added Aspect Model validation** IRS now validates the aspect model responses requested through EDC. JSON schema files are requested on demand using Semantic Hub API.
-- **Added BPN mapping** IRS job result now includes BPNs and the corresponding names.
-- **Enabling collecting "Batch" submodels** IRS now supports aspect model "Batch"
+- **Aspect Model validation** IRS now validates the aspect model responses requested via EDC. JSON schema files are requested on demand using Semantic Hub API.
+- **BPN mapping** IRS job result includes BPNs and the corresponding names.
+- **Enabled collecting of "Batch" submodels** IRS supports aspect model "Batch"
 
 ### Fixed
-- **Fixed malformed date-time in IRS job result**
-- **Fixed job cleanup process**
-- **IRS job processing** IRS jobs no longer stay stuck in state RUNNING due to malformed URLs.
+- **Malformed date-time in IRS job result** (TRI-627)
+- **Job cleanup process** Jobs are completely deleted after retention period exceeded. (TRI-631)
+- **IRS job processing** IRS jobs no longer stay stuck in state RUNNING due to malformed URLs. (TRI-675)
 - **Security fixes** Fixed various security findings.
 
 ### Changed
-- **Improved IRS monitoring** Added more metrics and improved Grafana dashboards.
-- **Improved submodel payload in IRS job response**
-- **CORS** Enable CORS configuration
+- **IRS monitoring** Added more metrics and improved Grafana dashboards.
+- **Submodel payload in IRS job response** Submodels are stored as object instead of string.
+- **CORS** Enabled CORS configuration
 - **Documentation** Improved README and UML diagrams.
-- **GitHub Integrations** Trivy /KICS/Eclipse DASH tool/VeraCode
-- **Improved and Extended Postman Collection**
-- **Improvements to IRS stability and code quality**
-- **Improved API docs**
-- **Improve test data and upload script**
-- **Helm Charts** Improved security and performance configurations. Created a All-in-One Helm Chart for IRS which includes all IRS dependencies. Helm Chart is released separately.
-- **Refactor Relationship Result Object of IRS**
-- **FOSS Initial GitHub & Code Preparation** Change package structure to org.eclipse.tractusx.
+- **GitHub integrations** Trivy/KICS/Eclipse DASH tool/VeraCode
+- **Extended Postman collection**
+- **IRS stability and code quality**
+- **API docs**
+- **Test data and upload script**
+- **Helm charts** Improved security and performance configurations. Created a All-in-One Helm Chart for IRS which includes all IRS dependencies. Helm Chart is released separately.
+- **Refactor relationship result object of IRS**
+- **FOSS initial GitHub & code preparation** Change package structure to `org.eclipse.tractusx`.
 
 ## [v1.0.0] - 2022-07-25
 ### Changed
