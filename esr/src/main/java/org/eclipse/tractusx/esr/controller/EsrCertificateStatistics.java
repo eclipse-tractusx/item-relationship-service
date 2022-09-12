@@ -19,41 +19,33 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs;
+package org.eclipse.tractusx.esr.controller;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import java.util.UUID;
+
+import lombok.Builder;
+import lombok.Value;
 
 /**
- * Application entry point.
+ * ESR certificate statistics data model
  */
-@SpringBootApplication
-@EnableScheduling
-@EnableCaching
-@ComponentScan(basePackages = {
-    "org.eclipse.tractusx.irs",
-    "org.eclipse.tractusx.esr"})
-public class IrsApplication {
+@Value
+@Builder
+public class EsrCertificateStatistics {
+
+    private UUID jobId;
+    private CertificateType certificateName;
+    private CertificateStatistics statistics;
 
     /**
-     * The IRS API version.
+     * Certificate statistics
      */
-    public static final String API_VERSION = "1.0";
-
-    /**
-     * The URL prefix for IRS API URLs.
-     */
-    public static final String API_PREFIX = "irs";
-
-    /**
-     * Entry point.
-     *
-     * @param args command line arguments.
-     */
-    public static void main(final String[] args) {
-        SpringApplication.run(IrsApplication.class, args);
+    @Value
+    @Builder
+    public static class CertificateStatistics {
+        private int certificatesWithStateValid;
+        private int certificatesWithStateInvalid;
+        private int certificatesWithStateUnknown;
+        private int certificatesWithStateExceptional;
     }
 }

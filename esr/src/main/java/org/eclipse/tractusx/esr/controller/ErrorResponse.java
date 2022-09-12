@@ -19,41 +19,27 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs;
+package org.eclipse.tractusx.esr.controller;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import java.util.List;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Value;
+import org.springframework.http.HttpStatus;
 
 /**
- * Application entry point.
+ * API error response
  */
-@SpringBootApplication
-@EnableScheduling
-@EnableCaching
-@ComponentScan(basePackages = {
-    "org.eclipse.tractusx.irs",
-    "org.eclipse.tractusx.esr"})
-public class IrsApplication {
+@Schema(description = "Error response.")
+@Value
+class ErrorResponse {
+    @Schema(description = "Error code.")
+    private HttpStatus statusCode;
 
-    /**
-     * The IRS API version.
-     */
-    public static final String API_VERSION = "1.0";
+    @Schema(description = "Error message.")
+    private String message;
 
-    /**
-     * The URL prefix for IRS API URLs.
-     */
-    public static final String API_PREFIX = "irs";
-
-    /**
-     * Entry point.
-     *
-     * @param args command line arguments.
-     */
-    public static void main(final String[] args) {
-        SpringApplication.run(IrsApplication.class, args);
-    }
+    @Schema(description = "List of errors.")
+    private List<String> errors;
 }
+

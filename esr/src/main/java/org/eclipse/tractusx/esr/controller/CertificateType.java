@@ -19,41 +19,15 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs;
+package org.eclipse.tractusx.esr.controller;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * Application entry point.
+ * Type of certificate
  */
-@SpringBootApplication
-@EnableScheduling
-@EnableCaching
-@ComponentScan(basePackages = {
-    "org.eclipse.tractusx.irs",
-    "org.eclipse.tractusx.esr"})
-public class IrsApplication {
+@Schema(description = "Type of certificate")
+public enum CertificateType {
+    ISO14001;
 
-    /**
-     * The IRS API version.
-     */
-    public static final String API_VERSION = "1.0";
-
-    /**
-     * The URL prefix for IRS API URLs.
-     */
-    public static final String API_PREFIX = "irs";
-
-    /**
-     * Entry point.
-     *
-     * @param args command line arguments.
-     */
-    public static void main(final String[] args) {
-        SpringApplication.run(IrsApplication.class, args);
-    }
 }

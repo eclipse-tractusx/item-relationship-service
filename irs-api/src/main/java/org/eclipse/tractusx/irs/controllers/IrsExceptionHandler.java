@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import javax.validation.ConstraintViolationException;
+
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
@@ -91,14 +93,18 @@ public class IrsExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException exception) {
         log.info(exception.getClass().getName(), exception);
 
+        String message = exception.getMessage();
+
         if (exception.getRootCause() instanceof IllegalArgumentException) {
             return handleIllegalArgumentException((IllegalArgumentException) exception.getRootCause());
+        } else if (exception.getRootCause() instanceof NoSuchElementException) {
+            message = ExceptionUtils.getRootCauseMessage(exception);
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                              .body(ErrorResponse.builder()
                                                 .withStatusCode(HttpStatus.BAD_REQUEST)
-                                                .withMessage(exception.getMessage())
+                                                .withMessage(message)
                                                 .build());
     }
 
@@ -116,6 +122,17 @@ public class IrsExceptionHandler {
                              .body(ErrorResponse.builder()
                                                 .withStatusCode(HttpStatus.BAD_REQUEST)
                                                 .withMessage(message)
+                                                .build());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(final ConstraintViolationException exception) {
+        log.info(exception.getClass().getName(), exception);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(ErrorResponse.builder()
+                                                .withStatusCode(HttpStatus.BAD_REQUEST)
+                                                .withMessage(exception.getMessage())
                                                 .build());
     }
 

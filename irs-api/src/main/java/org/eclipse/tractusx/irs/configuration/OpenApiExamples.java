@@ -28,6 +28,8 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
+import org.eclipse.tractusx.esr.controller.CertificateType;
+import org.eclipse.tractusx.esr.controller.EsrCertificateStatistics;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
@@ -73,6 +75,7 @@ public class OpenApiExamples {
     private static final String SUBMODEL_IDENTIFICATION = "urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff";
     private static final String JOB_HANDLE_ID_1 = "6c311d29-5753-46d4-b32c-19b918ea93b0";
     private static final int DEFAULT_DEPTH = 4;
+    private static final int CERT_STATS = 5;
 
     public void createExamples(final Components components) {
         components.addExamples("job-handle", toExample(createJobHandle(JOB_HANDLE_ID_1)));
@@ -94,6 +97,20 @@ public class OpenApiExamples {
         components.addExamples("canceled-job-result", createCanceledJobResult());
         components.addExamples("failed-job-result", createFailedJobResult());
         components.addExamples("complete-job-list-processing-state", createJobListProcessingState());
+        components.addExamples("complete-esr-job-result", createCompleteEsrCertificateStatistics());
+    }
+
+    private Example createCompleteEsrCertificateStatistics() {
+        return toExample(EsrCertificateStatistics.builder()
+                                       .jobId(UUID.randomUUID())
+                                       .certificateName(CertificateType.ISO14001)
+                                       .statistics(EsrCertificateStatistics.CertificateStatistics.builder()
+                                                .certificatesWithStateValid(CERT_STATS)
+                                                .certificatesWithStateInvalid(CERT_STATS)
+                                                .certificatesWithStateUnknown(CERT_STATS)
+                                                .certificatesWithStateExceptional(CERT_STATS)
+                                                .build())
+                                       .build());
     }
 
     private Example createJobListProcessingState() {

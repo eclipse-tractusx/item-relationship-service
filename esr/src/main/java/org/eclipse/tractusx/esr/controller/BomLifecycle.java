@@ -19,41 +19,35 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs;
+package org.eclipse.tractusx.esr.controller;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
-/**
- * Application entry point.
+/***
+ * API type for the view of the items tree to be returned by a query.
  */
-@SpringBootApplication
-@EnableScheduling
-@EnableCaching
-@ComponentScan(basePackages = {
-    "org.eclipse.tractusx.irs",
-    "org.eclipse.tractusx.esr"})
-public class IrsApplication {
+@JsonSerialize(using = ToStringSerializer.class)
+@Schema(description = "The lifecycle context in which the child part was assembled into the parent part.")
+@Getter
+public enum BomLifecycle {
+    @Schema(description = "The view of the ItemsTree as the vehicle was assembled.")
+    AS_BUILT("asBuilt");
 
-    /**
-     * The IRS API version.
-     */
-    public static final String API_VERSION = "1.0";
+    private final String name;
 
-    /**
-     * The URL prefix for IRS API URLs.
-     */
-    public static final String API_PREFIX = "irs";
-
-    /**
-     * Entry point.
-     *
-     * @param args command line arguments.
-     */
-    public static void main(final String[] args) {
-        SpringApplication.run(IrsApplication.class, args);
+    BomLifecycle(final String name) {
+        this.name = name;
     }
+
+    /**
+     * @return convert BomLifecycle to string value
+     */
+    @Override
+    public String toString() {
+        return name;
+    }
+
 }
