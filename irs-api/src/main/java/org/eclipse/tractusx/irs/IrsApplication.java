@@ -37,12 +37,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableCaching
 @ComponentScan(
-        basePackages = {
-                "org.eclipse.tractusx.irs",
-                "org.eclipse.tractusx.esr"},
-        excludeFilters = {
-                @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
-                @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class)} )
+    basePackages = {
+        "org.eclipse.tractusx.irs",
+        "org.eclipse.tractusx.esr"},
+    excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
+        @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class)})
 public class IrsApplication {
 
     /**
