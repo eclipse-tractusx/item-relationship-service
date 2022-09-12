@@ -9,6 +9,7 @@
 [![VeraCode](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/veracode.yaml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/veracode.yaml)
 [![OWASP Dependency Check](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml)
 [![Spotbugs](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/spotbugs.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/spotbugs.yml)
+[![Eclipse-dash](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/eclipse-dash.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/eclipse-dash.yml)
    
 
 ## What is the IRS?
