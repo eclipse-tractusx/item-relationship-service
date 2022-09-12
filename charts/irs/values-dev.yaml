@@ -36,6 +36,10 @@ rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
 digitalTwinRegistry:
   url: https://irs-aas-registry.dev.demo.catena-x.net
 
+global:
+  enablePrometheus: true
+  enableGrafana: true
+
 # Values for aas wrapper subchart.
 irs-aaswrapper:
   ingress:

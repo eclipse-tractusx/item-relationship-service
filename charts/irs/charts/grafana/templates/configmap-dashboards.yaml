@@ -1,3 +1,4 @@
+{{- if .Values.global.enableGrafana -}}
 {{- if .Values.dashboards }}
 {{ $files := .Files }}
 apiVersion: v1
@@ -12,4 +13,5 @@ data:
   {{ $k }}-dashboard.json: |
 {{ ($files.Get $v) | indent 4 }}
   {{- end }}
+{{- end }}
 {{- end }}

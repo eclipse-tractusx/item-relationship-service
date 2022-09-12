@@ -33,6 +33,10 @@ minio:
 rootUser: <path:traceability-irs/data/int/minio#minioUser>
 rootPassword: <path:traceability-irs/data/int/minio#minioPassword>
 
+global:
+  enablePrometheus: true
+  enableGrafana: true
+
 # Values for aas wrapper subchart.
 irs-aaswrapper:
   ingress:
