@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "63d1e95d-1b37-44a9-846e-eff28852bdf7",
+		"_postman_id": "cd6bf184-06f9-4458-843c-784d5ec3f1fd",
 		"name": "IRS DEMO Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1720,6 +1720,39 @@
 							""
 						]
 					}
+				}
+			]
+		},
+		{
+			"name": "ESR",
+			"item": [
+				{
+					"name": "GET ESR Certificate",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/esr/esr-statistics/{{GLOBAL_ASSET_ID}}/asBuilt/ISO14001/submodel",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"esr",
+								"esr-statistics",
+								"{{GLOBAL_ASSET_ID}}",
+								"asBuilt",
+								"ISO14001",
+								"submodel"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
