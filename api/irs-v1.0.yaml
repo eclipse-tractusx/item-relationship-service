@@ -37,7 +37,7 @@ paths:
             description: The lifecycle context in which the child part was assembled
               into the parent part.
             enum:
-              - AS_BUILT
+              - asBuilt
         - description: Type of certificate.
           example: ISO14001
           in: path
