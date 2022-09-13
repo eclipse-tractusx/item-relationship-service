@@ -23,7 +23,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, threaddump, loggers, prometheus, info
+        include: health, threaddump, loggers, prometheus, info, metrics
   endpoint:
     health:
       probes:
@@ -38,6 +38,9 @@ management:
     readinessstate:
       enabled: true
   metrics:
+    distribution:
+      percentiles-histogram:
+        http: true
     tags:
       application: ${spring.application.name}
   server:
@@ -49,7 +52,7 @@ logging:
   level:
     root: WARN
     org.springframework: INFO
-    net.catenax.irs: INFO
+    org.eclipse.tractusx.irs: INFO
 
 springdoc:
   api-docs:
@@ -71,8 +74,11 @@ irs:
         #          │ │ │ │ │ ┌───────────── day of the week (0 - 7)
         #          │ │ │ │ │ │          (or MON-SUN -- 0 or 7 is Sunday)
         #          │ │ │ │ │ │
-        completed: 0 0 * * * *
-        failed: 0 0 * * * *
+        completed: 0 0 * * * * # every hour
+        failed: 0 0 * * * * # every hour
+    jobstore:
+      cron:
+        expression: "*/10 * * * * ?" # every 10 seconds
 
 blobstore:
   endpoint: "${MINIO_URL}"
@@ -89,16 +95,38 @@ resilience4j:
         enableExponentialBackoff: true
         exponentialBackoffMultiplier: 2
     instances:
-      exponentialBackoff:
+      registry:
+        baseConfig: default
+      submodel:
         baseConfig: default
 
 aasWrapper:
   host: "${AASWRAPPER_HOST:}"
-  username: ${AAS_PROXY_SUBMODEL_USERNAME:}
-  password: ${AAS_PROXY_SUBMODEL_PASSWORD:}
+  username: ${AASWRAPPER_USERNAME:}
+  password: ${AASWRAPPER_PASSWORD:}
 
 aspectTypes:
   default: SerialPartTypization
 
 digitalTwinRegistry:
   url: https://semantics.int.demo.catena-x.net/registry
+
+semanticsHub:
+  url: https://semantics.int.demo.catena-x.net/hub/api/v1
+  cleanup:
+    #          ┌───────────── second (0-59)
+    #          │ ┌───────────── minute (0 - 59)
+    #          │ │ ┌───────────── hour (0 - 23)
+    #          │ │ │  ┌───────────── day of the month (1 - 31)
+    #          │ │ │  │ ┌───────────── month (1 - 12) (or JAN-DEC)
+    #          │ │ │  │ │ ┌───────────── day of the week (0 - 7)
+    #          │ │ │  │ │ │          (or MON-SUN -- 0 or 7 is Sunday)
+    #          │ │ │  │ │ │
+    scheduler: 0 0 23 * * * # every day at 23:00
+  defaultUrns: >
+    urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
+#    ,urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship
+
+bpdm:
+  url: https://catenax-bpdm-int.demo.catena-x.net/v1
+

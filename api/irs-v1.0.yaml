@@ -45,15 +45,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/JobStatusResult'
           description: List of job ids and status for requested job states.
-        "404":
-          content:
-            application/json:
-              examples:
-                complete:
-                  $ref: '#/components/examples/error-response'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: No jobIds found for requested job states.
       security:
         - OAuth2:
             - read
@@ -83,8 +74,8 @@ paths:
           content:
             application/json:
               examples:
-                complete:
-                  $ref: '#/components/examples/error-response'
+                error:
+                  $ref: '#/components/examples/error-response-400'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job registration failed.
@@ -141,8 +132,8 @@ paths:
           content:
             application/json:
               examples:
-                complete:
-                  $ref: '#/components/examples/error-response'
+                error:
+                  $ref: '#/components/examples/error-response-404'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job with the requested jobId not found.
@@ -177,8 +168,8 @@ paths:
           content:
             application/json:
               examples:
-                complete:
-                  $ref: '#/components/examples/error-response'
+                error:
+                  $ref: '#/components/examples/error-response-404'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job for requested jobId not found.
@@ -192,6 +183,7 @@ components:
   examples:
     canceled-job-result:
       value:
+        bpns: []
         job:
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
@@ -227,6 +219,9 @@ components:
         status: COMPLETED
     complete-job-result:
       value:
+        bpns:
+        - manufacturerId: BPNL00000003AYRE
+          manufacturerName: OEM A
         job:
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
@@ -255,7 +250,7 @@ components:
               running: 0
         relationships:
           - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
-            childItem:
+            linkedItem:
               assembledOn: 2022-02-03T14:48:54.709Z
               childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
               lastModifiedOn: 2022-02-03T14:48:54.709Z
@@ -309,13 +304,18 @@ components:
         submodels:
           - aspectType: urn:bamm:io.catenax.assembly_part_relationship:1.0.0
             identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
-            payload: "{\"catenaXId\":\"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\"\
-                        ,\"childParts\":[{\"assembledOn\":\"2022-02-03T14:48:54.709Z\",\"quantity\"\
-                        :{\"quantityNumber\":1.0,\"measurementUnit\":{\"lexicalValue\":\"piece\"\
-                        ,\"datatypeURI\":\"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\"\
-                        }},\"lastModifiedOn\":\"2022-02-03T14:48:54.709Z\",\"lifecycleContext\"\
-                        :\"AsBuilt\",\"childCatenaXId\":\"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\"\
-                        }]}"
+            payload:
+              catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+              childParts:
+              - assembledOn: 2022-02-03T14:48:54.709Z
+                childCatenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+                lastModifiedOn: 2022-02-03T14:48:54.709Z
+                lifecycleContext: AsBuilt
+                quantity:
+                  measurementUnit:
+                    datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
+                    lexicalValue: piece
+                  quantityNumber: 1
         tombstones:
           - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
             endpointURL: https://catena-x.net/vehicle/partdetails/
@@ -323,15 +323,21 @@ components:
               errorDetail: Details to reason of Failure
               lastAttempt: 2022-02-03T14:48:54.709Z
               retryCounter: 0
-    error-response:
+    error-response-400:
       value:
         errors:
-          - TimeoutException
-          - ParsingException
-        message: Some errors occurred
-        statusCode: 500 INTERNAL_SERVER_ERROR
+          - BadRequestException
+        message: Bad request
+        statusCode: 400 BAD_REQUEST
+    error-response-404:
+      value:
+        errors:
+          - NotFoundException
+        message: Not found
+        statusCode: 404 NOT_FOUND
     failed-job-result:
       value:
+        bpns: []
         job:
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
@@ -365,6 +371,9 @@ components:
         jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
     job-result-without-uncompleted-result-tree:
       value:
+        bpns:
+        - manufacturerId: BPNL00000003AYRE
+          manufacturerName: OEM A
         job:
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
@@ -393,7 +402,7 @@ components:
               running: 0
         relationships:
           - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
-            childItem:
+            linkedItem:
               assembledOn: 2022-02-03T14:48:54.709Z
               childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
               lastModifiedOn: 2022-02-03T14:48:54.709Z
@@ -447,13 +456,18 @@ components:
         submodels:
           - aspectType: urn:bamm:io.catenax.assembly_part_relationship:1.0.0
             identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
-            payload: "{\"catenaXId\":\"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\"\
-                    ,\"childParts\":[{\"assembledOn\":\"2022-02-03T14:48:54.709Z\",\"quantity\"\
-                    :{\"quantityNumber\":1.0,\"measurementUnit\":{\"lexicalValue\":\"piece\"\
-                    ,\"datatypeURI\":\"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\"\
-                    }},\"lastModifiedOn\":\"2022-02-03T14:48:54.709Z\",\"lifecycleContext\"\
-                    :\"AsBuilt\",\"childCatenaXId\":\"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\"\
-                    }]}"
+            payload:
+              catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+              childParts:
+              - assembledOn: 2022-02-03T14:48:54.709Z
+                childCatenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+                lastModifiedOn: 2022-02-03T14:48:54.709Z
+                lifecycleContext: AsBuilt
+                quantity:
+                  measurementUnit:
+                    datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
+                    lexicalValue: piece
+                  quantityNumber: 1
         tombstones:
           - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
             endpointURL: https://catena-x.net/vehicle/partdetails/
@@ -463,6 +477,7 @@ components:
               retryCounter: 0
     partial-job-result:
       value:
+        bpns: []
         job:
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
@@ -540,29 +555,14 @@ components:
           type: integer
           format: int32
           description: Number of running item transfers.
-    ChildItem:
+    Bpn:
       type: object
-      description: Set of child parts the parent object is assembled by (one structural
-        level down).
+      description: Collection of bpn mappings
       properties:
-        assembledOn:
+        manufacturerId:
           type: string
-          format: date-time
-          description: Datetime of assembly.
-        childCatenaXId:
-          $ref: '#/components/schemas/GlobalAssetIdentification'
-        lastModifiedOn:
+        manufacturerName:
           type: string
-          format: date-time
-          description: Last datetime item was modified.
-        lifecycleContext:
-          type: string
-          description: The lifecycle context in which the child part was assembled
-            into the parent part.
-          enum:
-            - asBuilt
-        quantity:
-          $ref: '#/components/schemas/Quantity'
     Endpoint:
       type: object
       properties:
@@ -754,6 +754,7 @@ components:
           enum:
             - SerialPartTypization
             - AssemblyPartRelationship
+            - Batch
             - ProductDescription
             - IdConversion
             - MarketplaceOffer
@@ -806,6 +807,12 @@ components:
       type: object
       description: Container for a job with item graph.
       properties:
+        bpns:
+          type: array
+          description: Collection of bpn mappings
+          items:
+            $ref: '#/components/schemas/Bpn'
+          uniqueItems: true
         job:
           $ref: '#/components/schemas/Job'
         relationships:
@@ -836,6 +843,29 @@ components:
           type: string
         text:
           type: string
+    LinkedItem:
+      type: object
+      description: Set of child parts the parent object is assembled by (one structural
+        level down).
+      properties:
+        assembledOn:
+          type: string
+          format: date-time
+          description: Datetime of assembly.
+        childCatenaXId:
+          $ref: '#/components/schemas/GlobalAssetIdentification'
+        lastModifiedOn:
+          type: string
+          format: date-time
+          description: Last datetime item was modified.
+        lifecycleContext:
+          type: string
+          description: The lifecycle context in which the child part was assembled
+            into the parent part.
+          enum:
+            - asBuilt
+        quantity:
+          $ref: '#/components/schemas/Quantity'
     MeasurementUnit:
       type: object
       properties:
@@ -896,6 +926,7 @@ components:
             enum:
               - SerialPartTypization
               - AssemblyPartRelationship
+              - Batch
               - ProductDescription
               - IdConversion
               - MarketplaceOffer
@@ -948,12 +979,12 @@ components:
       type: object
       description: Relationships between parent and child items.
       properties:
+        aspectType:
+          type: string
         catenaXId:
           $ref: '#/components/schemas/GlobalAssetIdentification'
-        childItem:
-          $ref: '#/components/schemas/ChildItem'
-        parentItem:
-          $ref: '#/components/schemas/ChildItem'
+        linkedItem:
+          $ref: '#/components/schemas/LinkedItem'
     Submodel:
       type: object
       description: Collection of requested Submodels
@@ -963,7 +994,9 @@ components:
         identification:
           type: string
         payload:
-          type: string
+          type: object
+          additionalProperties:
+            type: object
     SubmodelDescriptor:
       type: object
       properties:

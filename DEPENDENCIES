@@ -12,7 +12,7 @@ maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/2.13.3
 maven/mavencentral/com.fasterxml.jackson.module/jackson-module-parameter-names/2.13.3, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.fasterxml/classmate/1.5.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.github.docker-java/docker-java-api/3.2.13, Apache-2.0, approved, clearlydefined
-maven/mavencentral/com.github.docker-java/docker-java-transport-zerodep/3.2.13, Apache-2.0, restricted, clearlydefined
+maven/mavencentral/com.github.docker-java/docker-java-transport-zerodep/3.2.13, Apache-2.0 AND (Apache-2.0 AND BSD-3-Clause), approved, #3059
 maven/mavencentral/com.github.docker-java/docker-java-transport/3.2.13, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.github.mifmif/generex/1.0.2, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.github.stephenc.jcip/jcip-annotations/1.0-1, Apache-2.0, approved, CQ21949
@@ -27,7 +27,7 @@ maven/mavencentral/com.nimbusds/content-type/2.2, Apache-2.0, approved, clearlyd
 maven/mavencentral/com.nimbusds/lang-tag/1.6, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.nimbusds/nimbus-jose-jwt/9.22, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.nimbusds/oauth2-oidc-sdk/9.35, Apache-2.0, approved, clearlydefined
-maven/mavencentral/com.squareup.okhttp3/okhttp/4.10.0, Apache-2.0, restricted, clearlydefined
+maven/mavencentral/com.squareup.okhttp3/okhttp/4.10.0, Apache-2.0 AND MPL-2.0, approved, #3057
 maven/mavencentral/com.squareup.okio/okio-jvm/3.0.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.vaadin.external.google/android-json/0.0.20131108.vaadin1, Apache-2.0, approved, CQ21310
 maven/mavencentral/commons-fileupload/commons-fileupload/1.4, Apache-2.0, approved, clearlydefined
@@ -50,7 +50,7 @@ maven/mavencentral/io.github.resilience4j/resilience4j-spring-boot2/1.7.1, Apach
 maven/mavencentral/io.github.resilience4j/resilience4j-spring/1.7.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.github.resilience4j/resilience4j-timelimiter/1.7.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.micrometer/micrometer-core/1.9.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.micrometer/micrometer-registry-prometheus/1.9.2, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.micrometer/micrometer-registry-prometheus/1.9.3, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.minio/minio/8.4.3, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.prometheus/simpleclient/0.15.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.prometheus/simpleclient_common/0.15.0, Apache-2.0, approved, clearlydefined
@@ -72,10 +72,13 @@ maven/mavencentral/jakarta.xml.bind/jakarta.xml.bind-api/2.3.3, BSD-3-Clause, ap
 maven/mavencentral/junit/junit/4.13.2, EPL-2.0, approved, CQ23636
 maven/mavencentral/net.bytebuddy/byte-buddy-agent/1.12.10, Apache-2.0, approved, #1810
 maven/mavencentral/net.bytebuddy/byte-buddy/1.12.10, Apache-2.0 AND BSD-3-Clause, approved, #1811
-maven/mavencentral/net.catenax.irs/irs-api/0.0.1-SNAPSHOT, , restricted, clearlydefined
-maven/mavencentral/net.catenax.irs/irs-models/0.0.1-SNAPSHOT, , restricted, clearlydefined
-maven/mavencentral/net.datafaker/datafaker/1.4.0, Apache-2.0, restricted, clearlydefined
+maven/mavencentral/org.eclipse.tractusx.irs/irs-api/0.0.1-SNAPSHOT, , restricted, clearlydefined
+maven/mavencentral/org.eclipse.tractusx.irs/irs-models/0.0.1-SNAPSHOT, , restricted, clearlydefined
+maven/mavencentral/net.datafaker/datafaker/1.5.0, Apache-2.0, restricted, clearlydefined
 maven/mavencentral/net.java.dev.jna/jna/5.8.0, Apache-2.0 OR LGPL-2.1-or-later, approved, CQ23217
+maven/mavencentral/net.jimblackler.jsonschemafriend/core/0.11.3, , restricted, clearlydefined
+maven/mavencentral/net.jimblackler.jsonschemafriend/extra/0.11.3, , restricted, clearlydefined
+maven/mavencentral/net.jimblackler/jsonschemafriend/0.11.3, , restricted, clearlydefined
 maven/mavencentral/net.minidev/accessors-smart/2.4.8, Apache-2.0, approved, clearlydefined
 maven/mavencentral/net.minidev/json-smart/2.4.8, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.apache.commons/commons-compress/1.21, Apache-2.0 AND BSD-3-Clause AND bzip2-1.0.6 AND LicenseRef-Public-Domain, approved, CQ23710
@@ -109,6 +112,7 @@ maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib/1.6.20, Apache-2.0, approv
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib/1.6.21, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.jetbrains/annotations/13.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.jetbrains/annotations/17.0.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.jsoup/jsoup/1.15.3, MIT, restricted, clearlydefined
 maven/mavencentral/org.junit.jupiter/junit-jupiter-api/5.8.2, EPL-2.0, approved, #1291
 maven/mavencentral/org.junit.jupiter/junit-jupiter-params/5.8.2, EPL-2.0, approved, #1488
 maven/mavencentral/org.junit.jupiter/junit-jupiter/5.8.2, EPL-2.0, approved, clearlydefined
@@ -131,7 +135,6 @@ maven/mavencentral/org.springframework.boot/spring-boot-actuator-autoconfigure/2
 maven/mavencentral/org.springframework.boot/spring-boot-actuator/2.7.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.boot/spring-boot-autoconfigure/2.7.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.boot/spring-boot-starter-actuator/2.7.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.springframework.boot/spring-boot-starter-aop/2.6.8, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.boot/spring-boot-starter-aop/2.7.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.boot/spring-boot-starter-json/2.7.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.boot/spring-boot-starter-log4j2/2.7.0, Apache-2.0, approved, clearlydefined
@@ -169,8 +172,8 @@ maven/mavencentral/org.springframework/spring-test/5.3.20, Apache-2.0, approved,
 maven/mavencentral/org.springframework/spring-web/5.3.20, Apache-2.0 AND LicenseRef-Public-Domain, approved, CQ24028
 maven/mavencentral/org.springframework/spring-webmvc/5.3.20, Apache-2.0, approved, CQ23158
 maven/mavencentral/org.testcontainers/junit-jupiter/1.17.3, MIT, approved, clearlydefined
-maven/mavencentral/org.testcontainers/testcontainers/1.17.3, MIT, approved, clearlydefined
-maven/mavencentral/org.webjars/swagger-ui/4.10.3, Apache-2.0, restricted, clearlydefined
+maven/mavencentral/org.testcontainers/testcontainers/1.17.3, MIT, approved, #3074
+maven/mavencentral/org.webjars/swagger-ui/4.10.3, Apache-2.0 AND (BSD-3-Clause AND MIT) AND MIT, approved, #3060
 maven/mavencentral/org.webjars/webjars-locator-core/0.50, MIT, approved, clearlydefined
 maven/mavencentral/org.xerial.snappy/snappy-java/1.1.8.4, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.xmlunit/xmlunit-core/2.9.0, Apache-2.0, approved, clearlydefined

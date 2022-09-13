@@ -22,8 +22,7 @@ page at http://checkstyle.sourceforge.net/config.html -->
     </module>
 
     <module name="Header">
-        <property name="header"
-                  value="//\n// Copyright (c) 2021 Copyright Holder (Catena-X Consortium)\n//\n// See the AUTHORS file(s) distributed with this work for additional\n// information regarding authorship.\n//\n// See the LICENSE file(s) distributed with this work for\n// additional information regarding license terms.\n//"/>
+        <property name="headerFile" value="ci/irs.header"/>
         <property name="fileExtensions" value="java"/>
     </module>
 

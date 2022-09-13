@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.catenax.irs</groupId>
+        <groupId>org.eclipse.tractusx.irs</groupId>
         <artifactId>irs-parent-spring-boot</artifactId>
         <version>${revision}</version>
         <relativePath>../irs-parent-spring-boot</relativePath>
@@ -14,6 +14,13 @@
 
     <name>IRS API</name>
     <description>Item Relationship Service</description>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -34,7 +41,17 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <!-- Update snakeyaml manually to avoid vulnerability CVE-2020-13936; can be removed after Spring updates their dependency -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.32</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -81,6 +98,10 @@
             <artifactId>springdoc-openapi-ui</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
@@ -94,12 +115,28 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.catenax.irs</groupId>
+            <groupId>org.eclipse.tractusx.irs</groupId>
             <artifactId>irs-models</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.catenax.irs</groupId>
+            <groupId>net.jimblackler</groupId>
+            <artifactId>jsonschemafriend</artifactId>
+            <version>0.11.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jsoup</groupId>
+                    <artifactId>jsoup</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.15.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
             <artifactId>irs-testing</artifactId>
             <version>${revision}</version>
             <scope>test</scope>
@@ -137,6 +174,11 @@
             <artifactId>wiremock-jre8</artifactId>
             <version>2.33.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.7</version>
         </dependency>
     </dependencies>
 

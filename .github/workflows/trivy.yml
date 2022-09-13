@@ -6,12 +6,12 @@ name: "Trivy"
 on:
   push:
     branches: [ main, master ]
-  # pull_request:
+  pull_request:
   # The branches below must be a subset of the branches above
-  # branches: [ main, master ]
-  # paths-ignore:
-  #   - "**/*.md"
-  #   - "**/*.txt"
+    branches: [ main, master ]
+    paths-ignore:
+      - "**/*.md"
+      - "**/*.txt"
   schedule:
     # Once a day
     - cron: "0 0 * * *"

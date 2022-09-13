@@ -1,0 +1,22 @@
+springprofile: prd
+
+# Values for aas wrapper subchart.
+irs-aaswrapper:
+
+# Values for minio subchart.
+irs-minio:
+
+# Values for prometheus subchart.
+irs-prometheus:
+
+# Values for grafana subchart.
+irs-grafana:
+
+# Values for edc-controlplane subchart.
+edc-controlplane:
+
+# Values for edc-dataplane subchart.
+edc-dataplane:
+
+# Values for edc postgres subchart.
+postgresql:

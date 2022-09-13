@@ -39,7 +39,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn --batch-mode --update-snapshots verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=catenax-ng_product-item-relationship-service
+          mvn --batch-mode --update-snapshots \
+          verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          -Dsonar.projectKey=catenax-ng_product-item-relationship-service 
 
   build_images:
     strategy:
@@ -69,7 +71,7 @@ jobs:
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           # Use Docker `latest` tag convention
-          [ "$VERSION" == "master" ] && VERSION=latest
+          [ "$VERSION" == "main" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
           docker tag ${{ matrix.image }} $IMAGE_ID:$VERSION
