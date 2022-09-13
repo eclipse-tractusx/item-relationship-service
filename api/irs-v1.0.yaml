@@ -11,6 +11,69 @@ security:
       - read
       - write
 paths:
+  /esr/esr-statistics/{globalAssetId}/{bomLifecycle}/{certificateName}/submodel:
+    get:
+      description: "Register an ESR job to retrieve ESR certificate statistics for\
+          \ given {globalAssetId}."
+      operationId: getEsrCertificateStatistics
+      parameters:
+        - description: Id of global asset.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          in: path
+          name: globalAssetId
+          required: true
+          schema:
+            type: string
+            maxLength: 45
+            minLength: 45
+            pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        - description: BoM Lifecycle.
+          example: asBuilt
+          in: path
+          name: bomLifecycle
+          required: true
+          schema:
+            type: string
+            description: The lifecycle context in which the child part was assembled
+              into the parent part.
+            enum:
+              - asBuilt
+        - description: Type of certificate.
+          example: ISO14001
+          in: path
+          name: certificateName
+          required: true
+          schema:
+            type: string
+            description: Type of certificate
+            enum:
+              - ISO14001
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/complete-esr-job-result'
+              schema:
+                $ref: '#/components/schemas/EsrCertificateStatistics'
+          description: Return EsrCertificateStatistics for the requested globalAssetId.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Job registration failed.
+      security:
+        - OAuth2:
+            - write
+      summary: "Register an ESR job to retrieve ESR certificate statistics for given\
+          \ {globalAssetId}."
+      tags:
+        - Environmental and Social responsibility
   /irs/jobs:
     get:
       description: Returns jobIds for requested job states.
@@ -212,7 +275,16 @@ components:
               running: 0
         relationships: [ ]
         submodels: []
-        tombstones: [ ]
+        tombstones: []
+    complete-esr-job-result:
+      value:
+        certificateName: ISO14001
+        jobId: e5347c88-a921-11ec-b909-0242ac120002
+        statistics:
+          certificatesWithStateExceptional: 5
+          certificatesWithStateInvalid: 5
+          certificatesWithStateUnknown: 5
+          certificatesWithStateValid: 5
     complete-job-list-processing-state:
       value:
       - jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
@@ -563,6 +635,21 @@ components:
           type: string
         manufacturerName:
           type: string
+    CertificateStatistics:
+      type: object
+      properties:
+        certificatesWithStateExceptional:
+          type: integer
+          format: int32
+        certificatesWithStateInvalid:
+          type: integer
+          format: int32
+        certificatesWithStateUnknown:
+          type: integer
+          format: int32
+        certificatesWithStateValid:
+          type: integer
+          format: int32
     Endpoint:
       type: object
       properties:
@@ -655,6 +742,19 @@ components:
             - 509 BANDWIDTH_LIMIT_EXCEEDED
             - 510 NOT_EXTENDED
             - 511 NETWORK_AUTHENTICATION_REQUIRED
+    EsrCertificateStatistics:
+      type: object
+      properties:
+        certificateName:
+          type: string
+          description: Type of certificate
+          enum:
+            - ISO14001
+        jobId:
+          type: string
+          format: uuid
+        statistics:
+          $ref: '#/components/schemas/CertificateStatistics'
     GlobalAssetIdentification:
       type: object
       description: CATENA-X global asset id in the format urn:uuid:uuid4.
