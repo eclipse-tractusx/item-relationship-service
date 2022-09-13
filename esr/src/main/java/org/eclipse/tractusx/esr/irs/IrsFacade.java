@@ -15,9 +15,11 @@ public class IrsFacade {
 
     private IrsClient irsClient;
 
-    public IrsResponse getIrsResponse(String globalAssetId) {
-        StartJobResponse response = irsClient.startJob(IrsRequest.builder().globalAssetId(globalAssetId).build());
-        return irsClient.getJobDetails(response.getJobId());
+    public IrsResponse getIrsResponse(String globalAssetId, String bomLifecycle, String authorizationToken) {
+        StartJobResponse response = irsClient.startJob(
+                IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).build(),
+                authorizationToken);
+        return irsClient.getJobDetails(response.getJobId(), authorizationToken);
     }
 
 }

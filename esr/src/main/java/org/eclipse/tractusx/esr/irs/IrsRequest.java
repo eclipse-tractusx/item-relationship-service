@@ -9,4 +9,5 @@ import lombok.Value;
 @AllArgsConstructor
 public class IrsRequest {
     String globalAssetId;
+    String bomLifecycle;
 }
