@@ -17,6 +17,7 @@
         <module>irs-models</module>
         <module>integration-tests</module>
         <module>irs-report-aggregate</module>
+        <module>cucumber-tests</module>
     </modules>
 
     <properties>

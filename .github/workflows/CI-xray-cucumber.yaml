@@ -1,0 +1,51 @@
+name: IRS Cucumber Xray execution
+
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Download Feature Files
+        env:
+          JIRA_USERNAME: ${{ secrets.jira_username }}
+          JIRA_PASSWORD: ${{ secrets.jira_password }}
+          # JIRA filter 11349: project = TRI AND type = Test AND "Test Type" = Cucumber
+          # Downloads all feature files of cucumber tests inside TRI project
+        run: |
+          'curl -u $JIRA_USERNAME:$JIRA_PASSWORD "https://jira.catena-x.net/rest/raven/1.0/export/test?filter=11349" -o features.zip'
+          unzip -o features.zip  -d cucumber-tests/src/test/resources/features
+
+      - name: Build with Maven
+        run: mvn --batch-mode clean compile test -pl cucumber-tests
+
+      - name: Submit results to Xray
+        env:
+          JIRA_USERNAME: ${{ secrets.jira_username }}
+          JIRA_PASSWORD: ${{ secrets.jira_password }}
+        run: |
+          'curl --request POST \
+          -u $JIRA_USERNAME:$JIRA_PASSWORD \
+          --header 'Content-Type: application/json' \
+          --data-binary '@cucumber-tests/report.json' \
+          "https://jira.catena-x.net/rest/raven/1.0/import/execution/cucumber"'
