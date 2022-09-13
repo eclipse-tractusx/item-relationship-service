@@ -136,3 +136,7 @@ semanticsHub:
 bpdm:
   url: https://catenax-bpdm-int.demo.catena-x.net/v1
 
+# ESR Module specific properties
+esr:
+  irs:
+    url: https://irs-esr.dev.demo.catena-x.net/

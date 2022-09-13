@@ -59,6 +59,7 @@ public class RestTemplateConfig {
 
     public static final String OAUTH_REST_TEMPLATE = "oAuthRestTemplate";
     public static final String BASIC_AUTH_REST_TEMPLATE = "basicAuthRestTemplate";
+    public static final String DEFAULT_REST_TEMPLATE = "defaultRestTemplate";
 
     private static final String CLIENT_REGISTRATION_ID = "keycloak";
     private static final int TIMEOUT_SECONDS = 90;
@@ -84,6 +85,13 @@ public class RestTemplateConfig {
         return restTemplateBuilder.additionalInterceptors(
                                           new BasicAuthenticationInterceptor(aasWrapperUsername, aasWrapperPassword))
                                   .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .build();
+    }
+
+    @Bean(DEFAULT_REST_TEMPLATE)
+    /* package */ RestTemplate defaultRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
+        return restTemplateBuilder.setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                                   .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                                   .build();
     }

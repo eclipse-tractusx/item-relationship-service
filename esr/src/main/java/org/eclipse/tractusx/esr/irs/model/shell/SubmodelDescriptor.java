@@ -19,28 +19,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.esr.irs;
+package org.eclipse.tractusx.esr.irs.model.shell;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import java.util.List;
+
+import lombok.Builder;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * Public API Facade for IRS domain
+ *  Submodel Descriptor
  */
-
-@Service
-@RequiredArgsConstructor
-@Slf4j
-public class IrsFacade {
-
-    private final IrsClient irsClient;
-
-    public IrsResponse getIrsResponse(String globalAssetId, String bomLifecycle, String authorizationToken) {
-        StartJobResponse response = irsClient.startJob(
-                IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).build(),
-                authorizationToken);
-        return irsClient.getJobDetails(response.getJobId(), authorizationToken);
-    }
-
+@Value
+@Builder(toBuilder = true)
+@Jacksonized
+public class SubmodelDescriptor {
+    AdministrativeInformation administration;
+    String identification;
+    String idShort;
+    ListOfValues semanticId;
+    List<Endpoint> endpoints;
 }
