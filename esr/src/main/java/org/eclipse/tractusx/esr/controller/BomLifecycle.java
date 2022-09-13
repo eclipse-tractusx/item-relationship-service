@@ -42,12 +42,4 @@ public enum BomLifecycle {
         this.name = name;
     }
 
-    /**
-     * @return convert BomLifecycle to string value
-     */
-    @Override
-    public String toString() {
-        return name;
-    }
-
 }
