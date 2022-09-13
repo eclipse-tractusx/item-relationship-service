@@ -4,13 +4,11 @@
 
 replicaCount: 1
 
-namespace: product-traceability-irs
-
 image:
   repository: ghcr.io/catenax-ng/irs-api
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "main"
+  tag: ""
 
 imagePullSecrets: [ ]
 
