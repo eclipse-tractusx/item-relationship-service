@@ -154,8 +154,8 @@
                   }
                 }
               ],
-              "identification": "serialPartTypization",
-              "idShort": "serial-part-typization"
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -345,8 +345,8 @@
                   }
                 }
               ],
-              "identification": "serialPartTypization",
-              "idShort": "serial-part-typization"
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -517,8 +517,8 @@
                   }
                 }
               ],
-              "identification": "serialPartTypization",
-              "idShort": "serial-part-typization"
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -662,8 +662,8 @@
                   }
                 }
               ],
-              "identification": "serialPartTypization",
-              "idShort": "serial-part-typization"
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -808,8 +808,8 @@
                   }
                 }
               ],
-              "identification": "serialPartTypization",
-              "idShort": "serial-part-typization"
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -953,8 +953,8 @@
                   }
                 }
               ],
-              "identification": "serialPartTypization",
-              "idShort": "serial-part-typization"
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -1104,8 +1104,8 @@
                   }
                 }
               ],
-              "identification": "serialPartTypization",
-              "idShort": "serial-part-typization"
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -1276,8 +1276,8 @@
                   }
                 }
               ],
-              "identification": "serialPartTypization",
-              "idShort": "serial-part-typization"
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -1421,8 +1421,8 @@
                   }
                 }
               ],
-              "identification": "serialPartTypization",
-              "idShort": "serial-part-typization"
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -1567,8 +1567,8 @@
                   }
                 }
               ],
-              "identification": "serialPartTypization",
-              "idShort": "serial-part-typization"
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -1693,8 +1693,8 @@
                   }
                 }
               ],
-              "identification": "serialPartTypization",
-              "idShort": "serial-part-typization"
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -1838,8 +1838,8 @@
                   }
                 }
               ],
-              "identification": "serialPartTypization",
-              "idShort": "serial-part-typization"
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -2003,8 +2003,8 @@
                   }
                 }
               ],
-              "identification": "serialPartTypization",
-              "idShort": "serial-part-typization"
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -2140,8 +2140,8 @@
                   }
                 }
               ],
-              "identification": "serialPartTypization",
-              "idShort": "serial-part-typization"
+              "identification": "batch",
+              "idShort": "batch"
             }
           ]
         }
