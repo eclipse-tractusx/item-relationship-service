@@ -32,6 +32,6 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 @Jacksonized
 public class AdministrativeInformation {
-    String revision;
-    String version;
+    private String revision;
+    private String version;
 }

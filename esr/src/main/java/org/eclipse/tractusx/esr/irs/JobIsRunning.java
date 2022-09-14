@@ -28,7 +28,7 @@ import java.util.function.Predicate;
  */
 public class JobIsRunning implements Predicate<IrsResponse> {
     @Override
-    public boolean test(IrsResponse irsResponse) {
+    public boolean test(final IrsResponse irsResponse) {
         return irsResponse.isRunning();
     }
 }

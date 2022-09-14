@@ -35,10 +35,10 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class LinkedItem {
 
-    String childCatenaXId;
-    ZonedDateTime assembledOn;
-    ZonedDateTime lastModifiedOn;
-    String lifecycleContext;
-    Quantity quantity;
+    private String childCatenaXId;
+    private ZonedDateTime assembledOn;
+    private ZonedDateTime lastModifiedOn;
+    private String lifecycleContext;
+    private Quantity quantity;
 
 }

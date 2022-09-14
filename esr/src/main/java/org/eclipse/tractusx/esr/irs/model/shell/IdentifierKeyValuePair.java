@@ -32,8 +32,8 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 @Jacksonized
 public class IdentifierKeyValuePair {
-    String key;
-    ListOfValues subjectId;
-    String value;
-    ListOfValues semanticId;
+    private String key;
+    private ListOfValues subjectId;
+    private String value;
+    private ListOfValues semanticId;
 }

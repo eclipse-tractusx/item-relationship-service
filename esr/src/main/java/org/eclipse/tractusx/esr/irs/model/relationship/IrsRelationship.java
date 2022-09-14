@@ -33,8 +33,8 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class IrsRelationship {
 
-    String catenaXId;
-    LinkedItem linkedItem;
-    String aspectType;
+    private String catenaXId;
+    private LinkedItem linkedItem;
+    private String aspectType;
 
 }

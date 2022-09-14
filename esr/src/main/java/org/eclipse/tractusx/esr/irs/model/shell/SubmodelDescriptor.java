@@ -34,9 +34,9 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 @Jacksonized
 public class SubmodelDescriptor {
-    AdministrativeInformation administration;
-    String identification;
-    String idShort;
-    ListOfValues semanticId;
-    List<Endpoint> endpoints;
+    private AdministrativeInformation administration;
+    private String identification;
+    private String idShort;
+    private ListOfValues semanticId;
+    private List<Endpoint> endpoints;
 }

@@ -32,6 +32,6 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 @Jacksonized
 public class MeasurementUnit {
-    String datatypeURI;
-    String lexicalValue;
+    private String datatypeURI;
+    private String lexicalValue;
 }

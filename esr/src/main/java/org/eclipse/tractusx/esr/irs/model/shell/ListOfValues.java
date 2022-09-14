@@ -34,5 +34,5 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 @Jacksonized
 public class ListOfValues {
-    List<String> value;
+    private List<String> value;
 }

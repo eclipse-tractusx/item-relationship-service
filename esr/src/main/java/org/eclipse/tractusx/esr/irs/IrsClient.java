@@ -42,18 +42,18 @@ public class IrsClient {
     private final RestTemplate restTemplate;
     private final String irsUrl;
 
-    IrsClient(final RestTemplate defaultRestTemplate, @Value("${esr.irs.url:}") final String irsUrl) {
+    public IrsClient(final RestTemplate defaultRestTemplate, @Value("${esr.irs.url:}") final String irsUrl) {
         this.restTemplate = defaultRestTemplate;
         this.irsUrl = irsUrl;
     }
 
-    StartJobResponse startJob(IrsRequest irsRequest, String authorizationToken) {
+    public StartJobResponse startJob(final IrsRequest irsRequest, final String authorizationToken) {
         return restTemplate.postForObject(irsUrl + "/irs/jobs",
                 new HttpEntity<>(irsRequest, tokenInHeaders(authorizationToken)), StartJobResponse.class);
     }
 
     @Retry(name = "waiting-for-completed")
-    IrsResponse getJobDetails(String jobId, String authorizationToken) {
+    public IrsResponse getJobDetails(final String jobId, final String authorizationToken) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(irsUrl);
         uriBuilder.path("/irs/jobs/").path(jobId);
         return restTemplate.exchange(
@@ -64,7 +64,7 @@ public class IrsClient {
     }
 
     private static HttpHeaders tokenInHeaders(final String authorizationToken) {
-        HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         headers.set("Authorization", "Bearer " + authorizationToken);

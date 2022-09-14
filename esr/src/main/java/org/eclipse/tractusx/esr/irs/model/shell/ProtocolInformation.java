@@ -32,10 +32,10 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 @Jacksonized
 public class ProtocolInformation {
-    String endpointAddress;
-    String endpointProtocol;
-    String endpointProtocolVersion;
-    String subprotocol;
-    String subprotocolBody;
-    String subprotocolBodyEncoding;
+    private String endpointAddress;
+    private String endpointProtocol;
+    private String endpointProtocolVersion;
+    private String subprotocol;
+    private String subprotocolBody;
+    private String subprotocolBodyEncoding;
 }

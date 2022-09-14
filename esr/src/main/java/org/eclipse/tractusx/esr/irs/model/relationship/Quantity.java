@@ -34,6 +34,6 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 @Jacksonized
 public class Quantity {
-    BigDecimal quantityNumber;
-    MeasurementUnit measurementUnit;
+    private BigDecimal quantityNumber;
+    private MeasurementUnit measurementUnit;
 }

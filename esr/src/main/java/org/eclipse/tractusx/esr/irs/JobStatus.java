@@ -32,5 +32,5 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 @Jacksonized
 public class JobStatus {
-    String jobState;
+    private String jobState;
 }

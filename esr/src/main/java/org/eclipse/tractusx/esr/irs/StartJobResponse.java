@@ -32,5 +32,5 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 @Jacksonized
 public class StartJobResponse {
-    String jobId;
+    private String jobId;
 }

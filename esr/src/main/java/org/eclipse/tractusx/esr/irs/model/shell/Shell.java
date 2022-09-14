@@ -35,12 +35,12 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class Shell {
 
-    AdministrativeInformation administration;
-    String identification;
-    String idShort;
-    List<IdentifierKeyValuePair> specificAssetIds;
-    List<Description> descriptions;
-    ListOfValues globalAssetIds;
-    List<SubmodelDescriptor> submodelDescriptors;
+    private AdministrativeInformation administration;
+    private String identification;
+    private String idShort;
+    private List<IdentifierKeyValuePair> specificAssetIds;
+    private List<Description> descriptions;
+    private ListOfValues globalAssetIds;
+    private List<SubmodelDescriptor> submodelDescriptors;
 
 }

@@ -37,9 +37,9 @@ import org.eclipse.tractusx.esr.irs.model.shell.Shell;
 @Jacksonized
 public class IrsResponse {
 
-    JobStatus job;
-    List<IrsRelationship> relationships;
-    List<Shell> shells;
+    private JobStatus job;
+    private List<IrsRelationship> relationships;
+    private List<Shell> shells;
 
     public boolean isRunning()  {
         return "RUNNING".equals(job.getJobState());

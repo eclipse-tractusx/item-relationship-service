@@ -32,6 +32,6 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 @Jacksonized
 public class Description {
-    String language;
-    String text;
+    private String language;
+    private String text;
 }

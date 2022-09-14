@@ -35,6 +35,6 @@ import lombok.extern.jackson.Jacksonized;
 public class Endpoint {
 
     @JsonProperty("interface")
-    String interfaceInfo;
-    ProtocolInformation protocolInformation;
+    private String interfaceInfo;
+    private ProtocolInformation protocolInformation;
 }
