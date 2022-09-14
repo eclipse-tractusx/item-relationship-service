@@ -17,3 +17,8 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/certs
+
+# ESR Module specific properties
+esr:
+  irs:
+    url: http://localhost:8080

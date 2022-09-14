@@ -99,6 +99,12 @@ resilience4j:
         baseConfig: default
       submodel:
         baseConfig: default
+      waiting-for-completed:
+        resultPredicate: 'org.eclipse.tractusx.esr.irs.JobIsRunning'
+        maxAttempts: 10
+        waitDuration: 100s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
 
 aasWrapper:
   host: "${AASWRAPPER_HOST:}"
@@ -130,3 +136,7 @@ semanticsHub:
 bpdm:
   url: https://catenax-bpdm-int.demo.catena-x.net/v1
 
+# ESR Module specific properties
+esr:
+  irs:
+    url: https://irs-esr.dev.demo.catena-x.net/
