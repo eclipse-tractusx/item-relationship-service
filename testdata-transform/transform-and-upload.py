@@ -81,9 +81,8 @@ def create_edc_contract_definition_payload(contract_id_, edc_policy_id_, asset_p
 
 
 def print_response(response_):
-    if response_.status_code > 205:
-        print(response_)
-        print(response_.text)
+    print(response_)
+    print(response_.text)
 
 
 if __name__ == "__main__":
@@ -192,7 +191,7 @@ if __name__ == "__main__":
 
                 dict_assembly_parts[part_bpn].append(assembly_part)
 
-            elif tmp_key == "https://catenax.io/schema/Batch/3.0":
+            elif tmp_key == "https://catenax.io/schema/Batch/1.0.0":
                 batch = tmp_data[tmp_key][0]
 
                 part_bpn = ""
