@@ -48,7 +48,7 @@ def create_edc_asset_payload(submodel_url_, asset_prop_id_, digital_twin_submode
 
 def create_edc_policy_payload(edc_policy_id_, asset_prop_id_):
     return json.dumps({
-        "uid": edc_policy_id_,
+        "id": edc_policy_id_,
         "policy": {
             "prohibitions": [],
             "obligations": [],
