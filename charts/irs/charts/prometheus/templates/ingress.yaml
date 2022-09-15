@@ -1,3 +1,4 @@
+{{- if .Values.global.enablePrometheus -}}
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "prometheus.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
@@ -59,4 +60,5 @@ spec:
               {{- end }}
           {{- end }}
     {{- end }}
+{{- end }}
 {{- end }}

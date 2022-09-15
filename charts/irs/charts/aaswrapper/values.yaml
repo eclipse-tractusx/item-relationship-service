@@ -4,8 +4,6 @@
 
 replicaCount: 1
 
-namespace: product-traceability-irs
-
 image:
   repository: ghcr.io/catenax-ng/catenax-at-home/consumer-api-wrapper
   pullPolicy: Always
