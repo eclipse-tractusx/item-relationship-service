@@ -81,9 +81,8 @@ def create_edc_contract_definition_payload(contract_id_, edc_policy_id_, asset_p
 
 
 def print_response(response_):
-    if response_.status_code > 205:
-        print(response_)
-        print(response_.text)
+    print(response_)
+    print(response_.text)
 
 
 if __name__ == "__main__":
@@ -144,6 +143,7 @@ if __name__ == "__main__":
     dict_serial_parts = {}
     dict_assembly_parts = {}
     dict_aas = {}
+    dict_batch = {}
     contract_id = 1
 
     for tmp_data in testdata:
@@ -152,6 +152,7 @@ if __name__ == "__main__":
         part_bpn = None
         serial_part = None
         assembly_part = None
+        batch = None
 
         for tmp_key in tmp_keys:
             if tmp_key == "https://catenax.io/schema/SerialPartTypization/1.0.0":
@@ -190,6 +191,21 @@ if __name__ == "__main__":
 
                 dict_assembly_parts[part_bpn].append(assembly_part)
 
+            elif tmp_key == "https://catenax.io/schema/Batch/1.0.0":
+                batch = tmp_data[tmp_key][0]
+
+                part_bpn = ""
+                if dict_cxId_bpn.get(batch["catenaXId"]) is not None:
+                    part_bpn = dict_cxId_bpn[batch["catenaXId"]]
+
+                if part_bpn == "":
+                    print(error_no_bpn_found_)
+
+                if dict_batch.get(part_bpn) is None:
+                    dict_batch[part_bpn] = []
+
+                dict_batch[part_bpn].append(batch)
+
             elif tmp_key == "https://catenax.io/schema/AAS/3.0":
                 aas = tmp_data[tmp_key][0]
 
@@ -218,8 +234,9 @@ if __name__ == "__main__":
             for submodel_descriptor in aas.get("submodelDescriptors"):
                 digital_twin_submodel_id = uuid.uuid4().urn
 
-                if submodel_descriptor["idShort"] == "assembly-part-relationship" or submodel_descriptor[
-                        "idShort"] == "serial-part-typization":
+                if submodel_descriptor["idShort"] == "assembly-part-relationship" \
+                        or submodel_descriptor["idShort"] == "serial-part-typization" \
+                        or submodel_descriptor["idShort"] == "batch":
                     # 1. Prepare submodel endpoint address
                     endpoint = submodel_descriptor["endpoints"][0]
                     address = endpoint["protocolInformation"]["endpointAddress"]
@@ -238,15 +255,27 @@ if __name__ == "__main__":
                     # 2. Create submodel on submodel server
                     if submodel_descriptor["idShort"] == "assembly-part-relationship":
                         # Create assembly-part-relationship
+                        payload = create_submodel_payload(assembly_part)
+                        # print(payload)
                         response = requests.request(method="POST",
                                                     url=create_submodel_url(submodel_url, digital_twin_submodel_id),
-                                                    headers=headers, data=create_submodel_payload(assembly_part))
+                                                    headers=headers, data=payload)
                         print_response(response)
                     elif submodel_descriptor["idShort"] == "serial-part-typization":
                         # Create serial-part-typization
+                        payload = create_submodel_payload(serial_part)
+                        # print(payload)
                         response = requests.request(method="POST",
                                                     url=create_submodel_url(submodel_url, digital_twin_submodel_id),
-                                                    headers=headers, data=create_submodel_payload(serial_part))
+                                                    headers=headers, data=payload)
+                        print_response(response)
+                    elif submodel_descriptor["idShort"] == "batch":
+                        # Create batch
+                        payload = create_submodel_payload(batch)
+                        # print(payload)
+                        response = requests.request(method="POST",
+                                                    url=create_submodel_url(submodel_url, digital_twin_submodel_id),
+                                                    headers=headers, data=payload)
                         print_response(response)
                     edc_policy_id = str(uuid.uuid4())
 
@@ -254,27 +283,29 @@ if __name__ == "__main__":
 
                     # 3. Create edc asset
                     payload = create_edc_asset_payload(submodel_url, asset_prop_id, digital_twin_submodel_id)
-                    print(payload)
+                    # print(payload)
                     response = requests.request(method="POST", url=edc_asset_url, headers=headers_with_api_key,
                                                 data=payload)
                     print_response(response)
                     # 4. Create edc policy
                     payload = create_edc_policy_payload(contract_id, asset_prop_id)
-                    print(payload)
+                    # print(payload)
                     response = requests.request(method="POST", url=edc_policy_url, headers=headers_with_api_key,
                                                 data=payload)
                     print_response(response)
                     # 5. Create edc contract definition
                     payload = create_edc_contract_definition_payload(contract_id, contract_id, asset_prop_id)
-                    print(payload)
+                    # print(payload)
                     response = requests.request(method="POST", url=edc_contract_definition_url,
                                                 headers=headers_with_api_key,
                                                 data=payload)
                     print_response(response)
                     contract_id = contract_id + 1
+            payload = create_digital_twin_payload(aas)
+            # print(payload)
             response = requests.request(method="POST", url=create_digital_twin_payload_url(aas_url),
                                         headers=headers,
-                                        data=create_digital_twin_payload(aas))
+                                        data=payload)
             print_response(response)
 
     timestamp_end = time.time()
