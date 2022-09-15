@@ -30,7 +30,7 @@ jobs:
         run: |
           mvn org.eclipse.dash:license-tool-plugin:license-check \
           -Ddash.iplab.token=$ECLIPSE_DASH_TOKEN \
-          -Ddash.projectId=https://github.com/catenax-ng/product-item-relationship-service
+          -Ddash.projectId=automotive.tractusx
 
       - name: upload results
         if: always()
