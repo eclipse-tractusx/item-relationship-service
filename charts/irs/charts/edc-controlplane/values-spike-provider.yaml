@@ -48,6 +48,7 @@ configuration:
     edc.ids.id=urn:connector:edc-provider-controlplane-spike
     edc.ids.catalog.id=urn:catalog:default
     edc.ids.endpoint=https://irs-provider-controlplane-spike.dev.demo.catena-x.net/api/v1/ids
+    edc.ids.endpoint.audience=https://irs-provider-controlplane-spike.dev.demo.catena-x.net/api/v1/ids/data
     
     edc.receiver.http.endpoint=http://irs-provider-controlplane-spike:8080/api/service/pull
     

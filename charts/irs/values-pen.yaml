@@ -167,6 +167,7 @@ edc-controlplane:
       edc.ids.id=urn:connector:edc-consumer-controlplane-pen
       edc.ids.catalog.id=urn:catalog:default
       edc.ids.endpoint=https://irs-consumer-controlplane-pen.int.demo.catena-x.net/api/v1/ids
+      edc.ids.endpoint.audience=https://irs-consumer-controlplane-pen.int.demo.catena-x.net/api/v1/ids/data
 
       edc.receiver.http.endpoint=http://app-irs-pen-irs-aaswrapper:9192/callback/endpoint-data-reference
 
