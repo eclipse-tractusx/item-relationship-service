@@ -50,7 +50,7 @@ jobs:
           cache: 'pip'
       - run: pip install -r testdata-transform/requirements.txt
 
-      - name: Setup Test Data on INT
+      - name: Delete existing and setup new test data on provider EDC and Registry
         env:
           TESTFILE_PATH: ${{ github.event.inputs.testfilePath }}
           SUBMODEL_URL_1: ${{ github.event.inputs.submodelUrl1 }}
@@ -61,6 +61,10 @@ jobs:
           EDC_URL: ${{ github.event.inputs.edcUrl }}
           EDC_API_KEY: ${{ github.event.inputs.edcApiKey }}
         run: |
+          python testdata-transform/reset-env.py \
+          -a $AAS_URL \
+          -e $EDC_URL \
+          -k $EDC_API_KEY
           python testdata-transform/transform-and-upload.py \
           -f $TESTFILE_PATH \
           -s1 $SUBMODEL_URL_1 \
