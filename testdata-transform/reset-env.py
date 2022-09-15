@@ -18,31 +18,34 @@ if __name__ == "__main__":
     for item in items:
         global_asset_id = item["globalAssetId"]["value"][0]
         delete_response = requests.request(method="DELETE", url=registry_url+"/"+global_asset_id, headers=headers)
-        print(global_asset_id)
         print(delete_response)
-        print(delete_response.text)
+        if delete_response.status_code > 205:
+            print(global_asset_id)
 
     response = requests.request(method="GET", url=controlplane_data_contracts, headers=headers)
     values = response.json()
     for value in values:
         uid_ = value["id"]
         delete_response = requests.request(method="DELETE", url=controlplane_data_contracts+"/"+uid_, headers=headers)
-        print(uid_)
         print(delete_response)
+        if delete_response.status_code > 205:
+            print(uid_)
 
     response = requests.request(method="GET", url=controlplane_data_policies, headers=headers)
     values = response.json()
     for value in values:
-        uid_ = value["uid"]
+        uid_ = value["id"]
         delete_response = requests.request(method="DELETE", url=controlplane_data_policies+"/"+uid_, headers=headers)
-        print(uid_)
         print(delete_response)
+        if delete_response.status_code > 205:
+            print(uid_)
 
     response = requests.request(method="GET", url=controlplane_data_assets, headers=headers)
     values = response.json()
     for value in values:
         uid_ = value["properties"]["asset:prop:id"]
         delete_response = requests.request(method="DELETE", url=controlplane_data_assets+"/"+str(uid_), headers=headers)
-        print(uid_)
         print(delete_response)
+        if delete_response.status_code > 205:
+            print(uid_)
 

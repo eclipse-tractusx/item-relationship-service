@@ -19,8 +19,8 @@ on:
         description: 'URL for Submodel server 3'
         required: true
         type: string
-      internalProviderControlPlane:
-        description: 'Internal provider control plane URL of ids port'
+      publicProviderControlPlane:
+        description: 'Public provider control plane URL of ids'
         required: true
         type: string
       aasUrl:
@@ -56,7 +56,7 @@ jobs:
           SUBMODEL_URL_1: ${{ github.event.inputs.submodelUrl1 }}
           SUBMODEL_URL_2: ${{ github.event.inputs.submodelUrl2 }}
           SUBMODEL_URL_3: ${{ github.event.inputs.submodelUrl3 }}
-          INTERNAL_PROVIDER_CONTROL_PLANE: ${{ github.event.inputs.internalProviderControlPlane }}
+          INTERNAL_PROVIDER_CONTROL_PLANE: ${{ github.event.inputs.publicProviderControlPlane }}
           AAS_URL: ${{ github.event.inputs.aasUrl }}
           EDC_URL: ${{ github.event.inputs.edcUrl }}
           EDC_API_KEY: ${{ github.event.inputs.edcApiKey }}
@@ -66,7 +66,7 @@ jobs:
           -s1 $SUBMODEL_URL_1 \
           -s2 $SUBMODEL_URL_2 \
           -s3 $SUBMODEL_URL_3 \
-          -i $INTERNAL_PROVIDER_CONTROL_PLANE \
+          -c $INTERNAL_PROVIDER_CONTROL_PLANE \
           -a $AAS_URL \
           -e $EDC_URL \
           -k $EDC_API_KEY
