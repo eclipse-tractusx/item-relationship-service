@@ -33,7 +33,6 @@ jobs:
           # JIRA filter 11349: project = TRI AND type = Test AND "Test Type" = Cucumber
           # Downloads all feature files of cucumber tests inside TRI project
         run: |
-          unzip --help
           curl -u $JIRA_USERNAME:$JIRA_PASSWORD "https://jira.catena-x.net/rest/raven/1.0/export/test?filter=11349" -o features.zip
           unzip -o features.zip -d cucumber-tests/src/test/resources/features
 
@@ -45,8 +44,8 @@ jobs:
           JIRA_USERNAME: ${{ secrets.jira_username }}
           JIRA_PASSWORD: ${{ secrets.jira_password }}
         run: |
-          'curl --request POST \
+          curl --request POST \
           -u $JIRA_USERNAME:$JIRA_PASSWORD \
           --header 'Content-Type: application/json' \
           --data-binary '@cucumber-tests/report.json' \
-          "https://jira.catena-x.net/rest/raven/1.0/import/execution/cucumber"'
+          "https://jira.catena-x.net/rest/raven/1.0/import/execution/cucumber"
