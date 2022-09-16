@@ -11,9 +11,9 @@ import org.eclipse.tractusx.esr.irs.model.shell.ProtocolInformation;
 import org.eclipse.tractusx.esr.irs.model.shell.Shell;
 import org.eclipse.tractusx.esr.irs.model.shell.SubmodelDescriptor;
 
-class IrsFixture {
+public class IrsFixture {
 
-    static Relationship exampleRelationship(final String globalAssetId, final String childId) {
+    public static Relationship exampleRelationship(final String globalAssetId, final String childId) {
         return Relationship.builder()
                            .catenaXId(globalAssetId)
                            .aspectType("aspectType")
@@ -24,11 +24,11 @@ class IrsFixture {
                            .build();
     }
 
-    static Relationship exampleRelationship() {
+    public static Relationship exampleRelationship() {
         return exampleRelationship("urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447", "urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9");
     }
 
-    static Shell exampleShellWithGlobalAssetId(final String globalAssetId) {
+    public static Shell exampleShellWithGlobalAssetId(final String globalAssetId) {
         return Shell.builder()
                     .globalAssetId(ListOfValues.builder()
                                                .value(List.of(globalAssetId))
@@ -59,7 +59,7 @@ class IrsFixture {
                     .build();
     }
 
-    static Shell exampleShell() {
+    public static Shell exampleShell() {
         return exampleShellWithGlobalAssetId("urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf");
     }
 }

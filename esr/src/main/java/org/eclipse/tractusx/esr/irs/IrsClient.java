@@ -42,7 +42,7 @@ class IrsClient {
     private final RestTemplate restTemplate;
     private final String irsUrl;
 
-    IrsClient(final RestTemplate defaultRestTemplate, @Value("${esr.irs.url:}") final String irsUrl) {
+    /* package */ IrsClient(final RestTemplate defaultRestTemplate, @Value("${esr.irs.url:}") final String irsUrl) {
         this.restTemplate = defaultRestTemplate;
         this.irsUrl = irsUrl;
     }

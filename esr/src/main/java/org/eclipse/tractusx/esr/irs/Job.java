@@ -31,6 +31,7 @@ import lombok.extern.jackson.Jacksonized;
 @Value
 @Builder(toBuilder = true)
 @Jacksonized
+@SuppressWarnings({ "PMD.ShortClassName"})
 public class Job {
     private String jobId;
     private String globalAssetId;

@@ -102,7 +102,6 @@ public class OpenApiExamples {
 
     private Example createCompleteEsrCertificateStatistics() {
         return toExample(EsrCertificateStatistics.builder()
-                                       .jobId(UUID.fromString(JOB_ID))
                                        .certificateName(CertificateType.ISO14001)
                                        .certificateStateStatistic(EsrCertificateStatistics.CertificateStatistics.builder()
                                                 .certificatesWithStateValid(CERT_STATS)

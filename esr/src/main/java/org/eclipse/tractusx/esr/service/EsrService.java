@@ -83,11 +83,14 @@ public class EsrService {
     }
 
     /**
-     * @return TODO - its not gonna work for long processing jobs
+     * @return TODO (me) - its not gonna work for long processing jobs
      */
     private String getAuthenticationToken() {
-        return ((JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication())
-                .getToken().getTokenValue();
+        if (SecurityContextHolder.getContext().getAuthentication() instanceof JwtAuthenticationToken) {
+            return ((JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication()).getToken().getTokenValue();
+        }
+
+        return "";
     }
 
 }

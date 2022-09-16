@@ -21,8 +21,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.esr.controller.model;
 
-import java.util.UUID;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Value;
@@ -35,7 +33,6 @@ import org.eclipse.tractusx.esr.supplyon.CertificateState;
 @Builder
 public class EsrCertificateStatistics {
 
-    private UUID jobId;
     private CertificateType certificateName;
     private CertificateStatistics certificateStateStatistic;
 
@@ -44,7 +41,6 @@ public class EsrCertificateStatistics {
      */
     public static EsrCertificateStatistics initial() {
         return EsrCertificateStatistics.builder()
-                                       .jobId(UUID.randomUUID())
                                        .certificateName(CertificateType.ISO14001)
                                        .certificateStateStatistic(EsrCertificateStatistics.CertificateStatistics.builder()
                                              .certificatesWithStateValid(0)
