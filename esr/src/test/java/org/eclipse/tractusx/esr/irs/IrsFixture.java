@@ -13,15 +13,19 @@ import org.eclipse.tractusx.esr.irs.model.shell.SubmodelDescriptor;
 
 class IrsFixture {
 
-    static Relationship exampleRelationship() {
+    static Relationship exampleRelationship(final String globalAssetId, final String childId) {
         return Relationship.builder()
-                           .catenaXId("urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447")
+                           .catenaXId(globalAssetId)
                            .aspectType("aspectType")
                            .linkedItem(LinkedItem.builder()
-                                                 .childCatenaXId("urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9")
+                                                 .childCatenaXId(childId)
                                                  .lifecycleContext("asBuilt")
                                                  .build())
                            .build();
+    }
+
+    static Relationship exampleRelationship() {
+        return exampleRelationship("urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447", "urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9");
     }
 
     static Shell exampleShellWithGlobalAssetId(final String globalAssetId) {

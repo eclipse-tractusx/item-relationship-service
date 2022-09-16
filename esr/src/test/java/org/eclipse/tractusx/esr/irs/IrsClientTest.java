@@ -57,7 +57,7 @@ class IrsClientTest {
     public void shouldFetchResponseWithEmptyList() {
         // given
         IrsClient irsClient = new IrsClient(restTemplate, URL);
-        IrsResponse expectedResponse = new IrsResponse(new Job("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6","COMPLETED"), new ArrayList<>(),
+        IrsResponse expectedResponse = new IrsResponse(new Job("f41067c5-fad8-426c-903e-130ecac9c3da", "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6","COMPLETED"), new ArrayList<>(),
                 new ArrayList<>());
 
         given(restTemplate.exchange(getUriWithJobId(URL, JOB_ID), HttpMethod.GET,
@@ -76,7 +76,7 @@ class IrsClientTest {
         // given
         IrsClient irsClient = new IrsClient(restTemplate, URL);
         Relationship irsRelationship = exampleRelationship();
-        IrsResponse expectedResponse = new IrsResponse(new Job("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6","COMPLETED"), List.of(irsRelationship),
+        IrsResponse expectedResponse = new IrsResponse(new Job("f41067c5-fad8-426c-903e-130ecac9c3da", "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6","COMPLETED"), List.of(irsRelationship),
                 new ArrayList<>());
 
         given(restTemplate.exchange(getUriWithJobId(URL, JOB_ID), HttpMethod.GET,
@@ -98,7 +98,7 @@ class IrsClientTest {
         // given
         IrsClient irsClient = new IrsClient(restTemplate, URL);
         Shell expectedShell = exampleShell();
-        IrsResponse expectedResponse = new IrsResponse(new Job("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6","COMPLETED"), new ArrayList<>(),
+        IrsResponse expectedResponse = new IrsResponse(new Job("f41067c5-fad8-426c-903e-130ecac9c3da", "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6","COMPLETED"), new ArrayList<>(),
                 List.of(exampleShell()));
 
         given(restTemplate.exchange(getUriWithJobId(URL, JOB_ID), HttpMethod.GET,

@@ -40,6 +40,7 @@ public class IrsFacade {
         final StartJobResponse response = irsClient.startJob(
                 IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).build(),
                 authorizationToken);
+        log.info("Registered IRS job with jobId: {}", response.getJobId());
         return irsClient.getJobDetails(response.getJobId(), authorizationToken);
     }
 

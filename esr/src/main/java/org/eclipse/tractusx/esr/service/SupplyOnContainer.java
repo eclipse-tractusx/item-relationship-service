@@ -33,13 +33,13 @@ import org.eclipse.tractusx.esr.irs.IrsResponse;
  */
 @Value
 @AllArgsConstructor(staticName = "from")
-class SupplyOnData {
+class SupplyOnContainer {
     private BpnData requestor;
     private List<BpnData> suppliers;
 
-    public static Optional<SupplyOnData> from(final IrsResponse irsResponse) {
+    public static Optional<SupplyOnContainer> from(final IrsResponse irsResponse) {
         return irsResponse.findRequestorBPN()
-           .map(requestor -> SupplyOnData.from(requestor, irsResponse.findSuppliersBPN(requestor.getId())));
+           .map(requestor -> SupplyOnContainer.from(requestor, irsResponse.findSuppliersBPN(requestor.getId())));
     }
 
 }

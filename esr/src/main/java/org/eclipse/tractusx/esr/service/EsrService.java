@@ -36,7 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
 /**
- *
+ * Business logic for building EsrCertificateStatistics
  */
 @Service
 @RequiredArgsConstructor
@@ -47,37 +47,47 @@ public class EsrService {
     private final SupplyOnFacade supplyOnFacade;
 
     /**
+     * At first mapping between requestor-suppliers is being created.
+     * For created mapping - retrieval of ESR Certificate statistics from SupplyOn service.
      *
-     * @param globalAssetId
-     * @param bomLifecycle
-     * @param certificateName
-     * @return asd
+     * @param globalAssetId for Job registration
+     * @param bomLifecycle for Job registration
+     * @param certificateName ISO14001
+     * @return combined {@link EsrCertificateStatistics}
      */
     public EsrCertificateStatistics handle(final String globalAssetId, final BomLifecycle bomLifecycle,
             final CertificateType certificateName) {
 
-        final String token = ((JwtAuthenticationToken) SecurityContextHolder.getContext()
-                                                                                 .getAuthentication()).getToken()
-                                                                                                      .getTokenValue();
-
-        final IrsResponse irsResponse = irsFacade.getIrsResponse(globalAssetId, bomLifecycle.getName(), token);
-
         final EsrCertificateStatistics esrCertificateStatistics = EsrCertificateStatistics.initial();
 
-        SupplyOnData.from(irsResponse).ifPresent(supplyOn -> {
+        final IrsResponse irsResponse = irsFacade.getIrsResponse(globalAssetId, bomLifecycle.getName(), getAuthenticationToken());
+        log.info("Retrieved completed IRS job with jobId: {}", irsResponse.getJob().getJobId());
+
+        SupplyOnContainer.from(irsResponse).ifPresent(supplyOn -> {
             supplyOn.getSuppliers().forEach(supplier -> {
                 try {
+                    log.info("Calling SupplyOn service for ESR Certificate with req: {}, supp: {}", supplyOn.getRequestor().getBpn(), supplier.getBpn());
                     final EsrCertificate esrCertificate = supplyOnFacade.getESRCertificate(supplyOn.getRequestor().getBpn(),
                             supplier.getBpn());
+
+                    log.info("Retrieved ESR Certificate state: {}", esrCertificate.getCertificateState());
                     esrCertificateStatistics.incrementBy(esrCertificate.getCertificateState());
                 } catch (RestClientException e) {
-                    log.warn("SupplyOn endpoint caused exception", e);
+                    log.warn("SupplyOn endpoint returned exceptional state. Increasing certificatesWithStateExceptional statistic", e);
                     esrCertificateStatistics.incrementExceptional();
                 }
             });
         });
 
         return esrCertificateStatistics;
+    }
+
+    /**
+     * @return FIXME - its not gonna work for long processing jobs
+     */
+    private String getAuthenticationToken() {
+        return ((JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication())
+                .getToken().getTokenValue();
     }
 
 }

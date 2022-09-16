@@ -31,7 +31,8 @@ import lombok.extern.jackson.Jacksonized;
 @Value
 @Builder(toBuilder = true)
 @Jacksonized
-class Job {
+public class Job {
+    private String jobId;
     private String globalAssetId;
     private String jobState;
 }

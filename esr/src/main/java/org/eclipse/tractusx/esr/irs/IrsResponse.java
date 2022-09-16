@@ -56,21 +56,18 @@ public class IrsResponse {
     public Optional<BpnData> findRequestorBPN() {
         final String globalAssetId = this.getJob().getGlobalAssetId();
 
-        return this.getShells()
-                   .stream()
-                   .filter(shell -> shell.getGlobalAssetId().getValue().contains(globalAssetId))
-                   .findFirst()
-                   .flatMap(shell -> shell.findManufacturerId().map(bpn -> BpnData.from(globalAssetId, bpn)));
+        return this.findShellBpn(globalAssetId)
+                   .map(bpn -> BpnData.from(globalAssetId, bpn));
     }
 
     /**
-     * @param identification id of parent
+     * @param globalAssetId id of parent
      * @return Returns BPN data for children of shell
      */
-    public List<BpnData> findSuppliersBPN(final String identification) {
+    public List<BpnData> findSuppliersBPN(final String globalAssetId) {
         final List<String> childIds = this.getRelationships()
                                          .stream()
-                                         .filter(rel -> rel.getCatenaXId().equals(identification))
+                                         .filter(relationship -> relationship.getCatenaXId().equals(globalAssetId))
                                          .map(Relationship::getLinkedItem)
                                          .map(LinkedItem::getChildCatenaXId)
                                          .collect(Collectors.toList());
@@ -85,13 +82,13 @@ public class IrsResponse {
     }
 
     /**
-     * @param identification id
+     * @param globalAssetId id
      * @return Bpn value if Shell with id exists
      */
-    private Optional<String> findShellBpn(final String identification) {
+    private Optional<String> findShellBpn(final String globalAssetId) {
         return this.getShells()
                    .stream()
-                   .filter(shell -> shell.getIdentification().equals(identification))
+                   .filter(shell -> shell.getGlobalAssetId().getValue().contains(globalAssetId))
                    .findFirst()
                    .flatMap(Shell::findManufacturerId);
     }
