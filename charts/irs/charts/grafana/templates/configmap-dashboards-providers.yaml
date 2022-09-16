@@ -1,4 +1,4 @@
----
+{{- if .Values.global.enableGrafana -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,4 +10,5 @@ data:
   {{- with .Values.dashboardProviders }}
   dashboardproviders.yaml: |-
     {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- end }}

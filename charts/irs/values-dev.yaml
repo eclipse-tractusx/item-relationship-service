@@ -36,6 +36,10 @@ rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
 digitalTwinRegistry:
   url: https://irs-aas-registry.dev.demo.catena-x.net
 
+global:
+  enablePrometheus: true
+  enableGrafana: true
+
 # Values for aas wrapper subchart.
 irs-aaswrapper:
   ingress:
@@ -211,6 +215,7 @@ edc-controlplane:
       edc.ids.id=urn:connector:edc-consumer-controlplane
       edc.ids.catalog.id=urn:catalog:default
       edc.ids.endpoint=https://irs-consumer-controlplane.dev.demo.catena-x.net/api/v1/ids
+      edc.ids.endpoint.audience=https://irs-consumer-controlplane.dev.demo.catena-x.net/api/v1/ids/data
 
       edc.receiver.http.endpoint=http://irs-irs-aaswrapper:9192/callback/endpoint-data-reference
 
