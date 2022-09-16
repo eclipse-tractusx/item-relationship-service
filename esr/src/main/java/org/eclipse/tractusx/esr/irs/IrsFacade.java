@@ -34,7 +34,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class IrsFacade {
 
-    private final int DEPTH = 1;
+    private static final int DEPTH = 1;
     private final IrsClient irsClient;
 
     public IrsResponse getIrsResponse(final String globalAssetId, final String bomLifecycle, final String authorizationToken) {
