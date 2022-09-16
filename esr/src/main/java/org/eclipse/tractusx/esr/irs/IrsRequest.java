@@ -34,5 +34,5 @@ import lombok.Value;
 class IrsRequest {
     private String globalAssetId;
     private String bomLifecycle;
-    private int depth = 1;
+    private int depth;
 }
