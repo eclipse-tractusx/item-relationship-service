@@ -34,7 +34,7 @@ class IrsFacadeTest {
                 .build();
 
         BDDMockito.given(irsClient.startJob(
-                IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).build(),
+                IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).depth(1).build(),
                 token)
         ).willReturn(StartJobResponse.builder().jobId(jobId).build());
 
