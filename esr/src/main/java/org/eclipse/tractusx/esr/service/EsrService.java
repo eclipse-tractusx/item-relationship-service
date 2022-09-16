@@ -83,7 +83,7 @@ public class EsrService {
     }
 
     /**
-     * @return FIXME - its not gonna work for long processing jobs
+     * @return TODO - its not gonna work for long processing jobs
      */
     private String getAuthenticationToken() {
         return ((JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication())

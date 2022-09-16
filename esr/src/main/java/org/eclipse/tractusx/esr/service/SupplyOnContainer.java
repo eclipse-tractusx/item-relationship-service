@@ -39,7 +39,7 @@ class SupplyOnContainer {
 
     public static Optional<SupplyOnContainer> from(final IrsResponse irsResponse) {
         return irsResponse.findRequestorBPN()
-           .map(requestor -> SupplyOnContainer.from(requestor, irsResponse.findSuppliersBPN(requestor.getId())));
+           .map(requestor -> SupplyOnContainer.from(requestor, irsResponse.findSuppliersBPN(requestor.getGlobalAssetId())));
     }
 
 }

@@ -30,7 +30,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor(staticName = "from")
 public class BpnData {
-    private String id;
+    private String globalAssetId;
     private String bpn;
 
 }
