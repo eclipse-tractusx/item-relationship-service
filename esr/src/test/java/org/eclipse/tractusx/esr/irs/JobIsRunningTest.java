@@ -12,7 +12,7 @@ class JobIsRunningTest {
         JobIsRunning jobIsRunning = new JobIsRunning();
 
         // when
-        boolean result = jobIsRunning.test(IrsResponse.builder().job(JobStatus.builder().jobState("RUNNING").build()).build());
+        boolean result = jobIsRunning.test(IrsResponse.builder().job(Job.builder().jobState("RUNNING").build()).build());
 
         // then
         assertThat(result).isTrue();
@@ -24,7 +24,7 @@ class JobIsRunningTest {
         JobIsRunning jobIsRunning = new JobIsRunning();
 
         // when
-        boolean result = jobIsRunning.test(IrsResponse.builder().job(JobStatus.builder().jobState("COMPLETED").build()).build());
+        boolean result = jobIsRunning.test(IrsResponse.builder().job(Job.builder().jobState("COMPLETED").build()).build());
 
         // then
         assertThat(result).isFalse();

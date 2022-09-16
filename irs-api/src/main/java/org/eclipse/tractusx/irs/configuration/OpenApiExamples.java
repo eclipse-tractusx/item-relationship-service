@@ -28,8 +28,8 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
-import org.eclipse.tractusx.esr.controller.CertificateType;
-import org.eclipse.tractusx.esr.controller.EsrCertificateStatistics;
+import org.eclipse.tractusx.esr.controller.model.CertificateType;
+import org.eclipse.tractusx.esr.controller.model.EsrCertificateStatistics;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;

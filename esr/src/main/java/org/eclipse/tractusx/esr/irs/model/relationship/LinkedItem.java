@@ -21,8 +21,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.esr.irs.model.relationship;
 
-import java.time.ZonedDateTime;
-
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
@@ -36,9 +34,6 @@ import lombok.extern.jackson.Jacksonized;
 public class LinkedItem {
 
     private String childCatenaXId;
-    private ZonedDateTime assembledOn;
-    private ZonedDateTime lastModifiedOn;
     private String lifecycleContext;
-    private Quantity quantity;
 
 }

@@ -19,19 +19,27 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.esr.irs.model.relationship;
+package org.eclipse.tractusx.esr.controller.model;
 
-import lombok.Builder;
+import java.util.List;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import org.springframework.http.HttpStatus;
 
 /**
- *  Measurement Unit
+ * API error response
  */
+@Schema(description = "Error response.")
 @Value
-@Builder(toBuilder = true)
-@Jacksonized
-public class MeasurementUnit {
-    private String datatypeURI;
-    private String lexicalValue;
+public class ErrorResponse {
+    @Schema(description = "Error code.")
+    private HttpStatus statusCode;
+
+    @Schema(description = "Error message.")
+    private String message;
+
+    @Schema(description = "List of errors.")
+    private List<String> errors;
 }
+

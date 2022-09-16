@@ -23,8 +23,6 @@ package org.eclipse.tractusx.esr.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import java.util.UUID;
-
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -38,6 +36,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.esr.controller.model.BomLifecycle;
+import org.eclipse.tractusx.esr.controller.model.CertificateType;
+import org.eclipse.tractusx.esr.controller.model.ErrorResponse;
+import org.eclipse.tractusx.esr.controller.model.EsrCertificateStatistics;
+import org.eclipse.tractusx.esr.service.EsrService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,10 +57,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 class EsrController {
 
-    private static final int UUID_SIZE = 36;
-    private static final int URN_PREFIX_SIZE = 9;
-    private static final int GLOBAL_ASSET_ID_SIZE = URN_PREFIX_SIZE + UUID_SIZE;
+    private static final int GLOBAL_ASSET_ID_SIZE = 45;
     private static final String GLOBAL_ASSET_ID_REGEX = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
+
+    private final EsrService esrService;
 
     @Operation(operationId = "getEsrCertificateStatistics",
                summary = "Register an ESR job to retrieve ESR certificate statistics for given {globalAssetId}.",
@@ -93,12 +96,7 @@ class EsrController {
             @PathVariable final CertificateType certificateName) {
         log.debug("Global asset id: {}, bomLifecycle: {}, certificateName: {}", globalAssetId, bomLifecycle, certificateName);
 
-        final int validState = 5;
-        return EsrCertificateStatistics.builder()
-                .jobId(UUID.randomUUID())
-                .certificateName(certificateName)
-                .statistics(EsrCertificateStatistics.CertificateStatistics.builder().certificatesWithStateValid(validState).build())
-                .build();
+        return esrService.handle(globalAssetId, bomLifecycle, certificateName);
     }
 
 }

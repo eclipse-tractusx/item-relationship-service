@@ -19,33 +19,19 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.esr.controller;
-
-import java.util.UUID;
+package org.eclipse.tractusx.esr.irs;
 
 import lombok.Builder;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * ESR certificate statistics data model
+ *  Job Status
  */
 @Value
-@Builder
-public class EsrCertificateStatistics {
-
-    private UUID jobId;
-    private CertificateType certificateName;
-    private CertificateStatistics statistics;
-
-    /**
-     * Certificate statistics
-     */
-    @Value
-    @Builder
-    public static class CertificateStatistics {
-        private int certificatesWithStateValid;
-        private int certificatesWithStateInvalid;
-        private int certificatesWithStateUnknown;
-        private int certificatesWithStateExceptional;
-    }
+@Builder(toBuilder = true)
+@Jacksonized
+class Job {
+    private String globalAssetId;
+    private String jobState;
 }

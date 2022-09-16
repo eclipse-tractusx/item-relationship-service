@@ -28,7 +28,7 @@ class IrsFacadeTest {
         String token = "auth-token";
         String jobId = "job-id";
         IrsResponse expectedResponse = IrsResponse.builder()
-                .job(JobStatus.builder().jobState("COMPLETED").build())
+                .job(Job.builder().jobState("COMPLETED").build())
                 .relationships(new ArrayList<>())
                 .shells(new ArrayList<>())
                 .build();

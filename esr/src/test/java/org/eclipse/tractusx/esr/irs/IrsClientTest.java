@@ -1,20 +1,16 @@
 package org.eclipse.tractusx.esr.irs;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.esr.irs.IrsFixture.exampleRelationship;
+import static org.eclipse.tractusx.esr.irs.IrsFixture.exampleShell;
 import static org.mockito.BDDMockito.given;
 
-import java.math.BigDecimal;
 import java.net.URI;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.tractusx.esr.irs.model.relationship.IrsRelationship;
+import org.eclipse.tractusx.esr.irs.model.relationship.Relationship;
 import org.eclipse.tractusx.esr.irs.model.relationship.LinkedItem;
-import org.eclipse.tractusx.esr.irs.model.relationship.MeasurementUnit;
-import org.eclipse.tractusx.esr.irs.model.relationship.Quantity;
-import org.eclipse.tractusx.esr.irs.model.shell.AdministrativeInformation;
-import org.eclipse.tractusx.esr.irs.model.shell.Description;
 import org.eclipse.tractusx.esr.irs.model.shell.Endpoint;
 import org.eclipse.tractusx.esr.irs.model.shell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.esr.irs.model.shell.ListOfValues;
@@ -61,7 +57,7 @@ class IrsClientTest {
     public void shouldFetchResponseWithEmptyList() {
         // given
         IrsClient irsClient = new IrsClient(restTemplate, URL);
-        IrsResponse expectedResponse = new IrsResponse(new JobStatus("COMPLETED"), new ArrayList<>(),
+        IrsResponse expectedResponse = new IrsResponse(new Job("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6","COMPLETED"), new ArrayList<>(),
                 new ArrayList<>());
 
         given(restTemplate.exchange(getUriWithJobId(URL, JOB_ID), HttpMethod.GET,
@@ -79,8 +75,8 @@ class IrsClientTest {
     public void shouldFetchRelationships() {
         // given
         IrsClient irsClient = new IrsClient(restTemplate, URL);
-        IrsRelationship irsRelationship = exampleRelationship();
-        IrsResponse expectedResponse = new IrsResponse(new JobStatus("COMPLETED"), List.of(irsRelationship),
+        Relationship irsRelationship = exampleRelationship();
+        IrsResponse expectedResponse = new IrsResponse(new Job("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6","COMPLETED"), List.of(irsRelationship),
                 new ArrayList<>());
 
         given(restTemplate.exchange(getUriWithJobId(URL, JOB_ID), HttpMethod.GET,
@@ -93,7 +89,7 @@ class IrsClientTest {
         // then
         assertThat(actualResponse).isEqualTo(expectedResponse);
         assertThat(actualResponse.getRelationships()).hasSize(1);
-        IrsRelationship relationship = actualResponse.getRelationships().get(0);
+        Relationship relationship = actualResponse.getRelationships().get(0);
         assertThat(relationship).usingRecursiveComparison().isEqualTo(irsRelationship);
     }
 
@@ -102,7 +98,7 @@ class IrsClientTest {
         // given
         IrsClient irsClient = new IrsClient(restTemplate, URL);
         Shell expectedShell = exampleShell();
-        IrsResponse expectedResponse = new IrsResponse(new JobStatus("COMPLETED"), new ArrayList<>(),
+        IrsResponse expectedResponse = new IrsResponse(new Job("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6","COMPLETED"), new ArrayList<>(),
                 List.of(exampleShell()));
 
         given(restTemplate.exchange(getUriWithJobId(URL, JOB_ID), HttpMethod.GET,
@@ -133,69 +129,6 @@ class IrsClientTest {
         return headers;
     }
 
-    private IrsRelationship exampleRelationship() {
-        return IrsRelationship.builder()
-                    .catenaXId("urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447")
-                    .aspectType("aspectType")
-                    .linkedItem(LinkedItem.builder()
-                            .assembledOn(ZonedDateTime.now())
-                            .childCatenaXId("urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9")
-                            .lastModifiedOn(ZonedDateTime.now())
-                            .lifecycleContext("asBuilt")
-                            .quantity(Quantity.builder()
-                                    .measurementUnit(MeasurementUnit.builder()
-                                            .datatypeURI(
-                                                "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece")
-                                            .lexicalValue("piece")
-                                            .build())
-                                    .quantityNumber(BigDecimal.TEN)
-                            .build())
-                    .build())
-                .build();
-    }
 
-    private Shell exampleShell() {
-        return Shell.builder()
-                .administration(AdministrativeInformation.builder()
-                        .revision("example-revision")
-                        .version("example-version")
-                        .build())
-                .descriptions(List.of(Description.builder()
-                        .language("example-language")
-                        .text("example-text")
-                        .build()))
-                .globalAssetIds(ListOfValues.builder()
-                        .value(List.of("urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf"))
-                        .build())
-                .idShort("idShort")
-                .identification("urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf")
-                .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                        .key("ManufacturerId")
-                        .subjectId(ListOfValues.builder().value(List.of("sub-id")).build())
-                        .value("BPNL00000003AYRE")
-                        .semanticId(ListOfValues.builder().value(List.of("urn:bamm:com.catenax.serial_part_typization:1.0.0")).build())
-                        .build()))
-                .submodelDescriptors(List.of(SubmodelDescriptor.builder()
-                        .administration(AdministrativeInformation.builder()
-                                .revision("example-revision")
-                                .version("example-version")
-                                .build())
-                        .idShort("idShort")
-                        .identification("urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf")
-                        .semanticId(ListOfValues.builder().value(List.of("urn:bamm:com.catenax.serial_part_typization:1.0.0")).build())
-                                .endpoints(List.of(Endpoint.builder()
-                                        .protocolInformation(ProtocolInformation.builder()
-                                                .endpointAddress("urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf")
-                                                .endpointProtocol("AAS/SUBMODEL")
-                                                .endpointProtocolVersion("1.0RC02")
-                                                .subprotocol("sub protocol")
-                                                .subprotocolBody("sub protocol body")
-                                                .subprotocolBodyEncoding("UTF-8")
-                                                .build())
-                                        .interfaceInfo("https://TEST.connector")
-                                .build()))
-                        .build()))
-                .build();
-    }
 
 }

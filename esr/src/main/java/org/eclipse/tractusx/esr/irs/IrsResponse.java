@@ -21,13 +21,18 @@
  ********************************************************************************/
 package org.eclipse.tractusx.esr.irs;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
-import org.eclipse.tractusx.esr.irs.model.relationship.IrsRelationship;
+import org.eclipse.tractusx.esr.irs.model.relationship.Relationship;
+import org.eclipse.tractusx.esr.irs.model.relationship.LinkedItem;
 import org.eclipse.tractusx.esr.irs.model.shell.Shell;
+import org.eclipse.tractusx.esr.service.BpnData;
 
 /**
  *  Irs Response from IRS API
@@ -37,11 +42,59 @@ import org.eclipse.tractusx.esr.irs.model.shell.Shell;
 @Jacksonized
 public class IrsResponse {
 
-    private JobStatus job;
-    private List<IrsRelationship> relationships;
+    private Job job;
+    private List<Relationship> relationships;
     private List<Shell> shells;
 
     public boolean isRunning()  {
         return "RUNNING".equals(job.getJobState());
     }
+
+    /**
+     * @return Returns BPN data for initial global asset id
+     */
+    public Optional<BpnData> findRequestorBPN() {
+        final String globalAssetId = this.getJob().getGlobalAssetId();
+
+        return this.getShells()
+                   .stream()
+                   .filter(shell -> shell.getGlobalAssetId().getValue().contains(globalAssetId))
+                   .findFirst()
+                   .flatMap(shell -> shell.findManufacturerId().map(bpn -> BpnData.from(globalAssetId, bpn)));
+    }
+
+    /**
+     * @param identification id of parent
+     * @return Returns BPN data for children of shell
+     */
+    public List<BpnData> findSuppliersBPN(final String identification) {
+        final List<String> childIds = this.getRelationships()
+                                         .stream()
+                                         .filter(rel -> rel.getCatenaXId().equals(identification))
+                                         .map(Relationship::getLinkedItem)
+                                         .map(LinkedItem::getChildCatenaXId)
+                                         .collect(Collectors.toList());
+
+        final List<BpnData> suppliers = new ArrayList<>();
+
+        childIds.forEach(childId -> {
+            this.findShellBpn(childId).ifPresent(bpn -> suppliers.add(BpnData.from(childId, bpn)));
+        });
+
+        return suppliers;
+    }
+
+    /**
+     * @param identification id
+     * @return Bpn value if Shell with id exists
+     */
+    private Optional<String> findShellBpn(final String identification) {
+        return this.getShells()
+                   .stream()
+                   .filter(shell -> shell.getIdentification().equals(identification))
+                   .findFirst()
+                   .flatMap(Shell::findManufacturerId);
+    }
+
+
 }

@@ -21,19 +21,20 @@
  ********************************************************************************/
 package org.eclipse.tractusx.esr.irs.model.relationship;
 
-import java.math.BigDecimal;
-
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- *  Quantity
+ *  Irs Relationship
  */
 @Value
 @Builder(toBuilder = true)
 @Jacksonized
-public class Quantity {
-    private BigDecimal quantityNumber;
-    private MeasurementUnit measurementUnit;
+public class Relationship {
+
+    private String catenaXId;
+    private LinkedItem linkedItem;
+    private String aspectType;
+
 }

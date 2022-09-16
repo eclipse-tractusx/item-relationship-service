@@ -19,19 +19,33 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.esr.irs.model.shell;
+package org.eclipse.tractusx.esr.controller.model;
 
-import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
 /**
- *  Administrative Information
+ * Type of certificate
  */
-@Value
-@Builder(toBuilder = true)
-@Jacksonized
-public class AdministrativeInformation {
-    private String revision;
-    private String version;
+@JsonSerialize(using = ToStringSerializer.class)
+@Schema(description = "Type of certificate")
+@Getter
+public enum CertificateType {
+    ISO14001("ISO 14001");
+
+    private final String name;
+
+    @JsonCreator
+    CertificateType(final String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
+
 }

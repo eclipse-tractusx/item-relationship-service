@@ -19,27 +19,18 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.esr.controller;
+package org.eclipse.tractusx.esr.service;
 
-import java.util.List;
-
-import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Value;
-import org.springframework.http.HttpStatus;
 
 /**
- * API error response
+ * Container for globalAssetId and BPN value
  */
-@Schema(description = "Error response.")
 @Value
-class ErrorResponse {
-    @Schema(description = "Error code.")
-    private HttpStatus statusCode;
+@AllArgsConstructor(staticName = "from")
+public class BpnData {
+    private String id;
+    private String bpn;
 
-    @Schema(description = "Error message.")
-    private String message;
-
-    @Schema(description = "List of errors.")
-    private List<String> errors;
 }
-

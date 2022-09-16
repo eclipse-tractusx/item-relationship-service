@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.esr.irs.model.shell;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Value;
@@ -35,12 +36,16 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class Shell {
 
-    private AdministrativeInformation administration;
     private String identification;
-    private String idShort;
     private List<IdentifierKeyValuePair> specificAssetIds;
-    private List<Description> descriptions;
-    private ListOfValues globalAssetIds;
+    private ListOfValues globalAssetId;
     private List<SubmodelDescriptor> submodelDescriptors;
+
+    /**
+     * @return ManufacturerId value from Specific Asset Ids
+     */
+    public Optional<String> findManufacturerId() {
+        return this.specificAssetIds.stream().filter(assetId -> "ManufacturerId".equals(assetId.getKey())).map(IdentifierKeyValuePair::getValue).findFirst();
+    }
 
 }

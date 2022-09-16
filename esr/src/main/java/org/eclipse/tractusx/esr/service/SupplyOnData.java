@@ -19,31 +19,27 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.esr.controller;
+package org.eclipse.tractusx.esr.service;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
+import java.util.List;
+import java.util.Optional;
 
-/***
- * API type for the view of the items tree to be returned by a query.
+import lombok.AllArgsConstructor;
+import lombok.Value;
+import org.eclipse.tractusx.esr.irs.IrsResponse;
+
+/**
+ * Container for requestor and suppliers informations.
  */
-@JsonSerialize(using = ToStringSerializer.class)
-@Schema(description = "The lifecycle context in which the child part was assembled into the parent part.")
-@Getter
-public enum BomLifecycle {
-    @Schema(description = "The view of the ItemsTree as the vehicle was assembled.")
-    AS_BUILT("asBuilt");
+@Value
+@AllArgsConstructor(staticName = "from")
+class SupplyOnData {
+    private BpnData requestor;
+    private List<BpnData> suppliers;
 
-    private final String name;
-
-    BomLifecycle(final String name) {
-        this.name = name;
+    public static Optional<SupplyOnData> from(final IrsResponse irsResponse) {
+        return irsResponse.findRequestorBPN()
+           .map(requestor -> SupplyOnData.from(requestor, irsResponse.findSuppliersBPN(requestor.getId())));
     }
 
-    @Override
-    public String toString() {
-        return this.name;
-    }
 }
