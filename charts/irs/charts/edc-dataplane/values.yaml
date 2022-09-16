@@ -7,8 +7,6 @@
 # Note: If horizontal pod autoscaling is enabled this setting has no effect
 replicaCount: 1
 
-namespace: product-traceability-irs
-
 image:
   # -- Which derivate of the edc data-plane to use.
   # One of: [ghcr.io/catenax-ng/product-edc/edc-dataplane-hashicorp-vault, ghcr.io/catenax-ng/product-edc/edc-dataplane-azure-vault]

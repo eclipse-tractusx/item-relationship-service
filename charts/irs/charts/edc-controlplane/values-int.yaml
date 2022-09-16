@@ -9,7 +9,7 @@ nameOverride: "edc-consumer-controlplane"
 fullnameOverride: "edc-consumer-controlplane"
 
 image:
-  tag: "0.1.0"
+  tag: "0.1.1"
 
 ## Ingress declaration to expose the network service.
 ingresses:
@@ -47,6 +47,7 @@ configuration:
     edc.ids.id=urn:connector:edc-consumer-controlplane
     edc.ids.catalog.id=urn:catalog:default
     edc.ids.endpoint=https://irs-consumer-controlplane.int.demo.catena-x.net/api/v1/ids
+    edc.ids.endpoint.audience=https://irs-consumer-controlplane.int.demo.catena-x.net/api/v1/ids/data
     
     edc.receiver.http.endpoint=http://aaswrapper:9192/callback/endpoint-data-reference
     

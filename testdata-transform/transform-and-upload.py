@@ -48,7 +48,7 @@ def create_edc_asset_payload(submodel_url_, asset_prop_id_, digital_twin_submode
 
 def create_edc_policy_payload(edc_policy_id_, asset_prop_id_):
     return json.dumps({
-        "uid": edc_policy_id_,
+        "id": edc_policy_id_,
         "policy": {
             "prohibitions": [],
             "obligations": [],
@@ -82,7 +82,8 @@ def create_edc_contract_definition_payload(contract_id_, edc_policy_id_, asset_p
 
 def print_response(response_):
     print(response_)
-    print(response_.text)
+    if response_.status_code > 205:
+        print(response_.text)
 
 
 if __name__ == "__main__":
@@ -95,7 +96,7 @@ if __name__ == "__main__":
     parser.add_argument("-s1", "--submodel1", type=str, help="url of submodel server 1", required=True)
     parser.add_argument("-s2", "--submodel2", type=str, help="url of submodel server 2", required=True)
     parser.add_argument("-s3", "--submodel3", type=str, help="url of submodel server 3", required=True)
-    parser.add_argument("-i", "--internal", type=str, help="internal control plane submodel url", required=True)
+    parser.add_argument("-c", "--controlplane", type=str, help="Public provider control plane url", required=True)
     parser.add_argument("-a", "--aas", type=str, help="aas url", required=True)
     parser.add_argument("-e", "--edc", type=str, help="edc url", required=True)
     parser.add_argument("-k", "--apikey", type=str, help="edc api key", required=True)
@@ -107,7 +108,7 @@ if __name__ == "__main__":
     submodel_server_1_address = config.get("submodel1")
     submodel_server_2_address = config.get("submodel2")
     submodel_server_3_address = config.get("submodel3")
-    internal_control_plane_submodel_url = config.get("internal")
+    public_control_plane_url = config.get("controlplane")
     aas_url = config.get("aas")
     edc_url = config.get("edc")
     edc_api_key = config.get("apikey")
@@ -247,7 +248,7 @@ if __name__ == "__main__":
                     else:
                         submodel_url = submodel_server_3_address
 
-                    generated_address = internal_control_plane_submodel_url + "/" + digital_twin_id + \
+                    generated_address = public_control_plane_url + "/" + digital_twin_id + \
                         "-" + digital_twin_submodel_id + "/submodel?content=value&extent=withBlobValue"
                     endpoint["protocolInformation"]["endpointAddress"] = generated_address
                     submodel_descriptor["identification"] = digital_twin_submodel_id
