@@ -55,7 +55,7 @@
         <owasp-plugin.version>7.2.0</owasp-plugin.version>
 
         <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
-        <jar-plugin.version>3.2.2</jar-plugin.version>
+        <jar-plugin.version>3.3.0</jar-plugin.version>
         <flatten-plugin.version>1.3.0</flatten-plugin.version>
         <install-plugin.version>3.0.1</install-plugin.version>
     </properties>
