@@ -31,9 +31,10 @@ class SupplyOnFacadeTest {
 
     @Test
     void shouldReturnEsrCertificateData() {
+        final String requestorBPN = "BPNL00000003AYRE"; // TODO
         final String supplierBPN = "BPNL00000003XXX";
 
-        final EsrCertificate esrCertificate = supplyOnFacade.getESRCertificate(supplierBPN);
+        final EsrCertificate esrCertificate = supplyOnFacade.getESRCertificate(requestorBPN, supplierBPN);
 
         assertThat(esrCertificate).isNotNull();
         assertThat(esrCertificate.getCertificateState()).isNotNull();

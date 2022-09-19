@@ -38,12 +38,10 @@ public class SupplyOnFacade {
      */
     private static final String DEFAULT_CERTIFICATE_TYPE = "ISO14001";
 
-    private static final String REQUESTOR_BPN = "BPNL00000003AYRE"; // TODO
-
     private final SupplyOnClient supplyOnClient;
 
-    public EsrCertificate getESRCertificate(final String supplierBPN) {
-        return supplyOnClient.getESRCertificate(REQUESTOR_BPN, supplierBPN, DEFAULT_CERTIFICATE_TYPE);
+    public EsrCertificate getESRCertificate(final String requestorBPN, final String supplierBPN) {
+        return supplyOnClient.getESRCertificate(requestorBPN, supplierBPN, DEFAULT_CERTIFICATE_TYPE);
     }
 
 }

@@ -53,6 +53,7 @@ logging:
     root: WARN
     org.springframework: INFO
     org.eclipse.tractusx.irs: INFO
+    org.eclipse.tractusx.esr: INFO
 
 springdoc:
   api-docs:
@@ -102,7 +103,7 @@ resilience4j:
       waiting-for-completed:
         resultPredicate: 'org.eclipse.tractusx.esr.irs.JobIsRunning'
         maxAttempts: 10
-        waitDuration: 100s
+        waitDuration: 10s
         enableExponentialBackoff: true
         exponentialBackoffMultiplier: 2
 

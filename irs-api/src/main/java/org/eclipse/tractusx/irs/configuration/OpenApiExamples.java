@@ -28,8 +28,8 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
-import org.eclipse.tractusx.esr.controller.CertificateType;
-import org.eclipse.tractusx.esr.controller.EsrCertificateStatistics;
+import org.eclipse.tractusx.esr.controller.model.CertificateType;
+import org.eclipse.tractusx.esr.controller.model.EsrCertificateStatistics;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
@@ -102,9 +102,8 @@ public class OpenApiExamples {
 
     private Example createCompleteEsrCertificateStatistics() {
         return toExample(EsrCertificateStatistics.builder()
-                                       .jobId(UUID.fromString(JOB_ID))
                                        .certificateName(CertificateType.ISO14001)
-                                       .statistics(EsrCertificateStatistics.CertificateStatistics.builder()
+                                       .certificateStateStatistic(EsrCertificateStatistics.CertificateStatistics.builder()
                                                 .certificatesWithStateValid(CERT_STATS)
                                                 .certificatesWithStateInvalid(CERT_STATS)
                                                 .certificatesWithStateUnknown(CERT_STATS)

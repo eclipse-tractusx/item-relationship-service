@@ -19,19 +19,21 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.esr.irs.model.relationship;
+package org.eclipse.tractusx.esr.irs;
 
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- *  Measurement Unit
+ *  Job Status
  */
 @Value
 @Builder(toBuilder = true)
 @Jacksonized
-public class MeasurementUnit {
-    private String datatypeURI;
-    private String lexicalValue;
+@SuppressWarnings({ "PMD.ShortClassName"})
+public class Job {
+    private String jobId;
+    private String globalAssetId;
+    private String jobState;
 }

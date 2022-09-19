@@ -279,8 +279,7 @@ components:
     complete-esr-job-result:
       value:
         certificateName: ISO14001
-        jobId: e5347c88-a921-11ec-b909-0242ac120002
-        statistics:
+        certificateStateStatistic:
           certificatesWithStateExceptional: 5
           certificatesWithStateInvalid: 5
           certificatesWithStateUnknown: 5
@@ -750,10 +749,7 @@ components:
           description: Type of certificate
           enum:
             - ISO14001
-        jobId:
-          type: string
-          format: uuid
-        statistics:
+        certificateStateStatistic:
           $ref: '#/components/schemas/CertificateStatistics'
     GlobalAssetIdentification:
       type: object

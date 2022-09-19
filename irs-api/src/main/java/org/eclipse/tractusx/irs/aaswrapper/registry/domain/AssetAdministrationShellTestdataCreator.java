@@ -23,6 +23,7 @@ package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
@@ -82,7 +83,7 @@ class AssetAdministrationShellTestdataCreator {
         final Reference reference = Reference.builder().value(List.of(submodelUrn)).build();
 
         return SubmodelDescriptor.builder()
-                                 .identification(catenaXId)
+                                 .identification(UUID.randomUUID().toString())
                                  .idShort(submodelName)
                                  .endpoints(List.of(endpoint))
                                  .semanticId(reference)

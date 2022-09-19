@@ -19,27 +19,31 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.esr.controller;
+package org.eclipse.tractusx.esr.controller.model;
 
-import java.util.List;
-
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Value;
-import org.springframework.http.HttpStatus;
+import lombok.Getter;
 
-/**
- * API error response
+/***
+ * API type for the view of the items tree to be returned by a query.
  */
-@Schema(description = "Error response.")
-@Value
-class ErrorResponse {
-    @Schema(description = "Error code.")
-    private HttpStatus statusCode;
+@JsonSerialize(using = ToStringSerializer.class)
+@Schema(description = "The lifecycle context in which the child part was assembled into the parent part.")
+@Getter
+public enum BomLifecycle {
+    @Schema(description = "The view of the ItemsTree as the vehicle was assembled.")
+    AS_BUILT("asBuilt");
 
-    @Schema(description = "Error message.")
-    private String message;
+    private final String name;
 
-    @Schema(description = "List of errors.")
-    private List<String> errors;
+    BomLifecycle(final String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }
-

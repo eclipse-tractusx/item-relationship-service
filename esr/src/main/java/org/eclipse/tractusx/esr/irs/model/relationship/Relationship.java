@@ -19,15 +19,22 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.esr.controller;
+package org.eclipse.tractusx.esr.irs.model.relationship;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * Type of certificate
+ *  Irs Relationship
  */
-@Schema(description = "Type of certificate")
-public enum CertificateType {
-    ISO14001;
+@Value
+@Builder(toBuilder = true)
+@Jacksonized
+public class Relationship {
+
+    private String catenaXId;
+    private LinkedItem linkedItem;
+    private String aspectType;
 
 }

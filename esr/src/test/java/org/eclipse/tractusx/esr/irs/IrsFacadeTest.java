@@ -28,13 +28,13 @@ class IrsFacadeTest {
         String token = "auth-token";
         String jobId = "job-id";
         IrsResponse expectedResponse = IrsResponse.builder()
-                .job(JobStatus.builder().jobState("COMPLETED").build())
+                .job(Job.builder().jobState("COMPLETED").build())
                 .relationships(new ArrayList<>())
                 .shells(new ArrayList<>())
                 .build();
 
         BDDMockito.given(irsClient.startJob(
-                IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).build(),
+                IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).depth(1).build(),
                 token)
         ).willReturn(StartJobResponse.builder().jobId(jobId).build());
 

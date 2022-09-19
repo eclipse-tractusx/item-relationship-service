@@ -34,12 +34,14 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class IrsFacade {
 
+    private static final int DEPTH = 1;
     private final IrsClient irsClient;
 
     public IrsResponse getIrsResponse(final String globalAssetId, final String bomLifecycle, final String authorizationToken) {
         final StartJobResponse response = irsClient.startJob(
-                IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).build(),
+                IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).depth(DEPTH).build(),
                 authorizationToken);
+        log.info("Registered IRS job with jobId: {}", response.getJobId());
         return irsClient.getJobDetails(response.getJobId(), authorizationToken);
     }
 

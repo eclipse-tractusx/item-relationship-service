@@ -31,7 +31,8 @@ import lombok.Value;
 @Value
 @Builder(toBuilder = true)
 @AllArgsConstructor
-public class IrsRequest {
+class IrsRequest {
     private String globalAssetId;
     private String bomLifecycle;
+    private int depth;
 }

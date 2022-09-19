@@ -19,7 +19,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.esr.controller;
+package org.eclipse.tractusx.esr.controller.model;
 
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;

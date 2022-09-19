@@ -19,19 +19,18 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.esr.irs.model.shell;
+package org.eclipse.tractusx.esr.service;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
 
 /**
- *  Administrative Information
+ * Container for globalAssetId and BPN value
  */
 @Value
-@Builder(toBuilder = true)
-@Jacksonized
-public class AdministrativeInformation {
-    private String revision;
-    private String version;
+@AllArgsConstructor(staticName = "from")
+public class BpnData {
+    private String globalAssetId;
+    private String bpn;
+
 }

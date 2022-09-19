@@ -37,12 +37,12 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @Service
 @Slf4j
-public class IrsClient {
+class IrsClient {
 
     private final RestTemplate restTemplate;
     private final String irsUrl;
 
-    public IrsClient(final RestTemplate defaultRestTemplate, @Value("${esr.irs.url:}") final String irsUrl) {
+    /* package */ IrsClient(final RestTemplate defaultRestTemplate, @Value("${esr.irs.url:}") final String irsUrl) {
         this.restTemplate = defaultRestTemplate;
         this.irsUrl = irsUrl;
     }
@@ -56,6 +56,7 @@ public class IrsClient {
     public IrsResponse getJobDetails(final String jobId, final String authorizationToken) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(irsUrl);
         uriBuilder.path("/irs/jobs/").path(jobId);
+
         return restTemplate.exchange(
                 uriBuilder.build().toUri(),
                 HttpMethod.GET,
@@ -65,9 +66,9 @@ public class IrsClient {
 
     private static HttpHeaders tokenInHeaders(final String authorizationToken) {
         final HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-        headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
-        headers.set("Authorization", "Bearer " + authorizationToken);
+        headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + authorizationToken);
         return headers;
     }
 

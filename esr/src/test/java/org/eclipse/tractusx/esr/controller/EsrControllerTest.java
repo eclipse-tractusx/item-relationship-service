@@ -27,9 +27,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import javax.validation.ConstraintViolationException;
 
+import org.eclipse.tractusx.esr.controller.model.BomLifecycle;
+import org.eclipse.tractusx.esr.controller.model.CertificateType;
+import org.eclipse.tractusx.esr.service.EsrService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(EsrController.class)
@@ -38,21 +43,26 @@ class EsrControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @MockBean
+    private EsrService esrService;
+
     private final String globalAssetId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
     private final BomLifecycle bomLifecycle = BomLifecycle.AS_BUILT;
     private final CertificateType certificateType = CertificateType.ISO14001;
 
     @Test
+    @WithMockUser
     void shouldGetEsrCertificateStatisticsForValidPath() throws Exception {
-        final String path = "/esr/esr-statistics/" + globalAssetId + "/" + bomLifecycle.getName() + "/" + certificateType + "/submodel";
+        final String path = "/esr/esr-statistics/" + globalAssetId + "/" + bomLifecycle.getName() + "/" + certificateType.name() + "/submodel";
 
         this.mockMvc.perform(get(path))
                     .andExpect(status().isOk());
     }
 
     @Test
+    @WithMockUser
     void shouldReturnBadRequestForWrongGlobalAssetId() {
-        final String path = "/esr/esr-statistics/wrongGlobalAssetId/" + bomLifecycle.getName() + "/" + certificateType + "/submodel";
+        final String path = "/esr/esr-statistics/wrongGlobalAssetId/" + bomLifecycle.getName() + "/" + certificateType.name() + "/submodel";
 
         // MockMvc is not a real servlet environment, therefore it does not redirect
         // error responses to ErrorController, which produces error response.
@@ -61,14 +71,16 @@ class EsrControllerTest {
     }
 
     @Test
+    @WithMockUser
     void shouldReturnBadRequestForWrongBomLifecycle() throws Exception {
-        final String path = "/esr/esr-statistics/" + globalAssetId + "/notValidBomLifecycle/" + certificateType + "/submodel";
+        final String path = "/esr/esr-statistics/" + globalAssetId + "/notValidBomLifecycle/" + certificateType.name() + "/submodel";
 
         this.mockMvc.perform(get(path))
                     .andExpect(status().isBadRequest());
     }
 
     @Test
+    @WithMockUser
     void shouldReturnBadRequestForWrongCertificateType() throws Exception {
         final String path = "/esr/esr-statistics/" + globalAssetId + "/" + bomLifecycle.getName() + "/wrongCertificateType/submodel";
 

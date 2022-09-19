@@ -19,33 +19,27 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.esr.controller;
+package org.eclipse.tractusx.esr.service;
 
-import java.util.UUID;
+import java.util.List;
+import java.util.Optional;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Value;
+import org.eclipse.tractusx.esr.irs.IrsResponse;
 
 /**
- * ESR certificate statistics data model
+ * Container for requestor and suppliers informations.
  */
 @Value
-@Builder
-public class EsrCertificateStatistics {
+@AllArgsConstructor(staticName = "from")
+class SupplyOnContainer {
+    private BpnData requestor;
+    private List<BpnData> suppliers;
 
-    private UUID jobId;
-    private CertificateType certificateName;
-    private CertificateStatistics statistics;
-
-    /**
-     * Certificate statistics
-     */
-    @Value
-    @Builder
-    public static class CertificateStatistics {
-        private int certificatesWithStateValid;
-        private int certificatesWithStateInvalid;
-        private int certificatesWithStateUnknown;
-        private int certificatesWithStateExceptional;
+    public static Optional<SupplyOnContainer> from(final IrsResponse irsResponse) {
+        return irsResponse.findRequestorBPN()
+           .map(requestor -> SupplyOnContainer.from(requestor, irsResponse.findSuppliersBPN(requestor.getGlobalAssetId())));
     }
+
 }

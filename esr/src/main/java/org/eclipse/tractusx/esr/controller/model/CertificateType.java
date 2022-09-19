@@ -19,26 +19,27 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.esr.controller;
+package org.eclipse.tractusx.esr.controller.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-/***
- * API type for the view of the items tree to be returned by a query.
+/**
+ * Type of certificate
  */
 @JsonSerialize(using = ToStringSerializer.class)
-@Schema(description = "The lifecycle context in which the child part was assembled into the parent part.")
+@Schema(description = "Type of certificate")
 @Getter
-public enum BomLifecycle {
-    @Schema(description = "The view of the ItemsTree as the vehicle was assembled.")
-    AS_BUILT("asBuilt");
+public enum CertificateType {
+    ISO14001("ISO 14001");
 
     private final String name;
 
-    BomLifecycle(final String name) {
+    @JsonCreator
+    CertificateType(final String name) {
         this.name = name;
     }
 
@@ -46,4 +47,5 @@ public enum BomLifecycle {
     public String toString() {
         return this.name;
     }
+
 }
