@@ -28,8 +28,8 @@ jobs:
 
       - name: Download Feature Files
         env:
-          JIRA_USERNAME: ${{ secrets.jira_username }}
-          JIRA_PASSWORD: ${{ secrets.jira_password }}
+          JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
+          JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
           # JIRA filter 11349: project = TRI AND type = Test AND "Test Type" = Cucumber
           # Downloads all feature files of cucumber tests inside TRI project
         run: |
@@ -41,8 +41,8 @@ jobs:
 
       - name: Submit results to Xray
         env:
-          JIRA_USERNAME: ${{ secrets.jira_username }}
-          JIRA_PASSWORD: ${{ secrets.jira_password }}
+          JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
+          JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
         run: |
           curl --request POST \
           -u $JIRA_USERNAME:$JIRA_PASSWORD \
