@@ -5,6 +5,7 @@ import json
 import math
 import time
 import uuid
+import re
 
 import requests
 
@@ -38,6 +39,27 @@ def create_edc_asset_payload(submodel_url_, asset_prop_id_, digital_twin_submode
         "dataAddress": {
             "properties": {
                 "baseUrl": submodel_url_ + "/data/" + digital_twin_submodel_id_,
+                "type": "HttpData",
+                "proxyBody": True,
+                "proxyMethod": True
+            }
+        }
+    })
+
+
+def create_esr_edc_asset_payload(esr_url_, asset_prop_id_, digital_twin_id_):
+    return json.dumps({
+        "asset": {
+            "properties": {
+                "asset:prop:id": asset_prop_id_,
+                "asset:prop:description": "product description",
+                "asset:prop:contenttype": "application/json",
+                "asset:prop:policy-id": "use-eu"
+            }
+        },
+        "dataAddress": {
+            "properties": {
+                "baseUrl": esr_url_ + digital_twin_id_ + "/asBuilt/ISO14001/submodel",
                 "type": "HttpData",
                 "proxyBody": True,
                 "proxyMethod": True
@@ -80,6 +102,46 @@ def create_edc_contract_definition_payload(contract_id_, edc_policy_id_, asset_p
     })
 
 
+def create_aas_shell(global_asset_id_, id_short_, identification_, specific_asset_id_, submodel_descriptors_):
+    return json.dumps({
+        "description": [],
+        "globalAssetId": {
+            "value": [
+                global_asset_id_
+            ]
+        },
+        "idShort": id_short_,
+        "identification": identification_,
+        "specificAssetIds": specific_asset_id_,
+        "submodelDescriptors": submodel_descriptors_
+    })
+
+
+def create_submodel_descriptor(id_short_, identification_, semantic_id_, endpoint_address_):
+    return json.dumps(
+        {
+            "description": [],
+            "idShort": id_short_,
+            "identification": identification_,
+            "semanticId": {
+                "value": [
+                    semantic_id_
+                ]
+            },
+            "endpoints": [
+                {
+                    "interface": "HTTP",
+                    "protocolInformation": {
+                        "endpointAddress": endpoint_address_,
+                        "endpointProtocol": "HTTPS",
+                        "endpointProtocolVersion": "1.0"
+                    }
+                }
+            ]
+        }
+    )
+
+
 def print_response(response_):
     print(response_)
     if response_.status_code > 205:
@@ -89,7 +151,7 @@ def print_response(response_):
 if __name__ == "__main__":
     timestamp_start = time.time()
     # -f smallTestdata.json -s1 "http://localhost:8194" -s2 "http://localhost:8194" -s3 "http://localhost:8194"
-    # -i "http://provider-control-plane:8282" -a "http://localhost:4243" -e "http://localhost:8187" -k '123456'
+    # -p "http://provider-control-plane:8282" -a "http://localhost:4243" -e "http://localhost:8187" -k '123456'
     parser = argparse.ArgumentParser(description="Script to upload testdata into CX-Network.",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-f", "--file", type=str, help="Test data file location", required=True)
@@ -120,6 +182,8 @@ if __name__ == "__main__":
     edc_policy_url = "%s/data/policydefinitions" % edc_url
     edc_contract_definition_url = "%s/data/contractdefinitions" % edc_url
 
+    esr_url = "https://irs-esr.dev.demo.catena-x.net/esr/esr-statistics/"
+
     headers = {
         'Content-Type': 'application/json'
     }
@@ -129,185 +193,122 @@ if __name__ == "__main__":
         'Content-Type': 'application/json'
     }
 
-    error_no_bpn_found_ = "!!! ERROR: NO BPN FOUND !!!"
-
     # Opening JSON file
     f = open(filepath)
     data = json.load(f)
     f.close()
-
     testdata = data["https://catenax.io/schema/TestDataContainer/1.0.0"]
 
-    dict_cxId_bpn = {}
+    semantic_dict = {
+        "SerialPartTypization": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
+        "AssemblyPartRelationship": "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship",
+        "MaterialForRecycling": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+        "CertificateOfDestruction": "urn:bamm:io.catenax.certificate_of_destruction:1.0.0#CertificateOfDestruction",
+        "VehicleProductDescription": "urn:bamm:io.catenax.vehicle.product_description:1.0.1#ProductDescription",
+        "BatteryProductDescription": "urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription",
+        "ReturnRequest": "urn:bamm:io.catenax.return_request:1.0.0#ReturnRequest",
+        "PhysicalDimension": "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
+        "batch": "urn:bamm:io.catenax.batch:1.0.0#Batch"
+    }
 
-    list_bpn = []
-    dict_serial_parts = {}
-    dict_assembly_parts = {}
-    dict_aas = {}
-    dict_batch = {}
     contract_id = 1
 
     for tmp_data in testdata:
+        catenax_id = tmp_data["catenaXId"]
+        identification = uuid.uuid4().urn
         tmp_keys = tmp_data.keys()
-        aas = None
-        part_bpn = None
-        serial_part = None
-        assembly_part = None
-        batch = None
+
+        specific_asset_ids = [
+            {
+                "value": "",
+                "key": "manufacturerId"
+            },
+            {
+                "value": "",
+                "key": "manufacturerPartId"
+            },
+            {
+                "value": "",
+                "key": "partInstanceId"
+            }
+        ]
+
+        submodel_descriptors = []
 
         for tmp_key in tmp_keys:
-            if tmp_key == "https://catenax.io/schema/SerialPartTypization/1.0.0":
-                serial_part = tmp_data[tmp_key][0]
+            if tmp_key in "https://catenax.io/schema/batch/1.0.0" \
+                    or tmp_key in "https://catenax.io/schema/SerialPartTypization/1.0.0":
+                specific_asset_ids = tmp_data[tmp_key][0]["localIdentifiers"]
 
-                part_bpn = ""
-                for local_identifier in serial_part["localIdentifiers"]:
-                    if local_identifier["key"] == "ManufacturerID":
-                        part_bpn = local_identifier["value"]
+        part_bpn = ""
 
-                if part_bpn == "":
-                    print(error_no_bpn_found_)
+        for specific_asset_id in specific_asset_ids:
+            if specific_asset_id.get("key") == "manufacturerId":
+                part_bpn = specific_asset_id.get("value")
 
-                dict_cxId_bpn[serial_part["catenaXId"]] = part_bpn
+        for tmp_key in tmp_keys:
+            if tmp_key not in ("PlainObject", "catenaXId"):
+                submodel_name = re.sub('/[0-9].[0-9].[0-9]', '', tmp_key.replace("https://catenax.io/schema/", ""))
+                submodel_identification = uuid.uuid4().urn
+                semantic_id = semantic_dict.get(submodel_name)
+                endpoint_address = public_control_plane_url + "/" + catenax_id + \
+                    "-" + submodel_identification + "/submodel?content=value&extent=withBlobValue"
+                descriptor = create_submodel_descriptor(submodel_name, submodel_identification, semantic_id,
+                                                        endpoint_address)
+                submodel_descriptors.append(json.loads(descriptor))
 
-                if dict_serial_parts.get(part_bpn) is None:
-                    dict_serial_parts[part_bpn] = []
+                # 1. Prepare submodel endpoint address
+                if part_bpn == submodel_server_1_folder:
+                    submodel_url = submodel_server_1_address
+                elif part_bpn == submodel_server_2_folder:
+                    submodel_url = submodel_server_2_address
+                else:
+                    submodel_url = submodel_server_3_address
 
-                dict_serial_parts[part_bpn].append(serial_part)
+                # 2. Create submodel on submodel server
+                payload = create_submodel_payload(tmp_data[tmp_key][0])
+                print(payload)
+                # response = requests.request(method="POST",
+                #                             url=create_submodel_url(submodel_url, submodel_identification),
+                #                             headers=headers, data=payload)
+                # print_response(response)
 
-                if part_bpn not in list_bpn:
-                    list_bpn.append(part_bpn)
+                edc_policy_id = str(uuid.uuid4())
 
-            elif tmp_key == "https://catenax.io/schema/AssemblyPartRelationship/1.0.0":
-                assembly_part = tmp_data[tmp_key][0]
+                asset_prop_id = catenax_id + "-" + submodel_identification
 
-                part_bpn = ""
-                if dict_cxId_bpn.get(assembly_part["catenaXId"]) is not None:
-                    part_bpn = dict_cxId_bpn[assembly_part["catenaXId"]]
+                payload = create_edc_asset_payload(submodel_url, asset_prop_id, submodel_identification)
+                print(payload)
+                # response = requests.request(method="POST", url=edc_asset_url, headers=headers_with_api_key,
+                #                             data=payload)
+                # print_response(response)
+                # 4. Create edc policy
+                payload = create_edc_policy_payload(contract_id, asset_prop_id)
+                print(payload)
+                # response = requests.request(method="POST", url=edc_policy_url, headers=headers_with_api_key,
+                #                             data=payload)
+                # print_response(response)
+                # 5. Create edc contract definition
+                payload = create_edc_contract_definition_payload(contract_id, contract_id, asset_prop_id)
+                print(payload)
+                # response = requests.request(method="POST", url=edc_contract_definition_url,
+                #                             headers=headers_with_api_key,
+                #                             data=payload)
+                # print_response(response)
+                contract_id = contract_id + 1
 
-                if part_bpn == "":
-                    print(error_no_bpn_found_)
+        # create esr assets
+        # payload = create_esr_edc_asset_payload(esr_url, asset_prop_id, digital_twin_id)
 
-                if dict_assembly_parts.get(part_bpn) is None:
-                    dict_assembly_parts[part_bpn] = []
+        payload = create_aas_shell(catenax_id, "", identification, specific_asset_ids, submodel_descriptors)
+        print(payload)
 
-                dict_assembly_parts[part_bpn].append(assembly_part)
-
-            elif tmp_key == "https://catenax.io/schema/Batch/1.0.0":
-                batch = tmp_data[tmp_key][0]
-
-                part_bpn = ""
-                if dict_cxId_bpn.get(batch["catenaXId"]) is not None:
-                    part_bpn = dict_cxId_bpn[batch["catenaXId"]]
-
-                if part_bpn == "":
-                    print(error_no_bpn_found_)
-
-                if dict_batch.get(part_bpn) is None:
-                    dict_batch[part_bpn] = []
-
-                dict_batch[part_bpn].append(batch)
-
-            elif tmp_key == "https://catenax.io/schema/AAS/3.0":
-                aas = tmp_data[tmp_key][0]
-
-                part_bpn = ""
-                if dict_cxId_bpn.get(aas.get("globalAssetId").get("value")[0]) is not None:
-                    part_bpn = dict_cxId_bpn[aas.get("globalAssetId").get("value")[0]]
-
-                if part_bpn == "":
-                    print(error_no_bpn_found_)
-
-                # Transform semanticId to match the current model on CX-INT DT-Registry
-                for submodel_descriptor in aas["submodelDescriptors"]:
-                    value = submodel_descriptor["semanticId"][0]["value"]
-                    data = {"value": [value]}
-                    submodel_descriptor["semanticId"] = data
-
-                if dict_aas.get(part_bpn) is None:
-                    dict_aas[part_bpn] = []
-
-                dict_aas[part_bpn].append(aas)
-
-        if aas and part_bpn and (serial_part or assembly_part) is not None:
-            digital_twin_id = aas.get("globalAssetId")["value"][0]
-            aas["identification"] = digital_twin_id
-
-            for submodel_descriptor in aas.get("submodelDescriptors"):
-                digital_twin_submodel_id = uuid.uuid4().urn
-
-                if submodel_descriptor["idShort"] == "assembly-part-relationship" \
-                        or submodel_descriptor["idShort"] == "serial-part-typization" \
-                        or submodel_descriptor["idShort"] == "batch":
-                    # 1. Prepare submodel endpoint address
-                    endpoint = submodel_descriptor["endpoints"][0]
-                    address = endpoint["protocolInformation"]["endpointAddress"]
-                    if part_bpn == submodel_server_1_folder:
-                        submodel_url = submodel_server_1_address
-                    elif part_bpn == submodel_server_2_folder:
-                        submodel_url = submodel_server_2_address
-                    else:
-                        submodel_url = submodel_server_3_address
-
-                    generated_address = public_control_plane_url + "/" + digital_twin_id + \
-                        "-" + digital_twin_submodel_id + "/submodel?content=value&extent=withBlobValue"
-                    endpoint["protocolInformation"]["endpointAddress"] = generated_address
-                    submodel_descriptor["identification"] = digital_twin_submodel_id
-
-                    # 2. Create submodel on submodel server
-                    if submodel_descriptor["idShort"] == "assembly-part-relationship":
-                        # Create assembly-part-relationship
-                        payload = create_submodel_payload(assembly_part)
-                        # print(payload)
-                        response = requests.request(method="POST",
-                                                    url=create_submodel_url(submodel_url, digital_twin_submodel_id),
-                                                    headers=headers, data=payload)
-                        print_response(response)
-                    elif submodel_descriptor["idShort"] == "serial-part-typization":
-                        # Create serial-part-typization
-                        payload = create_submodel_payload(serial_part)
-                        # print(payload)
-                        response = requests.request(method="POST",
-                                                    url=create_submodel_url(submodel_url, digital_twin_submodel_id),
-                                                    headers=headers, data=payload)
-                        print_response(response)
-                    elif submodel_descriptor["idShort"] == "batch":
-                        # Create batch
-                        payload = create_submodel_payload(batch)
-                        # print(payload)
-                        response = requests.request(method="POST",
-                                                    url=create_submodel_url(submodel_url, digital_twin_submodel_id),
-                                                    headers=headers, data=payload)
-                        print_response(response)
-                    edc_policy_id = str(uuid.uuid4())
-
-                    asset_prop_id = digital_twin_id + "-" + digital_twin_submodel_id
-
-                    # 3. Create edc asset
-                    payload = create_edc_asset_payload(submodel_url, asset_prop_id, digital_twin_submodel_id)
-                    # print(payload)
-                    response = requests.request(method="POST", url=edc_asset_url, headers=headers_with_api_key,
-                                                data=payload)
-                    print_response(response)
-                    # 4. Create edc policy
-                    payload = create_edc_policy_payload(contract_id, asset_prop_id)
-                    # print(payload)
-                    response = requests.request(method="POST", url=edc_policy_url, headers=headers_with_api_key,
-                                                data=payload)
-                    print_response(response)
-                    # 5. Create edc contract definition
-                    payload = create_edc_contract_definition_payload(contract_id, contract_id, asset_prop_id)
-                    # print(payload)
-                    response = requests.request(method="POST", url=edc_contract_definition_url,
-                                                headers=headers_with_api_key,
-                                                data=payload)
-                    print_response(response)
-                    contract_id = contract_id + 1
-            payload = create_digital_twin_payload(aas)
-            # print(payload)
-            response = requests.request(method="POST", url=create_digital_twin_payload_url(aas_url),
-                                        headers=headers,
-                                        data=payload)
-            print_response(response)
+        # payload = create_digital_twin_payload(shell)
+        # print(payload)
+        # response = requests.request(method="POST", url=create_digital_twin_payload_url(aas_url),
+        #                             headers=headers,
+        #                             data=payload)
+        # print_response(response)
 
     timestamp_end = time.time()
     duration = timestamp_end - timestamp_start
