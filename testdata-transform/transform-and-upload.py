@@ -10,6 +10,7 @@ import re
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
+
 def create_submodel_payload(json_payload):
     return json.dumps(json_payload)
 
@@ -211,7 +212,8 @@ if __name__ == "__main__":
         "ReturnRequest": "urn:bamm:io.catenax.return_request:1.0.0#ReturnRequest",
         "PhysicalDimension": "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
         "batch": "urn:bamm:io.catenax.batch:1.0.0#Batch",
-        "EsrCertificateStateStatistic": "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic"
+        "EsrCertificateStateStatistic":
+            "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic"
     }
 
     contract_id = 1
@@ -250,7 +252,8 @@ if __name__ == "__main__":
             if tmp_key in "https://catenax.io/schema/batch/1.0.0" \
                     or tmp_key in "https://catenax.io/schema/SerialPartTypization/1.0.0":
                 specific_asset_ids = tmp_data[tmp_key][0]["localIdentifiers"]
-                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ","")
+                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"]\
+                    .replace(" ", "")
         print(name_at_manufacturer)
 
         part_bpn = ""
@@ -258,7 +261,7 @@ if __name__ == "__main__":
             if specific_asset_id.get("key") == "manufacturerId":
                 part_bpn = specific_asset_id.get("value")
 
-        if esr_url is not None:
+        if esr_url:
             tmp_data.update({"https://catenax.io/schema/EsrCertificateStateStatistic/1.0.1": ""})
 
         for tmp_key in tmp_keys:
