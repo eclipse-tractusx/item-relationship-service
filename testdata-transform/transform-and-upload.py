@@ -159,11 +159,12 @@ if __name__ == "__main__":
     parser.add_argument("-s1", "--submodel1", type=str, help="url of submodel server 1", required=True)
     parser.add_argument("-s2", "--submodel2", type=str, help="url of submodel server 2", required=True)
     parser.add_argument("-s3", "--submodel3", type=str, help="url of submodel server 3", required=True)
-    parser.add_argument("-c", "--controlplane", type=str, help="Public provider control plane url", required=True)
     parser.add_argument("-a", "--aas", type=str, help="aas url", required=True)
-    parser.add_argument("-e", "--edc", type=str, help="edc url", required=True)
+    parser.add_argument("-e1", "--edc1", type=str, help="Public EDC provider control plane url 1", required=True)
+    parser.add_argument("-e2", "--edc2", type=str, help="Public EDC provider control plane url 2", required=True)
+    parser.add_argument("-e3", "--edc3", type=str, help="Public EDC provider control plane url 3", required=True)
     parser.add_argument("-k", "--apikey", type=str, help="edc api key", required=True)
-    parser.add_argument("-E", "--esr", type=str, help="esr url", required=False)
+    parser.add_argument("-e", "--esr", type=str, help="esr url", required=False)
 
     args = parser.parse_args()
     config = vars(args)
@@ -172,18 +173,19 @@ if __name__ == "__main__":
     submodel_server_1_address = config.get("submodel1")
     submodel_server_2_address = config.get("submodel2")
     submodel_server_3_address = config.get("submodel3")
-    public_control_plane_url = config.get("controlplane")
     aas_url = config.get("aas")
-    edc_url = config.get("edc")
+    edc_url1 = config.get("edc1")
+    edc_url2 = config.get("edc2")
+    edc_url3 = config.get("edc3")
     edc_api_key = config.get("apikey")
     esr_url = config.get("esr")
 
-    submodel_server_1_folder = "BPNL00000003B0Q0"
-    submodel_server_2_folder = "BPNL00000003AXS3"
+    submodel_server_1_bpn = "BPNL00000003B0Q0"
+    submodel_server_2_bpn = "BPNL00000003AYRE"
 
-    edc_asset_url = "%s/data/assets" % edc_url
-    edc_policy_url = "%s/data/policydefinitions" % edc_url
-    edc_contract_definition_url = "%s/data/contractdefinitions" % edc_url
+    edc_asset_path = "/data/assets"
+    edc_policy_path = "/data/policydefinitions"
+    edc_contract_definition_path = "/data/contractdefinitions"
 
     # esr_url = "https://irs-esr.dev.demo.catena-x.net/esr/esr-statistics/"
 
@@ -223,6 +225,12 @@ if __name__ == "__main__":
 
     session = requests.Session()
     session.mount('https://', HTTPAdapter(max_retries=retries))
+
+    statistic_dict = {
+        "provider1": 0,
+        "provider2": 0,
+        "provider3": 0
+    }
 
     for tmp_data in testdata:
         catenax_id = tmp_data["catenaXId"]
@@ -266,10 +274,24 @@ if __name__ == "__main__":
 
         for tmp_key in tmp_keys:
             if tmp_key not in ("PlainObject", "catenaXId"):
+                # 1. Prepare submodel endpoint address
+                if part_bpn == submodel_server_1_bpn:
+                    submodel_url = submodel_server_1_address
+                    edc_url = edc_url1
+                    statistic_dict.update({"provider1": statistic_dict["provider1"] + 1})
+                elif part_bpn == submodel_server_2_bpn:
+                    submodel_url = submodel_server_2_address
+                    edc_url = edc_url2
+                    statistic_dict.update({"provider2": statistic_dict["provider2"] + 1})
+                else:
+                    submodel_url = submodel_server_3_address
+                    edc_url = edc_url3
+                    statistic_dict.update({"provider3": statistic_dict["provider3"] + 1})
+
                 submodel_name = re.sub('/[0-9].[0-9].[0-9]', '', tmp_key.replace("https://catenax.io/schema/", ""))
                 submodel_identification = uuid.uuid4().urn
                 semantic_id = semantic_dict.get(submodel_name)
-                endpoint_address = public_control_plane_url + "/" + catenax_id + \
+                endpoint_address = edc_url + "/" + catenax_id + \
                     "-" + submodel_identification + "/submodel?content=value&extent=withBlobValue"
                 descriptor = create_submodel_descriptor(submodel_name, submodel_identification, semantic_id,
                                                         endpoint_address)
@@ -277,14 +299,6 @@ if __name__ == "__main__":
 
                 edc_policy_id = str(uuid.uuid4())
                 asset_prop_id = catenax_id + "-" + submodel_identification
-
-                # 1. Prepare submodel endpoint address
-                if part_bpn == submodel_server_1_folder:
-                    submodel_url = submodel_server_1_address
-                elif part_bpn == submodel_server_2_folder:
-                    submodel_url = submodel_server_2_address
-                else:
-                    submodel_url = submodel_server_3_address
 
                 # 2. Create submodel on submodel server
                 if tmp_data[tmp_key] != "":
@@ -300,20 +314,20 @@ if __name__ == "__main__":
                 else:
                     payload = create_edc_asset_payload(submodel_url, asset_prop_id, submodel_identification)
                 # print(payload)
-                response = session.request(method="POST", url=edc_asset_url, headers=headers_with_api_key,
+                response = session.request(method="POST", url=edc_url + edc_asset_path, headers=headers_with_api_key,
                                            data=payload)
                 print_response(response)
 
                 # 4. Create edc policy
                 payload = create_edc_policy_payload(contract_id, asset_prop_id)
                 # print(payload)
-                response = session.request(method="POST", url=edc_policy_url, headers=headers_with_api_key,
+                response = session.request(method="POST", url=edc_url + edc_policy_path, headers=headers_with_api_key,
                                            data=payload)
                 print_response(response)
                 # 5. Create edc contract definition
                 payload = create_edc_contract_definition_payload(contract_id, contract_id, asset_prop_id)
                 # print(payload)
-                response = session.request(method="POST", url=edc_contract_definition_url,
+                response = session.request(method="POST", url=edc_url + edc_contract_definition_path,
                                            headers=headers_with_api_key,
                                            data=payload)
                 print_response(response)
@@ -332,3 +346,4 @@ if __name__ == "__main__":
     timestamp_end = time.time()
     duration = timestamp_end - timestamp_start
     print("Duration: %s Seconds" % math.ceil(duration))
+    print(statistic_dict)
