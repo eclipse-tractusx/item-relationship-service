@@ -53,6 +53,7 @@ public class SecurityConfiguration {
         "/api/api-docs",
         "/api/api-docs.yaml",
         "/api/api-docs/swagger-config",
+        "/esr/esr-statistics/**/**/**/submodel"
     };
 
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")

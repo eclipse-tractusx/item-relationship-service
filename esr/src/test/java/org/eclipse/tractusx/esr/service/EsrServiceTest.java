@@ -40,7 +40,7 @@ class EsrServiceTest {
                 .relationships(List.of(exampleRelationship(globalAssetId, childId)))
                 .shells(List.of(exampleShellWithGlobalAssetId(globalAssetId), exampleShellWithGlobalAssetId(childId)))
                 .build();
-        when(irsFacade.getIrsResponse(eq(globalAssetId), anyString(), anyString())).thenReturn(irsResponse);
+        when(irsFacade.getIrsResponse(eq(globalAssetId), anyString())).thenReturn(irsResponse);
 
         final EsrCertificateStatistics esrCertificateStatistics = esrService.handle(globalAssetId, BomLifecycle.AS_BUILT,
                 CertificateType.ISO14001);
@@ -61,7 +61,7 @@ class EsrServiceTest {
                                                    .relationships(List.of(exampleRelationship(globalAssetId, childId)))
                                                    .shells(List.of(exampleShellWithGlobalAssetId(globalAssetId), exampleShellWithGlobalAssetId(childId)))
                                                    .build();
-        when(irsFacade.getIrsResponse(eq(globalAssetId), anyString(), anyString())).thenReturn(irsResponse);
+        when(irsFacade.getIrsResponse(eq(globalAssetId), anyString())).thenReturn(irsResponse);
 
         final EsrCertificateStatistics esrCertificateStatistics = esrService.handle(globalAssetId, BomLifecycle.AS_BUILT,
                 CertificateType.ISO14001);

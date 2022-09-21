@@ -47,7 +47,7 @@ class IrsClientTest {
                 .willReturn(expectedResponse);
 
         // when
-        final StartJobResponse actualResponse = irsClient.startJob(irsRequest, TOKEN);
+        final StartJobResponse actualResponse = irsClient.startJob(irsRequest);
 
         // then
         assertThat(actualResponse).isEqualTo(expectedResponse);
@@ -65,7 +65,7 @@ class IrsClientTest {
                 new ResponseEntity<>(expectedResponse, HttpStatus.OK));
 
         // when
-        final IrsResponse actualResponse = irsClient.getJobDetails(JOB_ID, TOKEN);
+        final IrsResponse actualResponse = irsClient.getJobDetails(JOB_ID);
 
         // then
         assertThat(actualResponse).isEqualTo(expectedResponse);
@@ -84,7 +84,7 @@ class IrsClientTest {
                 new ResponseEntity<>(expectedResponse, HttpStatus.OK));
 
         // when
-        final IrsResponse actualResponse = irsClient.getJobDetails(JOB_ID, TOKEN);
+        final IrsResponse actualResponse = irsClient.getJobDetails(JOB_ID);
 
         // then
         assertThat(actualResponse).isEqualTo(expectedResponse);
@@ -106,7 +106,7 @@ class IrsClientTest {
                 new ResponseEntity<>(expectedResponse, HttpStatus.OK));
 
         // when
-        final IrsResponse actualResponse = irsClient.getJobDetails(JOB_ID, TOKEN);
+        final IrsResponse actualResponse = irsClient.getJobDetails(JOB_ID);
 
         // then
         assertThat(actualResponse).isEqualTo(expectedResponse);

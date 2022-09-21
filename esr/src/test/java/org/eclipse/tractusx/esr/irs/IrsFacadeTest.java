@@ -25,7 +25,6 @@ class IrsFacadeTest {
         // given
         String globalAssetId = "global-asset-id";
         String bomLifecycle = "asBuilt";
-        String token = "auth-token";
         String jobId = "job-id";
         IrsResponse expectedResponse = IrsResponse.builder()
                 .job(Job.builder().jobState("COMPLETED").build())
@@ -34,15 +33,14 @@ class IrsFacadeTest {
                 .build();
 
         BDDMockito.given(irsClient.startJob(
-                IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).depth(1).build(),
-                token)
+                IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).depth(1).build())
         ).willReturn(StartJobResponse.builder().jobId(jobId).build());
 
-        BDDMockito.given(irsClient.getJobDetails(jobId, token)
+        BDDMockito.given(irsClient.getJobDetails(jobId)
         ).willReturn(expectedResponse);
 
         // when
-        IrsResponse actualResponse = irsFacade.getIrsResponse(globalAssetId, bomLifecycle, token);
+        IrsResponse actualResponse = irsFacade.getIrsResponse(globalAssetId, bomLifecycle);
 
         // then
         assertThat(actualResponse).isEqualTo(expectedResponse);
