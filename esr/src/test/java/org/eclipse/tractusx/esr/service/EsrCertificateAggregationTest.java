@@ -82,4 +82,38 @@ class EsrCertificateAggregationTest {
         assertThat(actual.getCertificateStateStatistic().getCertificatesWithStateInvalid()).isEqualTo(0);
     }
 
+    @Test
+    public void shouldAggregateStatisticsForInitialValueIfStatisticsAreNull() {
+        // given
+        final EsrCertificateAggregation esrCertificateAggregation = new EsrCertificateAggregation(restTemplate);
+
+        final String globalAssetId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+
+        final IrsResponse irsResponse = IrsResponse.builder()
+                                                   .job(Job.builder()
+                                                           .jobId("f41067c5-fad8-426c-903e-130ecac9c3da")
+                                                           .globalAssetId(globalAssetId)
+                                                           .jobState("COMPLETED").build())
+                                                   .shells(List.of(exampleShellWithGlobalAssetId(globalAssetId, "urn:bamm:io.catenax.esr_certificates.esr_certificate:1.0.0")))
+                                                   .relationships(new ArrayList<>())
+                                                   .build();
+
+        final EsrCertificateStatistics subStatistics = EsrCertificateStatistics.builder()
+                                                                               .certificateStateStatistic(EsrCertificateStatistics.CertificateStatistics.builder()
+                                                                                                                                                        .certificatesWithStateValid(8)
+                                                                                                                                                        .certificatesWithStateInvalid(2)
+                                                                                                                                                        .build())
+                                                                               .build();
+
+        given(restTemplate.getForEntity("urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf", EsrCertificateStatistics.class))
+                .willReturn(new ResponseEntity<>(subStatistics, HttpStatus.OK));
+
+        // when
+        final EsrCertificateStatistics actual = esrCertificateAggregation.aggregateStatistics(irsResponse, null);
+
+        // then
+        assertThat(actual.getCertificateStateStatistic().getCertificatesWithStateValid()).isEqualTo(8);
+        assertThat(actual.getCertificateStateStatistic().getCertificatesWithStateInvalid()).isEqualTo(2);
+    }
+
 }

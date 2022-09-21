@@ -22,7 +22,6 @@
 package org.eclipse.tractusx.esr.service;
 
 import java.util.Collection;
-
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.esr.controller.model.EsrCertificateStatistics;
 import org.eclipse.tractusx.esr.irs.IrsResponse;
@@ -47,6 +46,8 @@ public class EsrCertificateAggregation {
 
     public EsrCertificateStatistics aggregateStatistics(final IrsResponse irs, final EsrCertificateStatistics esrStatistics) {
 
+        final EsrCertificateStatistics aggregatedStatistics = esrStatistics != null ? esrStatistics : EsrCertificateStatistics.initial();
+
         irs.getShells()
                 .stream()
                 .map(Shell::getSubmodelDescriptors)
@@ -55,9 +56,9 @@ public class EsrCertificateAggregation {
                 .map(SubmodelDescriptor::getEndpoints)
                 .flatMap(Collection::stream)
                 .map(endpoint -> endpoint.getProtocolInformation().getEndpointAddress())
-                .forEach(endpointAddress -> incrementStatistics(esrStatistics, endpointAddress));
+                .forEach(endpointAddress -> incrementStatistics(aggregatedStatistics, endpointAddress));
 
-        return esrStatistics;
+        return aggregatedStatistics;
     }
 
     private void incrementStatistics(final EsrCertificateStatistics esrStatistics, final String url) {
@@ -65,10 +66,12 @@ public class EsrCertificateAggregation {
         final ResponseEntity<EsrCertificateStatistics> responseEntity = restTemplate.getForEntity(url,
                 EsrCertificateStatistics.class);
 
-        if (responseEntity.getBody() != null && responseEntity.getStatusCode().is2xxSuccessful()) {
-            esrStatistics.incrementBy(responseEntity.getBody());
+        final EsrCertificateStatistics response = responseEntity.getBody();
+
+        if (response != null && responseEntity.getStatusCode().is2xxSuccessful()) {
+            esrStatistics.incrementBy(response);
         } else {
-            log.warn("ESR Endpoint call failed with status: {} and body: {}", responseEntity.getStatusCode(), responseEntity.getBody());
+            log.warn("ESR Endpoint call failed with status: {} and body: {}", responseEntity.getStatusCode(), response);
         }
     }
 
