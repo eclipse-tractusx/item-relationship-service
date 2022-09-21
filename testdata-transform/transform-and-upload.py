@@ -187,8 +187,6 @@ if __name__ == "__main__":
     edc_policy_path = "/data/policydefinitions"
     edc_contract_definition_path = "/data/contractdefinitions"
 
-    # esr_url = "https://irs-esr.dev.demo.catena-x.net/esr/esr-statistics/"
-
     headers = {
         'Content-Type': 'application/json'
     }
@@ -275,11 +273,11 @@ if __name__ == "__main__":
         for tmp_key in tmp_keys:
             if tmp_key not in ("PlainObject", "catenaXId"):
                 # 1. Prepare submodel endpoint address
-                if part_bpn == submodel_server_1_bpn:
+                if contract_id % 3 == 0:
                     submodel_url = submodel_server_1_address
                     edc_url = edc_url1
                     statistic_dict.update({"provider1": statistic_dict["provider1"] + 1})
-                elif part_bpn == submodel_server_2_bpn:
+                elif contract_id % 3 == 1:
                     submodel_url = submodel_server_2_address
                     edc_url = edc_url2
                     statistic_dict.update({"provider2": statistic_dict["provider2"] + 1})
