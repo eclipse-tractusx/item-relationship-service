@@ -45,6 +45,7 @@ public class EsrService {
 
     private final IrsFacade irsFacade;
     private final SupplyOnFacade supplyOnFacade;
+    private final EsrCertificateAggregation esrCertificateAggregation;
 
     /**
      * At first mapping between requestor-suppliers is being created.
@@ -52,7 +53,6 @@ public class EsrService {
      *
      * @param globalAssetId for Job registration
      * @param bomLifecycle for Job registration
-     * @param certificateName ISO14001
      * @return combined {@link EsrCertificateStatistics}
      */
     public EsrCertificateStatistics handle(final String globalAssetId, final BomLifecycle bomLifecycle,
@@ -79,7 +79,7 @@ public class EsrService {
             });
         });
 
-        return esrCertificateStatistics;
+        return esrCertificateAggregation.aggregateStatistics(irsResponse, esrCertificateStatistics);
     }
 
     /**
