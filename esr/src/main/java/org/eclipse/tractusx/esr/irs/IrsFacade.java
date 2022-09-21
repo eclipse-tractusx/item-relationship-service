@@ -37,12 +37,11 @@ public class IrsFacade {
     private static final int DEPTH = 1;
     private final IrsClient irsClient;
 
-    public IrsResponse getIrsResponse(final String globalAssetId, final String bomLifecycle, final String authorizationToken) {
+    public IrsResponse getIrsResponse(final String globalAssetId, final String bomLifecycle) {
         final StartJobResponse response = irsClient.startJob(
-                IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).depth(DEPTH).build(),
-                authorizationToken);
+                IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).depth(DEPTH).build());
         log.info("Registered IRS job with jobId: {}", response.getJobId());
-        return irsClient.getJobDetails(response.getJobId(), authorizationToken);
+        return irsClient.getJobDetails(response.getJobId());
     }
 
 }

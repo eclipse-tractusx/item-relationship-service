@@ -42,33 +42,32 @@ class IrsClient {
     private final RestTemplate restTemplate;
     private final String irsUrl;
 
-    /* package */ IrsClient(final RestTemplate defaultRestTemplate, @Value("${esr.irs.url:}") final String irsUrl) {
-        this.restTemplate = defaultRestTemplate;
+    /* package */ IrsClient(final RestTemplate oAuthRestTemplate, @Value("${esr.irs.url:}") final String irsUrl) {
+        this.restTemplate = oAuthRestTemplate;
         this.irsUrl = irsUrl;
     }
 
-    public StartJobResponse startJob(final IrsRequest irsRequest, final String authorizationToken) {
+    public StartJobResponse startJob(final IrsRequest irsRequest) {
         return restTemplate.postForObject(irsUrl + "/irs/jobs",
-                new HttpEntity<>(irsRequest, tokenInHeaders(authorizationToken)), StartJobResponse.class);
+                new HttpEntity<>(irsRequest, tokenInHeaders()), StartJobResponse.class);
     }
 
     @Retry(name = "waiting-for-completed")
-    public IrsResponse getJobDetails(final String jobId, final String authorizationToken) {
+    public IrsResponse getJobDetails(final String jobId) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(irsUrl);
         uriBuilder.path("/irs/jobs/").path(jobId);
 
         return restTemplate.exchange(
                 uriBuilder.build().toUri(),
                 HttpMethod.GET,
-                new HttpEntity<>(null, tokenInHeaders(authorizationToken)),
+                new HttpEntity<>(null, tokenInHeaders()),
                 IrsResponse.class).getBody();
     }
 
-    private static HttpHeaders tokenInHeaders(final String authorizationToken) {
+    private static HttpHeaders tokenInHeaders() {
         final HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + authorizationToken);
         return headers;
     }
 
