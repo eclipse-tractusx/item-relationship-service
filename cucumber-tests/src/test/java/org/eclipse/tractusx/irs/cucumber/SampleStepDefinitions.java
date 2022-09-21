@@ -7,7 +7,7 @@ import io.cucumber.java.en.When;
 public class SampleStepDefinitions {
 
     @Given("request for list of jobs \\/irs\\/jobs")
-    public void request_for_list_of_jobs() {
+    public void requestForListOfJobs() {
     }
 
     @When("\\/irs\\/jobs is executed without any parameter")

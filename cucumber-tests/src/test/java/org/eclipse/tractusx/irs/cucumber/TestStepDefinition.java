@@ -12,23 +12,23 @@ public class TestStepDefinition {
     private Integer result;
 
     @Given("I have entered {int} into the calculator")
-    public void i_have_entered_into_the_calculator(Integer int1) {
+    public void iHaveEnteredIntoTheCalculator(Integer int1) {
         this.int2 = this.int1;
         this.int1 = int1;
     }
 
     @When("I press add")
-    public void i_press_add() {
+    public void iPressAdd() {
         this.result = this.int1 + this.int2;
     }
 
     @When("I press multiply")
-    public void i_press_multiply() {
+    public void iPressMultiply() {
         this.result = this.int1 * this.int2;
     }
 
     @Then("the result should be {int} on the screen")
-    public void the_result_should_be_on_the_screen(Integer value) {
+    public void theResultShouldBeOnTheScreen(Integer value) {
         assertThat(this.result).isEqualTo(value);
     }
 }
