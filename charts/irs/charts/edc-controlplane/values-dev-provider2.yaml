@@ -38,6 +38,11 @@ ingresses:
       # -- If preset enables certificate generation via cert-manager cluster-wide issuer
       clusterIssuer: ""
 
+resources:
+  limits:
+    cpu: 1.5
+    memory: 2Gi
+
 configuration:
   # -- EDC configuration.properties configuring aspects of the [eclipse-dataspaceconnector](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector)
   properties: |-
