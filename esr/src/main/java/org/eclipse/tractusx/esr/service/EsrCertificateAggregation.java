@@ -59,8 +59,8 @@ public class EsrCertificateAggregation {
         return esrStatistics;
     }
 
-    private void incrementStatistics(EsrCertificateStatistics esrStatistics, String url) {
-        EsrCertificateStatistics subStatistics = restTemplate.getForEntity(url,
+    private void incrementStatistics(final EsrCertificateStatistics esrStatistics, final String url) {
+        final EsrCertificateStatistics subStatistics = restTemplate.getForEntity(url,
                 EsrCertificateStatistics.class).getBody();
 
         esrStatistics.incrementBy(subStatistics);
