@@ -86,5 +86,4 @@ jobs:
           -e1 $EDC_URL_1 \
           -e2 $EDC_URL_2 \
           -e3 $EDC_URL_3 \
-          -k $EDC_API_KEY \
-          -e $ESR_URL
+          -k $EDC_API_KEY 
