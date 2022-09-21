@@ -28,6 +28,7 @@ import org.eclipse.tractusx.esr.controller.model.EsrCertificateStatistics;
 import org.eclipse.tractusx.esr.irs.IrsResponse;
 import org.eclipse.tractusx.esr.irs.model.shell.Shell;
 import org.eclipse.tractusx.esr.irs.model.shell.SubmodelDescriptor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -60,10 +61,15 @@ public class EsrCertificateAggregation {
     }
 
     private void incrementStatistics(final EsrCertificateStatistics esrStatistics, final String url) {
-        final EsrCertificateStatistics subStatistics = restTemplate.getForEntity(url,
-                EsrCertificateStatistics.class).getBody();
+        log.info("Call ESR Endpoint using url: {}", url);
+        final ResponseEntity<EsrCertificateStatistics> responseEntity = restTemplate.getForEntity(url,
+                EsrCertificateStatistics.class);
 
-        esrStatistics.incrementBy(subStatistics);
+        if (responseEntity.getBody() != null && responseEntity.getStatusCode().is2xxSuccessful()) {
+            esrStatistics.incrementBy(responseEntity.getBody());
+        } else {
+            log.warn("ESR Endpoint call failed with status: {} and body: {}", responseEntity.getStatusCode(), responseEntity.getBody());
+        }
     }
 
 }

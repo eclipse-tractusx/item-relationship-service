@@ -21,7 +21,7 @@ class EsrCertificateAggregationTest {
     private final RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 
     @Test
-    public void shouldStartJob() {
+    public void shouldAggregateStatistics() {
         // given
         final EsrCertificateAggregation esrCertificateAggregation = new EsrCertificateAggregation(restTemplate);
 
@@ -52,6 +52,34 @@ class EsrCertificateAggregationTest {
         // then
         assertThat(actual.getCertificateStateStatistic().getCertificatesWithStateValid()).isEqualTo(8);
         assertThat(actual.getCertificateStateStatistic().getCertificatesWithStateInvalid()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldDoNothingWhenEsrDoNotResponseWithStatistics() {
+        // given
+        final EsrCertificateAggregation esrCertificateAggregation = new EsrCertificateAggregation(restTemplate);
+
+        final String globalAssetId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+
+        final IrsResponse irsResponse = IrsResponse.builder()
+                                                   .job(Job.builder()
+                                                           .jobId("f41067c5-fad8-426c-903e-130ecac9c3da")
+                                                           .globalAssetId(globalAssetId)
+                                                           .jobState("COMPLETED").build())
+                                                   .shells(List.of(exampleShellWithGlobalAssetId(globalAssetId, "urn:bamm:io.catenax.esr_certificates.esr_certificate:1.0.0")))
+                                                   .relationships(new ArrayList<>())
+                                                   .build();
+
+
+        given(restTemplate.getForEntity("urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf", EsrCertificateStatistics.class))
+                .willReturn(new ResponseEntity<>(null, HttpStatus.BAD_GATEWAY));
+
+        // when
+        final EsrCertificateStatistics actual = esrCertificateAggregation.aggregateStatistics(irsResponse, EsrCertificateStatistics.initial());
+
+        // then
+        assertThat(actual.getCertificateStateStatistic().getCertificatesWithStateValid()).isEqualTo(0);
+        assertThat(actual.getCertificateStateStatistic().getCertificatesWithStateInvalid()).isEqualTo(0);
     }
 
 }
