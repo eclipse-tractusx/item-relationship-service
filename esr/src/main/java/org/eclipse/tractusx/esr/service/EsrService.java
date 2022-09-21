@@ -53,6 +53,7 @@ public class EsrService {
      *
      * @param globalAssetId for Job registration
      * @param bomLifecycle for Job registration
+     * @param certificateName ISO14001
      * @return combined {@link EsrCertificateStatistics}
      */
     public EsrCertificateStatistics handle(final String globalAssetId, final BomLifecycle bomLifecycle,
