@@ -55,6 +55,13 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        Data Faker ships with a vulnerable version of snakeyaml, but is only used in tests.
+        ]]></notes>
+        <filePath regex="true">.*\bdatafaker.*</filePath>
+        <vulnerabilityName>CVE-2022-38751</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         False positive, version in use (> 1.31) is not affected anymore.
         ]]></notes>
         <gav regex="true">org\.yaml:snakeyaml.*</gav>
