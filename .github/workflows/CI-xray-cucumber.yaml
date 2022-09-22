@@ -33,7 +33,7 @@ jobs:
           # JIRA filter 11349: project = TRI AND type = Test AND "Test Type" = Cucumber
           # Downloads all feature files of cucumber tests inside TRI project
         run: |
-          curl -u $JIRA_USERNAME:$JIRA_PASSWORD "https://jira.catena-x.net/rest/raven/1.0/export/test?filter=11349" -o features.zip
+          curl -u $JIRA_USERNAME:$JIRA_PASSWORD "https://jira.catena-x.net/rest/raven/1.0/export/test?filter=11349&fz=true" -o features.zip
           unzip -o features.zip -d cucumber-tests/src/test/resources/features
 
       - name: Build with Maven
