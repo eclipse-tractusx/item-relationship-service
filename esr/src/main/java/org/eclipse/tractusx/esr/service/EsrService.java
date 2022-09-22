@@ -30,8 +30,6 @@ import org.eclipse.tractusx.esr.irs.IrsFacade;
 import org.eclipse.tractusx.esr.irs.IrsResponse;
 import org.eclipse.tractusx.esr.supplyon.EsrCertificate;
 import org.eclipse.tractusx.esr.supplyon.SupplyOnFacade;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
@@ -61,7 +59,7 @@ public class EsrService {
 
         final EsrCertificateStatistics esrCertificateStatistics = EsrCertificateStatistics.initial();
 
-        final IrsResponse irsResponse = irsFacade.getIrsResponse(globalAssetId, bomLifecycle.getName(), getAuthenticationToken());
+        final IrsResponse irsResponse = irsFacade.getIrsResponse(globalAssetId, bomLifecycle.getName());
         log.info("Retrieved completed IRS job with jobId: {}", irsResponse.getJob().getJobId());
 
         SupplyOnContainer.from(irsResponse).ifPresent(supplyOn -> {
@@ -81,17 +79,6 @@ public class EsrService {
         });
 
         return esrCertificateAggregation.aggregateStatistics(irsResponse, esrCertificateStatistics);
-    }
-
-    /**
-     * @return TODO (me) - its not gonna work for long processing jobs
-     */
-    private String getAuthenticationToken() {
-        if (SecurityContextHolder.getContext().getAuthentication() instanceof JwtAuthenticationToken) {
-            return ((JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication()).getToken().getTokenValue();
-        }
-
-        return "";
     }
 
 }
