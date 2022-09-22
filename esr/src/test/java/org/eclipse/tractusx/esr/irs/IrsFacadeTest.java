@@ -1,12 +1,12 @@
 package org.eclipse.tractusx.esr.irs;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,11 +32,11 @@ class IrsFacadeTest {
                 .shells(new ArrayList<>())
                 .build();
 
-        BDDMockito.given(irsClient.startJob(
+        given(irsClient.startJob(
                 IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).depth(1).build())
         ).willReturn(StartJobResponse.builder().jobId(jobId).build());
 
-        BDDMockito.given(irsClient.getJobDetails(jobId)
+        given(irsClient.getJobDetails(jobId)
         ).willReturn(expectedResponse);
 
         // when

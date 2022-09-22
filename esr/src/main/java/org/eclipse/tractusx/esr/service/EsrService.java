@@ -43,6 +43,7 @@ public class EsrService {
 
     private final IrsFacade irsFacade;
     private final SupplyOnFacade supplyOnFacade;
+    private final EsrCertificateAggregation esrCertificateAggregation;
 
     /**
      * At first mapping between requestor-suppliers is being created.
@@ -77,7 +78,7 @@ public class EsrService {
             });
         });
 
-        return esrCertificateStatistics;
+        return esrCertificateAggregation.aggregateStatistics(irsResponse, esrCertificateStatistics);
     }
 
 }

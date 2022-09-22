@@ -21,13 +21,16 @@ import org.eclipse.tractusx.esr.supplyon.EsrCertificate;
 import org.eclipse.tractusx.esr.supplyon.SupplyOnFacade;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 class EsrServiceTest {
 
     private final IrsFacade irsFacade = mock(IrsFacade.class);
     private final SupplyOnFacade supplyOnFacade = mock(SupplyOnFacade.class);
+    private final RestTemplate restTemplate = mock(RestTemplate.class);
+    private final EsrCertificateAggregation esrCertificateAggregation = new EsrCertificateAggregation(restTemplate);
 
-    private final EsrService esrService = new EsrService(irsFacade, supplyOnFacade);
+    private final EsrService esrService = new EsrService(irsFacade, supplyOnFacade, esrCertificateAggregation);
 
     @Test
     void shouldReturnEsrCertificateStatisticsWithIncrementedValidStateStatistic() {

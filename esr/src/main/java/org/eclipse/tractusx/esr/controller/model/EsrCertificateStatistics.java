@@ -69,6 +69,11 @@ public class EsrCertificateStatistics {
         return this;
     }
 
+    public EsrCertificateStatistics incrementBy(final EsrCertificateStatistics esrCertificateStatistics) {
+        this.certificateStateStatistic.incrementBy(esrCertificateStatistics.getCertificateStateStatistic());
+        return this;
+    }
+
     /**
      * Certificate statistics
      */
@@ -94,6 +99,13 @@ public class EsrCertificateStatistics {
                 default:
                     break;
             }
+        }
+
+        private void incrementBy(final CertificateStatistics certificateStatistics) {
+            this.certificatesWithStateValid += certificateStatistics.getCertificatesWithStateValid();
+            this.certificatesWithStateInvalid += certificateStatistics.getCertificatesWithStateInvalid();
+            this.certificatesWithStateUnknown += certificateStatistics.getCertificatesWithStateUnknown();
+            this.certificatesWithStateExceptional += certificateStatistics.getCertificatesWithStateExceptional();
         }
 
         private void incrementExceptional() {

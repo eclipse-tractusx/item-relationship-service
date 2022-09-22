@@ -13,6 +13,8 @@ import org.eclipse.tractusx.esr.irs.model.shell.SubmodelDescriptor;
 
 public class IrsFixture {
 
+    private static final String DEFAULT_SEMANTIC_ID = "urn:bamm:com.catenax.serial_part_typization:1.0.0";
+
     public static Relationship exampleRelationship(final String globalAssetId, final String childId) {
         return Relationship.builder()
                            .catenaXId(globalAssetId)
@@ -29,6 +31,10 @@ public class IrsFixture {
     }
 
     public static Shell exampleShellWithGlobalAssetId(final String globalAssetId) {
+        return exampleShellWithGlobalAssetId(globalAssetId, DEFAULT_SEMANTIC_ID);
+    }
+
+    public static Shell exampleShellWithGlobalAssetId(final String globalAssetId, final String semanticId) {
         return Shell.builder()
                     .globalAssetId(ListOfValues.builder()
                                                .value(List.of(globalAssetId))
@@ -42,7 +48,7 @@ public class IrsFixture {
                                                                     .build()))
                     .submodelDescriptors(List.of(SubmodelDescriptor.builder()
                                                                    .identification("urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf")
-                                                                   .semanticId(ListOfValues.builder().value(List.of("urn:bamm:com.catenax.serial_part_typization:1.0.0")).build())
+                                                                   .semanticId(ListOfValues.builder().value(List.of(semanticId)).build())
                                                                    .endpoints(List.of(Endpoint.builder()
                                                                                               .protocolInformation(
                                                                                                       ProtocolInformation.builder()

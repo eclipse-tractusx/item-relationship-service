@@ -34,7 +34,21 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 @Jacksonized
 public class SubmodelDescriptor {
+
+    private static final String ASSEMBLY_PART_RELATIONSHIP = "io.catenax.assembly_part_relationship";
+    private static final String ESR_CERTIFICATE = "io.catenax.esr_certificates.esr_certificate";
+
     private String identification;
     private ListOfValues semanticId;
     private List<Endpoint> endpoints;
+
+    public Boolean isPartRelationship() {
+        return semanticId != null && semanticId.getValue().stream()
+                                               .anyMatch(id -> id.contains(ASSEMBLY_PART_RELATIONSHIP));
+    }
+
+    public Boolean isEsrCertificate() {
+        return semanticId != null && semanticId.getValue().stream()
+                                               .anyMatch(id -> id.contains(ESR_CERTIFICATE));
+    }
 }
