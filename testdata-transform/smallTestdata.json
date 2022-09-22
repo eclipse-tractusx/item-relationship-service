@@ -137,6 +137,25 @@
               ],
               "identification": "serialPartTypization",
               "idShort": "serial-part-typization"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.batch:1.0.0#Batch"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -190,6 +209,28 @@
               "childCatenaXId": "urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a"
             }
           ]
+        }
+      ],
+      "https://catenax.io/schema/Batch/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BID12345678",
+              "key": "BatchID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "HUR"
+          },
+          "catenaXId": "urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb",
+          "partTypeInformation": {
+            "manufacturerPartId": "123-0.740-3434-A",
+            "customerPartId": "PRT-12345",
+            "classification": "product",
+            "nameAtManufacturer": "Mirror left",
+            "nameAtCustomer": "side element A"
+          }
         }
       ]
     },
@@ -287,6 +328,25 @@
               ],
               "identification": "serialPartTypization",
               "idShort": "serial-part-typization"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.batch:1.0.0#Batch"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -340,6 +400,28 @@
               "childCatenaXId": "urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef"
             }
           ]
+        }
+      ],
+      "https://catenax.io/schema/Batch/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BID12345678",
+              "key": "BatchID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "HUR"
+          },
+          "catenaXId": "urn:uuid:7fa65f10-9dc1-49fe-818a-09c7313a4562",
+          "partTypeInformation": {
+            "manufacturerPartId": "123-0.740-3434-A",
+            "customerPartId": "PRT-12345",
+            "classification": "product",
+            "nameAtManufacturer": "Mirror left",
+            "nameAtCustomer": "side element A"
+          }
         }
       ]
     },
@@ -418,12 +500,53 @@
               ],
               "identification": "serialPartTypization",
               "idShort": "serial-part-typization"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.batch:1.0.0#Batch"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
             "value": [
               "urn:uuid:16bb1a7e-8ed8-48ca-a839-5f38b704fcae"
             ]
+          }
+        }
+      ],
+      "https://catenax.io/schema/Batch/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BID12345678",
+              "key": "BatchID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "HUR"
+          },
+          "catenaXId": "urn:uuid:16bb1a7e-8ed8-48ca-a839-5f38b704fcae",
+          "partTypeInformation": {
+            "manufacturerPartId": "123-0.740-3434-A",
+            "customerPartId": "PRT-12345",
+            "classification": "product",
+            "nameAtManufacturer": "Mirror left",
+            "nameAtCustomer": "side element A"
           }
         }
       ]
@@ -522,6 +645,25 @@
               ],
               "identification": "serialPartTypization",
               "idShort": "serial-part-typization"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.batch:1.0.0#Batch"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -549,6 +691,28 @@
               "childCatenaXId": "urn:uuid:f7cf62fe-9e25-472b-9148-66ebcc291f31"
             }
           ]
+        }
+      ],
+      "https://catenax.io/schema/Batch/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BID12345678",
+              "key": "BatchID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "HUR"
+          },
+          "catenaXId": "urn:uuid:8eea5f45-0823-48ce-a4fc-c3bf1cdfa4c2",
+          "partTypeInformation": {
+            "manufacturerPartId": "123-0.740-3434-A",
+            "customerPartId": "PRT-12345",
+            "classification": "product",
+            "nameAtManufacturer": "Mirror left",
+            "nameAtCustomer": "side element A"
+          }
         }
       ]
     },
@@ -627,12 +791,53 @@
               ],
               "identification": "serialPartTypization",
               "idShort": "serial-part-typization"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.batch:1.0.0#Batch"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
             "value": [
               "urn:uuid:f7cf62fe-9e25-472b-9148-66ebcc291f31"
             ]
+          }
+        }
+      ],
+      "https://catenax.io/schema/Batch/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BID12345678",
+              "key": "BatchID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "HUR"
+          },
+          "catenaXId": "urn:uuid:f7cf62fe-9e25-472b-9148-66ebcc291f31",
+          "partTypeInformation": {
+            "manufacturerPartId": "123-0.740-3434-A",
+            "customerPartId": "PRT-12345",
+            "classification": "product",
+            "nameAtManufacturer": "Mirror left",
+            "nameAtCustomer": "side element A"
           }
         }
       ]
@@ -731,6 +936,25 @@
               ],
               "identification": "serialPartTypization",
               "idShort": "serial-part-typization"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.batch:1.0.0#Batch"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -744,6 +968,28 @@
         {
           "catenaXId": "urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef",
           "childParts": []
+        }
+      ],
+      "https://catenax.io/schema/Batch/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BID12345678",
+              "key": "BatchID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "HUR"
+          },
+          "catenaXId": "urn:uuid:0ce83951-bc18-4e8f-892d-48bad4eb67ef",
+          "partTypeInformation": {
+            "manufacturerPartId": "123-0.740-3434-A",
+            "customerPartId": "PRT-12345",
+            "classification": "product",
+            "nameAtManufacturer": "Mirror left",
+            "nameAtCustomer": "side element A"
+          }
         }
       ]
     },
@@ -841,6 +1087,25 @@
               ],
               "identification": "serialPartTypization",
               "idShort": "serial-part-typization"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.batch:1.0.0#Batch"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -894,6 +1159,28 @@
               "childCatenaXId": "urn:uuid:8b59e2ec-d76a-49a7-a795-c4bea4a02d87"
             }
           ]
+        }
+      ],
+      "https://catenax.io/schema/Batch/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BID12345678",
+              "key": "BatchID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "HUR"
+          },
+          "catenaXId": "urn:uuid:6dafbcec-2fce-4cbb-a5a9-b3b32aa5cffc",
+          "partTypeInformation": {
+            "manufacturerPartId": "123-0.740-3434-A",
+            "customerPartId": "PRT-12345",
+            "classification": "product",
+            "nameAtManufacturer": "Mirror left",
+            "nameAtCustomer": "side element A"
+          }
         }
       ]
     },
@@ -972,12 +1259,53 @@
               ],
               "identification": "serialPartTypization",
               "idShort": "serial-part-typization"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.batch:1.0.0#Batch"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
             "value": [
               "urn:uuid:b931e9e8-614d-494c-a8e6-548ee8b6ef34"
             ]
+          }
+        }
+      ],
+      "https://catenax.io/schema/Batch/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BID12345678",
+              "key": "BatchID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "HUR"
+          },
+          "catenaXId": "urn:uuid:b931e9e8-614d-494c-a8e6-548ee8b6ef34",
+          "partTypeInformation": {
+            "manufacturerPartId": "123-0.740-3434-A",
+            "customerPartId": "PRT-12345",
+            "classification": "product",
+            "nameAtManufacturer": "Mirror left",
+            "nameAtCustomer": "side element A"
           }
         }
       ]
@@ -1076,6 +1404,25 @@
               ],
               "identification": "serialPartTypization",
               "idShort": "serial-part-typization"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.batch:1.0.0#Batch"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -1103,6 +1450,28 @@
               "childCatenaXId": "urn:uuid:186359fb-4584-40e4-a59b-ed842d3d80d9"
             }
           ]
+        }
+      ],
+      "https://catenax.io/schema/Batch/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BID12345678",
+              "key": "BatchID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "HUR"
+          },
+          "catenaXId": "urn:uuid:1ae94880-e6b0-4bf3-ab74-8148b63c0640",
+          "partTypeInformation": {
+            "manufacturerPartId": "123-0.740-3434-A",
+            "customerPartId": "PRT-12345",
+            "classification": "product",
+            "nameAtManufacturer": "Mirror left",
+            "nameAtCustomer": "side element A"
+          }
         }
       ]
     },
@@ -1181,12 +1550,53 @@
               ],
               "identification": "serialPartTypization",
               "idShort": "serial-part-typization"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.batch:1.0.0#Batch"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
             "value": [
               "urn:uuid:186359fb-4584-40e4-a59b-ed842d3d80d9"
             ]
+          }
+        }
+      ],
+      "https://catenax.io/schema/Batch/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BID12345678",
+              "key": "BatchID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "HUR"
+          },
+          "catenaXId": "urn:uuid:186359fb-4584-40e4-a59b-ed842d3d80d9",
+          "partTypeInformation": {
+            "manufacturerPartId": "123-0.740-3434-A",
+            "customerPartId": "PRT-12345",
+            "classification": "product",
+            "nameAtManufacturer": "Mirror left",
+            "nameAtCustomer": "side element A"
           }
         }
       ]
@@ -1266,12 +1676,53 @@
               ],
               "identification": "serialPartTypization",
               "idShort": "serial-part-typization"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.batch:1.0.0#Batch"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
             "value": [
               "urn:uuid:8b59e2ec-d76a-49a7-a795-c4bea4a02d87"
             ]
+          }
+        }
+      ],
+      "https://catenax.io/schema/Batch/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BID12345678",
+              "key": "BatchID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "HUR"
+          },
+          "catenaXId": "urn:uuid:8b59e2ec-d76a-49a7-a795-c4bea4a02d87",
+          "partTypeInformation": {
+            "manufacturerPartId": "123-0.740-3434-A",
+            "customerPartId": "PRT-12345",
+            "classification": "product",
+            "nameAtManufacturer": "Mirror left",
+            "nameAtCustomer": "side element A"
           }
         }
       ]
@@ -1370,6 +1821,25 @@
               ],
               "identification": "serialPartTypization",
               "idShort": "serial-part-typization"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.batch:1.0.0#Batch"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -1397,6 +1867,28 @@
               "childCatenaXId": "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978"
             }
           ]
+        }
+      ],
+      "https://catenax.io/schema/Batch/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BID12345678",
+              "key": "BatchID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "HUR"
+          },
+          "catenaXId": "urn:uuid:587cfb38-7149-4f06-b1e0-0e9b6e98be2a",
+          "partTypeInformation": {
+            "manufacturerPartId": "123-0.740-3434-A",
+            "customerPartId": "PRT-12345",
+            "classification": "product",
+            "nameAtManufacturer": "Mirror left",
+            "nameAtCustomer": "side element A"
+          }
         }
       ]
     },
@@ -1494,6 +1986,25 @@
               ],
               "identification": "serialPartTypization",
               "idShort": "serial-part-typization"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.batch:1.0.0#Batch"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "batch",
+              "idShort": "batch"
             }
           ],
           "globalAssetId": {
@@ -1507,6 +2018,28 @@
         {
           "catenaXId": "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978",
           "childParts": []
+        }
+      ],
+      "https://catenax.io/schema/Batch/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BID12345678",
+              "key": "BatchID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "HUR"
+          },
+          "catenaXId": "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978",
+          "partTypeInformation": {
+            "manufacturerPartId": "123-0.740-3434-A",
+            "customerPartId": "PRT-12345",
+            "classification": "product",
+            "nameAtManufacturer": "Mirror left",
+            "nameAtCustomer": "side element A"
+          }
         }
       ]
     },
@@ -1590,6 +2123,25 @@
               ],
               "identification": "urn:uuid:3064f87d-5e4a-496b-9685-c1cf3e113198",
               "idShort": "assembly-part-relationship"
+            },
+            {
+              "semanticId": [
+                {
+                  "value": "urn:bamm:com.catenax.batch:1.0.0#Batch"
+                }
+              ],
+              "endpoints": [
+                {
+                  "interface": "https://BPNL00000003B2OM.connector",
+                  "protocolInformation": {
+                    "endpointAddress": "http://provider.connector:port/BPNL00000003B2OM/urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:23685ed-75cc-2a40-3a13-792a8bb2/submodel?content=value&extent=WithBLOBValue",
+                    "endpointProtocolVersion": "1.0RC02",
+                    "endpointProtocol": "AAS/SUBMODEL"
+                  }
+                }
+              ],
+              "identification": "batch",
+              "idShort": "batch"
             }
           ]
         }
@@ -1641,6 +2193,28 @@
               "materialAbbreviation": "CS2"
             }
           ]
+        }
+      ],
+      "https://catenax.io/schema/Batch/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BID12345678",
+              "key": "BatchID"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "HUR"
+          },
+          "catenaXId": "urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa",
+          "partTypeInformation": {
+            "manufacturerPartId": "123-0.740-3434-A",
+            "customerPartId": "PRT-12345",
+            "classification": "product",
+            "nameAtManufacturer": "Mirror left",
+            "nameAtCustomer": "side element A"
+          }
         }
       ]
     }

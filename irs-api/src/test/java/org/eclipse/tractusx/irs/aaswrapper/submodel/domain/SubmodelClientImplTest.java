@@ -114,4 +114,24 @@ class SubmodelClientImplTest {
         verify(this.restTemplate, times(3)).getForEntity(any(), any());
         verify(meterRegistry, times(3)).incrementSubmodelTimeoutCounter(any());
     }
+
+    @Test
+    void shouldThrowExceptionWhenEndpointAddressIsMalformed() {
+        final String malformedAddress = "null/BPNL00000003AYRE/urn%3Auuid%3A0834c0ea-435e-4085-8a9b-ac46af75deae-urn%3Auuid%3A6972cc4c-e31e-438c-8b23-4f32331a73ba/submodel?content=value&extent=WithBLOBValue";
+        assertThrows(IllegalArgumentException.class, () -> submodelClient.getSubmodel(malformedAddress));
+    }
+
+    @Test
+    void shouldReturnSubmodelWhenCallingLocalService() {
+        final String localAddress = "http://irs-aaswrapper:9191/BPNL00000003AYRE/urn%3Auuid%3A0834c0ea-435e-4085-8a9b-ac46af75deae-urn%3Auuid%3A6972cc4c-e31e-438c-8b23-4f32331a73ba/submodel?content=value&extent=WithBLOBValue";
+        final String data = "testdata";
+
+        final ResponseEntity<String> responseEntity = new ResponseEntity<>(data, HttpStatus.OK);
+        doReturn(responseEntity).when(restTemplate).getForEntity(any(), any());
+
+        final String submodelResponse = submodelClient.getSubmodel(localAddress);
+
+        assertThat(submodelResponse).isNotNull();
+        assertThat(submodelResponse).isEqualTo(data);
+    }
 }
