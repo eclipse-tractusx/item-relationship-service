@@ -4,7 +4,7 @@
 # Declare variables to be passed into your templates.
 
 image:
-  tag: "0.1.0"
+  tag: "0.1.1"
 
 # -- Overrides the charts name
 nameOverride: "edc-consumer-dataplane-pen"

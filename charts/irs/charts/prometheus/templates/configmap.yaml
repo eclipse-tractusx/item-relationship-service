@@ -1,4 +1,4 @@
----
+{{- if .Values.global.enablePrometheus -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -11,3 +11,4 @@ data:
   prometheus.yml: |-
     {{- toYaml . | nindent 4 }}
   {{- end }}
+{{- end }}

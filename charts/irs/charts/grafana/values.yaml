@@ -4,8 +4,6 @@
 
 replicaCount: 1
 
-namespace: product-traceability-irs
-
 image:
   repository: grafana/grafana
   pullPolicy: IfNotPresent

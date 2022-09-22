@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [v1.1.0] - 2022-09-12
+## [1.1.0] - 2022-09-12
 ### Added
 - **Aspect Model validation** IRS now validates the aspect model responses requested via EDC. JSON schema files are requested on demand using Semantic Hub API.
 - **BPN mapping** IRS job result includes BPNs and the corresponding names.
@@ -32,17 +32,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Refactor relationship result object of IRS**
 - **FOSS initial GitHub & code preparation** Change package structure to `org.eclipse.tractusx`.
 
-## [v1.0.0] - 2022-07-25
+## [1.0.0] - 2022-07-25
 ### Changed
 * **Improved Minio Helmchart** Latest Minio version is used now
 * **Submodel Information** If requested, the IRS collects submodel information now and adds it to the job result
 * **Improved job response** The job response object contains all the required fields now with correct values
 
-## [v0.9.1] - 2022-06-14
+## [0.9.1] - 2022-06-14
 ### Removed
 - **Remove AAS Proxy** The IRS works without the AASProxy component
 
-## [v0.9.0] - 2022-04-27
+## [0.9.0] - 2022-04-27
 ### Added
 - **Build traceability BoM as built tree** You can now use the IRS to retrieve a BoM tree with lifecycle stage "as built" for serialized components, which are distributed across the Catena-X network. In this release, the tree is being built on the aspects "SerialPartTypization" and "AssemblyPartRelationship". Focus is a tree built  in the direction top-down/parent-child.
 - *IRS API v1.0.0* First release of the IRS API.
@@ -63,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 [Unreleased]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.1.0...HEAD
-[v1.1.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.0.0...v1.1.0
-[v1.0.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v0.9.1...v1.0.0
-[v0.9.1]: https://github.com/catenax-ng/product-item-relationship-service/commits/v0.9.1
-[v0.9.0]: https://github.com/catenax-ng/product-item-relationship-service/commits/v0.9.0
+[1.1.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v0.9.1...v1.0.0
+[0.9.1]: https://github.com/catenax-ng/product-item-relationship-service/commits/v0.9.1
+[0.9.0]: https://github.com/catenax-ng/product-item-relationship-service/commits/v0.9.0
