@@ -53,4 +53,11 @@
         <filePath regex="true">.*\bdatafaker.*</filePath>
         <vulnerabilityName>CVE-2022-25857</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        False positive, version in use (> 1.31) is not affected anymore.
+        ]]></notes>
+        <gav regex="true">org\.yaml:snakeyaml.*</gav>
+        <vulnerabilityName>CVE-2022-38752</vulnerabilityName>
+    </suppress>
 </suppressions>
