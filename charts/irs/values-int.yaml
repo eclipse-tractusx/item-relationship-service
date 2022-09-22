@@ -33,6 +33,9 @@ minio:
 rootUser: <path:traceability-irs/data/int/minio#minioUser>
 rootPassword: <path:traceability-irs/data/int/minio#minioPassword>
 
+supplyOn:
+  subscriptionKey: <path:traceability-irs/data/int/supply#subscriptionKey>
+
 global:
   enablePrometheus: true
   enableGrafana: true

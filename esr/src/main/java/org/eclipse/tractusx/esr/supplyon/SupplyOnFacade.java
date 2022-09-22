@@ -21,8 +21,10 @@
  ********************************************************************************/
 package org.eclipse.tractusx.esr.supplyon;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.esr.controller.model.CertificateType;
 import org.springframework.stereotype.Service;
 
 /**
@@ -33,15 +35,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class SupplyOnFacade {
 
-    /**
-     * Spike covers ISO14001 type only
-     */
-    private static final String DEFAULT_CERTIFICATE_TYPE = "ISO14001";
-
     private final SupplyOnClient supplyOnClient;
 
-    public EsrCertificate getESRCertificate(final String requestorBPN, final String supplierBPN) {
-        return supplyOnClient.getESRCertificate(requestorBPN, supplierBPN, DEFAULT_CERTIFICATE_TYPE);
+    @Retry(name = "supplyOn")
+    public EsrCertificate getESRCertificate(final String requestorBPN, final String supplierBPN, final CertificateType certificateType) {
+        return supplyOnClient.getESRCertificate(requestorBPN, supplierBPN, certificateType.name());
     }
 
 }

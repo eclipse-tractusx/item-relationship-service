@@ -36,6 +36,9 @@ rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
 digitalTwinRegistry:
   url: https://irs-aas-registry.dev.demo.catena-x.net
 
+supplyOn:
+  subscriptionKey: <path:traceability-irs/data/dev/supply#subscriptionKey>
+
 global:
   enablePrometheus: false
   enableGrafana: false

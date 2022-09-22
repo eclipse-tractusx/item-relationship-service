@@ -83,6 +83,11 @@ spec:
               value: {{ .Values.aasWrapper.host }}
             - name: DIGITALTWINREGISTRY_URL
               value: {{ .Values.digitalTwinRegistry.url }}
+            - name: SUPPLY_ON_SUBSCRIPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "irs.secretName" . }}
+                  key: supplyOnSubscriptionKey
           ports:
             - name: http
               containerPort: 8080

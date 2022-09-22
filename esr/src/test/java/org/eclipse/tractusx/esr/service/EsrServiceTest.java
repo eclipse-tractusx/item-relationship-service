@@ -34,7 +34,7 @@ class EsrServiceTest {
 
     @Test
     void shouldReturnEsrCertificateStatisticsWithIncrementedValidStateStatistic() {
-        when(supplyOnFacade.getESRCertificate(anyString(), anyString())).thenReturn(EsrCertificate.builder().certificateState(
+        when(supplyOnFacade.getESRCertificate(anyString(), anyString(), eq(CertificateType.ISO14001))).thenReturn(EsrCertificate.builder().certificateState(
                 CertificateState.VALID).build());
 
         final String globalAssetId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
@@ -56,7 +56,7 @@ class EsrServiceTest {
 
     @Test
     void shouldReturnEsrCertificateStatisticsWithIncrementedExceptionalStateStatisticWhenSupplyOnServiceResultsWithError() {
-        when(supplyOnFacade.getESRCertificate(anyString(), anyString())).thenThrow(new RestClientException("SupplyOn Error"));
+        when(supplyOnFacade.getESRCertificate(anyString(), anyString(), eq(CertificateType.ISO14001))).thenThrow(new RestClientException("SupplyOn Error"));
 
         final String globalAssetId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
         final String childId = "urn:uuid:4faa5c19-75da-4dd1-b93f-ce1729d371d6";

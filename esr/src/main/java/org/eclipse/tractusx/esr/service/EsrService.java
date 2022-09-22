@@ -67,7 +67,7 @@ public class EsrService {
                 try {
                     log.info("Calling SupplyOn service for ESR Certificate with req: {}, supp: {}", supplyOn.getRequestor().getBpn(), supplier.getBpn());
                     final EsrCertificate esrCertificate = supplyOnFacade.getESRCertificate(supplyOn.getRequestor().getBpn(),
-                            supplier.getBpn());
+                            supplier.getBpn(), certificateName);
 
                     log.info("Retrieved ESR Certificate state: {}", esrCertificate.getCertificateState());
                     esrCertificateStatistics.incrementBy(esrCertificate.getCertificateState());

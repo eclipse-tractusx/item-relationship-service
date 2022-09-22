@@ -30,11 +30,14 @@ aasWrapper:
 minio:
   url: http://app-irs-pen-irs-minio:9000
 
+rootUser: <path:traceability-irs/data/int/minio#minioUser>
+rootPassword: <path:traceability-irs/data/int/minio#minioPassword>
+
 digitalTwinRegistry:
   url: https://semantics.int.demo.catena-x.net/registry
 
-rootUser: <path:traceability-irs/data/int/minio#minioUser>
-rootPassword: <path:traceability-irs/data/int/minio#minioPassword>
+supplyOn:
+  subscriptionKey: <path:traceability-irs/data/int/supply#subscriptionKey>
 
 global:
   enablePrometheus: false

@@ -106,6 +106,8 @@ resilience4j:
         waitDuration: 10s
         enableExponentialBackoff: true
         exponentialBackoffMultiplier: 2
+      supplyOn:
+        baseConfig: default
 
 aasWrapper:
   host: "${AASWRAPPER_HOST:}"
@@ -141,3 +143,7 @@ bpdm:
 esr:
   irs:
     url: https://irs-esr.dev.demo.catena-x.net/
+
+supplyOn:
+  url:  https://gateway.api.qas.supplyon.com/cx-bmw-api
+  subscriptionKey: ${SUPPLY_ON_SUBSCRIPTION_KEY:}
