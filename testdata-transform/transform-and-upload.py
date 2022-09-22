@@ -271,7 +271,8 @@ if __name__ == "__main__":
             tmp_data.update({"https://catenax.io/schema/EsrCertificateStateStatistic/1.0.1": ""})
 
         for tmp_key in tmp_keys:
-            if tmp_key not in ("PlainObject", "catenaXId"):
+            if tmp_key not in ("PlainObject", "catenaXId", "https://catenax.io/schema/PhysicalDimension/1.0.0",
+                               "https://catenax.io/schema/BatteryProductDescription/1.0.1"):
                 # 1. Prepare submodel endpoint address
                 if contract_id % 3 == 0:
                     submodel_url = submodel_server_1_address
