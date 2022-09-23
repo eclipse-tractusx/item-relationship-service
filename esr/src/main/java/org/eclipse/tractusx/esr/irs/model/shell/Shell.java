@@ -23,7 +23,9 @@ package org.eclipse.tractusx.esr.irs.model.shell;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
@@ -41,11 +43,19 @@ public class Shell {
     private ListOfValues globalAssetId;
     private List<SubmodelDescriptor> submodelDescriptors;
 
+    @JsonIgnore
+    private static final Pattern BPN_RGX = Pattern.compile("(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}");
+
     /**
      * @return ManufacturerId value from Specific Asset Ids
      */
-    public Optional<String> findManufacturerId() {
-        return this.specificAssetIds.stream().filter(assetId -> "ManufacturerId".equals(assetId.getKey())).map(IdentifierKeyValuePair::getValue).findFirst();
+    public Optional<String> findManufacturerIdIfValid() {
+        return this.specificAssetIds
+                .stream()
+                .filter(assetId -> "ManufacturerId".equals(assetId.getKey()))
+                .map(IdentifierKeyValuePair::getValue)
+                .filter(BPN_RGX.asPredicate())
+                .findFirst();
     }
 
 }
