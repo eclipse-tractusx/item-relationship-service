@@ -90,7 +90,7 @@ public class IrsResponse {
                    .stream()
                    .filter(shell -> shell.getGlobalAssetId().getValue().contains(globalAssetId))
                    .findFirst()
-                   .flatMap(Shell::findManufacturerId);
+                   .flatMap(Shell::findManufacturerIdIfValid);
     }
 
 
