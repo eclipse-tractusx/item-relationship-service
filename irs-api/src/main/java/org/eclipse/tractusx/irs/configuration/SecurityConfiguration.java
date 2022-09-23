@@ -23,6 +23,7 @@ package org.eclipse.tractusx.irs.configuration;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -63,6 +64,12 @@ public class SecurityConfiguration {
         httpSecurity.csrf().disable();
         httpSecurity.logout().disable();
         httpSecurity.cors();
+
+        httpSecurity.headers()
+                    .httpStrictTransportSecurity()
+                    .maxAgeInSeconds(Duration.ofDays(365).toSeconds())
+                    .includeSubDomains(true)
+                    .preload(true);
 
         httpSecurity
             .sessionManagement()
