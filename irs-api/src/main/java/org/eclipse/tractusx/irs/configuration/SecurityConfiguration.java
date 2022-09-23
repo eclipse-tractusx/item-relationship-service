@@ -55,7 +55,7 @@ public class SecurityConfiguration {
         "/api/api-docs.yaml",
         "/api/api-docs/swagger-config",
     };
-    private static final long HSTS_MAX_AGE = Duration.ofDays(365).toSeconds();
+    private static final long HSTS_MAX_AGE_DAYS = 365;
 
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     @Bean
@@ -68,7 +68,7 @@ public class SecurityConfiguration {
 
         httpSecurity.headers()
                     .httpStrictTransportSecurity()
-                    .maxAgeInSeconds(HSTS_MAX_AGE)
+                    .maxAgeInSeconds(Duration.ofDays(HSTS_MAX_AGE_DAYS).toSeconds())
                     .includeSubDomains(true)
                     .preload(true);
 
