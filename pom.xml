@@ -17,6 +17,7 @@
         <module>irs-models</module>
         <module>integration-tests</module>
         <module>irs-report-aggregate</module>
+        <module>cucumber-tests</module>
     </modules>
 
     <properties>
@@ -52,7 +53,7 @@
         <checkstyle.version>10.3.3</checkstyle.version>
         <jacoco.version>0.8.8</jacoco.version>
         <pmd-plugin.version>3.19.0</pmd-plugin.version>
-        <owasp-plugin.version>7.2.0</owasp-plugin.version>
+        <owasp-plugin.version>7.2.1</owasp-plugin.version>
 
         <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
         <jar-plugin.version>3.3.0</jar-plugin.version>

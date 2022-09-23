@@ -15,6 +15,7 @@ COPY irs-models irs-models
 COPY irs-parent-spring-boot irs-parent-spring-boot
 COPY irs-testing irs-testing
 COPY irs-report-aggregate irs-report-aggregate
+COPY cucumber-tests cucumber-tests
 
 # the --mount option requires BuildKit.
 RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -pl :$BUILD_TARGET -am -DskipTests
