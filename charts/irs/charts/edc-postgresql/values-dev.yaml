@@ -3,3 +3,9 @@ auth:
   username: <path:traceability-irs/data/dev/controlplane#databaseuser>
   password: <path:traceability-irs/data/dev/controlplane#databasepassword>
   database: "edc"
+
+primary:
+  resources:
+    limits:
+      cpu: 1.5
+      memory: 1.5Gi
