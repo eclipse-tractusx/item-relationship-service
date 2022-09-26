@@ -72,6 +72,8 @@ public class SecurityConfiguration {
                     .includeSubDomains(true)
                     .preload(true);
 
+        httpSecurity.headers().frameOptions().sameOrigin();
+
         httpSecurity
             .sessionManagement()
             .sessionCreationPolicy(STATELESS)
