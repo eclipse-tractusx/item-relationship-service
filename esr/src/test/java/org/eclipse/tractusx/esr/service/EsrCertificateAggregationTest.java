@@ -32,7 +32,7 @@ class EsrCertificateAggregationTest {
                         .jobId("f41067c5-fad8-426c-903e-130ecac9c3da")
                         .globalAssetId(globalAssetId)
                         .jobState("COMPLETED").build())
-                .shells(List.of(exampleShellWithGlobalAssetId(globalAssetId, "urn:bamm:io.catenax.esr_certificates.esr_certificate:1.0.0")))
+                .shells(List.of(exampleShellWithGlobalAssetId(globalAssetId, "urn:bamm:io.catenax.esr_certificates.io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.0")))
                 .relationships(new ArrayList<>())
                 .build();
 
@@ -66,7 +66,7 @@ class EsrCertificateAggregationTest {
                                                            .jobId("f41067c5-fad8-426c-903e-130ecac9c3da")
                                                            .globalAssetId(globalAssetId)
                                                            .jobState("COMPLETED").build())
-                                                   .shells(List.of(exampleShellWithGlobalAssetId(globalAssetId, "urn:bamm:io.catenax.esr_certificates.esr_certificate:1.0.0")))
+                                                   .shells(List.of(exampleShellWithGlobalAssetId(globalAssetId, "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.0")))
                                                    .relationships(new ArrayList<>())
                                                    .build();
 
@@ -94,7 +94,7 @@ class EsrCertificateAggregationTest {
                                                            .jobId("f41067c5-fad8-426c-903e-130ecac9c3da")
                                                            .globalAssetId(globalAssetId)
                                                            .jobState("COMPLETED").build())
-                                                   .shells(List.of(exampleShellWithGlobalAssetId(globalAssetId, "urn:bamm:io.catenax.esr_certificates.esr_certificate:1.0.0")))
+                                                   .shells(List.of(exampleShellWithGlobalAssetId(globalAssetId, "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.0")))
                                                    .relationships(new ArrayList<>())
                                                    .build();
 

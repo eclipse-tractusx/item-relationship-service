@@ -867,6 +867,7 @@ components:
             - ContactInformation
             - BatteryPass
             - VehicleDiagnosticDataQuality
+            - EsrCertificateStateStatistic
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
@@ -1039,6 +1040,7 @@ components:
               - ContactInformation
               - BatteryPass
               - VehicleDiagnosticDataQuality
+              - EsrCertificateStateStatistic
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
