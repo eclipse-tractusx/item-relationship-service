@@ -22,29 +22,37 @@
 package org.eclipse.tractusx.esr.supplyon;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+
+import java.net.URI;
 
 import org.eclipse.tractusx.esr.controller.model.CertificateType;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
-class SupplyOnFacadeTest {
+class SupplyOnClientTest {
 
-    private final SupplyOnClient supplyOnClient = mock(SupplyOnClient.class);
-    private final SupplyOnFacade supplyOnFacade = new SupplyOnFacade(supplyOnClient);
+    private final RestTemplate restTemplate = mock(RestTemplate.class);
+    private final SupplyOnClient supplyOnClient = new SupplyOnClientClientImpl(restTemplate, "http://local", "subKey");
 
     @Test
-    void shouldReturnEsrCertificateData() {
-        final String requestorBPN = "BPNL00000003AYRE";
-        final String supplierBPN = "BPNL00000003XXX";
-        final String certificateName = CertificateType.ISO14001.name();
-        when(supplyOnClient.getESRCertificate(requestorBPN, supplierBPN, certificateName))
-                .thenReturn(EsrCertificate.builder().certificateState(CertificateState.VALID).build());
+    void shouldReturnEsrCertificateWithValidState() {
+        // given
+        final EsrCertificate expectedResponse = EsrCertificate.builder().certificateState(CertificateState.VALID).build();
+        given(restTemplate.exchange(any(URI.class), eq(HttpMethod.GET), any(), eq(EsrCertificate.class)))
+                .willReturn(new ResponseEntity<>(expectedResponse, HttpStatus.OK));
 
-        final EsrCertificate esrCertificate = supplyOnFacade.getESRCertificate(requestorBPN, supplierBPN, CertificateType.ISO14001);
+        // when
+        final EsrCertificate esrCertificate = supplyOnClient.getESRCertificate("BPNL00000003AYRE", "BPNL00000003XXX", CertificateType.ISO14001.name());
 
-        assertThat(esrCertificate).isNotNull();
-        assertThat(esrCertificate.getCertificateState()).isNotNull();
+        // then
+        assertThat(esrCertificate).isEqualTo(expectedResponse);
     }
 
 }

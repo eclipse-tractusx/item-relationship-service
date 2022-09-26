@@ -31,7 +31,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 class IrsClientTest {
 
     private static final String URL = "https://irs-esr.dev.demo.catena-x.net/";
-    private static final String TOKEN = "jwt-token";
     private static final String JOB_ID = "1545da82-e5b3-4fda-bc35-866dc6a29c4c";
     private final RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 
@@ -43,7 +42,7 @@ class IrsClientTest {
         StartJobResponse expectedResponse = StartJobResponse.builder().jobId(JOB_ID).build();
 
         given(restTemplate.postForObject(URL + "/irs/jobs",
-                new HttpEntity<>(irsRequest, withToken(TOKEN)), StartJobResponse.class))
+                new HttpEntity<>(irsRequest), StartJobResponse.class))
                 .willReturn(expectedResponse);
 
         // when
@@ -60,9 +59,8 @@ class IrsClientTest {
         IrsResponse expectedResponse = new IrsResponse(new Job("f41067c5-fad8-426c-903e-130ecac9c3da", "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6","COMPLETED"), new ArrayList<>(),
                 new ArrayList<>());
 
-        given(restTemplate.exchange(getUriWithJobId(URL, JOB_ID), HttpMethod.GET,
-                new HttpEntity<>(null, withToken(TOKEN)), IrsResponse.class)).willReturn(
-                new ResponseEntity<>(expectedResponse, HttpStatus.OK));
+        given(restTemplate.getForObject(getUriWithJobId(URL, JOB_ID), IrsResponse.class))
+                .willReturn(expectedResponse);
 
         // when
         final IrsResponse actualResponse = irsClient.getJobDetails(JOB_ID);
@@ -79,9 +77,8 @@ class IrsClientTest {
         IrsResponse expectedResponse = new IrsResponse(new Job("f41067c5-fad8-426c-903e-130ecac9c3da", "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6","COMPLETED"), List.of(irsRelationship),
                 new ArrayList<>());
 
-        given(restTemplate.exchange(getUriWithJobId(URL, JOB_ID), HttpMethod.GET,
-                new HttpEntity<>(null, withToken(TOKEN)), IrsResponse.class)).willReturn(
-                new ResponseEntity<>(expectedResponse, HttpStatus.OK));
+        given(restTemplate.getForObject(getUriWithJobId(URL, JOB_ID), IrsResponse.class))
+                .willReturn(expectedResponse);
 
         // when
         final IrsResponse actualResponse = irsClient.getJobDetails(JOB_ID);
@@ -101,9 +98,8 @@ class IrsClientTest {
         IrsResponse expectedResponse = new IrsResponse(new Job("f41067c5-fad8-426c-903e-130ecac9c3da", "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6","COMPLETED"), new ArrayList<>(),
                 List.of(exampleShell()));
 
-        given(restTemplate.exchange(getUriWithJobId(URL, JOB_ID), HttpMethod.GET,
-                new HttpEntity<>(null, withToken(TOKEN)), IrsResponse.class)).willReturn(
-                new ResponseEntity<>(expectedResponse, HttpStatus.OK));
+        given(restTemplate.getForObject(getUriWithJobId(URL, JOB_ID), IrsResponse.class))
+                .willReturn(expectedResponse);
 
         // when
         final IrsResponse actualResponse = irsClient.getJobDetails(JOB_ID);
@@ -120,14 +116,5 @@ class IrsClientTest {
         uriBuilder.path("/irs/jobs/").path(jobId);
         return uriBuilder.build().toUri();
     }
-
-    private HttpHeaders withToken(String token) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-        headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
-        return headers;
-    }
-
-
 
 }

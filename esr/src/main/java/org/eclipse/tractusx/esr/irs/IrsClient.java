@@ -25,9 +25,6 @@ import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -49,7 +46,7 @@ class IrsClient {
 
     public StartJobResponse startJob(final IrsRequest irsRequest) {
         return restTemplate.postForObject(irsUrl + "/irs/jobs",
-                new HttpEntity<>(irsRequest, tokenInHeaders()), StartJobResponse.class);
+                new HttpEntity<>(irsRequest), StartJobResponse.class);
     }
 
     @Retry(name = "waiting-for-completed")
@@ -57,18 +54,9 @@ class IrsClient {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(irsUrl);
         uriBuilder.path("/irs/jobs/").path(jobId);
 
-        return restTemplate.exchange(
+        return restTemplate.getForObject(
                 uriBuilder.build().toUri(),
-                HttpMethod.GET,
-                new HttpEntity<>(null, tokenInHeaders()),
-                IrsResponse.class).getBody();
-    }
-
-    private static HttpHeaders tokenInHeaders() {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        return headers;
+                IrsResponse.class);
     }
 
 }
