@@ -21,6 +21,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.esr.irs;
 
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,8 +40,13 @@ public class IrsFacade {
     private final IrsClient irsClient;
 
     public IrsResponse getIrsResponse(final String globalAssetId, final String bomLifecycle) {
-        final StartJobResponse response = irsClient.startJob(
-                IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).depth(DEPTH).build());
+        final StartJobResponse response = irsClient.startJob(IrsRequest.builder()
+                                                                       .globalAssetId(globalAssetId)
+                                                                       .bomLifecycle(bomLifecycle)
+                                                                       .depth(DEPTH)
+                                                                       .aspects(List.of("EsrCertificateStateStatistic"))
+                                                                       .collectAspects(true)
+                                                                       .build());
         log.info("Registered IRS job with jobId: {}", response.getJobId());
         return irsClient.getJobDetails(response.getJobId());
     }
