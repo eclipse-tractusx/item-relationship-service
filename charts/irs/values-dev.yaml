@@ -76,6 +76,7 @@ irs-aaswrapper:
       wrapper.consumer.edc.apikey.name=X-Api-Key
       wrapper.consumer.edc.apikey.value=123456
       wrapper.callback.timeout=60
+      wrapper.cache.enabled=true
       # wrapper.auth.basic.someuser=somepassword
 
 # Values for grafana subchart.

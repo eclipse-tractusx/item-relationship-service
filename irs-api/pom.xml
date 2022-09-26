@@ -26,7 +26,7 @@
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
-            <version>8.4.4</version>
+            <version>8.4.5</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>

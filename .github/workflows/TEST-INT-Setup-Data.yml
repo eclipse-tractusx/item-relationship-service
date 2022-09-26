@@ -19,21 +19,29 @@ on:
         description: 'URL for Submodel server 3'
         required: true
         type: string
-      publicProviderControlPlane:
-        description: 'Public provider control plane URL of ids'
-        required: true
-        type: string
       aasUrl:
         description: 'Digital twin registry URL'
         required: true
         type: string
-      edcUrl:
-        description: 'Provider control plane URL'
+      edcUrl1:
+        description: 'Provider 1 control plane URL'
+        required: true
+        type: string
+      edcUrl2:
+        description: 'Provider 2 control plane URL'
+        required: true
+        type: string
+      edcUrl3:
+        description: 'Provider 3 control plane URL'
         required: true
         type: string
       edcApiKey:
         description: 'API-Key for the provider control plane'
         required: true
+        type: string
+      esrUrl:
+        description: 'ESR endpoint Url'
+        required: false
         type: string
 
 
@@ -56,21 +64,26 @@ jobs:
           SUBMODEL_URL_1: ${{ github.event.inputs.submodelUrl1 }}
           SUBMODEL_URL_2: ${{ github.event.inputs.submodelUrl2 }}
           SUBMODEL_URL_3: ${{ github.event.inputs.submodelUrl3 }}
-          INTERNAL_PROVIDER_CONTROL_PLANE: ${{ github.event.inputs.publicProviderControlPlane }}
           AAS_URL: ${{ github.event.inputs.aasUrl }}
-          EDC_URL: ${{ github.event.inputs.edcUrl }}
+          EDC_URL_1: ${{ github.event.inputs.edcUrl1 }}
+          EDC_URL_2: ${{ github.event.inputs.edcUrl2 }}
+          EDC_URL_3: ${{ github.event.inputs.edcUrl3 }}
           EDC_API_KEY: ${{ github.event.inputs.edcApiKey }}
+          ESR_URL: ${{ github.event.inputs.esrUrl }}
         run: |
           python testdata-transform/reset-env.py \
           -a $AAS_URL \
-          -e $EDC_URL \
+          -e1 $EDC_URL_1 \
+          -e2 $EDC_URL_2 \
+          -e3 $EDC_URL_3 \
           -k $EDC_API_KEY
           python testdata-transform/transform-and-upload.py \
           -f $TESTFILE_PATH \
           -s1 $SUBMODEL_URL_1 \
           -s2 $SUBMODEL_URL_2 \
           -s3 $SUBMODEL_URL_3 \
-          -c $INTERNAL_PROVIDER_CONTROL_PLANE \
           -a $AAS_URL \
-          -e $EDC_URL \
-          -k $EDC_API_KEY
+          -e1 $EDC_URL_1 \
+          -e2 $EDC_URL_2 \
+          -e3 $EDC_URL_3 \
+          -k $EDC_API_KEY 

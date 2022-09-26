@@ -1,0 +1,106 @@
+---
+# Default values for edc-controlplane.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# -- Overrides the charts name
+nameOverride: "irs-provider-controlplane3"
+# -- Overrides the releases full name
+fullnameOverride: "irs-provider-controlplane3"
+
+## Ingress declaration to expose the network service.
+ingresses:
+  ## Public / Internet facing Ingress
+  - enabled: true
+    # -- The hostname to be used to precisely map incoming traffic onto the underlying network service
+    hostname: "irs-provider-controlplane3.dev.demo.catena-x.net"
+    # -- Additional ingress annotations to add
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: HTTP
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    # -- EDC endpoints exposed by this ingress resource
+    endpoints:
+      - ids
+      - data
+    # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
+    className: "nginx"
+    # -- Enables TLS on the ingress resource
+    tls:
+      - hosts:
+          - "irs-provider-controlplane3.dev.demo.catena-x.net"
+        # Default secret for certificate creation already provided to your namespace
+        secretName: tls-secret
+    ## Adds [cert-manager](https://cert-manager.io/docs/) annotations to the ingress resource
+    certManager:
+      # -- If preset enables certificate generation via cert-manager namespace scoped issuer
+      issuer: ""
+      # -- If preset enables certificate generation via cert-manager cluster-wide issuer
+      clusterIssuer: ""
+
+resources:
+  limits:
+    cpu: 1.5
+    memory: 2Gi
+
+configuration:
+  # -- EDC configuration.properties configuring aspects of the [eclipse-dataspaceconnector](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector)
+  properties: |-
+    edc.api.auth.key=123456
+    
+    ids.webhook.address=https://irs-provider-controlplane3.dev.demo.catena-x.net
+    
+    edc.ids.id=urn:connector:edc-provider-controlplane
+    edc.ids.catalog.id=urn:catalog:default
+    edc.ids.endpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net/api/v1/ids
+    edc.ids.endpoint.audience=https://irs-provider-controlplane3.dev.demo.catena-x.net/api/v1/ids/data
+    
+    edc.receiver.http.endpoint=http://irs-provider-controlplane3:8080/api/service/pull
+    
+    edc.transfer.proxy.endpoint=http://irs-provider-dataplane3:8185/api/public
+    edc.transfer.proxy.token.signer.privatekey.alias=irs-dev-daps-cert-provider-key
+    edc.transfer.proxy.token.verifier.publickey.alias=irs-dev-daps-cert-provider
+    
+    edc.dataplane.selector.provider3.url=http://irs-provider-dataplane3:9999/api/dataplane/control
+    edc.dataplane.selector.provider3.sourcetypes=HttpData
+    edc.dataplane.selector.provider3.destinationtypes=HttpProxy
+    edc.dataplane.selector.provider3.properties={ "publicApiUrl": "http://irs-provider-dataplane3:8185/api/public" }
+    
+    edc.oauth.client.id=B9:7B:1A:54:74:DC:C7:45:6E:A2:24:DC:3F:6D:A7:4A:DD:D2:26:6A:keyid:B9:7B:1A:54:74:DC:C7:45:6E:A2:24:DC:3F:6D:A7:4A:DD:D2:26:6A
+    edc.oauth.private.key.alias=irs-dev-daps-cert-provider-key
+    edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
+    edc.oauth.provider.jwks.url=https://daps-irs.dev.demo.catena-x.net/.well-known/jwks.json
+    edc.oauth.public.key.alias=irs-dev-daps-cert-provider
+    edc.oauth.token.url=https://daps-irs.dev.demo.catena-x.net/token
+    
+    edc.vault.hashicorp.url=https://vault.demo.catena-x.net
+    edc.vault.hashicorp.token=<path:traceability-irs/data/dev/controlplane#vaultToken>
+    edc.vault.hashicorp.timeout.seconds=30
+    edc.vault.hashicorp.health.check.enabled=true
+    edc.vault.hashicorp.health.check.standby.ok=true
+    edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
+    
+    edc.data.encryption.keys.alias=irs-dev-daps-cert-consumer-key
+    edc.data.encryption.algorithm=NONE
+
+    # Postgresql related configuration
+    edc.datasource.asset.name=asset
+    edc.datasource.asset.url=jdbc:postgresql://irs-edc-postgres3-postgresql-hl:5432/edc
+    edc.datasource.asset.user=edc
+    edc.datasource.asset.password=databasepassword
+    edc.datasource.contractdefinition.name=contractdefinition
+    edc.datasource.contractdefinition.url=jdbc:postgresql://irs-edc-postgres3-postgresql-hl:5432/edc
+    edc.datasource.contractdefinition.user=edc
+    edc.datasource.contractdefinition.password=databasepassword
+    edc.datasource.contractnegotiation.name=contractnegotiation
+    edc.datasource.contractnegotiation.url=jdbc:postgresql://irs-edc-postgres3-postgresql-hl:5432/edc
+    edc.datasource.contractnegotiation.user=edc
+    edc.datasource.contractnegotiation.password=databasepassword
+    edc.datasource.policy.name=policy
+    edc.datasource.policy.url=jdbc:postgresql://irs-edc-postgres3-postgresql-hl:5432/edc
+    edc.datasource.policy.user=edc
+    edc.datasource.policy.password=databasepassword
+    edc.datasource.transferprocess.name=transferprocess
+    edc.datasource.transferprocess.url=jdbc:postgresql://irs-edc-postgres3-postgresql-hl:5432/edc
+    edc.datasource.transferprocess.user=edc
+    edc.datasource.transferprocess.password=databasepassword
