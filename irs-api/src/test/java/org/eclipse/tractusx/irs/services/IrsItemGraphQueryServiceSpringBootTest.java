@@ -118,7 +118,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(false).build());
         final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
                 List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP));
-        final int expectedTombstonesSizeFullTree = 9; // stub
+        final int expectedTombstonesSizeFullTree = 10; // stub
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);

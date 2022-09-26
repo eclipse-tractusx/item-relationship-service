@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
@@ -40,6 +41,8 @@ import org.springframework.web.client.RestClientException;
 @Slf4j
 public class BpdmDelegate extends AbstractDelegate {
 
+    private static final Pattern BPN_RGX = Pattern.compile("(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}");
+
     private final BpdmFacade bpdmFacade;
 
     public BpdmDelegate(final BpdmFacade bpdmFacade) {
@@ -57,16 +60,37 @@ public class BpdmDelegate extends AbstractDelegate {
                 .stream()
                 .findFirst()
                 .flatMap(AssetAdministrationShellDescriptor::findManufacturerId)
-                .ifPresent(manufacturerId -> {
-                    final Optional<String> manufacturerName = bpdmFacade.findManufacturerName(manufacturerId);
-                    manufacturerName.ifPresent(name -> itemContainerBuilder.bpn(Bpn.of(manufacturerId, name)));
-                });
+                .ifPresentOrElse(manufacturerId -> bpnFromManufacturerId(itemContainerBuilder, manufacturerId, itemId),
+                        () -> {
+                            final String message = String.format("Cannot find manufacturerId for Item: %s. Creating Tombstone.", itemId);
+                            log.warn(message);
+                            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0));
+                        });
         } catch (RestClientException e) {
             log.info("Business Partner endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
             itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount));
         }
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
+    }
+
+    private void bpnFromManufacturerId(final ItemContainer.ItemContainerBuilder itemContainerBuilder,
+            final String manufacturerId, final String itemId) {
+        final Optional<String> manufacturerName = bpdmFacade.findManufacturerName(manufacturerId);
+        manufacturerName.ifPresentOrElse(name -> {
+            final Bpn bpn = Bpn.of(manufacturerId, name);
+            if (BPN_RGX.matcher(bpn.getManufacturerId() + bpn.getManufacturerName()).find()) {
+                itemContainerBuilder.bpn(bpn);
+            } else {
+                final String message = String.format("BPN: %s for ItemId: %s is not valid. Creating Tombstone.", bpn.getManufacturerId() + bpn.getManufacturerName(), itemId);
+                log.warn(message);
+                itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0));
+            }
+        }, () -> {
+            final String message = String.format("BPN not exist in given Manufacturing ID: %s and for ItemId: %s. Creating Tombstone.", manufacturerId, itemId);
+            log.warn(message);
+            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0));
+        });
     }
 
 }
