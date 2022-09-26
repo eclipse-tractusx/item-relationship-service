@@ -1,4 +1,4 @@
-name: IRS CI
+name: IRS build
 
 on:
   workflow_dispatch:
