@@ -1,4 +1,4 @@
-name: Veracode Static Analysis
+name: Veracode SAST test
 on:
   schedule:
     - cron: "0 0 * * *"

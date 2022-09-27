@@ -1,4 +1,4 @@
-name: "Eclipse Dash"
+name: "Eclipse DASH IP Check"
 
 on:
   workflow_dispatch:
