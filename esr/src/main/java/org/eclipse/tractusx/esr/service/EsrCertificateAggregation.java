@@ -21,12 +21,14 @@
  ********************************************************************************/
 package org.eclipse.tractusx.esr.service;
 
+import java.net.URI;
 import java.util.Collection;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.esr.controller.model.EsrCertificateStatistics;
 import org.eclipse.tractusx.esr.irs.IrsResponse;
 import org.eclipse.tractusx.esr.irs.model.shell.Shell;
 import org.eclipse.tractusx.esr.irs.model.shell.SubmodelDescriptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -39,9 +41,11 @@ import org.springframework.web.client.RestTemplate;
 public class EsrCertificateAggregation {
 
     private final RestTemplate restTemplate;
+    private final AASWrapperUriAddressRewritePolicy aasWrapperUriAddressRewritePolicy;
 
-    public EsrCertificateAggregation(final RestTemplate defaultRestTemplate) {
+    public EsrCertificateAggregation(final RestTemplate defaultRestTemplate, @Value("${aasWrapper.host}") final String aasWrapperHost) {
         this.restTemplate = defaultRestTemplate;
+        this.aasWrapperUriAddressRewritePolicy = new AASWrapperUriAddressRewritePolicy(aasWrapperHost);
     }
 
     public EsrCertificateStatistics aggregateStatistics(final IrsResponse irs, final EsrCertificateStatistics esrStatistics) {
@@ -65,7 +69,8 @@ public class EsrCertificateAggregation {
 
     private void incrementStatistics(final EsrCertificateStatistics esrStatistics, final String url) {
         log.info("Call ESR Endpoint using url: {}", url);
-        final ResponseEntity<EsrCertificateStatistics> responseEntity = restTemplate.getForEntity(url,
+        final URI rewrittenUri = aasWrapperUriAddressRewritePolicy.rewriteToAASWrapperUri(url);
+        final ResponseEntity<EsrCertificateStatistics> responseEntity = restTemplate.getForEntity(rewrittenUri,
                 EsrCertificateStatistics.class);
 
         final EsrCertificateStatistics response = responseEntity.getBody();
