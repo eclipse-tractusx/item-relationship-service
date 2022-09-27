@@ -45,7 +45,7 @@ public class IrsFacade {
                                                                        .bomLifecycle(bomLifecycle)
                                                                        .depth(DEPTH)
                                                                        .aspects(List.of("EsrCertificateStateStatistic"))
-                                                                       .collectAspects(true)
+                                                                       .collectAspects(false)
                                                                        .build());
         log.info("Registered IRS job with jobId: {}", response.getJobId());
         return irsClient.getJobDetails(response.getJobId());
