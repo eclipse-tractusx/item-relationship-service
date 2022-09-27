@@ -48,7 +48,7 @@ public class EsrCertificateAggregation {
 
         final EsrCertificateStatistics aggregatedStatistics = esrStatistics != null ? esrStatistics : EsrCertificateStatistics.initial();
 
-        irs.getShells()
+        irs.getRequestorChild()
                 .stream()
                 .map(Shell::getSubmodelDescriptors)
                 .flatMap(Collection::stream)

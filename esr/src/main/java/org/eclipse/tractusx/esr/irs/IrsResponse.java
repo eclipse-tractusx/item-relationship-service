@@ -35,7 +35,7 @@ import org.eclipse.tractusx.esr.irs.model.shell.Shell;
 import org.eclipse.tractusx.esr.service.BpnData;
 
 /**
- *  Irs Response from IRS API
+ * Irs Response from IRS API
  */
 @Value
 @Builder(toBuilder = true)
@@ -46,7 +46,7 @@ public class IrsResponse {
     private List<Relationship> relationships;
     private List<Shell> shells;
 
-    public boolean isRunning()  {
+    public boolean isRunning() {
         return "RUNNING".equals(job.getJobState());
     }
 
@@ -56,8 +56,7 @@ public class IrsResponse {
     public Optional<BpnData> findRequestorBPN() {
         final String globalAssetId = this.getJob().getGlobalAssetId();
 
-        return this.findShellBpn(globalAssetId)
-                   .map(bpn -> BpnData.from(globalAssetId, bpn));
+        return this.findShellBpn(globalAssetId).map(bpn -> BpnData.from(globalAssetId, bpn));
     }
 
     /**
@@ -66,11 +65,11 @@ public class IrsResponse {
      */
     public List<BpnData> findSuppliersBPN(final String globalAssetId) {
         final List<String> childIds = this.getRelationships()
-                                         .stream()
-                                         .filter(relationship -> relationship.getCatenaXId().equals(globalAssetId))
-                                         .map(Relationship::getLinkedItem)
-                                         .map(LinkedItem::getChildCatenaXId)
-                                         .collect(Collectors.toList());
+                                          .stream()
+                                          .filter(relationship -> relationship.getCatenaXId().equals(globalAssetId))
+                                          .map(Relationship::getLinkedItem)
+                                          .map(LinkedItem::getChildCatenaXId)
+                                          .collect(Collectors.toList());
 
         final List<BpnData> suppliers = new ArrayList<>();
 
@@ -93,5 +92,18 @@ public class IrsResponse {
                    .flatMap(Shell::findManufacturerIdIfValid);
     }
 
+    public List<Shell> getRequestorChild() {
+        final String globalAssetId = this.getJob().getGlobalAssetId();
+        final List<String> childIds = this.getRelationships()
+                                          .stream()
+                                          .filter(relationship -> relationship.getCatenaXId().equals(globalAssetId))
+                                          .map(Relationship::getLinkedItem)
+                                          .map(LinkedItem::getChildCatenaXId)
+                                          .collect(Collectors.toList());
+        return this.getShells()
+                   .stream()
+                   .filter(shell -> childIds.contains(shell.getGlobalAssetId().getValue().get(0)))
+                   .collect(Collectors.toList());
+    }
 
 }
