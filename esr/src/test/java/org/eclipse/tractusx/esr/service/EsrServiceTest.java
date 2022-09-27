@@ -28,7 +28,7 @@ class EsrServiceTest {
     private final IrsFacade irsFacade = mock(IrsFacade.class);
     private final SupplyOnFacade supplyOnFacade = mock(SupplyOnFacade.class);
     private final RestTemplate restTemplate = mock(RestTemplate.class);
-    private final EsrCertificateAggregation esrCertificateAggregation = new EsrCertificateAggregation(restTemplate, "test");
+    private final EsrCertificateAggregation esrCertificateAggregation = new EsrCertificateAggregation(restTemplate);
 
     private final EsrService esrService = new EsrService(irsFacade, supplyOnFacade, esrCertificateAggregation);
 
