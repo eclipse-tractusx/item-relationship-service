@@ -292,8 +292,11 @@ if __name__ == "__main__":
                 submodel_name = re.sub('/[0-9].[0-9].[0-9]', '', tmp_key.replace("https://catenax.io/schema/", ""))
                 submodel_identification = uuid.uuid4().urn
                 semantic_id = semantic_dict.get(submodel_name)
-                endpoint_address = edc_url + "/" + catenax_id + \
-                    "-" + submodel_identification + "/submodel?content=value&extent=withBlobValue"
+                if submodel_name == "EsrCertificateStateStatistic" and esr_url is not None:
+                    endpoint_address = esr_url + "/" + catenax_id + "/asBuilt/ISO14001/submodel"
+                else:
+                    endpoint_address = edc_url + "/" + catenax_id + \
+                                       "-" + submodel_identification + "/submodel?content=value&extent=withBlobValue"
                 descriptor = create_submodel_descriptor(submodel_name, submodel_identification, semantic_id,
                                                         endpoint_address)
                 submodel_descriptors.append(json.loads(descriptor))
