@@ -52,7 +52,7 @@ public class IrsFixture {
                                                                    .endpoints(List.of(Endpoint.builder()
                                                                                               .protocolInformation(
                                                                                                       ProtocolInformation.builder()
-                                                                                                                         .endpointAddress("urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf")
+                                                                                                                         .endpointAddress("http://provider.test/urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf/submodel?content=value")
                                                                                                                          .endpointProtocol("AAS/SUBMODEL")
                                                                                                                          .endpointProtocolVersion("1.0RC02")
                                                                                                                          .subprotocol("sub protocol")
