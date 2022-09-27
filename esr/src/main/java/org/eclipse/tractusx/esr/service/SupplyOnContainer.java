@@ -26,20 +26,28 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.esr.irs.IrsResponse;
 
 /**
  * Container for requestor and suppliers informations.
  */
 @Value
+@Slf4j
 @AllArgsConstructor(staticName = "from")
 class SupplyOnContainer {
     private BpnData requestor;
     private List<BpnData> suppliers;
 
     public static Optional<SupplyOnContainer> from(final IrsResponse irsResponse) {
-        return irsResponse.findRequestorBPN()
-           .map(requestor -> SupplyOnContainer.from(requestor, irsResponse.findSuppliersBPN(requestor.getGlobalAssetId())));
+        log.info("Creating SupplyOnContainer from '{}'", irsResponse);
+        final Optional<SupplyOnContainer> supplyOnContainer = irsResponse.findRequestorBPN()
+                                                                         .map(requestor -> SupplyOnContainer.from(
+                                                                                 requestor,
+                                                                                 irsResponse.findSuppliersBPN(
+                                                                                         requestor.getGlobalAssetId())));
+        log.info("Created SupplyOnContainer '{}'", supplyOnContainer);
+        return supplyOnContainer;
     }
 
 }
