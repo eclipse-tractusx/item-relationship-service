@@ -1,6 +1,7 @@
 package org.eclipse.tractusx.esr.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.esr.irs.IrsFixture.exampleRelationship;
 import static org.eclipse.tractusx.esr.irs.IrsFixture.exampleShellWithGlobalAssetId;
 import static org.mockito.BDDMockito.given;
 
@@ -26,15 +27,20 @@ class EsrCertificateAggregationTest {
         final EsrCertificateAggregation esrCertificateAggregation = new EsrCertificateAggregation(restTemplate);
 
         final String globalAssetId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+        final String childId = "urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf";
 
         final IrsResponse irsResponse = IrsResponse.builder()
-                .job(Job.builder()
-                        .jobId("f41067c5-fad8-426c-903e-130ecac9c3da")
-                        .globalAssetId(globalAssetId)
-                        .jobState("COMPLETED").build())
-                .shells(List.of(exampleShellWithGlobalAssetId(globalAssetId, "urn:bamm:io.catenax.esr_certificates.io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.0")))
-                .relationships(new ArrayList<>())
-                .build();
+                                                   .job(Job.builder()
+                                                           .jobId("f41067c5-fad8-426c-903e-130ecac9c3da")
+                                                           .globalAssetId(globalAssetId)
+                                                           .jobState("COMPLETED")
+                                                           .build())
+                                                   .shells(List.of(exampleShellWithGlobalAssetId(globalAssetId,
+                                                                   "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.0"),
+                                                           exampleShellWithGlobalAssetId(childId)))
+                                                   .relationships(List.of(exampleRelationship(globalAssetId,
+                                                           "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")))
+                                                   .build();
 
         final EsrCertificateStatistics subStatistics = EsrCertificateStatistics.builder()
                 .certificateStateStatistic(EsrCertificateStatistics.CertificateStatistics.builder()
@@ -88,14 +94,19 @@ class EsrCertificateAggregationTest {
         final EsrCertificateAggregation esrCertificateAggregation = new EsrCertificateAggregation(restTemplate);
 
         final String globalAssetId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+        final String childId = "urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf";
 
         final IrsResponse irsResponse = IrsResponse.builder()
                                                    .job(Job.builder()
                                                            .jobId("f41067c5-fad8-426c-903e-130ecac9c3da")
                                                            .globalAssetId(globalAssetId)
-                                                           .jobState("COMPLETED").build())
-                                                   .shells(List.of(exampleShellWithGlobalAssetId(globalAssetId, "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.0")))
-                                                   .relationships(new ArrayList<>())
+                                                           .jobState("COMPLETED")
+                                                           .build())
+                                                   .shells(List.of(exampleShellWithGlobalAssetId(globalAssetId,
+                                                                   "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.0"),
+                                                           exampleShellWithGlobalAssetId(childId)))
+                                                   .relationships(List.of(exampleRelationship(globalAssetId,
+                                                           "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")))
                                                    .build();
 
         final EsrCertificateStatistics subStatistics = EsrCertificateStatistics.builder()
