@@ -35,7 +35,7 @@ class IrsFacadeTest {
 
         given(irsClient.startJob(
                 IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).depth(1).aspects(
-                        List.of("EsrCertificateStateStatistic")).collectAspects(true).build())
+                        List.of("EsrCertificateStateStatistic")).collectAspects(false).build())
         ).willReturn(StartJobResponse.builder().jobId(jobId).build());
 
         given(irsClient.getJobDetails(jobId)
