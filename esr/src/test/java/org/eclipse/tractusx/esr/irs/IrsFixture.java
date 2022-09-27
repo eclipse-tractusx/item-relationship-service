@@ -41,7 +41,7 @@ public class IrsFixture {
                                                .build())
                     .identification("urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf")
                     .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                    .key("ManufacturerId")
+                                                                    .key("manufacturerId")
                                                                     .subjectId(ListOfValues.builder().value(List.of("sub-id")).build())
                                                                     .value("BPNL00000003AYRE")
                                                                     .semanticId(ListOfValues.builder().value(List.of("urn:bamm:com.catenax.serial_part_typization:1.0.0")).build())

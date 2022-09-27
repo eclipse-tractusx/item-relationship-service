@@ -52,7 +52,7 @@ public class Shell {
     public Optional<String> findManufacturerIdIfValid() {
         return this.specificAssetIds
                 .stream()
-                .filter(assetId -> "ManufacturerId".equals(assetId.getKey()))
+                .filter(assetId -> "manufacturerId".equals(assetId.getKey()))
                 .map(IdentifierKeyValuePair::getValue)
                 .filter(BPN_RGX.asPredicate())
                 .findFirst();
