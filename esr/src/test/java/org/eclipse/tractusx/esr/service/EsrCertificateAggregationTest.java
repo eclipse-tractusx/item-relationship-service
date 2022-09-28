@@ -3,7 +3,6 @@ package org.eclipse.tractusx.esr.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.esr.irs.IrsFixture.exampleRelationship;
 import static org.eclipse.tractusx.esr.irs.IrsFixture.exampleShellWithGlobalAssetId;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ class EsrCertificateAggregationTest {
     @Test
     public void shouldAggregateStatistics() {
         // given
-        final EsrCertificateAggregation esrCertificateAggregation = new EsrCertificateAggregation(restTemplate, "test");
+        final EsrCertificateAggregation esrCertificateAggregation = new EsrCertificateAggregation(restTemplate);
 
         final String globalAssetId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
         final String childId = "urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf";
@@ -50,7 +49,7 @@ class EsrCertificateAggregationTest {
                         .build())
                 .build();
 
-        given(restTemplate.getForEntity(any(), any()))
+        given(restTemplate.getForEntity("urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf", EsrCertificateStatistics.class))
                 .willReturn(new ResponseEntity<>(subStatistics, HttpStatus.OK));
 
         // when
@@ -64,7 +63,7 @@ class EsrCertificateAggregationTest {
     @Test
     public void shouldDoNothingWhenEsrDoNotResponseWithStatistics() {
         // given
-        final EsrCertificateAggregation esrCertificateAggregation = new EsrCertificateAggregation(restTemplate, "test");
+        final EsrCertificateAggregation esrCertificateAggregation = new EsrCertificateAggregation(restTemplate);
 
         final String globalAssetId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
@@ -78,7 +77,7 @@ class EsrCertificateAggregationTest {
                                                    .build();
 
 
-        given(restTemplate.getForEntity(any(), any()))
+        given(restTemplate.getForEntity("urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf", EsrCertificateStatistics.class))
                 .willReturn(new ResponseEntity<>(null, HttpStatus.BAD_GATEWAY));
 
         // when
@@ -92,7 +91,7 @@ class EsrCertificateAggregationTest {
     @Test
     public void shouldAggregateStatisticsForInitialValueIfStatisticsAreNull() {
         // given
-        final EsrCertificateAggregation esrCertificateAggregation = new EsrCertificateAggregation(restTemplate, "test");
+        final EsrCertificateAggregation esrCertificateAggregation = new EsrCertificateAggregation(restTemplate);
 
         final String globalAssetId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
         final String childId = "urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf";
@@ -117,7 +116,7 @@ class EsrCertificateAggregationTest {
                                                                                                                                                         .build())
                                                                                .build();
 
-        given(restTemplate.getForEntity(any(), any()))
+        given(restTemplate.getForEntity("urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf", EsrCertificateStatistics.class))
                 .willReturn(new ResponseEntity<>(subStatistics, HttpStatus.OK));
 
         // when
