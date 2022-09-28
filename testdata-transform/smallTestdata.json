@@ -5532,6 +5532,416 @@
           "height": "61"
         }
       ]
+    },
+    {
+      "catenaXId": "urn:uuid:2ab59090-5406-444a-87c1-3d0b6bc85718",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003AYRE",
+              "key": "manufacturerId"
+            },
+            {
+              "value": "VS-27",
+              "key": "manufacturerPartId"
+            },
+            {
+              "value": "OMCVYLMEKOXCOEMCA",
+              "key": "partInstanceId"
+            },
+            {
+              "value": "OMCVYLMEKOXCOEMCA",
+              "key": "van"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2020-03-10T19:13:22.000Z",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:2ab59090-5406-444a-87c1-3d0b6bc85718",
+          "partTypeInformation": {
+            "manufacturerPartId": "VS-27",
+            "classification": "product",
+            "nameAtManufacturer": "Vehicle Fully Electric"
+          }
+        }
+      ],
+      "https://catenax.io/schema/MaterialForRecycling/1.1.0": [
+        {
+          "component": [
+            {
+              "materialName": "Iron",
+              "recycledContent": 0,
+              "materialClass": "1.1",
+              "quantity": {
+                "materialValue": 327.6,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "IR334"
+            },
+            {
+              "materialName": "Polyethylen",
+              "recycledContent": 0,
+              "materialClass": "5.5.1",
+              "quantity": {
+                "materialValue": 163.8,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "PE221"
+            },
+            {
+              "materialName": "Polyamid6",
+              "recycledContent": 0,
+              "materialClass": "5.5.1",
+              "quantity": {
+                "materialValue": 40.95,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "POL6"
+            },
+            {
+              "materialName": "Aluminium",
+              "recycledContent": 0,
+              "materialClass": "2.1",
+              "quantity": {
+                "materialValue": 286.65,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "ALU331"
+            },
+            {
+              "materialName": "Kerosene waxes and hydrocarbon waxes, oxidized, lithium salts",
+              "recycledContent": 0,
+              "materialClass": "0.7",
+              "quantity": {
+                "materialValue": 109.2,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "W123"
+            },
+            {
+              "materialName": "Glue",
+              "recycledContent": 0,
+              "materialClass": "6.2",
+              "quantity": {
+                "materialValue": 54.6,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "GL338"
+            },
+            {
+              "materialName": "Carbon Steel",
+              "recycledContent": 0,
+              "materialClass": "1.1.2",
+              "quantity": {
+                "materialValue": 382.2,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "CS2"
+            },
+            {
+              "materialName": "Cooper",
+              "recycledContent": 0,
+              "materialClass": "3.1",
+              "quantity": {
+                "materialValue": 250.2,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "CO7"
+            },
+            {
+              "materialName": "Rubber",
+              "recycledContent": 0,
+              "materialClass": "5.3",
+              "quantity": {
+                "materialValue": 7.8,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "R22"
+            },
+            {
+              "materialName": "Textiles",
+              "recycledContent": 0,
+              "materialClass": "5.5.2",
+              "quantity": {
+                "materialValue": 5.12,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "TEX1"
+            }
+          ]
+        }
+      ],
+      "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
+        {
+          "catenaXId": "urn:uuid:2ab59090-5406-444a-87c1-3d0b6bc85718",
+          "childParts": [
+            {
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:piece"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:b848cfad-d0c4-4cd4-92ac-9ac6fa52e71f"
+            },
+            {
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:piece"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:a9abb642-5cc6-4ec1-8ea6-67a6df56733d"
+            },
+            {
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:piece"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:40b2bfeb-10f0-4506-9cc0-64bd0f28d105"
+            },
+            {
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:piece"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:251667e0-40fb-42b8-9dbb-bd6480fb7475"
+            },
+            {
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:piece"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:c6cfa924-9586-44f6-9d3a-d1a909a2212c"
+            }
+          ]
+        }
+      ],
+      "https://catenax.io/schema/VehicleProductDescription/1.0.0": [
+        {
+          "bodyVariant": "Sedan",
+          "catenaXId": "urn:uuid:2ab59090-5406-444a-87c1-3d0b6bc85718",
+          "engine": {
+            "size": 2998,
+            "power": 143
+          },
+          "emptyWeight": 1.73,
+          "fuel": "electric",
+          "vehicleModel": "Vehicle Fully Electric",
+          "productionDateGMT": "2010-01-01",
+          "equipmentVariants": [
+            {
+              "code": "A248B",
+              "description": "steering wheel heating",
+              "group": "special equipment"
+            }
+          ],
+          "anonymisedIdentifier": "sOMtThyhVNDWUZNRcBaQXXI",
+          "mileage": [
+            {
+              "mileagePhase": "as maintained by workshop",
+              "mileageTimestamp": "2022-04-01T20:09:59.976Z",
+              "mileageDistance": 120000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:c6cfa924-9586-44f6-9d3a-d1a909a2212c",
+      "https://catenax.io/schema/SerialPartTypization/1.0.0": [
+        {
+          "localIdentifiers": [
+            {
+              "value": "BPNL00000003AYRE",
+              "key": "manufacturerId"
+            },
+            {
+              "value": "38049661-08",
+              "key": "manufacturerPartId"
+            },
+            {
+              "value": "NO-329231350304036846103634",
+              "key": "partInstanceId"
+            }
+          ],
+          "manufacturingInformation": {
+            "date": "2022-02-04T14:48:54",
+            "country": "DEU"
+          },
+          "catenaXId": "urn:uuid:c6cfa924-9586-44f6-9d3a-d1a909a2212c",
+          "partTypeInformation": {
+            "manufacturerPartId": "38049661-08",
+            "customerPartId": "38049661-08",
+            "classification": "component",
+            "nameAtManufacturer": "Battery",
+            "nameAtCustomer": "Battery"
+          }
+        }
+      ],
+      "https://catenax.io/schema/MaterialForRecycling/1.1.0": [
+        {
+          "component": [
+            {
+              "materialName": "Cooper",
+              "recycledContent": 0,
+              "materialClass": "3.1",
+              "quantity": {
+                "materialValue": 5.4,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "CO7"
+            },
+            {
+              "materialName": "Polyamid6",
+              "recycledContent": 0,
+              "materialClass": "5.5.1",
+              "quantity": {
+                "materialValue": 11.75,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "POL6"
+            },
+            {
+              "materialName": "Carbon Steel",
+              "recycledContent": 0,
+              "materialClass": "1.1.2",
+              "quantity": {
+                "materialValue": 1.23,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:kilogram"
+                }
+              },
+              "aggregateState": "solid",
+              "materialAbbreviation": "CS2"
+            }
+          ]
+        }
+      ],
+      "https://catenax.io/schema/AssemblyPartRelationship/1.0.0": [
+        {
+          "catenaXId": "urn:uuid:c6cfa924-9586-44f6-9d3a-d1a909a2212c",
+          "childParts": [
+            {
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:piece"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:9afe9e1b-a7e4-4fa0-81c6-6968278a755e"
+            },
+            {
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:piece"
+                }
+              },
+              "lifecycleContext": "AsBuilt",
+              "assembledOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:3ea62eb9-de33-485f-921d-f6420e449646"
+            }
+
+          ]
+        }
+      ],
+      "https://catenax.io/schema/ReturnRequest/0.1.1": [
+        {
+          "productConditions": "at least 1990 model",
+          "desiredPrice": {
+            "cost": 15340,
+            "currency": "EUR"
+          },
+          "returnConditions": "Wishes to buy",
+          "requestDate": "2022-01-01",
+          "needsReturn": true,
+          "latestReturnDate": "2025-01-01"
+        }
+      ]
     }
   ]
 }
