@@ -81,6 +81,7 @@ public class EsrCertificateStatistics {
      */
     @Getter
     @Builder
+    @Jacksonized
     public static class CertificateStatistics {
         private int certificatesWithStateValid;
         private int certificatesWithStateInvalid;
