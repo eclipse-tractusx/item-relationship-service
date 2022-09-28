@@ -1,4 +1,4 @@
-name: IRS TEST Setup Test Data
+name: Integration testdata setup
 
 on:
   workflow_dispatch:

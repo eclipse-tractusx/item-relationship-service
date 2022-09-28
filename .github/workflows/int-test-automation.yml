@@ -1,4 +1,4 @@
-name: IRS CI Integration test
+name: IRS integration tests
 
 on:
   workflow_dispatch:
