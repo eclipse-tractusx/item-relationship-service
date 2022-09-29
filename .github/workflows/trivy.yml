@@ -59,6 +59,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Determine image version
+        id: version
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo VERSION=$VERSION
+          echo "::set-output name=image_tag::$VERSION"
+
       # It's also possible to scan your private registry with Trivy's built-in image scan.
       # All you have to do is set ENV vars.
       # Docker Hub needs TRIVY_USERNAME and TRIVY_PASSWORD.
@@ -69,7 +81,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           # Path to Docker image
-          image-ref: "ghcr.io/catenax-ng/irs-api:main"
+          image-ref: "ghcr.io/catenax-ng/irs-api:${{ steps.version.outputs.image_tag }} "
           format: "sarif"
           output: "trivy-results2.sarif"
           exit-code: "1"
