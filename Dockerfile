@@ -22,7 +22,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -pl :$BUILD_TARGET 
 
 
 # Copy the jar and build image
-FROM eclipse-temurin:19-jre-alpine AS irs-api
+FROM gcr.io/distroless/java17-debian11:nonroot AS irs-api
 
 ARG UID=10000
 ARG GID=1000
