@@ -31,6 +31,7 @@ import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.eclipse.tractusx.irs.configuration.local.LocalTestDataConfiguration;
 import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -68,7 +69,13 @@ interface SubmodelClient {
 })
 class SubmodelClientLocalStub implements SubmodelClient {
 
-    private final JsonUtil jsonUtil = new JsonUtil();
+    private final JsonUtil jsonUtil;
+    private final SubmodelTestdataCreator testdataCreator;
+
+    /* package */ SubmodelClientLocalStub(final JsonUtil jsonUtil, final LocalTestDataConfiguration localTestDataConfiguration) {
+        this.jsonUtil = jsonUtil;
+        this.testdataCreator = new SubmodelTestdataCreator(localTestDataConfiguration.getCxTestDataContainer());
+    }
 
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
@@ -84,13 +91,12 @@ class SubmodelClientLocalStub implements SubmodelClient {
         if ("urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(submodelEndpointAddress)) {
             throw new RestClientException("Dummy Exception");
         }
-        final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
 
         if ("urn:uuid:ea724f73-cb93-4b7b-b92f-d97280ff888b".equals(submodelEndpointAddress)) {
-            return submodelTestdataCreator.createDummySerialPartTypizationString();
+            return testdataCreator.createDummySerialPartTypizationString();
         }
 
-        final AssemblyPartRelationship relationship = submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(
+        final AssemblyPartRelationship relationship = testdataCreator.createDummyAssemblyPartRelationshipForId(
                 submodelEndpointAddress);
         return jsonUtil.asString(relationship);
     }

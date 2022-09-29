@@ -24,16 +24,20 @@ package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
+import org.eclipse.tractusx.irs.configuration.local.LocalTestDataConfiguration;
+import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +46,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestClientException;
 
 @ExtendWith(MockitoExtension.class)
-class DigitalTwinRegistryFacadeTest {
+class DigitalTwinRegistryFacadeTest extends LocalTestDataConfigurationAware {
 
     private final String assemblyPartRelationshipURN = "urn:bamm:com.catenax.assembly_part_relationship:1.0.0";
     private final String serialPartTypizationURN = "urn:bamm:com.catenax.serial_part_typization:1.0.0";
@@ -51,15 +55,19 @@ class DigitalTwinRegistryFacadeTest {
     private DigitalTwinRegistryClient dtRegistryClientMock;
     private DigitalTwinRegistryFacade dtRegistryFacadeWithMock;
 
+    DigitalTwinRegistryFacadeTest() throws IOException {
+        super();
+    }
+
     @BeforeEach
     void setUp() {
-        digitalTwinRegistryFacade = new DigitalTwinRegistryFacade(new DigitalTwinRegistryClientLocalStub());
+        digitalTwinRegistryFacade = new DigitalTwinRegistryFacade(new DigitalTwinRegistryClientLocalStub(localTestDataConfiguration));
         dtRegistryFacadeWithMock = new DigitalTwinRegistryFacade(dtRegistryClientMock);
     }
 
     @Test
     void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() {
-        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+        final String catenaXId = "urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b";
 
         final AssetAdministrationShellDescriptor aasShellDescriptor = digitalTwinRegistryFacade.getAAShellDescriptor(
                 catenaXId);
@@ -127,7 +135,8 @@ class DigitalTwinRegistryFacadeTest {
     @Test
     void shouldThrowErrorWhenCallingTestId() {
         final String globalAssetId = "urn:uuid:9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d";
-        final DigitalTwinRegistryClientLocalStub client = new DigitalTwinRegistryClientLocalStub();
+        final DigitalTwinRegistryClientLocalStub client = new DigitalTwinRegistryClientLocalStub(mock(
+                LocalTestDataConfiguration.class));
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
                 () -> client.getAssetAdministrationShellDescriptor(globalAssetId));
@@ -135,7 +144,7 @@ class DigitalTwinRegistryFacadeTest {
 
     @Test
     void shouldReturnSubmodelEndpointsWhenFilteringByAspectType() {
-        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+        final String catenaXId = "urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b";
 
         final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryFacade.getAAShellDescriptor(catenaXId).getSubmodelDescriptors();
 

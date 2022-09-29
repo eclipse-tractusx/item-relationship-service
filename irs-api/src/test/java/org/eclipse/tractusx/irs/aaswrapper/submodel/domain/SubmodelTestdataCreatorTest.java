@@ -23,17 +23,27 @@ package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import org.assertj.core.api.Assertions;
+import org.eclipse.tractusx.irs.configuration.local.LocalTestDataConfiguration;
+import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
 
-class SubmodelTestdataCreatorTest {
+class SubmodelTestdataCreatorTest extends LocalTestDataConfigurationAware {
 
-    private final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator();
+    private final SubmodelTestdataCreator submodelTestdataCreator;
+
+    SubmodelTestdataCreatorTest() throws IOException {
+        super();
+
+        submodelTestdataCreator = new SubmodelTestdataCreator(localTestDataConfiguration.getCxTestDataContainer());
+    }
 
     @Test
     void shouldReturnAssemblyPartRelationshipWithoutChildrenWhenRequestingWithTestId() {
@@ -46,36 +56,21 @@ class SubmodelTestdataCreatorTest {
 
     @Test
     void shouldReturnAssemblyPartRelationshipWithPreDefinedChildrenWhenRequestingWithCatenaXId() {
-        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+        final String catenaXId = "urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873";
         final AssemblyPartRelationship assemblyPartRelationship = submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(
                 catenaXId);
 
         final Set<ChildData> childParts = assemblyPartRelationship.getChildParts();
-        assertThat(childParts).hasSize(3);
-        final List<String> childIDs = List.of("urn:uuid:5ce49656-5156-4c8a-b93e-19422a49c0bc",
-                "urn:uuid:09b48bcc-8993-4379-a14d-a7740e1c61d4", "urn:uuid:9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d");
-        childParts.forEach(childData -> assertThat(childIDs).contains(childData.getChildCatenaXId()));
-    }
-
-    @Test
-    void shouldReturnAssemblyPartRelationshipWithCustomChildrenWhenRequestingWithCatenaXId() {
-        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-
-        final List<String> children = List.of("abc", "def", "ghi");
-
-        final AssemblyPartRelationship assemblyPartRelationship = submodelTestdataCreator.getDummyAssemblyPartRelationshipWithChildren(
-                catenaXId, children);
-
-        final Set<ChildData> childParts = assemblyPartRelationship.getChildParts();
-        assertThat(childParts).hasSize(3);
-        final List<String> childIDs = List.of("abc", "def", "ghi");
+        assertThat(childParts).hasSize(1);
+        final List<String> childIDs = List.of("urn:uuid:ee5f6ca1-011d-4421-960a-4521b69b3503");
         childParts.forEach(childData -> assertThat(childIDs).contains(childData.getChildCatenaXId()));
     }
 
     @Test
     void shouldThrowErrorWhenCallingTestId() {
         final String catenaXId = "urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446";
-        final SubmodelClientLocalStub client = new SubmodelClientLocalStub();
+        final SubmodelClientLocalStub client = new SubmodelClientLocalStub(new JsonUtil(), mock(
+                LocalTestDataConfiguration.class));
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
                 () -> client.getSubmodel(catenaXId, AssemblyPartRelationship.class));
