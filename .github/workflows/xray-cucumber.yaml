@@ -34,13 +34,15 @@ jobs:
           # JIRA filter 11349: project = TRI AND type = Test AND "Test Type" = Cucumber
           # Downloads all feature files of cucumber tests inside TRI project
         run: |
-          echo "::set-output name=http_response::$(curl -s -w "%{http_code}" -u $JIRA_USERNAME:$JIRA_PASSWORD "https://jira.catena-x.net/rest/raven/1.0/export/test?filter=11349&fz=true" -o features.zip)"
-          
-          unzip -o features.zip -d cucumber-tests/src/test/resources/features || true
+          export HTTP_RESULT=$(curl -s -w "%{http_code}" -u $JIRA_USERNAME:$JIRA_PASSWORD "https://jira.catena-x.net/rest/raven/1.0/export/test?filter=11349&fz=true" -o features.zip)
+          [[ $HTTP_RESULT == 200 || $HTTP_RESULT == 400 ]]
+          echo "::set-output name=http_response::${{ env.HTTP_RESULT }}"
 
       - name: Build with Maven
         if: ${{ steps.download.outputs.http_response == '200' }}
-        run: mvn --batch-mode clean compile test -pl cucumber-tests
+        run: |
+          unzip -o features.zip -d cucumber-tests/src/test/resources/features
+          mvn --batch-mode clean compile test -pl cucumber-tests
 
       - name: Submit results to Xray
         if: ${{ steps.download.outputs.http_response == '200' }}
