@@ -38,11 +38,11 @@ jobs:
           unzip -o features.zip -d cucumber-tests/src/test/resources/features || true
 
       - name: Build with Maven
-        if: ${{ steps.download.http_response }} == 200
+        if: ${{ steps.download.http_response == '200' }}
         run: mvn --batch-mode clean compile test -pl cucumber-tests
 
       - name: Submit results to Xray
-        if: ${{ steps.download.http_response }} == 200
+        if: ${{ steps.download.http_response == '200' }}
         env:
           JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
           JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
