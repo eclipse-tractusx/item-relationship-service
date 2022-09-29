@@ -36,7 +36,7 @@ jobs:
         run: |
           export HTTP_RESULT=$(curl -s --show-error -w "%{http_code}" -u $JIRA_USERNAME:$JIRA_PASSWORD "https://jira.catena-x.net/rest/raven/1.0/export/test?filter=11349&fz=true" -o features.zip)
           [[ $HTTP_RESULT == 200 || $HTTP_RESULT == 400 ]]
-          echo "::set-output name=http_response::${{ env.HTTP_RESULT }}"
+          echo "::set-output name=http_response::$HTTP_RESULT"
 
       - name: Build with Maven
         if: ${{ steps.download.outputs.http_response == '200' }}
