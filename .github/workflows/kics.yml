@@ -1,4 +1,4 @@
-name: "KICS"
+name: "KICS security and vulnerability scanner"
 
 on:
   push:

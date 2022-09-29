@@ -1,4 +1,4 @@
-name: "owasp"
+name: "OWASP dependency scanner"
 
 on:
   push:
