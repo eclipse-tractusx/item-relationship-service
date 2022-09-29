@@ -36,7 +36,7 @@ import java.util.List;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
-import org.eclipse.tractusx.irs.configuration.local.LocalTestDataConfiguration;
+import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
 import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,8 +60,8 @@ class DigitalTwinRegistryFacadeTest extends LocalTestDataConfigurationAware {
     }
 
     @BeforeEach
-    void setUp() {
-        digitalTwinRegistryFacade = new DigitalTwinRegistryFacade(new DigitalTwinRegistryClientLocalStub(localTestDataConfiguration));
+    void setUp() throws IOException {
+        digitalTwinRegistryFacade = new DigitalTwinRegistryFacade(new DigitalTwinRegistryClientLocalStub(localTestDataConfiguration.cxTestDataContainer()));
         dtRegistryFacadeWithMock = new DigitalTwinRegistryFacade(dtRegistryClientMock);
     }
 
@@ -136,7 +136,7 @@ class DigitalTwinRegistryFacadeTest extends LocalTestDataConfigurationAware {
     void shouldThrowErrorWhenCallingTestId() {
         final String globalAssetId = "urn:uuid:9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d";
         final DigitalTwinRegistryClientLocalStub client = new DigitalTwinRegistryClientLocalStub(mock(
-                LocalTestDataConfiguration.class));
+                CxTestDataContainer.class));
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
                 () -> client.getAssetAdministrationShellDescriptor(globalAssetId));

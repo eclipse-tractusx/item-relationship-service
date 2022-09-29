@@ -26,7 +26,8 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
@@ -35,19 +36,20 @@ import org.springframework.core.io.ResourceLoader;
 /**
  * Local spring configuration for loading test data from resrouces.
  */
+@Profile({ "local", "stubtest" })
 @Configuration
-@Profile("local")
+@RequiredArgsConstructor
 public class LocalTestDataConfiguration {
 
-    @Getter
-    private CxTestDataContainer cxTestDataContainer;
+    private final ResourceLoader resourceLoader;
 
-    public LocalTestDataConfiguration(final ResourceLoader resourceLoader) throws IOException {
+    @Bean
+    public CxTestDataContainer cxTestDataContainer() throws IOException {
         final Resource resource = resourceLoader.getResource("classpath:test_data/CX_Testdata_1.3.3.json");
         final File file = resource.getFile();
 
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        this.cxTestDataContainer = objectMapper.readValue(file, CxTestDataContainer.class);
+        return objectMapper.readValue(file, CxTestDataContainer.class);
     }
 }

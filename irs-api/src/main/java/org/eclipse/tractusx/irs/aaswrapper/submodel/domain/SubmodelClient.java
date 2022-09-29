@@ -31,7 +31,7 @@ import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.eclipse.tractusx.irs.configuration.local.LocalTestDataConfiguration;
+import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
 import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -64,17 +64,15 @@ interface SubmodelClient {
  * Submodel client Rest Client Stub used in local environment
  */
 @Service
-@Profile({ "local",
-           "stubtest"
-})
+@Profile({ "local", "stubtest" })
 class SubmodelClientLocalStub implements SubmodelClient {
 
     private final JsonUtil jsonUtil;
     private final SubmodelTestdataCreator testdataCreator;
 
-    /* package */ SubmodelClientLocalStub(final JsonUtil jsonUtil, final LocalTestDataConfiguration localTestDataConfiguration) {
+    /* package */ SubmodelClientLocalStub(final JsonUtil jsonUtil, final CxTestDataContainer cxTestDataContainer) {
         this.jsonUtil = jsonUtil;
-        this.testdataCreator = new SubmodelTestdataCreator(localTestDataConfiguration.getCxTestDataContainer());
+        this.testdataCreator = new SubmodelTestdataCreator(cxTestDataContainer);
     }
 
     @Override

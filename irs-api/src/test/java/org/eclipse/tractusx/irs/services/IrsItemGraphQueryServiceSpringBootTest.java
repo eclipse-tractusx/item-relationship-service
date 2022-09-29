@@ -21,11 +21,11 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.services;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.given;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspectAndCollectAspects;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepth;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -58,9 +58,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = { "test",
-                             "stubtest"
-})
+@ActiveProfiles(profiles = { "test", "stubtest" })
 @Import(TestConfig.class)
 class IrsItemGraphQueryServiceSpringBootTest {
 
@@ -82,7 +80,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobWithoutDepthShouldBuildFullTree() {
         // given
         final RegisterJob registerJob = registerJobWithoutDepth();
-        final int expectedRelationshipsSizeFullTree = 6; // stub
+        final int expectedRelationshipsSizeFullTree = 1; // stub
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);
@@ -100,7 +98,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
         final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
                 List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP));
-        final int expectedRelationshipsSizeFullTree = 5; // stub
+        final int expectedRelationshipsSizeFullTree = 1; // stub
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);
@@ -118,7 +116,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(false).build());
         final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
                 List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP));
-        final int expectedTombstonesSizeFullTree = 10; // stub
+        final int expectedTombstonesSizeFullTree = 1; // stub
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);
@@ -134,7 +132,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobWithDepthShouldBuildTreeUntilGivenDepth() {
         // given
         final RegisterJob registerJob = registerJobWithDepthAndAspect(0, null);
-        final int expectedRelationshipsSizeFirstDepth = 3; // stub
+        final int expectedRelationshipsSizeFirstDepth = 1; // stub
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);
@@ -221,7 +219,6 @@ class IrsItemGraphQueryServiceSpringBootTest {
         assertThat(metrics.getJobCancelled().count()).isEqualTo(1.0);
         assertThat(metrics.getJobProcessed().count()).isEqualTo(1.0);
         assertThat(metrics.getJobInJobStore().value()).isEqualTo(5.0);
-
     }
 
     private int getTombstonesSize(final UUID jobId) {

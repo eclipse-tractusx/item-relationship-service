@@ -72,8 +72,8 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
     }
 
     @BeforeEach
-    void setUp() {
-        final SubmodelClientLocalStub submodelClientStub = new SubmodelClientLocalStub(jsonUtil, localTestDataConfiguration);
+    void setUp() throws IOException {
+        final SubmodelClientLocalStub submodelClientStub = new SubmodelClientLocalStub(jsonUtil, localTestDataConfiguration.cxTestDataContainer());
         submodelFacade = new SubmodelFacade(submodelClientStub);
     }
 

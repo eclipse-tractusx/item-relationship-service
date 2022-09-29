@@ -23,7 +23,7 @@ public class LocalTestDataConfigurationAware {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         final CxTestDataContainer cxTestDataContainer = objectMapper.readValue(file, CxTestDataContainer.class);
-        when(localTestDataConfiguration.getCxTestDataContainer()).thenReturn(cxTestDataContainer);
+        when(localTestDataConfiguration.cxTestDataContainer()).thenReturn(cxTestDataContainer);
     }
 
 }

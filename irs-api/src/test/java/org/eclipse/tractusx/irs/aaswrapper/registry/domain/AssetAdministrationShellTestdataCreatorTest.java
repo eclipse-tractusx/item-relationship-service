@@ -40,7 +40,7 @@ class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigura
     AssetAdministrationShellTestdataCreatorTest() throws IOException {
         super();
 
-        assetAdministrationShellTestdataCreator = new AssetAdministrationShellTestdataCreator(localTestDataConfiguration.getCxTestDataContainer());
+        assetAdministrationShellTestdataCreator = new AssetAdministrationShellTestdataCreator(localTestDataConfiguration.cxTestDataContainer());
     }
 
     @Test

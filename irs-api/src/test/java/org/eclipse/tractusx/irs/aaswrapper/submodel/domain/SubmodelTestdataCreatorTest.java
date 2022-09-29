@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.tractusx.irs.configuration.local.LocalTestDataConfiguration;
+import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ class SubmodelTestdataCreatorTest extends LocalTestDataConfigurationAware {
     SubmodelTestdataCreatorTest() throws IOException {
         super();
 
-        submodelTestdataCreator = new SubmodelTestdataCreator(localTestDataConfiguration.getCxTestDataContainer());
+        submodelTestdataCreator = new SubmodelTestdataCreator(localTestDataConfiguration.cxTestDataContainer());
     }
 
     @Test
@@ -70,7 +70,7 @@ class SubmodelTestdataCreatorTest extends LocalTestDataConfigurationAware {
     void shouldThrowErrorWhenCallingTestId() {
         final String catenaXId = "urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446";
         final SubmodelClientLocalStub client = new SubmodelClientLocalStub(new JsonUtil(), mock(
-                LocalTestDataConfiguration.class));
+                CxTestDataContainer.class));
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
                 () -> client.getSubmodel(catenaXId, AssemblyPartRelationship.class));
