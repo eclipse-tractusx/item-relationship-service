@@ -34,7 +34,7 @@ jobs:
           # JIRA filter 11349: project = TRI AND type = Test AND "Test Type" = Cucumber
           # Downloads all feature files of cucumber tests inside TRI project
         run: |
-          export HTTP_RESULT=$(curl -s -w "%{http_code}" -u $JIRA_USERNAME:$JIRA_PASSWORD "https://jira.catena-x.net/rest/raven/1.0/export/test?filter=11349&fz=true" -o features.zip)
+          export HTTP_RESULT=$(curl -s --show-error -w "%{http_code}" -u $JIRA_USERNAME:$JIRA_PASSWORD "https://jira.catena-x.net/rest/raven/1.0/export/test?filter=11349&fz=true" -o features.zip)
           [[ $HTTP_RESULT == 200 || $HTTP_RESULT == 400 ]]
           echo "::set-output name=http_response::${{ env.HTTP_RESULT }}"
 
