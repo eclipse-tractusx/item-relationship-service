@@ -31,6 +31,7 @@ import java.util.function.Supplier;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
 import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -68,12 +69,14 @@ interface DigitalTwinRegistryClient {
  * Digital Twin Registry Rest Client Stub used in local environment
  */
 @Service
-@Profile({ "local",
-           "stubtest"
-})
+@Profile({ "local", "stubtest" })
 class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
 
-    private final AssetAdministrationShellTestdataCreator testdataCreator = new AssetAdministrationShellTestdataCreator();
+    private final AssetAdministrationShellTestdataCreator testdataCreator;
+
+    /* package */ DigitalTwinRegistryClientLocalStub(final CxTestDataContainer cxTestDataContainer) {
+        this.testdataCreator = new AssetAdministrationShellTestdataCreator(cxTestDataContainer);
+    }
 
     @Override
     public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {

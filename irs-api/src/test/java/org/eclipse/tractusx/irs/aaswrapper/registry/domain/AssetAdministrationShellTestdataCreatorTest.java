@@ -30,15 +30,22 @@ import java.nio.file.Path;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.Test;
 
-class AssetAdministrationShellTestdataCreatorTest {
+class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigurationAware {
 
-    private final AssetAdministrationShellTestdataCreator assetAdministrationShellTestdataCreator = new AssetAdministrationShellTestdataCreator();
+    private final AssetAdministrationShellTestdataCreator assetAdministrationShellTestdataCreator;
+
+    AssetAdministrationShellTestdataCreatorTest() throws IOException {
+        super();
+
+        assetAdministrationShellTestdataCreator = new AssetAdministrationShellTestdataCreator(localTestDataConfiguration.cxTestDataContainer());
+    }
 
     @Test
     void shouldReturnAssetAdministrationShellDescriptorWhenRequestingWithCatenaXId() {
-        final String catenaXId = "8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+        final String catenaXId = "urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b";
 
         final AssetAdministrationShellDescriptor aasDescriptor = assetAdministrationShellTestdataCreator.createDummyAssetAdministrationShellDescriptorForId(
                 catenaXId);
