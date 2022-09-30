@@ -83,6 +83,8 @@ configuration:
     edc.data.encryption.keys.alias=irs-dev-daps-cert-consumer-key
     edc.data.encryption.algorithm=NONE
 
+    edc.negotiation.provider.state-machine.batch-size=50
+
     # Postgresql related configuration
     edc.datasource.asset.name=asset
     edc.datasource.asset.url=jdbc:postgresql://irs-edc-postgres-postgresql-hl:5432/edc
