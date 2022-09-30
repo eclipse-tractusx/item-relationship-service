@@ -60,8 +60,10 @@ registry:
       nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
   resources:
     limits:
+      cpu: 750m
       memory: "1024Mi"
     requests:
+      cpu: 250m
       memory: "512Mi"
 
 postgresql:
@@ -69,6 +71,10 @@ postgresql:
     persistence:
       enabled: true
       size: 1Gi
+    resources:
+      limits:
+        memory: 768Mi
+        cpu: 750m
   service:
     ports:
       postgresql: 5432

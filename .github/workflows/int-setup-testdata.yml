@@ -59,6 +59,36 @@ jobs:
       - run: pip install -r testdata-transform/requirements.txt
 
       - name: Delete existing and setup new test data on provider EDC and Registry
+        if: ${{ github.event.inputs.esrUrl == '' }}
+        env:
+          TESTFILE_PATH: ${{ github.event.inputs.testfilePath }}
+          SUBMODEL_URL_1: ${{ github.event.inputs.submodelUrl1 }}
+          SUBMODEL_URL_2: ${{ github.event.inputs.submodelUrl2 }}
+          SUBMODEL_URL_3: ${{ github.event.inputs.submodelUrl3 }}
+          AAS_URL: ${{ github.event.inputs.aasUrl }}
+          EDC_URL_1: ${{ github.event.inputs.edcUrl1 }}
+          EDC_URL_2: ${{ github.event.inputs.edcUrl2 }}
+          EDC_URL_3: ${{ github.event.inputs.edcUrl3 }}
+          EDC_API_KEY: ${{ github.event.inputs.edcApiKey }}
+        run: |
+          python testdata-transform/reset-env.py \
+          -a $AAS_URL \
+          -e1 $EDC_URL_1 \
+          -e2 $EDC_URL_2 \
+          -e3 $EDC_URL_3 \
+          -k $EDC_API_KEY
+          python testdata-transform/transform-and-upload.py \
+          -f $TESTFILE_PATH \
+          -s1 $SUBMODEL_URL_1 \
+          -s2 $SUBMODEL_URL_2 \
+          -s3 $SUBMODEL_URL_3 \
+          -a $AAS_URL \
+          -e1 $EDC_URL_1 \
+          -e2 $EDC_URL_2 \
+          -e3 $EDC_URL_3
+
+      - name: Delete existing and setup new test data on provider EDC and Registry
+        if: ${{ github.event.inputs.esrUrl != '' }}
         env:
           TESTFILE_PATH: ${{ github.event.inputs.testfilePath }}
           SUBMODEL_URL_1: ${{ github.event.inputs.submodelUrl1 }}
@@ -86,4 +116,5 @@ jobs:
           -e1 $EDC_URL_1 \
           -e2 $EDC_URL_2 \
           -e3 $EDC_URL_3 \
-          -k $EDC_API_KEY 
+          -k $EDC_API_KEY \
+          -e $ESR_URL 
