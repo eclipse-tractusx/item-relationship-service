@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +34,8 @@ class IrsFacadeTest {
                 .build();
 
         given(irsClient.startJob(
-                IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).depth(1).build())
+                IrsRequest.builder().globalAssetId(globalAssetId).bomLifecycle(bomLifecycle).depth(1).aspects(
+                        List.of("EsrCertificateStateStatistic")).collectAspects(false).build())
         ).willReturn(StartJobResponse.builder().jobId(jobId).build());
 
         given(irsClient.getJobDetails(jobId)

@@ -55,7 +55,8 @@ public enum AspectType {
     ADDRESS_ASPECT(AspectTypesConstants.ADDRESS_ASPECT),
     CONTACT_INFORMATION(AspectTypesConstants.CONTACT_INFORMATION),
     BATTERY_PASS(AspectTypesConstants.BATTERY_PASS),
-    VEHICLE_DIAGNOSTIC_DATA_QUALITY(AspectTypesConstants.VEHICLE_DIAGNOSTIC_DATA_QUALITY);
+    VEHICLE_DIAGNOSTIC_DATA_QUALITY(AspectTypesConstants.VEHICLE_DIAGNOSTIC_DATA_QUALITY),
+    ESR_CERTIFICATE_STATE_STATISTIC(AspectTypesConstants.ESR_CERTIFICATE_STATE_STATISTIC);
 
     private final String name;
 
@@ -118,5 +119,6 @@ public enum AspectType {
         public static final String CONTACT_INFORMATION = "ContactInformation";
         public static final String BATTERY_PASS = "BatteryPass";
         public static final String VEHICLE_DIAGNOSTIC_DATA_QUALITY = "VehicleDiagnosticDataQuality";
+        public static final String ESR_CERTIFICATE_STATE_STATISTIC = "EsrCertificateStateStatistic";
     }
 }

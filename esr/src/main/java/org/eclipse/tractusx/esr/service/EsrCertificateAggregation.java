@@ -45,10 +45,11 @@ public class EsrCertificateAggregation {
     }
 
     public EsrCertificateStatistics aggregateStatistics(final IrsResponse irs, final EsrCertificateStatistics esrStatistics) {
+        log.info("Aggregate statistics for {} with {}", irs, esrStatistics);
 
         final EsrCertificateStatistics aggregatedStatistics = esrStatistics != null ? esrStatistics : EsrCertificateStatistics.initial();
 
-        irs.getShells()
+        irs.getRequestorChild()
                 .stream()
                 .map(Shell::getSubmodelDescriptors)
                 .flatMap(Collection::stream)
@@ -58,6 +59,7 @@ public class EsrCertificateAggregation {
                 .map(endpoint -> endpoint.getProtocolInformation().getEndpointAddress())
                 .forEach(endpointAddress -> incrementStatistics(aggregatedStatistics, endpointAddress));
 
+        log.info("Aggregated statistics '{}'", aggregatedStatistics);
         return aggregatedStatistics;
     }
 

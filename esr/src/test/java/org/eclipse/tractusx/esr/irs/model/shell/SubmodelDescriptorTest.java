@@ -45,7 +45,7 @@ class SubmodelDescriptorTest {
         // given
         SubmodelDescriptor descriptor = SubmodelDescriptor.builder()
                                               .semanticId(ListOfValues.builder()
-                                                  .value(List.of("urn:bamm:io.catenax.esr_certificates.esr_certificate:1.0.0"))
+                                                  .value(List.of("urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic"))
                                                   .build())
                                               .build();
 

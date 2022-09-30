@@ -21,7 +21,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.esr.controller.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,10 +35,9 @@ import lombok.Getter;
 @Getter
 public enum CertificateType {
     ISO14001("ISO 14001");
-
+    @JsonValue
     private final String name;
 
-    @JsonCreator
     CertificateType(final String name) {
         this.name = name;
     }

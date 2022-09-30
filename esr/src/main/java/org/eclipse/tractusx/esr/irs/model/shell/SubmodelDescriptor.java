@@ -36,7 +36,7 @@ import lombok.extern.jackson.Jacksonized;
 public class SubmodelDescriptor {
 
     private static final String ASSEMBLY_PART_RELATIONSHIP = "io.catenax.assembly_part_relationship";
-    private static final String ESR_CERTIFICATE = "io.catenax.esr_certificates.esr_certificate";
+    private static final String ESR_CERTIFICATE = "io.catenax.esr_certificates.esr_certificate_state_statistic";
 
     private String identification;
     private ListOfValues semanticId;

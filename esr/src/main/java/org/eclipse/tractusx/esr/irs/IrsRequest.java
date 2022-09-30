@@ -21,6 +21,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.esr.irs;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
@@ -34,5 +36,7 @@ import lombok.Value;
 class IrsRequest {
     private String globalAssetId;
     private String bomLifecycle;
+    private List<String> aspects;
+    private boolean collectAspects;
     private int depth;
 }

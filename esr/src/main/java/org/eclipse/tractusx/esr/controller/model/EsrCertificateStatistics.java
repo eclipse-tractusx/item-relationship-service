@@ -24,6 +24,7 @@ package org.eclipse.tractusx.esr.controller.model;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 import org.eclipse.tractusx.esr.supplyon.CertificateState;
 
 /**
@@ -31,6 +32,7 @@ import org.eclipse.tractusx.esr.supplyon.CertificateState;
  */
 @Value
 @Builder
+@Jacksonized
 public class EsrCertificateStatistics {
 
     private CertificateType certificateName;
@@ -79,6 +81,7 @@ public class EsrCertificateStatistics {
      */
     @Getter
     @Builder
+    @Jacksonized
     public static class CertificateStatistics {
         private int certificatesWithStateValid;
         private int certificatesWithStateInvalid;
