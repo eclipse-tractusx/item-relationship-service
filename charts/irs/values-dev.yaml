@@ -246,6 +246,8 @@ edc-controlplane:
 
       edc.data.encryption.keys.alias=irs-dev-daps-cert-consumer-key
       edc.data.encryption.algorithm=NONE
+      
+      edc.negotiation.consumer.state-machine.batch-size=50
 
       # Postgresql related configuration
       edc.datasource.asset.name=asset
