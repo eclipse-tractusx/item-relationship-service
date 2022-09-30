@@ -27,19 +27,25 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Download Feature Files
+        id: download
         env:
           JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
           JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
           # JIRA filter 11349: project = TRI AND type = Test AND "Test Type" = Cucumber
           # Downloads all feature files of cucumber tests inside TRI project
         run: |
-          curl -u $JIRA_USERNAME:$JIRA_PASSWORD "https://jira.catena-x.net/rest/raven/1.0/export/test?filter=11349&fz=true" -o features.zip
-          unzip -o features.zip -d cucumber-tests/src/test/resources/features
+          export HTTP_RESULT=$(curl -s --show-error -w "%{http_code}" -u $JIRA_USERNAME:$JIRA_PASSWORD "https://jira.catena-x.net/rest/raven/1.0/export/test?filter=11349&fz=true" -o features.zip)
+          [[ $HTTP_RESULT == 200 || $HTTP_RESULT == 400 ]]
+          echo "::set-output name=http_response::$HTTP_RESULT"
 
       - name: Build with Maven
-        run: mvn --batch-mode clean compile test -pl cucumber-tests
+        if: ${{ steps.download.outputs.http_response == '200' }}
+        run: |
+          unzip -o features.zip -d cucumber-tests/src/test/resources/features
+          mvn --batch-mode clean compile test -pl cucumber-tests
 
       - name: Submit results to Xray
+        if: ${{ steps.download.outputs.http_response == '200' }}
         env:
           JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
           JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
