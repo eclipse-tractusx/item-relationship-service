@@ -202,20 +202,6 @@ if __name__ == "__main__":
     f.close()
     testdata = data["https://catenax.io/schema/TestDataContainer/1.0.0"]
 
-    semantic_dict = {
-        "SerialPartTypization": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-        "AssemblyPartRelationship": "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship",
-        "MaterialForRecycling": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
-        "CertificateOfDestruction": "urn:bamm:io.catenax.certificate_of_destruction:1.0.0#CertificateOfDestruction",
-        "VehicleProductDescription": "urn:bamm:io.catenax.vehicle.product_description:1.0.1#ProductDescription",
-        "BatteryProductDescription": "urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription",
-        "ReturnRequest": "urn:bamm:io.catenax.return_request:1.0.0#ReturnRequest",
-        "PhysicalDimension": "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
-        "batch": "urn:bamm:io.catenax.batch:1.0.0#Batch",
-        "EsrCertificateStateStatistic":
-            "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic"
-    }
-
     contract_id = 1
 
     retries = Retry(total=5,
@@ -255,8 +241,8 @@ if __name__ == "__main__":
         name_at_manufacturer = ""
 
         for tmp_key in tmp_keys:
-            if tmp_key in "https://catenax.io/schema/batch/1.0.0" \
-                    or tmp_key in "https://catenax.io/schema/SerialPartTypization/1.0.0":
+            if tmp_key in "urn:bamm:io.catenax.batch:1.0.0#Batch" \
+                    or tmp_key in "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization":
                 specific_asset_ids = tmp_data[tmp_key][0]["localIdentifiers"]
                 name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"] \
                     .replace(" ", "")
@@ -267,14 +253,15 @@ if __name__ == "__main__":
             if specific_asset_id.get("key") == "manufacturerId":
                 part_bpn = specific_asset_id.get("value")
 
-        asr = "https://catenax.io/schema/AssemblyPartRelationship/1.0.0"
+        asr = "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship"
 
         if esr_url and asr in tmp_keys and "childParts" in tmp_data[asr][0] and tmp_data[asr][0]["childParts"]:
-            tmp_data.update({"https://catenax.io/schema/EsrCertificateStateStatistic/1.0.1": ""})
+            tmp_data.update({"urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic": ""})
 
         for tmp_key in tmp_keys:
-            if tmp_key not in ("PlainObject", "catenaXId", "https://catenax.io/schema/PhysicalDimension/1.0.0",
-                               "https://catenax.io/schema/BatteryProductDescription/1.0.1"):
+            if tmp_key not in ("PlainObject", "catenaXId",
+                               "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
+                               "urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription/1.0.1"):
                 # 1. Prepare submodel endpoint address
                 if contract_id % 3 == 0:
                     submodel_url = submodel_server_1_address
@@ -289,9 +276,9 @@ if __name__ == "__main__":
                     edc_url = edc_url3
                     statistic_dict.update({"provider3": statistic_dict["provider3"] + 1})
 
-                submodel_name = re.sub('/[0-9].[0-9].[0-9]', '', tmp_key.replace("https://catenax.io/schema/", ""))
+                submodel_name = tmp_key[tmp_key.index("#")+1: len(tmp_key)]
                 submodel_identification = uuid.uuid4().urn
-                semantic_id = semantic_dict.get(submodel_name)
+                semantic_id = tmp_key
                 if submodel_name == "EsrCertificateStateStatistic" and esr_url is not None:
                     endpoint_address = esr_url + "/" + catenax_id + "/asBuilt/ISO14001/submodel"
                 else:
