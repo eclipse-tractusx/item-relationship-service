@@ -51,4 +51,8 @@
         <Class name="org.eclipse.tractusx.irs.util.JobMetrics$JobMetricsBuilder"/>
         <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
     </Match>
+    <Match>
+        <Class name="org.eclipse.tractusx.esr.irs.model.shell.Shell"/>
+        <Bug pattern="IMPROPER_UNICODE"/>
+    </Match>
 </FindBugsFilter>
