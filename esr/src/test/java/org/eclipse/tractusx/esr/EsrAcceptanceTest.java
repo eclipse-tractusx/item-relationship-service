@@ -29,7 +29,7 @@ class EsrAcceptanceTest {
                 .build();
 
         // when
-        final EsrCertificateStatistics esrCertificateStatistics = given()
+        final EsrCertificateStatistics actualStatistics = given()
                                                              .spec(requestSpecification)
                                                              .when()
                                                              .get("/esr/esr-statistics/" + globalAssetId
@@ -38,16 +38,17 @@ class EsrAcceptanceTest {
                                                              .statusCode(HttpStatus.OK.value())
                                                              .extract()
                                                              .as(EsrCertificateStatistics.class);
+        final EsrCertificateStatistics.CertificateStatistics actualStateStatistics = actualStatistics.getCertificateStateStatistic();
 
         // then
-        assertThat(esrCertificateStatistics).isNotNull();
-        assertThat(esrCertificateStatistics.getCertificateName()).isNotNull();
-        assertThat(esrCertificateStatistics.getCertificateName()).isEqualTo(CertificateType.ISO14001);
-        assertThat(esrCertificateStatistics.getCertificateStateStatistic()).isNotNull();
-        assertThat(esrCertificateStatistics.getCertificateStateStatistic().getCertificatesWithStateValid()).isEqualTo(21);
-        assertThat(esrCertificateStatistics.getCertificateStateStatistic().getCertificatesWithStateInvalid()).isEqualTo(3);
-        assertThat(esrCertificateStatistics.getCertificateStateStatistic().getCertificatesWithStateUnknown()).isEqualTo(2);
-        assertThat(esrCertificateStatistics.getCertificateStateStatistic().getCertificatesWithStateExceptional()).isEqualTo(1);
+        assertThat(actualStatistics).isNotNull();
+        assertThat(actualStatistics.getCertificateName()).isNotNull();
+        assertThat(actualStatistics.getCertificateName()).isEqualTo(CertificateType.ISO14001);
+        assertThat(actualStateStatistics).isNotNull();
+        assertThat(actualStateStatistics.getCertificatesWithStateValid()).isEqualTo(21);
+        assertThat(actualStateStatistics.getCertificatesWithStateInvalid()).isEqualTo(3);
+        assertThat(actualStateStatistics.getCertificatesWithStateUnknown()).isEqualTo(2);
+        assertThat(actualStateStatistics.getCertificatesWithStateExceptional()).isEqualTo(1);
     }
 
 }
