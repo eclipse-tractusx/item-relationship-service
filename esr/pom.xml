@@ -112,7 +112,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <!-- add this dep which bring back the groovy-xml in a single and last version (4) -->
             <groupId>io.rest-assured</groupId>
             <artifactId>json-path</artifactId>
             <version>5.2.0</version>

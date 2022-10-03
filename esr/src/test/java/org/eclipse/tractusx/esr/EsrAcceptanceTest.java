@@ -29,7 +29,7 @@ class EsrAcceptanceTest {
                 .build();
 
         // when
-        final EsrCertificateStatistics esrCertificateStatistics = given()//.config(config)
+        final EsrCertificateStatistics esrCertificateStatistics = given()
                                                              .spec(requestSpecification)
                                                              .when()
                                                              .get("/esr/esr-statistics/" + globalAssetId
