@@ -13,8 +13,8 @@ import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import org.eclipse.tractusx.irs.dto.JobParameter;
-import org.eclipse.tractusx.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.client.RestClientException;
 
 class DigitalTwinDelegateTest {
 
@@ -34,6 +34,22 @@ class DigitalTwinDelegateTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getShells()).isNotEmpty();
+    }
+
+    @Test
+    void shouldCatchRestClientExceptionAndPutTombstone() {
+        // given
+        when(digitalTwinRegistryFacade.getAAShellDescriptor(anyString())).thenThrow(
+                new RestClientException("Unable to call endpoint"));
+
+        // when
+        final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), new JobParameter(),
+                new AASTransferProcess(), "itemId");
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getTombstones()).hasSize(1);
+        assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
     }
 
 }
