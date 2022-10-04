@@ -38,7 +38,7 @@ jobs:
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.4.1
         with:
-          config: ci/cr.yaml
           charts_dir: charts/
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          RELEASE_NAME_TEMPLATE: "{{ .Name }}-helm-charts-{{ .Version }}"
