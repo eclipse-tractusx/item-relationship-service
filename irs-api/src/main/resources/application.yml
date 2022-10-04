@@ -108,6 +108,8 @@ resilience4j:
         exponentialBackoffMultiplier: 2
       supplyOn:
         baseConfig: default
+        ignore-exceptions:
+          - org.springframework.web.client.HttpClientErrorException.NotFound
 
 aasWrapper:
   host: "${AASWRAPPER_HOST:}"
