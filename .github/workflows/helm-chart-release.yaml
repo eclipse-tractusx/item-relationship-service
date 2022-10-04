@@ -29,6 +29,12 @@ jobs:
         with:
           version: v3.8.1
 
+      - name: Update helm dependencies for irs
+        run: |
+          cd charts/irs
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm dependency update
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.4.1
         with:
