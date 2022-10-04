@@ -41,4 +41,4 @@ jobs:
           charts_dir: charts/
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          RELEASE_NAME_TEMPLATE: "{{ .Name }}-helm-charts-{{ .Version }}"
+          CR_RELEASE_NAME_TEMPLATE: "{{ .Name }}-helm-charts-{{ .Version }}"
