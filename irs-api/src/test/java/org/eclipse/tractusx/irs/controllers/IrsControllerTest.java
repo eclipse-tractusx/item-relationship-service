@@ -21,6 +21,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.controllers;
 
+import static java.lang.String.format;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithGlobalAssetIdAndDepth;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepthAndAspect;
@@ -153,6 +154,17 @@ class IrsControllerTest {
 
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON).content(requestBody))
                     .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser
+    void shouldReturnBadRequestWhenCancelingAlreadyCompletedJob() throws Exception {
+        given(this.service.cancelJobById(jobId)).willThrow(new IllegalStateException(
+                format("Cannot transition from state %s to %s", JobState.COMPLETED, JobState.CANCELED)));
+
+        this.mockMvc.perform(put("/irs/jobs/" + jobId))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof IllegalStateException));
     }
 
 }
