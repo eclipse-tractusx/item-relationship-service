@@ -30,7 +30,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build
-        run: mvn package
+        run: mvn package --batch-mode -DskipTests
 
       - uses: actions/upload-artifact@v3
         with:
