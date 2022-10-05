@@ -1,0 +1,98 @@
+= System Overview
+
+== Standalone deployment
+
+The standalone deployment contains all components required to use the IRS to retrieve data.
+This contains:
+
+* IRS with Minio
+* Digital Twin Registry
+* DAPS
+* AAS Wrapper
+* EDC Consumer
+* EDC Provider
+* Submodel Providers
+
+Only Keycloak is not deployed and needs to be provided externally.
+
+[plantuml, target=standalone-overview, format=png]
+....
+skinparam monochrome true
+skinparam shadowing false
+skinparam nodesep 100
+skinparam ranksep 20
+
+cloud Keycloak
+
+node "Kubernetes Cluster" as k8s {
+
+    component IRS
+    component Minio
+    component "AAS Wrapper" as aasw
+    component "DT Registry" as dtr
+    component "EDC Consumer" as consumer
+    component "EDC Provider" as provider
+    database "Consumer DB" as cdb
+    database "Provider DB" as pdb
+    component "DAPS" as daps
+    collections "Submodel Provider" as submodel
+
+
+    IRS --> Minio
+    IRS --> aasw
+    IRS --> dtr
+    IRS --> daps
+    aasw -- consumer
+    consumer -- provider
+    provider -- submodel
+    consumer - cdb
+    provider - pdb
+
+}
+
+IRS -> Keycloak
+....
+
+== Integrated deployment
+
+The integrated deployment only contains the components required to connect the IRS to an existing Catena-X network. This includes:
+
+* IRS with Minio
+* AAS Wrapper
+* EDC Consumer
+
+Everything else needs to be provided externally.
+
+
+[plantuml, target=integrated-overview, format=png]
+....
+skinparam monochrome true
+skinparam shadowing false
+skinparam nodesep 100
+skinparam ranksep 20
+
+cloud "Digital Twin Registry" as dtr
+cloud "EDC Providers" as providers
+cloud Keycloak
+cloud "HashiCorp Vault" as vault
+
+node "IRS Kubernetes Cluster" as k8s {
+
+    component IRS
+    component Minio
+    component "AAS Wrapper" as aasw
+    component "EDC Consumer" as consumer
+    database "Consumer DB" as cdb
+
+    IRS --> Minio
+    IRS --> aasw
+    aasw -- consumer
+    cdb - consumer
+
+}
+
+IRS -> Keycloak
+IRS --> dtr
+consumer --> providers
+consumer -- vault
+....
