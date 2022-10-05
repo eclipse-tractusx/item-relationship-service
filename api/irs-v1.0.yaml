@@ -881,6 +881,14 @@ components:
         lastAttempt:
           type: string
           format: date-time
+        processStep:
+          type: string
+          enum:
+            - SUBMODEL_REQUEST
+            - DIGITAL_TWIN_REQUEST
+            - SCHEMA_VALIDATION
+            - SCHEMA_REQUEST
+            - BPDM_REQUEST
         retryCounter:
           type: integer
           format: int32

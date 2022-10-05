@@ -19,33 +19,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component;
+package org.eclipse.tractusx.irs.component.enums;
 
-import java.time.ZonedDateTime;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import lombok.Builder;
-import lombok.Value;
-import org.eclipse.tractusx.irs.component.enums.ProcessStep;
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
- * Processing Error Data Class
+ * Process step information
  */
-@Value
-@Builder(toBuilder = true, setterPrefix = "with")
-@JsonDeserialize(builder = ProcessingError.ProcessingErrorBuilder.class)
-public class ProcessingError {
-    private ProcessStep processStep;
-    private String errorDetail;
-    private ZonedDateTime lastAttempt;
-    private int retryCounter;
+@Getter
+@AllArgsConstructor
+public enum ProcessStep {
+    SUBMODEL_REQUEST("SubmodelRequest"),
+    DIGITAL_TWIN_REQUEST("DigitalTwinRequest"),
+    SCHEMA_VALIDATION("SchemaValidation"),
+    SCHEMA_REQUEST("SchemaRequest"),
+    BPDM_REQUEST("BpdmRequest");
 
-    /**
-     * Builder class
-     */
-    @JsonPOJOBuilder()
-    public static class ProcessingErrorBuilder {
-
-    }
+    @JsonValue
+    private final String value;
 }
