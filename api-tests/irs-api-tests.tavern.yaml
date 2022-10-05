@@ -1,0 +1,56 @@
+test_name: Make sure server process job after authorization
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: {KEYCLOAK_HOST}
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: {CLIENT_ID}
+        client_secret: {CLIENT_SECRET}
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a job and wait
+    request:
+      url: {IRS_HOST}/irs/jobs
+      json:
+        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: jobId
+    delay_after: 3
+
+  - name: fetch response for created job
+    request:
+      url: "{IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
