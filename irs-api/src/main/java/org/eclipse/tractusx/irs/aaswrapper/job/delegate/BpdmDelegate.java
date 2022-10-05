@@ -61,17 +61,12 @@ public class BpdmDelegate extends AbstractDelegate {
                                 .stream()
                                 .findFirst()
                                 .flatMap(AssetAdministrationShellDescriptor::findManufacturerId)
-                                .ifPresentOrElse(
-                                        manufacturerId -> bpnFromManufacturerId(itemContainerBuilder, manufacturerId,
-                                                itemId), () -> {
-                                                    final String message = String.format(
-                                                            "Cannot find manufacturerId for Item: %s. Creating Tombstone.",
-                                                            itemId);
-                                                    log.warn(message);
-                                                    itemContainerBuilder.tombstone(Tombstone.from(itemId, null,
-                                                            new BpdmDelegateProcessingException(message), 0,
-                                                            ProcessStep.BPDM_REQUEST));
-                                                });
+                                .ifPresentOrElse(manufacturerId -> bpnFromManufacturerId(itemContainerBuilder, manufacturerId, itemId),
+                                        () -> {
+                                            final String message = String.format("Cannot find manufacturerId for Item: %s. Creating Tombstone.", itemId);
+                                            log.warn(message);
+                                            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0, ProcessStep.BPDM_REQUEST));
+                                        });
         } catch (RestClientException e) {
             log.info("Business Partner endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
             itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount, ProcessStep.BPDM_REQUEST));
@@ -88,20 +83,14 @@ public class BpdmDelegate extends AbstractDelegate {
             if (BPN_RGX.matcher(bpn.getManufacturerId() + bpn.getManufacturerName()).find()) {
                 itemContainerBuilder.bpn(bpn);
             } else {
-                final String message = String.format("BPN: %s for ItemId: %s is not valid. Creating Tombstone.",
-                        bpn.getManufacturerId() + bpn.getManufacturerName(), itemId);
+                final String message = String.format("BPN: %s for ItemId: %s is not valid. Creating Tombstone.", bpn.getManufacturerId() + bpn.getManufacturerName(), itemId);
                 log.warn(message);
-                itemContainerBuilder.tombstone(
-                        Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0,
-                                ProcessStep.BPDM_REQUEST));
+                itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0, ProcessStep.BPDM_REQUEST));
             }
         }, () -> {
-            final String message = String.format(
-                    "BPN not exist in given Manufacturing ID: %s and for ItemId: %s. Creating Tombstone.",
-                    manufacturerId, itemId);
+            final String message = String.format("BPN not exist in given Manufacturing ID: %s and for ItemId: %s. Creating Tombstone.", manufacturerId, itemId);
             log.warn(message);
-            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0,
-                    ProcessStep.BPDM_REQUEST));
+            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0, ProcessStep.BPDM_REQUEST));
         });
     }
 
