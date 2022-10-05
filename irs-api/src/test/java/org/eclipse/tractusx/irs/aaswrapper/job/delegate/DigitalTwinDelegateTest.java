@@ -12,6 +12,7 @@ import java.util.List;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
+import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.dto.JobParameter;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
@@ -50,6 +51,8 @@ class DigitalTwinDelegateTest {
         assertThat(result).isNotNull();
         assertThat(result.getTombstones()).hasSize(1);
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
+                ProcessStep.DIGITAL_TWIN_REQUEST);
     }
 
 }
