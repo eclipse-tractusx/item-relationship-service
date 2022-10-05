@@ -85,7 +85,7 @@ public class BpdmDelegate extends AbstractDelegate {
             } else {
                 final String message = String.format("BPN: \"%s\" for CatenaXId: %s is not valid.", bpn.getManufacturerId() + bpn.getManufacturerName(), itemId);
                 log.warn(message);
-                itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0, ProcessStep.BPDM_REQUEST));
+                itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0, ProcessStep.BPDM_VALIDATION));
             }
         }, () -> {
             final String message = String.format("BPN not exist for given ManufacturerId: %s and for CatenaXId: %s.", manufacturerId, itemId);

@@ -35,7 +35,8 @@ public enum ProcessStep {
     DIGITAL_TWIN_REQUEST("DigitalTwinRequest"),
     SCHEMA_VALIDATION("SchemaValidation"),
     SCHEMA_REQUEST("SchemaRequest"),
-    BPDM_REQUEST("BpdmRequest");
+    BPDM_REQUEST("BpdmRequest"),
+    BPDM_VALIDATION("BpdmValidation");
 
     @JsonValue
     private final String value;

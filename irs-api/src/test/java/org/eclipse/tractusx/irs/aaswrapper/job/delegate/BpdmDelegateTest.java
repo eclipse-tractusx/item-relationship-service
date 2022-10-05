@@ -78,7 +78,7 @@ class BpdmDelegateTest {
         assertThat(result.getTombstones()).hasSize(1);
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
-                ProcessStep.BPDM_REQUEST);
+                ProcessStep.BPDM_VALIDATION);
     }
 
     @Test
