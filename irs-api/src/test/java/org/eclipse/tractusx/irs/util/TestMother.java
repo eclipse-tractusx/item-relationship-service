@@ -106,6 +106,17 @@ public class TestMother {
                            .build();
     }
 
+    public static JobParameter jobParameterCollectAspects() {
+        return JobParameter.builder()
+                           .rootItemId("urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873")
+                           .treeDepth(0)
+                           .bomLifecycle("AsBuilt")
+                           .aspectTypes(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(),
+                                   AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()))
+                           .collectAspects(true)
+                           .build();
+    }
+
     public static JobParameter jobParameterFilter() {
         return JobParameter.builder()
                            .rootItemId("urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873")
@@ -170,12 +181,12 @@ public class TestMother {
 
     public static Relationship relationship() {
         final LinkedItem linkedItem = LinkedItem.builder()
-                                                .childCatenaXId(GlobalAssetIdentification.of(UUID.randomUUID().toString()))
+                                                .childCatenaXId(
+                                                        GlobalAssetIdentification.of(UUID.randomUUID().toString()))
                                                 .lifecycleContext(BomLifecycle.AS_BUILT)
                                                 .build();
 
-        return new Relationship(GlobalAssetIdentification.of(UUID.randomUUID().toString()),
-                linkedItem,
+        return new Relationship(GlobalAssetIdentification.of(UUID.randomUUID().toString()), linkedItem,
                 RelationshipAspect.AssemblyPartRelationship.name());
     }
 
@@ -197,11 +208,12 @@ public class TestMother {
 
     public static AssetAdministrationShellDescriptor shellDescriptor(
             final List<SubmodelDescriptor> submodelDescriptors) {
-        return AssetAdministrationShellDescriptor
-                .builder()
-                .specificAssetIds(List.of(
-                        IdentifierKeyValuePair.builder().key("ManufacturerId").value("BPNL00000003AYRE").build()))
-                .submodelDescriptors(submodelDescriptors)
-                .build();
+        return AssetAdministrationShellDescriptor.builder()
+                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
+                                                                                                 .key("ManufacturerId")
+                                                                                                 .value("BPNL00000003AYRE")
+                                                                                                 .build()))
+                                                 .submodelDescriptors(submodelDescriptors)
+                                                 .build();
     }
 }
