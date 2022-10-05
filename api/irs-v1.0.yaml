@@ -889,6 +889,7 @@ components:
             - SCHEMA_VALIDATION
             - SCHEMA_REQUEST
             - BPDM_REQUEST
+            - BPDM_VALIDATION
         retryCounter:
           type: integer
           format: int32
