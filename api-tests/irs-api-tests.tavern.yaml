@@ -7,12 +7,12 @@ strict:
 stages:
   - name: authenticate and fetch access token
     request:
-      url: {KEYCLOAK_HOST}
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
       method: POST
       data:
         grant_type: client_credentials
-        client_id: {CLIENT_ID}
-        client_secret: {CLIENT_SECRET}
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
     response:
       status_code: 200
       json:
@@ -25,7 +25,7 @@ stages:
 
   - name: create a job and wait
     request:
-      url: {IRS_HOST}/irs/jobs
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
       method: POST
@@ -43,7 +43,7 @@ stages:
 
   - name: fetch response for created job
     request:
-      url: "{IRS_HOST}/irs/jobs/{job_id}"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
         returnUncompletedJob: true
       method: GET
