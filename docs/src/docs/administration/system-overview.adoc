@@ -2,7 +2,7 @@
 
 == Standalone deployment
 
-The standalone deployment contains all components required to use the IRS to retrieve data.
+The standalone deployment contains all components required to use the IRS to retrieve predefined testdata.
 This contains:
 
 * IRS with Minio

@@ -1,13 +1,68 @@
+[#_configuration]
 = Configuration
 
 Because IRS relies on multiple components, the following configuration parameters of values.yaml need to be adjusted:
 (<app-name> refers to the name the application is given in ArgoCD)
 
-== IRS configuration
+== Secrets
+This is a list of all secrets used in the deployment.
 
-=== Integrated (minimal) configuration
+|===
+|Name | Description | Required
 
-=== Standalone configuration
+|secret/controlplane/databaseUsername
+|Database user for the EDC controlplane
+|yes
+
+|secret/controlplane/databasePassword
+|Database password for the EDC controlplane
+|yes
+
+|secret/keycloak/oauth2/clientId
+|Client credentials for Keycloak
+|yes
+
+|secret/keycloak/oauth2/clientSecret
+|Client credentials for Keycloak
+|yes
+
+|secret/keycloak/oauth2/jwkSetUri
+|URI of the Keycloak JWK endpoint
+|yes
+
+|secret/keycloak/oauth2/tokenUri
+|URI of the Keycloak Token endpoint
+|yes
+
+|secret/minio/minioUser
+|Login credentials for Minio
+|yes
+
+|secret/minio/minioPassword
+|Login credentials for Minio
+|yes
+
+|secret/grafana/username
+|Login credentials for Grafana
+|no
+
+|secret/grafana/password
+|Login credentials for Grafana
+|no
+
+|secret/aasWrapper/username
+|Basic authentication of the AAS Wrapper API
+|no
+
+|secret/aasWrapper/password
+|Basic authentication of the AAS Wrapper API
+|no
+
+|===
+
+== Integrated (minimal) configuration
+
+== Standalone configuration
 
 [source,yaml]
 ----

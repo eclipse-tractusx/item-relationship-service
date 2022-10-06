@@ -1,6 +1,8 @@
 = Administration Guide
 
-include::system-overview/system-overview.adoc[leveloffset=1]
-include::installation/installation.adoc[leveloffset=1]
-include::configuration/configuration.adoc[leveloffset=1]
-include::troubleshooting/troubleshooting.adoc[leveloffset=1]
+:toc:
+
+include::system-overview.adoc[leveloffset=1]
+include::installation.adoc[leveloffset=1]
+include::configuration.adoc[leveloffset=1]
+include::troubleshooting.adoc[leveloffset=1]
