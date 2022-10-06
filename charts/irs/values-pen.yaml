@@ -129,9 +129,6 @@ edc-controlplane:
   # -- Overrides the releases full name
   fullnameOverride: "edc-consumer-controlplane-pen"
 
-  image:
-    tag: "0.1.0"
-
   ## Ingress declaration to expose the network service.
   ingresses:
     ## Public / Internet facing Ingress
@@ -199,6 +196,8 @@ edc-controlplane:
       edc.data.encryption.keys.alias=irs-int-daps-key
       edc.data.encryption.algorithm=NONE
 
+      edc.negotiation.consumer.state-machine.batch-size=50
+
       # Postgresql related configuration
       edc.datasource.asset.name=asset
       edc.datasource.asset.url=jdbc:postgresql://app-irs-pen-postgresql-hl:5432/edc
@@ -223,9 +222,6 @@ edc-controlplane:
 
 # Values for edc-dataplane subchart.
 edc-dataplane:
-  image:
-    tag: "0.1.0"
-
   # -- Overrides the charts name
   nameOverride: "edc-consumer-dataplane-pen"
   # -- Overrides the releases full name
