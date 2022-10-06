@@ -1,4 +1,4 @@
-name: "Eclipse Dash"
+name: "Eclipse DASH IP Check"
 
 on:
   workflow_dispatch:
@@ -27,7 +27,7 @@ jobs:
 
       - name: Build with Maven and check dependencies with dash
         run: |
-          mvn --batch-mode --update-snapshots verify -Ddash.fail=true
+          mvn --batch-mode --update-snapshots verify -Ddash.fail=true -DskipTests
 
       - name: upload results
         if: always()

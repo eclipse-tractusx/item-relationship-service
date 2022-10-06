@@ -64,8 +64,6 @@ import net.datafaker.Faker;
  */
 public class TestMother {
 
-    private static final String AS_BUILT = "AsBuilt";
-
     Faker faker = new Faker();
 
     public static RegisterJob registerJobWithoutDepthAndAspect() {
@@ -77,13 +75,13 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<AspectType> aspectTypes) {
-        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", depth, aspectTypes,
+        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873", depth, aspectTypes,
                 false);
     }
 
     public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth,
             final List<AspectType> aspectTypes) {
-        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", depth, aspectTypes,
+        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873", depth, aspectTypes,
                 true);
     }
 
@@ -100,7 +98,7 @@ public class TestMother {
 
     public static JobParameter jobParameter() {
         return JobParameter.builder()
-                           .rootItemId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")
+                           .rootItemId("urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873")
                            .treeDepth(0)
                            .bomLifecycle("AsBuilt")
                            .aspectTypes(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(),
@@ -110,19 +108,10 @@ public class TestMother {
 
     public static JobParameter jobParameterFilter() {
         return JobParameter.builder()
-                           .rootItemId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")
+                           .rootItemId("urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873")
                            .treeDepth(0)
                            .bomLifecycle("AsRequired")
                            .aspectTypes(List.of(AspectType.MATERIAL_FOR_RECYCLING.toString()))
-                           .build();
-    }
-
-    public static JobParameter jobParameterEmptyFilter() {
-        return JobParameter.builder()
-                           .rootItemId("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6")
-                           .treeDepth(0)
-                           .bomLifecycle("AsRequired")
-                           .aspectTypes(List.of())
                            .build();
     }
 

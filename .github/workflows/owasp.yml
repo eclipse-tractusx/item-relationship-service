@@ -1,4 +1,4 @@
-name: "owasp"
+name: "OWASP dependency scanner"
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: run maven owasp plugin
-        run: mvn install -Pdependency-check
+        run: mvn --batch-mode install -Pdependency-check -DskipTests
 
       - name: upload results
         if: always()

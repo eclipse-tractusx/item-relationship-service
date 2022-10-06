@@ -108,6 +108,17 @@ public class IrsExceptionHandler {
                                                 .build());
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalStateException(final IllegalStateException exception) {
+        log.info(exception.getClass().getName(), exception);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(ErrorResponse.builder()
+                                                .withStatusCode(HttpStatus.BAD_REQUEST)
+                                                .withMessage(exception.getMessage())
+                                                .build());
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(final HttpMessageNotReadableException exception) {
         log.info(exception.getClass().getName(), exception);

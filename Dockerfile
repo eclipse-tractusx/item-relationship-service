@@ -1,5 +1,5 @@
 # Dependencies
-FROM maven:3-openjdk-17 AS maven
+FROM maven:3-openjdk-17-slim AS maven
 ARG BUILD_TARGET=irs-api
 
 WORKDIR /build
@@ -16,13 +16,14 @@ COPY irs-models irs-models
 COPY irs-parent-spring-boot irs-parent-spring-boot
 COPY irs-testing irs-testing
 COPY irs-report-aggregate irs-report-aggregate
+COPY cucumber-tests cucumber-tests
 
 # the --mount option requires BuildKit.
 RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -pl :$BUILD_TARGET -am -DskipTests
 
 
 # Copy the jar and build image
-FROM eclipse-temurin:18-jre-alpine AS irs-api
+FROM gcr.io/distroless/java17-debian11:nonroot AS irs-api
 
 ARG UID=10000
 ARG GID=1000

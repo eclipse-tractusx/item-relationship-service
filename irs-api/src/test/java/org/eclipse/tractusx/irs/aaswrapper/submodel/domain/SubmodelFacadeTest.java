@@ -30,6 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +43,7 @@ import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.dto.JobParameter;
 import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,7 +55,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
-class SubmodelFacadeTest {
+class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
 
     private final JsonUtil jsonUtil = new JsonUtil();
 
@@ -65,9 +67,13 @@ class SubmodelFacadeTest {
 
     private SubmodelFacade submodelFacade;
 
+    SubmodelFacadeTest() throws IOException {
+        super();
+    }
+
     @BeforeEach
-    void setUp() {
-        final SubmodelClientLocalStub submodelClientStub = new SubmodelClientLocalStub();
+    void setUp() throws IOException {
+        final SubmodelClientLocalStub submodelClientStub = new SubmodelClientLocalStub(jsonUtil, localTestDataConfiguration.cxTestDataContainer());
         submodelFacade = new SubmodelFacade(submodelClientStub);
     }
 
@@ -85,21 +91,21 @@ class SubmodelFacadeTest {
 
     @Test
     void shouldReturnAssemblyPartRelationshipWithChildDataWhenRequestingWithCatenaXId() {
-        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+        final String catenaXId = "urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b";
 
         final List<Relationship> submodelResponse = submodelFacade.getRelationships(
                 catenaXId, jobParameter());
 
         assertThat(submodelResponse.get(0).getCatenaXId().getGlobalAssetId()).isEqualTo(catenaXId);
-        assertThat(submodelResponse).hasSize(3);
+        assertThat(submodelResponse).hasSize(32);
 
         final List<String> childIds = submodelResponse.stream()
                                                 .map(Relationship::getLinkedItem)
                                                 .map(LinkedItem::getChildCatenaXId)
                                                 .map(GlobalAssetIdentification::getGlobalAssetId)
                                                 .collect(Collectors.toList());
-        assertThat(childIds).containsAnyOf("urn:uuid:09b48bcc-8993-4379-a14d-a7740e1c61d4",
-                "urn:uuid:5ce49656-5156-4c8a-b93e-19422a49c0bc", "urn:uuid:9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d");
+        assertThat(childIds).containsAnyOf("urn:uuid:0d8da814-fcee-4b5e-b251-fc400da32399",
+                "urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873", "urn:uuid:0d039178-90a1-4329-843e-04ca0475a56e");
     }
 
     @Test
