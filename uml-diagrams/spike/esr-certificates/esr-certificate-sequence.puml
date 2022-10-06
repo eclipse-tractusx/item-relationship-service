@@ -1,0 +1,55 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+
+autonumber "<b>[000]"
+
+actor Client
+
+box "OEM" #LightGrey
+Client -> IRS : globalAssetId
+note left
+IRS API is requested
+POST http://Tier1_333/irs/jobs
+mode: aggregation
+aspects:ESRCertificatesStatistic
+globalAssetID: 3333
+bomLifecycle: asBuilt
+end note
+IRS -> DTRegistry: getAAS(globalAssetId)
+IRS <-- DTRegistry: AAS
+
+loop for each child
+IRS -> SubmodelServer_1_1 : getAssemblyPartRelPayload
+IRS <-- SubmodelServer_1_1 : AssemblyPartRelPayload
+ref over IRS,DTRegistry
+    IRS --> DTRegistry: getAAS for child
+end ref
+IRS -> IRS : extract BPML from AAS shell
+IRS -> SupplyOnAPI : call SupplyOnAPI http//supplyOn/BPML/BPML/submodels/ISO14001
+IRS <-- SupplyOnAPI : SupplyOnPayload
+IRS -> IRS : append SupplyOnPayload
+IRS -> IRS : aggregate ESRCertificatesStatistic
+IRS -> IRS_1_1 : globalAssetId
+IRS <- IRS_1_1 : JobResponse
+IRS -> IRS : aggregate JobResponse of Tier+1
+end loop
+
+Client <-- IRS : JobResponse
+
+end box
+
+participant "EDC" as EDC1 #99FF99
+
+box "Tier 1_1" #LightGrey
+participant SubmodelServer_1_1
+participant IRS_1_1
+end box
+
+box "Shared Service" #LightGrey
+participant DTRegistry
+participant SupplyOnAPI
+end box
+
+@enduml
