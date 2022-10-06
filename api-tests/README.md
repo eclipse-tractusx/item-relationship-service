@@ -9,7 +9,7 @@
 # before running tests
 export IRS_HOST="http://localhost:8080"
 # cannot put secrets here, please set it manually
-export KEYCLOAK_HOST="https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token"
+export KEYCLOAK_HOST=""
 export KEYCLOAK_CLIENT_ID=
 export KEYCLOAK_CLIENT_SECRET=
 ```
