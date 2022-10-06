@@ -40,7 +40,7 @@
         <micrometer.version>1.9.4</micrometer.version>
         <junit.version>5.8.2</junit.version>
         <datafaker.version>1.6.0</datafaker.version>
-        <json-unit-assertj.version>2.35.0</json-unit-assertj.version>
+        <json-unit-assertj.version>2.36.0</json-unit-assertj.version>
         <mockito-junit-jupiter.version>4.6.0</mockito-junit-jupiter.version>
         <assertj-core.version>3.23.1</assertj-core.version>
         <gatling.version>3.7.6</gatling.version>
