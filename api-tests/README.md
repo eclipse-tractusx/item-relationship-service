@@ -1,3 +1,8 @@
+# Usage 
+
+* Create variable.env in directory api-tests
+* Copy content to variable.env
+```
 # this is temporary file for local development to setup environments variable such a secrets and URLs
 # to run it just execute in console:
 # source variable.env
@@ -7,3 +12,12 @@ export IRS_HOST="http://localhost:8080"
 export KEYCLOAK_HOST="https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token"
 export KEYCLOAK_CLIENT_ID=
 export KEYCLOAK_CLIENT_SECRET=
+```
+* Execute command 
+```console
+  source variable.env
+  py.test irs-api-tests.tavern.yaml
+```
+
+
+
