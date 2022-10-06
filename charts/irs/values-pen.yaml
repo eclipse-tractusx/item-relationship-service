@@ -1,8 +1,5 @@
 springprofile: pen
 
-image:
-  tag: main
-
 ingress:
   hosts:
     - host: "irs-pen.int.demo.catena-x.net"
