@@ -547,14 +547,20 @@ components:
           type: integer
           format: int32
           description: Number of completed item transfers.
+          maximum: 2147483647
+          minimum: 0
         failed:
           type: integer
           format: int32
           description: Number of failed item transfers.
+          maximum: 2147483647
+          minimum: 0
         running:
           type: integer
           format: int32
           description: Number of running item transfers.
+          maximum: 2147483647
+          minimum: 0
     Bpn:
       type: object
       description: Collection of bpn mappings
@@ -782,6 +788,8 @@ components:
         depth:
           type: integer
           format: int32
+          maximum: 2147483647
+          minimum: 0
         direction:
           type: string
           description: Item graph traversal direction.
@@ -884,6 +892,8 @@ components:
         retryCounter:
           type: integer
           format: int32
+          maximum: 2147483647
+          minimum: 0
     ProtocolInformation:
       type: object
       properties:
@@ -908,6 +918,8 @@ components:
         quantityNumber:
           type: number
           format: double
+          maximum: 2147483647
+          minimum: 0
     Reference:
       type: object
       properties:

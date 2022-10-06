@@ -23,6 +23,9 @@ package org.eclipse.tractusx.irs.component;
 
 import java.util.List;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,6 +54,8 @@ public class JobParameter {
     private List<AspectType> aspects;
 
     @Schema(implementation = Integer.class)
+    @Min(0)
+    @Max(Integer.MAX_VALUE)
     private Integer depth;
 
     @Schema(implementation = Direction.class)
