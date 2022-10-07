@@ -67,17 +67,28 @@ public class OpenApiConfiguration {
     /**
      * Generates example values in Swagger
      *
-     * @return the customiser
+     * @return the customizer
      */
     @Bean
-    public OpenApiCustomiser customiser() {
+    public OpenApiCustomiser customizer() {
         return openApi -> {
             final Components components = openApi.getComponents();
             components.addSecuritySchemes("OAuth2", new SecurityScheme().type(SecurityScheme.Type.OAUTH2)
                                                                         .flows(new OAuthFlows().clientCredentials(
-                                                                                new OAuthFlow().tokenUrl("https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token"))));
+                                                                                new OAuthFlow().tokenUrl(
+                                                                                        "https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token"))));
             new OpenApiExamples().createExamples(components);
         };
+    }
+
+    /**
+     * Sets additionalProperties to false for every schema in components.
+     *
+     * @return the customizer
+     */
+    @Bean
+    public OpenApiCustomiser openApiAdditionalPropertiesCustomizer() {
+        return openApi -> openApi.getComponents().getSchemas().values().forEach(s -> s.setAdditionalProperties(false));
     }
 
 }
