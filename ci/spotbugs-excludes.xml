@@ -56,4 +56,8 @@
         <Class name="org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor"/>
         <Bug pattern="IMPROPER_UNICODE"/>
     </Match>
+    <Match>
+        <Class name="org.eclipse.tractusx.irs.configuration.RestTemplateConfig"/>
+        <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON"/>
+    </Match>
 </FindBugsFilter>
