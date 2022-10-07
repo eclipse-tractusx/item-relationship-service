@@ -510,7 +510,6 @@ components:
   schemas:
     AdministrativeInformation:
       type: object
-      additionalProperties: false
       properties:
         revision:
           type: string
@@ -518,7 +517,6 @@ components:
           type: string
     AssetAdministrationShellDescriptor:
       type: object
-      additionalProperties: false
       description: AAS shells.
       properties:
         administration:
@@ -543,7 +541,6 @@ components:
             $ref: '#/components/schemas/SubmodelDescriptor'
     AsyncFetchedItems:
       type: object
-      additionalProperties: false
       description: Statistics of job execution.
       properties:
         completed:
@@ -566,7 +563,6 @@ components:
           minimum: 0
     Bpn:
       type: object
-      additionalProperties: false
       description: Collection of bpn mappings
       properties:
         manufacturerId:
@@ -575,7 +571,6 @@ components:
           type: string
     Endpoint:
       type: object
-      additionalProperties: false
       properties:
         interface:
           type: string
@@ -583,7 +578,6 @@ components:
           $ref: '#/components/schemas/ProtocolInformation'
     ErrorResponse:
       type: object
-      additionalProperties: false
       description: Error response.
       properties:
         errors:
@@ -669,7 +663,6 @@ components:
             - 511 NETWORK_AUTHENTICATION_REQUIRED
     GlobalAssetIdentification:
       type: object
-      additionalProperties: false
       description: CATENA-X global asset id in the format urn:uuid:uuid4.
       properties:
         globalAssetId:
@@ -680,7 +673,6 @@ components:
           minLength: 45
     IdentifierKeyValuePair:
       type: object
-      additionalProperties: false
       properties:
         key:
           type: string
@@ -692,7 +684,6 @@ components:
           type: string
     Job:
       type: object
-      additionalProperties: false
       description: Executable unit with meta information and item graph result.
       properties:
         createdOn:
@@ -740,7 +731,6 @@ components:
         - jobState
     JobErrorDetails:
       type: object
-      additionalProperties: false
       description: Job error details.
       properties:
         errorDetail:
@@ -757,14 +747,12 @@ components:
           description: Datetime error occurs.
     JobHandle:
       type: object
-      additionalProperties: false
       properties:
         jobId:
           type: string
           format: uuid
     JobParameter:
       type: object
-      additionalProperties: false
       description: Job parameter of job processing.
       properties:
         aspects:
@@ -809,7 +797,6 @@ components:
             - downward
     JobStatusResult:
       type: object
-      additionalProperties: false
       properties:
         jobId:
           type: string
@@ -826,7 +813,6 @@ components:
           - ERROR
     Jobs:
       type: object
-      additionalProperties: false
       description: Container for a job with item graph.
       properties:
         bpns:
@@ -860,7 +846,6 @@ components:
             $ref: '#/components/schemas/Tombstone'
     LangString:
       type: object
-      additionalProperties: false
       properties:
         language:
           type: string
@@ -868,7 +853,6 @@ components:
           type: string
     LinkedItem:
       type: object
-      additionalProperties: false
       description: Set of child parts the parent object is assembled by (one structural
         level down).
       properties:
@@ -892,7 +876,6 @@ components:
           $ref: '#/components/schemas/Quantity'
     MeasurementUnit:
       type: object
-      additionalProperties: false
       properties:
         datatypeURI:
           type: string
@@ -900,7 +883,6 @@ components:
           type: string
     ProcessingError:
       type: object
-      additionalProperties: false
       properties:
         errorDetail:
           type: string
@@ -914,7 +896,6 @@ components:
           minimum: 0
     ProtocolInformation:
       type: object
-      additionalProperties: false
       properties:
         endpointAddress:
           type: string
@@ -930,7 +911,6 @@ components:
           type: string
     Quantity:
       type: object
-      additionalProperties: false
       description: Quantity component.
       properties:
         measurementUnit:
@@ -942,7 +922,6 @@ components:
           minimum: 0
     Reference:
       type: object
-      additionalProperties: false
       properties:
         value:
           type: array
@@ -950,7 +929,6 @@ components:
             type: string
     RegisterJob:
       type: object
-      additionalProperties: false
       description: The requested job definition.
       properties:
         aspects:
@@ -1011,7 +989,6 @@ components:
         - globalAssetId
     Relationship:
       type: object
-      additionalProperties: false
       description: Relationships between parent and child items.
       properties:
         aspectType:
@@ -1022,7 +999,6 @@ components:
           $ref: '#/components/schemas/LinkedItem'
     Submodel:
       type: object
-      additionalProperties: false
       description: Collection of requested Submodels
       properties:
         aspectType:
@@ -1035,7 +1011,6 @@ components:
             type: object
     SubmodelDescriptor:
       type: object
-      additionalProperties: false
       properties:
         administration:
           $ref: '#/components/schemas/AdministrativeInformation'
@@ -1055,14 +1030,12 @@ components:
           $ref: '#/components/schemas/Reference'
     Summary:
       type: object
-      additionalProperties: false
       description: Summary of the job with statistics of the job processing.
       properties:
         asyncFetchedItems:
           $ref: '#/components/schemas/AsyncFetchedItems'
     Tombstone:
       type: object
-      additionalProperties: false
       description: Collection of not resolvable endpoints as tombstones. Including
         cause of error and endpoint URL.
       properties:

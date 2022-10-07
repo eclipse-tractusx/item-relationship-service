@@ -81,14 +81,4 @@ public class OpenApiConfiguration {
         };
     }
 
-    /**
-     * Sets additionalProperties to false for every schema in components.
-     *
-     * @return the customizer
-     */
-    @Bean
-    public OpenApiCustomiser openApiAdditionalPropertiesCustomizer() {
-        return openApi -> openApi.getComponents().getSchemas().values().forEach(s -> s.setAdditionalProperties(false));
-    }
-
 }
