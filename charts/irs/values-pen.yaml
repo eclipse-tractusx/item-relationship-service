@@ -14,10 +14,10 @@ ingress:
 
 keycloak:
   oauth2:
-    clientId: <path:traceability-irs/data/int/keycloak/oauth2#clientId>
-    clientSecret: <path:traceability-irs/data/int/keycloak/oauth2#clientSecret>
-    clientTokenUri: <path:traceability-irs/data/int/keycloak/oauth2#tokenUri>
-    jwkSetUri: <path:traceability-irs/data/int/keycloak/oauth2#jwkSetUri>
+    clientId: <path:traceability-irs/data/pen/keycloak/oauth2#clientId>
+    clientSecret: <path:traceability-irs/data/pen/keycloak/oauth2#clientSecret>
+    clientTokenUri: <path:traceability-irs/data/pen/keycloak/oauth2#tokenUri>
+    jwkSetUri: <path:traceability-irs/data/pen/keycloak/oauth2#jwkSetUri>
 
 aasWrapper:
   host: http://app-irs-pen-irs-aaswrapper:9191/api/service
@@ -28,7 +28,7 @@ minio:
   url: http://app-irs-pen-irs-minio:9000
 
 digitalTwinRegistry:
-  url: https://semantics.int.demo.catena-x.net/registry
+  url: https://semantics-pen.dev.demo.catena-x.net/registry/registry
 
 rootUser: <path:traceability-irs/data/int/minio#minioUser>
 rootPassword: <path:traceability-irs/data/int/minio#minioPassword>
