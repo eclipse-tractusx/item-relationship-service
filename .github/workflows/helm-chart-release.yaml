@@ -1,4 +1,4 @@
-name: Release Charts
+name: Release Helm Charts
 
 on:
   workflow_dispatch:
@@ -29,10 +29,14 @@ jobs:
         with:
           version: v3.8.1
 
+      - name: Update helm dependencies for irs
+        run: |
+          cd charts/irs
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm dependency update
+
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.4.0
-        with:
-          config: ci/cr.yaml
-          charts_dir: charts/
+        uses: luisico/chart-releaser-action@on-tags
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_RELEASE_NAME_TEMPLATE: "{{ .Name }}-helm-charts-{{ .Version }}"

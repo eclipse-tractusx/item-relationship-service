@@ -1,4 +1,4 @@
-name: "spotbugs"
+name: "Spotbugs bug detection"
 
 on:
   push:

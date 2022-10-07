@@ -23,6 +23,7 @@ package org.eclipse.tractusx.irs.configuration;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -55,6 +56,7 @@ public class SecurityConfiguration {
         "/api/api-docs/swagger-config",
         "/esr/esr-statistics/**/**/**/submodel"
     };
+    private static final long HSTS_MAX_AGE_DAYS = 365;
 
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     @Bean
@@ -64,6 +66,14 @@ public class SecurityConfiguration {
         httpSecurity.csrf().disable();
         httpSecurity.logout().disable();
         httpSecurity.cors();
+
+        httpSecurity.headers()
+                    .httpStrictTransportSecurity()
+                    .maxAgeInSeconds(Duration.ofDays(HSTS_MAX_AGE_DAYS).toSeconds())
+                    .includeSubDomains(true)
+                    .preload(true);
+
+        httpSecurity.headers().frameOptions().sameOrigin();
 
         httpSecurity
             .sessionManagement()

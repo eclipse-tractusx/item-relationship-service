@@ -52,6 +52,11 @@
         <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
     </Match>
     <Match>
+        <!-- This one is an extreme edge case and not relevant in our case. -->
+        <Class name="org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor"/>
+        <Bug pattern="IMPROPER_UNICODE"/>
+    </Match>
+    <Match>
         <Class name="org.eclipse.tractusx.esr.irs.model.shell.Shell"/>
         <Bug pattern="IMPROPER_UNICODE"/>
     </Match>

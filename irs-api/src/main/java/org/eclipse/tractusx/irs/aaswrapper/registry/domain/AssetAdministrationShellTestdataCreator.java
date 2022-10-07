@@ -32,6 +32,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.LangString;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInformation;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
+import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
 
 /**
  * Class to create AssetAdministrationShell Testdata
@@ -39,12 +40,23 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescr
  */
 class AssetAdministrationShellTestdataCreator {
 
+    private final CxTestDataContainer cxTestDataContainer;
+
+    /* package */ AssetAdministrationShellTestdataCreator(final CxTestDataContainer cxTestDataContainer) {
+        this.cxTestDataContainer = cxTestDataContainer;
+    }
+
     public AssetAdministrationShellDescriptor createDummyAssetAdministrationShellDescriptorForId(
             final String catenaXId) {
         final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
 
-        submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId));
-        submodelDescriptors.add(createSerialPartTypizationSubmodelDescriptor(catenaXId));
+        this.cxTestDataContainer.getByCatenaXId(catenaXId)
+                                .flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship)
+                                .ifPresent(submodel -> submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId)));
+
+        this.cxTestDataContainer.getByCatenaXId(catenaXId)
+                                .flatMap(CxTestDataContainer.CxTestData::getSerialPartTypization)
+                                .ifPresent(submodel -> submodelDescriptors.add(createSerialPartTypizationSubmodelDescriptor(catenaXId)));
 
         final Reference globalAssetId = Reference.builder().value(List.of(catenaXId)).build();
         return AssetAdministrationShellDescriptor.builder()

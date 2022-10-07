@@ -30,7 +30,9 @@ jobs:
         run: |
           mvn org.eclipse.dash:license-tool-plugin:license-check \
           -Ddash.iplab.token=$ECLIPSE_DASH_TOKEN \
-          -Ddash.projectId=automotive.tractusx
+          -Ddash.projectId=automotive.tractusx \
+          --batch-mode \
+          -DskipTests
 
       - name: upload results
         if: always()

@@ -79,6 +79,7 @@ irs-aaswrapper:
       wrapper.consumer.edc.apikey.name=X-Api-Key
       wrapper.consumer.edc.apikey.value=123456
       wrapper.callback.timeout=60
+      wrapper.cache.agreement.enabled=true
       # wrapper.auth.basic.someuser=somepassword
 
 # Values for grafana subchart.
@@ -248,6 +249,8 @@ edc-controlplane:
 
       edc.data.encryption.keys.alias=irs-dev-daps-cert-consumer-key
       edc.data.encryption.algorithm=NONE
+      
+      edc.negotiation.consumer.state-machine.batch-size=50
 
       # Postgresql related configuration
       edc.datasource.asset.name=asset
