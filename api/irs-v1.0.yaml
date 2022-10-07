@@ -8,8 +8,7 @@ servers:
   - url: http://localhost:8080
 security:
   - oAuth2:
-      - read
-      - write
+    - profile email
 paths:
   /irs/jobs:
     get:
@@ -46,8 +45,8 @@ paths:
                   $ref: '#/components/schemas/JobStatusResult'
           description: List of job ids and status for requested job states.
       security:
-        - OAuth2:
-            - read
+      - oAuth2:
+        - profile email
       summary: Returns jobIds for requested job states.
       tags:
         - Item Relationship Service
@@ -80,8 +79,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job registration failed.
       security:
-        - OAuth2:
-            - write
+      - oAuth2:
+        - profile email
       summary: "Register an IRS job to retrieve an item graph for given {globalAssetId}."
       tags:
         - Item Relationship Service
@@ -138,8 +137,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job with the requested jobId not found.
       security:
-        - OAuth2:
-            - read
+      - oAuth2:
+        - profile email
       summary: Return job with optional item graph result for requested jobId.
       tags:
         - Item Relationship Service
@@ -174,8 +173,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job for requested jobId not found.
       security:
-        - OAuth2:
-            - write
+      - oAuth2:
+        - profile email
       summary: Cancel job for requested jobId.
       tags:
         - Item Relationship Service
@@ -1046,8 +1045,10 @@ components:
         processingError:
           $ref: '#/components/schemas/ProcessingError'
   securitySchemes:
-    OAuth2:
+    oAuth2:
       flows:
         clientCredentials:
+          scopes:
+            profile email: ""
           tokenUrl: https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token
       type: oauth2
