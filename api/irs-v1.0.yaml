@@ -949,6 +949,12 @@ components:
             into the parent part.
           enum:
             - asBuilt
+        callbackUrl:
+          type: string
+          description: "Callback url to notify requestor when job processing is finished.\
+                      \ There are two uri variable placeholders that can be used: jobId and\
+                      \ jobState."
+          example: "https://hostname.com/callback?jobId={jobId}&jobState={jobState}"
         collectAspects:
           type: boolean
           description: Flag to specify whether aspects should be requested and collected.
