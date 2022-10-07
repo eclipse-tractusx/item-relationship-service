@@ -28,7 +28,7 @@ minio:
   url: http://app-irs-pen-irs-minio:9000
 
 digitalTwinRegistry:
-  url: https://semantics-pen.dev.demo.catena-x.net/registry/registry
+  url: https://semantics-pen.dev.demo.catena-x.net/registry
 
 rootUser: <path:traceability-irs/data/int/minio#minioUser>
 rootPassword: <path:traceability-irs/data/int/minio#minioPassword>
