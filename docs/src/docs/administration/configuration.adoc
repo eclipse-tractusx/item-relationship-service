@@ -234,3 +234,4 @@ This is a list of all secrets used in the deployment.
 
 |<aas-wrapper-password>
 |Basic authentication of the AAS Wrapper API. You can leave this empty.
+|===
