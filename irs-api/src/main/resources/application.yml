@@ -62,7 +62,7 @@ springdoc:
   writer-with-order-by-keys: true
 
 irs:
-  apiUrl: "${IRS_API_URL}"
+  apiUrl: "${IRS_API_URL:http://localhost:8080}"
   job:
     cleanup:
       scheduler:
