@@ -1,7 +1,7 @@
 global:
   enablePrometheus: false
   enableGrafana: false
-irs:
+irs-helm:
   #####################
   # IRS Configuration #
   #####################
