@@ -57,7 +57,9 @@ jobs:
             7f3e9461a3abdb7a281fdc736fb0827e69e9278ccd6b929bd32fc2d84336f68c,\
             10e4fff1f26f0a765423e35a7d8952363a6e8961a58e20b3017cd7818745eb36"
           # Exclude accepted queries from the build
-          exclude_queries: "9f88c88d-824d-4d9a-b985-e22977046042"
+          exclude_queries: "9f88c88d-824d-4d9a-b985-e22977046042,\
+          00b78adf-b83f-419c-8ed8-c6018441dd3a,\
+          8c8261c2-19a9-4ef7-ad37-b8bc7bdd4d85"
 
       # Upload findings to GitHub Advanced Security Dashboard
       - name: Upload SARIF file for GitHub Advanced Security Dashboard
