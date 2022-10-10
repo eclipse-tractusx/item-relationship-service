@@ -155,6 +155,7 @@ edc-controlplane:
   ingresses: []
   edc:
     postgresql:
+      user: edc
       password:
     transfer:
       proxy:
