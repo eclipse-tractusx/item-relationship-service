@@ -143,6 +143,8 @@ irs-grafana:
 ##############################
 postgresql:
   auth:
+    username: edc
+    database: edc
     postgresPassword:
     password:
 
