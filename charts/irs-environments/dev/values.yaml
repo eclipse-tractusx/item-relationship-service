@@ -1,3 +1,6 @@
+global:
+  enablePrometheus: true
+  enableGrafana: true
 irs:
   #####################
   # IRS Configuration #
@@ -5,9 +8,6 @@ irs:
   irsUrl: "https://irs.dev.demo.catena-x.net"
   image:
     tag: $ARGOCD_APP_REVISION
-  global:
-    enablePrometheus: true
-    enableGrafana: true
   ingress:
     hosts:
       - host: "irs.dev.demo.catena-x.net"

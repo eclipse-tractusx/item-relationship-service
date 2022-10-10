@@ -11,14 +11,14 @@ The Keycloak, DAPS and Vault configuration / secrets depend on your setup and mi
 
 [source,yaml]
 ----
+global:
+  enablePrometheus: true #<1>
+  enableGrafana: true #<1>
 irs:
   #####################
   # IRS Configuration #
   #####################
   irsUrl: "https://<irs-url>"
-  global:
-    enablePrometheus: true #<1>
-    enableGrafana: true #<1>
   ingress:
     hosts:
       - host: "<irs-url>"
