@@ -114,7 +114,7 @@ This consists of:
 
 This setup uses the docker images provided by [product-edc](https://github.com/catenax-ng/product-edc/).
 
-Check the Helm charts at [./charts/irs](./charts/irs-old) for the configuration. 
+Check the Helm charts at [./charts/irs](./charts/irs) for the configuration. 
 
 ## Licenses
 Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0) - see [LICENSE](./LICENSE)
