@@ -16,10 +16,6 @@ podAnnotations: { }
 podSecurityContext:
   seccompProfile:
     type: RuntimeDefault
-  # fsGroup: 2000
-
-rootUser: <path:traceability-irs/data/int/minio#minioUser>
-rootPassword: <path:traceability-irs/data/int/minio#minioPassword>
 
 # Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
@@ -47,17 +43,13 @@ ingress:
   annotations:
     nginx.ingress.kubernetes.io/ssl-passthrough: "false"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   hosts: [ ]
   tls: [ ]
 
 # Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-resource-requests-and-limits
 resources:
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
     cpu: 0.75
     memory: 1.5Gi
@@ -97,16 +89,76 @@ readinessProbe:
   successThreshold: 1
   timeoutSeconds: 1
 
-minio:
-  url: http://app-irs-dev-minio:9000
+global:
+  enablePrometheus: false
+  enableGrafana: false
+
+# Values for minio subchart.
+irs-minio:
+  persistence:
+    enabled: false
+
+digitalTwinRegistry:
+  url:
 
 keycloak:
   oauth2:
     clientId:
+    clientSecret:
+    clientTokenUri:
+    jwkSetUri:
 
 aasWrapper:
-  host: http://aaswrapper:9191/api/service
   username:
+  password:
 
-digitalTwinRegistry:
-  url: https://semantics.int.demo.catena-x.net/registry
+irsUrl:
+
+postgresql:
+  auth:
+    postgresPassword:
+    username: "edc"
+    password:
+    database: "edc"
+
+  primary:
+    resources:
+      limits:
+        cpu: 1.5
+        memory: 1.5Gi
+
+edc-controlplane:
+  edc:
+    postgresql:
+      user: edc
+      password:
+    transfer:
+      proxy:
+        token:
+          verifier:
+            publickey:
+              alias:
+          signer:
+            privatekey:
+              alias:
+    api:
+      auth:
+        key:
+    controlplane:
+      url:
+    dataplane:
+      url:
+  configuration:
+    properties: |-
+      edc.oauth.client.id=
+      edc.oauth.private.key.alias=
+      edc.oauth.provider.jwks.url=
+      edc.oauth.public.key.alias=
+      edc.oauth.token.url=
+      
+      edc.vault.hashicorp.url=
+      edc.vault.hashicorp.token=
+      edc.vault.hashicorp.api.secret.path=
+      
+      edc.data.encryption.keys.alias=
+      edc.data.encryption.algorithm=

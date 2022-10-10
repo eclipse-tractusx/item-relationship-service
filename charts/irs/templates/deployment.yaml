@@ -41,10 +41,10 @@ spec:
             - name: tmp
               mountPath: /tmp
           env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: {{ .Values.springprofile }}
+            - name: IRS_API_URL
+              value: "{{ .Values.irsUrl }}"
             - name: MINIO_URL
-              value: {{ .Values.minio.url }}
+              value: "http://{{ include "irs.fullname" . }}-irs-minio:9000"
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -80,7 +80,7 @@ spec:
                   name: {{ template "irs.secretName" . }}
                   key: aasWrapperPassword
             - name: AASWRAPPER_HOST
-              value: {{ .Values.aasWrapper.host }}
+              value: "http://{{ include "irs.fullname" . }}-irs-aaswrapper:9191/api/service"
             - name: DIGITALTWINREGISTRY_URL
               value: {{ .Values.digitalTwinRegistry.url }}
           ports:
