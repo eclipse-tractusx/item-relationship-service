@@ -3,8 +3,9 @@ name: Release Helm Charts
 on:
   workflow_dispatch:
   push:
-    tags:
-      - '*'
+    branches:
+      - "feature/TRI-593-admin-guide"
+      - "main"
 
 jobs:
   release:
@@ -40,3 +41,4 @@ jobs:
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_RELEASE_NAME_TEMPLATE: "{{ .Name }}-helm-charts-{{ .Version }}"
+          CR_PACKAGE_PATH: "{{ .Name }}-helm-charts-{{ .Version }}"
