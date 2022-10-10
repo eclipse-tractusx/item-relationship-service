@@ -44,7 +44,7 @@ spec:
             - name: IRS_API_URL
               value: "{{ .Values.irsUrl }}"
             - name: MINIO_URL
-              value: "http://{{ include "irs.fullname" . }}-irs-minio:9000"
+              value: "http://{{ include ".Release.Name" . }}-irs-minio:9000"
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
