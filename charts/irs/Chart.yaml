@@ -1,5 +1,5 @@
 apiVersion: v2
-name: irs
+name: irs-helm
 description: IRS Helm chart for Kubernetes for Catena-X
 
 
