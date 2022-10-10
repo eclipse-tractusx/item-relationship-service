@@ -44,7 +44,6 @@ configuration:
     
     edc.dataplane.token.validation.endpoint=http://irs-consumer-controlplane:8182/validation/token
     
-    edc.receiver.http.endpoint=http://aaswrapper:9192/callback
     
     edc.oauth.client.id=4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90:keyid:4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90
     edc.oauth.private.key.alias=irs-dev-daps-cert-consumer-key

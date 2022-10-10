@@ -62,7 +62,7 @@ springdoc:
   writer-with-order-by-keys: true
 
 irs:
-  apiUrl: http://irs.int.demo.catena-x.net
+  apiUrl: "${IRS_API_URL}"
   job:
     cleanup:
       scheduler:
