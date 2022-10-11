@@ -10,8 +10,8 @@ data:
     web.http.callback.port=9192
     web.http.callback.path=/callback
     wrapper.callback.timeout=60
-    wrapper.consumer.edc.datamanagement.url=http://{{ .Release.Name }}-edc-controlplane:9193/api/v1/data
-    wrapper.consumer.edc.control.url=http://{{ .Release.Name }}-edc-controlplane:9191/api
+    wrapper.consumer.edc.datamanagement.url=http://{{ .Release.Name }}-edc-controlplane:8181/api/v1/data
+    wrapper.consumer.edc.control.url=http://{{ .Release.Name }}-edc-controlplane:9999/api
     wrapper.consumer.edc.apikey.name=X-Api-Key
     wrapper.consumer.edc.apikey.value={{ .Values.edc.api.auth.key }}
     {{- .Values.configuration.properties | nindent 4 }}
