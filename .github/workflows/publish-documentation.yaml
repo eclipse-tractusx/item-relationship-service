@@ -25,7 +25,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         run: |
-          mvn --batch-mode generate-resources
+          mvn -f docs/pom.xml --batch-mode generate-resources
 
       - name: GitHub Pages action
         uses: peaceiris/actions-gh-pages@v3.7.3
