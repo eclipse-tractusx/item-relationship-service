@@ -80,7 +80,7 @@ spec:
                   name: {{ template "irs.secretName" . }}
                   key: aasWrapperPassword
             - name: AASWRAPPER_HOST
-              value: "http://{{ include "irs.fullname" . }}-irs-aaswrapper:9191/api/service"
+              value: "http://{{ .Release.Name }}-irs-aaswrapper:9191/api/service"
             - name: DIGITALTWINREGISTRY_URL
               value: {{ .Values.digitalTwinRegistry.url }}
           ports:

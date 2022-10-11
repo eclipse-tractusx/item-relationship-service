@@ -111,13 +111,6 @@ readinessProbe:
   successThreshold: 1
   timeoutSeconds: 1
 
-config:
-  apiVersion: 1
-  datasources:
-    - name: Prometheus
-      type: prometheus
-      url: http://prometheus:9090
-      isDefault: true
 
 dashboardProviders:
   apiVersion: 1
