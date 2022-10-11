@@ -56,9 +56,9 @@ edc-controlplane:
   configuration:
     properties: |-
       edc.oauth.client.id=B9:7B:1A:54:74:DC:C7:45:6E:A2:24:DC:3F:6D:A7:4A:DD:D2:26:6A:keyid:B9:7B:1A:54:74:DC:C7:45:6E:A2:24:DC:3F:6D:A7:4A:DD:D2:26:6A
-      edc.oauth.private.key.alias=irs-dev-daps-cert-consumer-key
+      edc.oauth.private.key.alias=irs-dev-daps-cert-provider-key
       edc.oauth.provider.jwks.url=https://daps-irs.dev.demo.catena-x.net/.well-known/jwks.json
-      edc.oauth.public.key.alias=irs-dev-daps-cert-consumer
+      edc.oauth.public.key.alias=irs-dev-daps-cert-provider
       edc.oauth.token.url=https://daps-irs.dev.demo.catena-x.net/token
       edc.vault.hashicorp.url=https://vault.demo.catena-x.net
       edc.vault.hashicorp.token=<path:traceability-irs/data/dev/controlplane#vaultToken>
