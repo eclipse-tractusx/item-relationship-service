@@ -14,7 +14,7 @@ The Keycloak, DAPS and Vault configuration / secrets depend on your setup and mi
 global:
   enablePrometheus: true #<1>
   enableGrafana: true #<1>
-irs:
+irs-helm:
   #####################
   # IRS Configuration #
   #####################
