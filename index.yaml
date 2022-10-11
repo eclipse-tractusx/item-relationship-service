@@ -1,16 +1,5 @@
 apiVersion: v1
 entries:
-  aaswrapper:
-  - apiVersion: v2
-    appVersion: 0.0.3
-    created: "2022-09-02T13:07:09.772677219Z"
-    description: A Helm chart for Kubernetes
-    digest: 2ec23ffe36fb691715f1c746c9681fe85626d95202937bc442267fc55a422b62
-    name: aaswrapper
-    type: application
-    urls:
-    - https://github.com/catenax-ng/product-item-relationship-service/releases/download/aaswrapper-0.1.0/aaswrapper-0.1.0.tgz
-    version: 0.1.0
   irs:
   - apiVersion: v2
     appVersion: 1.1.0
@@ -49,27 +38,5 @@ entries:
     type: application
     urls:
     - https://github.com/catenax-ng/product-item-relationship-service/releases/download/irs-0.1.0/irs-0.1.0.tgz
-    version: 0.1.0
-  minio:
-  - apiVersion: v2
-    appVersion: RELEASE.2022-05-08T23-50-31Z
-    created: "2022-09-02T13:07:10.123582951Z"
-    description: A Helm chart for Kubernetes
-    digest: dc70b37cdd8e72e25c94308c8b120bd8a9900f4bbaf006d03fe11d147a44babe
-    name: minio
-    type: application
-    urls:
-    - https://github.com/catenax-ng/product-item-relationship-service/releases/download/minio-0.1.0/minio-0.1.0.tgz
-    version: 0.1.0
-  prometheus:
-  - apiVersion: v2
-    appVersion: v2.35.0
-    created: "2022-09-02T13:07:10.281423935Z"
-    description: A Helm chart for Kubernetes
-    digest: 4b4738f71358ba83a5d14f414842f273816493e10f1f4a4c3a2821f449d1c5e7
-    name: prometheus
-    type: application
-    urls:
-    - https://github.com/catenax-ng/product-item-relationship-service/releases/download/prometheus-0.1.0/prometheus-0.1.0.tgz
     version: 0.1.0
 generated: "2022-10-10T15:19:28.499447118Z"
