@@ -591,6 +591,7 @@ components:
       properties:
         errors:
           type: array
+          maxItems: 2147483647
           description: List of errors.
           items:
             type: string
@@ -960,6 +961,7 @@ components:
       properties:
         value:
           type: array
+          maxItems: 2147483647
           items:
             type: string
       additionalProperties: false
