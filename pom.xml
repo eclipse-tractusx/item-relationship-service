@@ -37,7 +37,7 @@
         <springboot.version>2.7.3</springboot.version>
         <springcloud-feign.version>3.1.4</springcloud-feign.version>
         <springdoc.version>1.6.7</springdoc.version>
-        <micrometer.version>1.9.4</micrometer.version>
+        <micrometer.version>1.9.5</micrometer.version>
         <junit.version>5.8.2</junit.version>
         <datafaker.version>1.6.0</datafaker.version>
         <json-unit-assertj.version>2.36.0</json-unit-assertj.version>
