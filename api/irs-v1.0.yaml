@@ -22,6 +22,7 @@ paths:
           required: false
           schema:
             type: array
+            maxItems: 2147483647
             items:
               type: string
               enum:
@@ -41,6 +42,7 @@ paths:
                   $ref: '#/components/examples/complete-job-list-processing-state'
               schema:
                 type: array
+                maxItems: 2147483647
                 items:
                   $ref: '#/components/schemas/JobStatusResult'
           description: List of job ids and status for requested job states.
@@ -523,6 +525,7 @@ components:
           $ref: '#/components/schemas/AdministrativeInformation'
         description:
           type: array
+          maxItems: 2147483647
           items:
             $ref: '#/components/schemas/LangString'
         globalAssetId:
@@ -533,10 +536,12 @@ components:
           type: string
         specificAssetIds:
           type: array
+          maxItems: 2147483647
           items:
             $ref: '#/components/schemas/IdentifierKeyValuePair'
         submodelDescriptors:
           type: array
+          maxItems: 2147483647
           items:
             $ref: '#/components/schemas/SubmodelDescriptor'
       additionalProperties: false
@@ -836,6 +841,7 @@ components:
         bpns:
           type: array
           description: Collection of bpn mappings
+          maxItems: 2147483647
           items:
             $ref: '#/components/schemas/Bpn'
           uniqueItems: true
@@ -843,21 +849,25 @@ components:
           $ref: '#/components/schemas/Job'
         relationships:
           type: array
+          maxItems: 2147483647
           description: Relationships between parent and child items.
           items:
             $ref: '#/components/schemas/Relationship'
         shells:
           type: array
+          maxItems: 2147483647
           description: AAS shells.
           items:
             $ref: '#/components/schemas/AssetAdministrationShellDescriptor'
         submodels:
           type: array
+          maxItems: 2147483647
           description: Collection of requested Submodels
           items:
             $ref: '#/components/schemas/Submodel'
         tombstones:
           type: array
+          maxItems: 2147483647
           description: Collection of not resolvable endpoints as tombstones. Including
             cause of error and endpoint URL.
           items:
@@ -959,6 +969,7 @@ components:
       properties:
         aspects:
           type: array
+          maxItems: 2147483647
           items:
             type: string
             enum:
@@ -1044,10 +1055,12 @@ components:
           $ref: '#/components/schemas/AdministrativeInformation'
         description:
           type: array
+          maxItems: 2147483647
           items:
             $ref: '#/components/schemas/LangString'
         endpoints:
           type: array
+          maxItems: 2147483647
           items:
             $ref: '#/components/schemas/Endpoint'
         idShort:
