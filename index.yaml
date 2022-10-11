@@ -39,4 +39,19 @@ entries:
     urls:
     - https://github.com/catenax-ng/product-item-relationship-service/releases/download/irs-0.1.0/irs-0.1.0.tgz
     version: 0.1.0
-generated: "2022-10-11T07:07:11.323719457Z"
+  irs-helm:
+  - apiVersion: v2
+    appVersion: 1.2.0
+    created: "2022-10-11T11:00:33.365534089Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 1.x.x
+    description: IRS Helm chart for Kubernetes for Catena-X
+    digest: bb1258e66197e083024ffde682f367b21c498863b4fda6896677339febfd3d4a
+    name: irs-helm
+    type: application
+    urls:
+    - https://github.com/catenax-ng/product-item-relationship-service/releases/download/irs-helm-2.0.0/irs-helm-2.0.0.tgz
+    version: 2.0.0
+generated: "2022-10-11T11:00:33.365548089Z"
