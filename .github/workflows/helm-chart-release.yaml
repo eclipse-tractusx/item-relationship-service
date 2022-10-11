@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - "feature/TRI-593-admin-guide"
       - "main"
+    paths:
+      - 'charts/**'
 
 jobs:
   release:
