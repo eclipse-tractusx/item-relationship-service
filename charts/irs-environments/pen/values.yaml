@@ -18,6 +18,10 @@ irs-helm:
         secretName: tls-secret
   digitalTwinRegistry:
     url: https://semantics.int.demo.catena-x.net/registry
+  semanticsHub:
+    url: https://semantics.int.demo.catena-x.net/hub/api/v1
+  bpdm:
+    url: https://catenax-bpdm-int.demo.catena-x.net/v1
   minioUser: <path:traceability-irs/data/int/minio#minioUser>
   minioPassword: <path:traceability-irs/data/int/minio#minioPassword>
   keycloak:

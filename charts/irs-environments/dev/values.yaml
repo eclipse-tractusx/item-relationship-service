@@ -6,8 +6,6 @@ irs-helm:
   # IRS Configuration #
   #####################
   irsUrl: "https://irs.dev.demo.catena-x.net"
-  image:
-    tag: $ARGOCD_APP_REVISION
   ingress:
     hosts:
       - host: "irs.dev.demo.catena-x.net"
@@ -20,6 +18,10 @@ irs-helm:
         secretName: tls-secret
   digitalTwinRegistry:
     url: https://irs-aas-registry.dev.demo.catena-x.net
+  semanticsHub:
+    url: https://semantics.int.demo.catena-x.net/hub/api/v1
+  bpdm:
+    url: https://catenax-bpdm-int.demo.catena-x.net/v1
   minioUser: <path:traceability-irs/data/dev/minio#minioUser>
   minioPassword: <path:traceability-irs/data/dev/minio#minioPassword>
   keycloak:

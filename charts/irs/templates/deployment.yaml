@@ -83,6 +83,12 @@ spec:
               value: "http://{{ .Release.Name }}-irs-aaswrapper:9191/api/service"
             - name: DIGITALTWINREGISTRY_URL
               value: {{ .Values.digitalTwinRegistry.url }}
+            - name: SEMANTICSHUB_URL
+              value: {{ .Values.semanticsHub.url }}
+            - name: SEMANTICSHUB_DEFAULT_URNS
+              value: {{ .Values.semanticsHub.defaultUrns }}
+            - name: BPDM_URL
+              value: {{ .Values.bpdm.url }}
           ports:
             - name: http
               containerPort: 8080

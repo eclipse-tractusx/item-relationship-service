@@ -102,6 +102,13 @@ irsUrl:
 
 digitalTwinRegistry:
   url:
+semanticsHub:
+  url:
+  defaultUrns: >
+    urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
+#    ,urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship
+bpdm:
+  url:
 minioUser:
 minioPassword:
 keycloak:
