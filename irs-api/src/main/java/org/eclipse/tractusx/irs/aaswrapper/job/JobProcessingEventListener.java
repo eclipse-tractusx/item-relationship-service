@@ -21,6 +21,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job;
 
+import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.NO_ERROR_REST_TEMPLATE;
+
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,10 +30,12 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -46,7 +50,7 @@ class JobProcessingEventListener {
     private final UrlValidator urlValidator;
     private final RestTemplate restTemplate;
 
-    /* package */ JobProcessingEventListener(final RestTemplate noErrorRestTemplate) {
+    /* package */ JobProcessingEventListener(@Qualifier(NO_ERROR_REST_TEMPLATE) final RestTemplate noErrorRestTemplate) {
         this.urlValidator = new UrlValidator();
         this.restTemplate = noErrorRestTemplate;
     }
@@ -62,8 +66,12 @@ class JobProcessingEventListener {
                 log.info("Got callback url {} for jobId {} with state {}", callbackUri,
                         jobProcessingFinishedEvent.getJobId(), jobProcessingFinishedEvent.getJobState());
 
-                final ResponseEntity<Void> callbackResponse = restTemplate.getForEntity(callbackUri, Void.class);
-                log.info("Callback url pinged, received http status: {}", callbackResponse.getStatusCode());
+                try {
+                    final ResponseEntity<Void> callbackResponse = restTemplate.getForEntity(callbackUri, Void.class);
+                    log.info("Callback url pinged, received http status: {}, jobId {}", callbackResponse.getStatusCode(), jobProcessingFinishedEvent.getJobId());
+                } catch (final ResourceAccessException resourceAccessException) {
+                    log.warn("Callback url is not reachable - connection timed out, jobId {}", jobProcessingFinishedEvent.getJobId());
+                }
             }
         }
     }
