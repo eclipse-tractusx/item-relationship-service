@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SemanticsHub URL (*env:SEMANTICSHUB_URL*) and default URNs (*env:SEMANTICSHUB_DEFAULT_URNS*) are now configurable
 - Added an administration guide covering installation and configuration topics (TRI-593) 
 - **Tombstones** Tombstone contains ProcessStep in ProcessingError
+- Added new optional parameter 'callbackUrl' to Job registration request
 
 ## [1.2.0] - 2022-09-30
 ### Added

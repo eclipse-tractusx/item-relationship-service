@@ -19,52 +19,18 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.dto;
+package org.eclipse.tractusx.irs.aaswrapper.job;
 
-import java.util.List;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Value;
+import org.eclipse.tractusx.irs.component.enums.JobState;
 
 /**
- * JobParameter model used for job creation
+ * Contains detailed information about finished job
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder(toBuilder = true)
-public class JobParameter {
+@Value
+public class JobProcessingFinishedEvent {
 
-    /**
-     * Job Data key for root item ID
-     */
-    private String rootItemId;
-
-    /**
-     * Expected depth of the tree
-     */
-    private int treeDepth;
-
-    /**
-     * Specified aspect types by the consumer
-     */
-    private List<String> aspectTypes;
-
-    /**
-     * Given lifecycleContext from the consumer
-     */
-    private String bomLifecycle;
-
-    /**
-     * Flag to specify whether aspects should be requested and collected.
-     */
-    private boolean collectAspects;
-
-    /**
-     * Callback url to notify requestor
-     */
-    private String callbackUrl;
-
+    private final String jobId;
+    private final JobState jobState;
+    private final String callbackUrl;
 }
