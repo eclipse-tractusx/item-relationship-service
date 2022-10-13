@@ -15,7 +15,9 @@ import java.util.List;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.SubmodelFacade;
+import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.dto.JobParameter;
+import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
 
@@ -60,6 +62,28 @@ class RelationshipDelegateTest {
         assertThat(result).isNotNull();
         assertThat(result.getTombstones()).hasSize(1);
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
+                ProcessStep.SUBMODEL_REQUEST);
+    }
+
+    @Test
+    void shouldCatchJsonParseExceptionAndPutTombstone() {
+        // given
+        when(submodelFacade.getRelationships(anyString(), any())).thenThrow(
+                new JsonParseException(new Exception("Payload did not match expected submodel")));
+        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder().shell(shellDescriptor(
+                List.of(submodelDescriptor(assemblyPartRelationshipAspectName, "address"))));
+
+        // when
+        final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, new JobParameter(),
+                new AASTransferProcess(), "itemId");
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getTombstones()).hasSize(1);
+        assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
+                ProcessStep.SUBMODEL_REQUEST);
     }
 
 }
