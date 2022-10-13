@@ -31,6 +31,7 @@ import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.dto.JobParameter;
 import org.springframework.web.client.RestClientException;
 
@@ -51,24 +52,24 @@ public class BpdmDelegate extends AbstractDelegate {
     }
 
     @Override
-    public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder, final JobParameter jobData,
-            final AASTransferProcess aasTransferProcess, final String itemId) {
+    public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder,
+            final JobParameter jobData, final AASTransferProcess aasTransferProcess, final String itemId) {
 
         try {
             itemContainerBuilder.build()
-                .getShells()
-                .stream()
-                .findFirst()
-                .flatMap(AssetAdministrationShellDescriptor::findManufacturerId)
-                .ifPresentOrElse(manufacturerId -> bpnFromManufacturerId(itemContainerBuilder, manufacturerId, itemId),
-                        () -> {
-                            final String message = String.format("Cannot find ManufacturerId for CatenaXId: %s", itemId);
-                            log.warn(message);
-                            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0));
-                        });
+                                .getShells()
+                                .stream()
+                                .findFirst()
+                                .flatMap(AssetAdministrationShellDescriptor::findManufacturerId)
+                                .ifPresentOrElse(manufacturerId -> bpnFromManufacturerId(itemContainerBuilder, manufacturerId, itemId),
+                                        () -> {
+                                            final String message = String.format("Cannot find ManufacturerId for CatenaXId: %s", itemId);
+                                            log.warn(message);
+                                            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0, ProcessStep.BPDM_REQUEST));
+                                        });
         } catch (RestClientException e) {
             log.info("Business Partner endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount));
+            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount, ProcessStep.BPDM_REQUEST));
         }
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
@@ -84,12 +85,12 @@ public class BpdmDelegate extends AbstractDelegate {
             } else {
                 final String message = String.format("BPN: \"%s\" for CatenaXId: %s is not valid.", bpn.getManufacturerId() + bpn.getManufacturerName(), itemId);
                 log.warn(message);
-                itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0));
+                itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0, ProcessStep.BPDM_VALIDATION));
             }
         }, () -> {
             final String message = String.format("BPN not exist for given ManufacturerId: %s and for CatenaXId: %s.", manufacturerId, itemId);
             log.warn(message);
-            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0));
+            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0, ProcessStep.BPDM_REQUEST));
         });
     }
 

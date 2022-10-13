@@ -28,6 +28,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
 import org.eclipse.tractusx.irs.component.enums.NodeType;
+import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 
 /**
  * Tombstone with information about request failure
@@ -42,8 +43,9 @@ public class Tombstone {
     private final ProcessingError processingError;
 
     public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
-            final int retryCount) {
+            final int retryCount, final ProcessStep processStep) {
         final ProcessingError processingError = ProcessingError.builder()
+                                                               .withProcessStep(processStep)
                                                                .withRetryCounter(retryCount)
                                                                .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
                                                                .withErrorDetail(exception.getMessage())
