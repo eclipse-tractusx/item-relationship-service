@@ -1,5 +1,7 @@
 # Usage 
-
+* Install python
+* Install pytest: ```py -m pip install pytest```
+* Install tavern: ```py -m pip install tavern```
 * Create variable.env in directory api-tests
 * Copy content to variable.env
 ```
@@ -16,7 +18,7 @@ export KEYCLOAK_CLIENT_SECRET=
 * Execute command 
 ```console
   source variable.env
-  py.test irs-api-tests.tavern.yaml
+  py -m pytest irs-api-tests.tavern.yaml
 ```
 
 

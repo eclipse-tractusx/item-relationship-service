@@ -96,15 +96,8 @@ stages:
       json:
         statusCode: BAD_REQUEST
         message: Invalid Arguments.
-        verify_response_with:
-          - errors: globalAssetId:size must be between 45 and 45
-          - errors: abc #globalAssetId:must match "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-
-#        errors: "globalAssetId:must match \"^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\""
-#       # body:  #not sure if this one work because of array with two elements
-#        #  errors:
-#         # - "globalAssetId:size must be between 45 and 45"
-#          #- "globalAssetId:must match \"^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\""
+        errors:
+          - globalAssetId:must match "^urn:uuid:[0-9a-fA-F]{{8}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{12}}$"
 
       headers:
         content-type: application/json
