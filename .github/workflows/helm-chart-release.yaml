@@ -3,8 +3,10 @@ name: Release Helm Charts
 on:
   workflow_dispatch:
   push:
-    tags:
-      - '*'
+    branches:
+      - "main"
+    paths:
+      - 'charts/**'
 
 jobs:
   release:
@@ -36,7 +38,6 @@ jobs:
           helm dependency update
 
       - name: Run chart-releaser
-        uses: luisico/chart-releaser-action@on-tags
+        uses: helm/chart-releaser-action@v1.4.1
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_RELEASE_NAME_TEMPLATE: "{{ .Name }}-helm-charts-{{ .Version }}"

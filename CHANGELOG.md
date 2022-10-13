@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- BPDM URL (*env:BPDM_URL*) is now configurable
+- SemanticsHub URL (*env:SEMANTICSHUB_URL*) and default URNs (*env:SEMANTICSHUB_DEFAULT_URNS*) are now configurable
+- Added an administration guide covering installation and configuration topics (TRI-593) 
 - **Tombstones** Tombstone contains ProcessStep in ProcessingError
 
 ## [1.2.0] - 2022-09-30
@@ -81,7 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.2.0...HEAD
 [1.2.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.1.0...1.2.0
 [1.1.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v0.9.1...v1.0.0
