@@ -27,6 +27,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.dto.JobParameter;
 import org.springframework.web.client.RestClientException;
 
@@ -55,7 +56,7 @@ public class DigitalTwinDelegate extends AbstractDelegate {
             itemContainerBuilder.shell(aaShell);
         } catch (RestClientException e) {
             log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount));
+            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount, ProcessStep.DIGITAL_TWIN_REQUEST));
         }
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);

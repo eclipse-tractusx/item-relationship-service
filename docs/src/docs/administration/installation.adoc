@@ -1,0 +1,35 @@
+= Installation
+
+The IRS Helm repository can be found here:
+https://catenax-ng.github.io/product-item-relationship-service/index.yaml
+
+Use the latest release of the "irs" chart.
+It contains all required dependencies.
+
+Supply the required configuration properties (see chapter xref:configuration.adoc#_configuration[Configuration]) in a values.yaml file or override the settings directly.
+
+== Deployment using Helm
+
+Add the IRS Helm repository:
+
+[listing]
+$ helm repo add irs https://catenax-ng.github.io/product-item-relationship-service
+
+Then install the Helm chart into your cluster:
+
+[listing]
+$ helm install -f your-values.yaml irs-app irs/irs
+
+== Deployment using ArgoCD
+
+Create a new Helm chart and use the IRS as a dependency.
+
+[source,yaml]
+dependencies:
+  - name: irs
+    repository: https://catenax-ng.github.io/product-item-relationship-service
+    version: 2.x.x
+
+Then provide your configuration as the values.yaml of that chart.
+
+Create a new application in ArgoCD and point it to your repository / Helm chart folder.

@@ -6,6 +6,7 @@ import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithout
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,8 +16,10 @@ import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.dto.JobParameter;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.client.RestClientException;
 
 class BpdmDelegateTest {
 
@@ -55,6 +58,8 @@ class BpdmDelegateTest {
         assertThat(result.getBpns()).isEmpty();
         assertThat(result.getTombstones()).hasSize(1);
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
+                ProcessStep.BPDM_REQUEST);
     }
 
     @Test
@@ -72,6 +77,27 @@ class BpdmDelegateTest {
         assertThat(result.getBpns()).isEmpty();
         assertThat(result.getTombstones()).hasSize(1);
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
+                ProcessStep.BPDM_VALIDATION);
+    }
+
+    @Test
+    void shouldCatchRestClientExceptionAndPutTombstone() {
+        // given
+        when(bpdmFacade.findManufacturerName(any())).thenThrow(RestClientException.class);
+        final ItemContainer.ItemContainerBuilder itemContainerWithShell = itemContainerWithAssetId("ManufacturerId", "BPNL00000003AYRE");
+
+        // when
+        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, new JobParameter(),
+                new AASTransferProcess(), "itemId");
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getBpns()).isEmpty();
+        assertThat(result.getTombstones()).hasSize(1);
+        assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
+                ProcessStep.BPDM_REQUEST);
     }
 
     @Test
@@ -88,6 +114,8 @@ class BpdmDelegateTest {
         assertThat(result.getBpns()).isEmpty();
         assertThat(result.getTombstones()).hasSize(1);
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
+                ProcessStep.BPDM_REQUEST);
     }
 
     private ItemContainer.ItemContainerBuilder itemContainerWithAssetId(String key, String value) {

@@ -62,16 +62,6 @@ spec:
                 secretKeyRef:
                   name: {{ include "grafana.fullname" . }}
                   key: password
-            - name: GF_AUTH_GITHUB_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "grafana.fullname" . }}
-                  key: oauthClientId
-            - name: GF_AUTH_GITHUB_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "grafana.fullname" . }}
-                  key: oauthClientSecret
             {{- with .Values.configEnvs }}
               {{- toYaml . | nindent 12 }}
             {{- end }}

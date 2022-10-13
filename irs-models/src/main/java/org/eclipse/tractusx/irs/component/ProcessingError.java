@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Value;
+import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 
 /**
  * Processing Error Data Class
@@ -35,8 +36,9 @@ import lombok.Value;
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = ProcessingError.ProcessingErrorBuilder.class)
 public class ProcessingError {
-    private final String errorDetail;
-    private final ZonedDateTime lastAttempt;
+    private ProcessStep processStep;
+    private String errorDetail;
+    private ZonedDateTime lastAttempt;
     private int retryCounter;
 
     /**

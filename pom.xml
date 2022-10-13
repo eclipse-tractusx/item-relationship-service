@@ -18,6 +18,7 @@
         <module>integration-tests</module>
         <module>irs-report-aggregate</module>
         <module>cucumber-tests</module>
+        <module>docs</module>
     </modules>
 
     <properties>
@@ -36,7 +37,7 @@
         <springboot.version>2.7.3</springboot.version>
         <springcloud-feign.version>3.1.4</springcloud-feign.version>
         <springdoc.version>1.6.7</springdoc.version>
-        <micrometer.version>1.9.4</micrometer.version>
+        <micrometer.version>1.9.5</micrometer.version>
         <junit.version>5.8.2</junit.version>
         <datafaker.version>1.6.0</datafaker.version>
         <json-unit-assertj.version>2.36.0</json-unit-assertj.version>
@@ -47,7 +48,7 @@
 
         <!-- Plugins -->
         <tidy.version>1.1.0</tidy.version>
-        <spotbugs-plugin.version>4.7.2.0</spotbugs-plugin.version>
+        <spotbugs-plugin.version>4.7.2.1</spotbugs-plugin.version>
         <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
         <checkstyle-plugin.version>3.2.0</checkstyle-plugin.version>
         <checkstyle.version>10.3.4</checkstyle.version>

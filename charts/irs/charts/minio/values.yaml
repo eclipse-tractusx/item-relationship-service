@@ -38,13 +38,6 @@ serviceAccount:
 ##
 priorityClassName: ""
 
-## Set default rootUser, rootPassword
-## AccessKey and secretKey is generated when not set
-## Distributed MinIO ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
-##
-rootUser: <path:traceability-irs/data/dev/minio#minioUser>
-rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
-
 ## Use existing Secret that store following variables:
 ##
 ## | Chart var             | .data.<key> in Secret    |
@@ -81,17 +74,8 @@ ingress:
   enabled: false
   className: ""
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-  # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: "app-irs-dev01-minio"
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
+  hosts: []
   tls: []
-    # - hosts:
-    #    - "app-irs-dev-minio"
-  #  secretName: tls-secret
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

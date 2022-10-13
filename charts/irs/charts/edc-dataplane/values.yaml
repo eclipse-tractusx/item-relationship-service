@@ -117,13 +117,34 @@ edc:
       port: "9090"
       # -- The path mapping the prometheus metrics are going to be exposed at
       path: /metrics
-
+  api:
+    auth:
+      key:
 service:
   # -- [Service type](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types) to expose the running application on a set of Pods as a network service.
   type: ClusterIP
 
 ## Ingress declaration to expose the network service.
-ingresses: {}
+ingresses:
+  ## Public / Internet facing Ingress
+  - enabled: true
+    # -- The hostname to be used to precisely map incoming traffic onto the underlying network service
+    hostname:
+    # -- Additional ingress annotations to add
+    annotations: { }
+    # -- EDC endpoints exposed by this ingress resource
+    endpoints:
+      - ids
+    # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
+    className: ""
+    # -- Enables TLS on the ingress resource
+    tls: false
+    ## Adds [cert-manager](https://cert-manager.io/docs/) annotations to the ingress resource
+    certManager:
+      # -- If preset enables certificate generation via cert-manager namespace scoped issuer
+      issuer: ""
+      # -- If preset enables certificate generation via cert-manager cluster-wide issuer
+      clusterIssuer: ""
 
 # -- [Resource management](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) applied to the deployed pod
 resources:
@@ -134,10 +155,10 @@ resources:
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
     cpu: 600m
-    memory: 0.9Gi
+    memory: 1Gi
   requests:
     cpu: 200m
-    memory: 0.3Gi
+    memory: 0.25Gi
 
 autoscaling:
   # -- Enables [horizontal pod autoscaling](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
@@ -185,99 +206,16 @@ opentelemetry:
     otel.javaagent.enabled=false
     otel.javaagent.debug=false
 
+
 configuration:
   # -- EDC configuration.properties configuring aspects of the [eclipse-dataspaceconnector](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector)
   properties: |-
-    # edc.atomikos.checkpoint.interval=
-    # edc.atomikos.directory=
-    # edc.atomikos.logging=
-    # edc.atomikos.threaded2pc=
-    # edc.atomikos.timeout=
-    # edc.aws.access.key=
-    # edc.aws.provision.retry.retries.max=
-    # edc.aws.provision.role.duration.session.max=
-    # edc.aws.secret.access.key=
-    # edc.blobstore.endpoint=
-    # edc.dataplane.token.validation.endpoint=
-    # edc.core.retry.backoff.max=
-    # edc.core.retry.backoff.min=
-    # edc.core.retry.retries.max=
-    # edc.core.system.health.check.liveness-period=
-    # edc.core.system.health.check.readiness-period=
-    # edc.core.system.health.check.startup-period=
-    # edc.core.system.health.check.threadpool-size=
-    # edc.dataplane.queue.capacity=
-    # edc.dataplane.wait=
-    # edc.dataplane.workers=
-    # edc.datasource.asset.name="default"
-    # edc.datasource.contractdefinition.name="default"
-    # edc.datasource.contractnegotiation.name="default"
-    # edc.datasource.policy.name="default"
-    # edc.datasource.transferprocess.name="default"
-    # edc.datasource.default.pool.maxIdleConnections=
-    # edc.datasource.default.pool.maxTotalConnections=
-    # edc.datasource.default.pool.minIdleConnections=
-    # edc.datasource.default.pool.testConnectionOnBorrow=
-    # edc.datasource.default.pool.testConnectionOnCreate=
-    # edc.datasource.default.pool.testConnectionOnReturn=
-    # edc.datasource.default.pool.testConnectionWhileIdle=
-    # edc.datasource.default.pool.testQuery=
-    # edc.datasource.default.url=
-    # edc.datasource.default.user=
-    # edc.datasource.default.password=
-    # edc.dpf.selector.url=
-    # edc.events.topic.endpoint=
-    # edc.events.topic.name=
-    # edc.fs.config=
-    # edc.hostname=
-    # edc.identity.did.url=
-    # edc.ids.catalog.id=
-    # edc.ids.curator=
-    # edc.ids.description=
-    # edc.ids.endpoint=
-    # edc.ids.id=
-    # edc.ids.maintainer=
-    # edc.ids.security.profile=
-    # edc.ids.title=
-    # edc.ids.validation.referringconnector=
-    # edc.ion.crawler.did-type=
-    # edc.ion.crawler.interval-minutes=
-    # edc.ion.crawler.ion.url=
-    # edc.metrics.enabled=
-    # edc.metrics.executor.enabled=
-    # edc.metrics.jersey.enabled=
-    # edc.metrics.jetty.enabled=
-    # edc.metrics.okhttp.enabled=
-    # edc.metrics.system.enabled=
-    # edc.negotiation.consumer.state-machine.batch-size=
-    # edc.negotiation.provider.state-machine.batch-size=
-    # edc.oauth.client.id=
-    # edc.oauth.private.key.alias=
-    # edc.oauth.provider.audience=
-    # edc.oauth.provider.jwks.refresh=
-    # edc.oauth.provider.jwks.url=
-    # edc.oauth.public.key.alias=
-    # edc.oauth.token.url=
-    # edc.oauth.validation.nbf.leeway=
-    # edc.receiver.http.auth-code=
-    # edc.receiver.http.auth-key=
-    # edc.receiver.http.endpoint=
-    # edc.transfer.functions.check.endpoint=
-    # edc.transfer.functions.enabled.protocols=
-    # edc.transfer.functions.transfer.endpoint=
-    # edc.transfer-process-store.database.name=
-    # edc.transfer.state-machine.batch-size=
-    # edc.vault=
-    # edc.vault.certificate=
-    # edc.vault.clientid=
-    # edc.vault.clientsecret=
-    # edc.vault.name=
-    # edc.vault.tenantid=
-    # edc.vault.hashicorp.url=
-    # edc.vault.hashicorp.token=
-    # edc.vault.hashicorp.timeout.seconds=
-    # edc.webdid.doh.url=
-    # edc.web.rest.cors.enabled=
-    # edc.web.rest.cors.headers=
-    # edc.web.rest.cors.methods=
-    # edc.web.rest.cors.origins=
+    edc.oauth.client.id=
+    edc.oauth.private.key.alias=
+    edc.oauth.provider.audience=
+    edc.oauth.provider.jwks.url=
+    edc.oauth.public.key.alias=
+    edc.oauth.token.url=
+    edc.vault.hashicorp.url=
+    edc.vault.hashicorp.token=
+    edc.vault.hashicorp.api.secret.path=

@@ -1,0 +1,7 @@
+= Item Relationship Service Documentation
+
+== Administration Guide
+xref:administration/administration-guide.adoc[]
+
+== Architecture Documentation (arc42)
+link:https://confluence.catena-x.net/x/NLGAAQ[]
