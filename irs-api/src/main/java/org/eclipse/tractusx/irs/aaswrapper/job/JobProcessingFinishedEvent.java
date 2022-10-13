@@ -19,46 +19,18 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component;
+package org.eclipse.tractusx.irs.aaswrapper.job;
 
-import java.util.List;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Singular;
 import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
-import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
-import org.eclipse.tractusx.irs.component.enums.Direction;
+import org.eclipse.tractusx.irs.component.enums.JobState;
 
 /**
- * Job parameter of job processing
+ * Contains detailed information about finished job
  */
-@Schema(description = "Job parameter of job processing.")
 @Value
-@Builder(toBuilder = true)
-@AllArgsConstructor
-@Jacksonized
-public class JobParameter {
+public class JobProcessingFinishedEvent {
 
-    @Schema(implementation = BomLifecycle.class)
-    private BomLifecycle bomLifecycle;
-
-    @Schema(implementation = AspectType.class)
-    @Singular
-    private List<AspectType> aspects;
-
-    @Schema(implementation = Integer.class)
-    private Integer depth;
-
-    @Schema(implementation = Direction.class)
-    private Direction direction;
-
-    @Schema(implementation = Boolean.class)
-    private boolean collectAspects;
-
-    private String callbackUrl;
-
+    private final String jobId;
+    private final JobState jobState;
+    private final String callbackUrl;
 }

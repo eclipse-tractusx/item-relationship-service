@@ -34,12 +34,14 @@ import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.tractusx.irs.aaswrapper.job.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.services.SecurityHelperService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 
 /**
@@ -83,6 +85,8 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      */
     private final MeterRegistryService meterService;
 
+    private final ApplicationEventPublisher applicationEventPublisher;
+
     /**
      * Create a new instance of {@link JobOrchestrator}.
      *
@@ -90,15 +94,16 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      * @param jobStore       Job store.
      * @param handler        Recursive job handler.
      * @param meterService   Collect metrics for monitoring
+     * @param applicationEventPublisher publisher of spring application events
      */
     public JobOrchestrator(final TransferProcessManager<T, P> processManager, final JobStore jobStore,
-            final RecursiveJobHandler<T, P> handler, final MeterRegistryService meterService) {
-
+            final RecursiveJobHandler<T, P> handler, final MeterRegistryService meterService, final ApplicationEventPublisher applicationEventPublisher) {
         this.processManager = processManager;
         this.jobStore = jobStore;
         this.handler = handler;
         this.securityHelperService = new SecurityHelperService();
         this.meterService = meterService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     /**
@@ -229,6 +234,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     private void callCompleteHandlerIfFinished(final String jobId) {
         jobStore.completeJob(jobId, this::completeJob);
+        publishJobProcessingFinishedEvent(jobId);
     }
 
     private void completeJob(final MultiTransferJob job) {
@@ -243,7 +249,15 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     private void markJobInError(final MultiTransferJob job, final Throwable exception, final String message) {
         log.error(message, exception);
         jobStore.markJobInError(job.getJobIdString(), message, exception.getClass().getName());
+        publishJobProcessingFinishedEvent(job.getJobIdString());
     }
+
+    private void publishJobProcessingFinishedEvent(final String jobId) {
+        jobStore.find(jobId).ifPresent(
+            job -> applicationEventPublisher.publishEvent(new JobProcessingFinishedEvent(job.getJobIdString(), job.getJob().getJobState(), job.getJobParameter().getCallbackUrl()))
+        );
+    }
+
 
     private long startTransfers(final MultiTransferJob job, final Stream<T> dataRequests) /* throws JobErrorDetails */ {
         return dataRequests.map(r -> startTransfer(job, r)).collect(Collectors.counting());

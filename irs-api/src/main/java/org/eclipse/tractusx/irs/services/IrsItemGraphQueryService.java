@@ -125,6 +125,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                            .direction(Direction.DOWNWARD)
                            .aspects(aspectTypeValues.isEmpty() ? List.of(defaultAspect) : aspectTypeValues)
                            .collectAspects(request.isCollectAspects())
+                           .callbackUrl(request.getCallbackUrl())
                            .build();
     }
 
