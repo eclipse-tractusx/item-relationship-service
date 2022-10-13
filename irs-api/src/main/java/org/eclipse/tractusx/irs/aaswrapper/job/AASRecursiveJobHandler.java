@@ -24,9 +24,9 @@ package org.eclipse.tractusx.irs.aaswrapper.job;
 import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.connector.job.RecursiveJobHandler;
-import org.eclipse.tractusx.irs.dto.JobParameter;
 
 /**
  * Recursive job handler for AAS data
@@ -43,7 +43,7 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
     @Override
     public Stream<ItemDataRequest> initiate(final MultiTransferJob job) {
         log.info("Initiating request for job {}", job.getJobIdString());
-        final var partId = job.getJobParameter().getRootItemId();
+        final var partId = job.getGlobalAssetId();
         final var dataRequest = ItemDataRequest.rootNode(partId);
         return Stream.of(dataRequest);
     }
@@ -53,7 +53,7 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
         log.info("Starting recursive request for job {}", job.getJobIdString());
 
         final JobParameter jobParameter = job.getJobParameter();
-        final int expectedDepth = jobParameter.getTreeDepth();
+        final int expectedDepth = jobParameter.getDepth();
         final Integer currentDepth = transferProcess.getDepth();
 
         if (expectedDepthOfTreeIsNotReached(expectedDepth, currentDepth)) {

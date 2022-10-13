@@ -40,6 +40,7 @@ import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
+import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.JobStatusResult;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterJob;
@@ -50,6 +51,7 @@ import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
+import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.JobInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
@@ -57,7 +59,6 @@ import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
-import org.eclipse.tractusx.irs.dto.JobParameter;
 import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
 import org.eclipse.tractusx.irs.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
@@ -86,7 +87,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     private final MeterRegistryService meterRegistryService;
 
     @Value("${aspectTypes.default}")
-    private String defaultAspect;
+    private AspectType defaultAspect;
 
     @Override
     public List<JobStatusResult> getJobsByJobState(final @NonNull List<JobState> jobStates) {
@@ -103,7 +104,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
         final var params = buildJobData(request);
 
-        final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(params);
+        final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getGlobalAssetId(), params);
         meterRegistryService.incrementNumberOfCreatedJobs();
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
@@ -115,30 +116,15 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     private JobParameter buildJobData(final @NonNull RegisterJob request) {
-        final String uuid = request.getGlobalAssetId();
-
-        final int treeDepth = request.getDepth();
-
         final BomLifecycle bomLifecycle = Optional.ofNullable(request.getBomLifecycle()).orElse(BomLifecycle.AS_BUILT);
-
-        final Optional<List<AspectType>> aspectTypes = Optional.ofNullable(request.getAspects());
-
-        final List<String> aspectTypeValues = aspectTypes.map(
-                                                                 types -> types.stream().map(AspectType::toString).collect(Collectors.toList()))
-                                                         .orElse(List.of(defaultAspect));
-        if (aspectTypeValues.isEmpty()) {
-            aspectTypeValues.add(defaultAspect);
-        }
-        log.info("Aspect Type Filter '{}'", aspectTypeValues);
-
-        final boolean collectAspects = request.isCollectAspects();
+        final List<AspectType> aspectTypeValues = Optional.ofNullable(request.getAspects()).orElse(List.of(defaultAspect));
 
         return JobParameter.builder()
-                           .rootItemId(uuid)
-                           .treeDepth(treeDepth)
-                           .bomLifecycle(bomLifecycle.getLifecycleContextCharacteristicValue())
-                           .aspectTypes(aspectTypeValues)
-                           .collectAspects(collectAspects)
+                           .depth(request.getDepth())
+                           .bomLifecycle(bomLifecycle)
+                           .direction(Direction.DOWNWARD)
+                           .aspects(aspectTypeValues.isEmpty() ? List.of(defaultAspect) : aspectTypeValues)
+                           .collectAspects(request.isCollectAspects())
                            .build();
     }
 

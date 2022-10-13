@@ -23,7 +23,7 @@ package org.eclipse.tractusx.irs.connector.job;
 
 import java.util.function.Consumer;
 
-import org.eclipse.tractusx.irs.dto.JobParameter;
+import org.eclipse.tractusx.irs.component.JobParameter;
 
 /**
  * Manages the processes to retrieve data by executing them asynchronously.

@@ -178,7 +178,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @Test
     void registerJobWithoutAspectsShouldUseDefault() {
         // given
-        final String defaultAspectType = "SerialPartTypization";
+        final AspectType defaultAspectType = AspectType.SERIAL_PART_TYPIZATION;
         final List<AspectType> emptyAspectTypeFilterList = List.of();
         final RegisterJob registerJob = registerJobWithDepthAndAspect(null, emptyAspectTypeFilterList);
 
@@ -188,7 +188,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         // then
         assertThat(multiTransferJob).isPresent();
-        assertThat(multiTransferJob.get().getJobParameter().getAspectTypes()).contains(defaultAspectType);
+        assertThat(multiTransferJob.get().getJobParameter().getAspects()).contains(defaultAspectType);
         assertThat(multiTransferJob.get().getJobParameter().isCollectAspects()).isFalse();
     }
 
