@@ -18,7 +18,7 @@ class EsrAcceptanceTest {
     @Test
     void shouldRetrieveEsrCertificateStatisticsWithExpectedStates() {
         // given
-        final String globalAssetId = "urn:uuid:2ab59090-5406-444a-87c1-3d0b6bc85718";
+        final String globalAssetId = "urn:uuid:993b2dd2-be30-4455-835d-1cd26bd1635c";
         final RequestSpecBuilder builder = new RequestSpecBuilder();
         builder.setBaseUri("https://irs-esr.dev.demo.catena-x.net");
         final RequestSpecification requestSpecification = builder.build();
@@ -45,10 +45,10 @@ class EsrAcceptanceTest {
         assertThat(actualStatistics.getCertificateName()).isNotNull();
         assertThat(actualStatistics.getCertificateName()).isEqualTo(CertificateType.ISO14001);
         assertThat(actualStateStatistics).isNotNull();
-        assertThat(actualStateStatistics.getCertificatesWithStateValid()).isEqualTo(21);
+        assertThat(actualStateStatistics.getCertificatesWithStateValid()).isEqualTo(5);
         assertThat(actualStateStatistics.getCertificatesWithStateInvalid()).isEqualTo(3);
         assertThat(actualStateStatistics.getCertificatesWithStateUnknown()).isEqualTo(2);
-        assertThat(actualStateStatistics.getCertificatesWithStateExceptional()).isEqualTo(1);
+        assertThat(actualStateStatistics.getCertificatesWithStateExceptional()).isEqualTo(31);
     }
 
 }
