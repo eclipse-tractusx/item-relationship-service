@@ -172,7 +172,7 @@ public class IrsController {
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "List of job ids and status for requested job states.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(
-                                                 schema = @Schema(implementation = JobStatusResult.class)),
+                                                 schema = @Schema(implementation = JobStatusResult.class), maxItems = Integer.MAX_VALUE),
                                                               examples = @ExampleObject(name = "complete",
                                                                                         ref = "#/components/examples/complete-job-list-processing-state"))
                                          })
@@ -182,7 +182,7 @@ public class IrsController {
     public List<JobStatusResult> getJobsByJobState(
             @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
                                                explode = Explode.FALSE, array = @ArraySchema(
-                    schema = @Schema(implementation = JobState.class))) @RequestParam(value = "jobStates",
+                    schema = @Schema(implementation = JobState.class), maxItems = Integer.MAX_VALUE)) @RequestParam(value = "jobStates",
                                                                                       required = false,
                                                                                       defaultValue = "") final List<JobState> jobStates) {
         return itemJobService.getJobsByJobState(jobStates);

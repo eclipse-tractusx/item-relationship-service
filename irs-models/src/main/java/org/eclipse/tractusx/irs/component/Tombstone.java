@@ -23,7 +23,9 @@ package org.eclipse.tractusx.irs.component;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
@@ -35,8 +37,14 @@ import org.eclipse.tractusx.irs.component.enums.NodeType;
 @Getter
 @Builder
 @Jacksonized
+@Schema(description = "Tombstone with information about request failure")
 public class Tombstone {
     private static final NodeType NODE_TYPE = NodeType.TOMBSTONE;
+
+    @Schema(description = "CATENA-X global asset id in the format urn:uuid:uuid4.",
+            example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+            minLength = 45, maxLength = 45,
+            pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     private final String catenaXId;
     private final String endpointURL;
     private final ProcessingError processingError;

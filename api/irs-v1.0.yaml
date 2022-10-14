@@ -22,7 +22,6 @@ paths:
           required: false
           schema:
             type: array
-            maxItems: 2147483647
             items:
               type: string
               enum:
@@ -33,6 +32,7 @@ paths:
                 - COMPLETED
                 - CANCELED
                 - ERROR
+            maxItems: 2147483647
       responses:
         "200":
           content:
@@ -42,9 +42,9 @@ paths:
                   $ref: '#/components/examples/complete-job-list-processing-state'
               schema:
                 type: array
-                maxItems: 2147483647
                 items:
                   $ref: '#/components/schemas/JobStatusResult'
+                maxItems: 2147483647
           description: List of job ids and status for requested job states.
       security:
       - oAuth2:
@@ -511,23 +511,24 @@ components:
   schemas:
     AdministrativeInformation:
       type: object
+      additionalProperties: false
       properties:
         revision:
           type: string
         version:
           type: string
-      additionalProperties: false
     AssetAdministrationShellDescriptor:
       type: object
+      additionalProperties: false
       description: AAS shells.
       properties:
         administration:
           $ref: '#/components/schemas/AdministrativeInformation'
         description:
           type: array
-          maxItems: 2147483647
           items:
             $ref: '#/components/schemas/LangString'
+          maxItems: 2147483647
         globalAssetId:
           $ref: '#/components/schemas/Reference'
         idShort:
@@ -536,17 +537,17 @@ components:
           type: string
         specificAssetIds:
           type: array
-          maxItems: 2147483647
           items:
             $ref: '#/components/schemas/IdentifierKeyValuePair'
+          maxItems: 2147483647
         submodelDescriptors:
           type: array
-          maxItems: 2147483647
           items:
             $ref: '#/components/schemas/SubmodelDescriptor'
-      additionalProperties: false
+          maxItems: 2147483647
     AsyncFetchedItems:
       type: object
+      additionalProperties: false
       description: Statistics of job execution.
       properties:
         completed:
@@ -567,35 +568,34 @@ components:
           description: Number of running item transfers.
           maximum: 2147483647
           minimum: 0
-      additionalProperties: false
     Bpn:
       type: object
-      description: Collection of bpn mappings
+      additionalProperties: false
+      description: Business partner id with name
       properties:
         manufacturerId:
           type: string
         manufacturerName:
           type: string
-      additionalProperties: false
     Endpoint:
       type: object
+      additionalProperties: false
       properties:
         interface:
           type: string
         protocolInformation:
           $ref: '#/components/schemas/ProtocolInformation'
-      additionalProperties: false
     ErrorResponse:
       type: object
+      additionalProperties: false
       description: Error response.
       properties:
         errors:
           type: array
-          maxItems: 2147483647
           description: List of errors.
           items:
             type: string
-            description: List of errors.
+          maxItems: 2147483647
         message:
           type: string
           description: Error message.
@@ -671,9 +671,9 @@ components:
             - 509 BANDWIDTH_LIMIT_EXCEEDED
             - 510 NOT_EXTENDED
             - 511 NETWORK_AUTHENTICATION_REQUIRED
-      additionalProperties: false
     GlobalAssetIdentification:
       type: object
+      additionalProperties: false
       description: CATENA-X global asset id in the format urn:uuid:uuid4.
       properties:
         globalAssetId:
@@ -683,9 +683,9 @@ components:
           maxLength: 45
           minLength: 45
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-      additionalProperties: false
     IdentifierKeyValuePair:
       type: object
+      additionalProperties: false
       properties:
         key:
           type: string
@@ -695,9 +695,9 @@ components:
           $ref: '#/components/schemas/Reference'
         value:
           type: string
-      additionalProperties: false
     Job:
       type: object
+      additionalProperties: false
       description: Executable unit with meta information and item graph result.
       properties:
         createdOn:
@@ -744,9 +744,9 @@ components:
         - globalAssetId
         - jobId
         - jobState
-      additionalProperties: false
     JobErrorDetails:
       type: object
+      additionalProperties: false
       description: Job error details.
       properties:
         errorDetail:
@@ -761,9 +761,9 @@ components:
           type: string
           format: date-time
           description: Datetime error occurs.
-      additionalProperties: false
     JobHandle:
       type: object
+      additionalProperties: false
       properties:
         jobId:
           type: string
@@ -772,9 +772,9 @@ components:
           maxLength: 36
           minLength: 36
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
-      additionalProperties: false
     JobParameter:
       type: object
+      additionalProperties: false
       description: Job parameter of job processing.
       properties:
         aspects:
@@ -817,9 +817,9 @@ components:
           description: Item graph traversal direction.
           enum:
             - downward
-      additionalProperties: false
     JobStatusResult:
       type: object
+      additionalProperties: false
       properties:
         jobId:
           type: string
@@ -834,56 +834,56 @@ components:
           - COMPLETED
           - CANCELED
           - ERROR
-      additionalProperties: false
     Jobs:
       type: object
+      additionalProperties: false
       description: Container for a job with item graph.
       properties:
         bpns:
           type: array
           description: Collection of bpn mappings
-          maxItems: 2147483647
           items:
             $ref: '#/components/schemas/Bpn'
+          maxItems: 2147483647
           uniqueItems: true
         job:
           $ref: '#/components/schemas/Job'
         relationships:
           type: array
-          maxItems: 2147483647
           description: Relationships between parent and child items.
           items:
             $ref: '#/components/schemas/Relationship'
+          maxItems: 2147483647
         shells:
           type: array
-          maxItems: 2147483647
           description: AAS shells.
           items:
             $ref: '#/components/schemas/AssetAdministrationShellDescriptor'
+          maxItems: 2147483647
         submodels:
           type: array
-          maxItems: 2147483647
           description: Collection of requested Submodels
           items:
             $ref: '#/components/schemas/Submodel'
+          maxItems: 2147483647
         tombstones:
           type: array
-          maxItems: 2147483647
           description: Collection of not resolvable endpoints as tombstones. Including
             cause of error and endpoint URL.
           items:
             $ref: '#/components/schemas/Tombstone'
-      additionalProperties: false
+          maxItems: 2147483647
     LangString:
       type: object
+      additionalProperties: false
       properties:
         language:
           type: string
         text:
           type: string
-      additionalProperties: false
     LinkedItem:
       type: object
+      additionalProperties: false
       description: Set of child parts the parent object is assembled by (one structural
         level down).
       properties:
@@ -905,17 +905,17 @@ components:
             - asBuilt
         quantity:
           $ref: '#/components/schemas/Quantity'
-      additionalProperties: false
     MeasurementUnit:
       type: object
+      additionalProperties: false
       properties:
         datatypeURI:
           type: string
         lexicalValue:
           type: string
-      additionalProperties: false
     ProcessingError:
       type: object
+      additionalProperties: false
       properties:
         errorDetail:
           type: string
@@ -927,9 +927,9 @@ components:
           format: int32
           maximum: 2147483647
           minimum: 0
-      additionalProperties: false
     ProtocolInformation:
       type: object
+      additionalProperties: false
       properties:
         endpointAddress:
           type: string
@@ -943,9 +943,9 @@ components:
           type: string
         subprotocolBodyEncoding:
           type: string
-      additionalProperties: false
     Quantity:
       type: object
+      additionalProperties: false
       description: Quantity component.
       properties:
         measurementUnit:
@@ -955,23 +955,22 @@ components:
           format: double
           maximum: 2147483647
           minimum: 0
-      additionalProperties: false
     Reference:
       type: object
+      additionalProperties: false
       properties:
         value:
           type: array
-          maxItems: 2147483647
           items:
             type: string
-      additionalProperties: false
+          maxItems: 2147483647
     RegisterJob:
       type: object
+      additionalProperties: false
       description: The requested job definition.
       properties:
         aspects:
           type: array
-          maxItems: 2147483647
           items:
             type: string
             enum:
@@ -994,6 +993,7 @@ components:
               - ContactInformation
               - BatteryPass
               - VehicleDiagnosticDataQuality
+          maxItems: 2147483647
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
@@ -1026,9 +1026,9 @@ components:
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
       required:
         - globalAssetId
-      additionalProperties: false
     Relationship:
       type: object
+      additionalProperties: false
       description: Relationships between parent and child items.
       properties:
         aspectType:
@@ -1037,10 +1037,11 @@ components:
           $ref: '#/components/schemas/GlobalAssetIdentification'
         linkedItem:
           $ref: '#/components/schemas/LinkedItem'
-      additionalProperties: false
     Submodel:
       type: object
-      description: Collection of requested Submodels
+      additionalProperties: false
+      description: "Submodel with identification of SubmodelDescriptor, aspect type\
+        \ and payload as String"
       properties:
         aspectType:
           type: string
@@ -1052,37 +1053,37 @@ components:
             type: object
     SubmodelDescriptor:
       type: object
+      additionalProperties: false
       properties:
         administration:
           $ref: '#/components/schemas/AdministrativeInformation'
         description:
           type: array
-          maxItems: 2147483647
           items:
             $ref: '#/components/schemas/LangString'
+          maxItems: 2147483647
         endpoints:
           type: array
-          maxItems: 2147483647
           items:
             $ref: '#/components/schemas/Endpoint'
+          maxItems: 2147483647
         idShort:
           type: string
         identification:
           type: string
         semanticId:
           $ref: '#/components/schemas/Reference'
-      additionalProperties: false
     Summary:
       type: object
+      additionalProperties: false
       description: Summary of the job with statistics of the job processing.
       properties:
         asyncFetchedItems:
           $ref: '#/components/schemas/AsyncFetchedItems'
-      additionalProperties: false
     Tombstone:
       type: object
-      description: Collection of not resolvable endpoints as tombstones. Including
-        cause of error and endpoint URL.
+      additionalProperties: false
+      description: Tombstone with information about request failure
       properties:
         catenaXId:
           type: string
@@ -1095,7 +1096,6 @@ components:
           type: string
         processingError:
           $ref: '#/components/schemas/ProcessingError'
-      additionalProperties: false
   securitySchemes:
     oAuth2:
       flows:
