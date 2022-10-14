@@ -23,7 +23,6 @@ package org.eclipse.tractusx.irs.component;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
