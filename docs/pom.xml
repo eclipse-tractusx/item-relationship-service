@@ -59,6 +59,8 @@
                     <attributes>
                         <source-highlighter>rouge</source-highlighter>
                         <toc>left</toc>
+                        <icons>font</icons>
+                        <icon-set>fas</icon-set>
                     </attributes>
                 </configuration>
                 <executions>
