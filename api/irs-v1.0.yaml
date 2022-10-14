@@ -366,6 +366,18 @@ components:
           - BadRequestException
         message: Bad request
         statusCode: 400 BAD_REQUEST
+    error-response-401:
+      value:
+        errors:
+          - UnauthorizedException
+        message: Unauthorized
+        statusCode: 401 UNAUTHORIZED
+    error-response-403:
+      value:
+        errors:
+          - ForbiddenException
+        message: Forbidden
+        statusCode: 403 FORBIDDEN
     error-response-404:
       value:
         errors:
