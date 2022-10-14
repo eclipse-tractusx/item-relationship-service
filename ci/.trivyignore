@@ -1,0 +1,2 @@
+# Only relevant if UNWRAP_SINGLE_VALUE_ARRAYS is activated, which is not the case here.
+CVE-2022-42003
