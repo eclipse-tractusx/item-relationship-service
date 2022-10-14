@@ -96,7 +96,6 @@ class JobOrchestratorTest {
         assertThat(job2).usingRecursiveComparison()
                         .ignoringFields("job.job.jobId")
                         .isEqualTo(MultiTransferJob.builder()
-                                                   .jobParameter(job.getJobParameter())
                                                    .job(job2.getJob().toBuilder().jobState(JobState.UNSAVED).build())
                                                    .build());
     }
@@ -142,7 +141,7 @@ class JobOrchestratorTest {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.empty());
 
-        var response = sut.startJob(job.getJobParameter());
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getJobParameter());
         var newJob = getStartedJob();
 
         // Assert
@@ -162,7 +161,7 @@ class JobOrchestratorTest {
         when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(okResponse);
 
         // Act
-        var response = sut.startJob(job.getJobParameter());
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getJobParameter());
 
         // Assert
         var newJob = getStartedJob();
@@ -179,7 +178,7 @@ class JobOrchestratorTest {
                 generate.response(status));
 
         // Act
-        var response = sut.startJob(job.getJobParameter());
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter());
 
         // Assert
         verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()));
@@ -199,7 +198,7 @@ class JobOrchestratorTest {
         when(handler.initiate(any(MultiTransferJob.class))).thenThrow(new RuntimeException());
 
         // Act
-        var response = sut.startJob(job.getJobParameter());
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter());
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
@@ -221,7 +220,7 @@ class JobOrchestratorTest {
         when(handler.initiate(any(MultiTransferJob.class))).thenThrow(new JobException("Cannot process the request"));
 
         // Act
-        var response = sut.startJob(job.getJobParameter());
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter());
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
@@ -389,7 +388,7 @@ class JobOrchestratorTest {
     }
 
     private MultiTransferJob startJob() {
-        sut.startJob(job.getJobParameter());
+        sut.startJob(job.getGlobalAssetId(), job.getJobParameter());
         return getStartedJob();
     }
 

@@ -445,8 +445,8 @@ class PersistentJobStoreTest {
                                                                  .exception("SomeError")
                                                                  .exceptionDate(ZonedDateTime.now())
                                                                  .build())
+                                       .jobParameter(jobParameter())
                                        .build())
-                               .jobParameter(jobParameter())
                                .build();
     }
 

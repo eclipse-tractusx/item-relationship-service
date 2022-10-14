@@ -777,6 +777,8 @@ components:
             into the parent part.
           enum:
             - asBuilt
+        callbackUrl:
+          type: string
         collectAspects:
           type: boolean
         depth:
