@@ -8,8 +8,7 @@ servers:
   - url: http://localhost:8080
 security:
   - oAuth2:
-      - read
-      - write
+    - profile email
 paths:
   /irs/jobs:
     get:
@@ -33,6 +32,7 @@ paths:
                 - COMPLETED
                 - CANCELED
                 - ERROR
+            maxItems: 2147483647
       responses:
         "200":
           content:
@@ -44,10 +44,47 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/JobStatusResult'
+                maxItems: 2147483647
           description: List of job ids and status for requested job states.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Returns jobIds for requested job states failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "404":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-404'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Job with the requested state not found.
       security:
-        - OAuth2:
-            - read
+      - oAuth2:
+        - profile email
       summary: Returns jobIds for requested job states.
       tags:
         - Item Relationship Service
@@ -79,9 +116,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job registration failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
       security:
-        - OAuth2:
-            - write
+      - oAuth2:
+        - profile email
       summary: "Register an IRS job to retrieve an item graph for given {globalAssetId}."
       tags:
         - Item Relationship Service
@@ -128,6 +183,33 @@ paths:
                 $ref: '#/components/schemas/Jobs'
           description: Return job with current processed item graph for the requested
             jobId.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Return job failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
         "404":
           content:
             application/json:
@@ -138,8 +220,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job with the requested jobId not found.
       security:
-        - OAuth2:
-            - read
+      - oAuth2:
+        - profile email
       summary: Return job with optional item graph result for requested jobId.
       tags:
         - Item Relationship Service
@@ -164,6 +246,33 @@ paths:
               schema:
                 $ref: '#/components/schemas/Job'
           description: Job with requested jobId canceled.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Cancel job failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
         "404":
           content:
             application/json:
@@ -174,8 +283,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job for requested jobId not found.
       security:
-        - OAuth2:
-            - write
+      - oAuth2:
+        - profile email
       summary: Cancel job for requested jobId.
       tags:
         - Item Relationship Service
@@ -329,6 +438,18 @@ components:
           - BadRequestException
         message: Bad request
         statusCode: 400 BAD_REQUEST
+    error-response-401:
+      value:
+        errors:
+          - UnauthorizedException
+        message: Unauthorized
+        statusCode: 401 UNAUTHORIZED
+    error-response-403:
+      value:
+        errors:
+          - ForbiddenException
+        message: Forbidden
+        statusCode: 403 FORBIDDEN
     error-response-404:
       value:
         errors:
@@ -510,6 +631,7 @@ components:
   schemas:
     AdministrativeInformation:
       type: object
+      additionalProperties: false
       properties:
         revision:
           type: string
@@ -517,6 +639,7 @@ components:
           type: string
     AssetAdministrationShellDescriptor:
       type: object
+      additionalProperties: false
       description: AAS shells.
       properties:
         administration:
@@ -525,6 +648,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LangString'
+          maxItems: 2147483647
         globalAssetId:
           $ref: '#/components/schemas/Reference'
         idShort:
@@ -535,29 +659,39 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IdentifierKeyValuePair'
+          maxItems: 2147483647
         submodelDescriptors:
           type: array
           items:
             $ref: '#/components/schemas/SubmodelDescriptor'
+          maxItems: 2147483647
     AsyncFetchedItems:
       type: object
+      additionalProperties: false
       description: Statistics of job execution.
       properties:
         completed:
           type: integer
           format: int32
           description: Number of completed item transfers.
+          maximum: 2147483647
+          minimum: 0
         failed:
           type: integer
           format: int32
           description: Number of failed item transfers.
+          maximum: 2147483647
+          minimum: 0
         running:
           type: integer
           format: int32
           description: Number of running item transfers.
+          maximum: 2147483647
+          minimum: 0
     Bpn:
       type: object
-      description: Collection of bpn mappings
+      additionalProperties: false
+      description: Business partner id with name
       properties:
         manufacturerId:
           type: string
@@ -565,6 +699,7 @@ components:
           type: string
     Endpoint:
       type: object
+      additionalProperties: false
       properties:
         interface:
           type: string
@@ -572,6 +707,7 @@ components:
           $ref: '#/components/schemas/ProtocolInformation'
     ErrorResponse:
       type: object
+      additionalProperties: false
       description: Error response.
       properties:
         errors:
@@ -579,7 +715,7 @@ components:
           description: List of errors.
           items:
             type: string
-            description: List of errors.
+          maxItems: 2147483647
         message:
           type: string
           description: Error message.
@@ -657,6 +793,7 @@ components:
             - 511 NETWORK_AUTHENTICATION_REQUIRED
     GlobalAssetIdentification:
       type: object
+      additionalProperties: false
       description: CATENA-X global asset id in the format urn:uuid:uuid4.
       properties:
         globalAssetId:
@@ -665,8 +802,10 @@ components:
           example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           maxLength: 45
           minLength: 45
+          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
     IdentifierKeyValuePair:
       type: object
+      additionalProperties: false
       properties:
         key:
           type: string
@@ -678,6 +817,7 @@ components:
           type: string
     Job:
       type: object
+      additionalProperties: false
       description: Executable unit with meta information and item graph result.
       properties:
         createdOn:
@@ -696,6 +836,7 @@ components:
           description: JobId of the job.
           maxLength: 36
           minLength: 36
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
         jobParameter:
           $ref: '#/components/schemas/JobParameter'
         jobState:
@@ -725,6 +866,7 @@ components:
         - jobState
     JobErrorDetails:
       type: object
+      additionalProperties: false
       description: Job error details.
       properties:
         errorDetail:
@@ -741,12 +883,18 @@ components:
           description: Datetime error occurs.
     JobHandle:
       type: object
+      additionalProperties: false
       properties:
         jobId:
           type: string
           format: uuid
+          description: JobId of the job.
+          maxLength: 36
+          minLength: 36
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
     JobParameter:
       type: object
+      additionalProperties: false
       description: Job parameter of job processing.
       properties:
         aspects:
@@ -784,6 +932,8 @@ components:
         depth:
           type: integer
           format: int32
+          maximum: 2147483647
+          minimum: 0
         direction:
           type: string
           description: Item graph traversal direction.
@@ -791,6 +941,7 @@ components:
             - downward
     JobStatusResult:
       type: object
+      additionalProperties: false
       properties:
         jobId:
           type: string
@@ -807,6 +958,7 @@ components:
           - ERROR
     Jobs:
       type: object
+      additionalProperties: false
       description: Container for a job with item graph.
       properties:
         bpns:
@@ -814,6 +966,7 @@ components:
           description: Collection of bpn mappings
           items:
             $ref: '#/components/schemas/Bpn'
+          maxItems: 2147483647
           uniqueItems: true
         job:
           $ref: '#/components/schemas/Job'
@@ -822,24 +975,29 @@ components:
           description: Relationships between parent and child items.
           items:
             $ref: '#/components/schemas/Relationship'
+          maxItems: 2147483647
         shells:
           type: array
           description: AAS shells.
           items:
             $ref: '#/components/schemas/AssetAdministrationShellDescriptor'
+          maxItems: 2147483647
         submodels:
           type: array
           description: Collection of requested Submodels
           items:
             $ref: '#/components/schemas/Submodel'
+          maxItems: 2147483647
         tombstones:
           type: array
           description: Collection of not resolvable endpoints as tombstones. Including
             cause of error and endpoint URL.
           items:
             $ref: '#/components/schemas/Tombstone'
+          maxItems: 2147483647
     LangString:
       type: object
+      additionalProperties: false
       properties:
         language:
           type: string
@@ -847,6 +1005,7 @@ components:
           type: string
     LinkedItem:
       type: object
+      additionalProperties: false
       description: Set of child parts the parent object is assembled by (one structural
         level down).
       properties:
@@ -870,6 +1029,7 @@ components:
           $ref: '#/components/schemas/Quantity'
     MeasurementUnit:
       type: object
+      additionalProperties: false
       properties:
         datatypeURI:
           type: string
@@ -877,6 +1037,7 @@ components:
           type: string
     ProcessingError:
       type: object
+      additionalProperties: false
       properties:
         errorDetail:
           type: string
@@ -895,8 +1056,11 @@ components:
         retryCounter:
           type: integer
           format: int32
+          maximum: 2147483647
+          minimum: 0
     ProtocolInformation:
       type: object
+      additionalProperties: false
       properties:
         endpointAddress:
           type: string
@@ -912,6 +1076,7 @@ components:
           type: string
     Quantity:
       type: object
+      additionalProperties: false
       description: Quantity component.
       properties:
         measurementUnit:
@@ -919,15 +1084,20 @@ components:
         quantityNumber:
           type: number
           format: double
+          maximum: 2147483647
+          minimum: 0
     Reference:
       type: object
+      additionalProperties: false
       properties:
         value:
           type: array
           items:
             type: string
+          maxItems: 2147483647
     RegisterJob:
       type: object
+      additionalProperties: false
       description: The requested job definition.
       properties:
         aspects:
@@ -954,6 +1124,7 @@ components:
               - ContactInformation
               - BatteryPass
               - VehicleDiagnosticDataQuality
+          maxItems: 2147483647
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
@@ -994,6 +1165,7 @@ components:
         - globalAssetId
     Relationship:
       type: object
+      additionalProperties: false
       description: Relationships between parent and child items.
       properties:
         aspectType:
@@ -1004,7 +1176,9 @@ components:
           $ref: '#/components/schemas/LinkedItem'
     Submodel:
       type: object
-      description: Collection of requested Submodels
+      additionalProperties: false
+      description: "Submodel with identification of SubmodelDescriptor, aspect type\
+        \ and payload as String"
       properties:
         aspectType:
           type: string
@@ -1016,6 +1190,7 @@ components:
             type: object
     SubmodelDescriptor:
       type: object
+      additionalProperties: false
       properties:
         administration:
           $ref: '#/components/schemas/AdministrativeInformation'
@@ -1023,10 +1198,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LangString'
+          maxItems: 2147483647
         endpoints:
           type: array
           items:
             $ref: '#/components/schemas/Endpoint'
+          maxItems: 2147483647
         idShort:
           type: string
         identification:
@@ -1035,24 +1212,32 @@ components:
           $ref: '#/components/schemas/Reference'
     Summary:
       type: object
+      additionalProperties: false
       description: Summary of the job with statistics of the job processing.
       properties:
         asyncFetchedItems:
           $ref: '#/components/schemas/AsyncFetchedItems'
     Tombstone:
       type: object
-      description: Collection of not resolvable endpoints as tombstones. Including
-        cause of error and endpoint URL.
+      additionalProperties: false
+      description: Tombstone with information about request failure
       properties:
         catenaXId:
           type: string
+          description: CATENA-X global asset id in the format urn:uuid:uuid4.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          maxLength: 45
+          minLength: 45
+          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         endpointURL:
           type: string
         processingError:
           $ref: '#/components/schemas/ProcessingError'
   securitySchemes:
-    OAuth2:
+    oAuth2:
       flows:
         clientCredentials:
+          scopes:
+            profile email: ""
           tokenUrl: https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token
       type: oauth2

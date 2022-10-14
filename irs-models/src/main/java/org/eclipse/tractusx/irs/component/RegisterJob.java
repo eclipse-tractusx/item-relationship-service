@@ -65,7 +65,7 @@ public class RegisterJob {
     @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)
     private BomLifecycle bomLifecycle;
 
-    @ArraySchema(schema = @Schema(implementation = AspectType.class))
+    @ArraySchema(schema = @Schema(implementation = AspectType.class), maxItems = Integer.MAX_VALUE)
     private List<AspectType> aspects;
 
     @Schema(implementation = Integer.class, minimum = MIN_TREE_DEPTH_DESC, maximum = MAX_TREE_DEPTH_DESC,

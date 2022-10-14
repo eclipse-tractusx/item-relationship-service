@@ -54,7 +54,8 @@ public class Job {
     @NotNull
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
     @Schema(description = "JobId of the job.", minLength = INPUT_FIELD_MIN_LENGTH,
-            maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class)
+            maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class,
+            pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i")
     private UUID jobId;
 
     @NotNull

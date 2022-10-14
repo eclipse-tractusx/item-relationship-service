@@ -30,6 +30,7 @@ import lombok.Value;
  */
 @Value
 @Builder(toBuilder = true)
+@Schema(description = "Summary of the job with statistics of the job processing.")
 public class Summary {
 
     /**

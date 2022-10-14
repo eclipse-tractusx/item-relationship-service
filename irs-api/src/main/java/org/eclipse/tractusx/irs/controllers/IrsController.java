@@ -80,7 +80,7 @@ public class IrsController {
 
     @Operation(operationId = "registerJobForGlobalAssetId",
                summary = "Register an IRS job to retrieve an item graph for given {globalAssetId}.",
-               security = @SecurityRequirement(name = "OAuth2", scopes = "write"),
+               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Item Relationship Service" },
                description = "Register an IRS job to retrieve an item graph for given {globalAssetId}.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Returns jobId of registered job.",
@@ -96,6 +96,18 @@ public class IrsController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
+                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-401"))
+                                         }),
+                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-403"))
+                                         }),
     })
     @IrsTimer("registerjob")
     @PostMapping("/jobs")
@@ -107,7 +119,7 @@ public class IrsController {
     @Operation(description = "Return job with optional item graph result for requested jobId.",
                operationId = "getJobForJobId",
                summary = "Return job with optional item graph result for requested jobId.",
-               security = @SecurityRequirement(name = "OAuth2", scopes = "read"),
+               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Return job with item graph for the requested jobId.",
@@ -122,6 +134,24 @@ public class IrsController {
                                                               schema = @Schema(implementation = Jobs.class),
                                                               examples = @ExampleObject(name = "complete",
                                                                                         ref = "#/components/examples/partial-job-result"))
+                                         }),
+                            @ApiResponse(responseCode = "400", description = "Return job failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-400"))
+                                         }),
+                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-401"))
+                                         }),
+                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-403"))
                                          }),
                             @ApiResponse(responseCode = "404", description = "Job with the requested jobId not found.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -145,9 +175,27 @@ public class IrsController {
 
     @Operation(description = "Cancel job for requested jobId.", operationId = "cancelJobByJobId",
                summary = "Cancel job for requested jobId.",
-               security = @SecurityRequirement(name = "OAuth2", scopes = "write"),
+               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with requested jobId canceled."),
+                            @ApiResponse(responseCode = "400", description = "Cancel job failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-400"))
+                                         }),
+                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-401"))
+                                         }),
+                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-403"))
+                                         }),
                             @ApiResponse(responseCode = "404", description = "Job for requested jobId not found.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
@@ -167,22 +215,46 @@ public class IrsController {
 
     @Operation(description = "Returns jobIds for requested job states.", operationId = "getJobIdsByJobStates",
                summary = "Returns jobIds for requested job states.",
-               security = @SecurityRequirement(name = "OAuth2", scopes = "read"),
+               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "List of job ids and status for requested job states.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(
-                                                 schema = @Schema(implementation = JobStatusResult.class)),
+                                                 schema = @Schema(implementation = JobStatusResult.class), maxItems = Integer.MAX_VALUE),
                                                               examples = @ExampleObject(name = "complete",
                                                                                         ref = "#/components/examples/complete-job-list-processing-state"))
-                                         })
+                                         }),
+                            @ApiResponse(responseCode = "400", description = "Returns jobIds for requested job states failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-400"))
+                                         }),
+                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-401"))
+                                         }),
+                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-403"))
+                                         }),
+                            @ApiResponse(responseCode = "404", description = "Job with the requested state not found.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-404"))
+                                         }),
     })
     @IrsTimer("getjobbystate")
     @GetMapping("/jobs")
     public List<JobStatusResult> getJobsByJobState(
             @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
                                                explode = Explode.FALSE, array = @ArraySchema(
-                    schema = @Schema(implementation = JobState.class))) @RequestParam(value = "jobStates",
+                    schema = @Schema(implementation = JobState.class), maxItems = Integer.MAX_VALUE)) @RequestParam(value = "jobStates",
                                                                                       required = false,
                                                                                       defaultValue = "") final List<JobState> jobStates) {
         return itemJobService.getJobsByJobState(jobStates);

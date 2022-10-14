@@ -23,8 +23,12 @@ package org.eclipse.tractusx.irs.component;
 
 import java.time.ZonedDateTime;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
@@ -39,6 +43,10 @@ public class ProcessingError {
     private ProcessStep processStep;
     private String errorDetail;
     private ZonedDateTime lastAttempt;
+
+    @Schema(implementation = Integer.class)
+    @Min(0)
+    @Max(Integer.MAX_VALUE)
     private int retryCounter;
 
     /**
