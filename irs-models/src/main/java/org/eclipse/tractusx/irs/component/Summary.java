@@ -24,12 +24,14 @@ package org.eclipse.tractusx.irs.component;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * Summary
  */
 @Value
 @Builder(toBuilder = true)
+@Jacksonized
 public class Summary {
 
     /**
