@@ -85,7 +85,8 @@ jobs:
           -a $AAS_URL \
           -e1 $EDC_URL_1 \
           -e2 $EDC_URL_2 \
-          -e3 $EDC_URL_3
+          -e3 $EDC_URL_3 \
+          -k $EDC_API_KEY
 
       - name: Delete existing and setup new test data on provider EDC and Registry
         if: ${{ github.event.inputs.esrUrl != '' }}

@@ -62,6 +62,8 @@ public class JobParameter {
     private Direction direction;
 
     @Schema(implementation = Boolean.class)
-    private Boolean collectAspects;
+    private boolean collectAspects;
+
+    private String callbackUrl;
 
 }

@@ -853,6 +853,8 @@ components:
             into the parent part.
           enum:
             - asBuilt
+        callbackUrl:
+          type: string
         collectAspects:
           type: boolean
         depth:
@@ -970,6 +972,15 @@ components:
         lastAttempt:
           type: string
           format: date-time
+        processStep:
+          type: string
+          enum:
+            - SUBMODEL_REQUEST
+            - DIGITAL_TWIN_REQUEST
+            - SCHEMA_VALIDATION
+            - SCHEMA_REQUEST
+            - BPDM_REQUEST
+            - BPDM_VALIDATION
         retryCounter:
           type: integer
           format: int32
@@ -1048,6 +1059,12 @@ components:
             into the parent part.
           enum:
             - asBuilt
+        callbackUrl:
+          type: string
+          description: "Callback url to notify requestor when job processing is finished.\
+                      \ There are two uri variable placeholders that can be used: jobId and\
+                      \ jobState."
+          example: "https://hostname.com/callback?jobId={jobId}&jobState={jobState}"
         collectAspects:
           type: boolean
           description: Flag to specify whether aspects should be requested and collected.

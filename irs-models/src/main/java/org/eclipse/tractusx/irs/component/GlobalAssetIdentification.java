@@ -61,7 +61,7 @@ public class GlobalAssetIdentification {
     /**
      * Custom deserializer from string
      */
-    /* package */  static class DefinitionDeserializer extends JsonDeserializer<GlobalAssetIdentification> {
+    /* package */ static class DefinitionDeserializer extends JsonDeserializer<GlobalAssetIdentification> {
         @Override
         public GlobalAssetIdentification deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext)
                 throws IOException {
