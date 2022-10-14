@@ -46,6 +46,24 @@ paths:
                   $ref: '#/components/schemas/JobStatusResult'
                 maxItems: 2147483647
           description: List of job ids and status for requested job states.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Returns jobIds for requested job states failed.
+        "404":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-404'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Job with the requested state not found.
       security:
       - oAuth2:
         - profile email
@@ -129,6 +147,15 @@ paths:
                 $ref: '#/components/schemas/Jobs'
           description: Return job with current processed item graph for the requested
             jobId.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Return job failed.
         "404":
           content:
             application/json:
@@ -165,6 +192,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Job'
           description: Job with requested jobId canceled.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Cancel job failed.
         "404":
           content:
             application/json:

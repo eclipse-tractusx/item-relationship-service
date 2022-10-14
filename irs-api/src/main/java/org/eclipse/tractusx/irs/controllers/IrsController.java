@@ -123,6 +123,12 @@ public class IrsController {
                                                               examples = @ExampleObject(name = "complete",
                                                                                         ref = "#/components/examples/partial-job-result"))
                                          }),
+                            @ApiResponse(responseCode = "400", description = "Return job failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-400"))
+                                         }),
                             @ApiResponse(responseCode = "404", description = "Job with the requested jobId not found.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
@@ -148,6 +154,12 @@ public class IrsController {
                security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with requested jobId canceled."),
+                            @ApiResponse(responseCode = "400", description = "Cancel job failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-400"))
+                                         }),
                             @ApiResponse(responseCode = "404", description = "Job for requested jobId not found.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
@@ -175,7 +187,19 @@ public class IrsController {
                                                  schema = @Schema(implementation = JobStatusResult.class), maxItems = Integer.MAX_VALUE),
                                                               examples = @ExampleObject(name = "complete",
                                                                                         ref = "#/components/examples/complete-job-list-processing-state"))
-                                         })
+                                         }),
+                            @ApiResponse(responseCode = "400", description = "Returns jobIds for requested job states failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-400"))
+                                         }),
+                            @ApiResponse(responseCode = "404", description = "Job with the requested state not found.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-404"))
+                                         }),
     })
     @IrsTimer("getjobbystate")
     @GetMapping("/jobs")
