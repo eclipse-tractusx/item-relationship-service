@@ -55,6 +55,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Returns jobIds for requested job states failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
         "404":
           content:
             application/json:
@@ -98,6 +116,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job registration failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
       security:
       - oAuth2:
         - profile email
@@ -156,6 +192,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Return job failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
         "404":
           content:
             application/json:
@@ -201,6 +255,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Cancel job failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
         "404":
           content:
             application/json:
