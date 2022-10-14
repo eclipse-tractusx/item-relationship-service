@@ -79,7 +79,7 @@ public class OpenApiConfiguration {
                                                                                                                "profile email", ""))
                                                                                                .tokenUrl(
                                                                                                        "https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token"))));
-            openApi.getComponents().getSchemas().values().forEach( s -> s.setAdditionalProperties(false));
+            openApi.getComponents().getSchemas().values().forEach(s -> s.setAdditionalProperties(false));
             new OpenApiExamples().createExamples(components);
         };
     }
