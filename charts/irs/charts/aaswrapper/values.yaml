@@ -101,16 +101,10 @@ readinessProbe:
 env:
   - name: EDC_FS_CONFIG
     value: /connector-config/configuration.properties
-
+edc:
+  api:
+    auth:
+      key:
 configuration:
   properties: |-
-    web.http.port=9191
-    web.http.path=/api
-    web.http.callback.port=9192
-    web.http.callback.path=/callback
-    wrapper.consumer.edc.datamanagement.url=http://edc-consumer-controlplane:9193/api/v1/data
-    wrapper.consumer.edc.control.url=http://edc-consumer-controlplane:9191/api
-    wrapper.consumer.edc.apikey.name=X-Api-Key
-    wrapper.consumer.edc.apikey.value=123456
-    wrapper.callback.timeout=60
     # wrapper.auth.basic.someuser=somepassword

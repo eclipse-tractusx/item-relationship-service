@@ -1,4 +1,5 @@
 @startuml
+skinparam monochrome true
 skinparam shadowing false
 autonumber "<b>[000]"
 

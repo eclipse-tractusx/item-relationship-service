@@ -1,0 +1,63 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+autonumber "<b>[000]"
+
+
+participant Client as Client
+box "Tier" #LightGrey
+participant ESRCertificateStatisticSubmodelServer as ESRSubServer
+
+participant MinIO as MinIO
+participant "EDCConsumer" as EDCConsumer #99FF99
+end box
+
+box "Tier1" #Grey
+participant "EDCProvider" as EDCProvider #99FF99
+participant ESRCertificateStatisticSubmodelServerTier1 as ESRSubServerTier1
+end box
+
+
+ESRSubServer -->  OnSupplyAPI : call OnSupplyAPI 
+note left
+    http//supplyOn/BPML_R/BPML_S/submodels/ISO14001
+    BPML_R : Requestor
+    BPML_S : Supplier
+end note
+ESRSubServer <--  OnSupplyAPI : ISO14001 Response
+ESRSubServer --> MinIO : Persist ISO14001 Response (optional)
+ESRSubServer <-- MinIO : ok
+ESRSubServer --> MinIO : Load ESRCertificateStatistic aspect
+    ESRSubServer <-- MinIO : ESRCertificateStatistic object or null
+opt ! ESRCertificateStatistic exists
+    ESRSubServer --> MinIO : Create and persist new ESRCertificateStatistic aspect
+end opt
+ESRSubServer --> ESRSubServer : Add certificateState of ISO14001 certificateState to ESRCertificateStatistic aspect
+
+opt shell contains ESRCertificateStatistic endpoint
+    ESRSubServer --> EDCConsumer :  call endpoint ESRCertificateStatistic
+    EDCConsumer --> EDCProvider
+    EDCProvider --> ESRSubServerTier1
+    ref over ESRSubServerTier1
+        ESRCertificateStatistic job processing
+    end ref
+    EDCProvider <-- ESRSubServerTier1
+    EDCConsumer <-- EDCProvider
+    ESRSubServer <-- EDCConsumer
+        opt ! ESRCertificateStatistic exists
+            ESRSubServer --> MinIO : Create and persist new ESRCertificateStatistic aspect
+        end opt
+    ESRSubServer --> ESRSubServer : Merge ESRCertificateStatistic
+    ESRSubServer --> MinIO : Persist ESRCertificateStatistic
+    ESRSubServer <-- MinIO : ok
+end opt
+
+box "SupplyOn ecosystem" #DarkGrey
+participant OnSupplyAPI
+end box
+
+
+Client <-- ESRSubServer: ESRCertificateStatistic Response
+
+@enduml

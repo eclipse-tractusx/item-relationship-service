@@ -29,17 +29,13 @@ business areas by means of data chains along the value chain in the automotive i
 
 ### Local deployment
 
-The two following subsections provide instructions for running either only the infrastructure on docker-compose and the application in the IDE, or for running the full stack (including the application) in docker-compose.
+The following subsection provides instructions for running the infrastructure on docker-compose and the application in the IDE.
 
 #### Docker-compose + IDE
 
 * Start the necessary infrastructure by running `docker-compose up`
 
 * Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
-
-#### Docker-compose full stack
-
-* Run `docker-compose --profile irs up`
 
 #### Local IRS API
 

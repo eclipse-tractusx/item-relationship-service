@@ -82,6 +82,18 @@ public class OpenApiExamples {
                                                                         .withStatusCode(
                                                                                 HttpStatus.BAD_REQUEST)
                                                                         .build()));
+        components.addExamples("error-response-401", toExample(ErrorResponse.builder()
+                                                                            .withErrors(List.of("UnauthorizedException"))
+                                                                            .withMessage("Unauthorized")
+                                                                            .withStatusCode(
+                                                                                    HttpStatus.UNAUTHORIZED)
+                                                                            .build()));
+        components.addExamples("error-response-403", toExample(ErrorResponse.builder()
+                                                                            .withErrors(List.of("ForbiddenException"))
+                                                                            .withMessage("Forbidden")
+                                                                            .withStatusCode(
+                                                                                    HttpStatus.FORBIDDEN)
+                                                                            .build()));
         components.addExamples("error-response-404", toExample(ErrorResponse.builder()
                                                                         .withErrors(List.of("NotFoundException"))
                                                                         .withMessage("Not found")

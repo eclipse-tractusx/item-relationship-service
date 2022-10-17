@@ -30,10 +30,10 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.Relationship;
-import org.eclipse.tractusx.irs.dto.JobParameter;
+import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.dto.RelationshipAspect;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -61,7 +61,7 @@ public class SubmodelFacade {
                 ? new HashSet<>(submodel.getChildParts())
                 : Collections.emptySet();
 
-        final String lifecycleContext = jobData.getBomLifecycle();
+        final BomLifecycle lifecycleContext = jobData.getBomLifecycle();
         if (shouldFilterByLifecycleContext(lifecycleContext)) {
             filterSubmodelPartsByLifecycleContext(childParts, lifecycleContext);
         }
@@ -91,15 +91,15 @@ public class SubmodelFacade {
     }
 
     private void filterSubmodelPartsByLifecycleContext(final Set<ChildData> submodelParts,
-            final String lifecycleContext) {
+            final BomLifecycle lifecycleContext) {
         submodelParts.removeIf(isNotLifecycleContext(lifecycleContext));
     }
 
-    private boolean shouldFilterByLifecycleContext(final String lifecycleContext) {
-        return StringUtils.isNotBlank(lifecycleContext);
+    private boolean shouldFilterByLifecycleContext(final BomLifecycle lifecycleContext) {
+        return lifecycleContext != null;
     }
 
-    private Predicate<ChildData> isNotLifecycleContext(final String lifecycleContext) {
-        return childData -> !childData.getLifecycleContext().getValue().equals(lifecycleContext);
+    private Predicate<ChildData> isNotLifecycleContext(final BomLifecycle lifecycleContext) {
+        return childData -> !childData.getLifecycleContext().getValue().equals(lifecycleContext.getLifecycleContextCharacteristicValue());
     }
 }

@@ -21,6 +21,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
@@ -36,12 +39,18 @@ import lombok.extern.jackson.Jacksonized;
 public class AsyncFetchedItems {
 
     @Schema(description = "Number of running item transfers.", implementation = Integer.class)
+    @Min(0)
+    @Max(Integer.MAX_VALUE)
     private Integer running;
 
     @Schema(description = "Number of completed item transfers.", implementation = Integer.class)
+    @Min(0)
+    @Max(Integer.MAX_VALUE)
     private Integer completed;
 
     @Schema(description = "Number of failed item transfers.", implementation = Integer.class)
+    @Min(0)
+    @Max(Integer.MAX_VALUE)
     private Integer failed;
 
 }

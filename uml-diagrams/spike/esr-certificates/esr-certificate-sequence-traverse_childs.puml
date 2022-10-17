@@ -1,0 +1,110 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+autonumber "<b>[000]"
+
+actor "ESRCertificateRequestor" as User
+
+box "Tier" #LightGrey
+participant ESRCertificateStatisticSubmodelServer as ESRSubServer
+participant IRS as IRS
+participant MinIO as MinIO
+participant "EDCConsumer" as EDCConsumer #99FF99
+end box
+
+box "Tier1" #Grey
+participant "EDCProvider" as EDCProvider #99FF99
+participant ESRCertificateStatisticSubmodelServerTier1 as ESRSubServerTier1
+end box
+
+User --> ESRSubServer: ../esr-certificate
+note left
+params: {globalAssetId, bomLifecycle, certificateName}
+end note
+ESRSubServer -> IRS : POST /irs/jobs
+ESRSubServer <-- IRS : 200
+note left
+params: {globalAssetId, bomLifecycle, depth=1}
+end note
+ref over IRS, DTRegistry, DAPS, "SubmodelServer AssemblyPartRelationship)"
+    Process JobResponse for given params
+end ref
+loop 100 times
+    ESRSubServer --> IRS: GET /irs/jobs?jobStates=COMPLETED
+    ESRSubServer <-- IRS: jobList
+    alt jobId is in jobList
+        ESRSubServer --> IRS: GET /irs/jobs{jobId}
+        ESRSubServer <-- IRS: return JobResponse
+        ESRSubServer --> ESRSubServer: break loop
+     else
+        ESRSubServer -> ESRSubServer : wait 5000
+    end alt
+end loop
+opt not hasCompleted(job)
+    User <--  ESRSubServer : 4xx
+end opt
+
+ESRSubServer --> ESRSubServer: extract BPNL number from AAShell
+note left
+    BPNL of Requestor
+end note
+
+loop for each shell()
+opt  shell is not parent shell
+   ESRSubServer --> ESRSubServer : extract BPNL number from AAShell
+   note left
+       BPNL of Supplier
+   end note
+
+ESRSubServer -->  SupplyOnAPI : call SupplyOnAPI
+note left
+    http//supplyOn/BPML_R/BPML_S/submodels/ISO14001
+    BPML_R : Requestor
+    BPML_S : Supplier
+end note
+ESRSubServer <--  SupplyOnAPI : ISO14001 Response
+ESRSubServer --> MinIO : Persist ISO14001 Response (optional)
+ESRSubServer --> MinIO : Load ESRCertificateStatistic aspect
+opt ! ESRCertificateStatistic exists
+    ESRSubServer --> MinIO : Persist new ESRCertificateStatistic aspect
+end opt
+ESRSubServer --> ESRSubServer : Merge ISO14001 certificateState to ESRCertificateStatistic aspect
+
+opt shell contains ESRCertificateStatistic endpoint
+    ESRSubServer --> EDCConsumer :  callEndpoint url
+    EDCConsumer --> EDCProvider
+    EDCProvider --> ESRSubServerTier1
+    ref over ESRSubServerTier1
+        ESRCertificateStatistic job processing
+    end ref
+    EDCProvider <-- ESRSubServerTier1
+    EDCConsumer <-- EDCProvider
+    ESRSubServer <-- EDCConsumer
+    ESRSubServer --> ESRSubServer : Merge ESRCertificateStatistic
+    ESRSubServer --> MinIO : Persist ESRCertificateStatistic
+    ESRSubServer <-- MinIO : ok
+end opt
+
+
+
+end loop
+
+ESRSubServer --> ESRSubServer : Request for User approval (optional))
+User -->  ESRSubServer: Grant User approval
+
+box "SupplyOn ecosystem" #DarkGrey
+participant SupplyOnAPI
+end box
+
+box "Shared Service" #LightGrey
+
+participant DTRegistry
+participant DAPS
+participant Vault
+participant "SubmodelServer AssemblyPartRelationship)"
+end box
+
+User <-- ESRSubServer: ESRCertificateStatistic Response
+
+@enduml

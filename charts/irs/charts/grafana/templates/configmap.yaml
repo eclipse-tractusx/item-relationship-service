@@ -7,8 +7,11 @@ metadata:
   labels:
     {{- include "grafana.labels" . | nindent 4 }}
 data:
-  {{- with .Values.config }}
   datasources.yaml: |-
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-  {{- end }}
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://{{ .Release.Name }}-irs-prometheus:9090
+        isDefault: true
+{{- end }}

@@ -54,17 +54,9 @@ ingress:
   annotations:
     nginx.ingress.kubernetes.io/ssl-passthrough: "false"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-  hosts:
-    - host: "irs-grafana.dev.demo.catena-x.net"
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls:
-    - hosts:
-        - "irs-grafana.dev.demo.catena-x.net"
-      # Default secret for certificate creation already provided to your namespace
-      secretName: tls-secret
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  hosts: []
+  tls: []
 
 # -- [Resource management](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) applied to the deployed pod
 resources:
@@ -119,18 +111,6 @@ readinessProbe:
   successThreshold: 1
   timeoutSeconds: 1
 
-username: <path:traceability-irs/data/dev/grafana#username>
-password: <path:traceability-irs/data/dev/grafana#password>
-oauthClientId: <path:traceability-irs/data/dev/grafana#oauthClientId>
-oauthClientSecret: <path:traceability-irs/data/dev/grafana#oauthClientSecret>
-
-config:
-  apiVersion: 1
-  datasources:
-    - name: Prometheus
-      type: prometheus
-      url: http://prometheus:9090
-      isDefault: true
 
 dashboardProviders:
   apiVersion: 1
@@ -150,21 +130,3 @@ dashboards:
   irsmonitoring: dashboards/resource-monitoring-dashboard.json
   irsjobs: dashboards/irs-jobs-dashboard.json
   irsapi: dashboards/irs-api-dashboard.json
-
-configEnvs:
-  - name: GF_SERVER_ROOT_URL
-    value: 'https://irs-grafana.dev.demo.catena-x.net'
-  - name: GF_AUTH_GITHUB_ENABLED
-    value: 'true'
-  - name: GF_AUTH_GITHUB_ALLOW_SIGN_UP
-    value: 'true'
-  - name: GF_AUTH_GITHUB_TEAM_IDS
-    value: '5783013'
-  - name: GF_AUTH_GITHUB_SCOPES
-    value: 'user:email,read:org'
-  - name: GF_AUTH_GITHUB_AUTH_URL
-    value: 'https://github.com/login/oauth/authorize'
-  - name: GF_AUTH_GITHUB_TOKEN_URL
-    value: 'https://github.com/login/oauth/access_token'
-  - name: GF_AUTH_GITHUB_API_URL
-    value: 'https://api.github.com/user'

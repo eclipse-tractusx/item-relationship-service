@@ -1,0 +1,94 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+
+|ESRCertificateStatistics SubmodelServer|
+start
+:Start search **(globalAssetId)**;
+note
+    API is requested
+    GET http://Tier1_333/esr-certificate-statistics
+    globalAssetId: urn:uuid4:3333
+    bomLifecycle: asBuilt
+    certificateName: ISO14001
+end note
+:Register JobResponse for **(globalAssetId, bomLifecycle, depth)**;
+note
+    POST ../irs/jobs;
+        {globalAssetId: urn:uuid4:3333,
+        bomLifecycle: asBuilt,
+        depth: 1}
+end note
+|#AntiqueWhite|IRS|
+: Register Job in JobStore;
+: Response jobid for registered job;
+|ESRCertificateStatistics SubmodelServer|
+
+repeat
+    : Poll for job;
+|IRS|
+:Check JobState;
+|ESRCertificateStatistics SubmodelServer|
+repeat while (jobStatus == COMPLETED?)
+:GET JobResponse /irs/jobs/{jobId};
+
+|IRS|
+: Return JobResponse;
+|ESRCertificateStatistics SubmodelServer|
+: Extract BPNL number from requestor AAS shell;
+repeat
+: Extract BPNL number from supplier AAS shell;
+repeat while (hasChildren?)
+
+partition lookopCertificate {
+:Get BPNL number of each requestor and supplier;
+note
+    BPNL number of requestor AAS shell
+    BPNL number of supplier AAS shell
+end note
+:SupplyON ISO14001 Certificate check
+ for each child;
+|SupplyOnAPI|
+:Lookup ISO14001 Certificate;
+
+
+|ESRCertificateStatistics SubmodelServer|
+:Merge ISO14001 Response to EsrCertificateStatistics;
+note
+    EsrCertificateStatistics attributes are incremented
+    according to returned status
+end note
+}
+
+partition callEsrCertificateStatisticsEndpoint {
+if(hasEsrCertificateStatisticsEndpoint?) then (yes)
+:Call EsrCertificateStatistics endpoint;
+note
+    in case an AAS contains an ESR CertificateStatistics
+    endpoint is available it points to the
+    IRS instance on next level
+end note
+
+|ESRCertificateStatistics SubmodelServer 2|
+:Start Search (globalAssetId);
+note
+ Similar procedure as on IRS
+end note
+:return  EsrCertificateStatistics;
+|ESRCertificateStatistics SubmodelServer|
+:Receive
+EsrCertificateStatistics;
+:Merge  EsrCertificateStatistic;
+endif;
+|ESRCertificateStatistics SubmodelServer|
+:Job set to approval required;
+repeat
+:Sleep;
+repeat while (approval?)
+
+:return EsrCertificateStatistic;
+
+stop
+
+@enduml

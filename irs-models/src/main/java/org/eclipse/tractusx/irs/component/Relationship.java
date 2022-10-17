@@ -35,6 +35,7 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 @Builder(toBuilder = true)
 @AllArgsConstructor
+@Schema(description = "Relationships between parent and child items.")
 public class Relationship {
 
     @Schema(implementation = GlobalAssetIdentification.class)

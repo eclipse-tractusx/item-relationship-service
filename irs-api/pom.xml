@@ -27,6 +27,18 @@
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
             <version>8.4.5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- Update jackson-databind manually to avoid vulnerability CVE-2022-42004; can be removed after Minio updates their dependency -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.4.2</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
@@ -161,7 +173,7 @@
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <version>1.6.7</version>
+            <version>1.6.8</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

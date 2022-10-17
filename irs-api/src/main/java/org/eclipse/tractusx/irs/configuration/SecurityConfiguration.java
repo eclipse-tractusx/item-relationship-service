@@ -33,6 +33,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -70,7 +71,10 @@ public class SecurityConfiguration {
                     .httpStrictTransportSecurity()
                     .maxAgeInSeconds(Duration.ofDays(HSTS_MAX_AGE_DAYS).toSeconds())
                     .includeSubDomains(true)
-                    .preload(true);
+                    .preload(true)
+                    .requestMatcher(AnyRequestMatcher.INSTANCE);
+
+        httpSecurity.headers().xssProtection().xssProtectionEnabled(true).block(true);
 
         httpSecurity.headers().frameOptions().sameOrigin();
 
