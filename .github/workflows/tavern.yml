@@ -27,8 +27,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          py -m pip install pytest
-          py -m pip install tavern
+          pip install pytest
+          pip install tavern
 
       - name: Run tests
         env:
@@ -37,4 +37,4 @@ jobs:
           KEYCLOAK_CLIENT_ID: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_ID }}
           KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_SECRET }}
         run: |
-          py -m pytest api-tests/irs-api-tests.tavern.yaml
+          python -m pytest api-tests/irs-api-tests.tavern.yaml
