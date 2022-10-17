@@ -42,7 +42,7 @@ jobs:
         if: ${{ steps.download.outputs.http_response == '200' }}
         run: |
           unzip -o features.zip -d cucumber-tests/src/test/resources/features
-          mvn --batch-mode clean compile test -pl cucumber-tests
+          mvn --batch-mode clean install -pl cucumber-tests,irs-models
 
       - name: Submit results to Xray
         if: ${{ steps.download.outputs.http_response == '200' }}

@@ -54,7 +54,6 @@ import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.http.HttpStatus;
 
 public class E2ETestStepDefinitions {
@@ -63,6 +62,7 @@ public class E2ETestStepDefinitions {
     private Jobs completedJob;
     private RequestSpecification authenticationRequest;
     private ObjectMapper objectMapper;
+    private String uri;
 
     @Before
     public void setup() {
@@ -72,26 +72,42 @@ public class E2ETestStepDefinitions {
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
-    private String obtainAccessToken(final OAuth2ClientProperties.Registration credentialsProperties,
-            final String tokenUrl) {
+    private String obtainAccessToken() {
         final Map<String, String> oauth2Payload = new HashMap<>();
-        oauth2Payload.put("grant_type", credentialsProperties.getAuthorizationGrantType());
-        oauth2Payload.put("client_id", credentialsProperties.getClientId());
-        oauth2Payload.put("client_secret", credentialsProperties.getClientSecret());
+        oauth2Payload.put("grant_type", System.getenv("GRANT_TYPE"));
+        oauth2Payload.put("client_id", System.getenv("CLIENT_ID"));
+        oauth2Payload.put("client_secret", System.getenv("CLIENT_SECRET"));
 
-        return given().params(oauth2Payload).post(tokenUrl).then().extract().jsonPath().getString("access_token");
+        return given().params(oauth2Payload)
+                      .post(System.getenv("TOKEN_URL"))
+                      .then()
+                      .extract()
+                      .jsonPath()
+                      .getString("access_token");
+    }
+
+    private RequestSpecification getAuthenticationRequestWithNewToken() {
+        final String accessToken = obtainAccessToken();
+        final RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.addHeader("Authorization", "Bearer " + accessToken);
+        builder.setBaseUri(uri);
+
+        return builder.build();
     }
 
     @Given("I have authorization with Keycloak to {string}")
     public void iHaveAuthorizationWithKeycloakTo(String environment) {
-        final OAuth2ClientProperties.Registration credentialsProperties = new OAuth2ClientProperties.Registration();
-        credentialsProperties.setClientId("todo");
-        credentialsProperties.setClientSecret("todo");
-        credentialsProperties.setAuthorizationGrantType("todo");
-        final String accessToken = obtainAccessToken(credentialsProperties, "todo");
+        final String accessToken = obtainAccessToken();
         final RequestSpecBuilder builder = new RequestSpecBuilder();
         builder.addHeader("Authorization", "Bearer " + accessToken);
-        builder.setBaseUri("todo");
+        if ("DEV".equals(environment)) {
+            uri = "https://irs.dev.demo.catena-x.net";
+        } else if ("INT".equals(environment)) {
+            uri = "https://irs.int.demo.catena-x.net";
+        } else {
+            throw new PendingException(String.format("No implementation for environment: '%s'", environment));
+        }
+        builder.setBaseUri(uri);
 
         authenticationRequest = builder.build();
     }
@@ -147,8 +163,8 @@ public class E2ETestStepDefinitions {
     public void iCheckIfTheJobHasStatusWithinMinutes(String status, int maxWaitTime) {
         await().atMost(maxWaitTime, TimeUnit.MINUTES)
                .with()
-               .pollInterval(Duration.ofSeconds(1L))
-               .until(() -> given().spec(authenticationRequest)
+               .pollInterval(Duration.ofSeconds(5L))
+               .until(() -> given().spec(getAuthenticationRequestWithNewToken())
                                    .contentType(ContentType.JSON)
                                    .queryParam("returnUncompletedJob", false)
                                    .get("/irs/jobs/" + jobId)
@@ -157,7 +173,7 @@ public class E2ETestStepDefinitions {
                                    .getJobState()
                                    .equals(JobState.value(status)));
 
-        completedJob = given().spec(authenticationRequest)
+        completedJob = given().spec(getAuthenticationRequestWithNewToken())
                               .contentType(ContentType.JSON)
                               .queryParam("returnUncompletedJob", true)
                               .get("/irs/jobs/" + jobId)
@@ -200,11 +216,19 @@ public class E2ETestStepDefinitions {
         return objectMapper.writeValueAsString(values2.get(valueType));
     }
 
-    @And("I check, if {string} contains bpnl nummer")
-    public void iCheckIfContainsBpnlNummer(String valueType) {
+    @And("I check, if submodels contains BPNL number {string} exactly {int} times")
+    public void iCheckIfSubmodelsContainsBPNLNumberExactlyTimes(String bpnNumber, int numberOfOccurrence) {
         assertThat((int) completedJob.getSubmodels()
                                      .stream()
-                                     .filter(submodel -> submodel.getPayload().toString().contains("BPNL00000003AYRE"))
-                                     .count()).isEqualTo(9);
+                                     .filter(submodel -> submodel.getPayload().toString().contains(bpnNumber))
+                                     .count()).isEqualTo(numberOfOccurrence);
+    }
+
+    @And("I check, if submodels contains BPNL number {string} at least {int} times")
+    public void iCheckIfSubmodelsContainsBPNLNumberAtLeastTimes(String bpnlNumber, int numberOfOccurrence) {
+        assertThat((int) completedJob.getSubmodels()
+                                     .stream()
+                                     .filter(submodel -> submodel.getPayload().toString().contains(bpnlNumber))
+                                     .count()).isGreaterThanOrEqualTo(numberOfOccurrence);
     }
 }
