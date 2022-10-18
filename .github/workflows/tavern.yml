@@ -1,0 +1,40 @@
+name: Tavern IRS API test
+
+on:
+  workflow_dispatch:
+    inputs:
+      irs-host:
+        type: choice
+        description: IRS environment to test
+        default: 'https://irs.int.demo.catena-x.net'
+        required: true
+        options:
+          - 'https://irs.int.demo.catena-x.net'
+          - 'https://irs.dev.demo.catena-x.net'
+  schedule:
+    - cron: '00 */1 * * 1-5'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.10.7
+
+      - name: Install dependencies
+        run: |
+          pip install pytest
+          pip install tavern
+
+      - name: Run tests
+        env:
+          IRS_HOST: ${{ github.event.inputs.irs-host || 'https://irs.int.demo.catena-x.net' }}
+          KEYCLOAK_HOST: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI }}
+          KEYCLOAK_CLIENT_ID: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_ID }}
+          KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_SECRET }}
+        run: |
+          python -m pytest api-tests/irs-api-tests.tavern.yaml

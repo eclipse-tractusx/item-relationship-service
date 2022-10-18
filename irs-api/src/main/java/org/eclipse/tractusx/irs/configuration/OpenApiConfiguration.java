@@ -21,13 +21,12 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration;
 
-import java.util.List;
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.OAuthFlow;
 import io.swagger.v3.oas.models.security.OAuthFlows;
+import io.swagger.v3.oas.models.security.Scopes;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
@@ -57,7 +56,7 @@ public class OpenApiConfiguration {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI().addServersItem(new Server().url(irsConfiguration.getApiUrl().toString()))
-                            .addSecurityItem(new SecurityRequirement().addList("oAuth2", List.of("read", "write")))
+                            .addSecurityItem(new SecurityRequirement().addList("oAuth2", "profile email"))
                             .info(new Info().title("IRS API")
                                             .version(IrsApplication.API_VERSION)
                                             .description(
@@ -67,15 +66,20 @@ public class OpenApiConfiguration {
     /**
      * Generates example values in Swagger
      *
-     * @return the customiser
+     * @return the customizer
      */
     @Bean
-    public OpenApiCustomiser customiser() {
+    public OpenApiCustomiser customizer() {
         return openApi -> {
             final Components components = openApi.getComponents();
-            components.addSecuritySchemes("OAuth2", new SecurityScheme().type(SecurityScheme.Type.OAUTH2)
+            components.addSecuritySchemes("oAuth2", new SecurityScheme().type(SecurityScheme.Type.OAUTH2)
                                                                         .flows(new OAuthFlows().clientCredentials(
-                                                                                new OAuthFlow().tokenUrl("https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token"))));
+                                                                                new OAuthFlow().scopes(
+                                                                                                       new Scopes().addString(
+                                                                                                               "profile email", ""))
+                                                                                               .tokenUrl(
+                                                                                                       "https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token"))));
+            openApi.getComponents().getSchemas().values().forEach(s -> s.setAdditionalProperties(false));
             new OpenApiExamples().createExamples(components);
         };
     }

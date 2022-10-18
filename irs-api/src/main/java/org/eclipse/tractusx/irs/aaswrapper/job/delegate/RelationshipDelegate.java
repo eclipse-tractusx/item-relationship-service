@@ -29,10 +29,11 @@ import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
+import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Tombstone;
-import org.eclipse.tractusx.irs.dto.JobParameter;
+import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 import org.springframework.web.client.RestClientException;
 
@@ -69,10 +70,10 @@ public class RelationshipDelegate extends AbstractDelegate {
                 } catch (RestClientException | IllegalArgumentException e) {
                     log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                             address);
-                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount));
+                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount, ProcessStep.SUBMODEL_REQUEST));
                 } catch (JsonParseException e) {
                     log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
-                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount));
+                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount, ProcessStep.SUBMODEL_REQUEST));
                 }
             })
         );

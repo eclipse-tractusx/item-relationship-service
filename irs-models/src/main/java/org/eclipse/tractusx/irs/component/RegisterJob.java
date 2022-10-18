@@ -38,6 +38,7 @@ import lombok.NoArgsConstructor;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
+import org.hibernate.validator.constraints.URL;
 
 /**
  * Request body for registering new job
@@ -68,7 +69,7 @@ public class RegisterJob {
     @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)
     private BomLifecycle bomLifecycle;
 
-    @ArraySchema(schema = @Schema(implementation = AspectType.class))
+    @ArraySchema(schema = @Schema(implementation = AspectType.class), maxItems = Integer.MAX_VALUE)
     private List<AspectType> aspects;
 
     @Schema(implementation = Integer.class, minimum = MIN_TREE_DEPTH_DESC, maximum = MAX_TREE_DEPTH_DESC,
@@ -82,6 +83,11 @@ public class RegisterJob {
 
     @Schema(description = "Flag to specify whether aspects should be requested and collected. Default is false.")
     private boolean collectAspects;
+
+    @URL
+    @Schema(description = "Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: jobId and jobState.",
+            example = "https://hostname.com/callback?jobId={jobId}&jobState={jobState}")
+    private String callbackUrl;
 
     /**
      * Returns requested depth if provided, otherwise MAX_TREE_DEPTH value

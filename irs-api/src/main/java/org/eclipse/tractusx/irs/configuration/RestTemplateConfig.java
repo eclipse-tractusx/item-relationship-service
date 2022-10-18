@@ -35,6 +35,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
@@ -48,6 +49,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -59,6 +61,7 @@ public class RestTemplateConfig {
 
     public static final String OAUTH_REST_TEMPLATE = "oAuthRestTemplate";
     public static final String BASIC_AUTH_REST_TEMPLATE = "basicAuthRestTemplate";
+    public static final String NO_ERROR_REST_TEMPLATE = "noErrorRestTemplate";
 
     private static final String CLIENT_REGISTRATION_ID = "keycloak";
     private static final int TIMEOUT_SECONDS = 90;
@@ -86,6 +89,27 @@ public class RestTemplateConfig {
                                   .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                                   .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                                   .build();
+    }
+
+    @Bean(NO_ERROR_REST_TEMPLATE)
+    /* package */ RestTemplate noErrorRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
+        final RestTemplate restTemplate = restTemplateBuilder.setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                                      .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                                      .build();
+
+        restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
+            /**
+             * Dont care what is the response, just log status code on console
+             * @param statusCode omitted
+             * @return false
+             */
+            @Override
+            public boolean hasError(final HttpStatus statusCode) {
+                return false;
+            }
+        });
+
+        return restTemplate;
     }
 
     @Bean

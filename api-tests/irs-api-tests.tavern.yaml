@@ -1,0 +1,755 @@
+test_name: Make sure server process job after authorization
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a job and wait
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: jobId
+    delay_after: 3
+
+  - name: fetch response for created job
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+
+---
+
+test_name: Make sure job return 400-response for invalid globalAssetId syntax (1.1.0 + 1.1.1)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a job and check errors in response
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7c6xyz00912345
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+      json:
+        statusCode: BAD_REQUEST
+        message: Invalid Arguments.
+        errors:
+          - globalAssetId:must match "^urn:uuid:[0-9a-fA-F]{{8}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{12}}$"
+      headers:
+        content-type: application/json
+
+---
+
+test_name: Make sure job with depth and bomLifecycle is processed (1.2.0)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a job and wait
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        bomLifecycle: "asBuilt"
+        depth: 2
+        collectAspects: true
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      json:
+        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: jobId
+    delay_after: 80
+
+  - name: fetch response for created job and check details
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          jobState: COMPLETED
+        relationships: []
+        tombstones: []
+        submodels: []
+#        createdOn: #2022-10-10T05:33:23.114513694Z
+#        startedOn: #2022-10-10T05:33:23.114792093Z
+      headers:
+        content-type: application/json
+
+
+---
+
+test_name: Make sure job with aspect serialPartTypization is processed (1.3.0)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a job and wait
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        aspects:
+          - SerialPartTypization
+        collectAspects: true
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      json:
+        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: jobId
+    delay_after: 80
+
+  - name: fetch response for created job and check details
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          jobState: COMPLETED
+        relationships: []
+        tombstones: []
+        submodels: []
+      #        createdOn: #2022-10-10T05:33:23.114513694Z
+      #        startedOn: #2022-10-10T05:33:23.114792093Z
+      headers:
+        content-type: application/json
+
+---
+
+test_name: Make sure job with aspects SerialPartTypization and AssemblyPartRelationship is processed (1.3.1)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a job and wait
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        aspects:
+          - SerialPartTypization
+          - AssemblyPartRelationship
+        collectAspects: true
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      json:
+        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: jobId
+    delay_after: 80
+
+  - name: fetch response for created job and check details
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          jobState: COMPLETED
+        relationships: []
+        tombstones: []
+        submodels: []
+      #        createdOn: #2022-10-10T05:33:23.114513694Z
+      #        startedOn: #2022-10-10T05:33:23.114792093Z
+      headers:
+        content-type: application/json
+
+
+---
+
+test_name: Make sure job with aspects BatteryPass and MaterialForRecycling (not MaterialAspect) is processed (1.3.2)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a job and wait
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        aspects:
+          - BatteryPass
+          - MaterialForRecycling
+        collectAspects: true
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      json:
+        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: jobId
+    delay_after: 80
+
+  - name: fetch response for created job and check details
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          jobState: COMPLETED
+        relationships: []
+        tombstones: []
+        submodels: []
+      #        createdOn: #2022-10-10T05:33:23.114513694Z
+      #        startedOn: #2022-10-10T05:33:23.114792093Z
+      headers:
+        content-type: application/json
+
+
+---
+
+test_name: Make sure job with aspects AddressAspect (not Address) and ContactInformation (not Contact) is processed (1.3.3)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a job and wait
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        aspects:
+          - AddressAspect
+          - ContactInformation
+        collectAspects: true
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      json:
+        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: jobId
+    delay_after: 80
+
+  - name: fetch response for created job and check details
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          jobState: COMPLETED
+        relationships: []
+        tombstones: []
+        submodels: []
+      #        createdOn: #2022-10-10T05:33:23.114513694Z
+      #        startedOn: #2022-10-10T05:33:23.114792093Z
+      headers:
+        content-type: application/json
+
+
+---
+
+test_name: Make sure job with aspects SerialPartTypization and ContactInformation is processed (1.3.4)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a job and wait
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        aspects:
+          - SerialPartTypization
+          - ContactInformation
+        collectAspects: true
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      json:
+        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: jobId
+    delay_after: 80
+
+  - name: fetch response for created job and check details
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          jobState: COMPLETED
+        relationships: []
+        tombstones: []
+        submodels: []
+      #        createdOn: #2022-10-10T05:33:23.114513694Z
+      #        startedOn: #2022-10-10T05:33:23.114792093Z
+      headers:
+        content-type: application/json
+
+
+---
+
+#test_name: Make sure job with aspects ???? is processed (1.3.5)
+#
+#strict:
+#  - headers:off
+#  - json:off
+#
+#stages:
+#  - name: authenticate and fetch access token
+#    request:
+#      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+#      method: POST
+#      data:
+#        grant_type: client_credentials
+#        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+#        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+#    response:
+#      status_code: 200
+#      json:
+#        token_type: Bearer
+#      headers:
+#        content-type: application/json
+#      save:
+#        json:
+#          access_token: access_token
+#
+#  - name: create a job and wait
+#    request:
+#      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+#      json:
+#        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+#        aspects:
+#          - ??
+#          - ??
+#        collectAspects: true
+#      method: POST
+#      headers:
+#        content-type: application/json
+#        Authorization: "Bearer {access_token:s}"
+#    response:
+#      status_code: 201
+#      json:
+#        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+#      headers:
+#        content-type: application/json
+#      save:
+#        json:
+#          job_id: jobId
+#    delay_after: 80
+#
+#  - name: fetch response for created job and check details
+#    request:
+#      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+#      params:
+#        returnUncompletedJob: true
+#      method: GET
+#      headers:
+#        content-type: application/json
+#        Authorization: "Bearer {access_token:s}"
+#    response:
+#      status_code: 200
+#      json:
+#        job:
+#          jobState: COMPLETED
+#        relationships: []
+#        tombstones: []
+#        submodels: []
+#      #        createdOn: #2022-10-10T05:33:23.114513694Z
+#      #        startedOn: #2022-10-10T05:33:23.114792093Z
+#      headers:
+#        content-type: application/json
+#
+#
+#---
+
+test_name: Make sure job with invalid aspects is giving the correct error message (1.4.1)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a job and wait
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        aspects:
+          - UnknownAspect
+        collectAspects: true
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+      json:
+        statusCode: BAD_REQUEST
+        message: "NoSuchElementException: Unsupported AspectType: UnknownAspect. Must be one of: SerialPartTypization, AssemblyPartRelationship, Batch, ProductDescription, IdConversion, MarketplaceOffer, MaterialForRecycling, PhysicalDimension, ReturnRequest, CertificateOfDestruction, CertificateOfDismantler, EndOfLife, PcfCore, PcfSupplyRelation, PcfTechnical, AddressAspect, ContactInformation, BatteryPass, VehicleDiagnosticDataQuality"
+        errors: null
+      headers:
+        content-type: application/json
+
+---
+
+test_name: Make sure job with all valid aspects is processed (1.5.0)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a job and wait
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        aspects:
+          - SerialPartTypization
+          - AssemblyPartRelationship
+          - Batch
+          - ProductDescription
+          - IdConversion
+          - MarketplaceOffer
+          - MaterialForRecycling
+          - PhysicalDimension
+          - ReturnRequest
+          - CertificateOfDestruction
+          - CertificateOfDismantler
+          - EndOfLife
+          - PcfCore
+          - PcfSupplyRelation
+          - PcfTechnical
+          - AddressAspect
+          - ContactInformation
+          - BatteryPass
+          - VehicleDiagnosticDataQuality
+        collectAspects: true
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      json:
+        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: jobId
+    delay_after: 120
+
+  - name: fetch response for created job and check details
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          jobState: COMPLETED
+        relationships: []
+        tombstones: []
+        submodels: []
+      #        createdOn: #2022-10-10T05:33:23.114513694Z
+      #        startedOn: #2022-10-10T05:33:23.114792093Z
+      headers:
+        content-type: application/json

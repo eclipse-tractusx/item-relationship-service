@@ -31,6 +31,7 @@ import lombok.extern.jackson.Jacksonized;
  */
 @Value
 @Builder(toBuilder = true)
+@Schema(description = "Summary of the job with statistics of the job processing.")
 @Jacksonized
 public class Summary {
 
