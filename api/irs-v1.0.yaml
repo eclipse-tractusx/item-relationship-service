@@ -305,7 +305,7 @@ components:
           jobParameter:
             aspects:
               - SerialPartTypization
-              - ContactInformation
+              - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
             depth: 4
@@ -343,7 +343,7 @@ components:
           jobParameter:
             aspects:
               - SerialPartTypization
-              - ContactInformation
+              - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
             depth: 4
@@ -470,7 +470,7 @@ components:
           jobParameter:
             aspects:
               - SerialPartTypization
-              - ContactInformation
+              - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
             depth: 4
@@ -507,7 +507,7 @@ components:
           jobParameter:
             aspects:
               - SerialPartTypization
-              - ContactInformation
+              - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
             depth: 4
@@ -611,7 +611,7 @@ components:
           jobParameter:
             aspects:
               - SerialPartTypization
-              - ContactInformation
+              - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
             depth: 4
@@ -900,25 +900,27 @@ components:
         aspects:
           type: string
           enum:
-            - SerialPartTypization
+            - AddressAspect
             - AssemblyPartRelationship
             - Batch
-            - ProductDescription
-            - IdConversion
-            - MarketplaceOffer
-            - MaterialForRecycling
-            - PhysicalDimension
-            - ReturnRequest
+            - BatteryPass
             - CertificateOfDestruction
             - CertificateOfDismantler
+            - ChargingProcess
+            - ClaimData
+            - DiagnosticData
             - EndOfLife
-            - PcfCore
-            - PcfSupplyRelation
-            - PcfTechnical
-            - AddressAspect
-            - ContactInformation
-            - BatteryPass
-            - VehicleDiagnosticDataQuality
+            - EsrCertificate
+            - EsrCertificateStateStatistic
+            - IdConversion
+            - MarketplaceOffer
+            - MaterialForHomologation
+            - MaterialForRecycling
+            - PartAsPlanned
+            - PhysicalDimension
+            - ProductDescription
+            - ReturnRequest
+            - SerialPartTypization
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
@@ -1105,25 +1107,27 @@ components:
           items:
             type: string
             enum:
-              - SerialPartTypization
+              - AddressAspect
               - AssemblyPartRelationship
               - Batch
-              - ProductDescription
-              - IdConversion
-              - MarketplaceOffer
-              - MaterialForRecycling
-              - PhysicalDimension
-              - ReturnRequest
+              - BatteryPass
               - CertificateOfDestruction
               - CertificateOfDismantler
+              - ChargingProcess
+              - ClaimData
+              - DiagnosticData
               - EndOfLife
-              - PcfCore
-              - PcfSupplyRelation
-              - PcfTechnical
-              - AddressAspect
-              - ContactInformation
-              - BatteryPass
-              - VehicleDiagnosticDataQuality
+              - EsrCertificate
+              - EsrCertificateStateStatistic
+              - IdConversion
+              - MarketplaceOffer
+              - MaterialForHomologation
+              - MaterialForRecycling
+              - PartAsPlanned
+              - PhysicalDimension
+              - ProductDescription
+              - ReturnRequest
+              - SerialPartTypization
           maxItems: 2147483647
         bomLifecycle:
           type: string
