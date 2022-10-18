@@ -602,7 +602,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"Address\",\r\n    \"Contact\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"AddressAspect\",\r\n    \"ContactInformation\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
@@ -647,50 +647,6 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialAspect\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
-						},
-						"url": {
-							"raw": "{{IRS_HOST}}/irs/jobs",
-							"host": [
-								"{{IRS_HOST}}"
-							],
-							"path": [
-								"irs",
-								"jobs"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "1.3.5 [Register Job with aspect *] https://${environment}/irs/jobs",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{ACCESS_TOKEN}}",
-								"type": "default"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [ \"SerialPartTypization\", \"AssemblyPartRelationship\", \"PartDimension\", \"SupplyRelationData\", \"PCFCoreData\", \"PCFTechnicalData\", \"MarketPlaceOffer\", \"MaterialAspect\", \"BatteryPass\", \"ProductDescriptionVehicle\", \"ProductDescriptionBattery\", \"ReturnRequest\", \"CertificateOfDestruction\", \"CertificateOfDismantler\", \"Address\", \"Contact\" ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",
