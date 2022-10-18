@@ -49,7 +49,7 @@ jobs:
           mvn --batch-mode clean install -pl cucumber-tests,irs-models
 
       - name: Submit results to Xray
-        if: ${{ steps.download.outputs.http_response == '200' }}
+        if: always() && ${{ steps.download.outputs.http_response == '200' }}
         env:
           JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
           JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
