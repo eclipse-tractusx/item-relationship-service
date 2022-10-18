@@ -263,7 +263,7 @@
 			]
 		},
 		{
-			"name": "Relase 1 Demo",
+			"name": "IRS Test Collection",
 			"item": [
 				{
 					"name": "1.0.0 [Register Job] https://${environment}/irs/jobs",
