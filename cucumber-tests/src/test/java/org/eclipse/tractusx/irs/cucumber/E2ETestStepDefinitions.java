@@ -74,12 +74,12 @@ public class E2ETestStepDefinitions {
 
     private String obtainAccessToken() {
         final Map<String, String> oauth2Payload = new HashMap<>();
-        oauth2Payload.put("grant_type", System.getenv("GRANT_TYPE"));
-        oauth2Payload.put("client_id", System.getenv("CLIENT_ID"));
-        oauth2Payload.put("client_secret", System.getenv("CLIENT_SECRET"));
+        oauth2Payload.put("grant_type", "client_credentials");
+        oauth2Payload.put("client_id", System.getenv("KEYCLOAK_CLIENT_ID"));
+        oauth2Payload.put("client_secret", System.getenv("KEYCLOAK_CLIENT_SECRET"));
 
         return given().params(oauth2Payload)
-                      .post(System.getenv("TOKEN_URL"))
+                      .post(System.getenv("KEYCLOAK_HOST"))
                       .then()
                       .extract()
                       .jsonPath()
@@ -134,7 +134,6 @@ public class E2ETestStepDefinitions {
 
     @And("aspects :")
     public void aspects(List<String> aspects) {
-        System.out.println(aspects);
         final ArrayList<AspectType> parsedAspects = new ArrayList<>();
         aspects.forEach(s -> parsedAspects.add(AspectType.fromValue(s)));
         registerJobBuilder.aspects(parsedAspects);
@@ -143,7 +142,6 @@ public class E2ETestStepDefinitions {
     @When("I get the job-id")
     public void iGetTheJobId() {
         final RegisterJob job = registerJobBuilder.build();
-        System.out.println(job);
 
         final JobHandle createdJobResponse = given().spec(authenticationRequest)
                                                     .contentType(ContentType.JSON)
