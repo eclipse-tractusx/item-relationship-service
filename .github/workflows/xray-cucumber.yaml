@@ -46,7 +46,7 @@ jobs:
           KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_SECRET }}
         run: |
           unzip -o features.zip -d cucumber-tests/src/test/resources/features
-          mvn --batch-mode clean install -pl cucumber-tests,irs-models
+          mvn --batch-mode clean install -pl cucumber-tests,irs-models -D"cucumber.filter.tags"="~@Ignore"
 
       - name: Submit results to Xray
         if: ${{ always() && steps.download.outputs.http_response == '200' }}
