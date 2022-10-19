@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.3.0] - 2022-10-18
 ### Added
 - BPDM URL (*env:BPDM_URL*) is now configurable
 - SemanticsHub URL (*env:SEMANTICSHUB_URL*) and default URNs (*env:SEMANTICSHUB_DEFAULT_URNS*) are now configurable
@@ -85,7 +87,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.2.0...1.3.0
 [1.2.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.1.0...1.2.0
 [1.1.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v0.9.1...v1.0.0
