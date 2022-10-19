@@ -194,20 +194,20 @@ public class E2ETestStepDefinitions {
         assertThat(completedJob.getJob().getSummary().getAsyncFetchedItems().getFailed()).isEqualTo(failed);
     }
 
-    @And("I check, if {string} are as expected")
-    public void iCheckIfAreAsExpected(String valueType) throws IOException {
+    @And("I check, if {string} are equal to {string}")
+    public void iCheckIfAreAsExpected(String valueType, String fileName) throws IOException {
         if ("submodels".equals(valueType)) {
             assertThat(objectMapper.writeValueAsString(completedJob.getSubmodels())).isEqualToIgnoringWhitespace(
-                    getExpectedAsString(valueType));
+                    getExpectedAsString(valueType, fileName));
         } else if ("relationships".equals(valueType)) {
             assertThat(objectMapper.writeValueAsString(completedJob.getRelationships())).isEqualToIgnoringWhitespace(
-                    getExpectedAsString(valueType));
+                    getExpectedAsString(valueType, fileName));
         }
     }
 
-    private String getExpectedAsString(final String valueType) throws IOException {
+    private String getExpectedAsString(final String valueType, final String fileName) throws IOException {
         ClassLoader classLoader = this.getClass().getClassLoader();
-        File file = new File(classLoader.getResource(valueType + ".json").getFile());
+        File file = new File(classLoader.getResource("expected-files/" + fileName).getFile());
         assertThat(file.exists()).isTrue();
         final LinkedHashMap values = objectMapper.readValue(file, LinkedHashMap.class);
         final LinkedHashMap values2 = (LinkedHashMap) values.get("values");
