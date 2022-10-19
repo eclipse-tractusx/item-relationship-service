@@ -210,8 +210,7 @@ public class E2ETestStepDefinitions {
         File file = new File(classLoader.getResource("expected-files/" + fileName).getFile());
         assertThat(file.exists()).isTrue();
         final LinkedHashMap values = objectMapper.readValue(file, LinkedHashMap.class);
-        final LinkedHashMap values2 = (LinkedHashMap) values.get("values");
-        return objectMapper.writeValueAsString(values2.get(valueType));
+        return objectMapper.writeValueAsString(values.get(valueType));
     }
 
     @And("I check, if submodels contains BPNL number {string} exactly {int} times")
