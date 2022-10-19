@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "63d1e95d-1b37-44a9-846e-eff28852bdf7",
+		"_postman_id": "21e60dde-242c-4fd0-a460-391bb03102af",
 		"name": "IRS DEMO Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1827,6 +1827,55 @@
 									"key": "bpn",
 									"value": "BPNL00000003AYRE"
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ESR Spike",
+			"item": [
+				{
+					"name": "Get Esr Statistics",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/esr/esr-statistics/urn:uuid:2ab59090-5406-444a-87c1-3d0b6bc85718/asBuilt/ISO14001/submodel",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"esr",
+								"esr-statistics",
+								"urn:uuid:2ab59090-5406-444a-87c1-3d0b6bc85718",
+								"asBuilt",
+								"ISO14001",
+								"submodel"
 							]
 						}
 					},
