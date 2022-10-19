@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "21e60dde-242c-4fd0-a460-391bb03102af",
+		"_postman_id": "da92511f-4c99-444b-9f07-3b105254f244",
 		"name": "IRS DEMO Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1865,14 +1865,14 @@
 							}
 						],
 						"url": {
-							"raw": "{{IRS_HOST}}/esr/esr-statistics/urn:uuid:2ab59090-5406-444a-87c1-3d0b6bc85718/asBuilt/ISO14001/submodel",
+							"raw": "{{IRS_HOST}}/esr/esr-statistics/urn:uuid:993b2dd2-be30-4455-835d-1cd26bd1635c/asBuilt/ISO14001/submodel",
 							"host": [
 								"{{IRS_HOST}}"
 							],
 							"path": [
 								"esr",
 								"esr-statistics",
-								"urn:uuid:2ab59090-5406-444a-87c1-3d0b6bc85718",
+								"urn:uuid:993b2dd2-be30-4455-835d-1cd26bd1635c",
 								"asBuilt",
 								"ISO14001",
 								"submodel"
@@ -1880,6 +1880,69 @@
 						}
 					},
 					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var CLIENT_ID = pm.environment.get(\"CLIENT_ID\");",
+							"var CLIENT_SECRET = pm.environment.get(\"CLIENT_SECRET\");",
+							"var KEYCLOAK_HOST = pm.environment.get(\"KEYCLOAK_HOST\");",
+							"var KEYCLOAK_HOST_FULL = KEYCLOAK_HOST +\"/auth/realms/CX-Central/protocol/openid-connect/token\"",
+							"",
+							"var bodyString = \"grant_type=client_credentials&client_id=\"+CLIENT_ID+\"&client_secret=\"+CLIENT_SECRET",
+							"",
+							"const echoPostRequest = {",
+							"  url: KEYCLOAK_HOST_FULL,",
+							"  method: 'POST',",
+							"  header: 'Content-Type:application/x-www-form-urlencoded',",
+							"  body: {",
+							"    mode: 'application/x-www-form-urlencoded',",
+							"    raw: bodyString",
+							"  }",
+							"};",
+							"",
+							"var getToken = true;",
+							"",
+							"if (!pm.environment.get('ACCESS_TOKEN_EXPIRY') || ",
+							"    !pm.environment.get('ACCESS_TOKEN')) {",
+							"    console.log('Token or expiry date are missing')",
+							"} else if (pm.environment.get('ACCESS_TOKEN_EXPIRY') <= (new Date()).getTime()) {",
+							"    console.log('Token is expired')",
+							"} else {",
+							"    getToken = false;",
+							"    console.log('Token and expiry date are all good');",
+							"}",
+							"",
+							"if (getToken === true) {",
+							"    pm.sendRequest(echoPostRequest, function (err, res) {",
+							"    console.log(err ? err : res.json());",
+							"        if (err === null) {",
+							"            console.log('Saving the token and expiry date')",
+							"            var responseJson = res.json();",
+							"            pm.environment.set('ACCESS_TOKEN', responseJson.access_token)",
+							"    ",
+							"            var expiryDate = new Date();",
+							"            expiryDate.setSeconds(expiryDate.getSeconds() + responseJson.expires_in);",
+							"            pm.environment.set('ACCESS_TOKEN_EXPIRY', expiryDate.getTime());",
+							"        }",
+							"    });",
+							"}",
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		}
