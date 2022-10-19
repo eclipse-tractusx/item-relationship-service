@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "63d1e95d-1b37-44a9-846e-eff28852bdf7",
+		"_postman_id": "9e3feedf-c0d4-49ec-b762-39bb8851cc66",
 		"name": "IRS DEMO Collection",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19870399"
 	},
 	"item": [
 		{
@@ -1826,6 +1827,336 @@
 								{
 									"key": "bpn",
 									"value": "BPNL00000003AYRE"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EDC-Requests",
+			"item": [
+				{
+					"name": "CONSUMER Get catalog",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "{{EDC_API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{CONSUMER_CONTROLPLANE}}/data/catalog?providerUrl={{PROVIDER_CONTROLPLANE_1}}/api/v1/ids/data&limit=9000",
+							"host": [
+								"{{CONSUMER_CONTROLPLANE}}"
+							],
+							"path": [
+								"data",
+								"catalog"
+							],
+							"query": [
+								{
+									"key": "providerUrl",
+									"value": "{{PROVIDER_CONTROLPLANE_1}}/api/v1/ids/data"
+								},
+								{
+									"key": "limit",
+									"value": "9000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CONSUMER start contract negotiation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "{{EDC_API_KEY}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"connectorId\": \"default\",\r\n    \"connectorAddress\": \"http://irs-provider-controlplane:8282/api/v1/ids/data\",\r\n    \"offer\": {\r\n        \"offerId\": \"22:e1318031-d1fc-49cb-aa93-740785bd2b31\",\r\n        \"assetId\": \"urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:aa62936c-8541-4163-95e6-80b51f150fd9\",\r\n        \"policy\": {\r\n            \"prohibitions\": [],\r\n            \"obligations\": [],\r\n            \"permissions\": [\r\n                {\r\n                    \"edctype\": \"dataspaceconnector:permission\",\r\n                    \"action\": {\r\n                        \"type\": \"USE\"\r\n                    },\r\n                    \"target\": \"urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:aa62936c-8541-4163-95e6-80b51f150fd9\",\r\n                    \"constraints\": [],\r\n                    \"@type\": {\r\n                        \"@policytype\": \"set\"\r\n                    }\r\n                }\r\n            ]\r\n        }\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "{{CONSUMER_CONTROLPLANE}}/data/contractnegotiations",
+							"host": [
+								"{{CONSUMER_CONTROLPLANE}}"
+							],
+							"path": [
+								"data",
+								"contractnegotiations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CONSUMER get contract negotiation for id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "{{EDC_API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{CONSUMER_CONTROLPLANE}}/data/contractnegotiations/:id",
+							"host": [
+								"{{CONSUMER_CONTROLPLANE}}"
+							],
+							"path": [
+								"data",
+								"contractnegotiations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CONSUMER start transferprocess",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "{{EDC_API_KEY}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"test1234567\",\r\n    \"connectorId\": \"edc-provider-controlplane\",\r\n    \"connectorAddress\": \"{{PROVIDER_CONTROLPLANE_1}}/api/v1/ids/data\",\r\n    \"contractId\": \"22:308e6327-8fed-46f6-a320-cf3e698d44eb\",\r\n    \"assetId\": \"urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb-urn:uuid:aa62936c-8541-4163-95e6-80b51f150fd9\",\r\n    \"protocol\": \"ids-multipart\",\r\n    \"managedResources\": \"false\",\r\n    \"transferType\": {\r\n        \"contentType\": \"application/octet-stream\",\r\n        \"isFinite\": true\r\n    },\r\n    \"dataDestination\": {\r\n        \"type\": \"HttpProxy\"\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "{{CONSUMER_CONTROLPLANE}}/data/transferprocess",
+							"host": [
+								"{{CONSUMER_CONTROLPLANE}}"
+							],
+							"path": [
+								"data",
+								"transferprocess"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CONSUMER get transferprocess by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "{{EDC_API_KEY}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{CONSUMER_CONTROLPLANE}}/data/transferprocess/:id",
+							"host": [
+								"{{CONSUMER_CONTROLPLANE}}"
+							],
+							"path": [
+								"data",
+								"transferprocess",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PROVIDER get policydefinitions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "{{EDC_API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{PROVIDER_CONTROLPLANE_1}}/data/policydefinitions",
+							"host": [
+								"{{PROVIDER_CONTROLPLANE_1}}"
+							],
+							"path": [
+								"data",
+								"policydefinitions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PROVIDER get assets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "{{EDC_API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{PROVIDER_CONTROLPLANE_1}}/data/assets",
+							"host": [
+								"{{PROVIDER_CONTROLPLANE_1}}"
+							],
+							"path": [
+								"data",
+								"assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PROVIDER get contractdefinitions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "{{EDC_API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{PROVIDER_CONTROLPLANE_1}}/data/contractdefinitions",
+							"host": [
+								"{{PROVIDER_CONTROLPLANE_1}}"
+							],
+							"path": [
+								"data",
+								"contractdefinitions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PROVIDER get contract negotiation for id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "{{EDC_API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{PROVIDER_CONTROLPLANE_1}}/data/contractnegotiations/:id",
+							"host": [
+								"{{PROVIDER_CONTROLPLANE_1}}"
+							],
+							"path": [
+								"data",
+								"contractnegotiations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PROVIDER get transfer process by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "{{EDC_API_KEY}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{PROVIDER_CONTROLPLANE_1}}/data/transferprocess/:id",
+							"host": [
+								"{{PROVIDER_CONTROLPLANE_1}}"
+							],
+							"path": [
+								"data",
+								"transferprocess",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
 								}
 							]
 						}
