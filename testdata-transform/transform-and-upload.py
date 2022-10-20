@@ -5,7 +5,6 @@ import json
 import math
 import time
 import uuid
-import re
 
 import requests
 from requests.adapters import HTTPAdapter, Retry
@@ -222,18 +221,6 @@ if __name__ == "__main__":
         tmp_keys = tmp_data.keys()
 
         specific_asset_ids = [
-            {
-                "value": "",
-                "key": "manufacturerId"
-            },
-            {
-                "value": "",
-                "key": "manufacturerPartId"
-            },
-            {
-                "value": "",
-                "key": "partInstanceId"
-            }
         ]
 
         submodel_descriptors = []
@@ -246,6 +233,18 @@ if __name__ == "__main__":
                 specific_asset_ids = tmp_data[tmp_key][0]["localIdentifiers"]
                 name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"] \
                     .replace(" ", "")
+            if tmp_key in "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned":
+                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"] \
+                    .replace(" ", "")
+                specific_asset_ids.append({
+                    "value": tmp_data[tmp_key][0]["partTypeInformation"]["manufacturerPartId"],
+                    "key": "manufacturerPartId"
+                })
+            if tmp_key in "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation":
+                specific_asset_ids.append({
+                    "value": tmp_data[tmp_key][0]["sites"][0]["externalSiteIdentifier"][0]["organization"],
+                    "key": "manufacturerId"
+                })
         print(name_at_manufacturer)
 
         part_bpn = ""
@@ -276,7 +275,7 @@ if __name__ == "__main__":
                     edc_url = edc_url3
                     statistic_dict.update({"provider3": statistic_dict["provider3"] + 1})
 
-                submodel_name = tmp_key[tmp_key.index("#")+1: len(tmp_key)]
+                submodel_name = tmp_key[tmp_key.index("#") + 1: len(tmp_key)]
                 submodel_identification = uuid.uuid4().urn
                 semantic_id = tmp_key
                 if submodel_name == "EsrCertificateStateStatistic" and esr_url is not None:
