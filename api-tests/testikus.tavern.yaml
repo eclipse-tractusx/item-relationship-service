@@ -58,7 +58,9 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        function: api-tests.tavern_helpers:array_is_empty
+        - function: api-tests.tavern_helpers:tombstones_are_not_empty
+        - function: api-tests.tavern_helpers:relationships_are_empty
+        - function: api-tests.tavern_helpers:submodels_are_not_empty
 #          extra_kwargs:
 #            expression: '<a src=\".*\">'
 #      json:
