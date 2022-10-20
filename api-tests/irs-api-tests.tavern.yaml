@@ -1,4 +1,4 @@
-test_name: Make sure server process job after authorization
+test_name: Make sure server process job after authorization (1.0.0)
 
 strict:
   - headers:off
@@ -27,7 +27,7 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
       method: POST
       headers:
         content-type: application/json
@@ -86,17 +86,18 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7c6xyz00912345
+        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7c6xyz009123452
       method: POST
       headers:
         content-type: application/json
         Authorization: "Bearer {access_token:s}"
     response:
-      status_code: 400
+      status_code: 200
       json:
         statusCode: BAD_REQUEST
         message: Invalid Arguments.
         errors:
+          - globalAssetId:size must be between 45 and 45
           - globalAssetId:must match "^urn:uuid:[0-9a-fA-F]{{8}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{12}}$"
       headers:
         content-type: application/json
@@ -132,7 +133,7 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         bomLifecycle: "asBuilt"
         depth: 2
         collectAspects: true
@@ -149,7 +150,7 @@ stages:
       save:
         json:
           job_id: jobId
-    delay_after: 80
+    delay_after: 240
 
   - name: fetch response for created job and check details
     request:
@@ -205,7 +206,7 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         aspects:
           - SerialPartTypization
         collectAspects: true
@@ -222,7 +223,7 @@ stages:
       save:
         json:
           job_id: jobId
-    delay_after: 80
+    delay_after: 240
 
   - name: fetch response for created job and check details
     request:
@@ -277,7 +278,7 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         aspects:
           - SerialPartTypization
           - AssemblyPartRelationship
@@ -295,7 +296,7 @@ stages:
       save:
         json:
           job_id: jobId
-    delay_after: 80
+    delay_after: 240
 
   - name: fetch response for created job and check details
     request:
@@ -322,7 +323,7 @@ stages:
 
 ---
 
-test_name: Make sure job with aspects BatteryPass and MaterialForRecycling (not MaterialAspect) is processed (1.3.2)
+test_name: Make sure job with aspects BatteryPass and MaterialForRecycling is processed (1.3.2)
 
 strict:
   - headers:off
@@ -351,7 +352,7 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         aspects:
           - BatteryPass
           - MaterialForRecycling
@@ -369,7 +370,7 @@ stages:
       save:
         json:
           job_id: jobId
-    delay_after: 80
+    delay_after: 240
 
   - name: fetch response for created job and check details
     request:
@@ -396,7 +397,7 @@ stages:
 
 ---
 
-test_name: Make sure job with aspects AddressAspect (not Address) and ContactInformation (not Contact) is processed (1.3.3)
+test_name: Make sure job with aspects AddressAspect and ContactInformation is processed (1.3.3)
 
 strict:
   - headers:off
@@ -425,7 +426,7 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         aspects:
           - AddressAspect
           - ContactInformation
@@ -443,7 +444,7 @@ stages:
       save:
         json:
           job_id: jobId
-    delay_after: 80
+    delay_after: 240
 
   - name: fetch response for created job and check details
     request:
@@ -499,7 +500,7 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         aspects:
           - SerialPartTypization
           - ContactInformation
@@ -517,7 +518,7 @@ stages:
       save:
         json:
           job_id: jobId
-    delay_after: 80
+    delay_after: 240
 
   - name: fetch response for created job and check details
     request:
@@ -543,80 +544,6 @@ stages:
 
 
 ---
-
-#test_name: Make sure job with aspects ???? is processed (1.3.5)
-#
-#strict:
-#  - headers:off
-#  - json:off
-#
-#stages:
-#  - name: authenticate and fetch access token
-#    request:
-#      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-#      method: POST
-#      data:
-#        grant_type: client_credentials
-#        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-#        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-#    response:
-#      status_code: 200
-#      json:
-#        token_type: Bearer
-#      headers:
-#        content-type: application/json
-#      save:
-#        json:
-#          access_token: access_token
-#
-#  - name: create a job and wait
-#    request:
-#      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
-#      json:
-#        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
-#        aspects:
-#          - ??
-#          - ??
-#        collectAspects: true
-#      method: POST
-#      headers:
-#        content-type: application/json
-#        Authorization: "Bearer {access_token:s}"
-#    response:
-#      status_code: 201
-#      json:
-#        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-#      headers:
-#        content-type: application/json
-#      save:
-#        json:
-#          job_id: jobId
-#    delay_after: 80
-#
-#  - name: fetch response for created job and check details
-#    request:
-#      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
-#      params:
-#        returnUncompletedJob: true
-#      method: GET
-#      headers:
-#        content-type: application/json
-#        Authorization: "Bearer {access_token:s}"
-#    response:
-#      status_code: 200
-#      json:
-#        job:
-#          jobState: COMPLETED
-#        relationships: []
-#        tombstones: []
-#        submodels: []
-#      #        createdOn: #2022-10-10T05:33:23.114513694Z
-#      #        startedOn: #2022-10-10T05:33:23.114792093Z
-#      headers:
-#        content-type: application/json
-#
-#
-#---
 
 test_name: Make sure job with invalid aspects is giving the correct error message (1.4.1)
 
@@ -647,7 +574,7 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         aspects:
           - UnknownAspect
         collectAspects: true
@@ -656,7 +583,7 @@ stages:
         content-type: application/json
         Authorization: "Bearer {access_token:s}"
     response:
-      status_code: 400
+      status_code: 200
       json:
         statusCode: BAD_REQUEST
         message: "NoSuchElementException: Unsupported AspectType: UnknownAspect. Must be one of: SerialPartTypization, AssemblyPartRelationship, Batch, ProductDescription, IdConversion, MarketplaceOffer, MaterialForRecycling, PhysicalDimension, ReturnRequest, CertificateOfDestruction, CertificateOfDismantler, EndOfLife, PcfCore, PcfSupplyRelation, PcfTechnical, AddressAspect, ContactInformation, BatteryPass, VehicleDiagnosticDataQuality"
@@ -695,7 +622,7 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         aspects:
           - SerialPartTypization
           - AssemblyPartRelationship
@@ -709,13 +636,15 @@ stages:
           - CertificateOfDestruction
           - CertificateOfDismantler
           - EndOfLife
-          - PcfCore
-          - PcfSupplyRelation
-          - PcfTechnical
+          - EsrCertificate
+          - EsrCertificateStateStatistic
+          - ChargingProcess
           - AddressAspect
-          - ContactInformation
+          - ClaimData
           - BatteryPass
-          - VehicleDiagnosticDataQuality
+          - DiagnosticData
+          - MaterialForHomologation
+          - PartAsPlanned
         collectAspects: true
       method: POST
       headers:
@@ -730,7 +659,7 @@ stages:
       save:
         json:
           job_id: jobId
-    delay_after: 120
+    delay_after: 240
 
   - name: fetch response for created job and check details
     request:
@@ -753,3 +682,62 @@ stages:
       #        startedOn: #2022-10-10T05:33:23.114792093Z
       headers:
         content-type: application/json
+
+
+#--- !! Some of Catena-X aspects do not work, see TRI-796
+#
+#test_name: Make sure job with no more relevant aspects is declined as excepted (X.Y.Z)
+#
+#strict:
+#  - headers:off
+#  - json:off
+#
+#stages:
+#  - name: authenticate and fetch access token
+#    request:
+#      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+#      method: POST
+#      data:
+#        grant_type: client_credentials
+#        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+#        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+#    response:
+#      status_code: 200
+#      json:
+#        token_type: Bearer
+#      headers:
+#        content-type: application/json
+#      save:
+#        json:
+#          access_token: access_token
+#
+#  - name: create a job and wait
+#    request:
+#      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+#      json:
+#        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+#        aspects:
+#          - PcfCore
+#          - PcfSupplyRelation
+#          - PcfTechnical
+#          - AddressAspect
+#          - ContactInformation
+#          - VehicleDiagnosticDataQuality
+#        collectAspects: true
+#      method: POST
+#      headers:
+#        content-type: application/json
+#        Authorization: "Bearer {access_token:s}"
+#    response:
+#      status_code: 200
+#      json:
+#        statusCode: BAD_REQUEST
+#        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+#        errors: null
+#      headers:
+#        content-type: application/json
+
+
+#        statusCode: BAD_REQUEST
+#        message: "NoSuchElementException: Unsupported AspectType: UnknownAspect. Must be one of: SerialPartTypization, AssemblyPartRelationship, Batch, ProductDescription, IdConversion, MarketplaceOffer, MaterialForRecycling, PhysicalDimension, ReturnRequest, CertificateOfDestruction, CertificateOfDismantler, EndOfLife, PcfCore, PcfSupplyRelation, PcfTechnical, AddressAspect, ContactInformation, BatteryPass, VehicleDiagnosticDataQuality"
+#        errors: null
