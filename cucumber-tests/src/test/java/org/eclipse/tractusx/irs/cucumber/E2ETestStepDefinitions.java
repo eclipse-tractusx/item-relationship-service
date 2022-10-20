@@ -29,8 +29,8 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -51,6 +51,8 @@ import io.restassured.specification.RequestSpecification;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterJob;
+import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -63,6 +65,18 @@ public class E2ETestStepDefinitions {
     private RequestSpecification authenticationRequest;
     private ObjectMapper objectMapper;
     private String uri;
+
+    private static List<Relationship> sortRelationships(final Jobs values) {
+        final List<Relationship> relationships = new ArrayList<>(values.getRelationships());
+        relationships.sort(Comparator.comparing(o -> o.getCatenaXId().getGlobalAssetId()));
+        return relationships;
+    }
+
+    private static List<Submodel> sortSubmodels(final Jobs values) {
+        final List<Submodel> submodels = new ArrayList<>(values.getSubmodels());
+        submodels.sort(Comparator.comparing(Submodel::getIdentification));
+        return submodels;
+    }
 
     @Before
     public void setup() {
@@ -197,10 +211,10 @@ public class E2ETestStepDefinitions {
     @And("I check, if {string} are equal to {string}")
     public void iCheckIfAreAsExpected(String valueType, String fileName) throws IOException {
         if ("submodels".equals(valueType)) {
-            assertThat(objectMapper.writeValueAsString(completedJob.getSubmodels())).isEqualToIgnoringWhitespace(
+            assertThat(objectMapper.writeValueAsString(sortSubmodels(completedJob))).isEqualToIgnoringWhitespace(
                     getExpectedAsString(valueType, fileName));
         } else if ("relationships".equals(valueType)) {
-            assertThat(objectMapper.writeValueAsString(completedJob.getRelationships())).isEqualToIgnoringWhitespace(
+            assertThat(objectMapper.writeValueAsString(sortRelationships(completedJob))).isEqualToIgnoringWhitespace(
                     getExpectedAsString(valueType, fileName));
         }
     }
@@ -209,8 +223,14 @@ public class E2ETestStepDefinitions {
         ClassLoader classLoader = this.getClass().getClassLoader();
         File file = new File(classLoader.getResource("expected-files/" + fileName).getFile());
         assertThat(file.exists()).isTrue();
-        final LinkedHashMap values = objectMapper.readValue(file, LinkedHashMap.class);
-        return objectMapper.writeValueAsString(values.get(valueType));
+        final Jobs values = objectMapper.readValue(file, Jobs.class);
+        String jobResult = "";
+        if (valueType.equals("submodels")) {
+            return objectMapper.writeValueAsString(sortSubmodels(values));
+        } else if (valueType.equals("relationships")) {
+            return objectMapper.writeValueAsString(sortRelationships(values));
+        }
+        return jobResult;
     }
 
     @And("I check, if submodels contains BPNL number {string} exactly {int} times")
