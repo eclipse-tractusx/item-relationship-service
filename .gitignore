@@ -58,3 +58,4 @@ dependency-reduced-pom.xml
 ### Local files ###
 dev/local/*
 /api-tests/variable.env
+api-tests/__pycache__/tavern_helpers.cpython-310.pyc

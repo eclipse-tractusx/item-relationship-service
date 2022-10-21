@@ -27,7 +27,7 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:88f51be1-3771-4335-8b5c-4c5050123123 #"{tavern.env_vars.GLOBAL_ASSET_ID}"
+        globalAssetId: urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0 #"{tavern.env_vars.GLOBAL_ASSET_ID}"
         bomLifecycle: "asBuilt"
         depth: 2
         collectAspects: true
@@ -58,9 +58,11 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: api-tests.tavern_helpers:tombstones_are_not_empty
-        - function: api-tests.tavern_helpers:relationships_are_empty
+        - function: api-tests.tavern_helpers:tombstones_are_empty
+        - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
+        #- function: api-tests.tavern_helpers:relationships_are_empty
+        #- function: api-tests.tavern_helpers:submodels_are_not_empty
 #          extra_kwargs:
 #            expression: '<a src=\".*\">'
 #      json:

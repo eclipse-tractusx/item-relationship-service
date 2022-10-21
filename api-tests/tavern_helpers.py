@@ -1,11 +1,22 @@
 # testing_utils.py
+
+def checkResponse(response):
+    tombstones_are_not_empty(response)
+    relationships_are_not_empty(response)
+    submodels_are_not_empty(response)
+
+
 def tombstones_are_empty(response):
-    """check array is empty"""
+    print (response.json().get("tombstones"));
+    print ("Check array is empty ", len(response.json().get("tombstones")))
     assert len(response.json().get("tombstones")) == 0
+    
 
 
 def tombstones_are_not_empty(response):
-    """check array is empty"""
+
+    print (response.json().get("tombstones"));
+    print ("Check if tombstones are not empty number:", len(response.json().get("tombstones")))
     assert len(response.json().get("tombstones")) != 0
 
     # try:
@@ -17,24 +28,24 @@ def tombstones_are_not_empty(response):
 
 
 def relationships_are_empty(response):
-    """check array is empty
-    """
+
+    print (response.json().get("relationships"));
+    print ("Check if relationships are empty", len(response.json().get("relationships")))
     assert len(response.json().get("relationships")) == 0
 
 
 def relationships_are_not_empty(response):
-    """check array is empty
-    """
+
+    print (response.json().get("relationships"));
+    print ("Check if relationships are not empty", len(response.json().get("relationships")))
     assert len(response.json().get("relationships")) != 0
 
 
 def submodels_are_empty(response):
-    """check array is empty
-    """
+
     assert len(response.json().get("submodels")) == 0
 
 
 def submodels_are_not_empty(response):
-    """check array is empty
-    """
+
     assert len(response.json().get("submodels")) != 0
