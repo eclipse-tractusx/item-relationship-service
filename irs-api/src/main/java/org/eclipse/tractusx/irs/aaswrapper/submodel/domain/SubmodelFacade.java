@@ -44,7 +44,7 @@ public class SubmodelFacade {
      * @return The Aspect Model for the given submodel
      */
     public List<Relationship> getRelationships(final String submodelEndpointAddress, final RelationshipAspect traversalAspectType) {
-        final RelationshipSubmodel relationshipSubmodel = this.submodelClient.getSubmodel(submodelEndpointAddress, traversalAspectType.getClazz());
+        final RelationshipSubmodel relationshipSubmodel = this.submodelClient.getSubmodel(submodelEndpointAddress, traversalAspectType.getSubmodelClazz());
 
         return relationshipSubmodel.asRelationships();
     }

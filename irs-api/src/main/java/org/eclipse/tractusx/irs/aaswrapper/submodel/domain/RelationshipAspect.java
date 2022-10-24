@@ -35,10 +35,10 @@ public enum RelationshipAspect {
 //    SingleLevelUsageAsBuilt;
 
     @Getter
-    private final Class<? extends RelationshipSubmodel> clazz;
+    private final Class<? extends RelationshipSubmodel> submodelClazz;
 
-    RelationshipAspect(Class<? extends RelationshipSubmodel> clazz) {
-        this.clazz = clazz;
+    RelationshipAspect(Class<? extends RelationshipSubmodel> submodelClazz) {
+        this.submodelClazz = submodelClazz;
     }
 
     /**

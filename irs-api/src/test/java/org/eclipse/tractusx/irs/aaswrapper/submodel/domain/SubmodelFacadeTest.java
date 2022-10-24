@@ -108,6 +108,24 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
+    void shouldReturnSingleLevelBomAsPlannedWithChildDataWhenRequestingWithCatenaXId() {
+        final String catenaXId = "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c";
+
+        final List<Relationship> submodelResponse = submodelFacade.getRelationships(
+                catenaXId + "_singleLevelBomAsPlanned", RelationshipAspect.SingleLevelBomAsPlanned);
+
+        assertThat(submodelResponse.get(0).getCatenaXId().getGlobalAssetId()).isEqualTo(catenaXId);
+        assertThat(submodelResponse).hasSize(1);
+
+        final List<String> childIds = submodelResponse.stream()
+                                                      .map(Relationship::getLinkedItem)
+                                                      .map(LinkedItem::getChildCatenaXId)
+                                                      .map(GlobalAssetIdentification::getGlobalAssetId)
+                                                      .collect(Collectors.toList());
+        assertThat(childIds).containsAnyOf("urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97");
+    }
+
+    @Test
     void shouldReturnFilteredAssemblyPartRelationshipWithoutChildrenWhenRequestingWithCatenaXId() {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
@@ -118,7 +136,7 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldReturnAssemblyPartRelationshipDTOWhenRequestingOnRealClient() {
+    void shouldReturnAssemblyPartRelationshipWhenRequestingOnRealClient() {
         final String endpointUrl = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(restTemplate,
                 "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);

@@ -35,8 +35,6 @@ import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
-import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
-import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 import org.springframework.web.client.RestClientException;
@@ -63,26 +61,25 @@ public class RelationshipDelegate extends AbstractDelegate {
 
         final RelationshipAspect relationshipAspect = RelationshipAspect.from(jobData.getBomLifecycle(), jobData.getDirection());
         itemContainerBuilder.build().getShells().stream().findFirst().ifPresent(
-            shell -> shell.findRelationshipEndpointAddresses(AspectType.fromValue(relationshipAspect.name()))
-                          .forEach(address -> {
-                    try {
-                        final List<Relationship> relationships = submodelFacade.getRelationships(address, relationshipAspect);
-                        final List<String> childIds = getChildIds(relationships);
+            shell -> shell.findRelationshipEndpointAddresses(AspectType.fromValue(relationshipAspect.name())).forEach(address -> {
+                try {
+                    final List<Relationship> relationships = submodelFacade.getRelationships(address, relationshipAspect);
+                    final List<String> childIds = getChildIds(relationships);
 
-                        log.info("Processing Relationships with {} children", childIds.size());
+                    log.info("Processing Relationships with {} children", childIds.size());
 
-                        aasTransferProcess.addIdsToProcess(childIds);
-                        itemContainerBuilder.relationships(relationships);
-                    } catch (RestClientException | IllegalArgumentException e) {
-                        log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
-                                address);
-                        itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount, ProcessStep.SUBMODEL_REQUEST));
-                    } catch (JsonParseException e) {
-                        log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
-                        itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount, ProcessStep.SUBMODEL_REQUEST));
-                    }
-                })
-            );
+                    aasTransferProcess.addIdsToProcess(childIds);
+                    itemContainerBuilder.relationships(relationships);
+                } catch (RestClientException | IllegalArgumentException e) {
+                    log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
+                            address);
+                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount, ProcessStep.SUBMODEL_REQUEST));
+                } catch (JsonParseException e) {
+                    log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
+                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount, ProcessStep.SUBMODEL_REQUEST));
+                }
+            })
+        );
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
     }

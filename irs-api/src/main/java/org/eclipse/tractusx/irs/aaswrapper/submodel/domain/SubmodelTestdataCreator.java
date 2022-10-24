@@ -22,8 +22,6 @@
 package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
 
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

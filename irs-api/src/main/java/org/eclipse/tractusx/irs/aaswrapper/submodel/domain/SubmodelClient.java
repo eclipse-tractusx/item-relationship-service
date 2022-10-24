@@ -26,7 +26,6 @@ import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.BASIC_AU
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import io.github.resilience4j.retry.Retry;

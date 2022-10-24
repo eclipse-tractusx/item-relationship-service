@@ -105,7 +105,9 @@ public class AssetAdministrationShellDescriptor {
     }
 
     /**
-     * @return The filtered list containing only SubmodelDescriptors which are AssemblyPartRelationship
+     *
+     * @param relationshipAspect filter for aspect type
+     * @return The filtered list of submodel addresses
      */
     public List<String> findRelationshipEndpointAddresses(final AspectType relationshipAspect) {
         final List<SubmodelDescriptor> filteredSubmodelDescriptors = filterDescriptorsByAspectTypes(List.of(relationshipAspect.toString()));
