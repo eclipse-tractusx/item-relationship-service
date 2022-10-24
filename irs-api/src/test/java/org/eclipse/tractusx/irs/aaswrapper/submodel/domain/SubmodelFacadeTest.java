@@ -23,7 +23,6 @@ package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -36,10 +35,8 @@ import java.util.stream.Collectors;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
-import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
@@ -78,7 +75,6 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldThrowExceptionWhenSubmodelNotFound() {
-        final JobParameter jobParameter = jobParameter();
         final String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(),
                 "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
@@ -155,12 +151,12 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldReturnStringWhenRequestingSubmodelWithoutAspect() {
-        final String catenaXId = "urn:uuid:ea724f73-cb93-4b7b-b92f-d97280ff888b";
+    void shouldReturnRawSerialPartTypizationWhenExisting() {
+        final String catenaXId = "urn:uuid:7eb7daf6-0c54-455b-aab7-bd5ca252f6ee";
 
-        final String submodelResponse = submodelFacade.getSubmodelRawPayload(catenaXId);
+        final String submodelResponse = submodelFacade.getSubmodelRawPayload(catenaXId + "_serialPartTypization");
 
         assertThat(submodelResponse).startsWith(
-                "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"ManufacturerID\"}");
+                "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"manufacturerId\"}");
     }
 }

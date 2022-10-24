@@ -87,10 +87,6 @@ class SubmodelClientLocalStub implements SubmodelClient {
 
     @Override
     public String getSubmodel(final String submodelEndpointAddress) {
-        if ("urn:uuid:ea724f73-cb93-4b7b-b92f-d97280ff888b".equals(submodelEndpointAddress)) {
-            return testdataCreator.createDummySerialPartTypizationString();
-        }
-
         final Map<String, Object> submodel = testdataCreator.createSubmodelForId(submodelEndpointAddress);
         return jsonUtil.asString(submodel);
     }
