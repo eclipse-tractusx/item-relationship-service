@@ -24,7 +24,6 @@ package org.eclipse.tractusx.irs.bpdm;
 import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.OAUTH_REST_TEMPLATE;
 
 import java.util.Collections;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,7 +58,7 @@ class BpdmClientLocalStub implements BpdmClient {
     public BusinessPartnerResponse getBusinessPartner(final String idValue, final String idType) {
         return BusinessPartnerResponse.builder()
                                       .bpn(idValue)
-                                      .names(Collections.singletonList(NameResponse.of(UUID.randomUUID(), "OEM A")))
+                                      .names(Collections.singletonList(NameResponse.of("OEM A")))
                                       .build();
     }
 }
@@ -83,7 +82,7 @@ class BpdmClientImpl implements BpdmClient {
     @Override
     public BusinessPartnerResponse getBusinessPartner(final String idValue, final String idType) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(bpdmUrl);
-        uriBuilder.path("/api/catena/business-partner/").path(idValue).queryParam("idType", idType);
+        uriBuilder.path("/api/catena/legal-entities/").path(idValue).queryParam("idType", idType);
 
         return restTemplate.getForObject(uriBuilder.build().toUri(), BusinessPartnerResponse.class);
     }

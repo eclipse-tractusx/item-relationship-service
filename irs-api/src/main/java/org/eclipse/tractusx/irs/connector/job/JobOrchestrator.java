@@ -234,7 +234,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     private void callCompleteHandlerIfFinished(final String jobId) {
         jobStore.completeJob(jobId, this::completeJob);
-        publishJobProcessingFinishedEvent(jobId);
+        publishJobProcessingFinishedEventIfFinished(jobId);
     }
 
     private void completeJob(final MultiTransferJob job) {
@@ -249,15 +249,20 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     private void markJobInError(final MultiTransferJob job, final Throwable exception, final String message) {
         log.error(message, exception);
         jobStore.markJobInError(job.getJobIdString(), message, exception.getClass().getName());
-        publishJobProcessingFinishedEvent(job.getJobIdString());
+        publishJobProcessingFinishedEventIfFinished(job.getJobIdString());
     }
 
-    private void publishJobProcessingFinishedEvent(final String jobId) {
+    private void publishJobProcessingFinishedEventIfFinished(final String jobId) {
         jobStore.find(jobId).ifPresent(
-            job -> applicationEventPublisher.publishEvent(new JobProcessingFinishedEvent(job.getJobIdString(), job.getJob().getJobState(), job.getJobParameter().getCallbackUrl()))
+            job -> {
+                if (job.getJob().getJobState().equals(JobState.COMPLETED) || job.getJob().getJobState().equals(JobState.ERROR)) {
+                    applicationEventPublisher.publishEvent(
+                            new JobProcessingFinishedEvent(job.getJobIdString(), job.getJob().getJobState(),
+                                    job.getJobParameter().getCallbackUrl()));
+                }
+            }
         );
     }
-
 
     private long startTransfers(final MultiTransferJob job, final Stream<T> dataRequests) /* throws JobErrorDetails */ {
         return dataRequests.map(r -> startTransfer(job, r)).collect(Collectors.counting());

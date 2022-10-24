@@ -74,7 +74,6 @@ public class TreeRecursiveLogic {
                                                            ItemContainer.class));
         final var assembledTree = assembler.retrieveItemGraph(partialTrees);
         final String json = jsonUtil.asString(assembledTree);
-        log.info("Storing assembled item graph: {}", json);
         final var blob = json.getBytes(StandardCharsets.UTF_8);
 
         log.info("Uploading assembled item graph to {}", targetBlobName);
