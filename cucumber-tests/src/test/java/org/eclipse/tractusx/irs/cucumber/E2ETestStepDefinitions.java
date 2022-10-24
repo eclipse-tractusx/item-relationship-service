@@ -29,9 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -44,9 +42,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
-import io.restassured.specification.RequestSpecification;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterJob;
@@ -61,9 +57,8 @@ public class E2ETestStepDefinitions {
     private RegisterJob.RegisterJobBuilder registerJobBuilder;
     private UUID jobId;
     private Jobs completedJob;
-    private RequestSpecification authenticationRequest;
     private ObjectMapper objectMapper;
-    private String uri;
+    private AuthenticationProperties authProperties;
 
     @Before
     public void setup() {
@@ -73,44 +68,21 @@ public class E2ETestStepDefinitions {
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
-    private String obtainAccessToken() {
-        final Map<String, String> oauth2Payload = new HashMap<>();
-        oauth2Payload.put("grant_type", "client_credentials");
-        oauth2Payload.put("client_id", System.getenv("KEYCLOAK_CLIENT_ID"));
-        oauth2Payload.put("client_secret", System.getenv("KEYCLOAK_CLIENT_SECRET"));
-
-        return given().params(oauth2Payload)
-                      .post(System.getenv("KEYCLOAK_HOST"))
-                      .then()
-                      .extract()
-                      .jsonPath()
-                      .getString("access_token");
-    }
-
-    private RequestSpecification getAuthenticationRequestWithNewToken() {
-        final String accessToken = obtainAccessToken();
-        final RequestSpecBuilder builder = new RequestSpecBuilder();
-        builder.addHeader("Authorization", "Bearer " + accessToken);
-        builder.setBaseUri(uri);
-
-        return builder.build();
-    }
-
-    @Given("I have authorization with Keycloak to {string}")
-    public void iHaveAuthorizationWithKeycloakTo(String environment) {
-        final String accessToken = obtainAccessToken();
-        final RequestSpecBuilder builder = new RequestSpecBuilder();
-        builder.addHeader("Authorization", "Bearer " + accessToken);
-        if ("DEV".equals(environment)) {
-            uri = "https://irs.dev.demo.catena-x.net";
-        } else if ("INT".equals(environment)) {
-            uri = "https://irs.int.demo.catena-x.net";
+    @Given("the environment is {string}")
+    public void theEnvironmentIs(String environment) {
+        final String clientId = System.getenv("KEYCLOAK_CLIENT_ID");
+        final String clientSecret = System.getenv("KEYCLOAK_CLIENT_SECRET");
+        final String keycloakUrl = System.getenv("KEYCLOAK_HOST");
+        final String irsUri;
+        if (environment.equals("DEV")) {
+            irsUri = System.getenv("IRS_DEV");
+        } else if (environment.equals("INT")) {
+            irsUri = System.getenv("IRS_INT");
         } else {
             throw new PendingException(String.format("No implementation for environment: '%s'", environment));
         }
-        builder.setBaseUri(uri);
-
-        authenticationRequest = builder.build();
+        authProperties = new AuthenticationProperties(irsUri, clientId, clientSecret, keycloakUrl, "client_credentials",
+                "access_token");
     }
 
     @Given("I register an IRS job for globalAssetId {string}")
@@ -144,7 +116,7 @@ public class E2ETestStepDefinitions {
     public void iGetTheJobId() {
         final RegisterJob job = registerJobBuilder.build();
 
-        final JobHandle createdJobResponse = given().spec(authenticationRequest)
+        final JobHandle createdJobResponse = given().spec(authProperties.getNewAuthenticationRequestSpecification())
                                                     .contentType(ContentType.JSON)
                                                     .body(job)
                                                     .when()
@@ -163,7 +135,7 @@ public class E2ETestStepDefinitions {
         await().atMost(maxWaitTime, TimeUnit.MINUTES)
                .with()
                .pollInterval(Duration.ofSeconds(5L))
-               .until(() -> given().spec(getAuthenticationRequestWithNewToken())
+               .until(() -> given().spec(authProperties.getNewAuthenticationRequestSpecification())
                                    .contentType(ContentType.JSON)
                                    .queryParam("returnUncompletedJob", false)
                                    .get("/irs/jobs/" + jobId)
@@ -172,7 +144,7 @@ public class E2ETestStepDefinitions {
                                    .getJobState()
                                    .equals(JobState.value(status)));
 
-        completedJob = given().spec(getAuthenticationRequestWithNewToken())
+        completedJob = given().spec(authProperties.getNewAuthenticationRequestSpecification())
                               .contentType(ContentType.JSON)
                               .queryParam("returnUncompletedJob", true)
                               .get("/irs/jobs/" + jobId)
