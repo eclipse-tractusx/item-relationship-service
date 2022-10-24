@@ -24,8 +24,6 @@ package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
-import static org.eclipse.tractusx.irs.util.TestMother.jobParameterFilter;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -41,6 +39,7 @@ import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
@@ -86,7 +85,7 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
         final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
-                () -> submodelFacade.getRelationships(url, jobParameter));
+                () -> submodelFacade.getRelationships(url, RelationshipAspect.AssemblyPartRelationship));
     }
 
     @Test
@@ -94,7 +93,7 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
         final String catenaXId = "urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b";
 
         final List<Relationship> submodelResponse = submodelFacade.getRelationships(
-                catenaXId, jobParameter());
+                catenaXId + "_assemblyPartRelationship", RelationshipAspect.AssemblyPartRelationship);
 
         assertThat(submodelResponse.get(0).getCatenaXId().getGlobalAssetId()).isEqualTo(catenaXId);
         assertThat(submodelResponse).hasSize(32);
@@ -113,7 +112,7 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
         final List<Relationship> submodelResponse = submodelFacade.getRelationships(
-                catenaXId, jobParameterFilter());
+                catenaXId + "_assemblyPartRelationship", RelationshipAspect.AssemblyPartRelationship);
 
         assertThat(submodelResponse).isEmpty();
     }
@@ -125,17 +124,14 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
                 "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
         SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
-        final AssemblyPartRelationship assemblyPartRelationship = new AssemblyPartRelationship();
-        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-        assemblyPartRelationship.setCatenaXId(catenaXId);
-        assemblyPartRelationship.setChildParts(new HashSet<>());
+        final AssemblyPartRelationship assemblyPartRelationship = new AssemblyPartRelationship("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", new HashSet<>());
 
         final String jsonObject = jsonUtil.asString(assemblyPartRelationship);
         final ResponseEntity<String> responseEntity = new ResponseEntity<>(jsonObject, HttpStatus.OK);
         doReturn(responseEntity).when(restTemplate).getForEntity(any(URI.class), any());
 
         final List<Relationship> submodelResponse = submodelFacade.getRelationships(endpointUrl,
-                jobParameter());
+                RelationshipAspect.AssemblyPartRelationship);
 
         assertThat(submodelResponse).isEmpty();
     }

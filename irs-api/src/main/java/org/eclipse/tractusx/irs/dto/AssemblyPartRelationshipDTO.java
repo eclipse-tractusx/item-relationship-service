@@ -26,6 +26,7 @@ import java.util.Set;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.RelationshipAspect;
 
 /**
  * AssemblyPartRelationshipDTO model used for internal application use

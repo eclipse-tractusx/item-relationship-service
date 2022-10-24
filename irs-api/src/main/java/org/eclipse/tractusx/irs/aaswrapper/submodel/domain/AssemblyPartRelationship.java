@@ -21,19 +21,105 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
 
+import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
+import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
+import org.eclipse.tractusx.irs.component.LinkedItem;
+import org.eclipse.tractusx.irs.component.MeasurementUnit;
+import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.enums.AspectType;
+import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 
 /**
  * AssemblyPartRelationship
  */
 @Data
 @Jacksonized
-class AssemblyPartRelationship {
+@AllArgsConstructor
+@NoArgsConstructor
+class AssemblyPartRelationship extends RelationshipSubmodel {
 
     private String catenaXId;
     private Set<ChildData> childParts;
 
+    @Override
+    List<Relationship> asRelationships() {
+        return Optional.ofNullable(this.childParts).stream().flatMap(Collection::stream)
+                       .map(childData -> childData.toRelationship(this.catenaXId))
+                       .collect(Collectors.toList());
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    /* package */ static class ChildData {
+
+        private ZonedDateTime assembledOn;
+        private Quantity quantity;
+        private ZonedDateTime lastModifiedOn;
+        private String lifecycleContext;
+        private String childCatenaXId;
+
+        public Relationship toRelationship(final String catenaXId) {
+            final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
+                                                                      .childCatenaXId(GlobalAssetIdentification.of(this.childCatenaXId))
+                                                                      .lifecycleContext(BomLifecycle.AS_BUILT)
+                                                                      .assembledOn(this.assembledOn)
+                                                                      .lastModifiedOn(this.lastModifiedOn);
+
+            if (thereIsQuantity()) {
+                final String datatypeURI = thereIsMeasurementUnit() ? this.quantity.getMeasurementUnit().getDatatypeURI() : null;
+                final String lexicalValue = thereIsMeasurementUnit() ? this.quantity.getMeasurementUnit().getLexicalValue() : null;
+
+                linkedItem.quantity(org.eclipse.tractusx.irs.component.Quantity.builder()
+                                                                               .quantityNumber(this.quantity.getQuantityNumber())
+                                                                               .measurementUnit(MeasurementUnit.builder()
+                                                                                                               .datatypeURI(datatypeURI)
+                                                                                                               .lexicalValue(lexicalValue)
+                                                                                                               .build())
+                                                                               .build());
+            }
+
+            return Relationship.builder()
+                               .catenaXId(GlobalAssetIdentification.of(catenaXId))
+                               .linkedItem(linkedItem.build())
+                               .aspectType(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString())
+                               .build();
+        }
+
+        private boolean thereIsMeasurementUnit() {
+            return this.quantity != null && this.quantity.getMeasurementUnit() != null;
+        }
+
+        private boolean thereIsQuantity() {
+            return this.quantity != null;
+        }
+
+        @Data
+        @Jacksonized
+        static class Quantity {
+
+            private Double quantityNumber;
+            private MeasurementUnit measurementUnit;
+
+            /**
+             * MeasurementUnit
+             */
+            @Data
+            @Jacksonized
+            /* package */ static class MeasurementUnit {
+                private String lexicalValue;
+                private String datatypeURI;
+            }
+        }
+    }
 }
