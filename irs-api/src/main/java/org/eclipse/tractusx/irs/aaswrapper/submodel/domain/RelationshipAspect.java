@@ -37,7 +37,7 @@ public enum RelationshipAspect {
     @Getter
     private final Class<? extends RelationshipSubmodel> submodelClazz;
 
-    RelationshipAspect(Class<? extends RelationshipSubmodel> submodelClazz) {
+    RelationshipAspect(final Class<? extends RelationshipSubmodel> submodelClazz) {
         this.submodelClazz = submodelClazz;
     }
 

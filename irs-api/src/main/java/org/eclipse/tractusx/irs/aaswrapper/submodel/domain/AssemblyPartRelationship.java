@@ -52,12 +52,15 @@ class AssemblyPartRelationship extends RelationshipSubmodel {
     private Set<ChildData> childParts;
 
     @Override
-    List<Relationship> asRelationships() {
+    /* package */ List<Relationship> asRelationships() {
         return Optional.ofNullable(this.childParts).stream().flatMap(Collection::stream)
                        .map(childData -> childData.toRelationship(this.catenaXId))
                        .collect(Collectors.toList());
     }
 
+    /**
+     * ChildData
+     */
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -104,9 +107,12 @@ class AssemblyPartRelationship extends RelationshipSubmodel {
             return this.quantity != null;
         }
 
+        /**
+         * Quantity
+         */
         @Data
         @Jacksonized
-        static class Quantity {
+        /* package */ static class Quantity {
 
             private Double quantityNumber;
             private MeasurementUnit measurementUnit;

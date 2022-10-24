@@ -48,6 +48,7 @@ public class CxTestDataContainer {
     /**
      * Single test data
      */
+    @SuppressWarnings("PMD.DataClass")
     @Data
     public static class CxTestData {
         private String catenaXId;

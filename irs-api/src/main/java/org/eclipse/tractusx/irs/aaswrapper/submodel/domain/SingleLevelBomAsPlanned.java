@@ -52,12 +52,15 @@ class SingleLevelBomAsPlanned extends RelationshipSubmodel {
     private Set<ChildData> childParts;
 
     @Override
-    List<Relationship> asRelationships() {
+    /* package */ List<Relationship> asRelationships() {
         return Optional.ofNullable(this.childParts).stream().flatMap(Collection::stream)
                        .map(childData -> childData.toRelationship(this.catenaXId))
                        .collect(Collectors.toList());
     }
 
+    /**
+     * ChildData
+     */
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -103,6 +106,9 @@ class SingleLevelBomAsPlanned extends RelationshipSubmodel {
             return this.quantity != null;
         }
 
+        /**
+         * Quantity
+         */
         @Data
         @Jacksonized
         /* package */ static class Quantity {
@@ -110,6 +116,9 @@ class SingleLevelBomAsPlanned extends RelationshipSubmodel {
             private Double quantityNumber;
             private MeasurementUnit measurementUnit;
 
+            /**
+             * MeasurementUnit
+             */
             @Data
             @Jacksonized
             /* package */ static class MeasurementUnit {
