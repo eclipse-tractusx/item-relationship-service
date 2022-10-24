@@ -31,6 +31,8 @@ import javax.validation.constraints.Size;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
@@ -44,6 +46,8 @@ import org.hibernate.validator.constraints.URL;
 @Schema(description = "The requested job definition.")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class RegisterJob {
 
     private static final String MIN_TREE_DEPTH_DESC = "1";
