@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,18 +64,6 @@ public class E2ETestStepDefinitions {
     private RequestSpecification authenticationRequest;
     private ObjectMapper objectMapper;
     private String uri;
-
-    private static List<Relationship> sortRelationships(final Jobs values) {
-        final List<Relationship> relationships = new ArrayList<>(values.getRelationships());
-        relationships.sort(Comparator.comparing(o -> o.getCatenaXId().getGlobalAssetId()));
-        return relationships;
-    }
-
-    private static List<Submodel> sortSubmodels(final Jobs values) {
-        final List<Submodel> submodels = new ArrayList<>(values.getSubmodels());
-        submodels.sort(Comparator.comparing(Submodel::getIdentification));
-        return submodels;
-    }
 
     @Before
     public void setup() {
@@ -210,27 +197,34 @@ public class E2ETestStepDefinitions {
 
     @And("I check, if {string} are equal to {string}")
     public void iCheckIfAreAsExpected(String valueType, String fileName) throws IOException {
-        if ("submodels".equals(valueType)) {
-            assertThat(objectMapper.writeValueAsString(sortSubmodels(completedJob))).isEqualToIgnoringWhitespace(
-                    getExpectedAsString(valueType, fileName));
-        } else if ("relationships".equals(valueType)) {
-            assertThat(objectMapper.writeValueAsString(sortRelationships(completedJob))).isEqualToIgnoringWhitespace(
-                    getExpectedAsString(valueType, fileName));
+        if ("relationships".equals(valueType)) {
+            final List<Relationship> actualRelationships = completedJob.getRelationships();
+            final List<Relationship> expectedRelationships = getExpectedRelationships(fileName);
+            assertThat(actualRelationships.size()).isEqualTo(expectedRelationships.size());
+            assertThat(actualRelationships).containsAll(expectedRelationships);
+        } else if ("submodels".equals(valueType)) {
+            final List<Submodel> actualSubmodels = completedJob.getSubmodels();
+            final List<Submodel> expectedSubmodels = getExpectedSubmodels(fileName);
+            assertThat(actualSubmodels.size()).isEqualTo(expectedSubmodels.size());
+            assertThat(actualSubmodels).usingRecursiveFieldByFieldElementComparatorIgnoringFields("identification")
+                                       .containsAll(expectedSubmodels);
         }
     }
 
-    private String getExpectedAsString(final String valueType, final String fileName) throws IOException {
+    private List<Submodel> getExpectedSubmodels(final String fileName) throws IOException {
         ClassLoader classLoader = this.getClass().getClassLoader();
         File file = new File(classLoader.getResource("expected-files/" + fileName).getFile());
         assertThat(file.exists()).isTrue();
-        final Jobs values = objectMapper.readValue(file, Jobs.class);
-        String jobResult = "";
-        if (valueType.equals("submodels")) {
-            return objectMapper.writeValueAsString(sortSubmodels(values));
-        } else if (valueType.equals("relationships")) {
-            return objectMapper.writeValueAsString(sortRelationships(values));
-        }
-        return jobResult;
+        final Jobs expectedJob = objectMapper.readValue(file, Jobs.class);
+        return expectedJob.getSubmodels();
+    }
+
+    private List<Relationship> getExpectedRelationships(final String fileName) throws IOException {
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        File file = new File(classLoader.getResource("expected-files/" + fileName).getFile());
+        assertThat(file.exists()).isTrue();
+        final Jobs expectedJob = objectMapper.readValue(file, Jobs.class);
+        return expectedJob.getRelationships();
     }
 
     @And("I check, if submodels contains BPNL number {string} exactly {int} times")
