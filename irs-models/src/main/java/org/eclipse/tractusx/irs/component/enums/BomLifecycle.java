@@ -39,7 +39,6 @@ import lombok.Getter;
 @Schema(description = "The lifecycle context in which the child part was assembled into the parent part.")
 @Getter
 public enum BomLifecycle {
-    @Schema(description = "The view of the ItemsTree as the vehicle was assembled.")
     AS_BUILT("asBuilt", "AsBuilt", AspectType.SERIAL_PART_TYPIZATION),
     AS_PLANNED("asPlanned", "AsPlanned", AspectType.PART_AS_PLANNED);
 
