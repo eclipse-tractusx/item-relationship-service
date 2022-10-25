@@ -48,6 +48,7 @@ public class CxTestDataContainer {
     /**
      * Single test data
      */
+    @SuppressWarnings("PMD.DataClass")
     @Data
     public static class CxTestData {
         private String catenaXId;
@@ -55,6 +56,10 @@ public class CxTestDataContainer {
         private List<Map<String, Object>> serialPartTypization;
         @JsonProperty("urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship")
         private List<Map<String, Object>> assemblyPartRelationship;
+        @JsonProperty("urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned")
+        private List<Map<String, Object>> partAsPlanned;
+        @JsonProperty("urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned")
+        private List<Map<String, Object>> singleLevelBomAsPlanned;
         @JsonProperty("urn:bamm:io.catenax.batch:1.0.0#Batch")
         private List<Map<String, Object>> batch;
         @JsonProperty("urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling")
@@ -70,6 +75,14 @@ public class CxTestDataContainer {
 
         public Optional<Map<String, Object>> getAssemblyPartRelationship() {
             return assemblyPartRelationship != null ? assemblyPartRelationship.stream().findFirst() : Optional.empty();
+        }
+
+        public Optional<Map<String, Object>> getPartAsPlanned() {
+            return partAsPlanned != null ? partAsPlanned.stream().findFirst() : Optional.empty();
+        }
+
+        public Optional<Map<String, Object>> getSingleLevelBomAsPlanned() {
+            return singleLevelBomAsPlanned != null ? singleLevelBomAsPlanned.stream().findFirst() : Optional.empty();
         }
     }
 }

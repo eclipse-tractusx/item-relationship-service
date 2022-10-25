@@ -45,7 +45,7 @@ public class LocalTestDataConfiguration {
 
     @Bean
     public CxTestDataContainer cxTestDataContainer() throws IOException {
-        final Resource resource = resourceLoader.getResource("classpath:test_data/CX_Testdata_1.3.3.json");
+        final Resource resource = resourceLoader.getResource("classpath:test_data/CX_Testdata.json");
         final File file = resource.getFile();
 
         final ObjectMapper objectMapper = new ObjectMapper();

@@ -59,10 +59,10 @@ class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigura
 
         assertThat(aasDescriptor.getSubmodelDescriptors()).hasSize(2);
         assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getEndpoints()).isNotNull();
-        assertThat(endpointAddress).isEqualTo(catenaXId);
+        assertThat(endpointAddress).isEqualTo(catenaXId + "_assemblyPartRelationship");
 
-        assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getSemanticId().getValue().get(0)).isEqualTo("urn:bamm:com.catenax.assembly_part_relationship:1.0.0");
-        assertThat(aasDescriptor.getSubmodelDescriptors().get(1).getSemanticId().getValue().get(0)).isEqualTo("urn:bamm:com.catenax.serial_part_typization:1.0.0");
+        assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getSemanticId().getValue().get(0)).isEqualTo("urn:bamm:io.catenax.assembly_part_relationship:1.0.0");
+        assertThat(aasDescriptor.getSubmodelDescriptors().get(1).getSemanticId().getValue().get(0)).isEqualTo("urn:bamm:io.catenax.serial_part_typization:1.0.0");
     }
 
     @Test
