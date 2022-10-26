@@ -32,6 +32,8 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
 import org.eclipse.tractusx.irs.component.JobParameter;
+import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
+import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.JobInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
@@ -80,6 +82,8 @@ class IrsApplicationTests {
     void shouldStoreBlobResultWhenRunningJob() throws Exception {
         final JobParameter jobParameter = JobParameter.builder()
                                                       .depth(5)
+                                                      .direction(Direction.DOWNWARD)
+                                                      .bomLifecycle(BomLifecycle.AS_BUILT)
                                                       .aspects(List.of())
                                                       .build();
 

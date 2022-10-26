@@ -116,5 +116,9 @@ This setup uses the docker images provided by [product-edc](https://github.com/c
 
 Check the Helm charts at [./charts/irs](./charts/irs) for the configuration. 
 
+## Documentation
+
+- [Item Relationship Service Documentation (catena-ng)](https://catenax-ng.github.io/product-item-relationship-service/docs/)
+
 ## Licenses
 Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0) - see [LICENSE](./LICENSE)

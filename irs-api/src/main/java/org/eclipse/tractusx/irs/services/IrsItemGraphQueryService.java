@@ -63,7 +63,6 @@ import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
 import org.eclipse.tractusx.irs.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -85,9 +84,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     private final BlobPersistence blobStore;
 
     private final MeterRegistryService meterRegistryService;
-
-    @Value("${aspectTypes.default}")
-    private AspectType defaultAspect;
 
     @Override
     public List<JobStatusResult> getJobsByJobState(final @NonNull List<JobState> jobStates) {
@@ -117,13 +113,13 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private JobParameter buildJobData(final @NonNull RegisterJob request) {
         final BomLifecycle bomLifecycle = Optional.ofNullable(request.getBomLifecycle()).orElse(BomLifecycle.AS_BUILT);
-        final List<AspectType> aspectTypeValues = Optional.ofNullable(request.getAspects()).orElse(List.of(defaultAspect));
+        final List<AspectType> aspectTypeValues = Optional.ofNullable(request.getAspects()).orElse(List.of(bomLifecycle.getDefaultAspect()));
 
         return JobParameter.builder()
                            .depth(request.getDepth())
                            .bomLifecycle(bomLifecycle)
                            .direction(Direction.DOWNWARD)
-                           .aspects(aspectTypeValues.isEmpty() ? List.of(defaultAspect) : aspectTypeValues)
+                           .aspects(aspectTypeValues.isEmpty() ? List.of(bomLifecycle.getDefaultAspect()) : aspectTypeValues)
                            .collectAspects(request.isCollectAspects())
                            .callbackUrl(request.getCallbackUrl())
                            .build();
@@ -134,13 +130,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final String idAsString = String.valueOf(jobId);
 
         final Optional<MultiTransferJob> canceled = this.jobStore.cancelJob(idAsString);
-        if (canceled.isPresent()) {
-            final MultiTransferJob job = canceled.get();
-
-            return job.getJob();
-        } else {
-            throw new EntityNotFoundException("No job exists with id " + jobId);
-        }
+        return canceled.orElseThrow(() -> new EntityNotFoundException("No job exists with id " + jobId)).getJob();
     }
 
     @Override

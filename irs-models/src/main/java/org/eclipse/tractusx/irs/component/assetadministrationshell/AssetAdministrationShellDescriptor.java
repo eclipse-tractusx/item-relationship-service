@@ -105,10 +105,12 @@ public class AssetAdministrationShellDescriptor {
     }
 
     /**
-     * @return The filtered list containing only SubmodelDescriptors which are AssemblyPartRelationship
+     *
+     * @param relationshipAspect filter for aspect type
+     * @return The filtered list of submodel addresses
      */
-    public List<String> findAssemblyPartRelationshipEndpointAddresses() {
-        final List<SubmodelDescriptor> filteredSubmodelDescriptors = filterDescriptorsByAssemblyPartRelationship();
+    public List<String> findRelationshipEndpointAddresses(final AspectType relationshipAspect) {
+        final List<SubmodelDescriptor> filteredSubmodelDescriptors = filterDescriptorsByAspectTypes(List.of(relationshipAspect.toString()));
         return filteredSubmodelDescriptors.stream()
                                           .map(SubmodelDescriptor::getEndpoints)
                                           .flatMap(endpoints -> endpoints.stream()
@@ -129,13 +131,6 @@ public class AssetAdministrationShellDescriptor {
                                                                                         submodelDescriptor, type)))
 
                                        .collect(Collectors.toList());
-    }
-
-    /**
-     * @return The SubmodelDescriptors which are of AspectType AssemblyPartRelationship
-     */
-    private List<SubmodelDescriptor> filterDescriptorsByAssemblyPartRelationship() {
-        return filterDescriptorsByAspectTypes(List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()));
     }
 
     private boolean isMatching(final SubmodelDescriptor submodelDescriptor, final String aspectTypeFilter) {

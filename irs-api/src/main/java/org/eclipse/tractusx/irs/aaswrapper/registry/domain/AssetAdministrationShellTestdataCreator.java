@@ -49,13 +49,12 @@ class AssetAdministrationShellTestdataCreator {
             final String catenaXId) {
         final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
 
-        this.cxTestDataContainer.getByCatenaXId(catenaXId)
-                                .flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship)
-                                .ifPresent(submodel -> submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId)));
-
-        this.cxTestDataContainer.getByCatenaXId(catenaXId)
-                                .flatMap(CxTestDataContainer.CxTestData::getSerialPartTypization)
-                                .ifPresent(submodel -> submodelDescriptors.add(createSerialPartTypizationSubmodelDescriptor(catenaXId)));
+        this.cxTestDataContainer.getByCatenaXId(catenaXId).ifPresent(testData -> {
+            testData.getAssemblyPartRelationship().ifPresent(submodel -> submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId)));
+            testData.getSerialPartTypization().ifPresent(submodel -> submodelDescriptors.add(createSerialPartTypizationSubmodelDescriptor(catenaXId)));
+            testData.getSingleLevelBomAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelBomAsPlannedSubmodelDescriptor(catenaXId)));
+            testData.getPartAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createPartAsPlannedSubmodelDescriptor(catenaXId)));
+        });
 
         final Reference globalAssetId = Reference.builder().value(List.of(catenaXId)).build();
         return AssetAdministrationShellDescriptor.builder()
@@ -69,19 +68,29 @@ class AssetAdministrationShellTestdataCreator {
     }
 
     private SubmodelDescriptor createAssemblyPartRelationshipSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:com.catenax.assembly_part_relationship:1.0.0",
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.assembly_part_relationship:1.0.0",
                 "assemblyPartRelationship");
     }
 
     private SubmodelDescriptor createSerialPartTypizationSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:com.catenax.serial_part_typization:1.0.0",
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.serial_part_typization:1.0.0",
                 "serialPartTypization");
+    }
+
+    private SubmodelDescriptor createSingleLevelBomAsPlannedSubmodelDescriptor(final String catenaXId) {
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.0",
+                "singleLevelBomAsPlanned");
+    }
+
+    private SubmodelDescriptor createPartAsPlannedSubmodelDescriptor(final String catenaXId) {
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.part_as_planned:1.0.0",
+                "partAsPlanned");
     }
 
     private SubmodelDescriptor createSubmodelDescriptor(final String catenaXId, final String submodelUrn,
             final String submodelName) {
         final ProtocolInformation protocolInformation = ProtocolInformation.builder()
-                                                                           .endpointAddress(catenaXId)
+                                                                           .endpointAddress(catenaXId.concat("_").concat(submodelName))
                                                                            .endpointProtocol("AAS/SUBMODEL")
                                                                            .endpointProtocolVersion("1.0RC02")
                                                                            .build();

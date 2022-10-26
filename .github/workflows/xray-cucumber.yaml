@@ -3,8 +3,6 @@ name: IRS Cucumber Xray execution
 on:
   workflow_dispatch:
   push:
-    branches-ignore:
-      - 'main'
 
 jobs:
   build:
@@ -48,7 +46,7 @@ jobs:
           IRS_DEV: https://irs.dev.demo.catena-x.net
         run: |
           unzip -o features.zip -d cucumber-tests/src/test/resources/features
-          mvn --batch-mode clean install -pl cucumber-tests,irs-models -D"cucumber.filter.tags"="not @Ignore"
+          mvn --batch-mode clean install -pl cucumber-tests,irs-models -D"cucumber.filter.tags"="not @Ignore and not @INTEGRATION_TEST"
 
       - name: Submit results to Xray
         if: ${{ always() && steps.download.outputs.http_response == '200' }}

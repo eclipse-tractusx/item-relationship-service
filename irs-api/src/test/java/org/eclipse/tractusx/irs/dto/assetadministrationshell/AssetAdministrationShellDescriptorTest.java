@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
+import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.junit.jupiter.api.Test;
 
 class AssetAdministrationShellDescriptorTest {
@@ -122,7 +123,7 @@ class AssetAdministrationShellDescriptorTest {
                                 "testAssemblyPartRelationshipEndpoint")));
 
         // Act
-        final List<String> result = shellDescriptor.findAssemblyPartRelationshipEndpointAddresses();
+        final List<String> result = shellDescriptor.findRelationshipEndpointAddresses(AspectType.ASSEMBLY_PART_RELATIONSHIP);
 
         // Assert
         assertThat(result).hasSize(1);
