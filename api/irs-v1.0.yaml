@@ -305,7 +305,7 @@ components:
           jobParameter:
             aspects:
               - SerialPartTypization
-              - AddressAspect
+              - ContactInformation
             bomLifecycle: asBuilt
             collectAspects: false
             depth: 4
@@ -343,7 +343,7 @@ components:
           jobParameter:
             aspects:
               - SerialPartTypization
-              - AddressAspect
+              - ContactInformation
             bomLifecycle: asBuilt
             collectAspects: false
             depth: 4
@@ -470,7 +470,7 @@ components:
           jobParameter:
             aspects:
               - SerialPartTypization
-              - AddressAspect
+              - ContactInformation
             bomLifecycle: asBuilt
             collectAspects: false
             depth: 4
@@ -507,7 +507,7 @@ components:
           jobParameter:
             aspects:
               - SerialPartTypization
-              - AddressAspect
+              - ContactInformation
             bomLifecycle: asBuilt
             collectAspects: false
             depth: 4
@@ -611,7 +611,7 @@ components:
           jobParameter:
             aspects:
               - SerialPartTypization
-              - AddressAspect
+              - ContactInformation
             bomLifecycle: asBuilt
             collectAspects: false
             depth: 4
@@ -900,28 +900,27 @@ components:
         aspects:
           type: string
           enum:
-            - AddressAspect
+            - SerialPartTypization
             - AssemblyPartRelationship
             - Batch
-            - BatteryPass
-            - CertificateOfDestruction
-            - CertificateOfDismantler
-            - ChargingProcess
-            - ClaimData
-            - DiagnosticData
-            - EndOfLife
-            - EsrCertificate
-            - EsrCertificateStateStatistic
+            - ProductDescription
             - IdConversion
             - MarketplaceOffer
-            - MaterialForHomologation
             - MaterialForRecycling
-            - PartAsPlanned
             - PhysicalDimension
-            - ProductDescription
             - ReturnRequest
-            - SerialPartTypization
+            - CertificateOfDestruction
+            - CertificateOfDismantler
+            - EndOfLife
+            - PcfCore
+            - PcfSupplyRelation
+            - PcfTechnical
+            - AddressAspect
+            - ContactInformation
+            - BatteryPass
+            - VehicleDiagnosticDataQuality
             - SingleLevelBomAsPlanned
+            - PartAsPlanned
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
@@ -1110,28 +1109,27 @@ components:
           items:
             type: string
             enum:
-              - AddressAspect
+              - SerialPartTypization
               - AssemblyPartRelationship
               - Batch
-              - BatteryPass
-              - CertificateOfDestruction
-              - CertificateOfDismantler
-              - ChargingProcess
-              - ClaimData
-              - DiagnosticData
-              - EndOfLife
-              - EsrCertificate
-              - EsrCertificateStateStatistic
+              - ProductDescription
               - IdConversion
               - MarketplaceOffer
-              - MaterialForHomologation
               - MaterialForRecycling
-              - PartAsPlanned
               - PhysicalDimension
-              - ProductDescription
               - ReturnRequest
-              - SerialPartTypization
+              - CertificateOfDestruction
+              - CertificateOfDismantler
+              - EndOfLife
+              - PcfCore
+              - PcfSupplyRelation
+              - PcfTechnical
+              - AddressAspect
+              - ContactInformation
+              - BatteryPass
+              - VehicleDiagnosticDataQuality
               - SingleLevelBomAsPlanned
+              - PartAsPlanned
           maxItems: 2147483647
         bomLifecycle:
           type: string
