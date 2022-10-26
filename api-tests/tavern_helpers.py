@@ -1,5 +1,6 @@
 # testing_utils.py
-
+# from logging import config
+# import yaml
 
 def checkResponse(response):
     tombstones_are_not_empty(response)
@@ -48,3 +49,18 @@ def errors_for_globalAssetId_are_correct(response):
     error_list = response.json().get("errors")
     assert 'globalAssetId:size must be between 45 and 45' in error_list
     assert 'globalAssetId:must match \"^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\"' in error_list
+
+
+def jobs_are_COMPLETED(response):
+    print('Expected status: COMPLETED')
+    print('Actual Status: ' + response.json()[0].get("status"))
+    # print('Length: ' + response.json().get())
+    assert 'COMPLETED' in response.json()[0].get("status")
+
+    # with open("Log.yaml", "r") as log_spec_file:
+    #     config.dictConfig(yaml.load(log_spec_file))
+
+    # for item in response.json().get():
+    #     for data_item in item['status']:
+    #         assert 'COMPLETED' in data_item
+

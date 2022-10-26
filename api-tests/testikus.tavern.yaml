@@ -1,98 +1,8 @@
-#test_name: Test for testing
-#
-#strict:
-#  - headers:off
-#  - json:off
-#
-#stages:
-#  - name: authenticate and fetch access token
-#    request:
-#      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-#      method: POST
-#      data:
-#        grant_type: client_credentials
-#        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-#        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-#    response:
-#      status_code: 200
-#      json:
-#        token_type: Bearer
-#      headers:
-#        content-type: application/json
-#      save:
-#        json:
-#          access_token: access_token
-#
-#  - name: create a job and wait
-#    request:
-#      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
-#      json:
-#        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
-#        bomLifecycle: "asBuilt"
-#        depth: 2
-#        collectAspects: true
-#      method: POST
-#      headers:
-#        content-type: application/json
-#        Authorization: "Bearer {access_token:s}"
-#    response:
-#      status_code: 201
-#      json:
-#        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-#      headers:
-#        content-type: application/json
-#      save:
-#        json:
-#          job_id: jobId
-#    delay_after: 200
-#
-#  - name: fetch response for created job and check details
-#    request:
-#      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
-#      params:
-#        returnUncompletedJob: true
-#      method: GET
-#      headers:
-#        content-type: application/json
-#        Authorization: "Bearer {access_token:s}"
-#    response:
-#      status_code: 200
-#      verify_response_with:
-#        function: api-tests.tavern_helpers:checkResponse
-##        - function: api-tests.tavern_helpers:tombstones_are_empty
-##        - function: api-tests.tavern_helpers:relationships_are_not_empty
-##        - function: api-tests.tavern_helpers:submodels_are_not_empty
-#      #        createdOn: #2022-10-10T05:33:23.114513694Z
-#      #        startedOn: #2022-10-10T05:33:23.114792093Z
-#      headers:
-#        content-type: application/json
-
-
-test_name: Make sure job with DEPRECATED Catena-X semantichub aspect is processed as expected
+test_name: Test for testing
 
 strict:
   - headers:off
   - json:off
-
-marks:
-  - parametrize:
-      key:
-        deprecated_aspect
-      vals:
-        #        - AssemblyPartRelationship
-        #        - IdConversion
-        #        - MarketplaceOffer
-        #        - MaterialForRecycling
-        #        - PhysicalDimension
-        #        - ReturnRequest
-        #        - EndOfLife
-        ##        - SerialPartTypization
-        #        - ProductDescription
-        - EoLStory
-        #        - Material
-        - PcfCore
-        - PcfSupplyRelation
-        - PcfTechnical
 
 stages:
   - name: authenticate and fetch access token
@@ -113,45 +23,29 @@ stages:
         json:
           access_token: access_token
 
-  - name: create a job and wait
+  - name: get all COMPLETED jobs
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
-      json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
-        aspects:
-          - "{deprecated_aspect}"
-        collectAspects: true
-      method: POST
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=COMPLETED"
+#      json:
+#        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7c6xyz009123452
+#        collectAspects: true
+#        depth: 10
+#        direction: "downward"
+      method: GET
       headers:
         content-type: application/json
         Authorization: "Bearer {access_token:s}"
     response:
-      status_code: 400
-      json:
-        statusCode: BAD_REQUEST
-        message: "NoSuchElementException: Unsupported AspectType: {deprecated_aspect}. Must be one of: SerialPartTypization, AssemblyPartRelationship, Batch, ProductDescription, IdConversion, MarketplaceOffer, MaterialForRecycling, PhysicalDimension, ReturnRequest, CertificateOfDestruction, CertificateOfDismantler, EndOfLife, PcfCore, PcfSupplyRelation, PcfTechnical, AddressAspect, ContactInformation, BatteryPass, VehicleDiagnosticDataQuality"
-        errors: null
+      status_code: 200
+      verify_response_with:
+        function: api-tests.tavern_helpers:jobs_are_COMPLETED
+#      json:
+#        - jobId: !anystr
+#        - status: !anystr
       headers:
         content-type: application/json
-
-#  - name: fetch response for created job and check details
-#    request:
-#      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
-#      params:
-#        returnUncompletedJob: true
-#      method: GET
-#      headers:
-#        content-type: application/json
-#        Authorization: "Bearer {access_token:s}"
-#    response:
-#      status_code: 200
-#      json:
-#        job:
-#          jobState: COMPLETED
-#        tombstones:
-#          - processingError:
-##              errorDetail:
-##              retryCounter: 3
-#
-#      headers:
-#        content-type: application/json
+      loggers:
+        tavern:
+          handlers:
+            - stderr
+          level: DEBUG
