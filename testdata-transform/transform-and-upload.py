@@ -155,13 +155,19 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Script to upload testdata into CX-Network.",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-f", "--file", type=str, help="Test data file location", required=True)
-    parser.add_argument("-s1", "--submodel1", type=str, help="url of submodel server 1", required=True)
-    parser.add_argument("-s2", "--submodel2", type=str, help="url of submodel server 2", required=True)
-    parser.add_argument("-s3", "--submodel3", type=str, help="url of submodel server 3", required=True)
+    parser.add_argument("-s1", "--submodel1", type=str, help="Submodel server display URL 1", required=True)
+    parser.add_argument("-s2", "--submodel2", type=str, help="Submodel server display URL 2", required=True)
+    parser.add_argument("-s3", "--submodel3", type=str, help="Submodel server display URL 3", required=True)
+    parser.add_argument("-su1", "--internalsubmodel1", type=str, help="Submodel server upload URL 1", required=False)
+    parser.add_argument("-su2", "--internalsubmodel2", type=str, help="Submodel server upload URL 2", required=False)
+    parser.add_argument("-su3", "--internalsubmodel3", type=str, help="Submodel server upload URL 3", required=False)
     parser.add_argument("-a", "--aas", type=str, help="aas url", required=True)
-    parser.add_argument("-e1", "--edc1", type=str, help="Public EDC provider control plane url 1", required=True)
-    parser.add_argument("-e2", "--edc2", type=str, help="Public EDC provider control plane url 2", required=True)
-    parser.add_argument("-e3", "--edc3", type=str, help="Public EDC provider control plane url 3", required=True)
+    parser.add_argument("-e1", "--edc1", type=str, help="EDC provider control plane display URL 1", required=True)
+    parser.add_argument("-e2", "--edc2", type=str, help="EDC provider control plane display URL 2", required=True)
+    parser.add_argument("-e3", "--edc3", type=str, help="EDC provider control plane display URL 3", required=True)
+    parser.add_argument("-eu1", "--internaledc1", type=str, help="EDC provider control plane upload URL 1", required=False)
+    parser.add_argument("-eu2", "--internaledc2", type=str, help="EDC provider control plane upload URL 2", required=False)
+    parser.add_argument("-eu3", "--internaledc3", type=str, help="EDC provider control plane upload URL 3", required=False)
     parser.add_argument("-k", "--apikey", type=str, help="edc api key", required=True)
     parser.add_argument("-e", "--esr", type=str, help="esr url", required=False)
 
@@ -172,10 +178,33 @@ if __name__ == "__main__":
     submodel_server_1_address = config.get("submodel1")
     submodel_server_2_address = config.get("submodel2")
     submodel_server_3_address = config.get("submodel3")
+
+    internal_submodel_server_1_address = config.get("internalsubmodel1")
+    internal_submodel_server_2_address = config.get("internalsubmodel2")
+    internal_submodel_server_3_address = config.get("internalsubmodel3")
+    if internal_submodel_server_1_address is None:
+        internal_submodel_server_1_address = submodel_server_1_address
+    if internal_submodel_server_2_address is None:
+        internal_submodel_server_2_address = submodel_server_2_address
+    if internal_submodel_server_3_address is None:
+        internal_submodel_server_3_address = submodel_server_3_address
+
     aas_url = config.get("aas")
     edc_url1 = config.get("edc1")
     edc_url2 = config.get("edc2")
     edc_url3 = config.get("edc3")
+
+    edc_internal_url1 = config.get("internaledc1")
+    edc_internal_url2 = config.get("internaledc2")
+    edc_internal_url3 = config.get("internaledc3")
+
+    if edc_internal_url1 is None:
+        edc_internal_url1 = edc_url1
+    if edc_internal_url2 is None:
+        edc_internal_url2 = edc_url2
+    if edc_internal_url3 is None:
+        edc_internal_url3 = edc_url3
+
     edc_api_key = config.get("apikey")
     esr_url = config.get("esr")
 
@@ -255,7 +284,8 @@ if __name__ == "__main__":
         asr = "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship"
 
         if esr_url and asr in tmp_keys and "childParts" in tmp_data[asr][0] and tmp_data[asr][0]["childParts"]:
-            tmp_data.update({"urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic": ""})
+            tmp_data.update({
+                "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic": ""})
 
         for tmp_key in tmp_keys:
             if tmp_key not in ("PlainObject", "catenaXId",
@@ -264,15 +294,21 @@ if __name__ == "__main__":
                 # 1. Prepare submodel endpoint address
                 if contract_id % 3 == 0:
                     submodel_url = submodel_server_1_address
+                    submodel_upload_url = internal_submodel_server_1_address
                     edc_url = edc_url1
+                    edc_upload_url = edc_internal_url1
                     statistic_dict.update({"provider1": statistic_dict["provider1"] + 1})
                 elif contract_id % 3 == 1:
                     submodel_url = submodel_server_2_address
+                    submodel_upload_url = internal_submodel_server_2_address
                     edc_url = edc_url2
+                    edc_upload_url = edc_internal_url2
                     statistic_dict.update({"provider2": statistic_dict["provider2"] + 1})
                 else:
                     submodel_url = submodel_server_3_address
+                    submodel_upload_url = internal_submodel_server_3_address
                     edc_url = edc_url3
+                    edc_upload_url = edc_internal_url3
                     statistic_dict.update({"provider3": statistic_dict["provider3"] + 1})
 
                 submodel_name = tmp_key[tmp_key.index("#") + 1: len(tmp_key)]
@@ -294,7 +330,7 @@ if __name__ == "__main__":
                 if tmp_data[tmp_key] != "":
                     payload = create_submodel_payload(tmp_data[tmp_key][0])
                     response = session.request(method="POST",
-                                               url=create_submodel_url(submodel_url, submodel_identification),
+                                               url=create_submodel_url(submodel_upload_url, submodel_identification),
                                                headers=headers, data=payload)
                     print_response(response)
 
@@ -303,18 +339,20 @@ if __name__ == "__main__":
                     payload = create_esr_edc_asset_payload(esr_url, asset_prop_id, catenax_id)
                 else:
                     payload = create_edc_asset_payload(submodel_url, asset_prop_id, submodel_identification)
-                response = session.request(method="POST", url=edc_url + edc_asset_path, headers=headers_with_api_key,
+                response = session.request(method="POST", url=edc_upload_url + edc_asset_path,
+                                           headers=headers_with_api_key,
                                            data=payload)
                 print_response(response)
 
                 # 4. Create edc policy
                 payload = create_edc_policy_payload(contract_id, asset_prop_id)
-                response = session.request(method="POST", url=edc_url + edc_policy_path, headers=headers_with_api_key,
+                response = session.request(method="POST", url=edc_upload_url + edc_policy_path,
+                                           headers=headers_with_api_key,
                                            data=payload)
                 print_response(response)
                 # 5. Create edc contract definition
                 payload = create_edc_contract_definition_payload(contract_id, contract_id, asset_prop_id)
-                response = session.request(method="POST", url=edc_url + edc_contract_definition_path,
+                response = session.request(method="POST", url=edc_upload_url + edc_contract_definition_path,
                                            headers=headers_with_api_key,
                                            data=payload)
                 print_response(response)
