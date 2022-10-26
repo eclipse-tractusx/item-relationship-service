@@ -58,3 +58,6 @@ dependency-reduced-pom.xml
 ### Local files ###
 dev/local/*
 /api-tests/variable.env
+
+### Cucumber ###
+/cucumber-tests/report.json
