@@ -1,6 +1,4 @@
 # testing_utils.py
-# from logging import config
-# import yaml
 
 def checkResponse(response):
     tombstones_are_not_empty(response)
@@ -56,11 +54,4 @@ def jobs_are_COMPLETED(response):
     print('Actual Status: ' + response.json()[0].get("status"))
     # print('Length: ' + response.json().get())
     assert 'COMPLETED' in response.json()[0].get("status")
-
-    # with open("Log.yaml", "r") as log_spec_file:
-    #     config.dictConfig(yaml.load(log_spec_file))
-
-    # for item in response.json().get():
-    #     for data_item in item['status']:
-    #         assert 'COMPLETED' in data_item
 

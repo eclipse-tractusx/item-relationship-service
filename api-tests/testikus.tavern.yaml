@@ -44,8 +44,3 @@ stages:
 #        - status: !anystr
       headers:
         content-type: application/json
-      loggers:
-        tavern:
-          handlers:
-            - stderr
-          level: DEBUG
