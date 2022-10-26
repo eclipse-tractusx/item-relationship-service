@@ -1,0 +1,209 @@
+global:
+  enablePrometheus: false
+  enableGrafana: false
+irs-helm:
+  #####################
+  # IRS Configuration #
+  #####################
+  irsUrl: "https://irs.dev.demo.catena-x.net"
+  ingress:
+    enabled: false
+  digitalTwinRegistry:
+    url: http://cx-irs-local-registry-svc:8080
+  semanticsHub:
+    url: https://semantics.int.demo.catena-x.net/hub/api/v1
+  bpdm:
+    url: https://partners-pool.int.demo.catena-x.net
+  minioUser: testtest
+  minioPassword: testtest
+  keycloak:
+    oauth2:
+      clientId:
+      clientSecret:
+      clientTokenUri:
+      jwkSetUri:
+  aasWrapper:
+    username: test
+    password: test
+
+  #######################
+  # Minio Configuration #
+  #######################
+  irs-minio:
+    minioUser: testtest
+    minioPassword: testtest
+
+  ############################
+  # AASWrapper Configuration #
+  ############################
+  irs-aaswrapper:
+    edc:
+      api:
+        auth:
+          key: "123456"
+
+  ##############################
+  # EDC Postgres Configuration #
+  ##############################
+  postgresql:
+    auth:
+      postgresPassword: test
+      password: test
+
+  ##################################
+  # EDC Controlplane Configuration #
+  ##################################
+  edc-controlplane:
+    ingresses:
+      - enabled: false
+
+    edc:
+      postgresql:
+        password: test
+        user: edc
+      transfer:
+        proxy:
+          token:
+            verifier:
+              publickey:
+                alias: irs-local-daps-cert-consumer
+            signer:
+              privatekey:
+                alias: irs-local-daps-cert-consumer-key
+      api:
+        auth:
+          key: "123456"
+      controlplane:
+        url: "http://irs-local-edc-controlplane"
+      dataplane:
+        url: "http://irs-local-edc-dataplane:8185"
+      endpoints:
+        ## IDS endpoints
+        ids:
+          # -- The network port, which the "ids" multipart api is going to be exposed by the container, pod and service
+          port: "80"
+          # -- The path mapping the "ids" multipart api is going to be exposed at
+          path: /api/v1/ids
+    configuration:
+      properties: |-
+        edc.oauth.client.id=53:F0:6A:5B:3E:46:56:32:76:84:D4:A6:46:AC:7D:BA:EA:9C:0F:D3:keyid:53:F0:6A:5B:3E:46:56:32:76:84:D4:A6:46:AC:7D:BA:EA:9C:0F:D3
+        edc.oauth.private.key.alias=irs-local-daps-cert-consumer-key
+        edc.oauth.provider.jwks.url=https://daps-irs.dev.demo.catena-x.net/.well-known/jwks.json
+        edc.oauth.public.key.alias=irs-local-daps-cert-consumer
+        edc.oauth.token.url=https://daps-irs.dev.demo.catena-x.net/token
+        edc.vault.hashicorp.url=https://vault.demo.catena-x.net
+        edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
+        edc.data.encryption.keys.alias=irs-local-daps-cert-consumer-key
+        edc.data.encryption.algorithm=NONE
+        
+        edc.vault.hashicorp.token=
+
+  ###############################
+  # EDC Dataplane Configuration #
+  ###############################
+  edc-dataplane:
+    edc:
+      api:
+        auth:
+          key: "123456"
+    ## Ingress declaration to expose the network service.
+    ingresses:
+      ## Public / Internet facing Ingress
+      - enabled: false
+
+    configuration:
+      properties: |-
+        edc.oauth.client.id=53:F0:6A:5B:3E:46:56:32:76:84:D4:A6:46:AC:7D:BA:EA:9C:0F:D3:keyid:53:F0:6A:5B:3E:46:56:32:76:84:D4:A6:46:AC:7D:BA:EA:9C:0F:D3
+        edc.oauth.private.key.alias=irs-local-daps-cert-consumer-key
+        edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
+        edc.oauth.provider.jwks.url=https://daps-irs.dev.demo.catena-x.net/.well-known/jwks.json
+        edc.oauth.public.key.alias=irs-local-daps-cert-consumer
+        edc.oauth.token.url=https://daps-irs.dev.demo.catena-x.net/token
+        edc.vault.hashicorp.url=https://vault.demo.catena-x.net
+        edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
+        
+        edc.vault.hashicorp.token=
+
+##############################
+# EDC Provider Configuration #
+##############################
+edc-provider:
+
+  ##################################
+  # EDC Controlplane Configuration #
+  ##################################
+  edc-controlplane-provider:
+    ingresses:
+      - enabled: false
+    edc:
+      postgresql:
+        user: edc
+        password: test
+      transfer:
+        proxy:
+          token:
+            verifier:
+              publickey:
+                alias: irs-local-daps-cert-provider
+            signer:
+              privatekey:
+                alias: irs-local-daps-cert-provider-key
+      api:
+        auth:
+          key: "123456"
+      controlplane:
+        url: "http://irs-local-edc-controlplane-provider"
+      dataplane:
+        url: "http://irs-local-edc-dataplane-provider:8185"
+      endpoints:
+        ## IDS endpoints
+        ids:
+          # -- The network port, which the "ids" multipart api is going to be exposed by the container, pod and service
+          port: "80"
+          # -- The path mapping the "ids" multipart api is going to be exposed at
+          path: /api/v1/ids
+    configuration:
+      properties: |-
+        edc.oauth.client.id=32:17:26:94:41:F3:3F:CD:5C:86:88:AF:83:4C:B1:FE:64:1F:CD:A9:keyid:32:17:26:94:41:F3:3F:CD:5C:86:88:AF:83:4C:B1:FE:64:1F:CD:A9
+        edc.oauth.private.key.alias=irs-local-daps-cert-provider-key
+        edc.oauth.provider.jwks.url=https://daps-irs.dev.demo.catena-x.net/.well-known/jwks.json
+        edc.oauth.public.key.alias=irs-local-daps-cert-provider
+        edc.oauth.token.url=https://daps-irs.dev.demo.catena-x.net/token
+        edc.vault.hashicorp.url=https://vault.demo.catena-x.net
+        edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
+        edc.data.encryption.keys.alias=irs-dev-daps-cert-consumer-key
+        edc.data.encryption.algorithm=NONE
+
+        edc.vault.hashicorp.token=
+
+  ###############################
+  # EDC Dataplane Configuration #
+  ###############################
+  edc-dataplane-provider:
+    edc:
+      api:
+        auth:
+          key: "123456"
+    ingresses:
+      - enabled: false
+    configuration:
+      properties: |-
+        edc.oauth.client.id=32:17:26:94:41:F3:3F:CD:5C:86:88:AF:83:4C:B1:FE:64:1F:CD:A9:keyid:32:17:26:94:41:F3:3F:CD:5C:86:88:AF:83:4C:B1:FE:64:1F:CD:A9
+        edc.oauth.private.key.alias=irs-local-daps-cert-provider-key
+        edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
+        edc.oauth.provider.jwks.url=https://daps-irs.dev.demo.catena-x.net/.well-known/jwks.json
+        edc.oauth.public.key.alias=irs-local-daps-cert-provider
+        edc.oauth.token.url=https://daps-irs.dev.demo.catena-x.net/token
+        edc.vault.hashicorp.url=https://vault.demo.catena-x.net
+        edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
+        
+        edc.vault.hashicorp.token=
+
+  postgresql-provider:
+    auth:
+      postgresPassword: test
+      password: test
+
+registry:
+  registry:
+    dockerSecret:
