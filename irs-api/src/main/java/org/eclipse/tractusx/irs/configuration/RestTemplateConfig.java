@@ -125,6 +125,14 @@ public class RestTemplateConfig {
         return authorizedClientManager;
     }
 
+    @Bean
+        /* package */ RestTemplate simpleRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
+        return restTemplateBuilder
+                                  .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .build();
+    }
+
     /**
      * Interceptor to add Authorization header to every call done via Rest template
      */

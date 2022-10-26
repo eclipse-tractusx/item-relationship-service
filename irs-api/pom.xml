@@ -147,6 +147,35 @@
             <artifactId>jsoup</artifactId>
             <version>1.15.3</version>
         </dependency>
+
+        <!-- EDC Client PoC -->
+
+        <dependency>
+            <groupId>org.eclipse.dataspaceconnector</groupId>
+            <artifactId>catalog-spi</artifactId>
+            <version>0.0.1-milestone-6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.dataspaceconnector</groupId>
+            <artifactId>contract-spi</artifactId>
+            <version>0.0.1-milestone-6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.dataspaceconnector</groupId>
+            <artifactId>transfer-spi</artifactId>
+            <version>0.0.1-milestone-6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.dataspaceconnector</groupId>
+            <artifactId>contractnegotiation-api</artifactId>
+            <version>0.0.1-milestone-6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.dataspaceconnector</groupId>
+            <artifactId>contractagreement-api</artifactId>
+            <version>0.0.1-milestone-6</version>
+        </dependency>
+
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
             <artifactId>irs-testing</artifactId>
