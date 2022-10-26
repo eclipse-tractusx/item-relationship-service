@@ -235,12 +235,11 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 400
+      verify_response_with:
+        function: api-tests.tavern_helpers:errors_for_globalAssetId_are_correct
       json:
         statusCode: BAD_REQUEST
         message: Invalid Arguments.
-        errors:
-          - globalAssetId:size must be between 45 and 45
-          - globalAssetId:must match "^urn:uuid:[0-9a-fA-F]{{8}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{4}}-[0-9a-fA-F]{{12}}$"
       headers:
         content-type: application/json
 
