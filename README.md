@@ -118,8 +118,7 @@ Check the Helm charts at [./charts/irs](./charts/irs) for the configuration.
 
 ## Documentation
 
-- :white_check_mark: [Item Relationship Service Documentation (catena-ng)](https://catenax-ng.github.io/product-item-relationship-service/docs/)
-- :red_circle: [Item Relationship Service Documentation (eclipse-tractusx)](https://github.com/eclipse-tractusx/item-relationship-service/docs/)
+- [Item Relationship Service Documentation (catena-ng)](https://catenax-ng.github.io/product-item-relationship-service/docs/)
 
 ## Licenses
 Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0) - see [LICENSE](./LICENSE)
