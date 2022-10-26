@@ -57,8 +57,9 @@ public enum AspectType {
     PHYSICAL_DIMENSION(AspectTypesConstants.PHYSICAL_DIMENSION),
     PRODUCT_DESCRIPTION(AspectTypesConstants.PRODUCT_DESCRIPTION),
     RETURN_REQUEST(AspectTypesConstants.RETURN_REQUEST),
+    SINGLE_LEVEL_BOM_AS_PLANNED(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_PLANNED),
     SERIAL_PART_TYPIZATION(AspectTypesConstants.SERIAL_PART_TYPIZATION);
-
+ 
     private final String name;
 
     AspectType(final String name) {
@@ -122,5 +123,7 @@ public enum AspectType {
         public static final String PRODUCT_DESCRIPTION = "ProductDescription";
         public static final String RETURN_REQUEST = "ReturnRequest";
         public static final String SERIAL_PART_TYPIZATION = "SerialPartTypization";
+        public static final String SINGLE_LEVEL_BOM_AS_PLANNED = "SingleLevelBomAsPlanned";
+        public static final String PART_AS_PLANNED = "PartAsPlanned";
     }
 }

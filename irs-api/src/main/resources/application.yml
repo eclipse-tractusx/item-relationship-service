@@ -105,9 +105,6 @@ aasWrapper:
   username: ${AASWRAPPER_USERNAME:}
   password: ${AASWRAPPER_PASSWORD:}
 
-aspectTypes:
-  default: SerialPartTypization
-
 digitalTwinRegistry:
   url: "${DIGITALTWINREGISTRY_URL:}"
 

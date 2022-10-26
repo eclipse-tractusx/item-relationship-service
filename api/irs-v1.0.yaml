@@ -921,12 +921,14 @@ components:
             - ProductDescription
             - ReturnRequest
             - SerialPartTypization
+            - SingleLevelBomAsPlanned
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
             into the parent part.
           enum:
             - asBuilt
+            - asPlanned
         callbackUrl:
           type: string
         collectAspects:
@@ -1027,6 +1029,7 @@ components:
             into the parent part.
           enum:
             - asBuilt
+            - asPlanned
         quantity:
           $ref: '#/components/schemas/Quantity'
     MeasurementUnit:
@@ -1128,6 +1131,7 @@ components:
               - ProductDescription
               - ReturnRequest
               - SerialPartTypization
+              - SingleLevelBomAsPlanned
           maxItems: 2147483647
         bomLifecycle:
           type: string
@@ -1135,6 +1139,7 @@ components:
             into the parent part.
           enum:
             - asBuilt
+            - asPlanned
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
