@@ -148,68 +148,59 @@ def print_response(response_):
         print(response_.text)
 
 
+def check_url_args(submodel_server_upload_urls_, submodel_server_urls_, edc_upload_urls_, edc_urls_):
+    nr_of_submodel_server_upload_urls = len(submodel_server_upload_urls_)
+    nr_of_submodel_server_urls = len(submodel_server_urls_)
+    if nr_of_submodel_server_upload_urls != nr_of_submodel_server_urls:
+        raise Exception(
+            f"Number and order of submodelserver upload URLs '{submodel_server_upload_urls_}' "
+            f"has to match number and order Number and order of submodelserver URLs '{submodel_server_urls_}'")
+    nr_of_edc_upload_urls = len(edc_upload_urls_)
+    nr_of_edc_urls = len(edc_urls_)
+    if nr_of_edc_upload_urls != nr_of_edc_urls:
+        raise Exception(
+            f"Number and order of edc upload URLs '{edc_upload_urls_}' has to match number and order of edc URLs "
+            f"'{edc_urls_}'")
+    if nr_of_submodel_server_urls != nr_of_edc_urls:
+        raise Exception(
+            f"Number and order of edc URLs '{edc_urls_}' has to match number and order of submodelserver URLS "
+            f"'{submodel_server_urls_}'")
+
+
 if __name__ == "__main__":
     timestamp_start = time.time()
-    # -f smallTestdata.json -s1 "http://localhost:8194" -s2 "http://localhost:8194" -s3 "http://localhost:8194"
-    # -p "http://provider-control-plane:8282" -a "http://localhost:4243" -e "http://localhost:8187" -k '123456'
     parser = argparse.ArgumentParser(description="Script to upload testdata into CX-Network.",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-f", "--file", type=str, help="Test data file location", required=True)
-    parser.add_argument("-s1", "--submodel1", type=str, help="Submodel server display URL 1", required=True)
-    parser.add_argument("-s2", "--submodel2", type=str, help="Submodel server display URL 2", required=True)
-    parser.add_argument("-s3", "--submodel3", type=str, help="Submodel server display URL 3", required=True)
-    parser.add_argument("-su1", "--internalsubmodel1", type=str, help="Submodel server upload URL 1", required=False)
-    parser.add_argument("-su2", "--internalsubmodel2", type=str, help="Submodel server upload URL 2", required=False)
-    parser.add_argument("-su3", "--internalsubmodel3", type=str, help="Submodel server upload URL 3", required=False)
+    parser.add_argument("-s", "--submodel", type=str, nargs="*", help="Submodel server display URLs", required=True)
+    parser.add_argument("-su", "--submodelupload", type=str, nargs="*", help="Submodel server upload URLs",
+                        required=False)
     parser.add_argument("-a", "--aas", type=str, help="aas url", required=True)
-    parser.add_argument("-e1", "--edc1", type=str, help="EDC provider control plane display URL 1", required=True)
-    parser.add_argument("-e2", "--edc2", type=str, help="EDC provider control plane display URL 2", required=True)
-    parser.add_argument("-e3", "--edc3", type=str, help="EDC provider control plane display URL 3", required=True)
-    parser.add_argument("-eu1", "--internaledc1", type=str, help="EDC provider control plane upload URL 1", required=False)
-    parser.add_argument("-eu2", "--internaledc2", type=str, help="EDC provider control plane upload URL 2", required=False)
-    parser.add_argument("-eu3", "--internaledc3", type=str, help="EDC provider control plane upload URL 3", required=False)
-    parser.add_argument("-k", "--apikey", type=str, help="edc api key", required=True)
-    parser.add_argument("-e", "--esr", type=str, help="esr url", required=False)
+    parser.add_argument("-edc", "--edc", type=str, nargs="*", help="EDC provider control plane display URLs",
+                        required=True)
+    parser.add_argument("-eu", "--edcupload", type=str, nargs="*", help="EDC provider control plane upload URLs",
+                        required=False)
+    parser.add_argument("-k", "--apikey", type=str, help="EDC provider api key", required=True)
+    parser.add_argument("-e", "--esr", type=str, help="ESR URL", required=False)
 
     args = parser.parse_args()
     config = vars(args)
 
     filepath = config.get("file")
-    submodel_server_1_address = config.get("submodel1")
-    submodel_server_2_address = config.get("submodel2")
-    submodel_server_3_address = config.get("submodel3")
-
-    internal_submodel_server_1_address = config.get("internalsubmodel1")
-    internal_submodel_server_2_address = config.get("internalsubmodel2")
-    internal_submodel_server_3_address = config.get("internalsubmodel3")
-    if internal_submodel_server_1_address is None:
-        internal_submodel_server_1_address = submodel_server_1_address
-    if internal_submodel_server_2_address is None:
-        internal_submodel_server_2_address = submodel_server_2_address
-    if internal_submodel_server_3_address is None:
-        internal_submodel_server_3_address = submodel_server_3_address
-
+    submodel_server_urls = config.get("submodel")
+    submodel_server_upload_urls = config.get("submodelupload")
     aas_url = config.get("aas")
-    edc_url1 = config.get("edc1")
-    edc_url2 = config.get("edc2")
-    edc_url3 = config.get("edc3")
-
-    edc_internal_url1 = config.get("internaledc1")
-    edc_internal_url2 = config.get("internaledc2")
-    edc_internal_url3 = config.get("internaledc3")
-
-    if edc_internal_url1 is None:
-        edc_internal_url1 = edc_url1
-    if edc_internal_url2 is None:
-        edc_internal_url2 = edc_url2
-    if edc_internal_url3 is None:
-        edc_internal_url3 = edc_url3
-
+    edc_urls = config.get("edc")
+    edc_upload_urls = config.get("edcupload")
     edc_api_key = config.get("apikey")
     esr_url = config.get("esr")
 
-    submodel_server_1_bpn = "BPNL00000003B0Q0"
-    submodel_server_2_bpn = "BPNL00000003AYRE"
+    if submodel_server_upload_urls is None:
+        submodel_server_upload_urls = submodel_server_urls
+    if edc_upload_urls is None:
+        edc_upload_urls = edc_urls
+
+    check_url_args(submodel_server_upload_urls, submodel_server_urls, edc_upload_urls, edc_urls)
 
     edc_asset_path = "/data/assets"
     edc_policy_path = "/data/policydefinitions"
@@ -234,15 +225,8 @@ if __name__ == "__main__":
 
     retries = Retry(total=5,
                     backoff_factor=0.1)
-
     session = requests.Session()
     session.mount('https://', HTTPAdapter(max_retries=retries))
-
-    statistic_dict = {
-        "provider1": 0,
-        "provider2": 0,
-        "provider3": 0
-    }
 
     for tmp_data in testdata:
         catenax_id = tmp_data["catenaXId"]
@@ -292,24 +276,10 @@ if __name__ == "__main__":
                                "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
                                "urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription/1.0.1"):
                 # 1. Prepare submodel endpoint address
-                if contract_id % 3 == 0:
-                    submodel_url = submodel_server_1_address
-                    submodel_upload_url = internal_submodel_server_1_address
-                    edc_url = edc_url1
-                    edc_upload_url = edc_internal_url1
-                    statistic_dict.update({"provider1": statistic_dict["provider1"] + 1})
-                elif contract_id % 3 == 1:
-                    submodel_url = submodel_server_2_address
-                    submodel_upload_url = internal_submodel_server_2_address
-                    edc_url = edc_url2
-                    edc_upload_url = edc_internal_url2
-                    statistic_dict.update({"provider2": statistic_dict["provider2"] + 1})
-                else:
-                    submodel_url = submodel_server_3_address
-                    submodel_upload_url = internal_submodel_server_3_address
-                    edc_url = edc_url3
-                    edc_upload_url = edc_internal_url3
-                    statistic_dict.update({"provider3": statistic_dict["provider3"] + 1})
+                submodel_url = submodel_server_urls[contract_id % len(submodel_server_urls)]
+                submodel_upload_url = submodel_server_upload_urls[contract_id % len(submodel_server_upload_urls)]
+                edc_url = edc_urls[contract_id % len(edc_urls)]
+                edc_upload_url = edc_upload_urls[contract_id % len(edc_upload_urls)]
 
                 submodel_name = tmp_key[tmp_key.index("#") + 1: len(tmp_key)]
                 submodel_identification = uuid.uuid4().urn
@@ -369,5 +339,4 @@ if __name__ == "__main__":
 
     timestamp_end = time.time()
     duration = timestamp_end - timestamp_start
-    print("Duration: %s Seconds" % math.ceil(duration))
-    print(statistic_dict)
+    print(f"Test data upload completed in {math.ceil(duration)} Seconds")

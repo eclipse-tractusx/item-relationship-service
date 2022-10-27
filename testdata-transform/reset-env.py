@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import argparse
+
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
@@ -51,24 +52,18 @@ def delete_policies_and_assets(policy_url_, asset_url_, headers_):
 
 
 if __name__ == "__main__":
-    # -a "https://irs-aas-registry.dev.demo.catena-x.net/registry/shell-descriptors"
-    # -e1 "https://irs-provider-controlplane.dev.demo.catena-x.net/data/contractdefinitions"
-    # -e2 "https://irs-provider-controlplane2.dev.demo.catena-x.net/data/contractdefinitions"
-    # -e3 "https://irs-provider-controlplane3.dev.demo.catena-x.net/data/contractdefinitions"
-    # -k '123456'
     parser = argparse.ArgumentParser(description="Script to delete testdata from CX Environment.",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-a", "--aas", type=str, help="aas url", required=True)
-    parser.add_argument("-e1", "--edc1", type=str, help="Public EDC provider control plane url 1", required=True)
-    parser.add_argument("-e2", "--edc2", type=str, help="Public EDC provider control plane url 2", required=True)
-    parser.add_argument("-e3", "--edc3", type=str, help="Public EDC provider control plane url 3", required=True)
+    parser.add_argument("-edc", "--edc", type=str, nargs="*", help="EDC provider control plane display URLs",
+                        required=True)
     parser.add_argument("-k", "--apikey", type=str, help="edc api key", required=True)
 
     args = parser.parse_args()
     config = vars(args)
     edc_api_key = config.get("apikey")
     registry_url = config.get("aas") + "/registry/shell-descriptors"
-    edc_urls = [config.get("edc1"), config.get("edc2"), config.get("edc3")]
+    edc_urls = config.get("edc")
 
     headers = {
         'X-Api-Key': edc_api_key,
