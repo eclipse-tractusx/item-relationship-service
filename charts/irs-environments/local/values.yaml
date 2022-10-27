@@ -46,6 +46,9 @@ irs-helm:
   # EDC Postgres Configuration #
   ##############################
   postgresql:
+    primary:
+      persistence:
+        enabled: false
     auth:
       postgresPassword: test
       password: test
@@ -200,10 +203,17 @@ edc-provider:
         edc.vault.hashicorp.token=
 
   postgresql-provider:
+    primary:
+      persistence:
+        enabled: false
     auth:
       postgresPassword: test
       password: test
 
 registry:
+  registrypostgres:
+    primary:
+      persistence:
+        enabled: false
   registry:
     dockerSecret:
