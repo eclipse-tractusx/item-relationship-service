@@ -1037,6 +1037,51 @@ stages:
         content-type: application/json
 
 
+
+---
+
+
+
+test_name: Make sure request for all jobs returns all status (2.0.3)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: get all INITIAL jobs
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        function: api-tests.tavern_helpers:status_of_all_jobs_are_given
+      headers:
+        content-type: application/json
+
+
 ---
 
 

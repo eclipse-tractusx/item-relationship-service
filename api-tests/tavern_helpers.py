@@ -58,6 +58,15 @@ def status_of_jobs_are_as_expected(response, expected_status):
         assert expected_status in actual_status
 
 
+def status_of_all_jobs_are_given(response):
+    print(response.json())
+    for i in response.json():
+        actual_status = i.get("status")
+        assert any(
+            ["COMPLETED" in actual_status, "ERROR" in actual_status, "INITIAL" in actual_status, "CANCELED" in actual_status]
+        )
+
+
 def errors_for_unknown_requested_globalAssetId_are_correct(response):
     print(response.json().get("errors"))
     error_list = response.json().get("errors")
