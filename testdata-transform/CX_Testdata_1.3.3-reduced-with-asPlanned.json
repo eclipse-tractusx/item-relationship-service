@@ -157,7 +157,7 @@
           "dismantlingDate": "2022-07-11T08:38:46.739Z"
         }
       ],
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
           "childParts": [
@@ -928,7 +928,7 @@
     },
     {
       "catenaXId": "urn:uuid:504cc0c4-4199-43bf-83d5-7ce575cf2170",
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:504cc0c4-4199-43bf-83d5-7ce575cf2170",
           "childParts": [
@@ -1014,7 +1014,7 @@
     },
     {
       "catenaXId": "urn:uuid:e4ee6157-108d-4dc5-b47b-08a317d1e2c5",
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:e4ee6157-108d-4dc5-b47b-08a317d1e2c5",
           "childParts": [
@@ -1967,7 +1967,7 @@
           "height": "610"
         }
       ],
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:cafdcb5d-4ed8-40e0-8af4-2b986a08ca7d",
           "childParts": [
@@ -2164,7 +2164,7 @@
     },
     {
       "catenaXId": "urn:uuid:56f09d9a-7004-46e8-a7e1-5a4a4caecced",
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:56f09d9a-7004-46e8-a7e1-5a4a4caecced",
           "childParts": [
@@ -2317,7 +2317,7 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:b5a3dc95-c4a3-482f-b5ef-89af7d6e6348",
           "childParts": []
@@ -2345,7 +2345,7 @@
     },
     {
       "catenaXId": "urn:uuid:a1c33cc3-60c2-4b06-a929-2c3ef8d09dd2",
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:a1c33cc3-60c2-4b06-a929-2c3ef8d09dd2",
           "childParts": [
@@ -2514,7 +2514,7 @@
     },
     {
       "catenaXId": "urn:uuid:6b7688db-ca94-4056-9e94-98b8f49bbf5e",
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:6b7688db-ca94-4056-9e94-98b8f49bbf5e",
           "childParts": [
@@ -2833,7 +2833,7 @@
           "dismantlingDate": "2022-07-11T08:38:46.739Z"
         }
       ],
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
           "childParts": [
@@ -3604,7 +3604,7 @@
     },
     {
       "catenaXId": "urn:uuid:50edf0fc-95a7-40b3-ad43-9156f3b81768",
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:50edf0fc-95a7-40b3-ad43-9156f3b81768",
           "childParts": [
@@ -3690,7 +3690,7 @@
     },
     {
       "catenaXId": "urn:uuid:f2e6d0cd-5a9a-451d-a583-510c5209f64c",
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:f2e6d0cd-5a9a-451d-a583-510c5209f64c",
           "childParts": [
@@ -4643,7 +4643,7 @@
           "height": "610"
         }
       ],
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:57ced45e-4f98-4aa4-bb67-6f7c51b90a4b",
           "childParts": [
@@ -4840,7 +4840,7 @@
     },
     {
       "catenaXId": "urn:uuid:133a0c0d-c5f1-4b2d-a5df-18765c55fba5",
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:133a0c0d-c5f1-4b2d-a5df-18765c55fba5",
           "childParts": [
@@ -4993,7 +4993,7 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:2687fd84-825d-4923-b1ab-66b70f002929",
           "childParts": []
@@ -5021,7 +5021,7 @@
     },
     {
       "catenaXId": "urn:uuid:9abcceb1-02ed-4384-83bb-e3f5b3be77d4",
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:9abcceb1-02ed-4384-83bb-e3f5b3be77d4",
           "childParts": [
@@ -5190,7 +5190,7 @@
     },
     {
       "catenaXId": "urn:uuid:68766b51-f794-4033-bcb1-f635ed309cd4",
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:68766b51-f794-4033-bcb1-f635ed309cd4",
           "childParts": [
@@ -5509,7 +5509,7 @@
           "dismantlingDate": "2022-07-11T08:38:46.739Z"
         }
       ],
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:a8cb40aa-3c7c-48ff-877c-ba08a8ad0bbb",
           "childParts": [
@@ -6280,7 +6280,7 @@
     },
     {
       "catenaXId": "urn:uuid:0eefc461-f341-4f71-9072-7291356a1c6d",
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:0eefc461-f341-4f71-9072-7291356a1c6d",
           "childParts": [
@@ -6366,7 +6366,7 @@
     },
     {
       "catenaXId": "urn:uuid:aa6e48b8-4e0d-4eeb-8dc0-ecd3e8a1b1fb",
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:aa6e48b8-4e0d-4eeb-8dc0-ecd3e8a1b1fb",
           "childParts": [
@@ -7319,7 +7319,7 @@
           "height": "610"
         }
       ],
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:03bd9690-8127-4275-bdfb-3d9d7b0b3ecc",
           "childParts": [
@@ -7516,7 +7516,7 @@
     },
     {
       "catenaXId": "urn:uuid:3b417f12-fc54-4c55-a337-3f174e5b8886",
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:3b417f12-fc54-4c55-a337-3f174e5b8886",
           "childParts": [
@@ -7669,7 +7669,7 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:0ec2b3a8-e2cb-4302-8bdb-2807deed0ecf",
           "childParts": []
@@ -7697,7 +7697,7 @@
     },
     {
       "catenaXId": "urn:uuid:5cd50f24-1885-4f3e-81a1-a2051f69382a",
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:5cd50f24-1885-4f3e-81a1-a2051f69382a",
           "childParts": [
@@ -7866,7 +7866,7 @@
     },
     {
       "catenaXId": "urn:uuid:a742d285-d9ef-4644-a52c-9424347257d5",
-      "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship": [
+      "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship": [
         {
           "catenaXId": "urn:uuid:a742d285-d9ef-4644-a52c-9424347257d5",
           "childParts": [
