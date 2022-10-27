@@ -37,6 +37,7 @@ def submodels_are_empty(response):
 
 
 def submodels_are_not_empty(response):
+    print(response)
     print(response.json().get("submodels"))
     print("Check if submodels are not empty", len(response.json().get("submodels")))
     assert len(response.json().get("submodels")) != 0
@@ -49,9 +50,22 @@ def errors_for_globalAssetId_are_correct(response):
     assert 'globalAssetId:must match \"^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\"' in error_list
 
 
-def jobs_are_COMPLETED(response):
-    print('Expected status: COMPLETED')
-    print('Actual Status: ' + response.json()[0].get("status"))
-    # print('Length: ' + response.json().get())
-    assert 'COMPLETED' in response.json()[0].get("status")
+def status_of_jobs_are_as_expected(response, expected_status):
+    print(response.json())
+    for i in response.json():
+        actual_status = i.get("status")
+        print(f"Asserting expected status '{expected_status}' to be equal to actual status '{actual_status}'")
+        assert expected_status in actual_status
+
+
+def errors_for_unknown_requested_globalAssetId_are_correct(response):
+    print(response.json().get("errors"))
+    error_list = response.json().get("errors")
+    assert 'No job exists with id bc1b4f4f-aa00-4296-8738-e7913c95f2d9' in error_list
+
+
+def check_createdOn_bigger_startedOn(createdOn, startedOn):
+    print(f"createdOn: {createdOn}")
+    print(f"startedOn: {startedOn}")
+    assert startedOn > createdOn
 

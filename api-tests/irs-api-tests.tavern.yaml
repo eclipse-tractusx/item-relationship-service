@@ -900,3 +900,184 @@ stages:
         errors: null
       headers:
         content-type: application/json
+
+
+---
+
+
+test_name: Make sure request for COMPLETED jobs only returns COMPLETED status (2.0.0)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: get all COMPLETED jobs
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=COMPLETED"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        function: api-tests.tavern_helpers:status_of_jobs_are_as_expected
+        extra_kwargs:
+          expected_status: COMPLETED
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure request for ERROR jobs only returns ERROR status (2.0.1)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: get all ERROR jobs
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=ERROR"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        function: api-tests.tavern_helpers:status_of_jobs_are_as_expected
+        extra_kwargs:
+          expected_status: ERROR
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure request for INITIAL jobs only returns INITIAL status (2.0.2)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: get all INITIAL jobs
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=INITIAL"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        function: api-tests.tavern_helpers:status_of_jobs_are_as_expected
+        extra_kwargs:
+          expected_status: INITIAL
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Check if error message for job request with unknown job-ID is correct (3.1.1)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: get job for unknown globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/bc1b4f4f-aa00-4296-8738-e7913c95f2d9"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 404
+      json:
+        statusCode: NOT_FOUND
+        message: Not Found
+      verify_response_with:
+        function: api-tests.tavern_helpers:errors_for_unknown_requested_globalAssetId_are_correct
+      headers:
+        content-type: application/json
