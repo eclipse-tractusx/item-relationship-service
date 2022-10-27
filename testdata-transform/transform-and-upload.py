@@ -241,19 +241,18 @@ if __name__ == "__main__":
         name_at_manufacturer = ""
 
         for tmp_key in tmp_keys:
-            if tmp_key in "urn:bamm:io.catenax.batch:1.0.0#Batch" \
-                    or tmp_key in "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization":
+            if "Batch" in tmp_key or "SerialPartTypization" in tmp_key:
                 specific_asset_ids = tmp_data[tmp_key][0]["localIdentifiers"]
-                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"] \
-                    .replace(" ", "")
-            if tmp_key in "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned":
-                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"] \
-                    .replace(" ", "")
+                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ",
+                                                                                                                 "")
+            if "PartAsPlanned" in tmp_key:
+                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ",
+                                                                                                                 "")
                 specific_asset_ids.append({
                     "value": tmp_data[tmp_key][0]["partTypeInformation"]["manufacturerPartId"],
                     "key": "manufacturerPartId"
                 })
-            if tmp_key in "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation":
+            if "PartSiteInformation" in tmp_key:
                 specific_asset_ids.append({
                     "value": tmp_data[tmp_key][0]["sites"][0]["externalSiteIdentifier"][0]["organization"],
                     "key": "manufacturerId"
@@ -267,14 +266,13 @@ if __name__ == "__main__":
 
         asr = "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship"
 
-        if esr_url and asr in tmp_keys and "childParts" in tmp_data[asr][0] and tmp_data[asr][0]["childParts"]:
+        if esr_url and "AssemblyPartRelationship" in tmp_keys and "childParts" in tmp_data[asr][0] and tmp_data[asr][0][
+                "childParts"]:
             tmp_data.update({
                 "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic": ""})
 
         for tmp_key in tmp_keys:
-            if tmp_key not in ("PlainObject", "catenaXId",
-                               "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
-                               "urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription/1.0.1"):
+            if "PlainObject" not in tmp_key and "catenaXId" not in tmp_key:
                 # 1. Prepare submodel endpoint address
                 submodel_url = submodel_server_urls[contract_id % len(submodel_server_urls)]
                 submodel_upload_url = submodel_server_upload_urls[contract_id % len(submodel_server_upload_urls)]
