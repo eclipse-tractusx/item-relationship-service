@@ -119,8 +119,7 @@ stages:
           jobState: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:submodels_are_not_empty
-      #        createdOn: #2022-10-10T05:33:23.114513694Z
-      #        startedOn: #2022-10-10T05:33:23.114792093Z
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
@@ -188,8 +187,7 @@ stages:
           jobState: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:submodels_are_empty
-      #        createdOn: #2022-10-10T05:33:23.114513694Z
-      #        startedOn: #2022-10-10T05:33:23.114792093Z
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
@@ -311,8 +309,7 @@ stages:
         - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
-      #        createdOn: #2022-10-10T05:33:23.114513694Z
-      #        startedOn: #2022-10-10T05:33:23.114792093Z
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
@@ -386,8 +383,7 @@ stages:
         - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
-      #        createdOn: #2022-10-10T05:33:23.114513694Z
-      #        startedOn: #2022-10-10T05:33:23.114792093Z
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
@@ -460,8 +456,7 @@ stages:
         - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
-      #        createdOn: #2022-10-10T05:33:23.114513694Z
-      #        startedOn: #2022-10-10T05:33:23.114792093Z
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
@@ -535,8 +530,7 @@ stages:
         - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
-      #        createdOn: #2022-10-10T05:33:23.114513694Z
-      #        startedOn: #2022-10-10T05:33:23.114792093Z
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
@@ -610,8 +604,7 @@ stages:
         - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
-      #        createdOn: #2022-10-10T05:33:23.114513694Z
-      #        startedOn: #2022-10-10T05:33:23.114792093Z
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
@@ -685,8 +678,7 @@ stages:
         - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
-      #        createdOn: #2022-10-10T05:33:23.114513694Z
-      #        startedOn: #2022-10-10T05:33:23.114792093Z
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
@@ -827,8 +819,7 @@ stages:
         - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
-      #        createdOn: #2022-10-10T05:33:23.114513694Z
-      #        startedOn: #2022-10-10T05:33:23.114792093Z
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 

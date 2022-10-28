@@ -1,4 +1,6 @@
 # testing_utils.py
+from datetime import datetime
+
 
 def checkResponse(response):
     tombstones_are_not_empty(response)
@@ -73,8 +75,28 @@ def errors_for_unknown_requested_globalAssetId_are_correct(response):
     assert 'No job exists with id bc1b4f4f-aa00-4296-8738-e7913c95f2d9' in error_list
 
 
-def check_createdOn_bigger_startedOn(createdOn, startedOn):
-    print(f"createdOn: {createdOn}")
-    print(f"startedOn: {startedOn}")
-    assert startedOn > createdOn
+def check_timestamps_for_completed_jobs(response):
+    print(f"createdOn: {response.json().get('job').get('createdOn')}")
+    print(f"startedOn: {response.json().get('job').get('startedOn')}")
+    print(f"lastModifiedOn: {response.json().get('job').get('lastModifiedOn')}")
+    print(f"jobCompleted: {response.json().get('job').get('jobCompleted')}")
 
+    created_on_timestamp = datetime.strptime(response.json().get('job').get('createdOn')[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
+    started_on_timestamp = datetime.strptime(response.json().get('job').get('startedOn')[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
+    last_modified_on_timestamp = datetime.strptime(response.json().get('job').get('lastModifiedOn')[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
+    job_completed_timestamp = datetime.strptime(response.json().get('job').get('jobCompleted')[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
+    assert started_on_timestamp > created_on_timestamp
+    assert last_modified_on_timestamp > started_on_timestamp
+    assert job_completed_timestamp > last_modified_on_timestamp
+
+
+def check_timestamps_for_not_completed_jobs(response):
+    print(f"createdOn: {response.json().get('job').get('createdOn')}")
+    print(f"startedOn: {response.json().get('job').get('startedOn')}")
+    print(f"lastModifiedOn: {response.json().get('job').get('lastModifiedOn')}")
+
+    created_on_timestamp = datetime.strptime(response.json().get('job').get('createdOn')[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
+    started_on_timestamp = datetime.strptime(response.json().get('job').get('startedOn')[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
+    last_modified_on_timestamp = datetime.strptime(response.json().get('job').get('lastModifiedOn')[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
+    assert started_on_timestamp > created_on_timestamp
+    assert last_modified_on_timestamp > started_on_timestamp
