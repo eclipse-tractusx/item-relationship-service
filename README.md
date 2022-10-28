@@ -43,6 +43,31 @@ The following subsection provides instructions for running the infrastructure on
 - API docs: http://localhost:8080/api/api-docs
 - API docs in yaml:  http://localhost:8080/api/api-docs.yaml
 
+### Local Helm deployment
+
+#### Prerequisites
+
+- install rancher desktop
+- install kubectl
+- Set Credentials for external environments in [helm charts](charts/irs-environments/local/values.yaml)
+
+#### How to run
+
+- **Windows**  
+  In CMD or PowerShell execute from project root: `.\charts\irs-environments\local\start.bat`  
+  A new window will open to forward the ports to your local machine.
+  Do not close this window until you want to stop the local deployment
+  
+- **Linux**  
+  Run the following commands from project root  
+  `./charts/irs-environments/local/start.sh`  
+  `./charts/irs-environments/local/forward-ports.sh`(in a separate terminal tab or window, this needs to stay open)  
+  `./charts/irs-environments/local/upload-testdata.sh`  
+
+IRS will be available at http://localhost:10165  
+#### How to stop 
+`helm uninstall irs-local -n product-traceability-irs`
+
 ### Accessing the secured API
 
 A valid access token is required to access every IRS endpoint and must be included in the Authorization header - otherwise **HTTP 401 Unauthorized** status is returned to the client.
