@@ -34,6 +34,7 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
+import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
@@ -45,14 +46,14 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
+import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.DataRequest;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
-import org.eclipse.tractusx.irs.dto.JobParameter;
-import org.eclipse.tractusx.irs.dto.RelationshipAspect;
+import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.RelationshipAspect;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import net.datafaker.Faker;
 
@@ -98,20 +99,29 @@ public class TestMother {
 
     public static JobParameter jobParameter() {
         return JobParameter.builder()
-                           .rootItemId("urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873")
-                           .treeDepth(0)
-                           .bomLifecycle("AsBuilt")
-                           .aspectTypes(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(),
-                                   AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()))
+                           .depth(0)
+                           .bomLifecycle(BomLifecycle.AS_BUILT)
+                           .direction(Direction.DOWNWARD)
+                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION,
+                                   AspectType.ASSEMBLY_PART_RELATIONSHIP))
+                           .build();
+    }
+
+    public static JobParameter jobParameterCollectAspects() {
+        return JobParameter.builder()
+                           .depth(0)
+                           .bomLifecycle(BomLifecycle.AS_BUILT)
+                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION,
+                                   AspectType.ASSEMBLY_PART_RELATIONSHIP))
+                           .collectAspects(true)
                            .build();
     }
 
     public static JobParameter jobParameterFilter() {
         return JobParameter.builder()
-                           .rootItemId("urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873")
-                           .treeDepth(0)
-                           .bomLifecycle("AsRequired")
-                           .aspectTypes(List.of(AspectType.MATERIAL_FOR_RECYCLING.toString()))
+                           .depth(0)
+                           .bomLifecycle(BomLifecycle.AS_BUILT)
+                           .aspects(List.of(AspectType.MATERIAL_FOR_RECYCLING))
                            .build();
     }
 
@@ -131,6 +141,7 @@ public class TestMother {
                   .createdOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .owner(faker.lorem().characters())
                   .lastModifiedOn(ZonedDateTime.now(ZoneId.of("UTC")))
+                  .jobParameter(jobParameter())
                   .build();
     }
 
@@ -141,8 +152,6 @@ public class TestMother {
     public MultiTransferJob job(JobState jobState) {
         return MultiTransferJob.builder()
                                .job(fakeJob(jobState))
-                               .jobParameter(jobParameter())
-                               .jobParameter(jobParameter())
                                .build();
     }
 
@@ -170,12 +179,12 @@ public class TestMother {
 
     public static Relationship relationship() {
         final LinkedItem linkedItem = LinkedItem.builder()
-                                                .childCatenaXId(GlobalAssetIdentification.of(UUID.randomUUID().toString()))
+                                                .childCatenaXId(
+                                                        GlobalAssetIdentification.of(UUID.randomUUID().toString()))
                                                 .lifecycleContext(BomLifecycle.AS_BUILT)
                                                 .build();
 
-        return new Relationship(GlobalAssetIdentification.of(UUID.randomUUID().toString()),
-                linkedItem,
+        return new Relationship(GlobalAssetIdentification.of(UUID.randomUUID().toString()), linkedItem,
                 RelationshipAspect.AssemblyPartRelationship.name());
     }
 
@@ -197,11 +206,12 @@ public class TestMother {
 
     public static AssetAdministrationShellDescriptor shellDescriptor(
             final List<SubmodelDescriptor> submodelDescriptors) {
-        return AssetAdministrationShellDescriptor
-                .builder()
-                .specificAssetIds(List.of(
-                        IdentifierKeyValuePair.builder().key("ManufacturerId").value("BPNL00000003AYRE").build()))
-                .submodelDescriptors(submodelDescriptors)
-                .build();
+        return AssetAdministrationShellDescriptor.builder()
+                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
+                                                                                                 .key("ManufacturerId")
+                                                                                                 .value("BPNL00000003AYRE")
+                                                                                                 .build()))
+                                                 .submodelDescriptors(submodelDescriptors)
+                                                 .build();
     }
 }

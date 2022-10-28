@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.component;
 import java.util.UUID;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
@@ -37,6 +38,11 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 public class JobHandle {
 
+    private static final int JOB_ID_FIELD_MAX_LENGTH = 36;
+
+    @Schema(description = "JobId of the job.", minLength = JOB_ID_FIELD_MAX_LENGTH,
+            maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class,
+            pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i")
     private UUID jobId;
 
     @Override

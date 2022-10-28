@@ -67,4 +67,11 @@
         <gav regex="true">org\.yaml:snakeyaml.*</gav>
         <vulnerabilityName>CVE-2022-38752</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Only relevant if UNWRAP_SINGLE_VALUE_ARRAYS is activated, which is not the case here.
+        ]]></notes>
+        <gav regex="true">com\.fasterxml\.jackson\.core:jackson-databind.*</gav>
+        <vulnerabilityName>CVE-2022-42003</vulnerabilityName>
+    </suppress>
 </suppressions>

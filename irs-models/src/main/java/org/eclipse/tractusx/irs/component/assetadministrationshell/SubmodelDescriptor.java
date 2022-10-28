@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.component.assetadministrationshell;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -43,6 +44,7 @@ public class SubmodelDescriptor {
     /**
      * description
      */
+    @ArraySchema(maxItems = Integer.MAX_VALUE)
     private List<LangString> description;
     /**
      * idShort
@@ -59,6 +61,7 @@ public class SubmodelDescriptor {
     /**
      * endpoint
      */
+    @ArraySchema(maxItems = Integer.MAX_VALUE)
     private List<Endpoint> endpoints;
 
     /**

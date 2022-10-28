@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.util.TestMother;
 import net.datafaker.Faker;
@@ -50,9 +51,9 @@ class MultiTransferJobTest {
 
     @Test
     void getJobData_Immutable() {
-        final List<String> aspectTypes = jobParameter().getAspectTypes();
+        final List<AspectType> aspectTypes = jobParameter().getAspects();
 
-        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> aspectTypes.add(word));
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> aspectTypes.add(AspectType.PCF_CORE));
     }
 
     @Test

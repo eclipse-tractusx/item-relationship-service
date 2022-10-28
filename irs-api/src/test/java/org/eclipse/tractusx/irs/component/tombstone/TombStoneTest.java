@@ -29,6 +29,7 @@ import java.time.ZonedDateTime;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.tractusx.irs.component.ProcessingError;
 import org.eclipse.tractusx.irs.component.Tombstone;
+import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.junit.jupiter.api.Test;
 
 class TombStoneTest {
@@ -43,6 +44,7 @@ class TombStoneTest {
         String endPointUrl = "http://localhost/dummy/interfaceinformation/urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
         ProcessingError processingError = ProcessingError.builder()
+                                                         .withProcessStep(ProcessStep.SUBMODEL_REQUEST)
                                                          .withRetryCounter(RetryRegistry.ofDefaults()
                                                                                         .getDefaultConfig()
                                                                                         .getMaxAttempts())
@@ -58,7 +60,7 @@ class TombStoneTest {
 
         //act
         tombstone = Tombstone.from(catenaXId, endPointUrl, illegalArgumentException,
-                RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts());
+                RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts(), ProcessStep.SUBMODEL_REQUEST);
 
         // assert
         assertThat(tombstone).isNotNull();

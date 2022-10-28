@@ -1,6 +1,5 @@
 package org.eclipse.tractusx.irs.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -17,7 +16,7 @@ public class LocalTestDataConfigurationAware {
     protected LocalTestDataConfiguration localTestDataConfiguration = mock(LocalTestDataConfiguration.class);
 
     protected LocalTestDataConfigurationAware() throws IOException {
-        final File file = new File("src/main/resources/test_data/CX_Testdata_1.3.3.json");
+        final File file = new File("src/main/resources/test_data/CX_Testdata.json");
 
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

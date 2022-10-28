@@ -27,6 +27,8 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,6 +46,7 @@ import org.eclipse.tractusx.irs.component.enums.AspectType;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Slf4j
+@Schema(description = "AAS shells.")
 public class AssetAdministrationShellDescriptor {
 
     /**
@@ -53,6 +56,7 @@ public class AssetAdministrationShellDescriptor {
     /**
      * description
      */
+    @ArraySchema(maxItems = Integer.MAX_VALUE)
     private List<LangString> description;
     /**
      * globalAssetId
@@ -69,10 +73,12 @@ public class AssetAdministrationShellDescriptor {
     /**
      * specificAssetIds
      */
+    @ArraySchema(maxItems = Integer.MAX_VALUE)
     private List<IdentifierKeyValuePair> specificAssetIds;
     /**
      * submodelDescriptors
      */
+    @ArraySchema(maxItems = Integer.MAX_VALUE)
     private List<SubmodelDescriptor> submodelDescriptors;
 
     /**
@@ -99,10 +105,12 @@ public class AssetAdministrationShellDescriptor {
     }
 
     /**
-     * @return The filtered list containing only SubmodelDescriptors which are AssemblyPartRelationship
+     *
+     * @param relationshipAspect filter for aspect type
+     * @return The filtered list of submodel addresses
      */
-    public List<String> findAssemblyPartRelationshipEndpointAddresses() {
-        final List<SubmodelDescriptor> filteredSubmodelDescriptors = filterDescriptorsByAssemblyPartRelationship();
+    public List<String> findRelationshipEndpointAddresses(final AspectType relationshipAspect) {
+        final List<SubmodelDescriptor> filteredSubmodelDescriptors = filterDescriptorsByAspectTypes(List.of(relationshipAspect.toString()));
         return filteredSubmodelDescriptors.stream()
                                           .map(SubmodelDescriptor::getEndpoints)
                                           .flatMap(endpoints -> endpoints.stream()
@@ -123,13 +131,6 @@ public class AssetAdministrationShellDescriptor {
                                                                                         submodelDescriptor, type)))
 
                                        .collect(Collectors.toList());
-    }
-
-    /**
-     * @return The SubmodelDescriptors which are of AspectType AssemblyPartRelationship
-     */
-    private List<SubmodelDescriptor> filterDescriptorsByAssemblyPartRelationship() {
-        return filterDescriptorsByAspectTypes(List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()));
     }
 
     private boolean isMatching(final SubmodelDescriptor submodelDescriptor, final String aspectTypeFilter) {

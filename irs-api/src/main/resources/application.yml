@@ -62,7 +62,7 @@ springdoc:
   writer-with-order-by-keys: true
 
 irs:
-  apiUrl: http://irs.int.demo.catena-x.net
+  apiUrl: "${IRS_API_URL:http://localhost:8080}"
   job:
     cleanup:
       scheduler:
@@ -105,14 +105,11 @@ aasWrapper:
   username: ${AASWRAPPER_USERNAME:}
   password: ${AASWRAPPER_PASSWORD:}
 
-aspectTypes:
-  default: SerialPartTypization
-
 digitalTwinRegistry:
-  url: https://semantics.int.demo.catena-x.net/registry
+  url: "${DIGITALTWINREGISTRY_URL:}"
 
 semanticsHub:
-  url: https://semantics.int.demo.catena-x.net/hub/api/v1
+  url: "${SEMANTICSHUB_URL:}"
   cleanup:
     #          ┌───────────── second (0-59)
     #          │ ┌───────────── minute (0 - 59)
@@ -123,10 +120,8 @@ semanticsHub:
     #          │ │ │  │ │ │          (or MON-SUN -- 0 or 7 is Sunday)
     #          │ │ │  │ │ │
     scheduler: 0 0 23 * * * # every day at 23:00
-  defaultUrns: >
-    urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
-#    ,urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship
+  defaultUrns: "${SEMANTICSHUB_DEFAULT_URNS:urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization}"
 
 bpdm:
-  url: https://catenax-bpdm-int.demo.catena-x.net/v1
+  url: "${BPDM_URL:}"
 

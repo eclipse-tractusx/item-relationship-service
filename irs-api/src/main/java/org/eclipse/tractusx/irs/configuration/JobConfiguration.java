@@ -47,6 +47,7 @@ import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -60,13 +61,13 @@ public class JobConfiguration {
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
             final DigitalTwinDelegate digitalTwinDelegate, final BlobPersistence blobStore,
-            final JobStore jobStore, final MeterRegistryService meterService) {
+            final JobStore jobStore, final MeterRegistryService meterService, final ApplicationEventPublisher applicationEventPublisher) {
 
         final var manager = new AASTransferProcessManager(digitalTwinDelegate, Executors.newCachedThreadPool(), blobStore);
         final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);
 
-        return new JobOrchestrator<>(manager, jobStore, handler, meterService);
+        return new JobOrchestrator<>(manager, jobStore, handler, meterService, applicationEventPublisher);
     }
 
     @Profile("!test")

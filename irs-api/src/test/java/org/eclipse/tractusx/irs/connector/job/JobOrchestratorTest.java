@@ -21,15 +21,16 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.connector.job;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.controllers.IrsAppConstants.JOB_EXECUTION_FAILED;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -53,6 +54,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 class JobOrchestratorTest {
@@ -68,6 +70,9 @@ class JobOrchestratorTest {
 
     @Mock
     MeterRegistryService meterRegistryService;
+
+    @Mock
+    ApplicationEventPublisher applicationEventPublisher;
 
     @InjectMocks
     JobOrchestrator<DataRequest, TransferProcess> sut;
@@ -91,7 +96,6 @@ class JobOrchestratorTest {
         assertThat(job2).usingRecursiveComparison()
                         .ignoringFields("job.job.jobId")
                         .isEqualTo(MultiTransferJob.builder()
-                                                   .jobParameter(job.getJobParameter())
                                                    .job(job2.getJob().toBuilder().jobState(JobState.UNSAVED).build())
                                                    .build());
     }
@@ -137,12 +141,13 @@ class JobOrchestratorTest {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.empty());
 
-        var response = sut.startJob(job.getJobParameter());
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getJobParameter());
         var newJob = getStartedJob();
 
         // Assert
         verifyNoInteractions(processManager);
         verify(jobStore).completeJob(eq(newJob.getJobIdString()), any());
+        verify(jobStore).find(eq(newJob.getJobIdString()));
         verifyNoMoreInteractions(jobStore);
 
         assertThat(response).isEqualTo(
@@ -156,7 +161,7 @@ class JobOrchestratorTest {
         when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(okResponse);
 
         // Act
-        var response = sut.startJob(job.getJobParameter());
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getJobParameter());
 
         // Assert
         var newJob = getStartedJob();
@@ -173,7 +178,7 @@ class JobOrchestratorTest {
                 generate.response(status));
 
         // Act
-        var response = sut.startJob(job.getJobParameter());
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter());
 
         // Assert
         verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()));
@@ -193,12 +198,13 @@ class JobOrchestratorTest {
         when(handler.initiate(any(MultiTransferJob.class))).thenThrow(new RuntimeException());
 
         // Act
-        var response = sut.startJob(job.getJobParameter());
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter());
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
         verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), JOB_EXECUTION_FAILED,
                 "java.lang.RuntimeException");
+        verify(jobStore).find(eq(jobCaptor.getValue().getJobIdString()));
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
 
@@ -214,12 +220,13 @@ class JobOrchestratorTest {
         when(handler.initiate(any(MultiTransferJob.class))).thenThrow(new JobException("Cannot process the request"));
 
         // Act
-        var response = sut.startJob(job.getJobParameter());
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter());
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
         verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), JOB_EXECUTION_FAILED,
                 "org.eclipse.tractusx.irs.connector.job.JobException");
+        verify(jobStore).find(eq(jobCaptor.getValue().getJobIdString()));
         verifyNoMoreInteractions(jobStore);
         assertThat(response).isEqualTo(JobInitiateResponse.builder()
                                                           .jobId(jobCaptor.getValue().getJobIdString())
@@ -250,6 +257,7 @@ class JobOrchestratorTest {
         // Assert
         verify(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
         verify(jobStore).completeJob(eq(job.getJobIdString()), any());
+        verify(jobStore).find(eq(job.getJobIdString()));
         verifyNoInteractions(processManager);
         verifyNoMoreInteractions(jobStore);
     }
@@ -262,6 +270,7 @@ class JobOrchestratorTest {
         // Assert
         verify(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
         verify(jobStore).completeJob(eq(job.getJobIdString()), any());
+        verify(jobStore).find(eq(job.getJobIdString()));
         verifyNoMoreInteractions(jobStore);
         verifyNoMoreInteractions(handler);
     }
@@ -302,6 +311,7 @@ class JobOrchestratorTest {
         // Assert
         verify(jobStore).markJobInError(job.getJobIdString(), JOB_EXECUTION_FAILED,
                 "org.eclipse.tractusx.irs.connector.job.JobException");
+        verify(jobStore, times(2)).find(eq(job.getJobIdString()));
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
     }
@@ -351,6 +361,7 @@ class JobOrchestratorTest {
         // temporarily created job should be deleted
         verify(jobStore).markJobInError(job.getJobIdString(), "Failed to start a transfer",
                 "org.eclipse.tractusx.irs.connector.job.JobException");
+        verify(jobStore).find(eq(job.getJobIdString()));
         verifyNoMoreInteractions(jobStore);
     }
 
@@ -365,6 +376,7 @@ class JobOrchestratorTest {
 
         // Assert
         verify(jobStore).markJobInError(job.getJobIdString(), JOB_EXECUTION_FAILED, "java.lang.RuntimeException");
+        verify(jobStore).find(eq(job.getJobIdString()));
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
     }
@@ -376,7 +388,7 @@ class JobOrchestratorTest {
     }
 
     private MultiTransferJob startJob() {
-        sut.startJob(job.getJobParameter());
+        sut.startJob(job.getGlobalAssetId(), job.getJobParameter());
         return getStartedJob();
     }
 

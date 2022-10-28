@@ -48,8 +48,8 @@ import org.springframework.web.client.RestClientException;
 @ExtendWith(MockitoExtension.class)
 class DigitalTwinRegistryFacadeTest extends LocalTestDataConfigurationAware {
 
-    private final String assemblyPartRelationshipURN = "urn:bamm:com.catenax.assembly_part_relationship:1.0.0";
-    private final String serialPartTypizationURN = "urn:bamm:com.catenax.serial_part_typization:1.0.0";
+    private final String assemblyPartRelationshipURN = "urn:bamm:io.catenax.assembly_part_relationship:1.0.0";
+    private final String serialPartTypizationURN = "urn:bamm:io.catenax.serial_part_typization:1.0.0";
     private DigitalTwinRegistryFacade digitalTwinRegistryFacade;
     @Mock
     private DigitalTwinRegistryClient dtRegistryClientMock;
@@ -76,7 +76,7 @@ class DigitalTwinRegistryFacadeTest extends LocalTestDataConfigurationAware {
         assertThat(shellEndpoints).isNotNull().hasSize(2);
         final Endpoint endpoint = shellEndpoints.get(0).getEndpoints().get(0);
 
-        assertThat(endpoint.getProtocolInformation().getEndpointAddress()).isEqualTo(catenaXId);
+        assertThat(endpoint.getProtocolInformation().getEndpointAddress()).contains(catenaXId);
         assertThat(shellEndpoints.get(0).getSemanticId().getValue()).containsExactly(assemblyPartRelationshipURN);
         assertThat(shellEndpoints.get(1).getSemanticId().getValue()).containsExactly(serialPartTypizationURN);
     }

@@ -43,8 +43,8 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
+import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.eclipse.tractusx.irs.dto.JobParameter;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -68,12 +68,6 @@ public class MultiTransferJob {
     @NonNull
     @Getter
     private Job job;
-    /**
-     * Arbitrary data attached to the job.
-     */
-
-    @Getter
-    private JobParameter jobParameter;
 
     /**
      * Collection of transfers that have completed for the job.
@@ -94,6 +88,16 @@ public class MultiTransferJob {
     @JsonIgnore
     public String getJobIdString() {
         return getJobId().toString();
+    }
+
+    @JsonIgnore
+    public String getGlobalAssetId() {
+        return getJob().getGlobalAssetId().getGlobalAssetId();
+    }
+
+    @JsonIgnore
+    public JobParameter getJobParameter() {
+        return getJob().getJobParameter();
     }
 
     /**

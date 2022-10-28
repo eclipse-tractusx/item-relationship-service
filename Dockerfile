@@ -16,13 +16,14 @@ COPY irs-parent-spring-boot irs-parent-spring-boot
 COPY irs-testing irs-testing
 COPY irs-report-aggregate irs-report-aggregate
 COPY cucumber-tests cucumber-tests
+COPY docs docs
 
 # the --mount option requires BuildKit.
 RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -pl :$BUILD_TARGET -am -DskipTests
 
 
 # Copy the jar and build image
-FROM gcr.io/distroless/java17-debian11:nonroot AS irs-api
+FROM eclipse-temurin:19-jre-alpine AS irs-api
 
 ARG UID=10000
 ARG GID=1000

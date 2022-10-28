@@ -5,6 +5,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added new 'asPlanned' value for bomLifecycle request parameter - now BomAsPlanned can be traversed by the IRS to build relationships
+## [1.3.0] - 2022-10-18
+### Added
+- BPDM URL (*env:BPDM_URL*) is now configurable
+- SemanticsHub URL (*env:SEMANTICSHUB_URL*) and default URNs (*env:SEMANTICSHUB_DEFAULT_URNS*) are now configurable
+- Added an administration guide covering installation and configuration topics (TRI-593) 
+- **Tombstones** Tombstone contains ProcessStep in ProcessingError
+- Added new optional parameter 'callbackUrl' to Job registration request
+
+## [1.2.0] - 2022-09-30
+### Added
+- Automatic eclipse dash IP-ticket creation
+- Automatic cucumber execution based on Tests in Jira
+
+### Fixed
+- Update HSTS header configuration (TRI-659)
+- Encode log output to avoid log forging (TRI-653)
+- Add missing X-Frame-Options header (TRI-661)
+- Switching to a distroless Docker base image to avoid vulnerable library (TRI-729)
+
+### Changed
+- Update EDC components to version 0.1.1
+- Update testdata set to 1.3.2
+- Create Tombstone for faulty/null/none BPN ManufactureId
+- Update aaswrapper to 0.0.7
 
 ## [1.1.0] - 2022-09-12
 ### Added
@@ -62,7 +88,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.2.0...1.3.0
+[1.2.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.1.0...1.2.0
 [1.1.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v0.9.1...v1.0.0
 [0.9.1]: https://github.com/catenax-ng/product-item-relationship-service/commits/v0.9.1

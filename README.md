@@ -29,17 +29,13 @@ business areas by means of data chains along the value chain in the automotive i
 
 ### Local deployment
 
-The two following subsections provide instructions for running either only the infrastructure on docker-compose and the application in the IDE, or for running the full stack (including the application) in docker-compose.
+The following subsection provides instructions for running the infrastructure on docker-compose and the application in the IDE.
 
 #### Docker-compose + IDE
 
 * Start the necessary infrastructure by running `docker-compose up`
 
 * Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
-
-#### Docker-compose full stack
-
-* Run `docker-compose --profile irs up`
 
 #### Local IRS API
 
@@ -119,6 +115,10 @@ This consists of:
 This setup uses the docker images provided by [product-edc](https://github.com/catenax-ng/product-edc/).
 
 Check the Helm charts at [./charts/irs](./charts/irs) for the configuration. 
+
+## Documentation
+
+- [Item Relationship Service Documentation (catena-ng)](https://catenax-ng.github.io/product-item-relationship-service/docs/)
 
 ## Licenses
 Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0) - see [LICENSE](./LICENSE)

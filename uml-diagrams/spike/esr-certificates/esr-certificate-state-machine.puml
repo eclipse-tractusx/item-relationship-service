@@ -1,0 +1,34 @@
+@startuml
+
+skinparam monochrome true
+skinparam shadowing false
+
+hide empty description
+
+state RUNNING {
+    state "EsrCertificate job in execution"
+}
+state APPROVAL_REQUIRED {
+    state "EsrCertificate job requires approval"
+}
+state APPROVED {
+    state "EsrCertificate job approved by user"
+}
+state DISAPPROVED {
+    state "EsrCertificate job disapproved by user"
+}
+state ERROR {
+    state "EsrCertificate job in error state"
+}
+
+[*] --> RUNNING
+RUNNING --> APPROVAL_REQUIRED : Approval required
+APPROVAL_REQUIRED --> ERROR : Approval timeout
+APPROVAL_REQUIRED --> APPROVED : approved by user
+APPROVAL_REQUIRED --> DISAPPROVED  : disapproved by user
+APPROVED ---> [*]
+DISAPPROVED ---> [*]
+RUNNING --> ERROR : Internal processing error
+ERROR ---> [*]
+
+@enduml
