@@ -196,7 +196,7 @@ stages:
 ---
 
 
-test_name: Make sure job return 400-response for invalid globalAssetId syntax (1.1.0 + 1.1.1)
+test_name: Make sure job request with invalid globalAssetId syntax return 400-response (1.1.0 + 1.1.1)
 
 strict:
   - headers:off
@@ -905,7 +905,7 @@ stages:
 ---
 
 
-test_name: Make sure request for COMPLETED jobs only returns COMPLETED status (2.0.0)
+test_name: Make sure search for COMPLETED jobs only returns COMPLETED status (2.0.0)
 
 strict:
   - headers:off
@@ -950,7 +950,7 @@ stages:
 ---
 
 
-test_name: Make sure request for ERROR jobs only returns ERROR status (2.0.1)
+test_name: Make sure search for ERROR jobs only returns ERROR status (2.0.1)
 
 strict:
   - headers:off
@@ -995,7 +995,7 @@ stages:
 ---
 
 
-test_name: Make sure request for INITIAL jobs only returns INITIAL status (2.0.2)
+test_name: Make sure search for INITIAL jobs only returns INITIAL status (2.0.2)
 
 strict:
   - headers:off
@@ -1042,7 +1042,71 @@ stages:
 
 
 
-test_name: Make sure request for all jobs returns all status (2.0.3)
+test_name: Make sure search for RUNNING jobs only returns RUNNING status (2.1.0)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a job for the next step
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        aspects:
+          - SerialPartTypization
+          - ContactInformation
+        collectAspects: true
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+
+  - name: get all INITIAL jobs
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=RUNNING"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        function: api-tests.tavern_helpers:status_of_jobs_are_as_expected
+        extra_kwargs:
+          expected_status: RUNNING
+      headers:
+        content-type: application/json
+
+
+---
+
+
+
+test_name: Make sure search for all jobs returns all status (2.0.3)
 
 strict:
   - headers:off
@@ -1082,10 +1146,55 @@ stages:
         content-type: application/json
 
 
+
 ---
 
 
-test_name: Check if error message for job request with unknown job-ID is correct (3.1.1)
+test_name: Check if error message for searching a job with too long job-ID is correct (3.1.1)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: get job for unknown globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/bc1b4f4f-aa00-4296-8738-e7913c95f2d99"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+      json:
+        statusCode: BAD_REQUEST
+        message: UUID string too large
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Check if error message for searching a job with unknown job-ID is correct (3.1.2)
 
 strict:
   - headers:off

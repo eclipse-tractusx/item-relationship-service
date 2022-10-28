@@ -63,7 +63,7 @@ def status_of_all_jobs_are_given(response):
     for i in response.json():
         actual_status = i.get("status")
         assert any(
-            ["COMPLETED" in actual_status, "ERROR" in actual_status, "INITIAL" in actual_status, "CANCELED" in actual_status]
+            ["COMPLETED" in actual_status, "ERROR" in actual_status, "INITIAL" in actual_status, "CANCELED" in actual_status, "RUNNING" in actual_status]
         )
 
 
