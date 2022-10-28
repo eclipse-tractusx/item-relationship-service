@@ -27,6 +27,7 @@ import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAs
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspectAndCollectAspects;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepth;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -42,6 +43,8 @@ import org.eclipse.tractusx.irs.component.JobErrorDetails;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
+import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
+import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
@@ -190,6 +193,16 @@ class IrsItemGraphQueryServiceSpringBootTest {
         assertThat(multiTransferJob).isPresent();
         assertThat(multiTransferJob.get().getJobParameter().getAspects()).contains(defaultAspectType);
         assertThat(multiTransferJob.get().getJobParameter().isCollectAspects()).isFalse();
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionForLifecycleAsPlannedAndDirectionUpward() {
+        final RegisterJob registerJob = new RegisterJob();
+        registerJob.setGlobalAssetId(UUID.randomUUID().toString());
+        registerJob.setDirection(Direction.UPWARD);
+        registerJob.setBomLifecycle(BomLifecycle.AS_PLANNED);
+
+        assertThrows(IllegalArgumentException.class, () -> service.registerItemJob(registerJob));
     }
 
     private int getRelationshipsSize(final UUID jobId) {
