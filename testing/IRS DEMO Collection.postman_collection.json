@@ -1060,7 +1060,7 @@
 					"response": []
 				},
 				{
-					"name": "2.1.0 [Search for completed Jobs]  http://${environment}/irs/jobs?jobStates=COMPLETED",
+					"name": "2.1.0 [Search for running Jobs]  http://${environment}/irs/jobs?jobStates=RUNNING",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1087,7 +1087,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{IRS_HOST}}/irs/jobs?jobStates=COMPLETED",
+							"raw": "{{IRS_HOST}}/irs/jobs?jobStates=RUNNING",
 							"host": [
 								"{{IRS_HOST}}"
 							],
@@ -1098,7 +1098,7 @@
 							"query": [
 								{
 									"key": "jobStates",
-									"value": "COMPLETED"
+									"value": "RUNNING"
 								}
 							]
 						}
@@ -1253,7 +1253,7 @@
 					"response": []
 				},
 				{
-					"name": "4.0.0 [Search for error Jobs]  http://${environment}/irs/jobs?jobStates=ERROR",
+					"name": "3.1.2 [Search for unknown jobId] http://${environment}/irs/jobs/:jobId",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1280,18 +1280,19 @@
 							}
 						],
 						"url": {
-							"raw": "{{IRS_HOST}}/irs/jobs?jobStates=ERROR",
+							"raw": "{{IRS_HOST}}/irs/jobs/:jobId",
 							"host": [
 								"{{IRS_HOST}}"
 							],
 							"path": [
 								"irs",
-								"jobs"
+								"jobs",
+								":jobId"
 							],
-							"query": [
+							"variable": [
 								{
-									"key": "jobStates",
-									"value": "ERROR"
+									"key": "jobId",
+									"value": "bc1b4f4f-aa00-4296-8738-e7913c95f2d9"
 								}
 							]
 						}
