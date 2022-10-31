@@ -57,7 +57,8 @@ public enum AspectType {
     BATTERY_PASS(AspectTypesConstants.BATTERY_PASS),
     VEHICLE_DIAGNOSTIC_DATA_QUALITY(AspectTypesConstants.VEHICLE_DIAGNOSTIC_DATA_QUALITY),
     SINGLE_LEVEL_BOM_AS_PLANNED(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_PLANNED),
-    PART_AS_PLANNED(AspectTypesConstants.PART_AS_PLANNED);
+    PART_AS_PLANNED(AspectTypesConstants.PART_AS_PLANNED),
+    SINGLE_LEVEL_USAGE_AS_BUILT(AspectTypesConstants.SINGLE_LEVEL_USAGE_AS_BUILT);
 
     private final String name;
 
@@ -122,5 +123,6 @@ public enum AspectType {
         public static final String VEHICLE_DIAGNOSTIC_DATA_QUALITY = "VehicleDiagnosticDataQuality";
         public static final String SINGLE_LEVEL_BOM_AS_PLANNED = "SingleLevelBomAsPlanned";
         public static final String PART_AS_PLANNED = "PartAsPlanned";
+        public static final String SINGLE_LEVEL_USAGE_AS_BUILT = "SingleLevelUsageAsBuilt";
     }
 }

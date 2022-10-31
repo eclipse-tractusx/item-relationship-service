@@ -36,7 +36,7 @@ import lombok.NoArgsConstructor;
 @JsonSerialize(using = ToStringSerializer.class)
 @Schema(description = "Item graph traversal direction.")
 public enum Direction {
-    //@Schema(description = "The tree is traversed in upward direction.") UPWARD("upward"),
+    @Schema(description = "The tree is traversed in upward direction.") UPWARD(DirectionConstants.UPWARD),
     @Schema(description = "The tree is traversed in downward direction.") DOWNWARD(DirectionConstants.DOWNWARD);
 
     private final String name;
@@ -76,6 +76,7 @@ public enum Direction {
      */
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class DirectionConstants {
+        public static final String UPWARD = "upward";
         public static final String DOWNWARD = "downward";
     }
 }
