@@ -921,6 +921,7 @@ components:
             - VehicleDiagnosticDataQuality
             - SingleLevelBomAsPlanned
             - PartAsPlanned
+            - SingleLevelUsageAsBuilt
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
@@ -941,6 +942,7 @@ components:
           type: string
           description: Item graph traversal direction.
           enum:
+            - upward
             - downward
     JobStatusResult:
       type: object
@@ -1130,6 +1132,7 @@ components:
               - VehicleDiagnosticDataQuality
               - SingleLevelBomAsPlanned
               - PartAsPlanned
+              - SingleLevelUsageAsBuilt
           maxItems: 2147483647
         bomLifecycle:
           type: string
@@ -1160,6 +1163,7 @@ components:
           default: downward
           description: Item graph traversal direction.
           enum:
+            - upward
             - downward
         globalAssetId:
           type: string
