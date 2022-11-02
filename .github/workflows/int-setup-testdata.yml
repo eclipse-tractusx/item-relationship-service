@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       submodelUrls:
-        description: 'URLs for Submodel servers'
+        description: 'Space-separated list of Submodel server URLs'
         required: true
         type: string
       aasUrl:
@@ -16,7 +16,7 @@ on:
         required: true
         type: string
       edcUrls:
-        description: 'Provider control plane URLs'
+        description: 'Space-separated list of Provider control plane URLs'
         required: true
         type: string
       edcApiKey:
