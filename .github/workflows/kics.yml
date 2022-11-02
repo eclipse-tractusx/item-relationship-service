@@ -31,7 +31,7 @@ jobs:
           path: "."
           # Exclude paths or files from scan
           # exclude_paths: "api/irs-v1.0.yaml"
-          exclude_paths: "api-tests/irs-api-tests.tavern.yaml"
+          exclude_paths: api-tests/irs-api-tests.tavern.yaml,charts/irs-environments/local/*
           # Fail on HIGH severity results
           fail_on: high
           # when provided with a directory on output_path
