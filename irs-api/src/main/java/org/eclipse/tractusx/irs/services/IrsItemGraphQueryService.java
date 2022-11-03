@@ -91,7 +91,9 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         return jobs.stream()
                    .map(job -> JobStatusResult.builder()
                                               .jobId(job.getJob().getJobId())
-                                              .status(job.getJob().getJobState())
+                                              .jobState(job.getJob().getJobState())
+                                              .createdOn(job.getJob().getCreatedOn())
+                                              .jobCompleted(job.getJob().getJobCompleted())
                                               .build())
                    .collect(Collectors.toList());
     }

@@ -21,8 +21,10 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
@@ -42,8 +44,20 @@ public class JobStatusResult {
     private UUID jobId;
 
     /**
-     * Current status for this job
+     * Current state of the job
      */
-    private JobState status;
+    private JobState jobState;
+
+    /**
+     * Timestamp when the job was created
+     */
+    @Schema(implementation = ZonedDateTime.class)
+    private ZonedDateTime createdOn;
+
+    /**
+     * Timestamp when the job was completed
+     */
+    @Schema(implementation = ZonedDateTime.class)
+    private ZonedDateTime jobCompleted;
 
 }

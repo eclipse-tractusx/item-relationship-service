@@ -142,6 +142,7 @@ public class TestMother {
                   .owner(faker.lorem().characters())
                   .lastModifiedOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .jobParameter(jobParameter())
+                  .jobCompleted(ZonedDateTime.now(ZoneId.of("UTC")))
                   .build();
     }
 

@@ -36,6 +36,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -68,6 +71,9 @@ class IrsControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private IrsItemGraphQueryService service;
@@ -104,10 +110,14 @@ class IrsControllerTest {
     @Test
     @WithMockUser
     void getJobsByJobState() throws Exception {
-        UUID jobId = UUID.randomUUID();
-        final JobStatusResult returnedJob = JobStatusResult.builder().jobId(jobId).status(JobState.RUNNING).build();
+        final JobStatusResult returnedJob = JobStatusResult.builder()
+                                                           .jobId(UUID.randomUUID())
+                                                           .jobState(JobState.COMPLETED)
+                                                           .createdOn(ZonedDateTime.now(ZoneId.of("UTC")))
+                                                           .jobCompleted(ZonedDateTime.now(ZoneId.of("UTC")))
+                                                           .build();
 
-        String returnJobAsString = new ObjectMapper().writeValueAsString(returnedJob);
+        final String returnJobAsString = objectMapper.writeValueAsString(returnedJob);
 
         when(service.getJobsByJobState(any())).thenReturn(List.of(returnedJob));
 
@@ -115,7 +125,9 @@ class IrsControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(content().string(containsString(returnJobAsString)))
                     .andExpect(content().string(containsString(returnedJob.getJobId().toString())))
-                    .andExpect(content().string(containsString(returnedJob.getStatus().toString())));
+                    .andExpect(content().string(containsString(returnedJob.getJobState().toString())))
+                    .andExpect(content().string(containsString(returnedJob.getCreatedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))))
+                    .andExpect(content().string(containsString(returnedJob.getJobCompleted().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))));
     }
 
     @Test
