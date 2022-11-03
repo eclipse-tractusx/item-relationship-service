@@ -36,8 +36,10 @@ import java.util.concurrent.TimeUnit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.PendingException;
+import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -52,6 +54,7 @@ import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 public class E2ETestStepDefinitions {
     private RegisterJob.RegisterJobBuilder registerJobBuilder;
@@ -213,5 +216,10 @@ public class E2ETestStepDefinitions {
                                      .stream()
                                      .filter(submodel -> submodel.getPayload().toString().contains(bpnlNumber))
                                      .count()).isGreaterThanOrEqualTo(numberOfOccurrence);
+    }
+
+    @After
+    public void addJobIdToResult(Scenario scenario) {
+        scenario.attach(jobId.toString(), MediaType.TEXT_PLAIN_VALUE, "jobId");
     }
 }
