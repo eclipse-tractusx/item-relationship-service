@@ -111,7 +111,9 @@ public class OpenApiExamples {
     private Example createJobListProcessingState() {
         return toExample(List.of(JobStatusResult.builder()
                                                 .jobId(UUID.fromString(JOB_HANDLE_ID_1))
-                                                .status(JobState.COMPLETED)
+                                                .jobState(JobState.COMPLETED)
+                                                .createdOn(EXAMPLE_ZONED_DATETIME)
+                                                .jobCompleted(EXAMPLE_ZONED_DATETIME)
                                                 .build()));
     }
 

@@ -324,8 +324,10 @@ components:
         tombstones: [ ]
     complete-job-list-processing-state:
       value:
-      - jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
-        status: COMPLETED
+      - createdOn: 2022-02-03T14:48:54.709Z
+        jobCompleted: 2022-02-03T14:48:54.709Z
+        jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
+        jobState: COMPLETED
     complete-job-result:
       value:
         bpns:
@@ -949,10 +951,16 @@ components:
       type: object
       additionalProperties: false
       properties:
+        createdOn:
+          type: string
+          format: date-time
+        jobCompleted:
+          type: string
+          format: date-time
         jobId:
           type: string
           format: uuid
-        status:
+        jobState:
           type: string
           enum:
           - UNSAVED
