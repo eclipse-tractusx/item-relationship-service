@@ -49,10 +49,10 @@ public class JobStatusResult {
     private JobState jobState;
 
     /**
-     * Timestamp when the job was created
+     * Timestamp when the job was started
      */
     @Schema(implementation = ZonedDateTime.class)
-    private ZonedDateTime createdOn;
+    private ZonedDateTime startedOn;
 
     /**
      * Timestamp when the job was completed
