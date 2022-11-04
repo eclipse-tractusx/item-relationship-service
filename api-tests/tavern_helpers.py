@@ -100,3 +100,36 @@ def check_timestamps_for_not_completed_jobs(response):
     last_modified_on_timestamp = datetime.strptime(response.json().get('job').get('lastModifiedOn')[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
     assert started_on_timestamp > created_on_timestamp
     assert last_modified_on_timestamp > started_on_timestamp
+
+
+def check_startedOn_timestamp_exists(response):
+    for i in response.json():
+        startedOn = i.get("startedOn")
+    print("Check if startedOn timestamp is existing.")
+    assert startedOn is not None
+
+
+def check_jobCompleted_timestamp_not_exists(response):
+    for i in response.json():
+        jobCompleted = i.get("jobCompleted")
+    print("Check if jobCompleted timestamp is missing.")
+    assert jobCompleted is None
+
+
+def check_jobCompleted_timestamp_exists(response):
+    for i in response.json():
+        jobCompleted = i.get("jobCompleted")
+    print("Check if jobCompleted timestamp is existing.")
+    assert jobCompleted is not None
+
+
+
+def check_startedOn_is_smaller_than_jobCompleted(response):
+    for i in response.json():
+        jobCompleted = i.get("jobCompleted")
+        startedOn = i.get("startedOn")
+
+        jobCompleted_timestamp = datetime.strptime(i.get("jobCompleted")[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
+        startedOn_timestamp = datetime.strptime(i.get("createdOn")[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
+    print(f"Check if startedOn timestamp '{startedOn}' is smaller than jobCompleted timestamp '{jobCompleted}'")
+    assert startedOn_timestamp > jobCompleted_timestamp
