@@ -218,7 +218,7 @@ public class E2ETestStepDefinitions {
                                      .count()).isGreaterThanOrEqualTo(numberOfOccurrence);
     }
 
-    @After
+    @After("@INTEGRATION_TEST")
     public void addJobIdToResult(Scenario scenario) {
         scenario.attach(jobId.toString(), MediaType.TEXT_PLAIN_VALUE, "jobId");
     }
