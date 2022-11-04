@@ -305,7 +305,7 @@ components:
           jobParameter:
             aspects:
               - SerialPartTypization
-              - ContactInformation
+              - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
             depth: 4
@@ -324,8 +324,10 @@ components:
         tombstones: [ ]
     complete-job-list-processing-state:
       value:
-      - jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
-        status: COMPLETED
+      - jobCompleted: 2022-02-03T14:48:54.709Z
+        jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
+        jobState: COMPLETED
+        startedOn: 2022-02-03T14:48:54.709Z
     complete-job-result:
       value:
         bpns:
@@ -343,7 +345,7 @@ components:
           jobParameter:
             aspects:
               - SerialPartTypization
-              - ContactInformation
+              - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
             depth: 4
@@ -470,7 +472,7 @@ components:
           jobParameter:
             aspects:
               - SerialPartTypization
-              - ContactInformation
+              - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
             depth: 4
@@ -507,7 +509,7 @@ components:
           jobParameter:
             aspects:
               - SerialPartTypization
-              - ContactInformation
+              - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
             depth: 4
@@ -611,7 +613,7 @@ components:
           jobParameter:
             aspects:
               - SerialPartTypization
-              - ContactInformation
+              - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
             depth: 4
@@ -900,27 +902,29 @@ components:
         aspects:
           type: string
           enum:
-            - SerialPartTypization
+            - AddressAspect
             - AssemblyPartRelationship
             - Batch
-            - ProductDescription
-            - IdConversion
-            - MarketplaceOffer
-            - MaterialForRecycling
-            - PhysicalDimension
-            - ReturnRequest
+            - BatteryPass
             - CertificateOfDestruction
             - CertificateOfDismantler
+            - ChargingProcess
+            - ClaimData
+            - DiagnosticData
             - EndOfLife
-            - PcfCore
-            - PcfSupplyRelation
-            - PcfTechnical
-            - AddressAspect
-            - ContactInformation
-            - BatteryPass
-            - VehicleDiagnosticDataQuality
-            - SingleLevelBomAsPlanned
+            - EsrCertificate
+            - EsrCertificateStateStatistic
+            - IdConversion
+            - MarketplaceOffer
+            - MaterialForHomologation
+            - MaterialForRecycling
             - PartAsPlanned
+            - PhysicalDimension
+            - ProductDescription
+            - ReturnRequest
+            - SerialPartTypization
+            - SingleLevelBomAsPlanned
+            - SingleLevelUsageAsBuilt
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
@@ -941,15 +945,19 @@ components:
           type: string
           description: Item graph traversal direction.
           enum:
+            - upward
             - downward
     JobStatusResult:
       type: object
       additionalProperties: false
       properties:
+        jobCompleted:
+          type: string
+          format: date-time
         jobId:
           type: string
           format: uuid
-        status:
+        jobState:
           type: string
           enum:
           - UNSAVED
@@ -959,6 +967,9 @@ components:
           - COMPLETED
           - CANCELED
           - ERROR
+        startedOn:
+          type: string
+          format: date-time
     Jobs:
       type: object
       additionalProperties: false
@@ -1109,27 +1120,29 @@ components:
           items:
             type: string
             enum:
-              - SerialPartTypization
+              - AddressAspect
               - AssemblyPartRelationship
               - Batch
-              - ProductDescription
-              - IdConversion
-              - MarketplaceOffer
-              - MaterialForRecycling
-              - PhysicalDimension
-              - ReturnRequest
+              - BatteryPass
               - CertificateOfDestruction
               - CertificateOfDismantler
+              - ChargingProcess
+              - ClaimData
+              - DiagnosticData
               - EndOfLife
-              - PcfCore
-              - PcfSupplyRelation
-              - PcfTechnical
-              - AddressAspect
-              - ContactInformation
-              - BatteryPass
-              - VehicleDiagnosticDataQuality
-              - SingleLevelBomAsPlanned
+              - EsrCertificate
+              - EsrCertificateStateStatistic
+              - IdConversion
+              - MarketplaceOffer
+              - MaterialForHomologation
+              - MaterialForRecycling
               - PartAsPlanned
+              - PhysicalDimension
+              - ProductDescription
+              - ReturnRequest
+              - SerialPartTypization
+              - SingleLevelBomAsPlanned
+              - SingleLevelUsageAsBuilt
           maxItems: 2147483647
         bomLifecycle:
           type: string
@@ -1160,6 +1173,7 @@ components:
           default: downward
           description: Item graph traversal direction.
           enum:
+            - upward
             - downward
         globalAssetId:
           type: string

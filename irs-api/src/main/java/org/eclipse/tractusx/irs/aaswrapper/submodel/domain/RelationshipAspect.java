@@ -21,6 +21,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
 
+import java.util.NoSuchElementException;
+import java.util.stream.Stream;
+
 import lombok.Getter;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
@@ -30,15 +33,21 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
  */
 @SuppressWarnings("PMD.FieldNamingConventions")
 public enum RelationshipAspect {
-    SingleLevelBomAsPlanned(SingleLevelBomAsPlanned.class),
-    AssemblyPartRelationship(AssemblyPartRelationship.class);
-//    SingleLevelUsageAsBuilt;
+    SingleLevelBomAsPlanned(SingleLevelBomAsPlanned.class, BomLifecycle.AS_PLANNED, Direction.DOWNWARD),
+    AssemblyPartRelationship(AssemblyPartRelationship.class, BomLifecycle.AS_BUILT, Direction.DOWNWARD),
+    SingleLevelUsageAsBuilt(SingleLevelUsageAsBuilt.class, BomLifecycle.AS_BUILT, Direction.UPWARD);
 
     @Getter
     private final Class<? extends RelationshipSubmodel> submodelClazz;
+    private final BomLifecycle bomLifecycle;
+    private final Direction direction;
 
-    RelationshipAspect(final Class<? extends RelationshipSubmodel> submodelClazz) {
+    RelationshipAspect(final Class<? extends RelationshipSubmodel> submodelClazz,
+            final BomLifecycle bomLifecycle,
+            final Direction direction) {
         this.submodelClazz = submodelClazz;
+        this.bomLifecycle = bomLifecycle;
+        this.direction = direction;
     }
 
     /**
@@ -51,11 +60,9 @@ public enum RelationshipAspect {
      * asPlanned + upward => SingleLevelXXXAsPlanned
      */
     public static RelationshipAspect from(final BomLifecycle bomLifecycle, final Direction direction) {
-        if (bomLifecycle.equals(BomLifecycle.AS_BUILT) && direction.equals(Direction.DOWNWARD)) {
-            return RelationshipAspect.AssemblyPartRelationship;
-        } else if (bomLifecycle.equals(BomLifecycle.AS_PLANNED) && direction.equals(Direction.DOWNWARD)) {
-            return RelationshipAspect.SingleLevelBomAsPlanned;
-        }
-        throw new UnsupportedOperationException("Not implemented");
+        return Stream.of(RelationshipAspect.values())
+                     .filter(aspect -> aspect.bomLifecycle.equals(bomLifecycle) && aspect.direction.equals(direction))
+                     .findFirst()
+                     .orElseThrow(NoSuchElementException::new);
     }
 }

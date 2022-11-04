@@ -136,6 +136,10 @@ class IrsItemGraphQueryServiceTest {
 
         assertNotNull(jobs);
         assertThat(jobs).hasSize(1);
+        assertThat(jobs.get(0).getJobId()).isNotNull();
+        assertThat(jobs.get(0).getJobState()).isEqualTo(JobState.COMPLETED);
+        assertThat(jobs.get(0).getStartedOn()).isNotNull();
+        assertThat(jobs.get(0).getJobCompleted()).isNotNull();
     }
 
 }

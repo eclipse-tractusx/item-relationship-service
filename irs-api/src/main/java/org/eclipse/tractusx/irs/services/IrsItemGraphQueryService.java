@@ -91,14 +91,21 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         return jobs.stream()
                    .map(job -> JobStatusResult.builder()
                                               .jobId(job.getJob().getJobId())
-                                              .status(job.getJob().getJobState())
+                                              .jobState(job.getJob().getJobState())
+                                              .startedOn(job.getJob().getStartedOn())
+                                              .jobCompleted(job.getJob().getJobCompleted())
                                               .build())
                    .collect(Collectors.toList());
     }
 
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
-        final var params = buildJobData(request);
+        final var params = buildJobParameter(request);
+        if (params.getBomLifecycle().equals(BomLifecycle.AS_PLANNED)
+                && params.getDirection().equals(Direction.UPWARD)) {
+//            Currently not supported variant
+            throw new IllegalArgumentException("BomLifecycle asPlanned with direction upward is not supported yet!");
+        }
 
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getGlobalAssetId(), params);
         meterRegistryService.incrementNumberOfCreatedJobs();
@@ -111,14 +118,15 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         }
     }
 
-    private JobParameter buildJobData(final @NonNull RegisterJob request) {
+    private JobParameter buildJobParameter(final @NonNull RegisterJob request) {
         final BomLifecycle bomLifecycle = Optional.ofNullable(request.getBomLifecycle()).orElse(BomLifecycle.AS_BUILT);
         final List<AspectType> aspectTypeValues = Optional.ofNullable(request.getAspects()).orElse(List.of(bomLifecycle.getDefaultAspect()));
+        final Direction direction = Optional.ofNullable(request.getDirection()).orElse(Direction.DOWNWARD);
 
         return JobParameter.builder()
                            .depth(request.getDepth())
                            .bomLifecycle(bomLifecycle)
-                           .direction(Direction.DOWNWARD)
+                           .direction(direction)
                            .aspects(aspectTypeValues.isEmpty() ? List.of(bomLifecycle.getDefaultAspect()) : aspectTypeValues)
                            .collectAspects(request.isCollectAspects())
                            .callbackUrl(request.getCallbackUrl())

@@ -37,27 +37,29 @@ import lombok.NoArgsConstructor;
 @JsonSerialize(using = ToStringSerializer.class)
 @SuppressWarnings("PMD.ShortMethodName")
 public enum AspectType {
-    SERIAL_PART_TYPIZATION(AspectTypesConstants.SERIAL_PART_TYPIZATION),
+    ADDRESS_ASPECT(AspectTypesConstants.ADDRESS_ASPECT),
     ASSEMBLY_PART_RELATIONSHIP(AspectTypesConstants.ASSEMBLY_PART_RELATIONSHIP),
     BATCH(AspectTypesConstants.BATCH),
-    PRODUCT_DESCRIPTION(AspectTypesConstants.PRODUCT_DESCRIPTION),
-    ID_CONVERSION(AspectTypesConstants.ID_CONVERSION),
-    MARKETPLACE_OFFER(AspectTypesConstants.MARKETPLACE_OFFER),
-    MATERIAL_FOR_RECYCLING(AspectTypesConstants.MATERIAL_FOR_RECYCLING),
-    PHYSICAL_DIMENSION(AspectTypesConstants.PHYSICAL_DIMENSION),
-    RETURN_REQUEST(AspectTypesConstants.RETURN_REQUEST),
+    BATTERY_PASS(AspectTypesConstants.BATTERY_PASS),
     CERTIFICATE_OF_DESTRUCTION(AspectTypesConstants.CERTIFICATE_OF_DESTRUCTION),
     CERTIFICATE_OF_DISMANTLER(AspectTypesConstants.CERTIFICATE_OF_DISMANTLER),
+    CHARGING_PROCESS(AspectTypesConstants.CHARGING_PROCESS),
+    CLAIM_DATA(AspectTypesConstants.CLAIM_DATA),
+    DIAGNOSTIC_DATA(AspectTypesConstants.DIAGNOSTIC_DATA),
     END_OF_LIFE(AspectTypesConstants.END_OF_LIFE),
-    PCF_CORE(AspectTypesConstants.PCF_CORE),
-    PCF_SUPPLY_RELATION(AspectTypesConstants.PCF_SUPPLY_RELATION),
-    PCF_TECHNICAL(AspectTypesConstants.PCF_TECHNICAL),
-    ADDRESS_ASPECT(AspectTypesConstants.ADDRESS_ASPECT),
-    CONTACT_INFORMATION(AspectTypesConstants.CONTACT_INFORMATION),
-    BATTERY_PASS(AspectTypesConstants.BATTERY_PASS),
-    VEHICLE_DIAGNOSTIC_DATA_QUALITY(AspectTypesConstants.VEHICLE_DIAGNOSTIC_DATA_QUALITY),
+    ESR_CERTIFICATE(AspectTypesConstants.ESR_CERTIFICATE),
+    ESR_CERTIFICATE_STATISTICS(AspectTypesConstants.ESR_CERTIFICATE_STATISTICS),
+    ID_CONVERSION(AspectTypesConstants.ID_CONVERSION),
+    MARKETPLACE_OFFER(AspectTypesConstants.MARKETPLACE_OFFER),
+    MATERIAL_FOR_HOMOLOGATION(AspectTypesConstants.MATERIAL_FOR_HOMOLOGATION),
+    MATERIAL_FOR_RECYCLING(AspectTypesConstants.MATERIAL_FOR_RECYCLING),
+    PART_AS_PLANNED(AspectTypesConstants.PART_AS_PLANNED),
+    PHYSICAL_DIMENSION(AspectTypesConstants.PHYSICAL_DIMENSION),
+    PRODUCT_DESCRIPTION(AspectTypesConstants.PRODUCT_DESCRIPTION),
+    RETURN_REQUEST(AspectTypesConstants.RETURN_REQUEST),
+    SERIAL_PART_TYPIZATION(AspectTypesConstants.SERIAL_PART_TYPIZATION),
     SINGLE_LEVEL_BOM_AS_PLANNED(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_PLANNED),
-    PART_AS_PLANNED(AspectTypesConstants.PART_AS_PLANNED);
+    SINGLE_LEVEL_USAGE_AS_BUILT(AspectTypesConstants.SINGLE_LEVEL_USAGE_AS_BUILT);
 
     private final String name;
 
@@ -101,26 +103,28 @@ public enum AspectType {
      */
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class AspectTypesConstants {
-        public static final String SERIAL_PART_TYPIZATION = "SerialPartTypization";
+        public static final String ADDRESS_ASPECT = "AddressAspect";
         public static final String ASSEMBLY_PART_RELATIONSHIP = "AssemblyPartRelationship";
         public static final String BATCH = "Batch";
-        public static final String PRODUCT_DESCRIPTION = "ProductDescription";
-        public static final String ID_CONVERSION = "IdConversion";
-        public static final String MARKETPLACE_OFFER = "MarketplaceOffer";
-        public static final String MATERIAL_FOR_RECYCLING = "MaterialForRecycling";
-        public static final String PHYSICAL_DIMENSION = "PhysicalDimension";
-        public static final String RETURN_REQUEST = "ReturnRequest";
+        public static final String BATTERY_PASS = "BatteryPass";
         public static final String CERTIFICATE_OF_DESTRUCTION = "CertificateOfDestruction";
         public static final String CERTIFICATE_OF_DISMANTLER = "CertificateOfDismantler";
+        public static final String CHARGING_PROCESS = "ChargingProcess";
+        public static final String CLAIM_DATA = "ClaimData";
+        public static final String DIAGNOSTIC_DATA = "DiagnosticData";
         public static final String END_OF_LIFE = "EndOfLife";
-        public static final String PCF_CORE = "PcfCore";
-        public static final String PCF_SUPPLY_RELATION = "PcfSupplyRelation";
-        public static final String PCF_TECHNICAL = "PcfTechnical";
-        public static final String ADDRESS_ASPECT = "AddressAspect";
-        public static final String CONTACT_INFORMATION = "ContactInformation";
-        public static final String BATTERY_PASS = "BatteryPass";
-        public static final String VEHICLE_DIAGNOSTIC_DATA_QUALITY = "VehicleDiagnosticDataQuality";
-        public static final String SINGLE_LEVEL_BOM_AS_PLANNED = "SingleLevelBomAsPlanned";
+        public static final String ESR_CERTIFICATE = "EsrCertificate";
+        public static final String ESR_CERTIFICATE_STATISTICS = "EsrCertificateStateStatistic";
+        public static final String ID_CONVERSION = "IdConversion";
+        public static final String MARKETPLACE_OFFER = "MarketplaceOffer";
+        public static final String MATERIAL_FOR_HOMOLOGATION = "MaterialForHomologation";
+        public static final String MATERIAL_FOR_RECYCLING = "MaterialForRecycling";
         public static final String PART_AS_PLANNED = "PartAsPlanned";
+        public static final String PHYSICAL_DIMENSION = "PhysicalDimension";
+        public static final String PRODUCT_DESCRIPTION = "ProductDescription";
+        public static final String RETURN_REQUEST = "ReturnRequest";
+        public static final String SERIAL_PART_TYPIZATION = "SerialPartTypization";
+        public static final String SINGLE_LEVEL_BOM_AS_PLANNED = "SingleLevelBomAsPlanned";
+        public static final String SINGLE_LEVEL_USAGE_AS_BUILT = "SingleLevelUsageAsBuilt";
     }
 }

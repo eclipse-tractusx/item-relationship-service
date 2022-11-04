@@ -139,9 +139,11 @@ public class TestMother {
                   .globalAssetId(GlobalAssetIdentification.of(UUID.randomUUID().toString()))
                   .jobState(state)
                   .createdOn(ZonedDateTime.now(ZoneId.of("UTC")))
+                  .startedOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .owner(faker.lorem().characters())
                   .lastModifiedOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .jobParameter(jobParameter())
+                  .jobCompleted(ZonedDateTime.now(ZoneId.of("UTC")))
                   .build();
     }
 

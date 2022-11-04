@@ -10,7 +10,7 @@
 [![OWASP Dependency Check](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml)
 [![Spotbugs](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/spotbugs.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/spotbugs.yml)
 [![Eclipse-dash](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/eclipse-dash.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/eclipse-dash.yml)
-   
+[![Tavern IRS API test](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/tavern.yml)   
 
 ## What is the IRS?
 
@@ -43,13 +43,50 @@ The following subsection provides instructions for running the infrastructure on
 - API docs: http://localhost:8080/api/api-docs
 - API docs in yaml:  http://localhost:8080/api/api-docs.yaml
 
+### Local Helm deployment
+
+#### Prerequisites
+
+- install rancher desktop
+- install kubectl
+- Credentials for external environments in [helm charts](charts/irs-environments/local/values.yaml) can be found in
+  IRS-KeePass
+  - registry.registry.dockerSecret
+  - edc.vault.hashicorp.token _(for provider and consumer data- and control-plane)_
+  - irs-helm.keycloak.oauth2.clientId
+  - irs-helm.keycloak.oauth2.clientSecret
+  - irs-helm.keycloak.oauth2.clientTokenUri
+  - irs-helm.keycloak.oauth2.jwkSetUri
+
+#### How to run
+
+- **Windows**  
+  In CMD or PowerShell execute from project root: `.\charts\irs-environments\local\start.bat`  
+  A new window will open to forward the ports to your local machine.
+  Do not close this window until you want to stop the local deployment
+
+- **Linux**  
+  Run the following commands from project root  
+  `./charts/irs-environments/local/start.sh`  
+  `./charts/irs-environments/local/forward-ports.sh`(in a separate terminal tab or window, this needs to stay open)  
+  `./charts/irs-environments/local/upload-testdata.sh`
+
+IRS will be available at http://localhost:10165
+
+#### How to stop
+
+`helm uninstall irs-local -n product-traceability-irs`
+
 ### Accessing the secured API
 
-A valid access token is required to access every IRS endpoint and must be included in the Authorization header - otherwise **HTTP 401 Unauthorized** status is returned to the client.
+A valid access token is required to access every IRS endpoint and must be included in the Authorization header -
+otherwise **HTTP 401 Unauthorized** status is returned to the client.
 
-The IRS uses the configured Keycloak server to validate access tokens. By default, this is the Catena-X INT Keycloak instance. Get in contact with them to receive your client credentials.
+The IRS uses the configured Keycloak server to validate access tokens. By default, this is the Catena-X INT Keycloak
+instance. Get in contact with them to receive your client credentials.
 
-To obtain an access token, you can use the prepared [Postman collection](./testing/IRS%20DEMO%20Collection.postman_collection.json). 
+To obtain an access token, you can use the
+prepared [Postman collection](./testing/IRS%20DEMO%20Collection.postman_collection.json).
 
 ### Sample calls
 
@@ -78,6 +115,7 @@ curl -X 'GET' 'http://localhost:8080/irs/jobs/<jobID>' -H 'accept: application/j
 ```
 
 ## Environments
+
 ### DEV environment
 
 The latest version on main is automatically picked up by ArgoCD and deployed to the DEV environment.
@@ -87,18 +125,21 @@ http://irs.dev.demo.catena-x.net/api/swagger-ui/index.html?configUrl=/api/api-do
 
 Additionally, we supply our own EDC setup to be able to do end-to-end tests in an isolated environment.
 This consists of:
- - AAS Wrapper
- - Digital Twin Registry
- - EDC Consumer (Control and Data Plane, Postgres DB)
- - EDC Provider (Control and Data Plane, Postgres DB)
- - DAPS
- - Multiple submodel servers to provide test data
 
-This setup uses the docker images provided by [product-edc](https://github.com/catenax-ng/product-edc/), [product-DAPS](https://github.com/catenax-ng/product-DAPS) and Semantic Hub.
+- AAS Wrapper
+- Digital Twin Registry
+- EDC Consumer (Control and Data Plane, Postgres DB)
+- EDC Provider (Control and Data Plane, Postgres DB)
+- DAPS
+- Multiple submodel servers to provide test data
+
+This setup uses the docker images provided by [product-edc](https://github.com/catenax-ng/product-edc/)
+, [product-DAPS](https://github.com/catenax-ng/product-DAPS) and Semantic Hub.
 
 Check the Helm charts at [./charts](./charts) for the configuration.
 
-The testdata on DEV is volatile and gets lost on pod restarts. New testdata can be provisioned using the GitHub action trigger.
+The testdata on DEV is volatile and gets lost on pod restarts. New testdata can be provisioned using the GitHub action
+trigger.
 
 ### INT environment
 
@@ -121,4 +162,5 @@ Check the Helm charts at [./charts/irs](./charts/irs) for the configuration.
 - [Item Relationship Service Documentation (catena-ng)](https://catenax-ng.github.io/product-item-relationship-service/docs/)
 
 ## Licenses
+
 Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0) - see [LICENSE](./LICENSE)
