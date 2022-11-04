@@ -1,0 +1,17 @@
+= Requirements overview
+
+== What is the Item Relationship Service?
+The IRS is a:
+
+- Functional federated component
+- API endpoint to retrieve the tree structures in a recursive way, which data assets are distributed throughout the Catena-X network
+- Reference implementation
+- Data chain provider
+
+== Substantial Features
+- provide a top-down BoM asBuilt tree structure along the submodel "AssemblyPartRelationship"
+- usage of EDC consumer for communicating with the Catena-X network
+- functionality of IRS provider will be handled by providers submodel servers
+- federated IRS service
+- 'asBuild' BoM of serialized components
+- provides endpoints for submodel-descriptors

@@ -1,0 +1,185 @@
+= Level 2
+
+== IRS controller
+
+The IRS REST controller to provide a RESTful web service.
+
+=== Component diagram
+
+[plantuml, target=level-2-controller, format=png]
+....
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+ component [**Controller**] <<System>> as Controller {
+    component [**IrsController**] <<Component>> as IrsController
+    component [**IrsItemGraphQueryService**] <<Component>> as IrsItemGraphQueryService
+        port "IRS API" as API_PORT
+    component [**JobOrchestrator**] <<Component>> as JobOrchestrator
+    interface JobStore
+    interface BlobPersistence
+    IrsController .>  IrsItemGraphQueryService
+
+
+    }
+    actor IrsApiConsumer
+        IrsController <..> JobOrchestrator
+        IrsController -up- API_PORT
+        IrsApiConsumer -(0- API_PORT
+        IrsItemGraphQueryService -( JobStore
+        IrsItemGraphQueryService --( BlobPersistence
+@enduml
+....
+
+=== Component description
+
+|===
+|Components |Description
+
+|IrsController
+|Application REST controller.
+
+|IrsItemGraphQueryService
+|Service for retrieving item graph.
+
+|JobOrchestrator
+|Orchestrator service for recursive MultiTransferJobs that potentially comprise multiple transfers.
+
+|JobStore
+|Spring configuration for job-related beans.
+
+|BlobstorePersistence
+|Interface for storing data blobs.
+|===
+
+
+== RecursiveJobHandler
+
+The *RecursiveJobHandler* component provide the logic to build jobs with recursive logic to retrieve items over the complete C-X network and assembles the partial results into a single item graph result.
+
+=== Component diagram
+
+[plantuml, target=level-2-jobhandler, format=png]
+....
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+ component [**RecursiveJobHandler**] <<Component>> as RecursiveJobHandler {
+    component [**AASRecursiveJobHandler**] <<Component>> as AASRecursiveJobHandler
+    component [**TreeRecursiveLogic**] <<Component>> as TreeRecursiveLogic
+    component [**ItemTreesAssembler**] <<Component>> as ItemTreesAssembler
+
+ }
+
+() "BlobStore\nInterface" as StoreInterface
+AASRecursiveJobHandler .> TreeRecursiveLogic
+TreeRecursiveLogic .> ItemTreesAssembler
+TreeRecursiveLogic --( StoreInterface
+@enduml
+....
+
+=== Component description
+
+|===
+|Components |Description
+
+|AASRecursiveJobHandler
+|Recursive job handler for AAS data
+
+|TreeRecursiveLogic
+|Retrieves item graphs from potentially multiple calls to IRS API behind multiple EDC Providers, and assembles their outputs into one overall item graph.
+
+|ItemTreesAssembler
+|Assembles multiple partial item graphs into one overall item graph.
+
+|BlobPersistence
+|Interface for storing data blobs.
+|===
+
+== TransferProcessManagment
+
+The TransferProcessManager creates executions and provides them to the executor service. Each execution contains HTTP requests to the asset administration shell registry and to the submodel interface.
+
+=== Component diagram
+
+[plantuml, target=level-2-transferprocess, format=png]
+....
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam nodesep 10
+skinparam ranksep 100
+
+
+component [**TransferProcessManagement**] <<Component>> as TransferProcessManagement {
+    component [**AASTransferProcessManager**] <<Component>> as TransferProcessManager
+    component [**DigitalTwinRegistryFacade**] <<Component>> as DTRFacade {
+        component [**DigitalTwinRegistryClient**] <<Component>> as DTRClient
+    }
+    component [**SubmodelFacade**] <<Component>> as SubmodelFacade {
+        component [**SubmodelClient**] <<Component>> as SubmodelClient
+    }
+    component [**ExecutorService**] <<Component>> as ExecutorService
+}
+
+component [**AASWrapper**] <<System>> as AASWrapper
+node "Digital Twin Registry" {
+    [**AAS Registry**] <<Component>> as AASR
+}
+
+node "SubmodelServer" {
+    [**SubmodelServer**] <<Component>> as SMS
+}
+
+
+DTRFacade --0)- TransferProcessManager
+SubmodelFacade --0)- TransferProcessManager
+ExecutorService <...> TransferProcessManager
+
+interface "Registry API" as RegAPI
+RegAPI -- AASR
+DTRClient ----( RegAPI
+
+interface "Wrapper API" as WrAPI
+WrAPI -- AASWrapper
+SubmodelClient ----( WrAPI
+
+interface "SubmodelAPI" as SMSAPI
+SMSAPI -- SMS
+AASWrapper --( SMSAPI
+
+database BlobStore
+TransferProcessManager -left-( BlobStoreInterface
+'BlobStoreInterface - TransferProcessManager
+BlobStoreInterface <...> BlobStore
+@enduml
+....
+
+=== Component description
+
+|===
+|Components |Description
+
+|TransferProcessManager
+|The TransferProcessManager manages the requests to the AASWrapper and DigitalTwinRegistry.
+
+|DigitalTwinRegistryFacade
+|The DigitalTwinRegistryFacade calls the DigitalTwinRegistry to retrieve data form the AAS registry and transforms the response to internal data models.
+
+|SubmodelFacade
+|The SubmodelFacade calls the AASWrapper to retrieve data from the submodel server and transforms the response to internal data models.
+
+|BlobStore
+|The BlobStore is the database where the relationships and tombstones are stored for a requested item.
+
+|AASWrapper
+|The AASWrapper is the interface to the EDC Network. It manages negotiation of contracts and transfer of data.
+
+|DigitalTwinRegistry
+|The DigitalTwinRegistry is the central database of registered assets.
+
+|ExecutorService
+|The ExecutorService enables the simultaneous execution of requests of transfer processes.
+|===
