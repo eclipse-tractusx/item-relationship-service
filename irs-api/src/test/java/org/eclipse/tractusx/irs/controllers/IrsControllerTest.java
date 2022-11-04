@@ -113,7 +113,7 @@ class IrsControllerTest {
         final JobStatusResult returnedJob = JobStatusResult.builder()
                                                            .jobId(UUID.randomUUID())
                                                            .jobState(JobState.COMPLETED)
-                                                           .createdOn(ZonedDateTime.now(ZoneId.of("UTC")))
+                                                           .startedOn(ZonedDateTime.now(ZoneId.of("UTC")))
                                                            .jobCompleted(ZonedDateTime.now(ZoneId.of("UTC")))
                                                            .build();
 
@@ -126,7 +126,7 @@ class IrsControllerTest {
                     .andExpect(content().string(containsString(returnJobAsString)))
                     .andExpect(content().string(containsString(returnedJob.getJobId().toString())))
                     .andExpect(content().string(containsString(returnedJob.getJobState().toString())))
-                    .andExpect(content().string(containsString(returnedJob.getCreatedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))))
+                    .andExpect(content().string(containsString(returnedJob.getStartedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))))
                     .andExpect(content().string(containsString(returnedJob.getJobCompleted().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))));
     }
 
