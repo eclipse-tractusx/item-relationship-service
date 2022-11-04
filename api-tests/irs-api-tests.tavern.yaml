@@ -1076,7 +1076,7 @@ stages:
       headers:
         content-type: application/json
 
-  - name: get all INITIAL jobs
+  - name: get all RUNNING jobs
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=RUNNING"
       method: GET
@@ -1122,7 +1122,7 @@ stages:
         json:
           access_token: access_token
 
-  - name: get all INITIAL jobs
+  - name: get all jobs
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       method: GET
@@ -1224,5 +1224,180 @@ stages:
         message: Not Found
       verify_response_with:
         function: api-tests.tavern_helpers:errors_for_unknown_requested_globalAssetId_are_correct
+      headers:
+        content-type: application/json
+
+---
+
+
+test_name: Make sure search for all jobs returns startTime for all status
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: get all jobs
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        function: api-tests.tavern_helpers:check_startedOn_timestamp_exists
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure search for running jobs returns no jobCompleted timestamp
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: get all jobs with status UNSAVED, INITIAL, RUNNING and TRANSFERS_FINISHED
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=UNSAVED, INITIAL, RUNNING, TRANSFERS_FINISHED"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: api-tests.tavern_helpers:check_startedOn_timestamp_exists
+        - function: api-tests.tavern_helpers:check_jobCompleted_timestamp_not_exists
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure search for completed jobs returns jobCompleted timestamp
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: get all jobs with status COMPLETED, ERROR and CANCELED
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=COMPLETED, ERROR, CANCELED"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: api-tests.tavern_helpers:check_startedOn_timestamp_exists
+        - function: api-tests.tavern_helpers:check_jobCompleted_timestamp_exists
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure search for completed jobs returns startedOn timestamp smaller than jobCompleted timestamp
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: get all jobs with status COMPLETED, ERROR and CANCELED
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=COMPLETED, ERROR, CANCELED"
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: api-tests.tavern_helpers:check_startedOn_timestamp_exists
+        - function: api-tests.tavern_helpers:check_jobCompleted_timestamp_exists
+        - function: api-tests.tavern_helpers:check_startedOn_is_smaller_than_jobCompleted
       headers:
         content-type: application/json
