@@ -9,6 +9,10 @@ irs:
       scheduler:
         completed: 0 * * * * *
         failed: 0 * * * * *
+    jobstore:
+      ttl:
+        failedInHours: 1
+        completedInHours: 1
 
 spring:
   security:

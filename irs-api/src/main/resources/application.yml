@@ -77,6 +77,9 @@ irs:
         completed: 0 0 * * * * # every hour
         failed: 0 0 * * * * # every hour
     jobstore:
+      ttl:
+        failedInHours: 168 # 7 days
+        completedInHours: 168 # 7 days
       cron:
         expression: "*/10 * * * * ?" # every 10 seconds
 
