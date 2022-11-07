@@ -140,6 +140,22 @@ class BpdmDelegateTest {
                 ProcessStep.BPDM_REQUEST);
     }
 
+    @Test
+    void shouldNotCreateBpnsAndTombstonesIfShellIsMissing() {
+        // given
+        final ItemContainer.ItemContainerBuilder itemContainerWithoutShell = ItemContainer.builder();
+
+        // when
+        final ItemContainer result = bpdmDelegate.process(itemContainerWithoutShell, jobParameter(),
+                new AASTransferProcess(), "itemId");
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getShells()).isEmpty();
+        assertThat(result.getBpns()).isEmpty();
+        assertThat(result.getTombstones()).isEmpty();
+    }
+
     private ItemContainer.ItemContainerBuilder itemContainerWithAssetId(String key, String value) {
         return ItemContainer.builder().shell(
                 AssetAdministrationShellDescriptor
