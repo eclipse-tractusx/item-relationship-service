@@ -3,5 +3,8 @@
 == Administration Guide
 xref:administration/administration-guide.adoc[]
 
+== API-Documentation
+xref:api-specification/api-specification.adoc[OpenApi specification]
+
 == Architecture Documentation (arc42)
 link:https://confluence.catena-x.net/x/NLGAAQ[]
