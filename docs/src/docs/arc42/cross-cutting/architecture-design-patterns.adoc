@@ -1,0 +1,52 @@
+= Architecture and design patterns
+
+== Dependency inversion
+
+For the IRS, we utilize the dependency inversion mechanisms provided by Spring Boot as much as possible.
+
+The principle says:
+
+High-level modules should not import anything from low-level modules. Both should depend on abstractions (e.g., interfaces).
+Abstractions should not depend on details. Details (concrete implementations) should depend on abstractions.
+
+Adhering to this, we define clear interfaces between the different domains (e.g. job orchestration and AAS communication) in the IRS and let dependencies be injected by the framework. This improves testability of the classes as well.
+
+== Hexagonal architecture
+
+The hexagonal architecture divides a system into several loosely-coupled interchangeable components, such as the application core, the database, the user interface, test scripts and interfaces with other systems. This approach is an alternative to the traditional layered architecture.
+
+For the IRS, this means decoupling the application logic from components like the BLOB store, the REST API controllers or the AAS client connection. With an interface between the parts (so-called port), it is easy to switch to other implementations, e.g. if you want to change the persistence implementation. No changes to the application logic will be necessary.
+
+
+
+[plantuml, target=architecture, format=png]
+....
+
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam spacing 50
+
+
+component [**IRS**] <<System>> {
+component [**REST Controller**] <<Component>> as RestController
+component [**IRS Core**] <<Component>> as Core
+component [**MinioBlobPersistence**] <<Component>> as BlobStore
+component [**AAS Consumer**] <<Component>> as AAS
+component [**EDC Consumer**] <<Component>> as EDC
+
+RestController ---( IIrsItemGraphQueryService
+Core -- IIrsItemGraphQueryService
+
+BlobStore --( BlobPersistence
+Core -- BlobPersistence
+
+AAS --- DigitalTwinRegistryClient
+Core ---( DigitalTwinRegistryClient
+
+EDC -- SubmodelClient
+Core ---( SubmodelClient
+}
+
+@enduml
+....

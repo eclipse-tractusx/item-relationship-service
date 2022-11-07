@@ -1,0 +1,21 @@
+= Safety and security concepts
+
+== Authentication / Authorization
+=== IRS API
+The IRS is secured using OAuth2.0 / Open ID Connect. Every request to the IRS API requires a valid bearer token.
+
+No special roles are required. Every user that can log in to the authentication provider may use the IRS API.
+
+=== IRS as DTR client
+The IRS acts as a client for the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect. The IRS uses client credentials to authenticate requests to the DTR. Due to this, the IRS account needs to have access to every item in the DTR, unrelated to the permissions of the account calling the IRS API.
+
+=== IRS as EDC client
+The IRS accesses the Catena-X network via the EDC consumer connector. This component requires authentication via a DAPS certificate, which was provided to the IRS via the network authority.
+
+The DAPS certificate identifies the IRS and is used to acquire access permissions for the data transferred via EDC.
+
+== Credentials
+Credentials must never be stored in Git!
+
+
+

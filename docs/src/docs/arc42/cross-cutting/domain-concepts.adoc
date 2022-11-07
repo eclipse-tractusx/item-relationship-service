@@ -1,0 +1,818 @@
+= Domain concepts
+
+== Domain entity model
+
+
+[plantuml, target=domain-entity-model, format=png]
+....
+@startuml
+entity Jobs {
+    ---
+    * job : Job
+    relationships : Collection<Relationship>
+    shells : Collection<Shells>
+}
+
+entity Job {
+     * jobID: String (UUID)
+     * globalAssetId: String (UUID)
+     ---
+     * jobStatus: JobState ("Finished")
+     * createdOn: DateTime
+     * requestURL: URI
+     startedOn: DateTime
+     lastModifiedOn: DateTime
+     jobFinished": DateTime
+     owner: String
+     summary : Summary
+     queryParameter : QueryParameter
+     exception : Exception
+}
+
+entity Summary {
+    ---
+    asyncFetchedItems : AsyncFetchedItems
+}
+
+entity AsyncFetchedItems {
+    ---
+    * queued : Number (Default :0)
+    * running : Number (Default :0)
+    * complete : Number (Default :0)
+    * failed : Number (Default :0)
+    * lost : Number (Default :0)
+}
+
+entity QueryParameter {
+     ---
+     bomLifecycle: BomLifecycle
+     aspect : Collection<AspectType>
+     depth: Number
+     direction: Direction
+}
+
+QueryParameter ||--  Direction
+QueryParameter ||--  BomLifecycle
+QueryParameter }|--  AspectType
+Summary ||--  AsyncFetchedItems
+Job ||-- QueryParameter
+
+
+enum Direction {
+    ---
+    UPWARD
+    DOWNWARD
+}
+
+enum BomLifecycle {
+    ---
+    asBuilt,
+    asMaintained
+}
+
+enum AspectType {
+    ---
+    SerialPartTypization
+	AssemblyPartRelationship
+	PartDimension
+	SupplyRelationData
+	PCFCoreData
+	PCFTechnicalData
+	MarketPlaceOffer
+	MaterialAspect
+	BatteryPass
+	ProducDescription.Vehicle
+	ProducDescription.Battery
+	ReturnRequest
+	CertificateOfDestruction
+	CertificateOfDismantler
+	Address
+	Contact
+}
+
+entity Exception {
+    ---
+    exception : List<Throwable>
+    errorDetail : String
+    exceptionDate : Date
+    statusCode : StatusCodeEnum
+}
+
+enum  StatusCodeEnum {
+    100
+    404
+    500
+    ...
+}
+
+enum JobState {
+    ---
+    UNSAVED
+    INITIAL
+    IN_PROGRESS
+    TRANSFERS_FINISHED
+    COMPLETED
+    ERROR
+}
+
+entity Relationship {
+   * catenaXId : String (UUID) (parentId)
+--
+  * childItem : ChildItem
+ }
+
+entity ChildItem {
+    quantity : Quanity
+    lifecycleContext: BomLifecycle
+    assembledOn: Date
+    lastModifiedOn : Date
+    childCatenaXId  : String (UUID)
+}
+
+entity Quantity {
+    quantityNumber  : Number
+    measurementUnit : MeasurementUnit
+}
+
+entity MeasurementUnit {
+    --
+    datatypeURI : URI
+    lexicalValue : String (? enum )
+}
+
+Quantity  ||-- MeasurementUnit
+ChildItem ||-- Quantity
+
+entity Shells {
+    shell : Collection<Shell>
+}
+
+entity Description {
+     language: String,
+     text: String
+}
+
+entity GenericDescriptor {
+     * identification : String
+     idShort: String
+     specificAssetIds : Map<String, String>
+     description : Collection<Description>
+}
+
+entity Shell {
+    globalAssetId : GlobalAssetId
+}
+
+entity GlobalAssetId {
+    value : String
+}
+
+entity SubmodelDescriptor {
+    semanticId : GlobalAssetId
+    endpoints : Collection<Endpoint>
+}
+
+entity Endpoint {
+    interface: String
+    protocolInformation : ProtocolInformation
+}
+
+enum ProtocolInformation {
+     endpointAddress: URI
+     endpointProtocol: String
+     endpointProtocolVersion: String
+}
+
+Jobs ||-- Job
+Jobs }|-- Relationship
+Jobs }|-- Shells
+Job ||-- JobState
+Job ||-- Summary
+Job ||--  Exception
+Shells }|-- Shell
+GenericDescriptor }|-- Description
+Shell ||-- GlobalAssetId
+GenericDescriptor <|-- Shell
+GenericDescriptor <|-- SubmodelDescriptor
+Endpoint ||--  ProtocolInformation
+Relationship }o-- ChildItem
+SubmodelDescriptor }o-- Endpoint
+Exception ||-- StatusCodeEnum
+
+@enduml
+....
+
+== Domain model
+
+[plantuml, target=domain-model, format=png]
+....
+@startuml
+
+interface IAasShell {
++getShell()
++getNodeType()
++isNodeType(NodeType)
+}
+abstract class AbstractAasShell {
+- String : idShort
+- String : identification
+- NodeType : nodeType
+}
+
+class Shell {
+- List<Description> : description
+- GlobalAssetId : globalAssetId
+- Map<String,String> : specificAssetIds
+- List<SubmodelDescriptors> : submodelDescriptors
++getShell()
+}
+class ShellTombstone{
+- ProcessingError : processingError
++getShell()
+}
+
+
+interface IItemRelationshipAspect {
++getItemRelationshipAspect()
+}
+abstract class AbstractItemRelationshipAspect {
+- String : catenaXId
+- NodeType : nodeType
+}
+class ItemRelationshipAspect {
+-RelationshipItem : childItem (AssemblyPartRelationShip)
++getItemRelationshipAspect()
+}
+class ItemRelationshipAspectTombstone{
+- ProcessingError : processingError
++getItemRelationshipAspect()
+}
+
+ItemRelationshipAspectTombstone -- ProcessingError
+ShellTombstone -- ProcessingError
+
+class ProcessingError  {
+    - Class : exception
+    - String : errorDetail
+    - URL: endpoint
+    - int : retryCounter
+    - Instant : lastModifiedOn
+}
+
+IItemRelationshipAspect <|.. AbstractItemRelationshipAspect
+AbstractItemRelationshipAspect <|-- ItemRelationshipAspect
+AbstractItemRelationshipAspect <|-- ItemRelationshipAspectTombstone
+AbstractItemRelationshipAspect -- NodeType
+
+
+IAasShell <|.. AbstractAasShell
+AbstractAasShell <|-- Shell
+AbstractAasShell <|-- ShellTombstone
+AbstractAasShell -- NodeType
+
+
+enum NodeType {
+ROOT("Root Node of the tree - the initial C-X ID")
+NODE("Node of the tree with childs - further AssemblyPartRelationShip aspects")
+LEAF("Leaf node of the tree - No further AssemblyPartRelationShip aspects")
+TOMBSTONE("Exceptional state - transient exception")
+}
+
+@enduml
+....
+
+== Entity
+
+=== Job
+
+|===
+|Attribute |Definition |Values |Schema |Sample value |Comment
+
+|jobID
+|UUID with unique ID of part tree generation job in registry.
+|UUID
+a|
+....
+{
+   "type": "string",
+   "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+   "minLength": 16,
+   "maxLength": 16
+}
+....
+|a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+|
+
+|globalAssetId
+|Unique ID of an Asset aka a Digital Twin aka AAS
+|UUID
+a|
+....
+{
+   "type": "string",
+   "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+   "minLength": 16,
+   "maxLength": 16
+}
+....
+|
+|
+
+|jobStatus
+|Status of the current job processing
+a|
+- unsaved
+- initial
+- in_progress
+- transfer_finished
+- completed
+- error
+a|
+....
+{
+  "enum": ["unsaved", "initial", "in_progress", "transfer_finished","completed","error"]
+}
+....
+|in_progress
+|
+
+|createdOn
+|Timestamp when job was created
+|Timestamp
+a|
+....
+{
+   "date-time"
+}
+format: YYYY-MM-DDTHH24:MI:SS:SSSZ
+....
+|"2022-02-03T14:48:54.709Z"
+|
+
+|startedOn
+|Timestamp when job processing was created
+|Timestamp
+a|
+....
+{
+   "date-time"
+}
+format: YYYY-MM-DDTHH24:MI:SS:SSSZ
+....
+|"2022-02-03T14:48:54.709Z"
+|
+
+|lastModifiedOn
+|Timestamp when job was last modified
+|Timestamp
+a|
+....
+{
+   "date-time"
+}
+format: YYYY-MM-DDTHH24:MI:SS:SSSZ
+....
+|"2022-02-03T14:48:54.709Z"
+|
+|jobCompleted
+|Timestamp when job was finished
+|Timestamp
+a|
+....
+{
+   "date-time"
+}
+format: YYYY-MM-DDTHH24:MI:SS:SSSZ
+....
+|"2022-02-03T14:48:54.709Z"
+|
+|requestURL
+|Requested Url of caller
+|URI
+a|
+....
+{
+   "uri-template"
+}
+....
+|https://api.server.test/api/v0.2/irs/item/6c311d29-5753-46d4-b32c-19b918ea93b0/as_built?aspect=SerialPartTypization&depth=1&direction=downward"
+|
+
+|owner
+|Owner of the job
+|
+a|
+....
+{
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 50
+}
+....
+|
+|RFU
+|===
+
+
+=== asyncFetchedItems
+
+|===
+| Attribute  | Definition                                                      | Values | Schema | Sample value | Comment
+
+| queued     | Number of queued aspect model endpoints fetch operations        | Number a|....
+{
+  "type": "number",
+  "minimum": 0,
+  "exclusiveMaximum": 10.000
+}
+....
+|4 | RFU
+
+| running    | Number of running aspect model endpoints fetch operations       | Number a|....
+{
+  "type": "number",
+  "minimum": 0,
+  "exclusiveMaximum": 10.000
+}
+....
+|5 | RFU
+
+| complete   | Number of completed aspect model endpoints fetch operations     | Number a|....
+{
+"type": "number",
+"minimum": 0,
+"exclusiveMaximum": 10.000
+}
+....
+|5 | RFU
+
+| failed     | Number of failed aspect model endpoints fetch operations        | Number a|....
+{
+"type": "number",
+"minimum": 0,
+"exclusiveMaximum": 10.000
+}
+....
+|5 | RFU
+
+| lost       | Number of lost aspect models endpoints during fetch operations  | Number a|....
+{
+"type": "number",
+"minimum": 0,
+"exclusiveMaximum": 10.000
+}
+....
+|5 | RFU
+
+|===
+
+=== queryParameter
+
+|===
+|Attribute |Definition |Values |Schema |Sample value
+
+|bomLifecycle
+|Unique ID of an Asset aka a Digital Twin aka AAS
+|UUID
+a|
+....
+{
+    "type": "string",
+    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+    "minLength": 16,
+    "maxLength": 16
+}
+....
+|a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+
+|aspect
+|Aspect information to add to the returned tree
+a|
+- SerialPartTypization
+- AssemblyPartRelationship
+- PartDimension
+- SupplyRelationData
+- PCFCoreData
+- PCFTechnicalData
+- MarketPlaceOffer
+- MaterialAspect
+- BatteryPass
+- ProductDescription.Vehicle
+- ProductDescription.Battery
+- ReturnRequest
+- CertificateOfDestruction
+- CertificateOfDismantler
+- Adress
+- Contact
+a|
+....
+{ "enum": ["SerialPartTypization", "AssemblyPartRelationship", "PartDimension", "SupplyRelationData", "...", "a.s.o"] }
+....
+|
+
+|depth
+|Max depth of the returned tree, if empty max depth is returned
+|Number
+a|
+....
+{ "type": "number", "minimum": 0, "exclusiveMaximum": 10.000 }
+....
+|5
+
+|direction
+|Specifies the direction in which the tree is to be built. For the construction of the part tree downward, i.e. top-down, the AssemblyPartRelationship aspect is evaluated in which the parent-child Relationship is mapped.
+
+*(upward is RFU as there is actually no Aspect with deals with Child-Parent Relationship right now)*
+|upward / downward
+|
+|
+|===
+
+=== exception
+
+|===
+|Attribute |Definition |Values |Schema |Sample value |Comment
+
+|exception
+|Exception class
+|Throwable
+a|
+....
+{
+"type": "string",
+"pattern": "*.class",
+
+}
+....
+|a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+|
+
+|errorDetail
+|Cause of the exception
+
+Error detail, potentially set if {@link #getState() state} is {@link JobState#ERROR}.
+|"Timer already cancelled"
+a|
+....
+{
+"type": "string",
+"minLength": 0,
+"maxLength": 4000
+}
+....
+|
+|
+
+|exceptionDate
+|Timestamp when exception occures.
+|Timestamp
+a|
+....
+{
+
+"date-time"
+
+}
+
+format: YYYY-MM-DDTHH24:MI:SS:SSSZ
+....
+|
+|
+|===
+
+=== relationships
+
+|===
+|Attribute |Definition |Values |Schema |Sample value |Comment
+|catenaXId
+|Unique ID of an Asset aka a Digital Twin aka AAS
+|UUID
+a|
+....
+{
+   "type": "string",
+   "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+   "minLength": 16,
+   "maxLength": 16
+}
+....
+|a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+|
+|===
+
+=== quantity / childItem
+
+|===
+|Attribute |Definition |Values |Schema |Sample value |Comment
+|catenaXId
+|Unique ID of an Asset aka a Digital Twin aka AAS
+|UUID
+a|
+....
+{
+"type": "string",
+"pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+"minLength": 16,
+"maxLength": 16
+}
+....
+|a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+|
+|===
+
+== JobStatus
+
+TODO Description for each job state.
+....
+public enum JobState {
+    UNSAVED,
+    INITIAL,
+    IN_PROGRESS,
+    TRANSFERS_FINISHED,
+    COMPLETED,
+    ERROR;
+}
+....
+
+== IRS API Response
+
+[plantuml, target=api-response, format=png]
+....
+@startjson
+{
+"job": {
+"jobID": "e5347c88-a921-11ec-b909-0242ac120002",
+"globalAssetId": "6c311d29-5753-46d4-b32c-19b918ea93b0",
+"jobStatus": "Completed",
+"createdOn": "2022-02-03T14:48:54.709Z",
+"startedOn" : "2022-02-03T14:48:54.709Z",
+"lastModifiedOn": "2022-02-03T14:48:54.709Z",
+"jobCompleted": "2022-02-03T14:48:54.709Z",
+"requestURL": "https://api.server.test/api/../",
+"owner": "",
+"summary": {
+"asyncFetchedItems": {
+"queued": 0,
+"running": 0,
+"complete": 0,
+"failed": 0,
+"lost": 0
+}},
+"queryParameter": {
+"bomLifecycle" : "asBuilt",
+"aspect" : "SerialPartTypization",
+"depth": 4,
+"direction": "downward"
+},
+"exception": {
+"exception": "IrsTimeoutException",
+"cause": "Timeout while requesting Digital Registry.",
+"exceptionDate" : "2022-02-03T14:48:54.709Z"
+}
+},
+"relationships": [
+{
+"catenaXId": "d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
+"childItem": {
+"quantity": {
+"quantityNumber": 1,
+"measurementUnit": {
+"datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+"lexicalValue": "piece"
+}
+},
+"lifecycleContext": "asBuilt",
+"assembledOn": "2022-02-03T14:48:54.709Z",
+"lastModifiedOn": "2022-02-03T14:48:54.709Z",
+"childCatenaXId": "a45a2246-f6e1-42da-b47d-5c3b58ed62e9"
+}
+}
+],
+"shells": [
+{
+"description": [
+{
+"language": "en",
+"text": "The shell for a vehicle"
+}
+],
+"globalAssetId": {
+"value": [
+"a45a2246-f6e1-42da-b47d-5c3b58ed62e9"
+]
+},
+"idShort": "future concept x",
+"identification": "882fc530-b69b-4707-95f6-5dbc5e9baaa8",
+"specificAssetIds": [
+{
+"key": "engineserialid",
+"value": "12309481209312"
+}
+],
+"submodelDescriptors": [
+{
+"description": [
+{
+"language": "en",
+"text": "Provides base vehicle information"
+}
+],
+"idShort": "vehicle base details",
+"identification": "4a738a24-b7d8-4989-9cd6-387772f40565",
+"semanticId": {
+"value": [
+"urn:bamm:com.catenax.vehicle:0.1.1"
+]
+},
+"endpoints": [
+{
+"interface": "HTTP",
+"protocolInformation": {
+"endpointAddress": "https://catena-x.net/vehicle/basedetails/",
+"endpointProtocol": "HTTPS",
+"endpointProtocolVersion": "1.0"
+}
+}
+]
+},
+{
+"description": [
+{
+"language": "en",
+"text": "Provides base vehicle information"
+}
+],
+"idShort": "vehicle part details",
+"identification": "dae4d249-6d66-4818-b576-bf52f3b9ae90",
+"semanticId": {
+"value": [
+"urn:bamm:com.catenax.vehicle:0.1.1#PartDetails"
+]
+},
+"endpoints": [
+{
+"interface": "HTTP",
+"protocolInformation": {
+"endpointAddress": "https://catena-x.net/vehicle/partdetails/",
+"endpointProtocol": "HTTPS",
+"endpointProtocolVersion": "1.0"
+}
+}
+]
+}
+]
+}
+]
+}
+@endjson
+....
+
+== InMemory Job Store Datamodel
+
+[plantuml, target=inmemory-model, format=png]
+....
+@startuml
+entity MultiTransferJob {
+--
+* jobId : string (UUID)
+* transferProcessIds: Set<string>
+* state : JobState
+* jobData: Map<String, String>
+* errorDetail: string
+* completedTransfers: List<TransferProcess>
+}
+
+MultiTransferJob -> JobState
+
+
+enum JobState {
+    UNSAVED,
+    INITIAL,
+    IN_PROGRESS,
+    TRANSFERS_FINISHED,
+    COMPLETED,
+    ERROR;
+}
+
+MultiTransferJob -> TransferProcess
+
+class TransferProcess {
+* String id;
+* Type type = Type.CONSUMER;
+* int state;
+* int stateCount = TransferProcessStates.UNSAVED;
+* long stateTimestamp;
+* String errorDetail;
+* DataRequest dataRequest;
+* ResourceManifest resourceManifest;
+* ProvisionedResourceSet provisionedResourceSet;
+}
+
+TransferProcess -> TransferProcessStates
+
+enum TransferProcessStates {
+    UNSAVED
+}
+
+@enduml
+....

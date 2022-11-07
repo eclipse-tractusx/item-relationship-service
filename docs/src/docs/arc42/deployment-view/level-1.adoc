@@ -1,0 +1,56 @@
+= Level 1 - IRS application
+
+This section focuses only on the IRS itself, detached from its neighbors. It shows the resources deployed in Kubernetes for the IRS.
+
+[plantuml, target=irs-resources, format=png]
+....
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam nodesep 100
+skinparam ranksep 20
+
+node IRS <<app>> {
+
+    frame public {
+        agent ingress
+        interface HTTPS
+    }
+
+    frame internal {
+        node pod {
+            artifact "IRS Docker image"
+        }
+        agent service as svc
+        collections secrets
+        interface "Actuator API (Port 4004)" as actuator
+    }
+
+
+    ingress #-- HTTPS
+    svc #- ingress : IRS API (Port 8080)
+    pod #--- svc
+    svc #-- actuator
+    pod -- secrets
+
+}
+
+
+@enduml
+....
+
+*Pod*
+
+This is the actual IRS Docker image which runs as a container. The ports are only available internally and can be opened up with the Service.
+
+*Secrets*
+
+The secret information (e.g. connection credentials) is stored here and provided to the Pod at runtime.
+
+*Service*
+
+The service resource opens up selected ports of the Pod so that other applications in the same cluster can access it or to be used by the Ingress.
+
+*Ingress*
+
+The ingress uses a reverse proxy to provide specified Service ports to the internet under a specified URL. This make the IRS API publicly available.

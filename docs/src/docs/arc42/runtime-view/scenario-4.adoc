@@ -1,0 +1,48 @@
+= Scenario 4: Cancel job execution
+
+[plantuml, target=cancel-job, format=png]
+....
+@startuml
+skinparam shadowing false
+autonumber "<b>[000]"
+
+actor IrsApiConsumer
+activate IrsApiConsumer
+
+
+box "IRSApplication" #LightGrey
+participant IrsAPI
+activate IrsAPI
+participant IrsController
+activate IrsController
+participant IrsItemGraphQueryService
+activate IrsItemGraphQueryService
+participant PersistentJobStore
+activate PersistentJobStore
+
+IrsApiConsumer -> IrsAPI : PUT /irs/jobs/:jobId
+IrsAPI -> IrsController : cancelJobByJobId
+IrsController -> IrsItemGraphQueryService : cancelJobById
+IrsItemGraphQueryService -> PersistentJobStore: find
+opt jobNotFound
+IrsController <-- IrsItemGraphQueryService : error - not found
+IrsAPI <-- IrsController : error - not found
+IrsApiConsumer <-- IrsAPI : 404 - not found
+else jobFound
+PersistentJobStore -> PersistentJobStore: transition job to CANCELED
+IrsItemGraphQueryService <-- PersistentJobStore: return job details
+IrsItemGraphQueryService -> IrsItemGraphQueryService : build job response
+IrsController <-- IrsItemGraphQueryService : job details
+IrsAPI <-- IrsController : job details
+IrsApiConsumer <-- IrsAPI : job details
+end opt
+
+
+@enduml
+....
+
+== Overview
+
+When a user wants to cancel a job execution, the IRS will lookup that job in the persistent job store and transition it to the CANCELED state, if it exists. If a job is canceled, no further requests to the Catena-X network will be performed.
+
+Afterwards, the IRS will return the updated job details of the canceled job to the user.
