@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated Spring Boot to 2.7.5 and Spring Security (Web and OAuth2 Client) dependencies to 5.7.5 due to CVEs
 - Renamed parameter from 'status' to 'jobState' in Job status response
+- 
+### Known knowns
+- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
 ## [1.4.0] - 2022-10-28
 ### Added
@@ -23,6 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added an administration guide covering installation and configuration topics (TRI-593) 
 - **Tombstones** Tombstone contains ProcessStep in ProcessingError
 - Added new optional parameter 'callbackUrl' to Job registration request
+
+### Known knowns
+- discovered lack of circuit breaker for communication with submodel server which is not responding (low risk) - will be addressed in future release
 
 ## [1.2.0] - 2022-09-30
 ### Added
