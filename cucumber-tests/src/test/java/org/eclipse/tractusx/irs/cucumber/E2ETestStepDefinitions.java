@@ -220,19 +220,22 @@ public class E2ETestStepDefinitions {
 
     @And("{string} are empty")
     public void areEmpty(String valueType) {
-        switch (valueType) {
-            case "tombstones":
-                assertThat(completedJob.getTombstones()).isEmpty();
-            case "submodels":
-                assertThat(completedJob.getSubmodels()).isEmpty();
-            case "relationships":
-                assertThat(completedJob.getRelationships()).isEmpty();
-            case "shells":
-                assertThat(completedJob.getShells()).isEmpty();
-            case "bpns":
-                assertThat(completedJob.getBpns()).isEmpty();
-            default:
-                throw new PendingException();
+        if ("tombstones".equals(valueType)) {
+            assertThat(completedJob.getTombstones()).isEmpty();
+        } else if ("submodels".equals(valueType)) {
+
+            assertThat(completedJob.getSubmodels()).isEmpty();
+        } else if ("relationships".equals(valueType)) {
+
+            assertThat(completedJob.getRelationships()).isEmpty();
+        } else if ("shells".equals(valueType)) {
+
+            assertThat(completedJob.getShells()).isEmpty();
+        } else if ("bpns".equals(valueType)) {
+
+            assertThat(completedJob.getBpns()).isEmpty();
+        } else {
+            throw new PendingException();
         }
     }
 
