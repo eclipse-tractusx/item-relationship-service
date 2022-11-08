@@ -27,6 +27,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 /**
  * Public API Facade for submodel domain
@@ -44,8 +45,11 @@ public class SubmodelFacade {
      * @return The Aspect Model for the given submodel
      */
     public List<Relationship> getRelationships(final String submodelEndpointAddress, final RelationshipAspect traversalAspectType) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("Get Submodel task");
         final RelationshipSubmodel relationshipSubmodel = this.submodelClient.getSubmodel(submodelEndpointAddress, traversalAspectType.getSubmodelClazz());
-
+        stopWatch.stop();
+        log.info("Task {} took {} ms for endpoint address: {}", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis(), submodelEndpointAddress);
         return relationshipSubmodel.asRelationships();
     }
 
