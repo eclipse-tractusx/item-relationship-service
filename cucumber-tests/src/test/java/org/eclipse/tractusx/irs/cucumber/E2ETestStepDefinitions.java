@@ -218,6 +218,24 @@ public class E2ETestStepDefinitions {
                                      .count()).isGreaterThanOrEqualTo(numberOfOccurrence);
     }
 
+    @And("{string} are empty")
+    public void areEmpty(String valueType) {
+        switch (valueType) {
+            case "tombstones":
+                assertThat(completedJob.getTombstones()).isEmpty();
+            case "submodels":
+                assertThat(completedJob.getSubmodels()).isEmpty();
+            case "relationships":
+                assertThat(completedJob.getRelationships()).isEmpty();
+            case "shells":
+                assertThat(completedJob.getShells()).isEmpty();
+            case "bpns":
+                assertThat(completedJob.getBpns()).isEmpty();
+            default:
+                throw new PendingException();
+        }
+    }
+
     @After("@INTEGRATION_TEST")
     public void addJobIdToResult(Scenario scenario) {
         scenario.attach(jobId.toString(), MediaType.TEXT_PLAIN_VALUE, "jobId");
