@@ -19,45 +19,15 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component;
+package org.eclipse.tractusx.irs.connector.job;
 
-import java.time.ZonedDateTime;
-import java.util.UUID;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
 import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
-import org.eclipse.tractusx.irs.component.enums.JobState;
 
 /**
- * Response for job status request
+ * Time to live for completed and failed Jobs.
  */
 @Value
-@Jacksonized
-@Builder(toBuilder = true)
-public class JobStatusResult {
-
-    /**
-     * Job identifier
-     */
-    private UUID jobId;
-
-    /**
-     * Current state of the job
-     */
-    private JobState jobState;
-
-    /**
-     * Timestamp when the job was started
-     */
-    @Schema(implementation = ZonedDateTime.class)
-    private ZonedDateTime startedOn;
-
-    /**
-     * Timestamp when the job was completed
-     */
-    @Schema(implementation = ZonedDateTime.class)
-    private ZonedDateTime jobCompleted;
-
+public class JobTTL {
+    private int ttlCompletedJobsInHours;
+    private int ttlFailedJobsInHours;
 }

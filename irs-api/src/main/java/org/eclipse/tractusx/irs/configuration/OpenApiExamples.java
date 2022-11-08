@@ -112,7 +112,7 @@ public class OpenApiExamples {
         return toExample(List.of(JobStatusResult.builder()
                                                 .jobId(UUID.fromString(JOB_HANDLE_ID_1))
                                                 .jobState(JobState.COMPLETED)
-                                                .createdOn(EXAMPLE_ZONED_DATETIME)
+                                                .startedOn(EXAMPLE_ZONED_DATETIME)
                                                 .jobCompleted(EXAMPLE_ZONED_DATETIME)
                                                 .build()));
     }

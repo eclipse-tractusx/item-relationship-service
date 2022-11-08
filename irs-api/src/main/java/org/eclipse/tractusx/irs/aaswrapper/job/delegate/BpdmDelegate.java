@@ -31,7 +31,6 @@ import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.Tombstone;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.springframework.web.client.RestClientException;
 
@@ -60,13 +59,14 @@ public class BpdmDelegate extends AbstractDelegate {
                                 .getShells()
                                 .stream()
                                 .findFirst()
-                                .flatMap(AssetAdministrationShellDescriptor::findManufacturerId)
-                                .ifPresentOrElse(manufacturerId -> bpnFromManufacturerId(itemContainerBuilder, manufacturerId, itemId),
+                                .ifPresent(shell -> shell.findManufacturerId()
+                                        .ifPresentOrElse(manufacturerId -> bpnFromManufacturerId(itemContainerBuilder, manufacturerId, itemId),
                                         () -> {
                                             final String message = String.format("Cannot find ManufacturerId for CatenaXId: %s", itemId);
                                             log.warn(message);
                                             itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0, ProcessStep.BPDM_REQUEST));
-                                        });
+                                        }
+                                ));
         } catch (RestClientException e) {
             log.info("Business Partner endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
             itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount, ProcessStep.BPDM_REQUEST));
