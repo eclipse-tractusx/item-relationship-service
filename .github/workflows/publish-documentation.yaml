@@ -24,9 +24,16 @@ jobs:
       - name: Setup Graphviz
         uses: ts-graphviz/setup-graphviz@v1
 
+      - name: Cache maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
       - name: Build API documentation with Maven
         run: |
-          mvn clean package -pl irs-api,irs-models -DskipTests --batch-mode
+          mvn clean package -pl irs-models,irs-testing,irs-api -DskipTests --batch-mode
           cp irs-api/target/generated-sources/openapi/index.html docs/src/docs/api-specification/index.html
 
       - name: Build with Maven
