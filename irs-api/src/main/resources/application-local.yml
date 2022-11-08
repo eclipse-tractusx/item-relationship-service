@@ -15,4 +15,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/certs
+          jwk-set-uri: http://localhost
+      client:
+        provider:
+          keycloak:
+            token-uri: http://localhost

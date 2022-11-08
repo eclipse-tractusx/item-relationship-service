@@ -1,8 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="IrsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="local" />
+    <envs>
+      <env name="SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI" value="https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/certs" />
+    </envs>
     <module name="irs-api" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="org.eclipse.tractusx.irs.IrsApplication" />
-    <option name="ACTIVE_PROFILES" value="local" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
