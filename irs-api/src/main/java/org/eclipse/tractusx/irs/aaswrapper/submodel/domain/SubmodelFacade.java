@@ -45,8 +45,8 @@ public class SubmodelFacade {
      * @return The Aspect Model for the given submodel
      */
     public List<Relationship> getRelationships(final String submodelEndpointAddress, final RelationshipAspect traversalAspectType) {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start("Get Submodel task");
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start("Get Submodel task for relationships");
         final RelationshipSubmodel relationshipSubmodel = this.submodelClient.getSubmodel(submodelEndpointAddress, traversalAspectType.getSubmodelClazz());
         stopWatch.stop();
         log.info("Task {} took {} ms for endpoint address: {}", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis(), submodelEndpointAddress);
@@ -58,7 +58,11 @@ public class SubmodelFacade {
      * @return The Aspect Model as JSON-String for the given submodel
      */
     public String getSubmodelRawPayload(final String submodelEndpointAddress) {
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start("Get Submodel raw payload task");
         final String submodel = this.submodelClient.getSubmodel(submodelEndpointAddress);
+        stopWatch.stop();
+        log.info("Task {} took {} ms for endpoint address: {}", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis(), submodelEndpointAddress);
         log.info("Returning Submodel as String: '{}'", submodel);
         return submodel;
     }
