@@ -2,7 +2,7 @@
 
 == Chapters
 
-- link:whitebox-overall.adoc[Whitebox overall system]
-- link:level-1.adoc[Level 1]
-- link:level-2.adoc[Level 2]
-- link:irs-api.adoc[IRS API]
+- xref:whitebox-overall.adoc[Whitebox overall system]
+- xref:level-1.adoc[Level 1]
+- xref:level-2.adoc[Level 2]
+- xref:irs-api.adoc[IRS API]

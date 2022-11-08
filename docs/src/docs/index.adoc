@@ -4,4 +4,5 @@
 xref:administration/administration-guide.adoc[]
 
 == Architecture Documentation (arc42)
-link:https://confluence.catena-x.net/x/NLGAAQ[]
+- xref:arc42/index.adoc[Single chapters]
+- xref:arc42/full.adoc[Full document]

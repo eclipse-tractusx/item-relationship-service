@@ -61,5 +61,6 @@ For information on how to run the application locally, please check the README d
 
 == View Levels
 
-- link:level-0.adoc[Level 0 - Cluster overview]
-- link:level-1.adoc[Level 1 - IRS application]
+include::level-0.adoc[leveloffset=+2]
+
+include::level-1.adoc[leveloffset=+2]

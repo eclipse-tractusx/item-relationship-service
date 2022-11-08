@@ -24,7 +24,7 @@ These components utilize data persistence, which needs to be backed up separatel
 
 - *Minio persistent volume*: Contains the stored Job information. In case of data loss, Jobs can be started again to retrieve the data from the network.
 - *Prometheus persistent volume*: Contains the monitoring data of the IRS. In case of data loss, no analysis can be done for past timeframes.
-- *Vault secrets*: In case of data loss, the credentials stored in the Vault need to be recreated manually. See the xref:../deployment-view/index.adoc[deployment view] for an overview.
+- *Vault secrets*: In case of data loss, the credentials stored in the Vault need to be recreated manually. See the deployment view for an overview.
 
 == Scaling
 If the number of consumers raises, the IRS can be scaled up by using more resources for the Deployment Pod. Those resources can be used to utilize more parallel threads to handle Job execution.

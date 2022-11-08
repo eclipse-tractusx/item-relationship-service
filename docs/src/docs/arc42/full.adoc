@@ -1,0 +1,12 @@
+= Architecture documentation (arc42)
+
+include::introduction-goals/index.adoc[leveloffset=+1]
+include::architecture-constraints/index.adoc[leveloffset=+1]
+include::scope-context/index.adoc[leveloffset=+1]
+include::solution-strategy/index.adoc[leveloffset=+1]
+include::building-block-view/index.adoc[leveloffset=+1]
+include::runtime-view/index.adoc[leveloffset=+1]
+include::deployment-view/index.adoc[leveloffset=+1]
+include::cross-cutting/full.adoc[leveloffset=+1]
+include::quality-requirements/index.adoc[leveloffset=+1]
+include::glossary.adoc[leveloffset=+1]
