@@ -2,7 +2,7 @@
 
 This section focuses only on the IRS itself, detached from its neighbors. It shows the resources deployed in Kubernetes for the IRS.
 
-[plantuml, target=irs-resources, format=png]
+[plantuml, target=irs-resources, format=svg]
 ....
 @startuml
 skinparam monochrome true

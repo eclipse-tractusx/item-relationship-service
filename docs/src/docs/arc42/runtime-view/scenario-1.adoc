@@ -2,7 +2,7 @@
 
 This section describes what happens when user creates a new job.
 
-[plantuml, target=create-job, format=png]
+[plantuml, target=create-job, format=svg]
 ....
 @startuml
 skinparam shadowing false

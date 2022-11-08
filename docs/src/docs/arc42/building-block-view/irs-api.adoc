@@ -7,7 +7,7 @@ Since we cannot rely on synchronous responses regarding the requests of submodel
 
 == IRS interaction diagram
 
-[plantuml, target=irs-api, format=png]
+[plantuml, target=irs-api, format=svg]
 ....
 @startuml
 skinparam monochrome true

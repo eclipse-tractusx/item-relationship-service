@@ -1,6 +1,6 @@
 = Technical context
 
-[plantuml, target=integrated-overview, format=png]
+[plantuml, target=integrated-overview, format=svg]
 ....
 @startuml
 skinparam monochrome true

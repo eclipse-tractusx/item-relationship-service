@@ -3,7 +3,7 @@
 == Domain entity model
 
 
-[plantuml, target=domain-entity-model, format=png]
+[plantuml, target=domain-entity-model, format=svg]
 ....
 @startuml
 entity Jobs {
@@ -204,7 +204,7 @@ Exception ||-- StatusCodeEnum
 
 == Domain model
 
-[plantuml, target=domain-model, format=png]
+[plantuml, target=domain-model, format=svg]
 ....
 @startuml
 
@@ -636,7 +636,7 @@ public enum JobState {
 
 == IRS API Response
 
-[plantuml, target=api-response, format=png]
+[plantuml, target=api-response, format=svg]
 ....
 @startjson
 {
@@ -769,7 +769,7 @@ public enum JobState {
 
 == InMemory Job Store Datamodel
 
-[plantuml, target=inmemory-model, format=png]
+[plantuml, target=inmemory-model, format=svg]
 ....
 @startuml
 entity MultiTransferJob {

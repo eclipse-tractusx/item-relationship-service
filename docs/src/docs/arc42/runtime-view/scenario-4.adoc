@@ -1,6 +1,6 @@
 = Scenario 4: Cancel job execution
 
-[plantuml, target=cancel-job, format=png]
+[plantuml, target=cancel-job, format=svg]
 ....
 @startuml
 skinparam shadowing false

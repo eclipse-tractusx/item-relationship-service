@@ -1,6 +1,6 @@
 = Quality tree
 
-[plantuml, target=quality-tree, format=png]
+[plantuml, target=quality-tree, format=svg]
 ....
 @startmindmap
 skinparam monochrome true

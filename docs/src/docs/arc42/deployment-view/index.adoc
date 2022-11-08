@@ -2,7 +2,7 @@
 
 The deployment view shows the IRS application on ArgoCD, which is a continuous delivery tool for Kubernetes. Kubernetes manifests are specified using Helm charts. Helm is a package manager for Kubernetes. IRS is developed in a cloud-agnostic manner, so the application could be installed in any cloud infrastructure (on-premises, hybrid, or public cloud infrastructure).
 
-[plantuml, target=deployment-view, format=png]
+[plantuml, target=deployment-view, format=svg]
 ....
 @startuml
 skinparam monochrome true

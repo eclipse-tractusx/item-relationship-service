@@ -2,7 +2,7 @@
 
 == Component diagram
 
-[plantuml, target=level-1, format=png]
+[plantuml, target=level-1, format=svg]
 ....
 @startuml
 skinparam monochrome true

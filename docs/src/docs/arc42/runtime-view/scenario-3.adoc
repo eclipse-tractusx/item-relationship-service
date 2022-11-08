@@ -1,6 +1,6 @@
 = Scenario 3: Request for JobResponse
 
-[plantuml, target=request-job, format=png]
+[plantuml, target=request-job, format=svg]
 ....
 @startuml
 skinparam shadowing false

@@ -19,7 +19,7 @@ For the IRS, this means decoupling the application logic from components like th
 
 
 
-[plantuml, target=architecture, format=png]
+[plantuml, target=architecture, format=svg]
 ....
 
 @startuml

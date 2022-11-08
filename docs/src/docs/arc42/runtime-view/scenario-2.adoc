@@ -2,7 +2,7 @@
 
 This section describes how a job is asynchronously executed inside the IRS.
 
-[plantuml, target=execute-job, format=png]
+[plantuml, target=execute-job, format=svg]
 ....
 @startuml
 skinparam shadowing false

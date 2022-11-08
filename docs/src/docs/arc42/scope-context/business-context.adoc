@@ -1,6 +1,6 @@
 = Business context
 
-[plantuml, target=business-context, format=png]
+[plantuml, target=business-context, format=svg]
 ....
 @startuml
 skinparam monochrome true

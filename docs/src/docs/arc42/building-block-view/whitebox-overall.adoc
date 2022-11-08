@@ -4,7 +4,7 @@ The interfaces show how the components interact with each other and which interf
 
 == Component diagram
 
-[plantuml, target=whitebox-overview, format=png]
+[plantuml, target=whitebox-overview, format=svg]
 ....
 @startuml
 skinparam monochrome true
