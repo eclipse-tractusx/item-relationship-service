@@ -88,13 +88,3 @@ skinparam shadowing false
 ** Low-cost / Cost-effectiveness
 @endmindmap
 ....
-
-
-== (Currently) out of scope
-- Ease of use - Easy to use
-- Ease of use - Ease of learning
-- (High) Adaptability - Modifiability
-- Reusability
-- Performance - Utilization
-- Performance - Efficiency
-- Scalability - Vertical scaling

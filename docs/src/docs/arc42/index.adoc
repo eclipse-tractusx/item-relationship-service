@@ -8,5 +8,5 @@
 - xref:runtime-view/index.adoc[Runtime view]
 - xref:deployment-view/index.adoc[Deployment view]
 - xref:cross-cutting/index.adoc[Cross-cutting concepts]
-- xref:quality-requirements/index.adoc[Quality requirements]
+- xref:quality/index.adoc[Quality requirements]
 - xref:glossary.adoc[Glossary]

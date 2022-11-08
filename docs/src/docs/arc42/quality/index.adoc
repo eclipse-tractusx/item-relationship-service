@@ -1,0 +1,15 @@
+= Quality requirements
+
+The quality scenarios in this section depict the fundamental quality goals as well as other required quality properties. They allow the evaluation of decision alternatives.
+
+- *Quality attribute*: A characteristic of software, or a generic term applying to quality factors, quality subfactors, or metric values.
+- *Quality factor*: A management-oriented attribute of software that contributes to its quality.
+- *Quality subfactor*: A decomposition of a quality factor or quality subfactor to its technical components.
+- *Metric value*: A metric output or an element that is from the range of a metric.
+- *Software quality metric*: A function whose inputs are software data and whose output is a single numerical value that can be interpreted as the degree to which software possesses a given attribute that affects its quality.
+
+*Source*: IEEE standard 1061 “Standard for a Software Quality Metrics Methodology”
+
+== List of requirements
+
+This section will be filled soon™.
