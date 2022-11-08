@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Added new parameters 'startedOn' and 'jobCompleted' to Job status response 
-- 
+
 ### Changed
 - Updated Spring Boot to 2.7.5 and Spring Security (Web and OAuth2 Client) dependencies to 5.7.5 due to CVEs
 - Renamed parameter from 'status' to 'jobState' in Job status response
