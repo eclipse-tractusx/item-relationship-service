@@ -157,7 +157,7 @@ public class E2ETestStepDefinitions {
     @And("I check, if number of {string} equals to {string}")
     public void iCheckIfNumberOfEqualsTo(String valueType, String arg1) {
         if ("tombstones".equals(valueType)) {
-            assertThat(completedJob.getTombstones().size()).isEqualTo(
+            assertThat(completedJob.getTombstones()).hasSize(
                     completedJob.getJob().getSummary().getAsyncFetchedItems().getFailed());
         } else {
             throw new PendingException();
@@ -175,13 +175,13 @@ public class E2ETestStepDefinitions {
         if ("relationships".equals(valueType)) {
             final List<Relationship> actualRelationships = completedJob.getRelationships();
             final List<Relationship> expectedRelationships = getExpectedRelationships(fileName);
-            assertThat(actualRelationships.size()).isEqualTo(expectedRelationships.size());
-            assertThat(actualRelationships).containsAll(expectedRelationships);
+            assertThat(actualRelationships).hasSameSizeAs(expectedRelationships)
+                                           .containsAll(expectedRelationships);
         } else if ("submodels".equals(valueType)) {
             final List<Submodel> actualSubmodels = completedJob.getSubmodels();
             final List<Submodel> expectedSubmodels = getExpectedSubmodels(fileName);
-            assertThat(actualSubmodels.size()).isEqualTo(expectedSubmodels.size());
-            assertThat(actualSubmodels).usingRecursiveFieldByFieldElementComparatorIgnoringFields("identification")
+            assertThat(actualSubmodels).hasSameSizeAs(expectedSubmodels)
+                                       .usingRecursiveFieldByFieldElementComparatorIgnoringFields("identification")
                                        .containsAll(expectedSubmodels);
         }
     }
@@ -189,7 +189,7 @@ public class E2ETestStepDefinitions {
     private List<Submodel> getExpectedSubmodels(final String fileName) throws IOException {
         ClassLoader classLoader = this.getClass().getClassLoader();
         File file = new File(classLoader.getResource("expected-files/" + fileName).getFile());
-        assertThat(file.exists()).isTrue();
+        assertThat(file).exists();
         final Jobs expectedJob = objectMapper.readValue(file, Jobs.class);
         return expectedJob.getSubmodels();
     }
@@ -197,7 +197,7 @@ public class E2ETestStepDefinitions {
     private List<Relationship> getExpectedRelationships(final String fileName) throws IOException {
         ClassLoader classLoader = this.getClass().getClassLoader();
         File file = new File(classLoader.getResource("expected-files/" + fileName).getFile());
-        assertThat(file.exists()).isTrue();
+        assertThat(file).exists();
         final Jobs expectedJob = objectMapper.readValue(file, Jobs.class);
         return expectedJob.getRelationships();
     }
@@ -216,6 +216,23 @@ public class E2ETestStepDefinitions {
                                      .stream()
                                      .filter(submodel -> submodel.getPayload().toString().contains(bpnlNumber))
                                      .count()).isGreaterThanOrEqualTo(numberOfOccurrence);
+    }
+
+    @And("{string} are empty")
+    public void areEmpty(String valueType) {
+        if ("tombstones".equals(valueType)) {
+            assertThat(completedJob.getTombstones()).isEmpty();
+        } else if ("submodels".equals(valueType)) {
+            assertThat(completedJob.getSubmodels()).isEmpty();
+        } else if ("relationships".equals(valueType)) {
+            assertThat(completedJob.getRelationships()).isEmpty();
+        } else if ("shells".equals(valueType)) {
+            assertThat(completedJob.getShells()).isEmpty();
+        } else if ("bpns".equals(valueType)) {
+            assertThat(completedJob.getBpns()).isEmpty();
+        } else {
+            throw new PendingException();
+        }
     }
 
     @After("@INTEGRATION_TEST")
