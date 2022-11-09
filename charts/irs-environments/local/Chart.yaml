@@ -18,5 +18,5 @@ version: 1.0.0
 
 dependencies:
   - name: irs-helm
-    repository: https://catenax-ng.github.io/product-item-relationship-service
+    repository: https://eclipse-tractusx.github.io/item-relationship-service
     version: 2.2.0

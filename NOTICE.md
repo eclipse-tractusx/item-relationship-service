@@ -25,15 +25,13 @@ SPDX-License-Identifier: Apache-2.0
 The project maintains the following source code repositories
 in the GitHub organization https://github.com/catenax-ng:
 
-* https://github.com/catenax-ng/product-item-relationship-service
-* https://github.com/eclipse-tractusx/item-relationship-service
+* https://github.com/catenax-ng/tx-item-relationship-service
 
 
 ## Third-party Content
 
 This project leverages the following third party content.
 
-See [DEPENDENCIES](https://github.com/catenax-ng/product-item-relationship-service/blob/main/DEPENDENCIES) file.
 See [DEPENDENCIES](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/DEPENDENCIES) file.
 
 ## Cryptography

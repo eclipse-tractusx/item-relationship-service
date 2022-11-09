@@ -25,7 +25,7 @@ The Service interacts with the Catena-X [Digital Twin Registry](https://catena-x
 
 - 🖥 Item Relationship Service Video
 - 📄 [Item Relationship Service Product Page](https://catena-x.net/en/angebote/item-relationship-service)
-- 📄 [Item Relationship Service Documentation](https://github.com/catenax-ng/product-item-relationship-service/blob/main/README.md)
+- 📄 [Item Relationship Service Documentation](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/README.md)
 - 📄 [IRS REST Api Documentation](http://irs.dev.demo.catena-x.net/api/swagger-ui/index.html?configUrl=/api/api-docs/swagger-config)
 - 📄 Catena-X Kit's
 

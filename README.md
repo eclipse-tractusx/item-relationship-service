@@ -1,16 +1,16 @@
 # ![Item Relationship Service (IRS)](logo.png)
 
-[![Apache 2 License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/catenax-ng/product-item-relationship-service/blob/main/LICENSE)  
-[![Build](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/irs-build.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/irs-build.yml)
+[![Apache 2 License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/LICENSE)  
+[![Build](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/irs-build.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/irs-build.yml)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=catenax-ng_product-item-relationship-service&metric=coverage)](https://sonarcloud.io/summary/new_code?id=catenax-ng_product-item-relationship-service)
-[![CodeQL](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml)  
-[![Kics](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/kics.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/kics.yml)
-[![Trivy](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/trivy.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/trivy.yml)
-[![VeraCode](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/veracode.yaml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/veracode.yaml)
-[![OWASP Dependency Check](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml)
-[![Spotbugs](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/spotbugs.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/spotbugs.yml)
-[![Eclipse-dash](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/eclipse-dash.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/eclipse-dash.yml)
-[![Tavern IRS API test](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/tavern.yml)   
+[![CodeQL](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/codeql.yml)  
+[![Kics](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/kics.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/kics.yml)
+[![Trivy](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/trivy.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/trivy.yml)
+[![VeraCode](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/veracode.yaml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/veracode.yaml)
+[![OWASP Dependency Check](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml)
+[![Spotbugs](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml)
+[![Eclipse-dash](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml)
+[![Tavern IRS API test](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml)   
 
 ## What is the IRS?
 
@@ -159,7 +159,7 @@ Check the Helm charts at [./charts/irs](./charts/irs) for the configuration.
 
 ## Documentation
 
-- [Item Relationship Service Documentation (catena-ng)](https://catenax-ng.github.io/product-item-relationship-service/docs/)
+- [Item Relationship Service Documentation (catena-ng)](https://eclipse-tractusx.github.io/item-relationship-service/docs/)
 
 ## Licenses
 
