@@ -55,7 +55,7 @@ public class SubmodelFacade {
      */
     public String getSubmodelRawPayload(final String submodelEndpointAddress) {
         final String submodel = this.submodelClient.getSubmodel(submodelEndpointAddress);
-        log.info("Returning Submodel as String: '{}'", submodel);
+        log.info("Retrieved Submodel as raw string from endpoint: '{}'", submodelEndpointAddress);
         return submodel;
     }
 
