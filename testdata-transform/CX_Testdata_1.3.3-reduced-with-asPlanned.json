@@ -8062,8 +8062,8 @@
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2018-07-19T04:46:59.000Z",
-            "validTo": "2031-04-23T10:05:55.000Z"
+            "validFrom": "2020-08-29T12:04:19.000Z",
+            "validTo": "2029-05-02T07:12:54.000Z"
           },
           "catenaXId": "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e",
           "partTypeInformation": {
@@ -8073,21 +8073,15 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation": [
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
           "catenaXId": "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e",
           "sites": [
             {
-              "functionValidUntil": "2025-05-09T17:18:37.000Z",
+              "functionValidUntil": "2031-06-05T00:51:02.000Z",
               "catenaXsiteId": "BPNS000004711DMY",
               "function": "production",
-              "functionValidFrom": "2016-01-24T11:14:34.000Z",
-              "externalSiteIdentifier": [
-                {
-                  "organization": "BPNL00000003AYRE",
-                  "externalIdentifier": "OEM A"
-                }
-              ]
+              "functionValidFrom": "2018-07-23T18:19:57.000Z"
             }
           ]
         }
@@ -8141,8 +8135,8 @@
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2013-11-26T23:32:06.000Z",
-            "validTo": "2026-05-08T11:43:28.000Z"
+            "validFrom": "2017-10-16T05:53:20.000Z",
+            "validTo": "2032-11-17T02:43:24.000Z"
           },
           "catenaXId": "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c",
           "partTypeInformation": {
@@ -8152,21 +8146,15 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation": [
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
           "catenaXId": "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c",
           "sites": [
             {
-              "functionValidUntil": "2032-10-25T19:29:35.000Z",
+              "functionValidUntil": "2027-07-12T11:05:07.000Z",
               "catenaXsiteId": "BPNS000004711DMY",
               "function": "production",
-              "functionValidFrom": "2019-12-07T13:21:44.000Z",
-              "externalSiteIdentifier": [
-                {
-                  "organization": "BPNL00000003AYRE",
-                  "externalIdentifier": "OEM A"
-                }
-              ]
+              "functionValidFrom": "2012-12-03T20:51:51.000Z"
             }
           ]
         }
@@ -8196,8 +8184,8 @@
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2015-09-04T14:42:30.000Z",
-            "validTo": "2024-05-10T16:40:22.000Z"
+            "validFrom": "2018-03-19T11:00:15.000Z",
+            "validTo": "2031-05-16T20:22:49.000Z"
           },
           "catenaXId": "urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97",
           "partTypeInformation": {
@@ -8207,21 +8195,15 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation": [
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
           "catenaXId": "urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97",
           "sites": [
             {
-              "functionValidUntil": "2031-01-23T02:32:23.000Z",
+              "functionValidUntil": "2024-06-08T20:18:46.000Z",
               "catenaXsiteId": "BPNS000004711DMY",
               "function": "production",
-              "functionValidFrom": "2014-11-13T19:06:57.000Z",
-              "externalSiteIdentifier": [
-                {
-                  "organization": "BPNL00000003AYRE",
-                  "externalIdentifier": "OEM A"
-                }
-              ]
+              "functionValidFrom": "2020-10-25T08:55:15.000Z"
             }
           ]
         }
@@ -8263,8 +8245,8 @@
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2018-08-04T04:26:48.000Z",
-            "validTo": "2025-05-09T14:41:28.000Z"
+            "validFrom": "2017-03-13T05:34:55.000Z",
+            "validTo": "2031-05-23T10:55:50.000Z"
           },
           "catenaXId": "urn:uuid:c7a2b803-f8fe-4b79-b6fc-967ce847c9a9",
           "partTypeInformation": {
@@ -8274,21 +8256,15 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation": [
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
           "catenaXId": "urn:uuid:c7a2b803-f8fe-4b79-b6fc-967ce847c9a9",
           "sites": [
             {
-              "functionValidUntil": "2024-04-21T10:02:25.000Z",
+              "functionValidUntil": "2029-12-30T12:27:46.000Z",
               "catenaXsiteId": "BPNS000004711DMY",
               "function": "production",
-              "functionValidFrom": "2013-02-07T17:35:18.000Z",
-              "externalSiteIdentifier": [
-                {
-                  "organization": "BPNL00000003AYRE",
-                  "externalIdentifier": "OEM A"
-                }
-              ]
+              "functionValidFrom": "2013-12-25T05:38:24.000Z"
             }
           ]
         }
@@ -8318,8 +8294,8 @@
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2020-05-14T21:15:28.000Z",
-            "validTo": "2027-10-29T03:30:51.000Z"
+            "validFrom": "2020-12-04T06:06:02.000Z",
+            "validTo": "2029-12-24T11:22:15.000Z"
           },
           "catenaXId": "urn:uuid:4f7b1cf2-a598-4027-bc78-63f6d8e55699",
           "partTypeInformation": {
@@ -8329,21 +8305,15 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation": [
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
           "catenaXId": "urn:uuid:4f7b1cf2-a598-4027-bc78-63f6d8e55699",
           "sites": [
             {
-              "functionValidUntil": "2030-02-10T18:01:07.000Z",
+              "functionValidUntil": "2028-06-13T16:56:27.000Z",
               "catenaXsiteId": "BPNS00000003B0Q0",
               "function": "production",
-              "functionValidFrom": "2020-08-24T08:03:51.000Z",
-              "externalSiteIdentifier": [
-                {
-                  "organization": "BPNL00000003B0Q0",
-                  "externalIdentifier": "N-Tier A"
-                }
-              ]
+              "functionValidFrom": "2015-11-26T13:11:33.000Z"
             }
           ]
         }
@@ -8360,8 +8330,8 @@
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2015-04-24T05:48:52.000Z",
-            "validTo": "2032-07-06T10:56:15.000Z"
+            "validFrom": "2020-04-25T02:01:51.000Z",
+            "validTo": "2031-11-29T06:12:17.000Z"
           },
           "catenaXId": "urn:uuid:15d2fcc8-6439-4d1e-904b-e62b4d3bf323",
           "partTypeInformation": {
@@ -8371,21 +8341,15 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation": [
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
           "catenaXId": "urn:uuid:15d2fcc8-6439-4d1e-904b-e62b4d3bf323",
           "sites": [
             {
-              "functionValidUntil": "2030-08-01T16:07:41.000Z",
+              "functionValidUntil": "2025-05-06T14:32:43.000Z",
               "catenaXsiteId": "BPNS00000003AXS3",
               "function": "production",
-              "functionValidFrom": "2014-10-20T17:31:22.000Z",
-              "externalSiteIdentifier": [
-                {
-                  "organization": "BPNL00000003AXS3",
-                  "externalIdentifier": "Sub Tier B"
-                }
-              ]
+              "functionValidFrom": "2018-08-16T15:04:03.000Z"
             }
           ]
         }
@@ -8402,8 +8366,8 @@
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2014-03-24T16:28:45.000Z",
-            "validTo": "2028-07-19T05:40:57.000Z"
+            "validFrom": "2016-05-24T17:00:07.000Z",
+            "validTo": "2027-02-27T23:53:16.000Z"
           },
           "catenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7",
           "partTypeInformation": {
@@ -8413,21 +8377,15 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation": [
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
           "catenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7",
           "sites": [
             {
-              "functionValidUntil": "2028-12-25T02:03:52.000Z",
+              "functionValidUntil": "2027-02-15T00:42:23.000Z",
               "catenaXsiteId": "BPNS00000003B2OM",
               "function": "production",
-              "functionValidFrom": "2020-07-10T22:55:45.000Z",
-              "externalSiteIdentifier": [
-                {
-                  "organization": "BPNL00000003B2OM",
-                  "externalIdentifier": "Tier A"
-                }
-              ]
+              "functionValidFrom": "2019-06-22T03:30:00.000Z"
             }
           ]
         }
@@ -8469,8 +8427,8 @@
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2018-02-15T08:33:26.000Z",
-            "validTo": "2032-10-06T21:45:04.000Z"
+            "validFrom": "2019-01-03T15:53:12.000Z",
+            "validTo": "2028-12-18T13:37:47.000Z"
           },
           "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
           "partTypeInformation": {
@@ -8480,21 +8438,15 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation": [
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
           "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
           "sites": [
             {
-              "functionValidUntil": "2026-09-02T07:05:32.000Z",
+              "functionValidUntil": "2027-03-07T18:54:55.000Z",
               "catenaXsiteId": "BPNS00000003B3NX",
               "function": "production",
-              "functionValidFrom": "2013-01-20T03:33:39.000Z",
-              "externalSiteIdentifier": [
-                {
-                  "organization": "BPNL00000003B3NX",
-                  "externalIdentifier": "Sub Tier A"
-                }
-              ]
+              "functionValidFrom": "2019-09-02T02:21:06.000Z"
             }
           ]
         }
@@ -8524,8 +8476,8 @@
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2020-10-23T10:13:41.000Z",
-            "validTo": "2027-02-07T06:59:52.000Z"
+            "validFrom": "2013-08-26T01:48:10.000Z",
+            "validTo": "2029-07-11T06:52:29.000Z"
           },
           "catenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e",
           "partTypeInformation": {
@@ -8535,21 +8487,15 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation": [
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
           "catenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e",
           "sites": [
             {
-              "functionValidUntil": "2026-03-11T20:36:56.000Z",
+              "functionValidUntil": "2026-10-29T05:00:59.000Z",
               "catenaXsiteId": "BPNS00000003B0Q0",
               "function": "production",
-              "functionValidFrom": "2013-08-20T04:18:09.000Z",
-              "externalSiteIdentifier": [
-                {
-                  "organization": "BPNL00000003B0Q0",
-                  "externalIdentifier": "N-Tier A"
-                }
-              ]
+              "functionValidFrom": "2016-03-09T23:26:10.000Z"
             }
           ]
         }
@@ -8566,8 +8512,8 @@
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2020-07-21T20:02:23.000Z",
-            "validTo": "2027-10-08T07:14:34.000Z"
+            "validFrom": "2014-09-05T05:18:51.000Z",
+            "validTo": "2027-08-08T06:10:08.000Z"
           },
           "catenaXId": "urn:uuid:4518c080-14fb-4252-b8de-4362d615868d",
           "partTypeInformation": {
@@ -8577,21 +8523,15 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation": [
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
           "catenaXId": "urn:uuid:4518c080-14fb-4252-b8de-4362d615868d",
           "sites": [
             {
-              "functionValidUntil": "2032-07-30T00:02:12.000Z",
+              "functionValidUntil": "2028-03-09T06:30:50.000Z",
               "catenaXsiteId": "BPNS00000003B0Q0",
               "function": "production",
-              "functionValidFrom": "2017-10-21T03:42:49.000Z",
-              "externalSiteIdentifier": [
-                {
-                  "organization": "BPNL00000003B0Q0",
-                  "externalIdentifier": "N-Tier A"
-                }
-              ]
+              "functionValidFrom": "2013-04-12T14:13:07.000Z"
             }
           ]
         }
@@ -8608,8 +8548,8 @@
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2020-01-26T08:12:32.000Z",
-            "validTo": "2026-06-01T02:58:10.000Z"
+            "validFrom": "2014-01-09T08:52:06.000Z",
+            "validTo": "2028-01-29T20:27:55.000Z"
           },
           "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
           "partTypeInformation": {
@@ -8619,21 +8559,15 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation": [
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
           "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
           "sites": [
             {
-              "functionValidUntil": "2025-10-30T10:21:59.000Z",
+              "functionValidUntil": "2031-01-22T14:18:18.000Z",
               "catenaXsiteId": "BPNS00000003B5MJ",
               "function": "production",
-              "functionValidFrom": "2016-08-01T23:40:28.000Z",
-              "externalSiteIdentifier": [
-                {
-                  "organization": "BPNL00000003B5MJ",
-                  "externalIdentifier": "Tier B"
-                }
-              ]
+              "functionValidFrom": "2016-05-04T16:30:44.000Z"
             }
           ]
         }
@@ -8675,8 +8609,8 @@
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2013-07-07T12:29:42.000Z",
-            "validTo": "2029-11-19T04:53:00.000Z"
+            "validFrom": "2016-05-01T01:10:59.000Z",
+            "validTo": "2032-08-08T06:55:17.000Z"
           },
           "catenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
           "partTypeInformation": {
@@ -8686,21 +8620,15 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation": [
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
           "catenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
           "sites": [
             {
-              "functionValidUntil": "2030-06-04T00:15:00.000Z",
+              "functionValidUntil": "2030-01-29T14:57:59.000Z",
               "catenaXsiteId": "BPNS00000003AXS3",
               "function": "production",
-              "functionValidFrom": "2019-01-28T17:45:47.000Z",
-              "externalSiteIdentifier": [
-                {
-                  "organization": "BPNL00000003AXS3",
-                  "externalIdentifier": "Sub Tier B"
-                }
-              ]
+              "functionValidFrom": "2018-03-19T03:43:14.000Z"
             }
           ]
         }
@@ -8717,8 +8645,8 @@
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2015-08-28T16:08:01.000Z",
-            "validTo": "2027-03-25T23:05:36.000Z"
+            "validFrom": "2015-07-06T13:44:02.000Z",
+            "validTo": "2032-07-29T20:08:18.000Z"
           },
           "catenaXId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
           "partTypeInformation": {
@@ -8728,21 +8656,15 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation": [
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
           "catenaXId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
           "sites": [
             {
-              "functionValidUntil": "2029-11-07T16:55:06.000Z",
+              "functionValidUntil": "2032-05-05T20:35:10.000Z",
               "catenaXsiteId": "BPNS000000815DMY",
               "function": "production",
-              "functionValidFrom": "2015-10-06T05:39:14.000Z",
-              "externalSiteIdentifier": [
-                {
-                  "organization": "BPNL00000003AVTH",
-                  "externalIdentifier": "OEM B"
-                }
-              ]
+              "functionValidFrom": "2015-04-01T00:34:47.000Z"
             }
           ]
         }
@@ -8784,8 +8706,8 @@
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2014-02-19T16:54:58.000Z",
-            "validTo": "2032-12-03T23:54:42.000Z"
+            "validFrom": "2017-10-30T15:43:04.000Z",
+            "validTo": "2024-01-23T13:21:10.000Z"
           },
           "catenaXId": "urn:uuid:65e1554e-e5cd-4560-bac1-1352582122fb",
           "partTypeInformation": {
@@ -8795,21 +8717,15 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation": [
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
           "catenaXId": "urn:uuid:65e1554e-e5cd-4560-bac1-1352582122fb",
           "sites": [
             {
-              "functionValidUntil": "2025-10-06T00:08:52.000Z",
+              "functionValidUntil": "2032-06-19T04:57:51.000Z",
               "catenaXsiteId": "BPNS000001111DMY",
               "function": "production",
-              "functionValidFrom": "2020-02-07T20:49:44.000Z",
-              "externalSiteIdentifier": [
-                {
-                  "organization": "BPNL00000003AZQP",
-                  "externalIdentifier": "OEM C"
-                }
-              ]
+              "functionValidFrom": "2015-06-09T07:26:38.000Z"
             }
           ]
         }
@@ -8839,8 +8755,8 @@
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2013-05-06T05:33:16.000Z",
-            "validTo": "2031-10-03T11:03:18.000Z"
+            "validFrom": "2016-01-18T13:31:18.000Z",
+            "validTo": "2030-02-15T14:28:45.000Z"
           },
           "catenaXId": "urn:uuid:e3e2a4d8-58bc-4ae9-afa2-e8946fda1f77",
           "partTypeInformation": {
@@ -8850,21 +8766,15 @@
           }
         }
       ],
-      "urn:bamm:io.catenax.part_site_information:1.0.0#PartSiteInformation": [
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
           "catenaXId": "urn:uuid:e3e2a4d8-58bc-4ae9-afa2-e8946fda1f77",
           "sites": [
             {
-              "functionValidUntil": "2024-12-22T01:57:33.000Z",
+              "functionValidUntil": "2025-03-28T18:20:05.000Z",
               "catenaXsiteId": "ReferenceError: \"BPN_TIER_BSITE_A\" is not defined in <eval> at line number 1",
               "function": "production",
-              "functionValidFrom": "2016-06-25T10:51:36.000Z",
-              "externalSiteIdentifier": [
-                {
-                  "organization": "BPNL00000003B5MJ",
-                  "externalIdentifier": "Tier B"
-                }
-              ]
+              "functionValidFrom": "2016-11-06T09:25:14.000Z"
             }
           ]
         }
