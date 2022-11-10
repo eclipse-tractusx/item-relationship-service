@@ -259,8 +259,8 @@ if __name__ == "__main__":
                 })
             if "PartSiteInformationAsPlanned" in tmp_key:
                 specific_asset_ids.append({
-                    "value": tmp_data[tmp_key][0]["sites"][0]["catenaXsiteId"],
-                    "key": "catenaXsiteId"
+                    "value": tmp_data[tmp_key][0]["sites"][0]["catenaXSiteId"],
+                    "key": "catenaXSiteId"
                 })
         print(name_at_manufacturer)
 
