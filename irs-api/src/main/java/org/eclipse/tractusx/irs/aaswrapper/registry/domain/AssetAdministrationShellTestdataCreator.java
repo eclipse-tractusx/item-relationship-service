@@ -23,6 +23,7 @@ package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
@@ -32,6 +33,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInfor
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
+import org.springframework.web.client.RestClientException;
 
 /**
  * Class to create AssetAdministrationShell Testdata
@@ -47,14 +49,16 @@ class AssetAdministrationShellTestdataCreator {
 
     public AssetAdministrationShellDescriptor createDummyAssetAdministrationShellDescriptorForId(
             final String catenaXId) {
-        final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
+        final Optional<CxTestDataContainer.CxTestData> cxTestData = this.cxTestDataContainer.getByCatenaXId(catenaXId);
+        if (cxTestData.isEmpty()) {
+            throw new RestClientException("Dummy Exception");
+        }
 
-        this.cxTestDataContainer.getByCatenaXId(catenaXId).ifPresent(testData -> {
-            testData.getAssemblyPartRelationship().ifPresent(submodel -> submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId)));
-            testData.getSerialPartTypization().ifPresent(submodel -> submodelDescriptors.add(createSerialPartTypizationSubmodelDescriptor(catenaXId)));
-            testData.getSingleLevelBomAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelBomAsPlannedSubmodelDescriptor(catenaXId)));
-            testData.getPartAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createPartAsPlannedSubmodelDescriptor(catenaXId)));
-        });
+        final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
+        cxTestData.get().getAssemblyPartRelationship().ifPresent(submodel -> submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId)));
+        cxTestData.get().getSerialPartTypization().ifPresent(submodel -> submodelDescriptors.add(createSerialPartTypizationSubmodelDescriptor(catenaXId)));
+        cxTestData.get().getSingleLevelBomAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelBomAsPlannedSubmodelDescriptor(catenaXId)));
+        cxTestData.get().getPartAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createPartAsPlannedSubmodelDescriptor(catenaXId)));
 
         final Reference globalAssetId = Reference.builder().value(List.of(catenaXId)).build();
         return AssetAdministrationShellDescriptor.builder()
