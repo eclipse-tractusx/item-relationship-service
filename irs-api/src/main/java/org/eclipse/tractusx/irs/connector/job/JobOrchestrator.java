@@ -55,10 +55,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 @Slf4j
 public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
-    private static final int TTL_CLEANUP_COMPLETED_JOBS_HOURS = 1;
-
-    private static final int TTL_CLEANUP_FAILED_JOBS_HOURS = 24;
-
     /**
      * Transfer process manager.
      */
@@ -88,29 +84,37 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
+     * Time to live for jobs
+     */
+    private final JobTTL jobTTL;
+
+    /**
      * Create a new instance of {@link JobOrchestrator}.
      *
-     * @param processManager the process manager
-     * @param jobStore       Job store.
-     * @param handler        Recursive job handler.
-     * @param meterService   Collect metrics for monitoring
+     * @param processManager            the process manager
+     * @param jobStore                  Job store.
+     * @param handler                   Recursive job handler.
+     * @param meterService              Collect metrics for monitoring
      * @param applicationEventPublisher publisher of spring application events
+     * @param jobTTL                    time to live for jobs
      */
     public JobOrchestrator(final TransferProcessManager<T, P> processManager, final JobStore jobStore,
-            final RecursiveJobHandler<T, P> handler, final MeterRegistryService meterService, final ApplicationEventPublisher applicationEventPublisher) {
+            final RecursiveJobHandler<T, P> handler, final MeterRegistryService meterService,
+            final ApplicationEventPublisher applicationEventPublisher, final JobTTL jobTTL) {
         this.processManager = processManager;
         this.jobStore = jobStore;
         this.handler = handler;
         this.securityHelperService = new SecurityHelperService();
         this.meterService = meterService;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.jobTTL = jobTTL;
     }
 
     /**
      * Start a job.
      *
      * @param globalAssetId root id
-     * @param jobData additional data for the job to be managed by the {@link JobStore}.
+     * @param jobData       additional data for the job to be managed by the {@link JobStore}.
      * @return response.
      */
     public JobInitiateResponse startJob(final String globalAssetId, final JobParameter jobData) {
@@ -193,7 +197,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     public void findAndCleanupCompletedJobs() {
         log.info("Running cleanup of completed jobs");
         final ZonedDateTime currentDateMinusSeconds = ZonedDateTime.now(ZoneOffset.UTC)
-                                                                   .minus(TTL_CLEANUP_COMPLETED_JOBS_HOURS,
+                                                                   .minus(jobTTL.getTtlCompletedJobsInHours(),
                                                                            ChronoUnit.HOURS);
         final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
                 currentDateMinusSeconds);
@@ -208,7 +212,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         log.info("Running cleanup of failed jobs");
 
         final ZonedDateTime currentDateMinusSeconds = ZonedDateTime.now(ZoneOffset.UTC)
-                                                                   .minus(TTL_CLEANUP_FAILED_JOBS_HOURS,
+                                                                   .minus(jobTTL.getTtlFailedJobsInHours(),
                                                                            ChronoUnit.HOURS);
         final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR,
                 currentDateMinusSeconds);
@@ -253,15 +257,15 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     private void publishJobProcessingFinishedEventIfFinished(final String jobId) {
-        jobStore.find(jobId).ifPresent(
-            job -> {
-                if (job.getJob().getJobState().equals(JobState.COMPLETED) || job.getJob().getJobState().equals(JobState.ERROR)) {
-                    applicationEventPublisher.publishEvent(
-                            new JobProcessingFinishedEvent(job.getJobIdString(), job.getJob().getJobState(),
-                                    job.getJobParameter().getCallbackUrl()));
-                }
+        jobStore.find(jobId).ifPresent(job -> {
+            if (job.getJob().getJobState().equals(JobState.COMPLETED) || job.getJob()
+                                                                            .getJobState()
+                                                                            .equals(JobState.ERROR)) {
+                applicationEventPublisher.publishEvent(
+                        new JobProcessingFinishedEvent(job.getJobIdString(), job.getJob().getJobState(),
+                                job.getJobParameter().getCallbackUrl()));
             }
-        );
+        });
     }
 
     private long startTransfers(final MultiTransferJob job, final Stream<T> dataRequests) /* throws JobErrorDetails */ {

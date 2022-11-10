@@ -36,8 +36,10 @@ import java.util.concurrent.TimeUnit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.PendingException;
+import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -49,9 +51,11 @@ import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
+import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 public class E2ETestStepDefinitions {
     private RegisterJob.RegisterJobBuilder registerJobBuilder;
@@ -63,6 +67,7 @@ public class E2ETestStepDefinitions {
     @Before
     public void setup() {
         registerJobBuilder = RegisterJob.builder();
+
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -103,6 +108,11 @@ public class E2ETestStepDefinitions {
     @And("direction {string}")
     public void direction(String direction) {
         registerJobBuilder.direction(Direction.fromValue(direction));
+    }
+
+    @And("bomLifecycle {string}")
+    public void bomlifecycle(String bomLifecycle) {
+        registerJobBuilder.bomLifecycle(BomLifecycle.fromValue(bomLifecycle));
     }
 
     @And("aspects :")
@@ -154,7 +164,7 @@ public class E2ETestStepDefinitions {
     @And("I check, if number of {string} equals to {string}")
     public void iCheckIfNumberOfEqualsTo(String valueType, String arg1) {
         if ("tombstones".equals(valueType)) {
-            assertThat(completedJob.getTombstones().size()).isEqualTo(
+            assertThat(completedJob.getTombstones()).hasSize(
                     completedJob.getJob().getSummary().getAsyncFetchedItems().getFailed());
         } else {
             throw new PendingException();
@@ -172,13 +182,13 @@ public class E2ETestStepDefinitions {
         if ("relationships".equals(valueType)) {
             final List<Relationship> actualRelationships = completedJob.getRelationships();
             final List<Relationship> expectedRelationships = getExpectedRelationships(fileName);
-            assertThat(actualRelationships.size()).isEqualTo(expectedRelationships.size());
-            assertThat(actualRelationships).containsAll(expectedRelationships);
+            assertThat(actualRelationships).hasSameSizeAs(expectedRelationships)
+                                           .containsAll(expectedRelationships);
         } else if ("submodels".equals(valueType)) {
             final List<Submodel> actualSubmodels = completedJob.getSubmodels();
             final List<Submodel> expectedSubmodels = getExpectedSubmodels(fileName);
-            assertThat(actualSubmodels.size()).isEqualTo(expectedSubmodels.size());
-            assertThat(actualSubmodels).usingRecursiveFieldByFieldElementComparatorIgnoringFields("identification")
+            assertThat(actualSubmodels).hasSameSizeAs(expectedSubmodels)
+                                       .usingRecursiveFieldByFieldElementComparatorIgnoringFields("identification")
                                        .containsAll(expectedSubmodels);
         }
     }
@@ -186,7 +196,7 @@ public class E2ETestStepDefinitions {
     private List<Submodel> getExpectedSubmodels(final String fileName) throws IOException {
         ClassLoader classLoader = this.getClass().getClassLoader();
         File file = new File(classLoader.getResource("expected-files/" + fileName).getFile());
-        assertThat(file.exists()).isTrue();
+        assertThat(file).exists();
         final Jobs expectedJob = objectMapper.readValue(file, Jobs.class);
         return expectedJob.getSubmodels();
     }
@@ -194,7 +204,7 @@ public class E2ETestStepDefinitions {
     private List<Relationship> getExpectedRelationships(final String fileName) throws IOException {
         ClassLoader classLoader = this.getClass().getClassLoader();
         File file = new File(classLoader.getResource("expected-files/" + fileName).getFile());
-        assertThat(file.exists()).isTrue();
+        assertThat(file).exists();
         final Jobs expectedJob = objectMapper.readValue(file, Jobs.class);
         return expectedJob.getRelationships();
     }
@@ -214,4 +224,28 @@ public class E2ETestStepDefinitions {
                                      .filter(submodel -> submodel.getPayload().toString().contains(bpnlNumber))
                                      .count()).isGreaterThanOrEqualTo(numberOfOccurrence);
     }
+
+    @And("{string} are empty")
+    public void areEmpty(String valueType) {
+        if ("tombstones".equals(valueType)) {
+            assertThat(completedJob.getTombstones()).isEmpty();
+        } else if ("submodels".equals(valueType)) {
+            assertThat(completedJob.getSubmodels()).isEmpty();
+        } else if ("relationships".equals(valueType)) {
+            assertThat(completedJob.getRelationships()).isEmpty();
+        } else if ("shells".equals(valueType)) {
+            assertThat(completedJob.getShells()).isEmpty();
+        } else if ("bpns".equals(valueType)) {
+            assertThat(completedJob.getBpns()).isEmpty();
+        } else {
+            throw new PendingException();
+        }
+    }
+
+    @After("@INTEGRATION_TEST")
+    public void addJobIdToResult(Scenario scenario) {
+        scenario.attach(jobId.toString(), MediaType.TEXT_PLAIN_VALUE, "jobId");
+    }
+
+
 }

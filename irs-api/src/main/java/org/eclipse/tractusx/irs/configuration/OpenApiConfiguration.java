@@ -33,6 +33,7 @@ import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.tractusx.irs.IrsApplication;
 import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -66,10 +67,12 @@ public class OpenApiConfiguration {
     /**
      * Generates example values in Swagger
      *
+     * @param tokenUri the keycloak token uri loaded from application.yaml
      * @return the customizer
      */
     @Bean
-    public OpenApiCustomiser customizer() {
+    public OpenApiCustomiser customizer(
+            @Value("${spring.security.oauth2.client.provider.keycloak.token-uri}") final String tokenUri) {
         return openApi -> {
             final Components components = openApi.getComponents();
             components.addSecuritySchemes("oAuth2", new SecurityScheme().type(SecurityScheme.Type.OAUTH2)
@@ -77,8 +80,7 @@ public class OpenApiConfiguration {
                                                                                 new OAuthFlow().scopes(
                                                                                                        new Scopes().addString(
                                                                                                                "profile email", ""))
-                                                                                               .tokenUrl(
-                                                                                                       "https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token"))));
+                                                                                               .tokenUrl(tokenUri))));
             openApi.getComponents().getSchemas().values().forEach(s -> s.setAdditionalProperties(false));
             new OpenApiExamples().createExamples(components);
         };

@@ -1260,5 +1260,5 @@ components:
         clientCredentials:
           scopes:
             profile email: ""
-          tokenUrl: https://centralidp.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token
+          tokenUrl: http://localhost
       type: oauth2
