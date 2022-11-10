@@ -191,6 +191,38 @@
                     "nameAtManufacturer": "Sub Tier B Glue"
                 }
             }
+        },
+        {
+            "identification": "urn:uuid:cc5d44eb-5a6d-478b-8203-70f982ea4c2e",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod" : {
+                    "validFrom" : "2013-10-27T15:55:57.000Z",
+                    "validTo" : "2025-05-28T23:24:22.000Z"
+                },
+                "catenaXId" : "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
+                "partTypeInformation" : {
+                    "manufacturerPartId" : "FJ-87",
+                    "classification" : "product",
+                    "nameAtManufacturer" : "Vehicle Model B"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:8accb42d-3adb-49cc-84af-8ae6ea6b5c4c",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod" : {
+                    "validFrom" : "2020-12-22T15:11:13.000Z",
+                    "validTo" : "2030-06-26T23:48:23.000Z"
+                },
+                "catenaXId" : "urn:uuid:65e1554e-e5cd-4560-bac1-1352582122fb",
+                "partTypeInformation" : {
+                    "manufacturerPartId" : "XK-34",
+                    "classification" : "product",
+                    "nameAtManufacturer" : "Vehicle Model C"
+                }
+            }
         }
     ]
 }

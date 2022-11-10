@@ -93,7 +93,7 @@ public class SubmodelDelegate extends AbstractDelegate {
                 shell.setSubmodelDescriptors(filteredSubmodelDescriptorsByAspectType);
 
             } catch (RestClientException e) {
-                log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
+                log.info("Submodel Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
                 itemContainerBuilder.tombstone(
                         Tombstone.from(itemId, null, e, retryCount, ProcessStep.SUBMODEL_REQUEST));
             }
