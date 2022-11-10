@@ -8772,7 +8772,7 @@
           "sites": [
             {
               "functionValidUntil": "2025-03-28T18:20:05.000Z",
-              "catenaXsiteId": "ReferenceError: \"BPN_TIER_BSITE_A\" is not defined in <eval> at line number 1",
+              "catenaXsiteId": "BPNS00000003B5MJ",
               "function": "production",
               "functionValidFrom": "2016-11-06T09:25:14.000Z"
             }
