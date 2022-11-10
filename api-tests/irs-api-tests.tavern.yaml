@@ -1298,7 +1298,7 @@ stages:
         json:
           access_token: access_token
 
-  - name: get all jobs with status UNSAVED, INITIAL, RUNNING and TRANSFERS_FINISHED
+  - name: get all jobs with status UNSAVED, INITIAL, RUNNING, TRANSFERS_FINISHED and CANCELED
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=UNSAVED, INITIAL, RUNNING, TRANSFERS_FINISHED, CANCELED"
       method: GET
@@ -1342,7 +1342,7 @@ stages:
         json:
           access_token: access_token
 
-  - name: get all jobs with status COMPLETED, ERROR and CANCELED
+  - name: get all jobs with status COMPLETED and ERROR
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=COMPLETED, ERROR"
       method: GET
@@ -1386,7 +1386,7 @@ stages:
         json:
           access_token: access_token
 
-  - name: get all jobs with status COMPLETED, ERROR and CANCELED
+  - name: get all jobs with status COMPLETED and ERROR
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=COMPLETED, ERROR"
       method: GET
