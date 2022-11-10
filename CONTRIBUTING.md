@@ -53,6 +53,15 @@ fulfills the DCO's requirement that you sign-off on your contributions.
 For more information, please see the Eclipse Committer Handbook:
 https://www.eclipse.org/projects/handbook/#resources-commit
 
+# Eclipse Dependency License Check
+
+In case of new dependencies or version updates, it might be necessary to have the new library checked and accepted by the Eclipse foundation. Do create new tickets for this, you can use this command:
+```
+mvn org.eclipse.dash:license-tool-plugin:license-check -Ddash.iplab.token=$ECLIPSE_DASH_TOKEN -Ddash.projectId=automotive.tractusx --batch-mode -DskipTests
+```
+
+For more information on the tool and how to acquire the token, check https://github.com/eclipse/dash-licenses.
+
 ### Commit messages
 The commit messages have to match a pattern in the form of:  
 ``< type >(optional scope):[<Ticket_ID>] < description >``
