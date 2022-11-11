@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Known knowns
+- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
+
+## [1.5.0] - 2022-11-11
 ### Added
 - Added new parameters 'startedOn' and 'jobCompleted' to Job status response 
 
@@ -12,9 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated Spring Boot to 2.7.5 and Spring Security (Web and OAuth2 Client) dependencies to 5.7.5 due to CVEs
 - Renamed parameter from 'status' to 'jobState' in Job status response
 - Time to live for finished jobs is now configurable
-
-### Known knowns
-- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
 ## [1.4.0] - 2022-10-28
 ### Added
@@ -104,7 +105,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/catenax-ng/product-item-relationship-service/compare/1.4.0...HEAD
+[Unreleased]: https://github.com/catenax-ng/product-item-relationship-service/compare/1.5.0...HEAD
+[1.5.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/1.4.0...1.5.0
 [1.4.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/1.3.0...1.4.0
 [1.3.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/1.2.0...1.3.0
 [1.2.0]: https://github.com/catenax-ng/product-item-relationship-service/compare/v1.1.0...1.2.0
