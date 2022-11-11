@@ -1,0 +1,27 @@
+= Business context
+
+[plantuml, target=business-context, format=svg]
+....
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+
+actor " Consumer" as CON
+node "Business Application"  as CE
+component [**IRS**] <<system>> as IRS
+node "Catena-X Network" as CX
+
+CE --> IRS
+CON --> IRS
+IRS --> CX
+@enduml
+....
+
+== Consumer
+The IRS API is being consumed by the dismantler dashboard and other parties which are part of the Catena-X network. They need to provide valid credentials issued by the Catena-X IAM. Additionally, they must provide a base global asset identifier to retrieve information for as well as configuration details for the view on that information.
+
+== Catena-X network
+The IRS retrieves data from the Catena-X network (using the necessary infrastructure, see Technical Context), aggregates it and provides it back to the consumers. This connection is mandatory. If the Catena-X services are unavailable, the IRS cannot perform any work.
+
+As of now, the IRS uses its own IAM credentials to gather the required data. This might be changed to use the consumer credentials in the future.

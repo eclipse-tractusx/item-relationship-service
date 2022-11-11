@@ -9,7 +9,7 @@ The deployment contains the components required to connect the IRS to an existin
 Everything else needs to be provided externally.
 
 
-[plantuml, target=integrated-overview, format=png]
+[plantuml, target=integrated-overview, format=svg]
 ....
 skinparam monochrome true
 skinparam shadowing false

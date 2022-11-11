@@ -1,0 +1,352 @@
+= Domain concepts
+
+== Domain entity model
+
+
+[plantuml, target=domain-entity-model, format=svg]
+....
+@startuml
+entity Jobs {
+    ---
+    * job : Job
+    relationships : Collection<Relationship>
+    shells : Collection<Shells>
+}
+
+entity Job {
+     * jobID: String (UUID)
+     * globalAssetId: String (UUID)
+     ---
+     * jobStatus: JobState ("Finished")
+     * createdOn: DateTime
+     * requestURL: URI
+     startedOn: DateTime
+     lastModifiedOn: DateTime
+     jobFinished": DateTime
+     owner: String
+     summary : Summary
+     queryParameter : QueryParameter
+     exception : Exception
+}
+
+entity Summary {
+    ---
+    asyncFetchedItems : AsyncFetchedItems
+}
+
+entity AsyncFetchedItems {
+    ---
+    * queued : Number (Default :0)
+    * running : Number (Default :0)
+    * complete : Number (Default :0)
+    * failed : Number (Default :0)
+    * lost : Number (Default :0)
+}
+
+entity QueryParameter {
+     ---
+     bomLifecycle: BomLifecycle
+     aspect : Collection<AspectType>
+     depth: Number
+     direction: Direction
+}
+
+QueryParameter ||--  Direction
+QueryParameter ||--  BomLifecycle
+QueryParameter }|--  AspectType
+Summary ||--  AsyncFetchedItems
+Job ||-- QueryParameter
+
+
+enum Direction {
+    ---
+    UPWARD
+    DOWNWARD
+}
+
+enum BomLifecycle {
+    ---
+    asBuilt,
+    asMaintained
+}
+
+enum AspectType {
+    ---
+    SerialPartTypization
+	AssemblyPartRelationship
+	PartDimension
+	SupplyRelationData
+	PCFCoreData
+	PCFTechnicalData
+	MarketPlaceOffer
+	MaterialAspect
+	BatteryPass
+	ProducDescription.Vehicle
+	ProducDescription.Battery
+	ReturnRequest
+	CertificateOfDestruction
+	CertificateOfDismantler
+	Address
+	Contact
+}
+
+entity Exception {
+    ---
+    exception : List<Throwable>
+    errorDetail : String
+    exceptionDate : Date
+    statusCode : StatusCodeEnum
+}
+
+enum  StatusCodeEnum {
+    100
+    404
+    500
+    ...
+}
+
+enum JobState {
+    ---
+    UNSAVED
+    INITIAL
+    IN_PROGRESS
+    TRANSFERS_FINISHED
+    COMPLETED
+    ERROR
+}
+
+entity Relationship {
+   * catenaXId : String (UUID) (parentId)
+--
+  * childItem : ChildItem
+ }
+
+entity ChildItem {
+    quantity : Quanity
+    lifecycleContext: BomLifecycle
+    assembledOn: Date
+    lastModifiedOn : Date
+    childCatenaXId  : String (UUID)
+}
+
+entity Quantity {
+    quantityNumber  : Number
+    measurementUnit : MeasurementUnit
+}
+
+entity MeasurementUnit {
+    --
+    datatypeURI : URI
+    lexicalValue : String (? enum )
+}
+
+Quantity  ||-- MeasurementUnit
+ChildItem ||-- Quantity
+
+entity Shells {
+    shell : Collection<Shell>
+}
+
+entity Description {
+     language: String,
+     text: String
+}
+
+entity GenericDescriptor {
+     * identification : String
+     idShort: String
+     specificAssetIds : Map<String, String>
+     description : Collection<Description>
+}
+
+entity Shell {
+    globalAssetId : GlobalAssetId
+}
+
+entity GlobalAssetId {
+    value : String
+}
+
+entity SubmodelDescriptor {
+    semanticId : GlobalAssetId
+    endpoints : Collection<Endpoint>
+}
+
+entity Endpoint {
+    interface: String
+    protocolInformation : ProtocolInformation
+}
+
+enum ProtocolInformation {
+     endpointAddress: URI
+     endpointProtocol: String
+     endpointProtocolVersion: String
+}
+
+Jobs ||-- Job
+Jobs }|-- Relationship
+Jobs }|-- Shells
+Job ||-- JobState
+Job ||-- Summary
+Job ||--  Exception
+Shells }|-- Shell
+GenericDescriptor }|-- Description
+Shell ||-- GlobalAssetId
+GenericDescriptor <|-- Shell
+GenericDescriptor <|-- SubmodelDescriptor
+Endpoint ||--  ProtocolInformation
+Relationship }o-- ChildItem
+SubmodelDescriptor }o-- Endpoint
+Exception ||-- StatusCodeEnum
+
+@enduml
+....
+
+== Domain model
+
+[plantuml, target=domain-model, format=svg]
+....
+@startuml
+
+interface IAasShell {
++getShell()
++getNodeType()
++isNodeType(NodeType)
+}
+abstract class AbstractAasShell {
+- String : idShort
+- String : identification
+- NodeType : nodeType
+}
+
+class Shell {
+- List<Description> : description
+- GlobalAssetId : globalAssetId
+- Map<String,String> : specificAssetIds
+- List<SubmodelDescriptors> : submodelDescriptors
++getShell()
+}
+class ShellTombstone{
+- ProcessingError : processingError
++getShell()
+}
+
+
+interface IItemRelationshipAspect {
++getItemRelationshipAspect()
+}
+abstract class AbstractItemRelationshipAspect {
+- String : catenaXId
+- NodeType : nodeType
+}
+class ItemRelationshipAspect {
+-RelationshipItem : childItem (AssemblyPartRelationShip)
++getItemRelationshipAspect()
+}
+class ItemRelationshipAspectTombstone{
+- ProcessingError : processingError
++getItemRelationshipAspect()
+}
+
+ItemRelationshipAspectTombstone -- ProcessingError
+ShellTombstone -- ProcessingError
+
+class ProcessingError  {
+    - Class : exception
+    - String : errorDetail
+    - URL: endpoint
+    - int : retryCounter
+    - Instant : lastModifiedOn
+}
+
+IItemRelationshipAspect <|.. AbstractItemRelationshipAspect
+AbstractItemRelationshipAspect <|-- ItemRelationshipAspect
+AbstractItemRelationshipAspect <|-- ItemRelationshipAspectTombstone
+AbstractItemRelationshipAspect -- NodeType
+
+
+IAasShell <|.. AbstractAasShell
+AbstractAasShell <|-- Shell
+AbstractAasShell <|-- ShellTombstone
+AbstractAasShell -- NodeType
+
+
+enum NodeType {
+ROOT("Root Node of the tree - the initial C-X ID")
+NODE("Node of the tree with childs - further AssemblyPartRelationShip aspects")
+LEAF("Leaf node of the tree - No further AssemblyPartRelationShip aspects")
+TOMBSTONE("Exceptional state - transient exception")
+}
+
+@enduml
+....
+
+== API Model
+
+For detailed information about the API model, please refer to the link:https://eclipse-tractusx.github.io/item-relationship-service/docs/api-specification/api-specification.html[API specification].
+
+== JobStatus
+
+A job can be in one of the following states:
+
+|===
+|State |Description
+
+|UNSAVED |The job was created, but not yet stored by the system.
+|INITIAL |The job was stored by the system and is now queued for processing.
+|IN_PROGRESS |The job is currently being processed.
+|TRANSFERS_FINISHED |All transfers for the job have been finished, and it is now being finalized.
+|COMPLETED |The job has completed. See the job response for details on the data.
+|ERROR |The job could not be processed correctly by the IRS due to a technical problem.
+|===
+
+
+== Job Store Datamodel
+
+[plantuml, target=inmemory-model, format=svg]
+....
+@startuml
+entity MultiTransferJob {
+--
+* jobId : string (UUID)
+* transferProcessIds: Set<string>
+* state : JobState
+* jobData: Map<String, String>
+* errorDetail: string
+* completedTransfers: List<TransferProcess>
+}
+
+MultiTransferJob -> JobState
+
+
+enum JobState {
+    UNSAVED,
+    INITIAL,
+    IN_PROGRESS,
+    TRANSFERS_FINISHED,
+    COMPLETED,
+    ERROR;
+}
+
+MultiTransferJob -> TransferProcess
+
+class TransferProcess {
+* String id;
+* Type type = Type.CONSUMER;
+* int state;
+* int stateCount = TransferProcessStates.UNSAVED;
+* long stateTimestamp;
+* String errorDetail;
+* DataRequest dataRequest;
+* ResourceManifest resourceManifest;
+* ProvisionedResourceSet provisionedResourceSet;
+}
+
+TransferProcess -> TransferProcessStates
+
+enum TransferProcessStates {
+    UNSAVED
+}
+
+@enduml
+....
