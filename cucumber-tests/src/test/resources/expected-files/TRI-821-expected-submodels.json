@@ -191,6 +191,38 @@
                     "nameAtManufacturer": "Sub Tier B Glue"
                 }
             }
+        },
+        {
+            "identification": "urn:uuid:cc5d44eb-5a6d-478b-8203-70f982ea4c2e",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2020-11-29T09:26:43.000Z",
+                    "validTo": "2027-04-28T05:19:34.000Z"
+                },
+                "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
+                "partTypeInformation": {
+                    "manufacturerPartId": "ZX-55",
+                    "classification": "product",
+                    "nameAtManufacturer": "Tier B ECU1"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:8accb42d-3adb-49cc-84af-8ae6ea6b5c4c",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2019-06-13T18:04:13.000Z",
+                    "validTo": "2030-10-16T20:56:51.000Z"
+                },
+                "catenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
+                "partTypeInformation": {
+                    "manufacturerPartId": "6775244-06",
+                    "classification": "product",
+                    "nameAtManufacturer": "Sub Tier B Glue"
+                }
+            }
         }
     ]
 }

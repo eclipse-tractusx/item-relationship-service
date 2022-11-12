@@ -1,0 +1,52 @@
+{
+    "submodels": [
+        {
+            "identification": "urn:uuid:aa111e0c-b67e-4c45-9d74-29071ad8da10",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2020-12-22T15:11:13.000Z",
+                    "validTo": "2030-06-26T23:48:23.000Z"
+                },
+                "catenaXId": "urn:uuid:65e1554e-e5cd-4560-bac1-1352582122fb",
+                "partTypeInformation": {
+                    "manufacturerPartId": "XK-34",
+                    "classification": "product",
+                    "nameAtManufacturer": "Vehicle Model C"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:967a42d4-8f57-403f-a848-d8f5488674ee",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2014-11-21T22:22:39.000Z",
+                    "validTo": "2032-11-26T03:32:08.000Z"
+                },
+                "catenaXId": "urn:uuid:e3e2a4d8-58bc-4ae9-afa2-e8946fda1f77",
+                "partTypeInformation": {
+                    "manufacturerPartId": "39478586-36",
+                    "classification": "product",
+                    "nameAtManufacturer": "Tier B ECU2"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:5fcbe839-cfac-4404-869a-e5ea95e700da",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2019-06-13T18:04:13.000Z",
+                    "validTo": "2030-10-16T20:56:51.000Z"
+                },
+                "catenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
+                "partTypeInformation": {
+                    "manufacturerPartId": "6775244-06",
+                    "classification": "product",
+                    "nameAtManufacturer": "Sub Tier B Glue"
+                }
+            }
+        }
+    ]
+}
