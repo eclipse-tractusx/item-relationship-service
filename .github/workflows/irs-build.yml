@@ -44,7 +44,7 @@ jobs:
         run: |
           mvn --batch-mode --update-snapshots \
           verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          -Dsonar.projectKey=catenax-ng_product-item-relationship-service 
+          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
 
   build_images:
     strategy:
