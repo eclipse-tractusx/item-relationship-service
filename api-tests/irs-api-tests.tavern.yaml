@@ -799,7 +799,7 @@ stages:
       save:
         json:
           job_id: jobId
-    delay_after: 240
+    delay_after: 320
 
   - name: fetch response for created job and check details
     request:
