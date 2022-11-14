@@ -1,0 +1,10 @@
+= Runtime view
+
+This section covers the main processes of the IRS and explains how data is transfered and processed when a job is executed.
+
+Please see the subpages for the relevant scenarios:
+
+- xref:scenario-1.adoc[Scenario 1: Create Job]
+- xref:scenario-2.adoc[Scenario 2: Job Execution]
+- xref:scenario-3.adoc[Scenario 3: Request for JobResponse]
+- xref:scenario-4.adoc[Scenario 4: Cancel job execution]

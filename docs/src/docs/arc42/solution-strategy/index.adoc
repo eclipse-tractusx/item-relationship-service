@@ -1,0 +1,54 @@
+= Solution strategy
+
+== Introduction
+
+|===
+|Quality goal |Matching approaches in the solution
+
+|application reliability
+a|
+- only data source is the Catena-X network, data is fetched directly from the data owner
+- IRS can be hosted decentralized by every participant by being an open source reference implementation
+
+|base security measures
+a|
+- API protection using OAuth2.0/OIDC
+- automatic static and dynamic code analysis tools as part of the pipeline
+
+|cloud agnostic solution
+a|
+- IRS is provided as a Docker image
+- Helm charts assist in deploying the application in any Kubernetes environment
+
+|multiple async job orchestration
+a|
+- Separate job executor decouples data requests from the job status API
+- Multiple jobs with multiple transfer requests each can be handled in parallel, depending on the deployment resources
+
+|running reference application
+a|
+- Working application can be used as reference by anyone due to open source publishing
+|===
+
+== Technology
+
+The IRS is developed using Java and the Spring Boot framework. This choice was made due to the technical knowledge of the team and the widespread support of the framework.
+
+Hosting the application is done using Docker and Kubernetes, which is widely used and vendor-independent regarding the hosting provider (e.g. AWS, Google Cloud, Azure, ...).
+
+Inter-service communication is done using HTTP REST. This is the standard method in the Catena-X landscape and makes the IRS API easy to use for any third party client.
+
+For persistence, blob storage was chosen as the payloads retrieved for each job vary for every aspect and the format can be unknown to the application, as it's just being tunneled through to the client.
+
+== Structure
+
+The IRS consists of 4 main components:
+
+1. the REST API to view and control Jobs
+2. the asynchronous job processing engine
+3. the job and payload persistence
+4. the AAS connector
+
+The REST API classes are separated from the application logic and can be replaced by a different interface easily. The actual entrypoint into the application logic are the *Service classes.
+
+The job processing engine handles execution of the data requests for each job. It uses the AAS connector to retrieve the data and stores it into the persistence. The actual implementation of the persistence is decoupled from the logical representation and can be replaced easily as well.

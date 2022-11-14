@@ -1,0 +1,22 @@
+= Quality goals
+
+IMPORTANT: The following table entries define overall IRS quality goals. The order of the topics do not resolve in a priority of the quality goals.
+
+|===
+|Quality goal |Motivation and description
+
+|running reference application
+|The IRS is built to traverse a distributed data chain across the automotive Industry. The goal for the IRS release 1 scope is to build a running solution to test the functionality of building a BoM as built of serialized components.
+
+|multiple async job orchestration
+|The IRS is built to access multiple endpoints parallel. Since the for the Endpoint it is not clear yet how long a request will take to respond. The Service is built to handle multiple asynchronous requests.
+
+|cloud agnostic solution
+|The IRS is built as reference architecture and able to run on different cloud solutions. It uses helm charts, terraform and a abstracts the storage, so that it can easily be integrated on different systems.
+
+|base security measures
+|The IRS is built with a base set of security features.
+
+|application reliability
+|The IRS architecture is set up so that the costumers can rely on reliable data chains
+|===

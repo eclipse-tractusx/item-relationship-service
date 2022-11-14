@@ -1,0 +1,94 @@
+= Level 1
+
+== Component diagram
+
+[plantuml, target=level-1, format=svg]
+....
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+ component [**IRS-Application**] <<System>> as IRS {
+    component [**RecursiveJobHandler**] <<Component>> as RecursiveJobHandler
+    component [**IrsController**] <<Component>> as IrsController
+    component [**JobOrchestrator**] <<Component>> as JobOrchestrator
+    component [**TransferProcessManagment**] <<Component>> as TransferProcessManagment
+
+
+    'component [**AASClient**] <<Subsystem>> as AASClient
+    'component [**AASFacade**] <<Subsystem>> as AASFacade
+    'component [**SubmodelClient**] <<Subsystem>> as SubmodelClient
+    'component [**SubmodelFacade**] <<Subsystem>> as SubmodelFacade ' --> Level2 View
+
+    port "IRS API" as API_PORT
+    port "AAS Proxy" as AAS_PORT
+
+    () "BlobStore\nInterface" as StoreInterface
+
+
+    IrsController <..> JobOrchestrator
+    JobOrchestrator <..> TransferProcessManagment
+    JobOrchestrator <..> RecursiveJobHandler
+    TransferProcessManagment --( StoreInterface
+
+
+}
+component [**AASProxy**] <<System>> as AASProxy
+actor IrsApiConsumer
+IrsController -up- API_PORT
+IrsApiConsumer -(0- API_PORT
+
+
+TransferProcessManagment --- AAS_PORT
+AAS_PORT -(0 AASProxy
+
+database "BlobStore" as BlobStore
+StoreInterface -down- BlobStore
+
+@enduml
+....
+
+== Component description
+
+|===
+|Components |Description
+
+|*IRS*
+|The IRS builds a digital representation of a product (digital twin) and the relationships of items the product consists of in a hierarchical structure.
+
+The result is an item graph in which each node represents a digital item of the product - this graph is called "Item Graph".
+
+|*IRS API*
+|The *IRS API* is the Interface over which the Data Consumer is communicating.
+
+|*IrsController*
+|The *IrsController* provides an REST Interface for retrieving IRS processed data and job details of the current item graph retrieval process.
+
+|*IrsItemGraphQueryService*
+|The *IrsItemGraphQueryService* implements the REST Interface of the IrsController.
+
+|*JobOrchestrator*
+|The *JobOrchestrator* is a component which manages (start, end, cancel, resume) the jobs which execute the item graph retrieval process.
+
+|*RecursiveJobHandler*
+|The *RecursiveJobHandler* handles the job execution recursively until a given abort criteria is reached or the complete item graph is build.
+
+|*TransferProcessManager*
+a| The TransferProcessManager handles the outgoing requests to the AASProxy.
+
+1. Initiation of the job and preparation of the stream of *DataRequests*
+2. *RecursiveJobHandler* requesting for AAS via the Digital Twin registry.
+3. Analyzing the structure of the AAS response by collecting the AssemblyPartRelationship Aspects
+4. Requesting for SubmodelEndpoints for given AssemblyPartRelationship children
+5. Recursively iteration over step 2-4 until an abort criterion is reached.
+6. Assembles the complete item graph
+
+|*BlobStore*
+|The BlobStore is the database where the relationships and tombstones are stored for a requested item.
+
+|*JobStore*
+|The JobStore is the database where the jobs with the information about the requested item are stored.
+
+|*AASProxy*
+|The AASProxy is the interface to the EDC Network. It provides an interface for the Asset Administration Shells and for the Submodels.
+|===

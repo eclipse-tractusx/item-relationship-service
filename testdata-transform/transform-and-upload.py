@@ -252,7 +252,12 @@ if __name__ == "__main__":
                     "value": tmp_data[tmp_key][0]["partTypeInformation"]["manufacturerPartId"],
                     "key": "manufacturerPartId"
                 })
-            if "PartSiteInformation" in tmp_key:
+            if "PartSiteInformationAsPlanned" in tmp_key:
+                specific_asset_ids.append({
+                    "value": tmp_data[tmp_key][0]["sites"][0]["catenaXSiteId"],
+                    "key": "catenaXSiteId"
+                })
+            elif "PartSiteInformation" in tmp_key:
                 specific_asset_ids.append({
                     "value": tmp_data[tmp_key][0]["sites"][0]["externalSiteIdentifier"][0]["organization"],
                     "key": "manufacturerId"

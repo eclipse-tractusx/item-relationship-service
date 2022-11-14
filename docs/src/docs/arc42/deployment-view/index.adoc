@@ -1,0 +1,66 @@
+= Deployment view
+
+The deployment view shows the IRS application on ArgoCD, which is a continuous delivery tool for Kubernetes. Kubernetes manifests are specified using Helm charts. Helm is a package manager for Kubernetes. IRS is developed in a cloud-agnostic manner, so the application could be installed in any cloud infrastructure (on-premises, hybrid, or public cloud infrastructure).
+
+[plantuml, target=deployment-view, format=svg]
+....
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam nodesep 100
+skinparam ranksep 20
+
+node ArgoCD
+node GitHub
+node "GitHub Container Registry" as ghcr
+node "Kubernetes Cluster" as k8s
+node "HashiCorp Vault" as vault
+actor Operator as ops
+
+ops --> ArgoCD : create app deployment
+ops --> vault : store credentials
+ArgoCD --> GitHub : fetch Helm charts
+ArgoCD --> k8s : create resources
+ArgoCD -> vault : fetch credentials
+GitHub --> ghcr : push Docker image
+k8s --> ghcr : fetch Docker image
+@enduml
+....
+
+
+*Operator*
+
+Manual preparation is required to initially set up the ArgoCD apps and the credentials in the HashiCorp Vault. This is done by the IRS system operator.
+
+*ArgoCD*
+
+Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes. See https://argo-cd.readthedocs.io/.
+
+*Vault*
+
+HashiCorp Vault stores credentials, which are picked up by ArgoCD to deploy them to the application.
+
+WARNING: Every secret information needed at runtime must be stored here and must never be part of the IRS Helm charts
+
+
+*GitHub*
+
+GitHub contains the application source code as well as the Helm charts used for deployment.
+The IRS Helm charts can be found here: https://github.com/eclipse-tractusx/item-relationship-service/tree/main/charts
+
+*GitHub Container Registry (GHCR)*
+
+When the IRS is built by GitHub Action workflows, the final image is pushed to the GHCR, where it can be picked up for deployment.
+
+*Kubernetes*
+
+The kubernetes cluster manages the underlying hardware that is used to run the applications defined in the Helm charts.
+
+== Local deployment
+For information on how to run the application locally, please check the README documentation in GitHub: https://github.com/eclipse-tractusx/item-relationship-service/blob/main/README.md
+
+== View Levels
+
+include::level-0.adoc[leveloffset=+2]
+
+include::level-1.adoc[leveloffset=+2]

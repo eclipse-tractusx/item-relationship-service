@@ -1,0 +1,50 @@
+= IRS API
+
+== References
+The Swagger documentation can be found in the local deployment of the reference application. More information can be found in the GitHub repository: https://github.com/eclipse-tractusx/item-relationship-service/blob/main/README.md
+
+Since we cannot rely on synchronous responses regarding the requests of submodel endpoints, we designed the IRS in a way that it will handle the job management of requesting all needed endpoints in order to build a BoM tree.
+
+== IRS interaction diagram
+
+[plantuml, target=irs-api, format=svg]
+....
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+actor APIConsumer
+activate APIConsumer
+
+box "IRS" #LightBlue
+participant WebService as "IRS API"
+activate WebService
+
+APIConsumer -> WebService : POST /irs/jobs/
+opt
+APIConsumer <-- WebService : 201: Job id response for successful job registration.
+
+    loop poll until response is  "200"
+         APIConsumer -> WebService : GET /irs/jobs/{jobId}
+
+         opt job.hasCompleted()
+                APIConsumer <-- WebService : "200" Item Graph for given jobId.
+         else job.isRunning()
+               alt ?returnUncompletedResultTree=true
+                 APIConsumer <-- WebService : "206" + payload(Job and Partial Item Graph)
+               else
+                 APIConsumer <-- WebService : "206" + payload(Job)
+                end alt
+         else job.hasFailed()
+            APIConsumer <-- WebService : "404" + Error
+        end opt
+    end loop
+
+else
+APIConsumer <-- WebService : 400: Registering job failed.
+end opt
+
+
+
+@enduml
+....

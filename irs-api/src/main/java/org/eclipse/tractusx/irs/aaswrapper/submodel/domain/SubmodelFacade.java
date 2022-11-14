@@ -61,9 +61,9 @@ public class SubmodelFacade {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start("Get Submodel raw payload task");
         final String submodel = this.submodelClient.getSubmodel(submodelEndpointAddress);
+        log.info("Retrieved Submodel as raw string from endpoint: '{}'", submodelEndpointAddress);
         stopWatch.stop();
         log.info("Task {} took {} ms for endpoint address: {}", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis(), submodelEndpointAddress);
-        log.info("Returning Submodel as String: '{}'", submodel);
         return submodel;
     }
 
