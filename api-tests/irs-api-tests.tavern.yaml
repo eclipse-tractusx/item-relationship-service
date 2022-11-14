@@ -537,7 +537,7 @@ stages:
 
 ---
 
-test_name: Make sure job with aspects AddressAspect and ContactInformation is processed (1.3.3)
+test_name: Make sure job with aspects AddressAspect and DiagnosticData is processed (1.3.3)
 
 strict:
   - headers:off
@@ -569,7 +569,7 @@ stages:
         globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         aspects:
           - AddressAspect
-          - ContactInformation
+          - DiagnosticData
         collectAspects: true
       method: POST
       headers:
@@ -611,7 +611,7 @@ stages:
 
 ---
 
-test_name: Make sure job with aspects SerialPartTypization and ContactInformation is processed (1.3.4)
+test_name: Make sure job with aspects SerialPartTypization and DiagnosticData is processed (1.3.4)
 
 strict:
   - headers:off
@@ -643,7 +643,7 @@ stages:
         globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         aspects:
           - SerialPartTypization
-          - ContactInformation
+          - DiagnosticData
         collectAspects: true
       method: POST
       headers:
@@ -726,7 +726,7 @@ stages:
       status_code: 400
       json:
         statusCode: BAD_REQUEST
-        message: "NoSuchElementException: Unsupported AspectType: UnknownAspect. Must be one of: SerialPartTypization, AssemblyPartRelationship, Batch, ProductDescription, IdConversion, MarketplaceOffer, MaterialForRecycling, PhysicalDimension, ReturnRequest, CertificateOfDestruction, CertificateOfDismantler, EndOfLife, PcfCore, PcfSupplyRelation, PcfTechnical, AddressAspect, ContactInformation, BatteryPass, VehicleDiagnosticDataQuality"
+        message: "NoSuchElementException: Unsupported AspectType: UnknownAspect. Must be one of: AddressAspect, AssemblyPartRelationship, Batch, BatteryPass, CertificateOfDestruction, CertificateOfDismantler, ChargingProcess, ClaimData, DiagnosticData, EndOfLife, EsrCertificate, EsrCertificateStateStatistic, IdConversion, MarketplaceOffer, MaterialForHomologation, MaterialForRecycling, PartAsPlanned, PhysicalDimension, ProductDescription, ReturnRequest, SerialPartTypization, SingleLevelBomAsPlanned, SingleLevelUsageAsBuilt"
         errors: null
       headers:
         content-type: application/json
@@ -837,20 +837,11 @@ marks:
       key:
         deprecated_aspect
       vals:
-#        - AssemblyPartRelationship
-#        - IdConversion
-#        - MarketplaceOffer
-#        - MaterialForRecycling
-#        - PhysicalDimension
-#        - ReturnRequest
-#        - EndOfLife
-##        - SerialPartTypization
-#        - ProductDescription
-        - EoLStory
-#        - Material
+        - VehicleDiagnosticDataQuality
         - PcfCore
         - PcfSupplyRelation
         - PcfTechnical
+        - ContactInformation
 
 stages:
   - name: authenticate and fetch access token
@@ -887,7 +878,7 @@ stages:
       status_code: 400
       json:
         statusCode: BAD_REQUEST
-        message: "NoSuchElementException: Unsupported AspectType: {deprecated_aspect}. Must be one of: SerialPartTypization, AssemblyPartRelationship, Batch, ProductDescription, IdConversion, MarketplaceOffer, MaterialForRecycling, PhysicalDimension, ReturnRequest, CertificateOfDestruction, CertificateOfDismantler, EndOfLife, PcfCore, PcfSupplyRelation, PcfTechnical, AddressAspect, ContactInformation, BatteryPass, VehicleDiagnosticDataQuality"
+        message: "NoSuchElementException: Unsupported AspectType: {deprecated_aspect}. Must be one of: AddressAspect, AssemblyPartRelationship, Batch, BatteryPass, CertificateOfDestruction, CertificateOfDismantler, ChargingProcess, ClaimData, DiagnosticData, EndOfLife, EsrCertificate, EsrCertificateStateStatistic, IdConversion, MarketplaceOffer, MaterialForHomologation, MaterialForRecycling, PartAsPlanned, PhysicalDimension, ProductDescription, ReturnRequest, SerialPartTypization, SingleLevelBomAsPlanned, SingleLevelUsageAsBuilt"
         errors: null
       headers:
         content-type: application/json
@@ -1065,7 +1056,7 @@ stages:
         globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         aspects:
           - SerialPartTypization
-          - ContactInformation
+          - DiagnosticData
         collectAspects: true
       method: POST
       headers:
