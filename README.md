@@ -1,16 +1,16 @@
 # ![Item Relationship Service (IRS)](logo.png)
 
-[![Apache 2 License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/catenax-ng/product-item-relationship-service/blob/main/LICENSE)  
-[![Build](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/irs-build.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/irs-build.yml)
+[![Apache 2 License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/LICENSE)  
+[![Build](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/irs-build.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/irs-build.yml)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=catenax-ng_product-item-relationship-service&metric=coverage)](https://sonarcloud.io/summary/new_code?id=catenax-ng_product-item-relationship-service)
-[![CodeQL](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/codeql.yml)  
-[![Kics](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/kics.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/kics.yml)
-[![Trivy](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/trivy.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/trivy.yml)
-[![VeraCode](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/veracode.yaml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/veracode.yaml)
-[![OWASP Dependency Check](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/owasp.yml)
-[![Spotbugs](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/spotbugs.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/spotbugs.yml)
-[![Eclipse-dash](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/eclipse-dash.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/eclipse-dash.yml)
-[![Tavern IRS API test](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/catenax-ng/product-item-relationship-service/actions/workflows/tavern.yml)   
+[![CodeQL](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/codeql.yml)  
+[![Kics](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/kics.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/kics.yml)
+[![Trivy](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/trivy.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/trivy.yml)
+[![VeraCode](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/veracode.yaml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/veracode.yaml)
+[![OWASP Dependency Check](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml)
+[![Spotbugs](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml)
+[![Eclipse-dash](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml)
+[![Tavern IRS API test](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml)   
 
 ## What is the IRS?
 
@@ -114,52 +114,9 @@ Retrieve the job results by using the jobId returned by the previous call:
 curl -X 'GET' 'http://localhost:8080/irs/jobs/<jobID>' -H 'accept: application/json' -H 'Authorization: Bearer <token_value>'
 ```
 
-## Environments
-
-### DEV environment
-
-The latest version on main is automatically picked up by ArgoCD and deployed to the DEV environment.
-See https://catenax-ng.github.io/.
-
-http://irs.dev.demo.catena-x.net/api/swagger-ui/index.html?configUrl=/api/api-docs/swagger-config
-
-Additionally, we supply our own EDC setup to be able to do end-to-end tests in an isolated environment.
-This consists of:
-
-- AAS Wrapper
-- Digital Twin Registry
-- EDC Consumer (Control and Data Plane, Postgres DB)
-- EDC Provider (Control and Data Plane, Postgres DB)
-- DAPS
-- Multiple submodel servers to provide test data
-
-This setup uses the docker images provided by [product-edc](https://github.com/catenax-ng/product-edc/)
-, [product-DAPS](https://github.com/catenax-ng/product-DAPS) and Semantic Hub.
-
-Check the Helm charts at [./charts](./charts) for the configuration.
-
-The testdata on DEV is volatile and gets lost on pod restarts. New testdata can be provisioned using the GitHub action
-trigger.
-
-### INT environment
-
-The latest version on main is automatically picked up by ArgoCD and deployed to the INT environment.
-See https://catenax-ng.github.io/.
-
-http://irs.int.demo.catena-x.net/api/swagger-ui/index.html?configUrl=/api/api-docs/swagger-config
-
-Additionally, we supply our own EDC consumer to connect to the Catena-X integration system.
-This consists of:
-- AAS Wrapper
-- EDC Consumer (Control and Data Plane, Postgres DB)
-
-This setup uses the docker images provided by [product-edc](https://github.com/catenax-ng/product-edc/).
-
-Check the Helm charts at [./charts/irs](./charts/irs) for the configuration. 
-
 ## Documentation
 
-- [Item Relationship Service Documentation (catena-ng)](https://catenax-ng.github.io/product-item-relationship-service/docs/)
+- [Item Relationship Service Documentation (catena-ng)](https://eclipse-tractusx.github.io/item-relationship-service/docs/)
 
 ## Licenses
 

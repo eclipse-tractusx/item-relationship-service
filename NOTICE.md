@@ -1,10 +1,14 @@
 # Notices
 
-This content is part of [CatenaX](https://catena-x.net).
+This content is produced and maintained by the Eclipse Tractus-X project.
 
-* Project home: https://github.com/catenax-ng
+* Project home: https://projects.eclipse.org/projects/automotive.tractusx
 
 See the AUTHORS file(s) distributed with this work for additional information regarding authorship.
+
+## Trademarks
+
+Eclipse Tractus-X is a trademark of the Eclipse Foundation.
 
 ## Copyright
 
@@ -23,9 +27,8 @@ SPDX-License-Identifier: Apache-2.0
 ## Source Code
 
 The project maintains the following source code repositories
-in the GitHub organization https://github.com/catenax-ng:
+in the GitHub organization https://github.com/eclipse-tractusx:
 
-* https://github.com/catenax-ng/product-item-relationship-service
 * https://github.com/eclipse-tractusx/item-relationship-service
 
 
@@ -33,7 +36,6 @@ in the GitHub organization https://github.com/catenax-ng:
 
 This project leverages the following third party content.
 
-See [DEPENDENCIES](https://github.com/catenax-ng/product-item-relationship-service/blob/main/DEPENDENCIES) file.
 See [DEPENDENCIES](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/DEPENDENCIES) file.
 
 ## Cryptography

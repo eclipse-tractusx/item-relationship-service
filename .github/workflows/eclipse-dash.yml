@@ -3,8 +3,7 @@ name: "Eclipse DASH IP Check"
 on:
   workflow_dispatch:
   push:
-    branches-ignore:
-      - 'main'
+
 
 jobs:
   build:
