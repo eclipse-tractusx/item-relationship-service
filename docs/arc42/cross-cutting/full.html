@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Administration Guide</title>
+<title>Cross-cutting concepts</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -436,749 +436,506 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-pre.rouge table td { padding: 5px; }
-pre.rouge table pre { margin: 0; }
-pre.rouge .cm {
-  color: #999988;
-  font-style: italic;
-}
-pre.rouge .cp {
-  color: #999999;
-  font-weight: bold;
-}
-pre.rouge .c1 {
-  color: #999988;
-  font-style: italic;
-}
-pre.rouge .cs {
-  color: #999999;
-  font-weight: bold;
-  font-style: italic;
-}
-pre.rouge .c, pre.rouge .ch, pre.rouge .cd, pre.rouge .cpf {
-  color: #999988;
-  font-style: italic;
-}
-pre.rouge .err {
-  color: #a61717;
-  background-color: #e3d2d2;
-}
-pre.rouge .gd {
-  color: #000000;
-  background-color: #ffdddd;
-}
-pre.rouge .ge {
-  color: #000000;
-  font-style: italic;
-}
-pre.rouge .gr {
-  color: #aa0000;
-}
-pre.rouge .gh {
-  color: #999999;
-}
-pre.rouge .gi {
-  color: #000000;
-  background-color: #ddffdd;
-}
-pre.rouge .go {
-  color: #888888;
-}
-pre.rouge .gp {
-  color: #555555;
-}
-pre.rouge .gs {
-  font-weight: bold;
-}
-pre.rouge .gu {
-  color: #aaaaaa;
-}
-pre.rouge .gt {
-  color: #aa0000;
-}
-pre.rouge .kc {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .kd {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .kn {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .kp {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .kr {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .kt {
-  color: #445588;
-  font-weight: bold;
-}
-pre.rouge .k, pre.rouge .kv {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .mf {
-  color: #009999;
-}
-pre.rouge .mh {
-  color: #009999;
-}
-pre.rouge .il {
-  color: #009999;
-}
-pre.rouge .mi {
-  color: #009999;
-}
-pre.rouge .mo {
-  color: #009999;
-}
-pre.rouge .m, pre.rouge .mb, pre.rouge .mx {
-  color: #009999;
-}
-pre.rouge .sa {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .sb {
-  color: #d14;
-}
-pre.rouge .sc {
-  color: #d14;
-}
-pre.rouge .sd {
-  color: #d14;
-}
-pre.rouge .s2 {
-  color: #d14;
-}
-pre.rouge .se {
-  color: #d14;
-}
-pre.rouge .sh {
-  color: #d14;
-}
-pre.rouge .si {
-  color: #d14;
-}
-pre.rouge .sx {
-  color: #d14;
-}
-pre.rouge .sr {
-  color: #009926;
-}
-pre.rouge .s1 {
-  color: #d14;
-}
-pre.rouge .ss {
-  color: #990073;
-}
-pre.rouge .s, pre.rouge .dl {
-  color: #d14;
-}
-pre.rouge .na {
-  color: #008080;
-}
-pre.rouge .bp {
-  color: #999999;
-}
-pre.rouge .nb {
-  color: #0086B3;
-}
-pre.rouge .nc {
-  color: #445588;
-  font-weight: bold;
-}
-pre.rouge .no {
-  color: #008080;
-}
-pre.rouge .nd {
-  color: #3c5d5d;
-  font-weight: bold;
-}
-pre.rouge .ni {
-  color: #800080;
-}
-pre.rouge .ne {
-  color: #990000;
-  font-weight: bold;
-}
-pre.rouge .nf, pre.rouge .fm {
-  color: #990000;
-  font-weight: bold;
-}
-pre.rouge .nl {
-  color: #990000;
-  font-weight: bold;
-}
-pre.rouge .nn {
-  color: #555555;
-}
-pre.rouge .nt {
-  color: #000080;
-}
-pre.rouge .vc {
-  color: #008080;
-}
-pre.rouge .vg {
-  color: #008080;
-}
-pre.rouge .vi {
-  color: #008080;
-}
-pre.rouge .nv, pre.rouge .vm {
-  color: #008080;
-}
-pre.rouge .ow {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .o {
-  color: #000000;
-  font-weight: bold;
-}
-pre.rouge .w {
-  color: #bbbbbb;
-}
-pre.rouge {
-  background-color: #f8f8f8;
-}
-</style>
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>Administration Guide</h1>
+<h1>Cross-cutting concepts</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_system_overview">System Overview</a></li>
-<li><a href="#_installation">Installation</a>
+<li><a href="#_domain_concepts">Domain concepts</a>
 <ul class="sectlevel2">
-<li><a href="#_deployment_using_helm">Deployment using Helm</a></li>
-<li><a href="#_deployment_using_argocd">Deployment using ArgoCD</a></li>
+<li><a href="#_domain_entity_model">Domain entity model</a></li>
+<li><a href="#_domain_model">Domain model</a></li>
+<li><a href="#_api_model">API Model</a></li>
+<li><a href="#_jobstatus">JobStatus</a></li>
+<li><a href="#_job_store_datamodel">Job Store Datamodel</a></li>
 </ul>
 </li>
-<li><a href="#_configuration">Configuration</a>
+<li><a href="#_safety_and_security_concepts">Safety and security concepts</a>
 <ul class="sectlevel2">
-<li><a href="#_helm_configuration_values_yaml">Helm configuration (values.yaml)</a></li>
-<li><a href="#_values_explained">Values explained</a></li>
-<li><a href="#_daps_configuration">DAPS configuration</a></li>
-<li><a href="#_secrets">Secrets</a></li>
+<li><a href="#_authentication_authorization">Authentication / Authorization</a></li>
+<li><a href="#_credentials">Credentials</a></li>
 </ul>
 </li>
-<li><a href="#_troubleshooting">Troubleshooting</a></li>
+<li><a href="#_architecture_and_design_patterns">Architecture and design patterns</a>
+<ul class="sectlevel2">
+<li><a href="#_dependency_inversion">Dependency inversion</a></li>
+<li><a href="#_hexagonal_architecture">Hexagonal architecture</a></li>
+</ul>
+</li>
+<li><a href="#_under_the_hood_concepts">"Under-the-hood" concepts</a>
+<ul class="sectlevel2">
+<li><a href="#_persistency">Persistency</a></li>
+<li><a href="#_transaction_handling">Transaction handling</a></li>
+<li><a href="#_session_handling">Session handling</a></li>
+<li><a href="#_communication_and_integration">Communication and integration</a></li>
+<li><a href="#_exception_and_error_handling">Exception and error handling</a></li>
+<li><a href="#_parallelization_and_threading">Parallelization and threading</a></li>
+<li><a href="#_plausibility_checks_and_validation">Plausibility checks and validation</a></li>
+</ul>
+</li>
+<li><a href="#_development_concepts">Development concepts</a>
+<ul class="sectlevel2">
+<li><a href="#_build_test_deploy">Build, test, deploy</a></li>
+<li><a href="#_code_generation">Code generation</a></li>
+<li><a href="#_migration">Migration</a></li>
+<li><a href="#_configurability">Configurability</a></li>
+</ul>
+</li>
+<li><a href="#_operational_concepts">Operational concepts</a>
+<ul class="sectlevel2">
+<li><a href="#_administration">Administration</a></li>
+<li><a href="#_disaster_recovery">Disaster-Recovery</a></li>
+<li><a href="#_scaling">Scaling</a></li>
+<li><a href="#_clustering">Clustering</a></li>
+<li><a href="#_logging">Logging</a></li>
+<li><a href="#_monitoring">Monitoring</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_system_overview">System Overview</h2>
+<h2 id="_domain_concepts">Domain concepts</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_domain_entity_model">Domain entity model</h3>
+<div class="imageblock">
+<div class="content">
+<img src="domain-entity-model.svg" alt="domain entity model" width="2101" height="1146">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_domain_model">Domain model</h3>
+<div class="imageblock">
+<div class="content">
+<img src="domain-model.svg" alt="domain model" width="2045" height="646">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_api_model">API Model</h3>
 <div class="paragraph">
-<p>The deployment contains the components required to connect the IRS to an existing Catena-X network. This includes:</p>
+<p>For detailed information about the API model, please refer to the <a href="https://eclipse-tractusx.github.io/item-relationship-service/docs/api-specification/api-specification.html">API specification</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_jobstatus">JobStatus</h3>
+<div class="paragraph">
+<p>A job can be in one of the following states:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">State</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNSAVED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The job was created, but not yet stored by the system.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INITIAL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The job was stored by the system and is now queued for processing.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IN_PROGRESS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The job is currently being processed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRANSFERS_FINISHED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All transfers for the job have been finished, and it is now being finalized.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">COMPLETED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The job has completed. See the job response for details on the data.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The job could not be processed correctly by the IRS due to a technical problem.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_job_store_datamodel">Job Store Datamodel</h3>
+<div class="imageblock">
+<div class="content">
+<img src="inmemory-model.svg" alt="inmemory model" width="1188" height="264">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_safety_and_security_concepts">Safety and security concepts</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_authentication_authorization">Authentication / Authorization</h3>
+<div class="sect3">
+<h4 id="_irs_api">IRS API</h4>
+<div class="paragraph">
+<p>The IRS is secured using OAuth2.0 / Open ID Connect. Every request to the IRS API requires a valid bearer token.</p>
+</div>
+<div class="paragraph">
+<p>No special roles are required. Every user that can log in to the authentication provider may use the IRS API.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_irs_as_dtr_client">IRS as DTR client</h4>
+<div class="paragraph">
+<p>The IRS acts as a client for the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect. The IRS uses client credentials to authenticate requests to the DTR. Due to this, the IRS account needs to have access to every item in the DTR, unrelated to the permissions of the account calling the IRS API.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_irs_as_edc_client">IRS as EDC client</h4>
+<div class="paragraph">
+<p>The IRS accesses the Catena-X network via the EDC consumer connector. This component requires authentication via a DAPS certificate, which was provided to the IRS via the network authority.</p>
+</div>
+<div class="paragraph">
+<p>The DAPS certificate identifies the IRS and is used to acquire access permissions for the data transferred via EDC.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_credentials">Credentials</h3>
+<div class="paragraph">
+<p>Credentials must never be stored in Git!</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_architecture_and_design_patterns">Architecture and design patterns</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_dependency_inversion">Dependency inversion</h3>
+<div class="paragraph">
+<p>For the IRS, we utilize the dependency inversion mechanisms provided by Spring Boot as much as possible.</p>
+</div>
+<div class="paragraph">
+<p>The principle says:</p>
+</div>
+<div class="paragraph">
+<p>High-level modules should not import anything from low-level modules. Both should depend on abstractions (e.g., interfaces).
+Abstractions should not depend on details. Details (concrete implementations) should depend on abstractions.</p>
+</div>
+<div class="paragraph">
+<p>Adhering to this, we define clear interfaces between the different domains (e.g. job orchestration and AAS communication) in the IRS and let dependencies be injected by the framework. This improves testability of the classes as well.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_hexagonal_architecture">Hexagonal architecture</h3>
+<div class="paragraph">
+<p>The hexagonal architecture divides a system into several loosely-coupled interchangeable components, such as the application core, the database, the user interface, test scripts and interfaces with other systems. This approach is an alternative to the traditional layered architecture.</p>
+</div>
+<div class="paragraph">
+<p>For the IRS, this means decoupling the application logic from components like the BLOB store, the REST API controllers or the AAS client connection. With an interface between the parts (so-called port), it is easy to switch to other implementations, e.g. if you want to change the persistence implementation. No changes to the application logic will be necessary.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="architecture.svg" alt="architecture" width="710" height="507">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_under_the_hood_concepts">"Under-the-hood" concepts</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_persistency">Persistency</h3>
+<div class="paragraph">
+<p>The IRS stores two types of data in a persistent way:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>IRS with Minio</p>
+<p>Job metadata</p>
 </li>
 <li>
-<p>AAS Wrapper</p>
-</li>
-<li>
-<p>EDC Consumer (controlplane &amp; dataplane)</p>
+<p>Job payloads, e.g. AAS shells or submodel data</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Everything else needs to be provided externally.</p>
+<p>All of this is data is stored in an object store. The currently used implementation is Minio (Amazon S3 compatible).
+This reduces the complexity in storing and retrieving data. There also is no predefined model for the data, every document can be stored as it is.
+The downside of this approach is lack of query functionality, as we can only search through the keys of the entries but not based on the value data.
+In the future, another approach or an additional way to to index the data might be required.</p>
 </div>
-<div class="imageblock">
-<div class="content">
-<img src="integrated-overview.svg" alt="integrated overview" width="668" height="314">
+<div class="paragraph">
+<p>To let the data survive system restarts, Minio needs to use a persistent volume for the data storage. A default configuration for this is provided in the Helm charts.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_transaction_handling">Transaction handling</h3>
+<div class="paragraph">
+<p>There currently is no transaction management in the IRS.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_session_handling">Session handling</h3>
+<div class="paragraph">
+<p>There is no session handling in the IRS, access is solely based on bearer tokens, the API is stateless.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_communication_and_integration">Communication and integration</h3>
+<div class="paragraph">
+<p>All interfaces to other systems are using RESTful calls over HTTP(S). Where central authentication is required, a common Keycloak instance is used.</p>
+</div>
+<div class="paragraph">
+<p>For outgoing calls, the Spring RestTemplate mechanism is used and separate RestTemplates are created for the different ways of authentication.</p>
+</div>
+<div class="paragraph">
+<p>For incoming calls, we utilize the Spring REST Controller mechanism, annotating the interfaces accordingly and also documenting the endpoints using OpenAPI annotations.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_exception_and_error_handling">Exception and error handling</h3>
+<div class="paragraph">
+<p>There are two types of potential errors in the IRS:</p>
+</div>
+<div class="sect3">
+<h4 id="_technical_errors">Technical errors</h4>
+<div class="paragraph">
+<p>Technical errors occur when there is a problem with the application itself, its configuration or directly connected infrastructure, e.g. the Minio persistence. Usually, the application cannot solve these problems by itself and requires some external support (manual work or automated recovery mechanisms, e.g. Kubernetes liveness probes).</p>
+</div>
+<div class="paragraph">
+<p>These errors are printed mainly to the application log and are relevant for the healthchecks.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_functional_errors">Functional errors</h4>
+<div class="paragraph">
+<p>Functional errors occur when there is a problem with the data that is being processed or external systems are unavailable and data cannot be sent / fetched as required for the process. While the system might not be able to provide the required function at that moment, it may work with a different dataset or as soon as the external systems recover.</p>
+</div>
+<div class="paragraph">
+<p>These errors are reported in the Job response and do not directly affect application health.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_rules_for_exception_handling">Rules for exception handling</h4>
+<div class="sect4">
+<h5 id="_throw_or_log_dont_do_both">Throw or log, don&#8217;t do both</h5>
+<div class="paragraph">
+<p>When catching an exception, either log the exception and handle the problem or rethrow it, so it can be handled at a higher level of the code. By doing both, an exception might be written to the log multiple times, which can be confusing.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_write_own_base_exceptions_for_internal_interfaces">Write own base exceptions for (internal) interfaces</h5>
+<div class="paragraph">
+<p>By defining a common (checked) base exception for an interface, the caller is forced to handle potential errors, but can keep the logic simple. On the other hand, you still have the possibility to derive various, meaningful exceptions for different error cases, which can then be thrown via the API.</p>
+</div>
+<div class="paragraph">
+<p>Of course, when using only RuntimeExceptions, this is not necessary - but those can be overlooked quite easily, so be careful there.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_central_fallback_exception_handler">Central fallback exception handler</h5>
+<div class="paragraph">
+<p>There will always be some exception that cannot be handled inside of the code correctly - or it may just have been unforeseen. A central fallback exception handler is required so all problems are visible in the log and the API always returns meaningful responses. In some cases, this is as simple as a HTTP 500.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_dont_expose_too_much_exception_details_over_api">Dont expose too much exception details over API</h5>
+<div class="paragraph">
+<p>It&#8217;s good to inform the user, why their request did not work, but only if they can do something about it (HTTP 4xx). So in case of application problems, you should not expose details of the problem to the caller. This way, we avoid opening potential attack vectors.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_parallelization_and_threading">Parallelization and threading</h3>
+<div class="paragraph">
+<p>The heart of the IRS is the parallel execution of planned jobs. As almost each job requires multiple calls to various endpoints, those are done in parallel as well to reduce the total execution time for each job.</p>
+</div>
+<div class="paragraph">
+<p>Tasks execution is orchestrated by the JobOrchestrator class. It utilizes a cental ExecutorService, which manages the number of threads and schedules new Task as they come in.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_plausibility_checks_and_validation">Plausibility checks and validation</h3>
+<div class="paragraph">
+<p>Data validation happens at two points:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>IRS API: the data sent by the client is validated to match the model defined in the IRS. If the validation fails, the IRS sends a HTTP 400 response and indicates the problem to the caller.</p>
+</li>
+<li>
+<p>Submodel payload: each time a submodel payload is requested from via EDC, the data is validated against the model defined in the SemanticHub for the matching aspect type.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_installation">Installation</h2>
+<h2 id="_development_concepts">Development concepts</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>The IRS Helm repository can be found here:
-<a href="https://eclipse-tractusx.github.io/item-relationship-service/index.yaml" class="bare">https://eclipse-tractusx.github.io/item-relationship-service/index.yaml</a></p>
-</div>
-<div class="paragraph">
-<p>Use the latest release of the "irs" chart.
-It contains all required dependencies.</p>
-</div>
-<div class="paragraph">
-<p>Supply the required configuration properties (see chapter <a href="#_configuration">Configuration</a>) in a values.yaml file or override the settings directly.</p>
-</div>
 <div class="sect2">
-<h3 id="_deployment_using_helm">Deployment using Helm</h3>
+<h3 id="_build_test_deploy">Build, test, deploy</h3>
 <div class="paragraph">
-<p>Add the IRS Helm repository:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ helm repo add irs https://eclipse-tractusx.github.io/item-relationship-service</pre>
-</div>
+<p>The IRS is built using Maven and utilizes all the standard concepts of it. Test execution is part of the build process and a minimum test coverage of 80% is enforced.</p>
 </div>
 <div class="paragraph">
-<p>Then install the Helm chart into your cluster:</p>
+<p>The project setup contains a multi-module Maven build. Commonly used classes (like the IRS data model) should be extracted into a separate submodule and reused across the project. However, this is not a "one-size-fits-all" solution. New submodules should be created with care and require a review by the team.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre>$ helm install -f your-values.yaml irs-app irs/irs-helm</pre>
+<div class="paragraph">
+<p>The Maven build alone only leads up to the JAR artifact of the IRS. Do create Docker images, the Docker build feature is used. This copies all resources into a builder image, builds the software and creates a final Docker image at the end that can then be deployed.</p>
 </div>
+<div class="paragraph">
+<p>Although the Docker image can be deployed in various ways, the standard solution are the provided Helm charts, which describe the required components as well.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_deployment_using_argocd">Deployment using ArgoCD</h3>
+<h3 id="_code_generation">Code generation</h3>
 <div class="paragraph">
-<p>Create a new Helm chart and use the IRS as a dependency.</p>
+<p>There are two methods of code generation in the IRS:</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="yaml"><span class="na">dependencies</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">irs-helm</span>
-    <span class="na">repository</span><span class="pi">:</span> <span class="s">https://eclipse-tractusx.github.io/item-relationship-service</span>
-    <span class="na">version</span><span class="pi">:</span> <span class="s">2.x.x</span></code></pre>
+<div class="sect3">
+<h4 id="_lombok">Lombok</h4>
+<div class="paragraph">
+<p>The Lombok library is heavily used to generate boilerplate code (like Constructors, Getters, Setters, Builders&#8230;&#8203;).
+This way, code can be written faster and this boilerplate code is excluded from test coverage, which keeps the test base lean.</p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_swagger_openapi">Swagger / OpenAPI</h4>
+<div class="paragraph">
+<p>The API uses OpenAPI annotations to describe the endpoints with all necessary information. The annotations are then used to automatically generate the OpenAPI specification file, which can be viewed in the Swagger UI that is deployed with the application.</p>
 </div>
 <div class="paragraph">
-<p>Then provide your configuration as the values.yaml of that chart.</p>
+<p>The generated OpenAPI specification file is automatically compared to a fixed, stored version of it to avoid unwanted changes of the API.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_migration">Migration</h3>
+<div class="paragraph">
+<p>There currently is no data migration mechanism for the IRS.
+In case the model of the persisted data (Jobs) changes, data is dropped and Jobs will need to be recreated.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configurability">Configurability</h3>
+<div class="paragraph">
+<p>The IRS utilizes the configuration mechanism provided by Spring Boot. Configuration properties can be defined in the file <code>src/main/resources/application.yml</code></p>
 </div>
 <div class="paragraph">
-<p>Create a new application in ArgoCD and point it to your repository / Helm chart folder.</p>
+<p>For local testing purposes, there is an additional configuration file called <code>application-local.yml</code>. Values can be overriden there to support the local dev environment.</p>
+</div>
+<div class="paragraph">
+<p>Other profiles should be avoided. Instead, any value that might need to change in a runtime environment must be overridable using environment variables. The operator must have total control over the configuration of the IRS.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_configuration">Configuration</h2>
+<h2 id="_operational_concepts">Operational concepts</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Take the following template and adjust the configuration parameters (&lt;placeholders&gt; mark the relevant spots).
-You can define the URLs as well as most of the secrets yourself.</p>
-</div>
-<div class="paragraph">
-<p>The Keycloak, DAPS and Vault configuration / secrets depend on your setup and might need to be provided externally.</p>
-</div>
 <div class="sect2">
-<h3 id="_helm_configuration_values_yaml">Helm configuration (values.yaml)</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="yaml"><span class="na">global</span><span class="pi">:</span>
-  <span class="na">enablePrometheus</span><span class="pi">:</span> <span class="no">true</span> <i class="conum" data-value="1"></i><b>(1)</b>
-  <span class="na">enableGrafana</span><span class="pi">:</span> <span class="no">true</span> <i class="conum" data-value="1"></i><b>(1)</b>
-<span class="na">irs-helm</span><span class="pi">:</span>
-  <span class="c1">#####################</span>
-  <span class="c1"># IRS Configuration #</span>
-  <span class="c1">#####################</span>
-  <span class="na">irsUrl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://&lt;irs-url&gt;"</span>
-  <span class="na">ingress</span><span class="pi">:</span>
-    <span class="na">hosts</span><span class="pi">:</span>
-      <span class="pi">-</span> <span class="na">host</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;irs-url&gt;"</span>
-        <span class="na">paths</span><span class="pi">:</span>
-          <span class="pi">-</span> <span class="na">path</span><span class="pi">:</span> <span class="s">/</span>
-            <span class="na">pathType</span><span class="pi">:</span> <span class="s">ImplementationSpecific</span>
-    <span class="na">tls</span><span class="pi">:</span>
-      <span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span>
-          <span class="pi">-</span> <span class="s2">"</span><span class="s">&lt;irs-url&gt;"</span>
-        <span class="na">secretName</span><span class="pi">:</span> <span class="s">tls-secret</span>
-  <span class="na">digitalTwinRegistry</span><span class="pi">:</span>
-    <span class="na">url</span><span class="pi">:</span> <span class="s">https://&lt;digital-twin-registry-url&gt;</span>
-  <span class="na">semanticsHub</span><span class="pi">:</span>
-    <span class="na">url</span><span class="pi">:</span> <span class="s">https://&lt;semantics-hub-url&gt;</span>
-  <span class="na">bpdm</span><span class="pi">:</span>
-    <span class="na">url</span><span class="pi">:</span> <span class="s">https://&lt;bpdm-url&gt;</span>
-  <span class="na">minioUser</span><span class="pi">:</span> <span class="s">&lt;minio-username&gt;</span>
-  <span class="na">minioPassword</span><span class="pi">:</span> <span class="s">&lt;minio-password&gt;</span>
-  <span class="na">keycloak</span><span class="pi">:</span>
-    <span class="na">oauth2</span><span class="pi">:</span>
-      <span class="na">clientId</span><span class="pi">:</span> <span class="s">&lt;keycloak-client-id&gt;</span>
-      <span class="na">clientSecret</span><span class="pi">:</span> <span class="s">&lt;keycloak-client-secret&gt;</span>
-      <span class="na">clientTokenUri</span><span class="pi">:</span> <span class="s">&lt;keycloak-token-uri&gt;</span>
-      <span class="na">jwkSetUri</span><span class="pi">:</span> <span class="s">&lt;keycloak-jwkset-uri&gt;</span>
-  <span class="na">aasWrapper</span><span class="pi">:</span>
-    <span class="na">username</span><span class="pi">:</span> <span class="s">&lt;aas-wrapper-username&gt;</span>
-    <span class="na">password</span><span class="pi">:</span> <span class="s">&lt;aas-wrapper-password&gt;</span>
-
-  <span class="c1">#######################</span>
-  <span class="c1"># Minio Configuration #</span>
-  <span class="c1">#######################</span>
-  <span class="na">irs-minio</span><span class="pi">:</span>
-    <span class="na">minioUser</span><span class="pi">:</span> <span class="s">&lt;minio-username&gt;</span>
-    <span class="na">minioPassword</span><span class="pi">:</span> <span class="s">&lt;minio-password&gt;</span>
-
-  <span class="c1">############################</span>
-  <span class="c1"># AASWrapper Configuration #</span>
-  <span class="c1">############################</span>
-  <span class="na">irs-aaswrapper</span><span class="pi">:</span>
-    <span class="na">edc</span><span class="pi">:</span>
-      <span class="na">api</span><span class="pi">:</span>
-        <span class="na">auth</span><span class="pi">:</span>
-          <span class="na">key</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;edc-api-key&gt;"</span>
-
-  <span class="c1">#########################</span>
-  <span class="c1"># Grafana Configuration #</span>
-  <span class="c1">#########################</span>
-  <span class="na">irs-grafana</span><span class="pi">:</span> <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="na">ingress</span><span class="pi">:</span>
-      <span class="na">hosts</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="na">host</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;grafana-url&gt;"</span>
-          <span class="na">paths</span><span class="pi">:</span>
-            <span class="pi">-</span> <span class="na">path</span><span class="pi">:</span> <span class="s">/</span>
-              <span class="na">pathType</span><span class="pi">:</span> <span class="s">ImplementationSpecific</span>
-      <span class="na">tls</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span>
-            <span class="pi">-</span> <span class="s2">"</span><span class="s">&lt;grafana-url&gt;"</span>
-          <span class="na">secretName</span><span class="pi">:</span> <span class="s">tls-secret</span>
-
-    <span class="na">username</span><span class="pi">:</span> <span class="s">&lt;grafana-username&gt;</span>
-    <span class="na">password</span><span class="pi">:</span> <span class="s">&lt;grafana-password&gt;</span>
-
-  <span class="c1">##############################</span>
-  <span class="c1"># EDC Postgres Configuration #</span>
-  <span class="c1">##############################</span>
-  <span class="na">postgresql</span><span class="pi">:</span>
-    <span class="na">auth</span><span class="pi">:</span>
-      <span class="na">postgresPassword</span><span class="pi">:</span> <span class="s">&lt;postgres-admin-password&gt;</span>
-      <span class="na">password</span><span class="pi">:</span> <span class="s">&lt;postgres-password&gt;</span>
-
-  <span class="c1">##################################</span>
-  <span class="c1"># EDC Controlplane Configuration #</span>
-  <span class="c1">##################################</span>
-  <span class="na">edc-controlplane</span><span class="pi">:</span>
-    <span class="na">ingresses</span><span class="pi">:</span>
-      <span class="pi">-</span> <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
-        <span class="na">hostname</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;controlplane-url&gt;"</span>
-        <span class="na">annotations</span><span class="pi">:</span>
-          <span class="na">nginx.ingress.kubernetes.io/ssl-passthrough</span><span class="pi">:</span> <span class="s2">"</span><span class="s">false"</span>
-          <span class="na">nginx.ingress.kubernetes.io/backend-protocol</span><span class="pi">:</span> <span class="s2">"</span><span class="s">HTTP"</span>
-          <span class="na">nginx.ingress.kubernetes.io/force-ssl-redirect</span><span class="pi">:</span> <span class="s2">"</span><span class="s">true"</span>
-        <span class="na">endpoints</span><span class="pi">:</span>
-          <span class="pi">-</span> <span class="s">ids</span>
-          <span class="pi">-</span> <span class="s">data</span>
-        <span class="na">className</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
-        <span class="na">tls</span><span class="pi">:</span>
-          <span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span>
-              <span class="pi">-</span> <span class="s2">"</span><span class="s">&lt;controlplane-url&gt;"</span>
-            <span class="na">secretName</span><span class="pi">:</span> <span class="s">tls-secret</span>
-        <span class="na">certManager</span><span class="pi">:</span>
-          <span class="na">issuer</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
-          <span class="na">clusterIssuer</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
-
-    <span class="na">edc</span><span class="pi">:</span>
-      <span class="na">postgresql</span><span class="pi">:</span>
-        <span class="na">password</span><span class="pi">:</span> <span class="s">&lt;postgres-password&gt;</span>
-      <span class="na">transfer</span><span class="pi">:</span>
-        <span class="na">proxy</span><span class="pi">:</span>
-          <span class="na">token</span><span class="pi">:</span>
-            <span class="na">verifier</span><span class="pi">:</span>
-              <span class="na">publickey</span><span class="pi">:</span>
-                <span class="na">alias</span><span class="pi">:</span> <span class="s">&lt;daps-certificate-name&gt;</span>
-            <span class="na">signer</span><span class="pi">:</span>
-              <span class="na">privatekey</span><span class="pi">:</span>
-                <span class="na">alias</span><span class="pi">:</span> <span class="s">&lt;daps-privatekey-name&gt;</span>
-      <span class="na">api</span><span class="pi">:</span>
-        <span class="na">auth</span><span class="pi">:</span>
-          <span class="na">key</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;edc-api-key&gt;"</span>
-      <span class="na">controlplane</span><span class="pi">:</span>
-        <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://&lt;controlplane-url&gt;"</span>
-      <span class="na">dataplane</span><span class="pi">:</span>
-        <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://&lt;dataplane-url&gt;"</span>
-    <span class="na">configuration</span><span class="pi">:</span>
-      <span class="na">properties</span><span class="pi">:</span> <span class="pi">|-</span>
-        <span class="s">edc.oauth.client.id=&lt;daps-client-id&gt;</span>
-        <span class="s">edc.oauth.private.key.alias=&lt;daps-privatekey-name&gt;</span>
-        <span class="s">edc.oauth.provider.jwks.url=&lt;daps-jwks-url&gt;</span>
-        <span class="s">edc.oauth.public.key.alias=&lt;daps-certificate-name&gt;</span>
-        <span class="s">edc.oauth.token.url=&lt;daps-token-url&gt;</span>
-        <span class="s">edc.vault.hashicorp.url=&lt;vault-url&gt;</span>
-        <span class="s">edc.vault.hashicorp.token=&lt;vault-token&gt;</span>
-        <span class="s">edc.vault.hashicorp.api.secret.path=&lt;vault-secret-store-path&gt;</span>
-        <span class="s">edc.data.encryption.keys.alias=&lt;daps-privatekey-name&gt;</span>
-        <span class="s">edc.data.encryption.algorithm=NONE</span>
-
-  <span class="c1">###############################</span>
-  <span class="c1"># EDC Dataplane Configuration #</span>
-  <span class="c1">###############################</span>
-  <span class="na">edc-dataplane</span><span class="pi">:</span>
-    <span class="na">edc</span><span class="pi">:</span>
-      <span class="na">api</span><span class="pi">:</span>
-        <span class="na">auth</span><span class="pi">:</span>
-          <span class="na">key</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;edc-api-key&gt;"</span>
-    <span class="na">ingresses</span><span class="pi">:</span>
-      <span class="pi">-</span> <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
-        <span class="na">hostname</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;dataplane-url&gt;"</span>
-        <span class="na">annotations</span><span class="pi">:</span>
-          <span class="na">nginx.ingress.kubernetes.io/ssl-passthrough</span><span class="pi">:</span> <span class="s2">"</span><span class="s">false"</span>
-          <span class="na">nginx.ingress.kubernetes.io/backend-protocol</span><span class="pi">:</span> <span class="s2">"</span><span class="s">HTTP"</span>
-          <span class="na">nginx.ingress.kubernetes.io/force-ssl-redirect</span><span class="pi">:</span> <span class="s2">"</span><span class="s">true"</span>
-        <span class="na">endpoints</span><span class="pi">:</span>
-          <span class="pi">-</span> <span class="s">public</span>
-        <span class="na">className</span><span class="pi">:</span> <span class="s2">"</span><span class="s">nginx"</span>
-        <span class="na">tls</span><span class="pi">:</span>
-          <span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span>
-              <span class="pi">-</span> <span class="s2">"</span><span class="s">&lt;dataplane-url&gt;"</span>
-            <span class="na">secretName</span><span class="pi">:</span> <span class="s">tls-secret</span>
-        <span class="na">certManager</span><span class="pi">:</span>
-          <span class="na">issuer</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
-          <span class="na">clusterIssuer</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
-
-    <span class="na">configuration</span><span class="pi">:</span>
-      <span class="na">properties</span><span class="pi">:</span> <span class="pi">|-</span>
-        <span class="s">edc.oauth.client.id=&lt;daps-client-id&gt;</span>
-        <span class="s">edc.oauth.private.key.alias=&lt;daps-privatekey-name&gt;</span>
-        <span class="s">edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL</span>
-        <span class="s">edc.oauth.provider.jwks.url=&lt;daps-jwks-url&gt;</span>
-        <span class="s">edc.oauth.public.key.alias=&lt;daps-certificate-name&gt;</span>
-        <span class="s">edc.oauth.token.url=&lt;daps-token-url&gt;</span>
-        <span class="s">edc.vault.hashicorp.url=&lt;vault-url&gt;</span>
-        <span class="s">edc.vault.hashicorp.token=&lt;vault-token&gt;</span>
-        <span class="s">edc.vault.hashicorp.api.secret.path=&lt;vault-secret-store-path&gt;</span></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Use this to enable or disable the monitoring components</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>This block can be removed if Grafana is disabled</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_values_explained">Values explained</h3>
+<h3 id="_administration">Administration</h3>
 <div class="sect3">
-<h4 id="_irs_url">&lt;irs-url&gt;</h4>
+<h4 id="_configuration">Configuration</h4>
 <div class="paragraph">
-<p>The hostname where the IRS will be made available.</p>
+<p>The IRS can be configured using two mechanisms:</p>
 </div>
-</div>
-<div class="sect3">
-<h4 id="_digital_twin_registry_url">&lt;digital-twin-registry-url&gt;</h4>
+<div class="sect4">
+<h5 id="_application_yml">application.yml</h5>
 <div class="paragraph">
-<p>The URL of the Digital Twin Registry. The IRS uses this service to fetch AAS shells.</p>
+<p>If you build the IRS yourself, you can modify the application.yml config that is shipped with the IRS. This file contains all possible config entries for the application.
+Once the Docker image has been built, these values can only be overwritten using the Spring external config mechanism (see <a href="https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html" class="bare">https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html</a>), e.g. by mounting a config file in the right path or using environment variables.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_semantics_hub_url">&lt;semantics-hub-url&gt;</h4>
+<div class="sect4">
+<h5 id="_helm_chart">Helm Chart</h5>
 <div class="paragraph">
-<p>The URL of the SemanticsHub. The IRS uses this service to fetch aspect schemas for payload validation.</p>
+<p>The most relevant config properties are exposed as environment variables and must be set in the Helm chart so the application can run at all. Check the IRS Helm chart in Git for all available variables.</p>
 </div>
-</div>
-<div class="sect3">
-<h4 id="_bpdm_url">&lt;bpdm-url&gt;</h4>
-<div class="paragraph">
-<p>The URL of the BPDM service. The IRS uses this service to fetch business partner information based on BPNs.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_keycloak_token_uri">&lt;keycloak-token-uri&gt;</h4>
-<div class="paragraph">
-<p>The URL of the Keycloak token API. Used by the IRS for token creation to authenticate with other services.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_keycloak_jwkset_uri">&lt;keycloak-jwkset-uri&gt;</h4>
-<div class="paragraph">
-<p>The URL of the Keycloak JWK Set. Used by the IRS to validate tokens when the IRS API is called.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_grafana_url">&lt;grafana-url&gt;</h4>
-<div class="paragraph">
-<p>The hostname where Grafana will be made available.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_controlplane_url">&lt;controlplane-url&gt;</h4>
-<div class="paragraph">
-<p>The hostname where the EDC consumer controlplane will be made available.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_dataplane_url">&lt;dataplane-url&gt;</h4>
-<div class="paragraph">
-<p>The hostname where the EDC consumer dataplane will be made available.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_daps_configuration">DAPS configuration</h3>
-<div class="paragraph">
-<p>EDC requires a DAPS instance to function correctly. For more information on this, please refer to the <a href="https://github.com/catenax-ng/product-DAPS">DAPS</a> or the <a href="https://github.com/catenax-ng/product-edc">EDC</a> documentation.</p>
-</div>
+<h3 id="_disaster_recovery">Disaster-Recovery</h3>
 <div class="sect3">
-<h4 id="_vault_url">&lt;vault-url&gt;</h4>
+<h4 id="_ephemeral_components">Ephemeral components</h4>
 <div class="paragraph">
-<p>The base URL of the Vault instance.
-EDC requires a running instance of HashiCorp Vault to store the DAPS certificate and private key.</p>
+<p>All components in the IRS deployment not listed in the persistent components section below are considered ephemeral and are easily replaced in a disaster scenario.
+All deployment components are described using Helm charts, which can be used to restore the deployment with the Docker images.
+Should the Docker images go missing, they can be restored by executing the build pipelines for the corresponding version tag of the component.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_vault_secret_store_path">&lt;vault-secret-store-path&gt;</h4>
+<h4 id="_persistent_components">Persistent components</h4>
 <div class="paragraph">
-<p>The path to the secret store in Vault where the DAPS certificate and key can be found.</p>
+<p>These components utilize data persistence, which needs to be backed up separately by the operator.</p>
 </div>
-<div class="paragraph">
-<p><em>Example: /v1/team-name</em></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_daps_certificate_name">&lt;daps-certificate-name&gt;</h4>
-<div class="paragraph">
-<p>The name of the DAPS certificate in the Vault.</p>
-</div>
-<div class="paragraph">
-<p><em>Example: irs-daps-certificate</em></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_daps_privatekey_name">&lt;daps-privatekey-name&gt;</h4>
-<div class="paragraph">
-<p>The name of the DAPS private key in the Vault.</p>
-</div>
-<div class="paragraph">
-<p><em>Example: irs-daps-private-key</em></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_daps_client_id">&lt;daps-client-id&gt;</h4>
-<div class="paragraph">
-<p>The DAPS client ID.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_daps_jwks_url">&lt;daps-jwks-url&gt;</h4>
-<div class="paragraph">
-<p>The URL of the DAPS JWK Set.</p>
-</div>
-<div class="paragraph">
-<p><em>Example: <a href="https://daps-hostname/.well-known/jwks.json" class="bare">https://daps-hostname/.well-known/jwks.json</a></em></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_daps_token_url">&lt;daps-token-url&gt;</h4>
-<div class="paragraph">
-<p>The URL of the DAPS token API.</p>
-</div>
-<div class="paragraph">
-<p><em>Example: <a href="https://daps-hostname/token" class="bare">https://daps-hostname/token</a></em></p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Minio persistent volume</strong>: Contains the stored Job information. In case of data loss, Jobs can be started again to retrieve the data from the network.</p>
+</li>
+<li>
+<p><strong>Prometheus persistent volume</strong>: Contains the monitoring data of the IRS. In case of data loss, no analysis can be done for past timeframes.</p>
+</li>
+<li>
+<p><strong>Vault secrets</strong>: In case of data loss, the credentials stored in the Vault need to be recreated manually. See the deployment view for an overview.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_secrets">Secrets</h3>
+<h3 id="_scaling">Scaling</h3>
 <div class="paragraph">
-<p>This is a list of all secrets used in the deployment.</p>
+<p>If the number of consumers raises, the IRS can be scaled up by using more resources for the Deployment Pod. Those resources can be used to utilize more parallel threads to handle Job execution.</p>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Keep the values for these settings safe and do not publish them!
-</td>
-</tr>
-</table>
 </div>
-<div class="sect3">
-<h4 id="_postgres_admin_password">&lt;postgres-admin-password&gt;</h4>
+<div class="sect2">
+<h3 id="_clustering">Clustering</h3>
 <div class="paragraph">
-<p>Database password for the <strong>postgres</strong> user. To be defined by you.</p>
+<p>The IRS can run in clustered mode, as each running job is only present in one pod at a time.
+Note: as soon as a resume feature is implemented, this needs to be addressed here.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_postgres_password">&lt;postgres-password&gt;</h4>
+<div class="sect2">
+<h3 id="_logging">Logging</h3>
 <div class="paragraph">
-<p>Database password for the application user (default username: <strong>edc</strong>). To be defined by you.</p>
+<p>Logs are being written directly to stdout and are picked up by the cluster management.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_keycloak_client_id">&lt;keycloak-client-id&gt;</h4>
+<div class="sect2">
+<h3 id="_monitoring">Monitoring</h3>
 <div class="paragraph">
-<p>Client ID for Keycloak. Request this from your Keycloak operator.</p>
+<p>The application can be monitored using Prometheus and Grafana. Both systems are defined in the Helm charts with a default setup.
+A number of Grafana dashboards are deployed automatically, to display data about:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Pod / JVM resources</p>
+</li>
+<li>
+<p>API metrics</p>
+</li>
+<li>
+<p>Functional information about IRS Jobs</p>
+</li>
+</ul>
 </div>
-<div class="sect3">
-<h4 id="_keycloak_client_secret">&lt;keycloak-client-secret&gt;</h4>
-<div class="paragraph">
-<p>Client secret for Keycloak. Request this from your Keycloak operator.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_minio_username">&lt;minio-username&gt;</h4>
-<div class="paragraph">
-<p>Login username for Minio. To be defined by you.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_minio_password">&lt;minio-password&gt;</h4>
-<div class="paragraph">
-<p>Login password for Minio. To be defined by you.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_edc_api_key">&lt;edc-api-key&gt;</h4>
-<div class="paragraph">
-<p>An API key for the EDC API. To be defined by you.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_vault_token">&lt;vault-token&gt;</h4>
-<div class="paragraph">
-<p>The access token for the HashiCorp Vault API.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_grafana_username">&lt;grafana-username&gt;</h4>
-<div class="paragraph">
-<p>Login username for Grafana. To be defined by you.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_grafana_password">&lt;grafana-password&gt;</h4>
-<div class="paragraph">
-<p>Login password for Grafana. To be defined by you.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_aas_wrapper_username">&lt;aas-wrapper-username&gt;</h4>
-<div class="paragraph">
-<p>Basic authentication of the AAS Wrapper API. You can leave this empty if no basic auth is configured for the AAS Wrapper.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_aas_wrapper_password">&lt;aas-wrapper-password&gt;</h4>
-<div class="paragraph">
-<p>Basic authentication of the AAS Wrapper API. You can leave this empty if no basic auth is configured for the AAS Wrapper.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_troubleshooting">Troubleshooting</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Coming soon&#8230;&#8203;</p>
 </div>
 </div>
 </div>

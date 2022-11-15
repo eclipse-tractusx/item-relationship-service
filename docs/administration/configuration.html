@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.17">
+<meta name="generator" content="Asciidoctor 2.0.18">
 <title>Configuration</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -84,10 +84,10 @@ code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;
 ul,ol,dl{line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
 ul,ol{margin-left:1.5em}
 ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0}
-ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
-ul.square{list-style-type:square}
 ul.circle{list-style-type:circle}
 ul.disc{list-style-type:disc}
+ul.square{list-style-type:square}
+ul.circle ul:not([class]),ul.disc ul:not([class]),ul.square ul:not([class]){list-style:inherit}
 ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
 dl dt{margin-bottom:.3125em;font-weight:bold}
 dl dd{margin-bottom:1.25em}
@@ -659,7 +659,46 @@ pre.rouge {
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_helm_configuration_values_yaml">Helm configuration (values.yaml)</a></li>
-<li><a href="#_secrets">Secrets</a></li>
+<li><a href="#_values_explained">Values explained</a>
+<ul class="sectlevel2">
+<li><a href="#_irs_url">&lt;irs-url&gt;</a></li>
+<li><a href="#_digital_twin_registry_url">&lt;digital-twin-registry-url&gt;</a></li>
+<li><a href="#_semantics_hub_url">&lt;semantics-hub-url&gt;</a></li>
+<li><a href="#_bpdm_url">&lt;bpdm-url&gt;</a></li>
+<li><a href="#_keycloak_token_uri">&lt;keycloak-token-uri&gt;</a></li>
+<li><a href="#_keycloak_jwkset_uri">&lt;keycloak-jwkset-uri&gt;</a></li>
+<li><a href="#_grafana_url">&lt;grafana-url&gt;</a></li>
+<li><a href="#_controlplane_url">&lt;controlplane-url&gt;</a></li>
+<li><a href="#_dataplane_url">&lt;dataplane-url&gt;</a></li>
+</ul>
+</li>
+<li><a href="#_daps_configuration">DAPS configuration</a>
+<ul class="sectlevel2">
+<li><a href="#_vault_url">&lt;vault-url&gt;</a></li>
+<li><a href="#_vault_secret_store_path">&lt;vault-secret-store-path&gt;</a></li>
+<li><a href="#_daps_certificate_name">&lt;daps-certificate-name&gt;</a></li>
+<li><a href="#_daps_privatekey_name">&lt;daps-privatekey-name&gt;</a></li>
+<li><a href="#_daps_client_id">&lt;daps-client-id&gt;</a></li>
+<li><a href="#_daps_jwks_url">&lt;daps-jwks-url&gt;</a></li>
+<li><a href="#_daps_token_url">&lt;daps-token-url&gt;</a></li>
+</ul>
+</li>
+<li><a href="#_secrets">Secrets</a>
+<ul class="sectlevel2">
+<li><a href="#_postgres_admin_password">&lt;postgres-admin-password&gt;</a></li>
+<li><a href="#_postgres_password">&lt;postgres-password&gt;</a></li>
+<li><a href="#_keycloak_client_id">&lt;keycloak-client-id&gt;</a></li>
+<li><a href="#_keycloak_client_secret">&lt;keycloak-client-secret&gt;</a></li>
+<li><a href="#_minio_username">&lt;minio-username&gt;</a></li>
+<li><a href="#_minio_password">&lt;minio-password&gt;</a></li>
+<li><a href="#_edc_api_key">&lt;edc-api-key&gt;</a></li>
+<li><a href="#_vault_token">&lt;vault-token&gt;</a></li>
+<li><a href="#_grafana_username">&lt;grafana-username&gt;</a></li>
+<li><a href="#_grafana_password">&lt;grafana-password&gt;</a></li>
+<li><a href="#_aas_wrapper_username">&lt;aas-wrapper-username&gt;</a></li>
+<li><a href="#_aas_wrapper_password">&lt;aas-wrapper-password&gt;</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -867,79 +906,226 @@ You can define the URLs as well as most of the secrets yourself.</p>
 </div>
 </div>
 <div class="sect1">
+<h2 id="_values_explained">Values explained</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_irs_url">&lt;irs-url&gt;</h3>
+<div class="paragraph">
+<p>The hostname where the IRS will be made available.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_digital_twin_registry_url">&lt;digital-twin-registry-url&gt;</h3>
+<div class="paragraph">
+<p>The URL of the Digital Twin Registry. The IRS uses this service to fetch AAS shells.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_semantics_hub_url">&lt;semantics-hub-url&gt;</h3>
+<div class="paragraph">
+<p>The URL of the SemanticsHub. The IRS uses this service to fetch aspect schemas for payload validation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_bpdm_url">&lt;bpdm-url&gt;</h3>
+<div class="paragraph">
+<p>The URL of the BPDM service. The IRS uses this service to fetch business partner information based on BPNs.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_keycloak_token_uri">&lt;keycloak-token-uri&gt;</h3>
+<div class="paragraph">
+<p>The URL of the Keycloak token API. Used by the IRS for token creation to authenticate with other services.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_keycloak_jwkset_uri">&lt;keycloak-jwkset-uri&gt;</h3>
+<div class="paragraph">
+<p>The URL of the Keycloak JWK Set. Used by the IRS to validate tokens when the IRS API is called.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_grafana_url">&lt;grafana-url&gt;</h3>
+<div class="paragraph">
+<p>The hostname where Grafana will be made available.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_controlplane_url">&lt;controlplane-url&gt;</h3>
+<div class="paragraph">
+<p>The hostname where the EDC consumer controlplane will be made available.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dataplane_url">&lt;dataplane-url&gt;</h3>
+<div class="paragraph">
+<p>The hostname where the EDC consumer dataplane will be made available.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_daps_configuration">DAPS configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>EDC requires a DAPS instance to function correctly. For more information on this, please refer to the <a href="https://github.com/catenax-ng/product-DAPS">DAPS</a> or the <a href="https://github.com/catenax-ng/product-edc">EDC</a> documentation.</p>
+</div>
+<div class="sect2">
+<h3 id="_vault_url">&lt;vault-url&gt;</h3>
+<div class="paragraph">
+<p>The base URL of the Vault instance.
+EDC requires a running instance of HashiCorp Vault to store the DAPS certificate and private key.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_vault_secret_store_path">&lt;vault-secret-store-path&gt;</h3>
+<div class="paragraph">
+<p>The path to the secret store in Vault where the DAPS certificate and key can be found.</p>
+</div>
+<div class="paragraph">
+<p><em>Example: /v1/team-name</em></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_daps_certificate_name">&lt;daps-certificate-name&gt;</h3>
+<div class="paragraph">
+<p>The name of the DAPS certificate in the Vault.</p>
+</div>
+<div class="paragraph">
+<p><em>Example: irs-daps-certificate</em></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_daps_privatekey_name">&lt;daps-privatekey-name&gt;</h3>
+<div class="paragraph">
+<p>The name of the DAPS private key in the Vault.</p>
+</div>
+<div class="paragraph">
+<p><em>Example: irs-daps-private-key</em></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_daps_client_id">&lt;daps-client-id&gt;</h3>
+<div class="paragraph">
+<p>The DAPS client ID.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_daps_jwks_url">&lt;daps-jwks-url&gt;</h3>
+<div class="paragraph">
+<p>The URL of the DAPS JWK Set.</p>
+</div>
+<div class="paragraph">
+<p><em>Example: <a href="https://daps-hostname/.well-known/jwks.json" class="bare">https://daps-hostname/.well-known/jwks.json</a></em></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_daps_token_url">&lt;daps-token-url&gt;</h3>
+<div class="paragraph">
+<p>The URL of the DAPS token API.</p>
+</div>
+<div class="paragraph">
+<p><em>Example: <a href="https://daps-hostname/token" class="bare">https://daps-hostname/token</a></em></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_secrets">Secrets</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a list of all secrets used in the deployment.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
+<div class="admonitionblock warning">
+<table>
 <tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Keep the values for these settings safe and do not publish them!
+</td>
 </tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;postgres-admin-password&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database password for the <strong>postgres</strong> user</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;postgres-password&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database password for the application user (default username: <strong>edc</strong>)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;keycloak-client-id&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client ID for Keycloak. Request this from your Keycloak operator.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;keycloak-client-secret&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret for Keycloak. Request this from your Keycloak operator.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;minio-username&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Login username for Minio</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;minio-password&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Login password for Minio</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;edc-api-key&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A self defined API key for the EDC API</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;vault-token&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The access token for the HashiCorp Vault API</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;grafana-username&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Login username for Grafana</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;grafana-password&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Login password for Grafana</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;aas-wrapper-username&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication of the AAS Wrapper API. You can leave this empty.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;aas-wrapper-password&gt;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Basic authentication of the AAS Wrapper API. You can leave this empty.</p></td>
-</tr>
-</tbody>
 </table>
+</div>
+<div class="sect2">
+<h3 id="_postgres_admin_password">&lt;postgres-admin-password&gt;</h3>
+<div class="paragraph">
+<p>Database password for the <strong>postgres</strong> user. To be defined by you.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_postgres_password">&lt;postgres-password&gt;</h3>
+<div class="paragraph">
+<p>Database password for the application user (default username: <strong>edc</strong>). To be defined by you.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_keycloak_client_id">&lt;keycloak-client-id&gt;</h3>
+<div class="paragraph">
+<p>Client ID for Keycloak. Request this from your Keycloak operator.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_keycloak_client_secret">&lt;keycloak-client-secret&gt;</h3>
+<div class="paragraph">
+<p>Client secret for Keycloak. Request this from your Keycloak operator.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_minio_username">&lt;minio-username&gt;</h3>
+<div class="paragraph">
+<p>Login username for Minio. To be defined by you.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_minio_password">&lt;minio-password&gt;</h3>
+<div class="paragraph">
+<p>Login password for Minio. To be defined by you.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_edc_api_key">&lt;edc-api-key&gt;</h3>
+<div class="paragraph">
+<p>An API key for the EDC API. To be defined by you.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_vault_token">&lt;vault-token&gt;</h3>
+<div class="paragraph">
+<p>The access token for the HashiCorp Vault API.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_grafana_username">&lt;grafana-username&gt;</h3>
+<div class="paragraph">
+<p>Login username for Grafana. To be defined by you.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_grafana_password">&lt;grafana-password&gt;</h3>
+<div class="paragraph">
+<p>Login password for Grafana. To be defined by you.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_aas_wrapper_username">&lt;aas-wrapper-username&gt;</h3>
+<div class="paragraph">
+<p>Basic authentication of the AAS Wrapper API. You can leave this empty if no basic auth is configured for the AAS Wrapper.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_aas_wrapper_password">&lt;aas-wrapper-password&gt;</h3>
+<div class="paragraph">
+<p>Basic authentication of the AAS Wrapper API. You can leave this empty if no basic auth is configured for the AAS Wrapper.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-10-13 15:21:05 UTC
+Last updated 2022-11-15 11:29:41 UTC
 </div>
 </div>
 </body>
