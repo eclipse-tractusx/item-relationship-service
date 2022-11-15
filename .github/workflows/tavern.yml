@@ -51,10 +51,11 @@ jobs:
         env:
           JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
           JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
-        # Upload the tavern results to JIRA Test execution TRI-910
+        # Remove tokens and upload the tavern results to JIRA Test execution TRI-910
         run: |
+          sed "s/access_token:s = '.*'/access_token:s =/g" tavern-results.xml | sed "s/Authorization: Bearer .*/Authorization:/g" | uniq > result.xml
           curl -H "Content-Type: multipart/form-data" \
           -u $JIRA_USERNAME:$JIRA_PASSWORD \ 
-          -F "file=@tavern-results.xml" \
+          -F "file=@result.xml" \
           https://jira.catena-x.net/rest/raven/1.0/import/execution/junit?testExecKey=TRI-910
           
