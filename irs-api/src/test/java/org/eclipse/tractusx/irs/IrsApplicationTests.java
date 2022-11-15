@@ -31,12 +31,14 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
+import org.eclipse.tractusx.irs.component.JobParameter;
+import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
+import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.JobInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
-import org.eclipse.tractusx.irs.dto.JobParameter;
 import org.eclipse.tractusx.irs.persistence.BlobPersistence;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -79,12 +81,13 @@ class IrsApplicationTests {
     @Test
     void shouldStoreBlobResultWhenRunningJob() throws Exception {
         final JobParameter jobParameter = JobParameter.builder()
-                                                      .rootItemId("rootitemid")
-                                                      .treeDepth(5)
-                                                      .aspectTypes(List.of())
+                                                      .depth(5)
+                                                      .direction(Direction.DOWNWARD)
+                                                      .bomLifecycle(BomLifecycle.AS_BUILT)
+                                                      .aspects(List.of())
                                                       .build();
 
-        final JobInitiateResponse response = jobOrchestrator.startJob(jobParameter);
+        final JobInitiateResponse response = jobOrchestrator.startJob("rootitemid", jobParameter);
 
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.OK);
 

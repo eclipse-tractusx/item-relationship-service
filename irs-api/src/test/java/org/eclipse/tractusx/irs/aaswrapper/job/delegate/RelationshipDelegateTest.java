@@ -1,5 +1,27 @@
+/********************************************************************************
+ * Copyright (c) 2021,2022
+ *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022: ZF Friedrichshafen AG
+ *       2022: ISTOS GmbH
+ * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Apache License, Version 2.0 which is available at
+ * https://www.apache.org/licenses/LICENSE-2.0. *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
+import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.eclipse.tractusx.irs.util.TestMother.relationship;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptor;
@@ -16,7 +38,6 @@ import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
-import org.eclipse.tractusx.irs.dto.JobParameter;
 import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
@@ -37,7 +58,7 @@ class RelationshipDelegateTest {
         final AASTransferProcess aasTransferProcess = new AASTransferProcess();
 
         // when
-        final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, new JobParameter(),
+        final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
                 aasTransferProcess, "itemId");
 
         // then
@@ -55,7 +76,7 @@ class RelationshipDelegateTest {
                 List.of(submodelDescriptor(assemblyPartRelationshipAspectName, "address"))));
 
         // when
-        final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, new JobParameter(),
+        final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
                 new AASTransferProcess(), "itemId");
 
         // then
@@ -75,7 +96,7 @@ class RelationshipDelegateTest {
                 List.of(submodelDescriptor(assemblyPartRelationshipAspectName, "address"))));
 
         // when
-        final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, new JobParameter(),
+        final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
                 new AASTransferProcess(), "itemId");
 
         // then

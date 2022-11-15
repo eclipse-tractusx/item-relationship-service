@@ -24,18 +24,20 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.SubmodelFacade;
+import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
+import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
-import org.eclipse.tractusx.irs.dto.JobParameter;
 import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.InvalidSchemaException;
@@ -77,7 +79,7 @@ public class SubmodelDelegate extends AbstractDelegate {
                 log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
 
                 final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.filterDescriptorsByAspectTypes(
-                        jobData.getAspectTypes());
+                        jobData.getAspects().stream().map(AspectType::toString).collect(Collectors.toList()));
 
                 if (jobData.isCollectAspects()) {
                     log.info("Collecting Submodels.");
@@ -91,7 +93,7 @@ public class SubmodelDelegate extends AbstractDelegate {
                 shell.setSubmodelDescriptors(filteredSubmodelDescriptorsByAspectType);
 
             } catch (RestClientException e) {
-                log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
+                log.info("Submodel Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
                 itemContainerBuilder.tombstone(
                         Tombstone.from(itemId, null, e, retryCount, ProcessStep.SUBMODEL_REQUEST));
             }

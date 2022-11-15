@@ -47,20 +47,19 @@ class SubmodelTestdataCreatorTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldReturnAssemblyPartRelationshipWithoutChildrenWhenRequestingWithTestId() {
-        final AssemblyPartRelationship dummyAssemblyPartRelationshipForId = submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(
-                "test");
-
-        assertThat(dummyAssemblyPartRelationshipForId.getCatenaXId()).isEqualTo("test");
-        assertThat(dummyAssemblyPartRelationshipForId.getChildParts()).isEmpty();
+        final AssemblyPartRelationship dummyAssemblyPartRelationshipForId = submodelTestdataCreator.createSubmodelForId(
+                "test", AssemblyPartRelationship.class);
+        assertThat(dummyAssemblyPartRelationshipForId.getCatenaXId()).isNull();
+        assertThat(dummyAssemblyPartRelationshipForId.getChildParts()).isNull();
     }
 
     @Test
     void shouldReturnAssemblyPartRelationshipWithPreDefinedChildrenWhenRequestingWithCatenaXId() {
         final String catenaXId = "urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873";
-        final AssemblyPartRelationship assemblyPartRelationship = submodelTestdataCreator.createDummyAssemblyPartRelationshipForId(
-                catenaXId);
+        final AssemblyPartRelationship assemblyPartRelationship = submodelTestdataCreator.createSubmodelForId(
+                catenaXId + "_assemblyPartRelationship", AssemblyPartRelationship.class);
 
-        final Set<ChildData> childParts = assemblyPartRelationship.getChildParts();
+        final Set<AssemblyPartRelationship.ChildData> childParts = assemblyPartRelationship.getChildParts();
         assertThat(childParts).hasSize(1);
         final List<String> childIDs = List.of("urn:uuid:ee5f6ca1-011d-4421-960a-4521b69b3503");
         childParts.forEach(childData -> assertThat(childIDs).contains(childData.getChildCatenaXId()));

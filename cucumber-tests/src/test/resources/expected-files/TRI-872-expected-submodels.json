@@ -1,0 +1,196 @@
+{
+    "submodels": [
+        {
+            "identification": "urn:uuid:0eff0cbb-ae48-4de4-b3d1-e03cac8718cb",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2013-04-11T16:17:30.000Z",
+                    "validTo": "2032-10-14T02:03:33.000Z"
+                },
+                "catenaXId": "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e",
+                "partTypeInformation": {
+                    "manufacturerPartId": "ZX-55",
+                    "classification": "product",
+                    "nameAtManufacturer": "Vehicle Model A"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:eb3c5e55-27f8-4f34-a2f3-2c45e00013ab",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2017-05-01T23:33:43.000Z",
+                    "validTo": "2027-08-12T16:05:05.000Z"
+                },
+                "catenaXId": "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c",
+                "partTypeInformation": {
+                    "manufacturerPartId": "38049661-08",
+                    "classification": "product",
+                    "nameAtManufacturer": "OEM A High Voltage Battery"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:25aa26ee-4685-4424-b60f-b97375d9113d",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2012-12-11T10:05:52.000Z",
+                    "validTo": "2027-06-12T22:05:42.000Z"
+                },
+                "catenaXId": "urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97",
+                "partTypeInformation": {
+                    "manufacturerPartId": "8840838-04",
+                    "classification": "product",
+                    "nameAtManufacturer": "HV Modul"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:cc5d44eb-5a6d-478b-8203-70f982ea4c2e",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2019-05-31T16:59:06.000Z",
+                    "validTo": "2032-11-20T23:15:34.000Z"
+                },
+                "catenaXId": "urn:uuid:c7a2b803-f8fe-4b79-b6fc-967ce847c9a9",
+                "partTypeInformation": {
+                    "manufacturerPartId": "8840374-09",
+                    "classification": "product",
+                    "nameAtManufacturer": "ZB ZELLE"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:8accb42d-3adb-49cc-84af-8ae6ea6b5c4c",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2019-07-02T09:01:14.000Z",
+                    "validTo": "2030-04-17T08:22:12.000Z"
+                },
+                "catenaXId": "urn:uuid:4f7b1cf2-a598-4027-bc78-63f6d8e55699",
+                "partTypeInformation": {
+                    "manufacturerPartId": "7A047C7-01",
+                    "classification": "product",
+                    "nameAtManufacturer": "N Tier A CathodeMaterial"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:0eff0cbb-ae48-4de4-b3d1-e03cac8718cb",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2013-04-08T11:51:30.000Z",
+                    "validTo": "2030-05-18T21:49:58.000Z"
+                },
+                "catenaXId": "urn:uuid:15d2fcc8-6439-4d1e-904b-e62b4d3bf323",
+                "partTypeInformation": {
+                    "manufacturerPartId": "9A047C7-01",
+                    "classification": "product",
+                    "nameAtManufacturer": "Sub Tier B Sealant"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:eb3c5e55-27f8-4f34-a2f3-2c45e00013ab",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2013-08-12T20:25:12.000Z",
+                    "validTo": "2028-10-07T18:29:01.000Z"
+                },
+                "catenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7",
+                "partTypeInformation": {
+                    "manufacturerPartId": "32494586-73",
+                    "classification": "product",
+                    "nameAtManufacturer": "Tier A Gearbox"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:25aa26ee-4685-4424-b60f-b97375d9113d",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2019-07-21T14:05:51.000Z",
+                    "validTo": "2032-11-24T13:29:20.000Z"
+                },
+                "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
+                "partTypeInformation": {
+                    "manufacturerPartId": "6740244-02",
+                    "classification": "product",
+                    "nameAtManufacturer": "Sub Tier A Sensor"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:cc5d44eb-5a6d-478b-8203-70f982ea4c2e",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2017-05-10T01:00:31.000Z",
+                    "validTo": "2030-11-25T13:31:57.000Z"
+                },
+                "catenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e",
+                "partTypeInformation": {
+                    "manufacturerPartId": "7A047KK-01",
+                    "classification": "product",
+                    "nameAtManufacturer": "N Tier A NTier Product"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:8accb42d-3adb-49cc-84af-8ae6ea6b5c4c",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2013-01-23T16:35:32.000Z",
+                    "validTo": "2027-06-13T08:37:37.000Z"
+                },
+                "catenaXId": "urn:uuid:4518c080-14fb-4252-b8de-4362d615868d",
+                "partTypeInformation": {
+                    "manufacturerPartId": "7A987KK-04",
+                    "classification": "product",
+                    "nameAtManufacturer": "N Tier A Plastics"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:cc5d44eb-5a6d-478b-8203-70f982ea4c2e",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2020-11-29T09:26:43.000Z",
+                    "validTo": "2027-04-28T05:19:34.000Z"
+                },
+                "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
+                "partTypeInformation": {
+                    "manufacturerPartId": "ZX-55",
+                    "classification": "product",
+                    "nameAtManufacturer": "Tier B ECU1"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:8accb42d-3adb-49cc-84af-8ae6ea6b5c4c",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2019-06-13T18:04:13.000Z",
+                    "validTo": "2030-10-16T20:56:51.000Z"
+                },
+                "catenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
+                "partTypeInformation": {
+                    "manufacturerPartId": "6775244-06",
+                    "classification": "product",
+                    "nameAtManufacturer": "Sub Tier B Glue"
+                }
+            }
+        }
+    ]
+}

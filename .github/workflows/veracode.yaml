@@ -18,7 +18,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Set up Maven
-        uses: stCarolas/setup-maven@v4.4
+        uses: stCarolas/setup-maven@v4.5
         with:
           maven-version: 3.8.2
 
@@ -42,7 +42,7 @@ jobs:
           appname: 'IRS'
           version: '${{ github.run_id }}'
           createprofile: false
-          vid: '${{ secrets.VERACODE_API_ID }}'
-          vkey: '${{ secrets.VERACODE_API_KEY }}'
+          vid: '${{ secrets.VERACODE_API_ID || secrets.ORG_VERACODE_API_ID }}'
+          vkey: '${{ secrets.VERACODE_API_KEY || secrets.ORG_VERACODE_API_KEY }}'
           filepath: 'irs-api/target/*exec.jar'
           deleteIncompleteScan: 2 #delete a scan of any status except Results Ready to proceed with the uploadandscan action. If errors occur when running this action, the Java wrapper automatically deletes the incomplete scan.

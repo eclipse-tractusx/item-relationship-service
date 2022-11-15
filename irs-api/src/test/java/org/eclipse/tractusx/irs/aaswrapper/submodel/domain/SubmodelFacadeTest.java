@@ -23,9 +23,6 @@ package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
-import static org.eclipse.tractusx.irs.util.TestMother.jobParameterFilter;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -40,7 +37,6 @@ import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
-import org.eclipse.tractusx.irs.dto.JobParameter;
 import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
@@ -79,22 +75,21 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldThrowExceptionWhenSubmodelNotFound() {
-        final JobParameter jobParameter = jobParameter();
         final String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(),
                 "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
         final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
-                () -> submodelFacade.getRelationships(url, jobParameter));
+                () -> submodelFacade.getRelationships(url, RelationshipAspect.AssemblyPartRelationship));
     }
 
     @Test
-    void shouldReturnAssemblyPartRelationshipWithChildDataWhenRequestingWithCatenaXId() {
+    void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndAssemblyPartRelationship() {
         final String catenaXId = "urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b";
 
         final List<Relationship> submodelResponse = submodelFacade.getRelationships(
-                catenaXId, jobParameter());
+                catenaXId + "_assemblyPartRelationship", RelationshipAspect.AssemblyPartRelationship);
 
         assertThat(submodelResponse.get(0).getCatenaXId().getGlobalAssetId()).isEqualTo(catenaXId);
         assertThat(submodelResponse).hasSize(32);
@@ -109,44 +104,69 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldReturnFilteredAssemblyPartRelationshipWithoutChildrenWhenRequestingWithCatenaXId() {
-        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+    void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsPlanned() {
+        final String catenaXId = "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c";
 
         final List<Relationship> submodelResponse = submodelFacade.getRelationships(
-                catenaXId, jobParameterFilter());
+                catenaXId + "_singleLevelBomAsPlanned", RelationshipAspect.SingleLevelBomAsPlanned);
+
+        assertThat(submodelResponse.get(0).getCatenaXId().getGlobalAssetId()).isEqualTo(catenaXId);
+        assertThat(submodelResponse).hasSize(1);
+
+        final List<String> childIds = submodelResponse.stream()
+                                                      .map(Relationship::getLinkedItem)
+                                                      .map(LinkedItem::getChildCatenaXId)
+                                                      .map(GlobalAssetIdentification::getGlobalAssetId)
+                                                      .collect(Collectors.toList());
+        assertThat(childIds).containsAnyOf("urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97");
+    }
+
+    @Test
+    void shouldReturnEmptyRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelUsageAsBuilt() {
+        final String catenaXId = "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c";
+
+        final List<Relationship> submodelResponse = submodelFacade.getRelationships(
+                catenaXId + "_singleLevelUsageAsBuilt", RelationshipAspect.SingleLevelUsageAsBuilt);
 
         assertThat(submodelResponse).isEmpty();
     }
 
     @Test
-    void shouldReturnAssemblyPartRelationshipDTOWhenRequestingOnRealClient() {
+    void shouldReturnEmptyRelationshipsWhenRequestingWithNotExistingCatenaXIdAndAssemblyPartRelationship() {
+        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+
+        final List<Relationship> submodelResponse = submodelFacade.getRelationships(
+                catenaXId + "_assemblyPartRelationship", RelationshipAspect.AssemblyPartRelationship);
+
+        assertThat(submodelResponse).isEmpty();
+    }
+
+    @Test
+    void shouldReturnRelationshipsWhenRequestingOnRealClient() {
         final String endpointUrl = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(restTemplate,
                 "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
         SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
 
-        final AssemblyPartRelationship assemblyPartRelationship = new AssemblyPartRelationship();
-        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-        assemblyPartRelationship.setCatenaXId(catenaXId);
-        assemblyPartRelationship.setChildParts(new HashSet<>());
+        final AssemblyPartRelationship assemblyPartRelationship = new AssemblyPartRelationship("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", new HashSet<>());
 
         final String jsonObject = jsonUtil.asString(assemblyPartRelationship);
         final ResponseEntity<String> responseEntity = new ResponseEntity<>(jsonObject, HttpStatus.OK);
         doReturn(responseEntity).when(restTemplate).getForEntity(any(URI.class), any());
 
         final List<Relationship> submodelResponse = submodelFacade.getRelationships(endpointUrl,
-                jobParameter());
+                RelationshipAspect.AssemblyPartRelationship);
 
         assertThat(submodelResponse).isEmpty();
     }
 
     @Test
-    void shouldReturnStringWhenRequestingSubmodelWithoutAspect() {
-        final String catenaXId = "urn:uuid:ea724f73-cb93-4b7b-b92f-d97280ff888b";
+    void shouldReturnRawSerialPartTypizationWhenExisting() {
+        final String catenaXId = "urn:uuid:7eb7daf6-0c54-455b-aab7-bd5ca252f6ee";
 
-        final String submodelResponse = submodelFacade.getSubmodelRawPayload(catenaXId);
+        final String submodelResponse = submodelFacade.getSubmodelRawPayload(catenaXId + "_serialPartTypization");
 
         assertThat(submodelResponse).startsWith(
-                "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"ManufacturerID\"}");
+                "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"manufacturerId\"}");
     }
 }

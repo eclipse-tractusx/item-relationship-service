@@ -57,3 +57,8 @@ dependency-reduced-pom.xml
 /connector/**/bin/
 ### Local files ###
 dev/local/*
+/api-tests/variable.env
+api-tests/__pycache__/
+
+### Cucumber ###
+/cucumber-tests/report.json

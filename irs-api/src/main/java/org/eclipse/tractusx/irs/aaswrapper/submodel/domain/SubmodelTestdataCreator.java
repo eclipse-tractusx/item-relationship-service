@@ -21,13 +21,14 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.Map;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
 
 /**
@@ -46,28 +47,26 @@ class SubmodelTestdataCreator {
         objectMapper.registerModule(new Jdk8Module());
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public AssemblyPartRelationship createDummyAssemblyPartRelationshipForId(final String catenaXId) {
-        final Optional<AssemblyPartRelationship> assemblyPartRelationship = this.cxTestDataContainer.getByCatenaXId(catenaXId)
-                                                                                    .flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship)
-                                                                                    .map(assemblyPart -> objectMapper.convertValue(assemblyPart, AssemblyPartRelationship.class));
-
-        final AssemblyPartRelationship emptyAssemblyPart = new AssemblyPartRelationship();
-        emptyAssemblyPart.setCatenaXId(catenaXId);
-        emptyAssemblyPart.setChildParts(Set.of());
-
-        return assemblyPartRelationship.orElse(emptyAssemblyPart);
+    public Map<String, Object> createSubmodelForId(final String endpointAddress) {
+        final String catenaXId = StringUtils.substringBefore(endpointAddress, "_");
+        if (endpointAddress.contains("assemblyPartRelationship")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship).orElse(Map.of());
+        } else if (endpointAddress.contains("serialPartTypization")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSerialPartTypization).orElse(Map.of());
+        }  else if (endpointAddress.contains("singleLevelBomAsPlanned")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned).orElse(Map.of());
+        } else if (endpointAddress.contains("partAsPlanned")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getPartAsPlanned).orElse(Map.of());
+        }
+        return Map.of();
     }
 
-    public String createDummySerialPartTypizationString() {
-        return "{\"localIdentifiers\":["
-                + "{\"value\":\"BPNL00000003AYRE\",\"key\":\"ManufacturerID\"},"
-                + "{\"value\":\"8840838-04\",\"key\":\"ManufacturerPartID\"},"
-                + "{\"value\":\"NO-397646649734958738335866\",\"key\":\"PartInstanceID\"}],"
-                + "\"manufacturingInformation\":{\"date\":\"2022-02-04T14:48:54\",\"country\":\"DEU\"},"
-                + "\"catenaXId\":\"urn:uuid:5f479670-0b9a-475f-88e9-30f3558eb5aa\","
-                + "\"partTypeInformation\":{\"manufacturerPartID\":\"8840838-04\",\"customerPartId\":\"8840838-04\","
-                + "\"classification\":\"component\",\"nameAtManufacturer\":\"HVMODUL\",\"nameAtCustomer\":\"HVMODUL\"}}";
+    public <T> T createSubmodelForId(final String catenaXId, final Class<T> submodelClass) {
+        final Map<String, Object> submodelForId = createSubmodelForId(catenaXId);
+        return objectMapper.convertValue(submodelForId, submodelClass);
     }
+
 }

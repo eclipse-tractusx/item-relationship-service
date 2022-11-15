@@ -25,7 +25,7 @@ import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
-import org.eclipse.tractusx.irs.dto.JobParameter;
+import org.eclipse.tractusx.irs.component.JobParameter;
 
 /**
  * Abstract base class to process Shells, Submodels, Bpns and store them inside {@link ItemContainer}

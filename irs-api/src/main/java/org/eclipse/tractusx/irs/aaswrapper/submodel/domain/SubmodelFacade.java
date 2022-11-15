@@ -21,20 +21,13 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.Relationship;
-import org.eclipse.tractusx.irs.dto.JobParameter;
-import org.eclipse.tractusx.irs.dto.RelationshipAspect;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 /**
  * Public API Facade for submodel domain
@@ -48,32 +41,16 @@ public class SubmodelFacade {
 
     /**
      * @param submodelEndpointAddress The URL to the submodel endpoint
-     * @param jobData                 relevant job data values
+     * @param traversalAspectType aspect type for traversal informations
      * @return The Aspect Model for the given submodel
      */
-    public List<Relationship> getRelationships(final String submodelEndpointAddress, final JobParameter jobData) {
-        final AssemblyPartRelationship submodel = this.submodelClient.getSubmodel(submodelEndpointAddress,
-                AssemblyPartRelationship.class);
-
-        log.info("Submodel: {}, childParts {}", submodel.getCatenaXId(), submodel.getChildParts());
-
-        final Set<ChildData> childParts = thereAreChildParts(submodel)
-                ? new HashSet<>(submodel.getChildParts())
-                : Collections.emptySet();
-
-        final String lifecycleContext = jobData.getBomLifecycle();
-        if (shouldFilterByLifecycleContext(lifecycleContext)) {
-            filterSubmodelPartsByLifecycleContext(childParts, lifecycleContext);
-        }
-
-        return buildRelationships(childParts, submodel.getCatenaXId());
-    }
-
-    private List<Relationship> buildRelationships(final Set<ChildData> submodelParts, final String catenaXId) {
-        return submodelParts.stream()
-                            .map(childData -> childData.toRelationship(catenaXId,
-                                    RelationshipAspect.AssemblyPartRelationship))
-                            .collect(Collectors.toList());
+    public List<Relationship> getRelationships(final String submodelEndpointAddress, final RelationshipAspect traversalAspectType) {
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start("Get Submodel task for relationships");
+        final RelationshipSubmodel relationshipSubmodel = this.submodelClient.getSubmodel(submodelEndpointAddress, traversalAspectType.getSubmodelClazz());
+        stopWatch.stop();
+        log.info("Task {} took {} ms for endpoint address: {}", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis(), submodelEndpointAddress);
+        return relationshipSubmodel.asRelationships();
     }
 
     /**
@@ -81,25 +58,13 @@ public class SubmodelFacade {
      * @return The Aspect Model as JSON-String for the given submodel
      */
     public String getSubmodelRawPayload(final String submodelEndpointAddress) {
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start("Get Submodel raw payload task");
         final String submodel = this.submodelClient.getSubmodel(submodelEndpointAddress);
-        log.info("Returning Submodel as String: '{}'", submodel);
+        log.info("Retrieved Submodel as raw string from endpoint: '{}'", submodelEndpointAddress);
+        stopWatch.stop();
+        log.info("Task {} took {} ms for endpoint address: {}", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis(), submodelEndpointAddress);
         return submodel;
     }
 
-    private boolean thereAreChildParts(final AssemblyPartRelationship submodel) {
-        return submodel.getChildParts() != null;
-    }
-
-    private void filterSubmodelPartsByLifecycleContext(final Set<ChildData> submodelParts,
-            final String lifecycleContext) {
-        submodelParts.removeIf(isNotLifecycleContext(lifecycleContext));
-    }
-
-    private boolean shouldFilterByLifecycleContext(final String lifecycleContext) {
-        return StringUtils.isNotBlank(lifecycleContext);
-    }
-
-    private Predicate<ChildData> isNotLifecycleContext(final String lifecycleContext) {
-        return childData -> !childData.getLifecycleContext().getValue().equals(lifecycleContext);
-    }
 }

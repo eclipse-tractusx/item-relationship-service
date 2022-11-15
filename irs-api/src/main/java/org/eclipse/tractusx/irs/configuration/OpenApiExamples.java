@@ -82,6 +82,18 @@ public class OpenApiExamples {
                                                                         .withStatusCode(
                                                                                 HttpStatus.BAD_REQUEST)
                                                                         .build()));
+        components.addExamples("error-response-401", toExample(ErrorResponse.builder()
+                                                                            .withErrors(List.of("UnauthorizedException"))
+                                                                            .withMessage("Unauthorized")
+                                                                            .withStatusCode(
+                                                                                    HttpStatus.UNAUTHORIZED)
+                                                                            .build()));
+        components.addExamples("error-response-403", toExample(ErrorResponse.builder()
+                                                                            .withErrors(List.of("ForbiddenException"))
+                                                                            .withMessage("Forbidden")
+                                                                            .withStatusCode(
+                                                                                    HttpStatus.FORBIDDEN)
+                                                                            .build()));
         components.addExamples("error-response-404", toExample(ErrorResponse.builder()
                                                                         .withErrors(List.of("NotFoundException"))
                                                                         .withMessage("Not found")
@@ -99,7 +111,9 @@ public class OpenApiExamples {
     private Example createJobListProcessingState() {
         return toExample(List.of(JobStatusResult.builder()
                                                 .jobId(UUID.fromString(JOB_HANDLE_ID_1))
-                                                .status(JobState.COMPLETED)
+                                                .jobState(JobState.COMPLETED)
+                                                .startedOn(EXAMPLE_ZONED_DATETIME)
+                                                .jobCompleted(EXAMPLE_ZONED_DATETIME)
                                                 .build()));
     }
 
@@ -146,7 +160,7 @@ public class OpenApiExamples {
         return JobParameter.builder()
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .depth(DEFAULT_DEPTH)
-                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION, AspectType.CONTACT_INFORMATION))
+                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION, AspectType.ADDRESS_ASPECT))
                            .direction(Direction.DOWNWARD)
                            .collectAspects(false)
                            .build();

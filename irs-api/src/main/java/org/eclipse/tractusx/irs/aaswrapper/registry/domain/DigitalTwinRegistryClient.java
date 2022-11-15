@@ -39,7 +39,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -80,9 +79,6 @@ class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
 
     @Override
     public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
-        if ("urn:uuid:9ea14fbe-0401-4ad0-93b6-dad46b5b6e3d".equals(aasIdentifier)) {
-            throw new RestClientException("Dummy Exception");
-        }
         return testdataCreator.createDummyAssetAdministrationShellDescriptorForId(aasIdentifier);
     }
 

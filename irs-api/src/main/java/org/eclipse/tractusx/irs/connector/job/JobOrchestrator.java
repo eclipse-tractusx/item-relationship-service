@@ -33,16 +33,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.tractusx.irs.aaswrapper.job.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobParameter;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
-import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
-import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.services.SecurityHelperService;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 
 /**
@@ -55,10 +54,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 // Handle RuntimeException from callbacks
 @Slf4j
 public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
-
-    private static final int TTL_CLEANUP_COMPLETED_JOBS_HOURS = 1;
-
-    private static final int TTL_CLEANUP_FAILED_JOBS_HOURS = 24;
 
     /**
      * Transfer process manager.
@@ -86,33 +81,45 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      */
     private final MeterRegistryService meterService;
 
+    private final ApplicationEventPublisher applicationEventPublisher;
+
+    /**
+     * Time to live for jobs
+     */
+    private final JobTTL jobTTL;
+
     /**
      * Create a new instance of {@link JobOrchestrator}.
      *
-     * @param processManager the process manager
-     * @param jobStore       Job store.
-     * @param handler        Recursive job handler.
-     * @param meterService   Collect metrics for monitoring
+     * @param processManager            the process manager
+     * @param jobStore                  Job store.
+     * @param handler                   Recursive job handler.
+     * @param meterService              Collect metrics for monitoring
+     * @param applicationEventPublisher publisher of spring application events
+     * @param jobTTL                    time to live for jobs
      */
     public JobOrchestrator(final TransferProcessManager<T, P> processManager, final JobStore jobStore,
-            final RecursiveJobHandler<T, P> handler, final MeterRegistryService meterService) {
-
+            final RecursiveJobHandler<T, P> handler, final MeterRegistryService meterService,
+            final ApplicationEventPublisher applicationEventPublisher, final JobTTL jobTTL) {
         this.processManager = processManager;
         this.jobStore = jobStore;
         this.handler = handler;
         this.securityHelperService = new SecurityHelperService();
         this.meterService = meterService;
+        this.applicationEventPublisher = applicationEventPublisher;
+        this.jobTTL = jobTTL;
     }
 
     /**
      * Start a job.
      *
-     * @param jobData additional data for the job to be managed by the {@link JobStore}.
+     * @param globalAssetId root id
+     * @param jobData       additional data for the job to be managed by the {@link JobStore}.
      * @return response.
      */
-    public JobInitiateResponse startJob(final org.eclipse.tractusx.irs.dto.JobParameter jobData) {
-        final Job job = createJob(jobData.getRootItemId(), jobData);
-        final var multiJob = MultiTransferJob.builder().job(job).jobParameter(jobData).build();
+    public JobInitiateResponse startJob(final String globalAssetId, final JobParameter jobData) {
+        final Job job = createJob(globalAssetId, jobData);
+        final var multiJob = MultiTransferJob.builder().job(job).build();
         jobStore.create(multiJob);
 
         final Stream<T> requests;
@@ -190,7 +197,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     public void findAndCleanupCompletedJobs() {
         log.info("Running cleanup of completed jobs");
         final ZonedDateTime currentDateMinusSeconds = ZonedDateTime.now(ZoneOffset.UTC)
-                                                                   .minus(TTL_CLEANUP_COMPLETED_JOBS_HOURS,
+                                                                   .minus(jobTTL.getTtlCompletedJobsInHours(),
                                                                            ChronoUnit.HOURS);
         final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
                 currentDateMinusSeconds);
@@ -205,7 +212,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         log.info("Running cleanup of failed jobs");
 
         final ZonedDateTime currentDateMinusSeconds = ZonedDateTime.now(ZoneOffset.UTC)
-                                                                   .minus(TTL_CLEANUP_FAILED_JOBS_HOURS,
+                                                                   .minus(jobTTL.getTtlFailedJobsInHours(),
                                                                            ChronoUnit.HOURS);
         final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR,
                 currentDateMinusSeconds);
@@ -231,6 +238,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     private void callCompleteHandlerIfFinished(final String jobId) {
         jobStore.completeJob(jobId, this::completeJob);
+        publishJobProcessingFinishedEventIfFinished(jobId);
     }
 
     private void completeJob(final MultiTransferJob job) {
@@ -245,6 +253,19 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     private void markJobInError(final MultiTransferJob job, final Throwable exception, final String message) {
         log.error(message, exception);
         jobStore.markJobInError(job.getJobIdString(), message, exception.getClass().getName());
+        publishJobProcessingFinishedEventIfFinished(job.getJobIdString());
+    }
+
+    private void publishJobProcessingFinishedEventIfFinished(final String jobId) {
+        jobStore.find(jobId).ifPresent(job -> {
+            if (job.getJob().getJobState().equals(JobState.COMPLETED) || job.getJob()
+                                                                            .getJobState()
+                                                                            .equals(JobState.ERROR)) {
+                applicationEventPublisher.publishEvent(
+                        new JobProcessingFinishedEvent(job.getJobIdString(), job.getJob().getJobState(),
+                                job.getJobParameter().getCallbackUrl()));
+            }
+        });
     }
 
     private long startTransfers(final MultiTransferJob job, final Stream<T> dataRequests) /* throws JobErrorDetails */ {
@@ -253,7 +274,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     private TransferInitiateResponse startTransfer(final MultiTransferJob job,
             final T dataRequest)  /* throws JobErrorDetails */ {
-        final org.eclipse.tractusx.irs.dto.JobParameter jobData = job.getJobParameter();
+        final JobParameter jobData = job.getJobParameter();
 
         final var response = processManager.initiateRequest(dataRequest,
                 transferId -> jobStore.addTransferProcess(job.getJobIdString(), transferId),
@@ -266,7 +287,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         return response;
     }
 
-    private Job createJob(final String globalAssetId, final org.eclipse.tractusx.irs.dto.JobParameter jobData) {
+    private Job createJob(final String globalAssetId, final JobParameter jobData) {
         if (StringUtils.isEmpty(globalAssetId)) {
             throw new JobException("GlobalAsset Identifier cannot be null or empty string");
         }
@@ -278,25 +299,8 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                   .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .jobState(JobState.UNSAVED)
                   .owner(securityHelperService.getClientIdClaim())
-                  .jobParameter(buildJobParameter(jobData))
+                  .jobParameter(jobData)
                   .build();
-    }
-
-    @SuppressWarnings("PMD.NullAssignment")
-    private JobParameter buildJobParameter(final org.eclipse.tractusx.irs.dto.JobParameter jobData) {
-        return JobParameter.builder()
-                           .depth(jobData.getTreeDepth())
-                           .direction(Direction.DOWNWARD)
-                           .aspects(jobData.getAspectTypes()
-                                                                     .stream()
-                                                                     .map(AspectType::fromValue)
-                                                                     .collect(Collectors.toList()))
-                           .bomLifecycle(StringUtils.isNotBlank(jobData.getBomLifecycle())
-                                                             ? BomLifecycle.fromLifecycleContextCharacteristic(
-                                                             jobData.getBomLifecycle())
-                                                             : null)
-                           .collectAspects(jobData.isCollectAspects())
-                           .build();
     }
 
     private ResponseStatus convertMessage(final String message) {

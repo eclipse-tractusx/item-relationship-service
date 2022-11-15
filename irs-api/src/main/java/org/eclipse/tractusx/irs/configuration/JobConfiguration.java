@@ -40,6 +40,7 @@ import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
+import org.eclipse.tractusx.irs.connector.job.JobTTL;
 import org.eclipse.tractusx.irs.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.persistence.MinioBlobPersistence;
@@ -47,6 +48,8 @@ import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -55,18 +58,23 @@ import org.springframework.context.annotation.Profile;
  * Spring configuration for job-related beans.
  */
 @Configuration
+@SuppressWarnings({ "PMD.ExcessiveImports" })
 public class JobConfiguration {
 
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
-            final DigitalTwinDelegate digitalTwinDelegate, final BlobPersistence blobStore,
-            final JobStore jobStore, final MeterRegistryService meterService) {
+            final DigitalTwinDelegate digitalTwinDelegate, final BlobPersistence blobStore, final JobStore jobStore,
+            final MeterRegistryService meterService, final ApplicationEventPublisher applicationEventPublisher,
+            @Value("${irs.job.jobstore.ttl.failedInHours:}") final int ttlFailedJobs,
+            @Value("${irs.job.jobstore.ttl.completedInHours:}") final int ttlCompletedJobs) {
 
-        final var manager = new AASTransferProcessManager(digitalTwinDelegate, Executors.newCachedThreadPool(), blobStore);
+        final var manager = new AASTransferProcessManager(digitalTwinDelegate, Executors.newCachedThreadPool(),
+                blobStore);
         final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);
+        final JobTTL jobTTL = new JobTTL(ttlCompletedJobs, ttlFailedJobs);
 
-        return new JobOrchestrator<>(manager, jobStore, handler, meterService);
+        return new JobOrchestrator<>(manager, jobStore, handler, meterService, applicationEventPublisher, jobTTL);
     }
 
     @Profile("!test")
@@ -87,27 +95,25 @@ public class JobConfiguration {
     }
 
     @Bean
-    public DigitalTwinDelegate digitalTwinDelegate(
-            final RelationshipDelegate relationshipDelegate, final DigitalTwinRegistryFacade digitalTwinRegistryFacade) {
+    public DigitalTwinDelegate digitalTwinDelegate(final RelationshipDelegate relationshipDelegate,
+            final DigitalTwinRegistryFacade digitalTwinRegistryFacade) {
         return new DigitalTwinDelegate(relationshipDelegate, digitalTwinRegistryFacade);
     }
 
     @Bean
-    public RelationshipDelegate relationshipDelegate(
-            final SubmodelDelegate submodelDelegate, final SubmodelFacade submodelFacade) {
+    public RelationshipDelegate relationshipDelegate(final SubmodelDelegate submodelDelegate,
+            final SubmodelFacade submodelFacade) {
         return new RelationshipDelegate(submodelDelegate, submodelFacade);
     }
 
     @Bean
-    public SubmodelDelegate submodelDelegate(
-            final BpdmDelegate bpdmDelegate, final SubmodelFacade submodelFacade,
+    public SubmodelDelegate submodelDelegate(final BpdmDelegate bpdmDelegate, final SubmodelFacade submodelFacade,
             final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService) {
         return new SubmodelDelegate(bpdmDelegate, submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil());
     }
 
     @Bean
-    public BpdmDelegate bpdmDelegate(
-            final BpdmFacade bpdmFacade) {
+    public BpdmDelegate bpdmDelegate(final BpdmFacade bpdmFacade) {
         return new BpdmDelegate(bpdmFacade);
     }
 }

@@ -1,0 +1,18 @@
+= Glossary
+
+|===
+|Term |Description
+
+|AAS | Asset Administration Shell (Industry 4.0)
+|Aspect servers (submodel endpoints)
+|Companies participating in the interorganizational data exchange provides their data over aspect servers. The so called "submodel-descriptors" in the AAS shells are pointing to these AspectServers which provide the data-assets of the participating these companies in Catena-X.
+|BoM |Bill of Materials
+|Edge |see Traversal Aspect
+|IRS |Item Relationship Service
+|Item Graph |The result returned via the IRS. This corresponds to a tree structure in which each node represents a part of a virtual asset.
+|MTPDC |Formerly known Service Name: Multi Tier Parts Data Chain
+|PRS |Formerly known Service Name: Parts Relationship Name
+|Traversal Aspect |aka Edge: Aspect which the IRS uses for traversal through the data chain. Identified by a parent-child or a child-parent relationship.
+
+Samples: SingleLevelBomAsPlanned, AssemblyPartRelationship and SingleLevelUsageAsBuilt
+|===

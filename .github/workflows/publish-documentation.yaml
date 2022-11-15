@@ -21,6 +21,21 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Graphviz
+        uses: ts-graphviz/setup-graphviz@v1
+
+      - name: Cache maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build API documentation with Maven
+        run: |
+          mvn clean package -pl irs-models,irs-testing,irs-api -DskipTests --batch-mode
+          cp irs-api/target/generated-sources/openapi/index.html docs/src/docs/api-specification/index.html
+
       - name: Build with Maven
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -28,7 +43,7 @@ jobs:
           mvn -f docs/pom.xml --batch-mode generate-resources
 
       - name: GitHub Pages action
-        uses: peaceiris/actions-gh-pages@v3.7.3
+        uses: peaceiris/actions-gh-pages@v3.9.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: "./docs/target/generated-docs"

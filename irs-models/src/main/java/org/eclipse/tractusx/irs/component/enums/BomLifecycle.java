@@ -39,14 +39,15 @@ import lombok.Getter;
 @Schema(description = "The lifecycle context in which the child part was assembled into the parent part.")
 @Getter
 public enum BomLifecycle {
-    @Schema(description = "The view of the ItemsTree as the vehicle was assembled.") AS_BUILT("asBuilt", "AsBuilt");
+    AS_BUILT("asBuilt", AspectType.SERIAL_PART_TYPIZATION),
+    AS_PLANNED("asPlanned", AspectType.PART_AS_PLANNED);
 
     private final String name;
-    private final String lifecycleContextCharacteristicValue;
+    private final AspectType defaultAspect;
 
-    BomLifecycle(final String name, final String lifecycleContextCharacteristicValue) {
+    BomLifecycle(final String name, final AspectType aspectType) {
         this.name = name;
-        this.lifecycleContextCharacteristicValue = lifecycleContextCharacteristicValue;
+        this.defaultAspect = aspectType;
     }
 
     /**
@@ -72,13 +73,6 @@ public enum BomLifecycle {
         return Stream.of(BomLifecycle.values()).map(bomLifecycle -> bomLifecycle.name).collect(Collectors.joining(", "));
     }
 
-    public static BomLifecycle fromLifecycleContextCharacteristic(final String value) {
-        return Stream.of(BomLifecycle.values())
-                     .filter(bomLifecycle -> bomLifecycle.lifecycleContextCharacteristicValue.equals(value))
-                     .findFirst()
-                     .orElseThrow();
-    }
-
     /**
      * @return convert BomLifecycle to string value
      */
@@ -86,4 +80,5 @@ public enum BomLifecycle {
     public String toString() {
         return name;
     }
+
 }

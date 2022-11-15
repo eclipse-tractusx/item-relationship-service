@@ -5,7 +5,6 @@ import json
 import math
 import time
 import uuid
-import re
 
 import requests
 from requests.adapters import HTTPAdapter, Retry
@@ -149,39 +148,59 @@ def print_response(response_):
         print(response_.text)
 
 
+def check_url_args(submodel_server_upload_urls_, submodel_server_urls_, edc_upload_urls_, edc_urls_):
+    nr_of_submodel_server_upload_urls = len(submodel_server_upload_urls_)
+    nr_of_submodel_server_urls = len(submodel_server_urls_)
+    if nr_of_submodel_server_upload_urls != nr_of_submodel_server_urls:
+        raise Exception(
+            f"Number and order of submodelserver upload URLs '{submodel_server_upload_urls_}' "
+            f"has to match number and order Number and order of submodelserver URLs '{submodel_server_urls_}'")
+    nr_of_edc_upload_urls = len(edc_upload_urls_)
+    nr_of_edc_urls = len(edc_urls_)
+    if nr_of_edc_upload_urls != nr_of_edc_urls:
+        raise Exception(
+            f"Number and order of edc upload URLs '{edc_upload_urls_}' has to match number and order of edc URLs "
+            f"'{edc_urls_}'")
+    if nr_of_submodel_server_urls != nr_of_edc_urls:
+        raise Exception(
+            f"Number and order of edc URLs '{edc_urls_}' has to match number and order of submodelserver URLS "
+            f"'{submodel_server_urls_}'")
+
+
 if __name__ == "__main__":
     timestamp_start = time.time()
-    # -f smallTestdata.json -s1 "http://localhost:8194" -s2 "http://localhost:8194" -s3 "http://localhost:8194"
-    # -p "http://provider-control-plane:8282" -a "http://localhost:4243" -e "http://localhost:8187" -k '123456'
     parser = argparse.ArgumentParser(description="Script to upload testdata into CX-Network.",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-f", "--file", type=str, help="Test data file location", required=True)
-    parser.add_argument("-s1", "--submodel1", type=str, help="url of submodel server 1", required=True)
-    parser.add_argument("-s2", "--submodel2", type=str, help="url of submodel server 2", required=True)
-    parser.add_argument("-s3", "--submodel3", type=str, help="url of submodel server 3", required=True)
+    parser.add_argument("-s", "--submodel", type=str, nargs="*", help="Submodel server display URLs", required=True)
+    parser.add_argument("-su", "--submodelupload", type=str, nargs="*", help="Submodel server upload URLs",
+                        required=False)
     parser.add_argument("-a", "--aas", type=str, help="aas url", required=True)
-    parser.add_argument("-e1", "--edc1", type=str, help="Public EDC provider control plane url 1", required=True)
-    parser.add_argument("-e2", "--edc2", type=str, help="Public EDC provider control plane url 2", required=True)
-    parser.add_argument("-e3", "--edc3", type=str, help="Public EDC provider control plane url 3", required=True)
-    parser.add_argument("-k", "--apikey", type=str, help="edc api key", required=True)
-    parser.add_argument("-e", "--esr", type=str, help="esr url", required=False)
+    parser.add_argument("-edc", "--edc", type=str, nargs="*", help="EDC provider control plane display URLs",
+                        required=True)
+    parser.add_argument("-eu", "--edcupload", type=str, nargs="*", help="EDC provider control plane upload URLs",
+                        required=False)
+    parser.add_argument("-k", "--apikey", type=str, help="EDC provider api key", required=True)
+    parser.add_argument("-e", "--esr", type=str, help="ESR URL", required=False)
 
     args = parser.parse_args()
     config = vars(args)
 
     filepath = config.get("file")
-    submodel_server_1_address = config.get("submodel1")
-    submodel_server_2_address = config.get("submodel2")
-    submodel_server_3_address = config.get("submodel3")
+    submodel_server_urls = config.get("submodel")
+    submodel_server_upload_urls = config.get("submodelupload")
     aas_url = config.get("aas")
-    edc_url1 = config.get("edc1")
-    edc_url2 = config.get("edc2")
-    edc_url3 = config.get("edc3")
+    edc_urls = config.get("edc")
+    edc_upload_urls = config.get("edcupload")
     edc_api_key = config.get("apikey")
     esr_url = config.get("esr")
 
-    submodel_server_1_bpn = "BPNL00000003B0Q0"
-    submodel_server_2_bpn = "BPNL00000003AYRE"
+    if submodel_server_upload_urls is None:
+        submodel_server_upload_urls = submodel_server_urls
+    if edc_upload_urls is None:
+        edc_upload_urls = edc_urls
+
+    check_url_args(submodel_server_upload_urls, submodel_server_urls, edc_upload_urls, edc_urls)
 
     edc_asset_path = "/data/assets"
     edc_policy_path = "/data/policydefinitions"
@@ -206,15 +225,8 @@ if __name__ == "__main__":
 
     retries = Retry(total=5,
                     backoff_factor=0.1)
-
     session = requests.Session()
     session.mount('https://', HTTPAdapter(max_retries=retries))
-
-    statistic_dict = {
-        "provider1": 0,
-        "provider2": 0,
-        "provider3": 0
-    }
 
     for tmp_data in testdata:
         catenax_id = tmp_data["catenaXId"]
@@ -222,18 +234,6 @@ if __name__ == "__main__":
         tmp_keys = tmp_data.keys()
 
         specific_asset_ids = [
-            {
-                "value": "",
-                "key": "manufacturerId"
-            },
-            {
-                "value": "",
-                "key": "manufacturerPartId"
-            },
-            {
-                "value": "",
-                "key": "partInstanceId"
-            }
         ]
 
         submodel_descriptors = []
@@ -241,11 +241,27 @@ if __name__ == "__main__":
         name_at_manufacturer = ""
 
         for tmp_key in tmp_keys:
-            if tmp_key in "urn:bamm:io.catenax.batch:1.0.0#Batch" \
-                    or tmp_key in "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization":
+            if "Batch" in tmp_key or "SerialPartTypization" in tmp_key:
                 specific_asset_ids = tmp_data[tmp_key][0]["localIdentifiers"]
-                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"] \
-                    .replace(" ", "")
+                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ",
+                                                                                                                 "")
+            if "PartAsPlanned" in tmp_key:
+                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ",
+                                                                                                                 "")
+                specific_asset_ids.append({
+                    "value": tmp_data[tmp_key][0]["partTypeInformation"]["manufacturerPartId"],
+                    "key": "manufacturerPartId"
+                })
+            if "PartSiteInformationAsPlanned" in tmp_key:
+                specific_asset_ids.append({
+                    "value": tmp_data[tmp_key][0]["sites"][0]["catenaXSiteId"],
+                    "key": "catenaXSiteId"
+                })
+            elif "PartSiteInformation" in tmp_key:
+                specific_asset_ids.append({
+                    "value": tmp_data[tmp_key][0]["sites"][0]["externalSiteIdentifier"][0]["organization"],
+                    "key": "manufacturerId"
+                })
         print(name_at_manufacturer)
 
         part_bpn = ""
@@ -255,28 +271,20 @@ if __name__ == "__main__":
 
         asr = "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship"
 
-        if esr_url and asr in tmp_keys and "childParts" in tmp_data[asr][0] and tmp_data[asr][0]["childParts"]:
-            tmp_data.update({"urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic": ""})
+        if esr_url and "AssemblyPartRelationship" in tmp_keys and "childParts" in tmp_data[asr][0] and tmp_data[asr][0][
+                "childParts"]:
+            tmp_data.update({
+                "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic": ""})
 
         for tmp_key in tmp_keys:
-            if tmp_key not in ("PlainObject", "catenaXId",
-                               "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
-                               "urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription/1.0.1"):
+            if "PlainObject" not in tmp_key and "catenaXId" not in tmp_key:
                 # 1. Prepare submodel endpoint address
-                if contract_id % 3 == 0:
-                    submodel_url = submodel_server_1_address
-                    edc_url = edc_url1
-                    statistic_dict.update({"provider1": statistic_dict["provider1"] + 1})
-                elif contract_id % 3 == 1:
-                    submodel_url = submodel_server_2_address
-                    edc_url = edc_url2
-                    statistic_dict.update({"provider2": statistic_dict["provider2"] + 1})
-                else:
-                    submodel_url = submodel_server_3_address
-                    edc_url = edc_url3
-                    statistic_dict.update({"provider3": statistic_dict["provider3"] + 1})
+                submodel_url = submodel_server_urls[contract_id % len(submodel_server_urls)]
+                submodel_upload_url = submodel_server_upload_urls[contract_id % len(submodel_server_upload_urls)]
+                edc_url = edc_urls[contract_id % len(edc_urls)]
+                edc_upload_url = edc_upload_urls[contract_id % len(edc_upload_urls)]
 
-                submodel_name = tmp_key[tmp_key.index("#")+1: len(tmp_key)]
+                submodel_name = tmp_key[tmp_key.index("#") + 1: len(tmp_key)]
                 submodel_identification = uuid.uuid4().urn
                 semantic_id = tmp_key
                 if submodel_name == "EsrCertificateStateStatistic" and esr_url is not None:
@@ -295,7 +303,7 @@ if __name__ == "__main__":
                 if tmp_data[tmp_key] != "":
                     payload = create_submodel_payload(tmp_data[tmp_key][0])
                     response = session.request(method="POST",
-                                               url=create_submodel_url(submodel_url, submodel_identification),
+                                               url=create_submodel_url(submodel_upload_url, submodel_identification),
                                                headers=headers, data=payload)
                     print_response(response)
 
@@ -304,18 +312,20 @@ if __name__ == "__main__":
                     payload = create_esr_edc_asset_payload(esr_url, asset_prop_id, catenax_id)
                 else:
                     payload = create_edc_asset_payload(submodel_url, asset_prop_id, submodel_identification)
-                response = session.request(method="POST", url=edc_url + edc_asset_path, headers=headers_with_api_key,
+                response = session.request(method="POST", url=edc_upload_url + edc_asset_path,
+                                           headers=headers_with_api_key,
                                            data=payload)
                 print_response(response)
 
                 # 4. Create edc policy
                 payload = create_edc_policy_payload(contract_id, asset_prop_id)
-                response = session.request(method="POST", url=edc_url + edc_policy_path, headers=headers_with_api_key,
+                response = session.request(method="POST", url=edc_upload_url + edc_policy_path,
+                                           headers=headers_with_api_key,
                                            data=payload)
                 print_response(response)
                 # 5. Create edc contract definition
                 payload = create_edc_contract_definition_payload(contract_id, contract_id, asset_prop_id)
-                response = session.request(method="POST", url=edc_url + edc_contract_definition_path,
+                response = session.request(method="POST", url=edc_upload_url + edc_contract_definition_path,
                                            headers=headers_with_api_key,
                                            data=payload)
                 print_response(response)
@@ -332,5 +342,4 @@ if __name__ == "__main__":
 
     timestamp_end = time.time()
     duration = timestamp_end - timestamp_start
-    print("Duration: %s Seconds" % math.ceil(duration))
-    print(statistic_dict)
+    print(f"Test data upload completed in {math.ceil(duration)} Seconds")

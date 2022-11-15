@@ -25,6 +25,7 @@ import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.BASIC_AU
 
 import java.net.SocketTimeoutException;
 import java.net.URI;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import io.github.resilience4j.retry.Retry;
@@ -77,28 +78,18 @@ class SubmodelClientLocalStub implements SubmodelClient {
 
     @Override
     public <T> T getSubmodel(final String submodelEndpointAddress, final Class<T> submodelClass) {
-        return jsonUtil.fromString(getStubData(submodelEndpointAddress), submodelClass);
-    }
-
-    @Override
-    public String getSubmodel(final String submodelEndpointAddress) {
-        return getStubData(submodelEndpointAddress);
-    }
-
-    private String getStubData(final String submodelEndpointAddress) {
         if ("urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(submodelEndpointAddress)) {
             throw new RestClientException("Dummy Exception");
         }
 
-        if ("urn:uuid:ea724f73-cb93-4b7b-b92f-d97280ff888b".equals(submodelEndpointAddress)) {
-            return testdataCreator.createDummySerialPartTypizationString();
-        }
-
-        final AssemblyPartRelationship relationship = testdataCreator.createDummyAssemblyPartRelationshipForId(
-                submodelEndpointAddress);
-        return jsonUtil.asString(relationship);
+        return testdataCreator.createSubmodelForId(submodelEndpointAddress, submodelClass);
     }
 
+    @Override
+    public String getSubmodel(final String submodelEndpointAddress) {
+        final Map<String, Object> submodel = testdataCreator.createSubmodelForId(submodelEndpointAddress);
+        return jsonUtil.asString(submodel);
+    }
 }
 
 /**

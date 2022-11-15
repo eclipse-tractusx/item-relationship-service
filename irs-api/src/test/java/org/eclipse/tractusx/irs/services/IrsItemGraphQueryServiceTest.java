@@ -29,12 +29,14 @@ import static org.mockito.Mockito.when;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.Job;
+import org.eclipse.tractusx.irs.component.JobStatusResult;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -122,6 +124,22 @@ class IrsItemGraphQueryServiceTest {
                 new EntityNotFoundException("No job exists with id " + jobId));
 
         assertThrows(EntityNotFoundException.class, () -> testee.cancelJobById(jobId));
+    }
+
+    @Test
+    void shouldReturnFoundJob() {
+        final List<JobState> states = List.of(JobState.COMPLETED);
+        final MultiTransferJob multiTransferJob = MultiTransferJob.builder().job(generate.fakeJob(JobState.COMPLETED)).build();
+        when(jobStore.findByStates(states)).thenReturn(List.of(multiTransferJob));
+
+        final List<JobStatusResult> jobs = testee.getJobsByJobState(states);
+
+        assertNotNull(jobs);
+        assertThat(jobs).hasSize(1);
+        assertThat(jobs.get(0).getJobId()).isNotNull();
+        assertThat(jobs.get(0).getJobState()).isEqualTo(JobState.COMPLETED);
+        assertThat(jobs.get(0).getStartedOn()).isNotNull();
+        assertThat(jobs.get(0).getJobCompleted()).isNotNull();
     }
 
 }

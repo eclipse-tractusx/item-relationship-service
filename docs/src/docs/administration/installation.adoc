@@ -1,7 +1,7 @@
 = Installation
 
 The IRS Helm repository can be found here:
-https://catenax-ng.github.io/product-item-relationship-service/index.yaml
+https://eclipse-tractusx.github.io/item-relationship-service/index.yaml
 
 Use the latest release of the "irs" chart.
 It contains all required dependencies.
@@ -13,12 +13,12 @@ Supply the required configuration properties (see chapter xref:configuration.ado
 Add the IRS Helm repository:
 
 [listing]
-$ helm repo add irs https://catenax-ng.github.io/product-item-relationship-service
+$ helm repo add irs https://eclipse-tractusx.github.io/item-relationship-service
 
 Then install the Helm chart into your cluster:
 
 [listing]
-$ helm install -f your-values.yaml irs-app irs/irs
+$ helm install -f your-values.yaml irs-app irs/irs-helm
 
 == Deployment using ArgoCD
 
@@ -26,8 +26,8 @@ Create a new Helm chart and use the IRS as a dependency.
 
 [source,yaml]
 dependencies:
-  - name: irs
-    repository: https://catenax-ng.github.io/product-item-relationship-service
+  - name: irs-helm
+    repository: https://eclipse-tractusx.github.io/item-relationship-service
     version: 2.x.x
 
 Then provide your configuration as the values.yaml of that chart.

@@ -23,16 +23,18 @@ package org.eclipse.tractusx.irs.component;
 
 import java.util.Map;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 /**
  * Submodel with identification of SubmodelDescriptor, aspect type and payload as String
  */
-@Getter
+@Value
 @Builder
 @Jacksonized
+@Schema(description = "Submodel with identification of SubmodelDescriptor, aspect type and payload as String")
 public class Submodel {
     private String identification;
     private String aspectType;
