@@ -52,7 +52,7 @@ class AssemblyPartRelationship extends RelationshipSubmodel {
     private Set<ChildData> childParts;
 
     @Override
-    /* package */ List<Relationship> asRelationships() {
+    public List<Relationship> asRelationships() {
         return Optional.ofNullable(this.childParts).stream().flatMap(Collection::stream)
                        .map(childData -> childData.toRelationship(this.catenaXId))
                        .collect(Collectors.toList());
