@@ -618,7 +618,7 @@
 					"response": []
 				},
 				{
-					"name": "1.3.3 [Register Job with aspect type AddressAspect and ContactInformation] https://${environment}/irs/jobs",
+					"name": "1.3.3 [Register Job with aspect type AddressAspect and DiagnosticData] https://${environment}/irs/jobs",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -646,7 +646,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"aspects\": [\r\n    \"AddressAspect\",\r\n    \"ContactInformation\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
+							"raw": "{\r\n  \"aspects\": [\r\n    \"AddressAspect\",\r\n    \"DiagnosticData\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",

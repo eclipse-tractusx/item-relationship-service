@@ -55,7 +55,7 @@ def errors_for_globalAssetId_are_correct(response):
 def status_of_jobs_are_as_expected(response, expected_status):
     print(response.json())
     for i in response.json():
-        actual_status = i.get("status")
+        actual_status = i.get("jobState")
         print(f"Asserting expected status '{expected_status}' to be equal to actual status '{actual_status}'")
         assert expected_status in actual_status
 
@@ -63,7 +63,7 @@ def status_of_jobs_are_as_expected(response, expected_status):
 def status_of_all_jobs_are_given(response):
     print(response.json())
     for i in response.json():
-        actual_status = i.get("status")
+        actual_status = i.get("jobState")
         assert any(
             ["COMPLETED" in actual_status, "ERROR" in actual_status, "INITIAL" in actual_status, "CANCELED" in actual_status, "RUNNING" in actual_status]
         )
