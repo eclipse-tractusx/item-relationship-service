@@ -162,4 +162,12 @@ public class RestTemplateConfig {
         }
     }
 
+    @Bean
+        /* package */ RestTemplate simpleRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
+        return restTemplateBuilder
+                .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                .build();
+    }
+
 }
