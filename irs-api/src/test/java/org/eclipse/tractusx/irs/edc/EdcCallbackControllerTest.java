@@ -22,38 +22,30 @@
 package org.eclipse.tractusx.irs.edc;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class EdcCallbackControllerTest {
 
-    private EdcCallbackController testee;
-
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage();
-
-    @BeforeEach
-    void setUp() {
-        testee = new EdcCallbackController(storage);
-    }
+    private final EdcCallbackController testee = new EdcCallbackController(storage);
 
     @Test
     void shouldStoreAgreementId() {
         // arrange
-        final EndpointDataReference ref = mock(EndpointDataReference.class);
+        final var ref = mock(EndpointDataReference.class);
         when(ref.getProperties()).thenReturn(Map.of("cid", "testId"));
 
         // act
         testee.receiveEdcCallback(ref);
 
         // assert
-        final EndpointDataReference result = storage.get("testId");
+        final var result = storage.get("testId");
 
         assertThat(result).isNotNull().isEqualTo(ref);
     }
