@@ -48,6 +48,7 @@ jobs:
           python -m pytest api-tests/irs-api-tests.tavern.yaml --junitxml=tavern-results.xml
 
       - name: Upload results
+        if: always()
         env:
           JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
           JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
