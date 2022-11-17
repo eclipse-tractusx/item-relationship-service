@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.irs.configuration;
 
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -61,6 +62,8 @@ import org.springframework.context.annotation.Profile;
 @SuppressWarnings({ "PMD.ExcessiveImports" })
 public class JobConfiguration {
 
+    public static final int EXECUTOR_CORE_POOL_SIZE = 5;
+
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
             final DigitalTwinDelegate digitalTwinDelegate, final BlobPersistence blobStore, final JobStore jobStore,
@@ -75,6 +78,11 @@ public class JobConfiguration {
         final JobTTL jobTTL = new JobTTL(ttlCompletedJobs, ttlFailedJobs);
 
         return new JobOrchestrator<>(manager, jobStore, handler, meterService, applicationEventPublisher, jobTTL);
+    }
+
+    @Bean
+    public ScheduledExecutorService scheduledExecutorService() {
+        return Executors.newScheduledThreadPool(EXECUTOR_CORE_POOL_SIZE);
     }
 
     @Profile("!test")
