@@ -94,7 +94,7 @@ public class EdcSubmodelFacade {
         final LocalTime startTime = LocalTime.now();
         return () -> {
             final LocalTime now = LocalTime.now();
-            if (startTime.plus(ttl).isAfter(now)) {
+            if (startTime.plus(ttl).isBefore(now)) {
                 throw new EdcTimeoutException("Waiting for submodel endpoint timed out after " + ttl);
             }
             action.run();
@@ -106,12 +106,16 @@ public class EdcSubmodelFacade {
         EndpointDataReference dataReference = endpointDataReferenceStorage.get(contractAgreementId);
 
         if (dataReference != null) {
-            String data = edcDataPlaneClient.getData(dataReference, submodel);
+            try {
+                String data = edcDataPlaneClient.getData(dataReference, submodel);
 
-            final RelationshipSubmodel relationshipSubmodel = jsonUtil.fromString(data,
-                    traversalAspectType.getSubmodelClazz());
+                final RelationshipSubmodel relationshipSubmodel = jsonUtil.fromString(data,
+                        traversalAspectType.getSubmodelClazz());
 
-            completionFuture.complete(relationshipSubmodel.asRelationships());
+                completionFuture.complete(relationshipSubmodel.asRelationships());
+            } catch (Exception e) {
+                completionFuture.completeExceptionally(e);
+            }
         }
     }
 

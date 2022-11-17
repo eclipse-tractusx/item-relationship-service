@@ -30,12 +30,15 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.github.jknack.handlebars.internal.Files;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.RelationshipAspect;
-import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.util.JsonUtil;
@@ -56,15 +59,15 @@ class EdcSubmodelFacadeTest {
     @Mock
     private EdcDataPlaneClient edcDataPlaneClient;
     private final EndpointDataReferenceStorage endpointDataReferenceStorage = new EndpointDataReferenceStorage();
-    @Mock
-    private JsonUtil jsonUtil;
+    private final JsonUtil jsonUtil = new JsonUtil();
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     private EdcSubmodelFacade testee;
 
     @BeforeEach
     void setUp() {
         testee = new EdcSubmodelFacade(contractNegotiationService, edcDataPlaneClient, endpointDataReferenceStorage,
-                jsonUtil);
+                jsonUtil, scheduler);
     }
 
     @Test
@@ -74,17 +77,18 @@ class EdcSubmodelFacadeTest {
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);
         endpointDataReferenceStorage.put("agreementId", ref);
-        final Relationship relationship = Relationship.builder()
-                                                      .catenaXId(GlobalAssetIdentification.of("test"))
-                                                      .build();
+        final String assemblyPartRelationshipJson = readAssemblyPartRelationshipData();
+        when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(assemblyPartRelationshipJson);
 
-        when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(readAssemblyPartRelationshipData());
 
         // act
         final var result = testee.getRelationships(ENDPOINT_ADDRESS, RelationshipAspect.AssemblyPartRelationship);
+        final List<Relationship> resultingRelationships = result.get(5, TimeUnit.SECONDS);
 
         // assert
-        assertThat(result).isNotNull().contains(relationship);
+        final List<Relationship> expectedRelationships = jsonUtil.fromString(assemblyPartRelationshipJson,
+                RelationshipAspect.AssemblyPartRelationship.getSubmodelClazz()).asRelationships();
+        assertThat(resultingRelationships).isNotNull().containsAll(expectedRelationships);
     }
 
     @NotNull
