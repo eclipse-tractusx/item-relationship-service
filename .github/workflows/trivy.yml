@@ -40,7 +40,7 @@ jobs:
           format: "sarif"
           output: "trivy-results1.sarif"
           severity: "CRITICAL,HIGH"
-          skip-dirs: "chart/aasregistry,chart/edc-controlplane,chart/edc-dataplane,chart/edc-provider-control-plane,chart/edc-provider-data-plane,chart/submodelservers,charts/irs-environments/local,charts/connector/daps"
+          skip-dirs: "charts/connector/aasregistry,charts/connector/daps,charts/connector/edc-provider,charts/connector/submodelservers,charts/irs-environments/local"
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
