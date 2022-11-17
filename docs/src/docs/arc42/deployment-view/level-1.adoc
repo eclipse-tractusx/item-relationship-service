@@ -4,39 +4,7 @@ This section focuses only on the IRS itself, detached from its neighbors. It sho
 
 [plantuml, target=irs-resources, format=svg]
 ....
-@startuml
-skinparam monochrome true
-skinparam shadowing false
-skinparam nodesep 100
-skinparam ranksep 20
-
-node IRS <<app>> {
-
-    frame public {
-        agent ingress
-        interface HTTPS
-    }
-
-    frame internal {
-        node pod {
-            artifact "IRS Docker image"
-        }
-        agent service as svc
-        collections secrets
-        interface "Actuator API (Port 4004)" as actuator
-    }
-
-
-    ingress #-- HTTPS
-    svc #- ingress : IRS API (Port 8080)
-    pod #--- svc
-    svc #-- actuator
-    pod -- secrets
-
-}
-
-
-@enduml
+include::../../../uml-diagrams/deployment-view/level-1.puml[]
 ....
 
 *Pod*

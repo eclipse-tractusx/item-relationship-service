@@ -68,7 +68,7 @@ include::../../../uml-diagrams/building-block-view/level-2-int-recursive-job-han
 The TransferProcessManager creates executions and provides them to the executor service. Each execution contains HTTP requests to the asset administration shell registry and to the submodel interface.
 
 === Component diagram
-[plantuml, target=level-2-jobhandler, format=svg]
+[plantuml, target=level-2-transfer-process-management, format=svg]
 ....
 include::../../../uml-diagrams/building-block-view/level-2-int-transfer-process-management.puml[]
 ....
