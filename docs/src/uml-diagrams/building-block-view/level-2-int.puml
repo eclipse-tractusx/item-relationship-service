@@ -1,0 +1,22 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+ component [**Controller**] <<System>> as Controller {
+    component [**IrsController**] <<Component>> as IrsController
+    component [**IrsItemGraphQueryService**] <<Component>> as IrsItemGraphQueryService
+        port "IRS API" as API_PORT
+    component [**JobOrchestrator**] <<Component>> as JobOrchestrator
+    interface JobStore
+    interface BlobPersistence
+    IrsController .>  IrsItemGraphQueryService
+
+
+    }
+    actor IrsApiConsumer
+        IrsController <..> JobOrchestrator
+        IrsController -up- API_PORT
+        IrsApiConsumer -(0- API_PORT
+        IrsItemGraphQueryService -( JobStore
+        IrsItemGraphQueryService --( BlobPersistence
+@enduml
