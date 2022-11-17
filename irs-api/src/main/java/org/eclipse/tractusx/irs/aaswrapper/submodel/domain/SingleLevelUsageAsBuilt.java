@@ -52,7 +52,7 @@ class SingleLevelUsageAsBuilt extends RelationshipSubmodel {
     private Set<ParentData> parentParts;
 
     @Override
-    /* package */ List<Relationship> asRelationships() {
+    public List<Relationship> asRelationships() {
         return Optional.ofNullable(this.parentParts).stream().flatMap(Collection::stream)
                        .map(parentData -> parentData.toRelationship(this.catenaXId))
                        .collect(Collectors.toList());
