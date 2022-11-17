@@ -32,6 +32,7 @@ import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 @Slf4j
 @Service
@@ -45,6 +46,8 @@ public class EdcSubmodelFacade {
 
     public List<Relationship> getRelationships(final String submodelEndpointAddress, final RelationshipAspect traversalAspectType)
             throws InterruptedException {
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start("Get EDC Submodel task for relationships");
 
         final String submodel = "/submodel";
         final int indexOfUrn = findIndexOf(submodelEndpointAddress, "/urn");
@@ -57,18 +60,23 @@ public class EdcSubmodelFacade {
         final String providerConnectorUrl = submodelEndpointAddress.substring(0, indexOfUrn);
         final String target = submodelEndpointAddress.substring(indexOfUrn, indexOfSubModel);
 
-        NegotiationResponse negotiationResponse = contractNegotiationService.negotiate(providerConnectorUrl, target);
+        log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerConnectorUrl, target);
+        final NegotiationResponse negotiationResponse = contractNegotiationService.negotiate(providerConnectorUrl, target);
 
         EndpointDataReference dataReference = null;
         // need to add timeout break
         while (dataReference == null) {
             Thread.sleep(1000);
+            log.info("Retrieving dataReference from storage for contractAgreementId {}", negotiationResponse.getContractAgreementId());
             dataReference = endpointDataReferenceStorage.get(negotiationResponse.getContractAgreementId());
         }
 
-        String data = edcDataPlaneClient.getData(dataReference, submodel);
+        log.info("Retrieving data from EDC data plane with dataReference {}:{}", dataReference.getAuthKey(), dataReference.getAuthCode());
+        final String data = edcDataPlaneClient.getData(dataReference, submodel);
 
         final RelationshipSubmodel relationshipSubmodel = jsonUtil.fromString(data, traversalAspectType.getSubmodelClazz());
+        stopWatch.stop();
+        log.info("EDC Task {} took {} ms for endpoint address: {}", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis(), submodelEndpointAddress);
         return relationshipSubmodel.asRelationships();
     }
 

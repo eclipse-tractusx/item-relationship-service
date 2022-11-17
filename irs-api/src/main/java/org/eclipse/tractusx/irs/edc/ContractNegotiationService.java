@@ -75,7 +75,7 @@ public class ContractNegotiationService {
 
         final NegotiationResponse negotiationResponse = edcControlPlaneClient.getNegotiationResult(negotiationId);
 
-        TransferProcessRequest transferProcessRequest = TransferProcessRequest.builder()
+        final TransferProcessRequest transferProcessRequest = TransferProcessRequest.builder()
                 .id(UUID.randomUUID().toString())
                 .connectorId(catalog.getId())
                 .connectorAddress(providerConnectorUrl + CONTROL_PLANE_SUFIX)

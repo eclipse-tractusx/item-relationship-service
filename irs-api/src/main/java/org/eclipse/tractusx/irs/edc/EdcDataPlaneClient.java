@@ -53,6 +53,7 @@ public class EdcDataPlaneClient {
                 new HttpEntity<>(null, headers(dataReference)),
                 String.class).getBody();
 
+        log.info("Extracting raw embeddedData from EDC data plane response");
         return extractData(response);
     }
 
