@@ -47,7 +47,8 @@ import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference
 import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.RelationshipAspect;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
-import org.eclipse.tractusx.irs.exceptions.EdcTimeoutException;
+import org.eclipse.tractusx.irs.exceptions.TimeoutException;
+import org.eclipse.tractusx.irs.services.AsyncPollingService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,13 +72,15 @@ class EdcSubmodelFacadeTest {
 
     private final TimeMachine clock = new TimeMachine();
 
+    private final AsyncPollingService pollingService = new AsyncPollingService(clock, scheduler);
+
     private EdcSubmodelFacade testee;
 
     @BeforeEach
     void setUp() {
 
         testee = new EdcSubmodelFacade(contractNegotiationService, edcDataPlaneClient, endpointDataReferenceStorage,
-                jsonUtil, scheduler, clock);
+                jsonUtil, pollingService);
     }
 
     @Test
@@ -101,7 +104,7 @@ class EdcSubmodelFacadeTest {
     }
 
     @Test
-    void shouldTimeOut() {
+    void shouldTimeOut() throws Exception {
         // arrange
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
@@ -112,7 +115,7 @@ class EdcSubmodelFacadeTest {
 
         // assert
         assertThatThrownBy(result::get).isInstanceOf(ExecutionException.class)
-                                       .hasCauseInstanceOf(EdcTimeoutException.class);
+                                       .hasCauseInstanceOf(TimeoutException.class);
     }
 
     @NotNull
