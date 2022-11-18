@@ -47,6 +47,6 @@ class EdcCallbackControllerTest {
         // assert
         final var result = storage.get("testId");
 
-        assertThat(result).isNotNull().isEqualTo(ref);
+        assertThat(result).isNotNull().contains(ref);
     }
 }
