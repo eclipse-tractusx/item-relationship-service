@@ -4,48 +4,7 @@
 
 [plantuml, target=level-1, format=svg]
 ....
-@startuml
-skinparam monochrome true
-skinparam shadowing false
-
- component [**IRS-Application**] <<System>> as IRS {
-    component [**RecursiveJobHandler**] <<Component>> as RecursiveJobHandler
-    component [**IrsController**] <<Component>> as IrsController
-    component [**JobOrchestrator**] <<Component>> as JobOrchestrator
-    component [**TransferProcessManagment**] <<Component>> as TransferProcessManagment
-
-
-    'component [**AASClient**] <<Subsystem>> as AASClient
-    'component [**AASFacade**] <<Subsystem>> as AASFacade
-    'component [**SubmodelClient**] <<Subsystem>> as SubmodelClient
-    'component [**SubmodelFacade**] <<Subsystem>> as SubmodelFacade ' --> Level2 View
-
-    port "IRS API" as API_PORT
-    port "AAS Proxy" as AAS_PORT
-
-    () "BlobStore\nInterface" as StoreInterface
-
-
-    IrsController <..> JobOrchestrator
-    JobOrchestrator <..> TransferProcessManagment
-    JobOrchestrator <..> RecursiveJobHandler
-    TransferProcessManagment --( StoreInterface
-
-
-}
-component [**AASProxy**] <<System>> as AASProxy
-actor IrsApiConsumer
-IrsController -up- API_PORT
-IrsApiConsumer -(0- API_PORT
-
-
-TransferProcessManagment --- AAS_PORT
-AAS_PORT -(0 AASProxy
-
-database "BlobStore" as BlobStore
-StoreInterface -down- BlobStore
-
-@enduml
+include::../../../uml-diagrams/building-block-view/building-block-view.puml[]
 ....
 
 == Component description

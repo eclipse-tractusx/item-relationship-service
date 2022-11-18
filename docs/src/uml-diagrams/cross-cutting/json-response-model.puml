@@ -1,4 +1,6 @@
 @startjson
+skinparam monochrome true
+skinparam shadowing false
 {
           "job": {
             "jobID": "e5347c88-a921-11ec-b909-0242ac120002",
