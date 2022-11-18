@@ -26,6 +26,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
@@ -38,19 +39,22 @@ import org.springframework.util.StopWatch;
 public class SubmodelFacade {
 
     private final SubmodelClient submodelClient;
+    private final EdcSubmodelFacade edcSubmodelFacade;
 
     /**
      * @param submodelEndpointAddress The URL to the submodel endpoint
      * @param traversalAspectType aspect type for traversal informations
      * @return The Aspect Model for the given submodel
      */
-    public List<Relationship> getRelationships(final String submodelEndpointAddress, final RelationshipAspect traversalAspectType) {
+    public List<Relationship> getRelationships(final String submodelEndpointAddress, final RelationshipAspect traversalAspectType)
+            throws InterruptedException {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start("Get Submodel task for relationships");
-        final RelationshipSubmodel relationshipSubmodel = this.submodelClient.getSubmodel(submodelEndpointAddress, traversalAspectType.getSubmodelClazz());
+        final List<Relationship> relationships = edcSubmodelFacade.getRelationships(submodelEndpointAddress,
+                traversalAspectType);
         stopWatch.stop();
         log.info("Task {} took {} ms for endpoint address: {}", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis(), submodelEndpointAddress);
-        return relationshipSubmodel.asRelationships();
+        return relationships;
     }
 
     /**
