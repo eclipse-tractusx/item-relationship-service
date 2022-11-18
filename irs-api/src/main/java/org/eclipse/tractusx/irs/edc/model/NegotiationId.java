@@ -25,6 +25,9 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+/**
+ * Contains an EDC contract negotiation ID.
+ */
 @Value
 @Builder(toBuilder = true)
 @Jacksonized

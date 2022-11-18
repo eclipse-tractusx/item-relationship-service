@@ -42,11 +42,16 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
+/**
+ * Public API facade for EDC domain
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class EdcSubmodelFacade {
 
+    public static final int MAXIMUM_TASK_RUNTIME_MINUTES = 10;
+    public static final int POLL_INTERVAL_MILLIS = 100;
     private final ContractNegotiationService contractNegotiationService;
     private final EdcDataPlaneClient edcDataPlaneClient;
     private final EndpointDataReferenceStorage endpointDataReferenceStorage;
@@ -93,7 +98,8 @@ public class EdcSubmodelFacade {
 
     @NotNull
     private ScheduledFuture<?> pollForSubmodel(final Runnable action) {
-        return scheduler.scheduleWithFixedDelay(withTimeout(action, Duration.ofMinutes(10)), 0, 100,
+        return scheduler.scheduleWithFixedDelay(withTimeout(action, Duration.ofMinutes(MAXIMUM_TASK_RUNTIME_MINUTES)), 0,
+                POLL_INTERVAL_MILLIS,
                 TimeUnit.MILLISECONDS);
     }
 

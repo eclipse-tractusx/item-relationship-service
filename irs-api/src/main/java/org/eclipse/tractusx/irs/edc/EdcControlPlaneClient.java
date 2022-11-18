@@ -40,17 +40,21 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Communicates with the EDC ControlPlane
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class EdcControlPlaneClient {
 
     static final String CONSUMER_CONTROL_PLANE = "https://irs-consumer-controlplane.dev.demo.catena-x.net";
-//    static final String PROVIDER_CONTROL_PLANE = "https://irs-provider-controlplane3.dev.demo.catena-x.net";
 
     static final String CONTROL_PLANE_SUFIX = "/api/v1/ids/data";
     private static final String EDC_HEADER = "X-Api-Key";
     private static final String EDC_TOKEN = "";
+    public static final int MAX_NUMBER_OF_CALLS = 20;
+    private static final long SLEEP_TIMEOUT_IN_MILLIS = 2000;
 
     private final RestTemplate simpleRestTemplate;
 
@@ -80,10 +84,10 @@ public class EdcControlPlaneClient {
 
         int calls = 0;
         boolean confirmed = false;
-        while (calls < 20 && !confirmed) {
+        while (calls < MAX_NUMBER_OF_CALLS && !confirmed) {
             calls++;
             log.info("Check negotiations status for: {} time", calls);
-            Thread.sleep(1000L);
+            Thread.sleep(SLEEP_TIMEOUT_IN_MILLIS);
 
             response = simpleRestTemplate.exchange(
                     CONSUMER_CONTROL_PLANE + "/data/contractnegotiations/" + negotiationId.getId(), HttpMethod.GET,
@@ -113,10 +117,10 @@ public class EdcControlPlaneClient {
 
         int calls = 0;
         boolean completed = false;
-        while (calls < 20 && !completed) {
+        while (calls < MAX_NUMBER_OF_CALLS && !completed) {
             calls++;
             log.info("Check Transfer Process status for: {} time", calls);
-            Thread.sleep(2000L);
+            Thread.sleep(SLEEP_TIMEOUT_IN_MILLIS);
 
             response = simpleRestTemplate.exchange(
                     CONSUMER_CONTROL_PLANE + "/data/transferprocess/" + transferProcessId.getId(),

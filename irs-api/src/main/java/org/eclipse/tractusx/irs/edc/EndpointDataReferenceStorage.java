@@ -28,6 +28,9 @@ import org.springframework.stereotype.Service;
 
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 
+/**
+ * InMemory storage for endpoint data references.
+ */
 @Service
 public class EndpointDataReferenceStorage {
 
