@@ -33,6 +33,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
@@ -50,7 +51,8 @@ class RelationshipDelegateTest {
     final String assemblyPartRelationshipAspectName = "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship";
 
     @Test
-    void shouldFillItemContainerWithRelationshipAndAddChildIdsToProcess() {
+    void shouldFillItemContainerWithRelationshipAndAddChildIdsToProcess()
+            throws ExecutionException, InterruptedException {
         // given
         when(submodelFacade.getRelationships(anyString(), any())).thenReturn(Collections.singletonList(relationship()));
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder().shell(shellDescriptor(
@@ -68,7 +70,7 @@ class RelationshipDelegateTest {
     }
 
     @Test
-    void shouldCatchRestClientExceptionAndPutTombstone() {
+    void shouldCatchRestClientExceptionAndPutTombstone() throws ExecutionException, InterruptedException {
         // given
         when(submodelFacade.getRelationships(anyString(), any())).thenThrow(
                 new RestClientException("Unable to call endpoint"));
@@ -88,7 +90,7 @@ class RelationshipDelegateTest {
     }
 
     @Test
-    void shouldCatchJsonParseExceptionAndPutTombstone() {
+    void shouldCatchJsonParseExceptionAndPutTombstone() throws ExecutionException, InterruptedException {
         // given
         when(submodelFacade.getRelationships(anyString(), any())).thenThrow(
                 new JsonParseException(new Exception("Payload did not match expected submodel")));

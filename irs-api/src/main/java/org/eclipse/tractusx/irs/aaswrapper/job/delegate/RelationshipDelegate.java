@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +71,7 @@ public class RelationshipDelegate extends AbstractDelegate {
 
                     aasTransferProcess.addIdsToProcess(childIds);
                     itemContainerBuilder.relationships(relationships);
-                } catch (RestClientException | IllegalArgumentException e) {
+                } catch (RestClientException | IllegalArgumentException | ExecutionException | InterruptedException e) {
                     log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                             address);
                     itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount, ProcessStep.SUBMODEL_REQUEST));

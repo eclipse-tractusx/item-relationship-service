@@ -61,7 +61,7 @@ class SubmodelFacadeWiremockTest {
         configureFor(this.wireMockServer.port());
         SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate, buildApiMethodUrl() + "/api/service",
                 jsonUtil, meterRegistry, retryRegistry);
-        this.submodelFacade = new SubmodelFacade(submodelClient);
+        this.submodelFacade = new SubmodelFacade(submodelClient, null);
     }
 
     @AfterEach

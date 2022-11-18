@@ -49,7 +49,7 @@ public class SubmodelFacade {
      * @return The Aspect Model for the given submodel
      */
     public List<Relationship> getRelationships(final String submodelEndpointAddress, final RelationshipAspect traversalAspectType)
-            throws InterruptedException, ExecutionException {
+            throws ExecutionException, InterruptedException {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start("Get Submodel task for relationships");
         final CompletableFuture<List<Relationship>> relationships = edcSubmodelFacade.getRelationships(
