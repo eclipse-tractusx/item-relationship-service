@@ -40,6 +40,7 @@ import org.eclipse.tractusx.irs.exceptions.EdcTimeoutException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 @Slf4j
 @Service
@@ -54,6 +55,8 @@ public class EdcSubmodelFacade {
 
     public CompletableFuture<List<Relationship>> getRelationships(final String submodelEndpointAddress,
             final RelationshipAspect traversalAspectType) {
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start("Get EDC Submodel task for relationships");
 
         final String submodel = "/submodel";
         final int indexOfUrn = findIndexOf(submodelEndpointAddress, "/urn");
@@ -66,18 +69,19 @@ public class EdcSubmodelFacade {
 
         final String providerConnectorUrl = submodelEndpointAddress.substring(0, indexOfUrn);
         final String target = submodelEndpointAddress.substring(indexOfUrn, indexOfSubModel);
+        log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerConnectorUrl, target);
         final NegotiationResponse negotiationResponse = contractNegotiationService.negotiate(providerConnectorUrl,
                 target);
 
-        return startSubmodelDataRetrieval(traversalAspectType, submodel, negotiationResponse.getContractAgreementId());
+        return startSubmodelDataRetrieval(traversalAspectType, submodel, negotiationResponse.getContractAgreementId(), stopWatch);
     }
 
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(
-            final RelationshipAspect traversalAspectType, final String submodel, final String contractAgreementId) {
+            final RelationshipAspect traversalAspectType, final String submodel, final String contractAgreementId, final StopWatch stopWatch) {
 
         CompletableFuture<List<Relationship>> completionFuture = new CompletableFuture<>();
         final Runnable action = () -> retrieveSubmodelData(traversalAspectType, submodel, contractAgreementId,
-                completionFuture);
+                completionFuture, stopWatch);
 
         final ScheduledFuture<?> checkFuture = pollForSubmodel(action);
         completionFuture.whenComplete((result, thrown) -> checkFuture.cancel(true));
@@ -102,17 +106,22 @@ public class EdcSubmodelFacade {
     }
 
     private void retrieveSubmodelData(final RelationshipAspect traversalAspectType, final String submodel,
-            final String contractAgreementId, final CompletableFuture<List<Relationship>> completionFuture) {
+            final String contractAgreementId, final CompletableFuture<List<Relationship>> completionFuture, final StopWatch stopWatch) {
+        log.info("Retrieving dataReference from storage for contractAgreementId {}", contractAgreementId);
         EndpointDataReference dataReference = endpointDataReferenceStorage.get(contractAgreementId);
 
         if (dataReference != null) {
             try {
+                log.info("Retrieving data from EDC data plane with dataReference {}:{}", dataReference.getAuthKey(), dataReference.getAuthCode());
                 String data = edcDataPlaneClient.getData(dataReference, submodel);
 
                 final RelationshipSubmodel relationshipSubmodel = jsonUtil.fromString(data,
                         traversalAspectType.getSubmodelClazz());
 
                 completionFuture.complete(relationshipSubmodel.asRelationships());
+
+                stopWatch.stop();
+                log.info("EDC Task {} took {} ms for endpoint address: {}", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis(), submodelEndpointAddress);
             } catch (Exception e) {
                 completionFuture.completeExceptionally(e);
             }
