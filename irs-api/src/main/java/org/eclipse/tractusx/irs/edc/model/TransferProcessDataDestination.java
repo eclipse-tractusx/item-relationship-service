@@ -25,6 +25,9 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+/**
+ * Contains the data destination type for a transfer process.
+ */
 @Value
 @Builder(toBuilder = true)
 @Jacksonized

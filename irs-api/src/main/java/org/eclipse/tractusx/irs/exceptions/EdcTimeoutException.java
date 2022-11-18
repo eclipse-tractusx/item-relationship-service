@@ -19,23 +19,13 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.model;
-
-import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+package org.eclipse.tractusx.irs.exceptions;
 
 /**
- * EDC transfer process response.
+ * Exception for timeouts in EDC communication.
  */
-@Value
-@Builder(toBuilder = true)
-@Jacksonized
-public class TransferProcessResponse {
-
-    private String responseId;
-    private String type;
-    private String state;
-    private String errorDetail;
-
+public class EdcTimeoutException extends RuntimeException {
+    public EdcTimeoutException(final String msg) {
+        super(msg);
+    }
 }

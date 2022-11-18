@@ -25,12 +25,15 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+/**
+ * EDC transfer process request.
+ */
 @Value
 @Builder(toBuilder = true)
 @Jacksonized
 public class TransferProcessRequest {
 
-    private String id;
+    private String requestId;
     private String connectorId;
     private String connectorAddress;
     private String contractId;

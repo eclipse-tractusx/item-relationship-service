@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.irs.edc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -30,14 +31,23 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.github.jknack.handlebars.internal.Files;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.RelationshipAspect;
-import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
+import org.eclipse.tractusx.irs.exceptions.EdcTimeoutException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,15 +66,18 @@ class EdcSubmodelFacadeTest {
     @Mock
     private EdcDataPlaneClient edcDataPlaneClient;
     private final EndpointDataReferenceStorage endpointDataReferenceStorage = new EndpointDataReferenceStorage();
-    @Mock
-    private JsonUtil jsonUtil;
+    private final JsonUtil jsonUtil = new JsonUtil();
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+    private final TimeMachine clock = new TimeMachine();
 
     private EdcSubmodelFacade testee;
 
     @BeforeEach
     void setUp() {
+
         testee = new EdcSubmodelFacade(contractNegotiationService, edcDataPlaneClient, endpointDataReferenceStorage,
-                jsonUtil);
+                jsonUtil, scheduler, clock);
     }
 
     @Test
@@ -74,17 +87,32 @@ class EdcSubmodelFacadeTest {
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);
         endpointDataReferenceStorage.put("agreementId", ref);
-        final Relationship relationship = Relationship.builder()
-                                                      .catenaXId(GlobalAssetIdentification.of("test"))
-                                                      .build();
-
-        when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(readAssemblyPartRelationshipData());
+        final String assemblyPartRelationshipJson = readAssemblyPartRelationshipData();
+        when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(assemblyPartRelationshipJson);
 
         // act
         final var result = testee.getRelationships(ENDPOINT_ADDRESS, RelationshipAspect.AssemblyPartRelationship);
+        final List<Relationship> resultingRelationships = result.get(5, TimeUnit.SECONDS);
 
         // assert
-        assertThat(result).isNotNull().contains(relationship);
+        final List<Relationship> expectedRelationships = jsonUtil.fromString(assemblyPartRelationshipJson,
+                RelationshipAspect.AssemblyPartRelationship.getSubmodelClazz()).asRelationships();
+        assertThat(resultingRelationships).isNotNull().containsAll(expectedRelationships);
+    }
+
+    @Test
+    void shouldTimeOut() {
+        // arrange
+        when(contractNegotiationService.negotiate(any(), any())).thenReturn(
+                NegotiationResponse.builder().contractAgreementId("agreementId").build());
+
+        // act
+        final var result = testee.getRelationships(ENDPOINT_ADDRESS, RelationshipAspect.AssemblyPartRelationship);
+        clock.travelToFuture(Duration.ofMinutes(20));
+
+        // assert
+        assertThatThrownBy(result::get).isInstanceOf(ExecutionException.class)
+                                       .hasCauseInstanceOf(EdcTimeoutException.class);
     }
 
     @NotNull
@@ -92,5 +120,30 @@ class EdcSubmodelFacadeTest {
         final InputStream resourceAsStream = getClass().getResourceAsStream("/__files/assemblyPartRelationship.json");
         Objects.requireNonNull(resourceAsStream);
         return Files.read(resourceAsStream, StandardCharsets.UTF_8);
+    }
+
+}
+
+class TimeMachine extends Clock {
+
+    private Instant currentTime = Instant.now();
+
+    @Override
+    public ZoneId getZone() {
+        return ZoneId.systemDefault();
+    }
+
+    @Override
+    public Clock withZone(final ZoneId zone) {
+        return this;
+    }
+
+    @Override
+    public Instant instant() {
+        return currentTime;
+    }
+
+    public void travelToFuture(Duration timeToAdd) {
+        currentTime = currentTime.plus(timeToAdd);
     }
 }

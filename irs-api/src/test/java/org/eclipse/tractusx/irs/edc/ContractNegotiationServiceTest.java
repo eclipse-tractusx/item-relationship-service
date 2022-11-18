@@ -57,11 +57,11 @@ class ContractNegotiationServiceTest {
         final var catalog = mockCatalog(assetId);
         when(edcControlPlaneClient.getCatalog(CONNECTOR_URL)).thenReturn(catalog);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
-                NegotiationId.builder().id("negotiationId").build());
+                NegotiationId.builder().value("negotiationId").build());
         NegotiationResponse response = NegotiationResponse.builder().contractAgreementId("agreementId").build();
         when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(response);
         when(edcControlPlaneClient.startTransferProcess(any())).thenReturn(
-                TransferProcessId.builder().id("transferProcessId").build());
+                TransferProcessId.builder().value("transferProcessId").build());
 
         // act
         response = testee.negotiate(CONNECTOR_URL, assetId);

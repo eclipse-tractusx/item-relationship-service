@@ -47,7 +47,10 @@
         <!-- Too many false positives, as the rules assumes every class is serializable. -->
         <exclude name="BeanMembersShouldSerialize"/>
     </rule>
-    <rule ref="category/java/multithreading.xml"></rule>
+    <rule ref="category/java/multithreading.xml">
+        <exclude name="DoNotUseThreads" />
+    </rule>
+
     <rule ref="category/java/performance.xml"></rule>
     <rule ref="category/java/security.xml"></rule>
 

@@ -40,54 +40,51 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Communicates with the EDC ControlPlane
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class EdcControlPlaneClient {
 
-    static final String CONSUMER_CONTROL_PLANE = "https://irs-consumer-controlplane.dev.demo.catena-x.net";
-//    static final String PROVIDER_CONTROL_PLANE = "https://irs-provider-controlplane3.dev.demo.catena-x.net";
+    private static final String CONSUMER_CONTROL_PLANE = "https://irs-consumer-controlplane.dev.demo.catena-x.net";
 
-    static final String CONTROL_PLANE_SUFIX = "/api/v1/ids/data";
+    /* package */ static final String CONTROL_PLANE_SUFIX = "/api/v1/ids/data";
     private static final String EDC_HEADER = "X-Api-Key";
     private static final String EDC_TOKEN = "";
+    public static final int MAX_NUMBER_OF_CALLS = 20;
+    private static final long SLEEP_TIMEOUT_IN_MILLIS = 2000;
 
     private final RestTemplate simpleRestTemplate;
 
-    Catalog getCatalog(String providerConnectorUrl) {
-        return simpleRestTemplate.exchange(CONSUMER_CONTROL_PLANE
-                + "/data/catalog?providerUrl="
-                + providerConnectorUrl
-                + CONTROL_PLANE_SUFIX
-                + "&limit=1000",
-                HttpMethod.GET,
-                new HttpEntity<>(null, headers()),
-                Catalog.class).getBody();
+    /* package */ Catalog getCatalog(final String providerConnectorUrl) {
+        return simpleRestTemplate.exchange(
+                CONSUMER_CONTROL_PLANE + "/data/catalog?providerUrl=" + providerConnectorUrl + CONTROL_PLANE_SUFIX
+                        + "&limit=1000", HttpMethod.GET, new HttpEntity<>(null, headers()), Catalog.class).getBody();
     }
 
-    NegotiationId startNegotiations(NegotiationRequest request) {
-        return simpleRestTemplate.exchange(CONSUMER_CONTROL_PLANE
-                        + "/data/contractnegotiations",
-                HttpMethod.POST,
-                new HttpEntity<>(request, headers()),
-                NegotiationId.class).getBody();
+    /* package */ NegotiationId startNegotiations(final NegotiationRequest request) {
+        return simpleRestTemplate.exchange(CONSUMER_CONTROL_PLANE + "/data/contractnegotiations", HttpMethod.POST,
+                new HttpEntity<>(request, headers()), NegotiationId.class).getBody();
     }
 
     @SneakyThrows
-    NegotiationResponse getNegotiationResult(NegotiationId negotiationId) {
+    /* package */ NegotiationResponse getNegotiationResult(final NegotiationId negotiationId) {
 
         NegotiationResponse response = null;
+        final HttpEntity<Object> objectHttpEntity = new HttpEntity<>(null, headers());
 
         int calls = 0;
         boolean confirmed = false;
-        while (calls < 20 && !confirmed) {
+        while (calls < MAX_NUMBER_OF_CALLS && !confirmed) {
             calls++;
             log.info("Check negotiations status for: {} time", calls);
-            Thread.sleep(1000L);
+            Thread.sleep(SLEEP_TIMEOUT_IN_MILLIS);
 
             response = simpleRestTemplate.exchange(
-                    CONSUMER_CONTROL_PLANE + "/data/contractnegotiations/" + negotiationId.getId(), HttpMethod.GET,
-                    new HttpEntity<>(null, headers()), NegotiationResponse.class).getBody();
+                    CONSUMER_CONTROL_PLANE + "/data/contractnegotiations/" + negotiationId.getValue(), HttpMethod.GET,
+                    objectHttpEntity, NegotiationResponse.class).getBody();
 
             log.info("Response status of negotiation: {}", response);
 
@@ -99,30 +96,26 @@ public class EdcControlPlaneClient {
         return response;
     }
 
-    TransferProcessId startTransferProcess(TransferProcessRequest request) {
-        return simpleRestTemplate.exchange(CONSUMER_CONTROL_PLANE
-                        + "/data/transferprocess",
-                HttpMethod.POST,
-                new HttpEntity<>(request, headers()),
-                TransferProcessId.class).getBody();
+    /* package */ TransferProcessId startTransferProcess(final TransferProcessRequest request) {
+        return simpleRestTemplate.exchange(CONSUMER_CONTROL_PLANE + "/data/transferprocess", HttpMethod.POST,
+                new HttpEntity<>(request, headers()), TransferProcessId.class).getBody();
     }
 
     @SneakyThrows
-    TransferProcessResponse getTransferProcess(TransferProcessId transferProcessId) {
+    /* package */ TransferProcessResponse getTransferProcess(final TransferProcessId transferProcessId) {
         TransferProcessResponse response = null;
+        final HttpEntity<Object> objectHttpEntity = new HttpEntity<>(null, headers());
 
         int calls = 0;
         boolean completed = false;
-        while (calls < 20 && !completed) {
+        while (calls < MAX_NUMBER_OF_CALLS && !completed) {
             calls++;
             log.info("Check Transfer Process status for: {} time", calls);
-            Thread.sleep(2000L);
+            Thread.sleep(SLEEP_TIMEOUT_IN_MILLIS);
 
             response = simpleRestTemplate.exchange(
-                    CONSUMER_CONTROL_PLANE + "/data/transferprocess/" + transferProcessId.getId(),
-                    HttpMethod.GET,
-                    new HttpEntity<>(null, headers()),
-                    TransferProcessResponse.class).getBody();
+                    CONSUMER_CONTROL_PLANE + "/data/transferprocess/" + transferProcessId.getValue(), HttpMethod.GET,
+                    objectHttpEntity, TransferProcessResponse.class).getBody();
 
             log.info("Response status of Transfer Process: {}", response);
 
@@ -135,7 +128,7 @@ public class EdcControlPlaneClient {
     }
 
     private HttpHeaders headers() {
-        HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.add(EDC_HEADER, EDC_TOKEN);
         return headers;

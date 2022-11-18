@@ -26,6 +26,9 @@ import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 
+/**
+ * EDC contract offer request.
+ */
 @Value
 @Builder(toBuilder = true)
 @Jacksonized
