@@ -21,6 +21,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
@@ -35,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping(IrsApplication.API_PREFIX)
+@Hidden
 @RequiredArgsConstructor
 public class EdcCallbackController {
 
