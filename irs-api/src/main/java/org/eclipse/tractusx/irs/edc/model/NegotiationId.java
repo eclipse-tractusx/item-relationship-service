@@ -33,5 +33,5 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class NegotiationId {
 
-    private String id;
+    private String value;
 }

@@ -33,7 +33,7 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class TransferProcessResponse {
 
-    private String id;
+    private String responseId;
     private String type;
     private String state;
     private String errorDetail;

@@ -35,13 +35,13 @@ import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference
 @Service
 public class EndpointDataReferenceStorage {
 
-    Map<String, EndpointDataReference> storageMap = new ConcurrentHashMap<>();
+    private final Map<String, EndpointDataReference> storageMap = new ConcurrentHashMap<>();
 
-    public void put(String contractAgreementId, EndpointDataReference dataReference) {
+    public void put(final String contractAgreementId, final EndpointDataReference dataReference) {
         storageMap.put(contractAgreementId, dataReference);
     }
 
-    public Optional<EndpointDataReference> get(String contractAgreementId) {
+    public Optional<EndpointDataReference> get(final String contractAgreementId) {
         return Optional.ofNullable(storageMap.get(contractAgreementId));
     }
 

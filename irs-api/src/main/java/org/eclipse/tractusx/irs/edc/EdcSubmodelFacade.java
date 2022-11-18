@@ -91,7 +91,7 @@ public class EdcSubmodelFacade {
             final RelationshipAspect traversalAspectType, final String submodel, final String contractAgreementId,
             final StopWatch stopWatch) {
 
-        CompletableFuture<List<Relationship>> completionFuture = new CompletableFuture<>();
+        final CompletableFuture<List<Relationship>> completionFuture = new CompletableFuture<>();
         final Runnable action = () -> retrieveSubmodelData(traversalAspectType, submodel, contractAgreementId,
                 completionFuture, stopWatch);
 
@@ -108,6 +108,7 @@ public class EdcSubmodelFacade {
                 POLL_INTERVAL_MILLIS, TimeUnit.MILLISECONDS);
     }
 
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private Runnable withTimeout(final Runnable action, final Duration ttl,
             final CompletableFuture<List<Relationship>> taskToEndOnError) {
         final LocalTime startTime = LocalTime.now(clock);
@@ -128,13 +129,13 @@ public class EdcSubmodelFacade {
             final String contractAgreementId, final CompletableFuture<List<Relationship>> completionFuture,
             final StopWatch stopWatch) {
         log.info("Retrieving dataReference from storage for contractAgreementId {}", contractAgreementId);
-        Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.get(contractAgreementId);
+        final Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.get(contractAgreementId);
 
         if (dataReference.isPresent()) {
             final EndpointDataReference ref = dataReference.get();
             log.info("Retrieving data from EDC data plane with dataReference {}:{}", ref.getAuthKey(),
                     ref.getAuthCode());
-            String data = edcDataPlaneClient.getData(ref, submodel);
+            final String data = edcDataPlaneClient.getData(ref, submodel);
 
             final RelationshipSubmodel relationshipSubmodel = jsonUtil.fromString(data,
                     traversalAspectType.getSubmodelClazz());

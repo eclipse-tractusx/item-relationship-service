@@ -73,7 +73,7 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnValidNegotiationId() {
         // arrange
-        final var negotiationId = NegotiationId.builder().id("test").build();
+        final var negotiationId = NegotiationId.builder().value("test").build();
         when(restTemplate.exchange(any(), eq(HttpMethod.POST), any(), eq(NegotiationId.class),
                 any(Object.class))).thenReturn(ResponseEntity.of(Optional.of(negotiationId)));
         final NegotiationRequest request = NegotiationRequest.builder().build();
@@ -88,7 +88,7 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnConfirmedNegotiationResult() {
         // arrange
-        final var negotiationId = NegotiationId.builder().id("test").build();
+        final var negotiationId = NegotiationId.builder().value("test").build();
         final var negotiationResult = NegotiationResponse.builder()
                                                          .contractAgreementId("testContractId")
                                                          .state("CONFIRMED")
@@ -106,8 +106,8 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnValidTransferProcessId() {
         // arrange
-        final var processId = TransferProcessId.builder().id("test").build();
-        final var request = TransferProcessRequest.builder().id("testRequest").build();
+        final var processId = TransferProcessId.builder().value("test").build();
+        final var request = TransferProcessRequest.builder().requestId("testRequest").build();
         when(restTemplate.exchange(any(), eq(HttpMethod.POST), any(), eq(TransferProcessId.class),
                 any(Object.class))).thenReturn(ResponseEntity.of(Optional.of(processId)));
 
@@ -121,8 +121,8 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnCompletedTransferProcessResult() {
         // arrange
-        final var processId = TransferProcessId.builder().id("test").build();
-        final var response = TransferProcessResponse.builder().id("testResponse").state("COMPLETED").build();
+        final var processId = TransferProcessId.builder().value("test").build();
+        final var response = TransferProcessResponse.builder().responseId("testResponse").state("COMPLETED").build();
         when(restTemplate.exchange(any(), eq(HttpMethod.GET), any(), eq(TransferProcessResponse.class),
                 any(Object.class))).thenReturn(ResponseEntity.of(Optional.of(response)));
 

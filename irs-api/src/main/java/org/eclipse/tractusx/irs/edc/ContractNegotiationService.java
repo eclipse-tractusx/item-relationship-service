@@ -53,9 +53,9 @@ public class ContractNegotiationService {
 
     private final EdcControlPlaneClient edcControlPlaneClient;
 
-    public NegotiationResponse negotiate(String providerConnectorUrl, String target) {
+    public NegotiationResponse negotiate(final String providerConnectorUrl, final String target) {
         log.info("Get catalog from EDC provider.");
-        Catalog catalog = edcControlPlaneClient.getCatalog(providerConnectorUrl);
+        final Catalog catalog = edcControlPlaneClient.getCatalog(providerConnectorUrl);
 
         log.info("Search for offer for asset id: {}", target);
         final ContractOffer contractOfferForGivenAssetId = findOffer(target, catalog);
@@ -74,12 +74,12 @@ public class ContractNegotiationService {
 
         final NegotiationId negotiationId = edcControlPlaneClient.startNegotiations(negotiationRequest);
 
-        log.info("Fetch negotation id: {}", negotiationId.getId());
+        log.info("Fetch negotation id: {}", negotiationId.getValue());
 
         final NegotiationResponse negotiationResponse = edcControlPlaneClient.getNegotiationResult(negotiationId);
 
         final TransferProcessRequest transferProcessRequest = TransferProcessRequest.builder()
-                .id(UUID.randomUUID().toString())
+                .requestId(UUID.randomUUID().toString())
                 .connectorId(catalog.getId())
                 .connectorAddress(providerConnectorUrl + CONTROL_PLANE_SUFIX)
                 .contractId(negotiationResponse.getContractAgreementId())
@@ -91,7 +91,7 @@ public class ContractNegotiationService {
 
         // can be added to cache after completed
         edcControlPlaneClient.getTransferProcess(transferProcessId);
-        log.info("Transfer process completed for transferProcessId: {}", transferProcessId.getId());
+        log.info("Transfer process completed for transferProcessId: {}", transferProcessId.getValue());
         return negotiationResponse;
     }
 

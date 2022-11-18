@@ -47,7 +47,7 @@ public class EdcDataPlaneClient {
 
     private final RestTemplate simpleRestTemplate;
 
-    public String getData(EndpointDataReference dataReference, String subUrl) {
+    public String getData(final EndpointDataReference dataReference, final String subUrl) {
         final String url = getUrl(dataReference.getEndpoint(), subUrl);
 
         final String response = simpleRestTemplate.exchange(
@@ -60,7 +60,7 @@ public class EdcDataPlaneClient {
         return extractData(response);
     }
 
-    private String getUrl(String connectorUrl, String subUrl) {
+    private String getUrl(final String connectorUrl, final String subUrl) {
         var url = connectorUrl;
         if (subUrl != null && !subUrl.isEmpty()) {
             url = url.endsWith("/") ? url + subUrl : url + "/" + subUrl;
@@ -68,18 +68,19 @@ public class EdcDataPlaneClient {
         return url;
     }
 
-    private HttpHeaders headers(EndpointDataReference dataReference) {
+    private HttpHeaders headers(final EndpointDataReference dataReference) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.add(dataReference.getAuthKey(), dataReference.getAuthCode());
         return headers;
     }
 
-    private String extractData(String response) {
-        Matcher dataMatcher = RESPONSE_PATTERN.matcher(response);
+    private String extractData(final String response) {
+        String modifiedResponse = response;
+        Matcher dataMatcher = RESPONSE_PATTERN.matcher(modifiedResponse);
         while (dataMatcher.matches()) {
-            response = dataMatcher.group("embeddedData");
-            response = response.replace("\\\"", "\"").replace("\\\\", "\\");
+            modifiedResponse = dataMatcher.group("embeddedData");
+            modifiedResponse = modifiedResponse.replace("\\\"", "\"").replace("\\\\", "\\");
             dataMatcher = RESPONSE_PATTERN.matcher(response);
         }
         return response;
