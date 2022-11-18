@@ -25,6 +25,9 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+/**
+ * EDC transfer process request.
+ */
 @Value
 @Builder(toBuilder = true)
 @Jacksonized

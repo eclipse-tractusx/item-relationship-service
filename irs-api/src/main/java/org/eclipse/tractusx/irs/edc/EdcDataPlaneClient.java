@@ -35,6 +35,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Communicates with the EDC DataPlane.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor

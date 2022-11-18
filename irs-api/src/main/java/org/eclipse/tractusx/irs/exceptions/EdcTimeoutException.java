@@ -19,35 +19,13 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.springframework.stereotype.Service;
-
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+package org.eclipse.tractusx.irs.exceptions;
 
 /**
- * InMemory storage for endpoint data references.
+ * Exception for timeouts in EDC communication.
  */
-@Service
-public class EndpointDataReferenceStorage {
-
-    Map<String, EndpointDataReference> storageMap = null;
-
-    public void put(String contractAgreementId, EndpointDataReference dataReference) {
-        if (storageMap == null) {
-            storageMap = new ConcurrentHashMap<>();
-        }
-        storageMap.put(contractAgreementId, dataReference);
+public class EdcTimeoutException extends RuntimeException {
+    public EdcTimeoutException(final String msg) {
+        super(msg);
     }
-
-    public EndpointDataReference get(String contractAgreementId) {
-        if (!storageMap.containsKey(contractAgreementId)) {
-            throw new RuntimeException();
-        }
-        return storageMap.get(contractAgreementId);
-    }
-
 }
