@@ -11,16 +11,16 @@ include::../../../uml-diagrams/runtime-view/api-call-asynchrous-sequence.puml[]
 
 This section describes how the IRS fetches submodel payload.
 
-[plantuml, target=submodel processing, format=svg]
+[plantuml, target=submodel-processing, format=svg]
 ....
 include::../../../uml-diagrams/runtime-view/aas-shell-and submodel-processing.puml[]
 ....
 
-== Job orchistration flow
+== Job orchestration flow
 
-This section describes the job orchistration in IRS.
+This section describes the job orchestration in IRS.
 
-[plantuml, target=job-orchistration, format=svg]
+[plantuml, target=job-orchestration, format=svg]
 ....
-include::../../../uml-diagrams/runtime-view/job-orchistration-sequence.puml[]
+include::../../../uml-diagrams/runtime-view/job-orchestration-sequence.puml[]
 ....
