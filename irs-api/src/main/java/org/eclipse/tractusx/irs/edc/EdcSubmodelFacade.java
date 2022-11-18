@@ -21,9 +21,11 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -58,6 +60,8 @@ public class EdcSubmodelFacade {
     private final JsonUtil jsonUtil;
     private final ScheduledExecutorService scheduler;
 
+    private final Clock clock;
+
     public CompletableFuture<List<Relationship>> getRelationships(final String submodelEndpointAddress,
             final RelationshipAspect traversalAspectType) {
         final StopWatch stopWatch = new StopWatch();
@@ -91,26 +95,32 @@ public class EdcSubmodelFacade {
         final Runnable action = () -> retrieveSubmodelData(traversalAspectType, submodel, contractAgreementId,
                 completionFuture, stopWatch);
 
-        final ScheduledFuture<?> checkFuture = pollForSubmodel(action);
+        final ScheduledFuture<?> checkFuture = pollForSubmodel(action, completionFuture);
         completionFuture.whenComplete((result, thrown) -> checkFuture.cancel(true));
         return completionFuture;
     }
 
     @NotNull
-    private ScheduledFuture<?> pollForSubmodel(final Runnable action) {
-        return scheduler.scheduleWithFixedDelay(withTimeout(action, Duration.ofMinutes(MAXIMUM_TASK_RUNTIME_MINUTES)), 0,
-                POLL_INTERVAL_MILLIS,
-                TimeUnit.MILLISECONDS);
+    private ScheduledFuture<?> pollForSubmodel(final Runnable action,
+            final CompletableFuture<List<Relationship>> completionFuture) {
+        return scheduler.scheduleWithFixedDelay(
+                withTimeout(action, Duration.ofMinutes(MAXIMUM_TASK_RUNTIME_MINUTES), completionFuture), 0,
+                POLL_INTERVAL_MILLIS, TimeUnit.MILLISECONDS);
     }
 
-    private Runnable withTimeout(final Runnable action, final Duration ttl) {
-        final LocalTime startTime = LocalTime.now();
+    private Runnable withTimeout(final Runnable action, final Duration ttl,
+            final CompletableFuture<List<Relationship>> taskToEndOnError) {
+        final LocalTime startTime = LocalTime.now(clock);
         return () -> {
-            final LocalTime now = LocalTime.now();
-            if (startTime.plus(ttl).isBefore(now)) {
-                throw new EdcTimeoutException("Waiting for submodel endpoint timed out after " + ttl);
+            try {
+                final LocalTime now = LocalTime.now(clock);
+                if (startTime.plus(ttl).isBefore(now)) {
+                    throw new EdcTimeoutException("Waiting for submodel endpoint timed out after " + ttl);
+                }
+                action.run();
+            } catch (Exception e) {
+                taskToEndOnError.completeExceptionally(e);
             }
-            action.run();
         };
     }
 
@@ -118,24 +128,21 @@ public class EdcSubmodelFacade {
             final String contractAgreementId, final CompletableFuture<List<Relationship>> completionFuture,
             final StopWatch stopWatch) {
         log.info("Retrieving dataReference from storage for contractAgreementId {}", contractAgreementId);
-        EndpointDataReference dataReference = endpointDataReferenceStorage.get(contractAgreementId);
+        Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.get(contractAgreementId);
 
-        if (dataReference != null) {
-            try {
-                log.info("Retrieving data from EDC data plane with dataReference {}:{}", dataReference.getAuthKey(),
-                        dataReference.getAuthCode());
-                String data = edcDataPlaneClient.getData(dataReference, submodel);
+        if (dataReference.isPresent()) {
+            final EndpointDataReference ref = dataReference.get();
+            log.info("Retrieving data from EDC data plane with dataReference {}:{}", ref.getAuthKey(),
+                    ref.getAuthCode());
+            String data = edcDataPlaneClient.getData(ref, submodel);
 
-                final RelationshipSubmodel relationshipSubmodel = jsonUtil.fromString(data,
-                        traversalAspectType.getSubmodelClazz());
+            final RelationshipSubmodel relationshipSubmodel = jsonUtil.fromString(data,
+                    traversalAspectType.getSubmodelClazz());
 
-                completionFuture.complete(relationshipSubmodel.asRelationships());
+            completionFuture.complete(relationshipSubmodel.asRelationships());
 
-                stopWatch.stop();
-                log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
-            } catch (Exception e) {
-                completionFuture.completeExceptionally(e);
-            }
+            stopWatch.stop();
+            log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
         }
     }
 
