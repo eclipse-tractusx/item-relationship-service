@@ -33,6 +33,7 @@ import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessId;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -52,6 +53,8 @@ public class EdcControlPlaneClient {
 
     static final String CONTROL_PLANE_SUFIX = "/api/v1/ids/data";
     private static final String EDC_HEADER = "X-Api-Key";
+
+    @Value("${edc.token:}")
     private static final String EDC_TOKEN = "";
     public static final int MAX_NUMBER_OF_CALLS = 20;
     private static final long SLEEP_TIMEOUT_IN_MILLIS = 2000;

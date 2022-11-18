@@ -128,3 +128,6 @@ semanticsHub:
 bpdm:
   url: "${BPDM_URL:}"
 
+edc:
+  token: "${EDC_TOKEN}"
+
