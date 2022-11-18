@@ -69,7 +69,7 @@ public class EdcDataPlaneClient {
     }
 
     private HttpHeaders headers(final EndpointDataReference dataReference) {
-        HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.add(dataReference.getAuthKey(), dataReference.getAuthCode());
         return headers;
@@ -83,7 +83,7 @@ public class EdcDataPlaneClient {
             modifiedResponse = modifiedResponse.replace("\\\"", "\"").replace("\\\\", "\\");
             dataMatcher = RESPONSE_PATTERN.matcher(response);
         }
-        return response;
+        return modifiedResponse;
     }
 
 }
