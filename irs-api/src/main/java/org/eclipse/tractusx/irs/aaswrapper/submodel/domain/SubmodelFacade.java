@@ -22,6 +22,8 @@
 package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,14 +49,14 @@ public class SubmodelFacade {
      * @return The Aspect Model for the given submodel
      */
     public List<Relationship> getRelationships(final String submodelEndpointAddress, final RelationshipAspect traversalAspectType)
-            throws InterruptedException {
+            throws InterruptedException, ExecutionException {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start("Get Submodel task for relationships");
-        final List<Relationship> relationships = edcSubmodelFacade.getRelationships(submodelEndpointAddress,
-                traversalAspectType);
+        final CompletableFuture<List<Relationship>> relationships = edcSubmodelFacade.getRelationships(
+                submodelEndpointAddress, traversalAspectType);
         stopWatch.stop();
         log.info("Task {} took {} ms for endpoint address: {}", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis(), submodelEndpointAddress);
-        return relationships;
+        return relationships.get();
     }
 
     /**
