@@ -55,7 +55,7 @@ public class EdcControlPlaneClient {
     private static final String EDC_HEADER = "X-Api-Key";
 
     @Value("${edc.token:}")
-    private static final String EDC_TOKEN = "";
+    private static final String EDC_TOKEN = "123456";
     public static final int MAX_NUMBER_OF_CALLS = 20;
     private static final long SLEEP_TIMEOUT_IN_MILLIS = 2000;
 
