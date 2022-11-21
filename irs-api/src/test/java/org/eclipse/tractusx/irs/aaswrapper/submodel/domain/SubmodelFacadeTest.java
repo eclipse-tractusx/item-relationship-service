@@ -31,12 +31,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
@@ -70,7 +72,7 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
     @BeforeEach
     void setUp() throws IOException {
         final SubmodelClientLocalStub submodelClientStub = new SubmodelClientLocalStub(jsonUtil, localTestDataConfiguration.cxTestDataContainer());
-        submodelFacade = new SubmodelFacade(submodelClientStub);
+        submodelFacade = new SubmodelFacade(submodelClientStub, null);
     }
 
     @Test
@@ -78,14 +80,15 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
         final String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(new RestTemplate(),
                 "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
-        final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
+        final SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient, null);
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
                 () -> submodelFacade.getRelationships(url, RelationshipAspect.AssemblyPartRelationship));
     }
 
     @Test
-    void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndAssemblyPartRelationship() {
+    void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndAssemblyPartRelationship()
+            throws ExecutionException, InterruptedException, EdcClientException {
         final String catenaXId = "urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b";
 
         final List<Relationship> submodelResponse = submodelFacade.getRelationships(
@@ -104,7 +107,8 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsPlanned() {
+    void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsPlanned()
+            throws ExecutionException, InterruptedException, EdcClientException {
         final String catenaXId = "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c";
 
         final List<Relationship> submodelResponse = submodelFacade.getRelationships(
@@ -122,7 +126,8 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldReturnEmptyRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelUsageAsBuilt() {
+    void shouldReturnEmptyRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelUsageAsBuilt()
+            throws ExecutionException, InterruptedException, EdcClientException {
         final String catenaXId = "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c";
 
         final List<Relationship> submodelResponse = submodelFacade.getRelationships(
@@ -132,7 +137,8 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldReturnEmptyRelationshipsWhenRequestingWithNotExistingCatenaXIdAndAssemblyPartRelationship() {
+    void shouldReturnEmptyRelationshipsWhenRequestingWithNotExistingCatenaXIdAndAssemblyPartRelationship()
+            throws ExecutionException, InterruptedException, EdcClientException {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
 
         final List<Relationship> submodelResponse = submodelFacade.getRelationships(
@@ -142,11 +148,12 @@ class SubmodelFacadeTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldReturnRelationshipsWhenRequestingOnRealClient() {
+    void shouldReturnRelationshipsWhenRequestingOnRealClient()
+            throws ExecutionException, InterruptedException, EdcClientException {
         final String endpointUrl = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
         final SubmodelClientImpl submodelClient = new SubmodelClientImpl(restTemplate,
                 "http://aaswrapper:9191/api/service", jsonUtil, meterRegistry, retryRegistry);
-        SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient);
+        SubmodelFacade submodelFacade = new SubmodelFacade(submodelClient, null);
 
         final AssemblyPartRelationship assemblyPartRelationship = new AssemblyPartRelationship("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6", new HashSet<>());
 

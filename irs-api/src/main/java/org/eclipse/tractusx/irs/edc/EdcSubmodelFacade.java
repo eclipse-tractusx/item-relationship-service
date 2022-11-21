@@ -68,7 +68,7 @@ public class EdcSubmodelFacade {
         }
 
         final String providerConnectorUrl = submodelEndpointAddress.substring(0, indexOfUrn);
-        final String target = submodelEndpointAddress.substring(indexOfUrn, indexOfSubModel);
+        final String target = submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
         log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerConnectorUrl,
                 target);
         final NegotiationResponse negotiationResponse = contractNegotiationService.negotiate(providerConnectorUrl,

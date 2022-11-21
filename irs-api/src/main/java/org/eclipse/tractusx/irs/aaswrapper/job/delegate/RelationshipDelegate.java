@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,7 @@ import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
+import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 import org.springframework.web.client.RestClientException;
 
@@ -49,15 +51,14 @@ public class RelationshipDelegate extends AbstractDelegate {
 
     private final SubmodelFacade submodelFacade;
 
-    public RelationshipDelegate(final AbstractDelegate nextStep,
-            final SubmodelFacade submodelFacade) {
+    public RelationshipDelegate(final AbstractDelegate nextStep, final SubmodelFacade submodelFacade) {
         super(nextStep);
         this.submodelFacade = submodelFacade;
     }
 
     @Override
-    public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder, final JobParameter jobData,
-            final AASTransferProcess aasTransferProcess, final String itemId) {
+    public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder,
+            final JobParameter jobData, final AASTransferProcess aasTransferProcess, final String itemId) {
 
         final RelationshipAspect relationshipAspect = RelationshipAspect.from(jobData.getBomLifecycle(), jobData.getDirection());
         itemContainerBuilder.build().getShells().stream().findFirst().ifPresent(
@@ -70,7 +71,8 @@ public class RelationshipDelegate extends AbstractDelegate {
 
                     aasTransferProcess.addIdsToProcess(childIds);
                     itemContainerBuilder.relationships(relationships);
-                } catch (RestClientException | IllegalArgumentException e) {
+                } catch (RestClientException | IllegalArgumentException | ExecutionException | InterruptedException
+                         | EdcClientException e) {
                     log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                             address);
                     itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount, ProcessStep.SUBMODEL_REQUEST));
@@ -86,9 +88,9 @@ public class RelationshipDelegate extends AbstractDelegate {
 
     private List<String> getChildIds(final List<Relationship> relationships) {
         return relationships.stream()
-                           .map(Relationship::getLinkedItem)
-                           .map(LinkedItem::getChildCatenaXId)
-                           .map(GlobalAssetIdentification::getGlobalAssetId)
-                           .collect(Collectors.toList());
+                            .map(Relationship::getLinkedItem)
+                            .map(LinkedItem::getChildCatenaXId)
+                            .map(GlobalAssetIdentification::getGlobalAssetId)
+                            .collect(Collectors.toList());
     }
 }

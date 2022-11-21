@@ -22,10 +22,14 @@
 package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
@@ -38,19 +42,25 @@ import org.springframework.util.StopWatch;
 public class SubmodelFacade {
 
     private final SubmodelClient submodelClient;
+    private final EdcSubmodelFacade edcSubmodelFacade;
 
     /**
      * @param submodelEndpointAddress The URL to the submodel endpoint
-     * @param traversalAspectType aspect type for traversal informations
+     * @param traversalAspectType     aspect type for traversal information
      * @return The Aspect Model for the given submodel
      */
-    public List<Relationship> getRelationships(final String submodelEndpointAddress, final RelationshipAspect traversalAspectType) {
+    public List<Relationship> getRelationships(final String submodelEndpointAddress,
+            final RelationshipAspect traversalAspectType)
+            throws ExecutionException, InterruptedException, EdcClientException {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start("Get Submodel task for relationships");
-        final RelationshipSubmodel relationshipSubmodel = this.submodelClient.getSubmodel(submodelEndpointAddress, traversalAspectType.getSubmodelClazz());
+        final CompletableFuture<List<Relationship>> relationships = edcSubmodelFacade.getRelationships(
+                submodelEndpointAddress, traversalAspectType);
         stopWatch.stop();
-        log.info("Task {} took {} ms for endpoint address: {}", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis(), submodelEndpointAddress);
-        return relationshipSubmodel.asRelationships();
+        final List<Relationship> relationshipsResponse = relationships.get();
+        log.info("Task {} took {} ms for endpoint address: {}", stopWatch.getLastTaskName(),
+                stopWatch.getLastTaskTimeMillis(), submodelEndpointAddress);
+        return relationshipsResponse;
     }
 
     /**
@@ -63,7 +73,8 @@ public class SubmodelFacade {
         final String submodel = this.submodelClient.getSubmodel(submodelEndpointAddress);
         log.info("Retrieved Submodel as raw string from endpoint: '{}'", submodelEndpointAddress);
         stopWatch.stop();
-        log.info("Task {} took {} ms for endpoint address: {}", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis(), submodelEndpointAddress);
+        log.info("Task {} took {} ms for endpoint address: {}", stopWatch.getLastTaskName(),
+                stopWatch.getLastTaskTimeMillis(), submodelEndpointAddress);
         return submodel;
     }
 
