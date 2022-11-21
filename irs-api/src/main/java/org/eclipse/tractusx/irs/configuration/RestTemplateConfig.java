@@ -29,7 +29,6 @@ import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,7 +38,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -75,17 +73,6 @@ public class RestTemplateConfig {
 
         return restTemplateBuilder.additionalInterceptors(
                                           new OAuthClientCredentialsRestTemplateInterceptor(authorizedClientManager(), clientRegistration))
-                                  .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                                  .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                                  .build();
-    }
-
-    @Bean(BASIC_AUTH_REST_TEMPLATE)
-    /* package */ RestTemplate basicAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder,
-            @Value("${aasWrapper.username}") final String aasWrapperUsername,
-            @Value("${aasWrapper.password}") final String aasWrapperPassword) {
-        return restTemplateBuilder.additionalInterceptors(
-                                          new BasicAuthenticationInterceptor(aasWrapperUsername, aasWrapperPassword))
                                   .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                                   .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                                   .build();
