@@ -48,8 +48,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @RequiredArgsConstructor
 public class EdcControlPlaneClient {
-
-    static final String CONSUMER_CONTROL_PLANE = "http://irs-local-edc-controlplane";
+    static final String CONSUMER_CONTROL_PLANE = "http://irs-local-edc-controlplane:8181";
 
     static final String CONTROL_PLANE_SUFIX = "/api/v1/ids/data";
     private static final String EDC_HEADER = "X-Api-Key";
