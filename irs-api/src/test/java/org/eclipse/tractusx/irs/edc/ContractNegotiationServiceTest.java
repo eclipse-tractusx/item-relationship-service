@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.irs.edc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -36,6 +37,7 @@ import org.eclipse.tractusx.irs.edc.model.NegotiationId;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessId;
 import org.eclipse.tractusx.irs.exceptions.ContractNegotiationException;
+import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -82,5 +84,21 @@ class ContractNegotiationServiceTest {
         when(contractOffer.getAsset()).thenReturn(asset);
         when(catalog.getContractOffers()).thenReturn(List.of(contractOffer));
         return catalog;
+    }
+
+    @Test
+    void shouldThrowErrorWhenRetrievingNegotiationResult() {
+        // arrange
+        final var assetId = "testTarget";
+        final var catalog = mockCatalog(assetId);
+        when(edcControlPlaneClient.getCatalog(CONNECTOR_URL)).thenReturn(catalog);
+        when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
+                NegotiationId.builder().value("negotiationId").build());
+        CompletableFuture<NegotiationResponse> response = CompletableFuture.failedFuture(
+                new RuntimeException("Test exception"));
+        when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(response);
+
+        // act & assert
+        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, assetId)).isInstanceOf(EdcClientException.class);
     }
 }

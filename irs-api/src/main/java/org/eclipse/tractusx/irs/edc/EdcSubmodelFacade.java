@@ -64,7 +64,7 @@ public class EdcSubmodelFacade {
         final int indexOfSubModel = findIndexOf(submodelEndpointAddress, submodel);
 
         if (indexOfUrn == -1 || indexOfSubModel == -1) {
-            throw new IllegalArgumentException(
+            throw new EdcClientException(
                     "Cannot rewrite endpoint address, malformed format: " + submodelEndpointAddress);
         }
 

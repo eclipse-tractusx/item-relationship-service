@@ -29,4 +29,8 @@ public class EdcClientException extends Exception {
     public EdcClientException(final Throwable cause) {
         super(cause);
     }
+
+    public EdcClientException(final String msg) {
+        super(msg);
+    }
 }
