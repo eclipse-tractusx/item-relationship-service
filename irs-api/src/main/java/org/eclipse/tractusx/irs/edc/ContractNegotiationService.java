@@ -56,7 +56,7 @@ public class ContractNegotiationService {
     public NegotiationResponse negotiate(String providerConnectorUrl, String target) {
         log.info("Get catalog from EDC provider.");
         Catalog catalog = edcControlPlaneClient.getCatalog(providerConnectorUrl);
-
+        log.info("Received catalog: {}", catalog);
         log.info("Search for offer for asset id: {}", target);
         final ContractOffer contractOfferForGivenAssetId = findOffer(target, catalog);
 
