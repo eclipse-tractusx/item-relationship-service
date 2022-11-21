@@ -33,6 +33,7 @@ import java.util.concurrent.CompletableFuture;
 import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
+import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.model.NegotiationId;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessId;
@@ -42,6 +43,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,6 +55,9 @@ class ContractNegotiationServiceTest {
 
     @Mock
     private EdcControlPlaneClient edcControlPlaneClient;
+
+    @Mock
+    private EdcConfiguration config;
 
     @Test
     void shouldNegotiateSuccessfully() throws ContractNegotiationException {

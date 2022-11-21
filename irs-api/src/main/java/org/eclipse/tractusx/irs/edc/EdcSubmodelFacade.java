@@ -21,7 +21,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -32,6 +31,7 @@ import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference
 import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.RelationshipAspect;
 import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.RelationshipSubmodel;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.services.AsyncPollingService;
@@ -47,7 +47,7 @@ import org.springframework.util.StopWatch;
 @RequiredArgsConstructor
 public class EdcSubmodelFacade {
 
-    public static final int MAXIMUM_TASK_RUNTIME_MINUTES = 10;
+    private final EdcConfiguration config;
     private final ContractNegotiationService contractNegotiationService;
     private final EdcDataPlaneClient edcDataPlaneClient;
     private final EndpointDataReferenceStorage endpointDataReferenceStorage;
@@ -59,9 +59,8 @@ public class EdcSubmodelFacade {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start("Get EDC Submodel task for relationships, endpoint " + submodelEndpointAddress);
 
-        final String submodel = "/submodel";
-        final int indexOfUrn = findIndexOf(submodelEndpointAddress, "/urn");
-        final int indexOfSubModel = findIndexOf(submodelEndpointAddress, submodel);
+        final int indexOfUrn = findIndexOf(submodelEndpointAddress, config.getSubmodelUrnPrefix());
+        final int indexOfSubModel = findIndexOf(submodelEndpointAddress, config.getSubmodelPath());
 
         if (indexOfUrn == -1 || indexOfSubModel == -1) {
             throw new EdcClientException(
@@ -75,18 +74,16 @@ public class EdcSubmodelFacade {
         final NegotiationResponse negotiationResponse = contractNegotiationService.negotiate(providerConnectorUrl,
                 target);
 
-        return startSubmodelDataRetrieval(traversalAspectType, submodel, negotiationResponse.getContractAgreementId(),
-                stopWatch);
+        return startSubmodelDataRetrieval(traversalAspectType, negotiationResponse.getContractAgreementId(), stopWatch);
     }
 
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(
-            final RelationshipAspect traversalAspectType, final String submodel, final String contractAgreementId,
-            final StopWatch stopWatch) {
+            final RelationshipAspect traversalAspectType, final String contractAgreementId, final StopWatch stopWatch) {
 
         return pollingService.<List<Relationship>>createJob()
-                             .action(() -> retrieveSubmodelData(traversalAspectType, submodel, contractAgreementId,
-                                     stopWatch))
-                             .timeToLive(Duration.ofMinutes(MAXIMUM_TASK_RUNTIME_MINUTES))
+                             .action(() -> retrieveSubmodelData(traversalAspectType, config.getSubmodelPath(),
+                                     contractAgreementId, stopWatch))
+                             .timeToLive(config.getSubmodelRequestTtl())
                              .description("waiting for submodel retrieval")
                              .build()
                              .schedule();

@@ -21,8 +21,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
-import static org.eclipse.tractusx.irs.edc.EdcControlPlaneClient.CONTROL_PLANE_SUFFIX;
-
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.UUID;
@@ -37,6 +35,7 @@ import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.dataspaceconnector.policy.model.PolicyType;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
+import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.model.ContractOfferRequest;
 import org.eclipse.tractusx.irs.edc.model.NegotiationId;
 import org.eclipse.tractusx.irs.edc.model.NegotiationRequest;
@@ -57,6 +56,8 @@ public class ContractNegotiationService {
 
     private final EdcControlPlaneClient edcControlPlaneClient;
 
+    private final EdcConfiguration config;
+
     public NegotiationResponse negotiate(final String providerConnectorUrl, final String target)
             throws ContractNegotiationException {
         log.info("Get catalog from EDC provider.");
@@ -75,7 +76,7 @@ public class ContractNegotiationService {
         final NegotiationRequest negotiationRequest = NegotiationRequest.builder()
                                                                         .connectorId(catalog.getId())
                                                                         .connectorAddress(providerConnectorUrl
-                                                                                + CONTROL_PLANE_SUFFIX)
+                                                                                + config.getControlPlaneProviderSuffix())
                                                                         .offer(contractOfferRequest)
                                                                         .build();
 
@@ -90,7 +91,8 @@ public class ContractNegotiationService {
         final var request = TransferProcessRequest.builder()
                                                   .requestId(UUID.randomUUID().toString())
                                                   .connectorId(catalog.getId())
-                                                  .connectorAddress(providerConnectorUrl + CONTROL_PLANE_SUFFIX)
+                                                  .connectorAddress(
+                                                          providerConnectorUrl + config.getControlPlaneProviderSuffix())
                                                   .contractId(response.getContractAgreementId())
                                                   .assetId(target)
                                                   .dataDestination(TransferProcessDataDestination.builder().build())

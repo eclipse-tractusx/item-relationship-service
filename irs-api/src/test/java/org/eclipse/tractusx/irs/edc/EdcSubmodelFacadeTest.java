@@ -46,6 +46,7 @@ import com.github.jknack.handlebars.internal.Files;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.RelationshipAspect;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.exceptions.TimeoutException;
 import org.eclipse.tractusx.irs.services.AsyncPollingService;
@@ -55,6 +56,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -74,13 +76,20 @@ class EdcSubmodelFacadeTest {
 
     private final AsyncPollingService pollingService = new AsyncPollingService(clock, scheduler);
 
+    @Spy
+    private final EdcConfiguration config = new EdcConfiguration();
+
     private EdcSubmodelFacade testee;
 
     @BeforeEach
     void setUp() {
-
-        testee = new EdcSubmodelFacade(contractNegotiationService, edcDataPlaneClient, endpointDataReferenceStorage,
-                jsonUtil, pollingService);
+        config.setControlPlaneEndpointData("https://irs-consumer-controlplane.dev.demo.catena-x.net/data");
+        config.setSubmodelPath("/submodel");
+        config.setSubmodelUrnPrefix("/urn");
+        config.setSubmodelRequestTtl(Duration.ofMinutes(10));
+        config.setControlPlaneRequestTtl(Duration.ofMinutes(10));
+        testee = new EdcSubmodelFacade(config, contractNegotiationService, edcDataPlaneClient,
+                endpointDataReferenceStorage, jsonUtil, pollingService);
     }
 
     @Test

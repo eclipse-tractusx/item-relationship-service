@@ -108,6 +108,22 @@ aasWrapper:
   username: ${AASWRAPPER_USERNAME:}
   password: ${AASWRAPPER_PASSWORD:}
 
+edc:
+  controlplane:
+    request-ttl: PT10M
+    endpoint:
+      data: ${EDC_ENDPOINT_DATA:}
+    provider-suffix: /api/v1/ids/data
+    catalog-limit: 1000
+    api-key:
+      header: ${EDC_API_KEY_HEADER:X-Api-Key}
+      secret: ${EDC_API_KEY_SECRET:}
+
+  submodel:
+    request-ttl: PT10M
+    path: "/submodel"
+    urn-prefix: "/urn"
+
 digitalTwinRegistry:
   url: "${DIGITALTWINREGISTRY_URL:}"
 

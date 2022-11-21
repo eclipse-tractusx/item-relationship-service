@@ -21,7 +21,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -29,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
+import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.model.NegotiationId;
 import org.eclipse.tractusx.irs.edc.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
@@ -51,27 +51,25 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class EdcControlPlaneClient {
 
-    public static final int MAXIMUM_TASK_RUNTIME_MINUTES = 10;
-
-    private static final String CONSUMER_CONTROL_PLANE_DATA_ENDPOINT = "https://irs-consumer-controlplane.dev.demo.catena-x.net/data";
-
-    /* package */ static final String CONTROL_PLANE_SUFFIX = "/api/v1/ids/data";
-    private static final String EDC_HEADER = "X-Api-Key";
-    private static final String EDC_TOKEN = "";
     public static final String STATUS_CONFIRMED = "CONFIRMED";
     public static final String STATUS_COMPLETED = "COMPLETED";
     private final RestTemplate simpleRestTemplate;
     private final AsyncPollingService pollingService;
 
+    private final EdcConfiguration config;
+
     /* package */ Catalog getCatalog(final String providerConnectorUrl) {
-        return simpleRestTemplate.exchange(
-                CONSUMER_CONTROL_PLANE_DATA_ENDPOINT + "/catalog?providerUrl=" + providerConnectorUrl
-                        + CONTROL_PLANE_SUFFIX + "&limit=1000", HttpMethod.GET, new HttpEntity<>(null, headers()),
-                Catalog.class).getBody();
+        final var catalogUrl =
+                config.getControlPlaneEndpointData() + "/catalog?providerUrl={providerUrl}&limit={limit}";
+        final var providerUrl = providerConnectorUrl + config.getControlPlaneProviderSuffix();
+        final var limit = config.getControlPlaneCatalogLimit();
+
+        return simpleRestTemplate.exchange(catalogUrl, HttpMethod.GET, new HttpEntity<>(null, headers()), Catalog.class,
+                providerUrl, limit).getBody();
     }
 
     /* package */ NegotiationId startNegotiations(final NegotiationRequest request) {
-        return simpleRestTemplate.exchange(CONSUMER_CONTROL_PLANE_DATA_ENDPOINT + "/contractnegotiations",
+        return simpleRestTemplate.exchange(config.getControlPlaneEndpointData() + "/contractnegotiations",
                 HttpMethod.POST, new HttpEntity<>(request, headers()), NegotiationId.class).getBody();
     }
 
@@ -83,7 +81,7 @@ public class EdcControlPlaneClient {
                                  log.info("Check negotiations status");
 
                                  final NegotiationResponse response = simpleRestTemplate.exchange(
-                                         CONSUMER_CONTROL_PLANE_DATA_ENDPOINT + "/contractnegotiations/"
+                                         config.getControlPlaneEndpointData() + "/contractnegotiations/"
                                                  + negotiationId.getValue(), HttpMethod.GET, objectHttpEntity,
                                          NegotiationResponse.class).getBody();
 
@@ -95,14 +93,14 @@ public class EdcControlPlaneClient {
                                  return Optional.empty();
                              })
                              .description("wait for negotiation confirmation")
-                             .timeToLive(Duration.ofMinutes(MAXIMUM_TASK_RUNTIME_MINUTES))
+                             .timeToLive(config.getControlPlaneRequestTtl())
                              .build()
                              .schedule();
 
     }
 
     /* package */ TransferProcessId startTransferProcess(final TransferProcessRequest request) {
-        return simpleRestTemplate.exchange(CONSUMER_CONTROL_PLANE_DATA_ENDPOINT + "/transferprocess", HttpMethod.POST,
+        return simpleRestTemplate.exchange(config.getControlPlaneEndpointData() + "/transferprocess", HttpMethod.POST,
                 new HttpEntity<>(request, headers()), TransferProcessId.class).getBody();
     }
 
@@ -116,7 +114,7 @@ public class EdcControlPlaneClient {
                                  log.info("Check Transfer Process status");
 
                                  final TransferProcessResponse response = simpleRestTemplate.exchange(
-                                         CONSUMER_CONTROL_PLANE_DATA_ENDPOINT + "/transferprocess/"
+                                         config.getControlPlaneEndpointData() + "/transferprocess/"
                                                  + transferProcessId.getValue(), HttpMethod.GET, objectHttpEntity,
                                          TransferProcessResponse.class).getBody();
 
@@ -129,7 +127,7 @@ public class EdcControlPlaneClient {
 
                              })
                              .description("wait for transfer process completion")
-                             .timeToLive(Duration.ofMinutes(MAXIMUM_TASK_RUNTIME_MINUTES))
+                             .timeToLive(config.getControlPlaneRequestTtl())
                              .build()
                              .schedule();
 
@@ -138,7 +136,7 @@ public class EdcControlPlaneClient {
     private HttpHeaders headers() {
         final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        headers.add(EDC_HEADER, EDC_TOKEN);
+        headers.add(config.getControlPlaneApiKeyHeader(), config.getControlPlaneApiKeySecret());
         return headers;
     }
 
