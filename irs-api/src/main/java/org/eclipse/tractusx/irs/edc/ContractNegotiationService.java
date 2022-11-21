@@ -21,10 +21,13 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
-import static org.eclipse.tractusx.irs.edc.EdcControlPlaneClient.CONTROL_PLANE_SUFIX;
+import static org.eclipse.tractusx.irs.edc.EdcControlPlaneClient.CONTROL_PLANE_SUFFIX;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +44,7 @@ import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessDataDestination;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessId;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessRequest;
+import org.eclipse.tractusx.irs.exceptions.ContractNegotiationException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -53,7 +57,8 @@ public class ContractNegotiationService {
 
     private final EdcControlPlaneClient edcControlPlaneClient;
 
-    public NegotiationResponse negotiate(final String providerConnectorUrl, final String target) {
+    public NegotiationResponse negotiate(final String providerConnectorUrl, final String target)
+            throws ContractNegotiationException {
         log.info("Get catalog from EDC provider.");
         final Catalog catalog = edcControlPlaneClient.getCatalog(providerConnectorUrl);
 
@@ -61,38 +66,54 @@ public class ContractNegotiationService {
         final ContractOffer contractOfferForGivenAssetId = findOffer(target, catalog);
 
         final ContractOfferRequest contractOfferRequest = ContractOfferRequest.builder()
-                            .offerId(contractOfferForGivenAssetId.getId())
-                            .assetId(target)
-                            .policy(policyFor(target))
-                            .build();
+                                                                              .offerId(
+                                                                                      contractOfferForGivenAssetId.getId())
+                                                                              .assetId(target)
+                                                                              .policy(policyFor(target))
+                                                                              .build();
 
         final NegotiationRequest negotiationRequest = NegotiationRequest.builder()
-                            .connectorId(catalog.getId())
-                            .connectorAddress(providerConnectorUrl + CONTROL_PLANE_SUFIX)
-                            .offer(contractOfferRequest)
-                            .build();
+                                                                        .connectorId(catalog.getId())
+                                                                        .connectorAddress(providerConnectorUrl
+                                                                                + CONTROL_PLANE_SUFFIX)
+                                                                        .offer(contractOfferRequest)
+                                                                        .build();
 
         final NegotiationId negotiationId = edcControlPlaneClient.startNegotiations(negotiationRequest);
 
         log.info("Fetch negotation id: {}", negotiationId.getValue());
 
-        final NegotiationResponse negotiationResponse = edcControlPlaneClient.getNegotiationResult(negotiationId);
+        final CompletableFuture<NegotiationResponse> responseFuture = edcControlPlaneClient.getNegotiationResult(
+                negotiationId);
+        final NegotiationResponse response = Objects.requireNonNull(getNegotiationResponse(responseFuture));
 
-        final TransferProcessRequest transferProcessRequest = TransferProcessRequest.builder()
-                .requestId(UUID.randomUUID().toString())
-                .connectorId(catalog.getId())
-                .connectorAddress(providerConnectorUrl + CONTROL_PLANE_SUFIX)
-                .contractId(negotiationResponse.getContractAgreementId())
-                .assetId(target)
-                .dataDestination(TransferProcessDataDestination.builder().build())
-                .build();
+        final var request = TransferProcessRequest.builder()
+                                                  .requestId(UUID.randomUUID().toString())
+                                                  .connectorId(catalog.getId())
+                                                  .connectorAddress(providerConnectorUrl + CONTROL_PLANE_SUFFIX)
+                                                  .contractId(response.getContractAgreementId())
+                                                  .assetId(target)
+                                                  .dataDestination(TransferProcessDataDestination.builder().build())
+                                                  .build();
 
-        final TransferProcessId transferProcessId = edcControlPlaneClient.startTransferProcess(transferProcessRequest);
+        final TransferProcessId transferProcessId = edcControlPlaneClient.startTransferProcess(request);
 
         // can be added to cache after completed
         edcControlPlaneClient.getTransferProcess(transferProcessId);
         log.info("Transfer process completed for transferProcessId: {}", transferProcessId.getValue());
-        return negotiationResponse;
+        return response;
+    }
+
+    private NegotiationResponse getNegotiationResponse(final CompletableFuture<NegotiationResponse> negotiationResponse)
+            throws ContractNegotiationException {
+        try {
+            return negotiationResponse.get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            throw new ContractNegotiationException(e);
+        }
+        return null;
     }
 
     private static ContractOffer findOffer(final String target, final Catalog catalog) {
@@ -106,11 +127,12 @@ public class ContractNegotiationService {
     private static Policy policyFor(final String target) {
         return Policy.Builder.newInstance()
                              .permission(Permission.Builder.newInstance()
-                                 .target(target)
-                                 .action(Action.Builder.newInstance().type("USE").build())
-                                 .build())
+                                                           .target(target)
+                                                           .action(Action.Builder.newInstance().type("USE").build())
+                                                           .build())
                              .type(PolicyType.SET)
                              .build();
     }
 
 }
+
