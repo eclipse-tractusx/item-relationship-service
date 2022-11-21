@@ -22,12 +22,9 @@
 package org.eclipse.tractusx.irs.edc;
 
 import java.time.Duration;
-import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,9 +33,9 @@ import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.RelationshipAspect;
 import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.RelationshipSubmodel;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
-import org.eclipse.tractusx.irs.exceptions.EdcTimeoutException;
+import org.eclipse.tractusx.irs.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.services.AsyncPollingService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
@@ -51,15 +48,14 @@ import org.springframework.util.StopWatch;
 public class EdcSubmodelFacade {
 
     public static final int MAXIMUM_TASK_RUNTIME_MINUTES = 10;
-    public static final int POLL_INTERVAL_MILLIS = 100;
     private final ContractNegotiationService contractNegotiationService;
     private final EdcDataPlaneClient edcDataPlaneClient;
     private final EndpointDataReferenceStorage endpointDataReferenceStorage;
     private final JsonUtil jsonUtil;
-    private final ScheduledExecutorService scheduler;
+    private final AsyncPollingService pollingService;
 
     public CompletableFuture<List<Relationship>> getRelationships(final String submodelEndpointAddress,
-            final RelationshipAspect traversalAspectType) {
+            final RelationshipAspect traversalAspectType) throws EdcClientException {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start("Get EDC Submodel task for relationships, endpoint " + submodelEndpointAddress);
 
@@ -68,7 +64,7 @@ public class EdcSubmodelFacade {
         final int indexOfSubModel = findIndexOf(submodelEndpointAddress, submodel);
 
         if (indexOfUrn == -1 || indexOfSubModel == -1) {
-            throw new IllegalArgumentException(
+            throw new EdcClientException(
                     "Cannot rewrite endpoint address, malformed format: " + submodelEndpointAddress);
         }
 
@@ -87,56 +83,38 @@ public class EdcSubmodelFacade {
             final RelationshipAspect traversalAspectType, final String submodel, final String contractAgreementId,
             final StopWatch stopWatch) {
 
-        CompletableFuture<List<Relationship>> completionFuture = new CompletableFuture<>();
-        final Runnable action = () -> retrieveSubmodelData(traversalAspectType, submodel, contractAgreementId,
-                completionFuture, stopWatch);
+        return pollingService.<List<Relationship>>createJob()
+                             .action(() -> retrieveSubmodelData(traversalAspectType, submodel, contractAgreementId,
+                                     stopWatch))
+                             .timeToLive(Duration.ofMinutes(MAXIMUM_TASK_RUNTIME_MINUTES))
+                             .description("waiting for submodel retrieval")
+                             .build()
+                             .schedule();
 
-        final ScheduledFuture<?> checkFuture = pollForSubmodel(action);
-        completionFuture.whenComplete((result, thrown) -> checkFuture.cancel(true));
-        return completionFuture;
     }
 
-    @NotNull
-    private ScheduledFuture<?> pollForSubmodel(final Runnable action) {
-        return scheduler.scheduleWithFixedDelay(withTimeout(action, Duration.ofMinutes(MAXIMUM_TASK_RUNTIME_MINUTES)), 0,
-                POLL_INTERVAL_MILLIS,
-                TimeUnit.MILLISECONDS);
-    }
-
-    private Runnable withTimeout(final Runnable action, final Duration ttl) {
-        final LocalTime startTime = LocalTime.now();
-        return () -> {
-            final LocalTime now = LocalTime.now();
-            if (startTime.plus(ttl).isBefore(now)) {
-                throw new EdcTimeoutException("Waiting for submodel endpoint timed out after " + ttl);
-            }
-            action.run();
-        };
-    }
-
-    private void retrieveSubmodelData(final RelationshipAspect traversalAspectType, final String submodel,
-            final String contractAgreementId, final CompletableFuture<List<Relationship>> completionFuture,
-            final StopWatch stopWatch) {
+    private Optional<List<Relationship>> retrieveSubmodelData(final RelationshipAspect traversalAspectType,
+            final String submodel, final String contractAgreementId, final StopWatch stopWatch) {
         log.info("Retrieving dataReference from storage for contractAgreementId {}", contractAgreementId);
-        EndpointDataReference dataReference = endpointDataReferenceStorage.get(contractAgreementId);
+        final Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.get(contractAgreementId);
 
-        if (dataReference != null) {
-            try {
-                log.info("Retrieving data from EDC data plane with dataReference {}:{}", dataReference.getAuthKey(),
-                        dataReference.getAuthCode());
-                String data = edcDataPlaneClient.getData(dataReference, submodel);
+        if (dataReference.isPresent()) {
+            final EndpointDataReference ref = dataReference.get();
+            log.info("Retrieving data from EDC data plane with dataReference {}:{}", ref.getAuthKey(),
+                    ref.getAuthCode());
+            final String data = edcDataPlaneClient.getData(ref, submodel);
 
-                final RelationshipSubmodel relationshipSubmodel = jsonUtil.fromString(data,
-                        traversalAspectType.getSubmodelClazz());
+            final RelationshipSubmodel relationshipSubmodel = jsonUtil.fromString(data,
+                    traversalAspectType.getSubmodelClazz());
 
-                completionFuture.complete(relationshipSubmodel.asRelationships());
+            final List<Relationship> relationships = relationshipSubmodel.asRelationships();
 
-                stopWatch.stop();
-                log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
-            } catch (Exception e) {
-                completionFuture.completeExceptionally(e);
-            }
+            stopWatch.stop();
+            log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
+
+            return Optional.of(relationships);
         }
+        return Optional.empty();
     }
 
     private int findIndexOf(final String endpointAddress, final String str) {

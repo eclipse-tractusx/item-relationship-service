@@ -19,23 +19,27 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.model;
+package org.eclipse.tractusx.irs.services;
 
-import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import java.time.Clock;
+import java.util.concurrent.ScheduledExecutorService;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 /**
- * EDC transfer process response.
+ * Provides scheduling services for asynchronous polling.
  */
-@Value
-@Builder(toBuilder = true)
-@Jacksonized
-public class TransferProcessResponse {
+@Service
+@RequiredArgsConstructor
+public class AsyncPollingService {
 
-    private String responseId;
-    private String type;
-    private String state;
-    private String errorDetail;
+    private final Clock clock;
+    private final ScheduledExecutorService scheduler;
+
+    public <T> PollingJob.PollingJobBuilder<T> createJob() {
+        return PollingJob.<T>builder().clock(clock).scheduler(scheduler);
+    }
 
 }
+

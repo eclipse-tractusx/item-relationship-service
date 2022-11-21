@@ -22,10 +22,10 @@
 package org.eclipse.tractusx.irs.exceptions;
 
 /**
- * Exception for timeouts in EDC communication.
+ * Exception for errors in the contract negotiation.
  */
-public class EdcTimeoutException extends RuntimeException {
-    public EdcTimeoutException(final String msg) {
-        super(msg);
+public class ContractNegotiationException extends EdcClientException {
+    public ContractNegotiationException(final Throwable cause) {
+        super(cause);
     }
 }

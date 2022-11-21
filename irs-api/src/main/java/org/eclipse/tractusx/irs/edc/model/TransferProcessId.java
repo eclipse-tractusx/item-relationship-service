@@ -33,6 +33,6 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class TransferProcessId {
 
-    private String id;
+    private String value;
 
 }

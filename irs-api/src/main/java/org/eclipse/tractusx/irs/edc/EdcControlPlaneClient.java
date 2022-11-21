@@ -21,10 +21,12 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.tractusx.irs.edc.model.NegotiationId;
@@ -33,7 +35,7 @@ import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessId;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessResponse;
-import org.springframework.beans.factory.annotation.Value;
+import org.eclipse.tractusx.irs.services.AsyncPollingService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -48,100 +50,93 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @RequiredArgsConstructor
 public class EdcControlPlaneClient {
-    static final String CONSUMER_CONTROL_PLANE = "http://irs-local-edc-controlplane:8181";
 
-    static final String CONTROL_PLANE_SUFIX = "/api/v1/ids/data";
+    public static final int MAXIMUM_TASK_RUNTIME_MINUTES = 10;
+
+    private static final String CONSUMER_CONTROL_PLANE_DATA_ENDPOINT = "https://irs-consumer-controlplane.dev.demo.catena-x.net/data";
+
+    /* package */ static final String CONTROL_PLANE_SUFFIX = "/api/v1/ids/data";
     private static final String EDC_HEADER = "X-Api-Key";
-
-    @Value("${edc.token:}")
-    private static final String EDC_TOKEN = "123456";
-    public static final int MAX_NUMBER_OF_CALLS = 20;
-    private static final long SLEEP_TIMEOUT_IN_MILLIS = 2000;
-
+    private static final String EDC_TOKEN = "";
+    public static final String STATUS_CONFIRMED = "CONFIRMED";
+    public static final String STATUS_COMPLETED = "COMPLETED";
     private final RestTemplate simpleRestTemplate;
+    private final AsyncPollingService pollingService;
 
-    Catalog getCatalog(String providerConnectorUrl) {
-        return simpleRestTemplate.exchange(CONSUMER_CONTROL_PLANE
-                + "/data/catalog?providerUrl="
-                + providerConnectorUrl
-                + CONTROL_PLANE_SUFIX
-                + "&limit=1000",
-                HttpMethod.GET,
-                new HttpEntity<>(null, headers()),
+    /* package */ Catalog getCatalog(final String providerConnectorUrl) {
+        return simpleRestTemplate.exchange(
+                CONSUMER_CONTROL_PLANE_DATA_ENDPOINT + "/catalog?providerUrl=" + providerConnectorUrl
+                        + CONTROL_PLANE_SUFFIX + "&limit=1000", HttpMethod.GET, new HttpEntity<>(null, headers()),
                 Catalog.class).getBody();
     }
 
-    NegotiationId startNegotiations(NegotiationRequest request) {
-        return simpleRestTemplate.exchange(CONSUMER_CONTROL_PLANE
-                        + "/data/contractnegotiations",
-                HttpMethod.POST,
-                new HttpEntity<>(request, headers()),
-                NegotiationId.class).getBody();
+    /* package */ NegotiationId startNegotiations(final NegotiationRequest request) {
+        return simpleRestTemplate.exchange(CONSUMER_CONTROL_PLANE_DATA_ENDPOINT + "/contractnegotiations",
+                HttpMethod.POST, new HttpEntity<>(request, headers()), NegotiationId.class).getBody();
     }
 
-    @SneakyThrows
-    NegotiationResponse getNegotiationResult(NegotiationId negotiationId) {
+    /* package */ CompletableFuture<NegotiationResponse> getNegotiationResult(final NegotiationId negotiationId) {
+        final HttpEntity<Object> objectHttpEntity = new HttpEntity<>(null, headers());
 
-        NegotiationResponse response = null;
+        return pollingService.<NegotiationResponse>createJob()
+                             .action(() -> {
+                                 log.info("Check negotiations status");
 
-        int calls = 0;
-        boolean confirmed = false;
-        while (calls < MAX_NUMBER_OF_CALLS && !confirmed) {
-            calls++;
-            log.info("Check negotiations status for: {} time", calls);
-            Thread.sleep(SLEEP_TIMEOUT_IN_MILLIS);
+                                 final NegotiationResponse response = simpleRestTemplate.exchange(
+                                         CONSUMER_CONTROL_PLANE_DATA_ENDPOINT + "/contractnegotiations/"
+                                                 + negotiationId.getValue(), HttpMethod.GET, objectHttpEntity,
+                                         NegotiationResponse.class).getBody();
 
-            response = simpleRestTemplate.exchange(
-                    CONSUMER_CONTROL_PLANE + "/data/contractnegotiations/" + negotiationId.getId(), HttpMethod.GET,
-                    new HttpEntity<>(null, headers()), NegotiationResponse.class).getBody();
+                                 log.info("Response status of negotiation: {}", response);
 
-            log.info("Response status of negotiation: {}", response);
+                                 if (response != null && STATUS_CONFIRMED.equals(response.getState())) {
+                                     return Optional.of(response);
+                                 }
+                                 return Optional.empty();
+                             })
+                             .description("wait for negotiation confirmation")
+                             .timeToLive(Duration.ofMinutes(MAXIMUM_TASK_RUNTIME_MINUTES))
+                             .build()
+                             .schedule();
 
-            if (response != null) {
-                confirmed = "CONFIRMED".equals(response.getState());
-            }
-
-        }
-        return response;
     }
 
-    TransferProcessId startTransferProcess(TransferProcessRequest request) {
-        return simpleRestTemplate.exchange(CONSUMER_CONTROL_PLANE
-                        + "/data/transferprocess",
-                HttpMethod.POST,
-                new HttpEntity<>(request, headers()),
-                TransferProcessId.class).getBody();
+    /* package */ TransferProcessId startTransferProcess(final TransferProcessRequest request) {
+        return simpleRestTemplate.exchange(CONSUMER_CONTROL_PLANE_DATA_ENDPOINT + "/transferprocess", HttpMethod.POST,
+                new HttpEntity<>(request, headers()), TransferProcessId.class).getBody();
     }
 
-    @SneakyThrows
-    TransferProcessResponse getTransferProcess(TransferProcessId transferProcessId) {
-        TransferProcessResponse response = null;
+    /* package */ CompletableFuture<TransferProcessResponse> getTransferProcess(
+            final TransferProcessId transferProcessId) {
 
-        int calls = 0;
-        boolean completed = false;
-        while (calls < MAX_NUMBER_OF_CALLS && !completed) {
-            calls++;
-            log.info("Check Transfer Process status for: {} time", calls);
-            Thread.sleep(SLEEP_TIMEOUT_IN_MILLIS);
+        final HttpEntity<Object> objectHttpEntity = new HttpEntity<>(null, headers());
 
-            response = simpleRestTemplate.exchange(
-                    CONSUMER_CONTROL_PLANE + "/data/transferprocess/" + transferProcessId.getId(),
-                    HttpMethod.GET,
-                    new HttpEntity<>(null, headers()),
-                    TransferProcessResponse.class).getBody();
+        return pollingService.<TransferProcessResponse>createJob()
+                             .action(() -> {
+                                 log.info("Check Transfer Process status");
 
-            log.info("Response status of Transfer Process: {}", response);
+                                 final TransferProcessResponse response = simpleRestTemplate.exchange(
+                                         CONSUMER_CONTROL_PLANE_DATA_ENDPOINT + "/transferprocess/"
+                                                 + transferProcessId.getValue(), HttpMethod.GET, objectHttpEntity,
+                                         TransferProcessResponse.class).getBody();
 
-            if (response != null) {
-                completed = "COMPLETED".equals(response.getState());
-            }
+                                 log.info("Response status of Transfer Process: {}", response);
 
-        }
-        return response;
+                                 if (response != null && STATUS_COMPLETED.equals(response.getState())) {
+                                     return Optional.of(response);
+                                 }
+                                 return Optional.empty();
+
+                             })
+                             .description("wait for transfer process completion")
+                             .timeToLive(Duration.ofMinutes(MAXIMUM_TASK_RUNTIME_MINUTES))
+                             .build()
+                             .schedule();
+
     }
 
     private HttpHeaders headers() {
-        HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.add(EDC_HEADER, EDC_TOKEN);
         return headers;

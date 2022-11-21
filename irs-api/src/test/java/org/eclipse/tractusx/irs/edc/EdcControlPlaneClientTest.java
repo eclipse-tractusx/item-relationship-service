@@ -27,7 +27,10 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.tractusx.irs.edc.model.NegotiationId;
@@ -36,10 +39,12 @@ import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessId;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessResponse;
+import org.eclipse.tractusx.irs.services.AsyncPollingService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -51,10 +56,12 @@ class EdcControlPlaneClientTest {
     @Mock
     private RestTemplate restTemplate;
 
+    @Spy
+    private final AsyncPollingService pollingService = new AsyncPollingService(Clock.systemUTC(),
+            Executors.newSingleThreadScheduledExecutor());
+
     @InjectMocks
     private EdcControlPlaneClient testee;
-
-
 
     @Test
     void shouldReturnValidCatalog() {
@@ -73,7 +80,7 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnValidNegotiationId() {
         // arrange
-        final var negotiationId = NegotiationId.builder().id("test").build();
+        final var negotiationId = NegotiationId.builder().value("test").build();
         when(restTemplate.exchange(any(), eq(HttpMethod.POST), any(), eq(NegotiationId.class),
                 any(Object.class))).thenReturn(ResponseEntity.of(Optional.of(negotiationId)));
         final NegotiationRequest request = NegotiationRequest.builder().build();
@@ -86,9 +93,9 @@ class EdcControlPlaneClientTest {
     }
 
     @Test
-    void shouldReturnConfirmedNegotiationResult() {
+    void shouldReturnConfirmedNegotiationResult() throws Exception {
         // arrange
-        final var negotiationId = NegotiationId.builder().id("test").build();
+        final var negotiationId = NegotiationId.builder().value("test").build();
         final var negotiationResult = NegotiationResponse.builder()
                                                          .contractAgreementId("testContractId")
                                                          .state("CONFIRMED")
@@ -98,16 +105,17 @@ class EdcControlPlaneClientTest {
 
         // act
         final var result = testee.getNegotiationResult(negotiationId);
+        final NegotiationResponse response = result.get(5, TimeUnit.SECONDS);
 
         // assert
-        assertThat(result).isEqualTo(negotiationResult);
+        assertThat(response).isEqualTo(negotiationResult);
     }
 
     @Test
     void shouldReturnValidTransferProcessId() {
         // arrange
-        final var processId = TransferProcessId.builder().id("test").build();
-        final var request = TransferProcessRequest.builder().id("testRequest").build();
+        final var processId = TransferProcessId.builder().value("test").build();
+        final var request = TransferProcessRequest.builder().requestId("testRequest").build();
         when(restTemplate.exchange(any(), eq(HttpMethod.POST), any(), eq(TransferProcessId.class),
                 any(Object.class))).thenReturn(ResponseEntity.of(Optional.of(processId)));
 
@@ -119,17 +127,18 @@ class EdcControlPlaneClientTest {
     }
 
     @Test
-    void shouldReturnCompletedTransferProcessResult() {
+    void shouldReturnCompletedTransferProcessResult() throws Exception {
         // arrange
-        final var processId = TransferProcessId.builder().id("test").build();
-        final var response = TransferProcessResponse.builder().id("testResponse").state("COMPLETED").build();
+        final var processId = TransferProcessId.builder().value("test").build();
+        final var response = TransferProcessResponse.builder().responseId("testResponse").state("COMPLETED").build();
         when(restTemplate.exchange(any(), eq(HttpMethod.GET), any(), eq(TransferProcessResponse.class),
                 any(Object.class))).thenReturn(ResponseEntity.of(Optional.of(response)));
 
         // act
         final var result = testee.getTransferProcess(processId);
+        final TransferProcessResponse transferProcessResponse = result.get(5, TimeUnit.SECONDS);
 
         // assert
-        assertThat(result).isEqualTo(response);
+        assertThat(transferProcessResponse).isEqualTo(response);
     }
 }

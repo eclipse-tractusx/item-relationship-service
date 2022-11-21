@@ -21,6 +21,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration;
 
+import java.time.Clock;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -84,6 +85,12 @@ public class JobConfiguration {
     public ScheduledExecutorService scheduledExecutorService() {
         return Executors.newScheduledThreadPool(EXECUTOR_CORE_POOL_SIZE);
     }
+
+    @Bean
+    public Clock clock() {
+        return Clock.systemUTC();
+    }
+
 
     @Profile("!test")
     @Bean

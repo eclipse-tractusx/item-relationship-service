@@ -33,7 +33,7 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class NegotiationResponse {
 
-    private String id;
+    private String responseId;
     private String contractAgreementId;
     private String counterPartyAddress;
     private String errorDetail;

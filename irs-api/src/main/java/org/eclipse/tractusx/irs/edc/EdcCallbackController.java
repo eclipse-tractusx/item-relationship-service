@@ -43,8 +43,8 @@ public class EdcCallbackController {
     private final EndpointDataReferenceStorage storage;
 
     @PostMapping("/endpoint-data-reference")
-    public void receiveEdcCallback(EndpointDataReference dataReference) {
-        var contractAgreementId = dataReference.getProperties().get("cid");
+    public void receiveEdcCallback(final EndpointDataReference dataReference) {
+        final var contractAgreementId = dataReference.getProperties().get("cid");
         storage.put(contractAgreementId, dataReference);
         log.info("Endpoint Data Reference received and cached for agreement: {}", contractAgreementId);
     }
