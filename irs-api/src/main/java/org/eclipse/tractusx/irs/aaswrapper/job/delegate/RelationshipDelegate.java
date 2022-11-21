@@ -37,6 +37,7 @@ import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
+import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 import org.springframework.web.client.RestClientException;
 
@@ -71,7 +72,8 @@ public class RelationshipDelegate extends AbstractDelegate {
 
                     aasTransferProcess.addIdsToProcess(childIds);
                     itemContainerBuilder.relationships(relationships);
-                } catch (RestClientException | IllegalArgumentException | ExecutionException | InterruptedException e) {
+                } catch (RestClientException | IllegalArgumentException | ExecutionException | InterruptedException |
+                         EdcClientException e) {
                     log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                             address);
                     itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount, ProcessStep.SUBMODEL_REQUEST));

@@ -39,6 +39,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
+import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
@@ -52,7 +53,7 @@ class RelationshipDelegateTest {
 
     @Test
     void shouldFillItemContainerWithRelationshipAndAddChildIdsToProcess()
-            throws ExecutionException, InterruptedException {
+            throws ExecutionException, InterruptedException, EdcClientException {
         // given
         when(submodelFacade.getRelationships(anyString(), any())).thenReturn(Collections.singletonList(relationship()));
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder().shell(shellDescriptor(
@@ -70,7 +71,8 @@ class RelationshipDelegateTest {
     }
 
     @Test
-    void shouldCatchRestClientExceptionAndPutTombstone() throws ExecutionException, InterruptedException {
+    void shouldCatchRestClientExceptionAndPutTombstone()
+            throws ExecutionException, InterruptedException, EdcClientException {
         // given
         when(submodelFacade.getRelationships(anyString(), any())).thenThrow(
                 new RestClientException("Unable to call endpoint"));
@@ -90,7 +92,8 @@ class RelationshipDelegateTest {
     }
 
     @Test
-    void shouldCatchJsonParseExceptionAndPutTombstone() throws ExecutionException, InterruptedException {
+    void shouldCatchJsonParseExceptionAndPutTombstone()
+            throws ExecutionException, InterruptedException, EdcClientException {
         // given
         when(submodelFacade.getRelationships(anyString(), any())).thenThrow(
                 new JsonParseException(new Exception("Payload did not match expected submodel")));
