@@ -49,7 +49,7 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class EdcControlPlaneClient {
 
-    static final String CONSUMER_CONTROL_PLANE = "https://irs-consumer-controlplane.dev.demo.catena-x.net";
+    static final String CONSUMER_CONTROL_PLANE = "http://irs-local-edc-controlplane";
 
     static final String CONTROL_PLANE_SUFIX = "/api/v1/ids/data";
     private static final String EDC_HEADER = "X-Api-Key";
