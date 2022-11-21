@@ -103,11 +103,6 @@ resilience4j:
       submodel:
         baseConfig: default
 
-aasWrapper:
-  host: "${AASWRAPPER_HOST:}"
-  username: ${AASWRAPPER_USERNAME:}
-  password: ${AASWRAPPER_PASSWORD:}
-
 edc:
   controlplane:
     request-ttl: ${EDC_CONTROLPLANE_REQUEST_TTL:PT10M}
@@ -116,7 +111,7 @@ edc:
     provider-suffix: ${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/ids/data}
     catalog-limit: ${EDC_CONTROLPLANE_CATALOG_LIMIT:1000}
     api-key:
-      header: ${EDC_API_KEY_HEADER:X-Api-Key}
+      header: ${EDC_API_KEY_HEADER:}
       secret: ${EDC_API_KEY_SECRET:}
 
   submodel:

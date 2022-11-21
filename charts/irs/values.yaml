@@ -117,9 +117,25 @@ keycloak:
     clientSecret:
     clientTokenUri:
     jwkSetUri:
-aasWrapper:
-  username:
-  password:
+edc:
+  controlplane:
+    endpoint:
+      data:
+    request:
+      ttl: PT10M
+    provider:
+      suffix: /api/v1/ids/data
+    catalog:
+      limit: 1000
+    apikey:
+      header:
+      secret: test
+  submodel:
+    request:
+      ttl: PT10M
+    path: /submodel
+    urnprefix: /urn
+
 
 #######################
 # Minio Configuration #
@@ -127,15 +143,6 @@ aasWrapper:
 irs-minio:
   minioUser:
   minioPassword:
-
-############################
-# AASWrapper Configuration #
-############################
-irs-aaswrapper:
-  edc:
-    api:
-      auth:
-        key:
 
 #########################
 # Grafana Configuration #
