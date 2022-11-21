@@ -79,7 +79,7 @@ public class PollingJob<T> {
 
     }
 
-    private Runnable wrapWithTimeout(Runnable actionToUse) {
+    private Runnable wrapWithTimeout(final Runnable actionToUse) {
         if (timeToLive != null) {
             return RunnableDecorator.withTimeout(actionToUse, timeToLive, clock, StringUtils.trimToEmpty(description));
         }

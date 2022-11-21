@@ -25,7 +25,7 @@ package org.eclipse.tractusx.irs.exceptions;
  * Exception for errors in the contract negotiation.
  */
 public class ContractNegotiationException extends EdcClientException {
-    public ContractNegotiationException(Throwable cause) {
+    public ContractNegotiationException(final Throwable cause) {
         super(cause);
     }
 }

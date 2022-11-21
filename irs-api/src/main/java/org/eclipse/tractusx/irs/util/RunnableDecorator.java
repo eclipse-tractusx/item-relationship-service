@@ -41,7 +41,8 @@ public class RunnableDecorator {
      * If the action takes longer than the specified duration, it throws a TimeoutException.
      *
      * @param action         the Runnable to wrap with a timeout
-     * @param ttl            the time-to-live; after the duration has passed, a TimeoutException will be thrown.
+     * @param ttl            the time-to-live; after the duration has passed, a
+     *                       TimeoutException will be thrown.
      * @param clock          the clock to use to calculate timeouts
      * @param timeoutMessage the message to include in the TimeoutException
      * @return the wrapped Runnable

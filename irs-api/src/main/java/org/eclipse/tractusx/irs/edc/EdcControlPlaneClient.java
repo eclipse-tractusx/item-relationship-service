@@ -58,6 +58,8 @@ public class EdcControlPlaneClient {
     /* package */ static final String CONTROL_PLANE_SUFFIX = "/api/v1/ids/data";
     private static final String EDC_HEADER = "X-Api-Key";
     private static final String EDC_TOKEN = "";
+    public static final String STATUS_CONFIRMED = "CONFIRMED";
+    public static final String STATUS_COMPLETED = "COMPLETED";
     private final RestTemplate simpleRestTemplate;
     private final AsyncPollingService pollingService;
 
@@ -87,7 +89,7 @@ public class EdcControlPlaneClient {
 
                                  log.info("Response status of negotiation: {}", response);
 
-                                 if (response != null && "CONFIRMED".equals(response.getState())) {
+                                 if (response != null && STATUS_CONFIRMED.equals(response.getState())) {
                                      return Optional.of(response);
                                  }
                                  return Optional.empty();
@@ -120,7 +122,7 @@ public class EdcControlPlaneClient {
 
                                  log.info("Response status of Transfer Process: {}", response);
 
-                                 if (response != null && "COMPLETED".equals(response.getState())) {
+                                 if (response != null && STATUS_COMPLETED.equals(response.getState())) {
                                      return Optional.of(response);
                                  }
                                  return Optional.empty();
