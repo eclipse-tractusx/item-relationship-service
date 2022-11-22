@@ -19,7 +19,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
+package org.eclipse.tractusx.irs.edc;
 
 import java.time.ZonedDateTime;
 import java.util.Collection;
@@ -38,15 +38,16 @@ import org.eclipse.tractusx.irs.component.MeasurementUnit;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
+import org.eclipse.tractusx.irs.edc.RelationshipSubmodel;
 
 /**
- * AssemblyPartRelationship
+ * SingleLevelBomAsPlanned
  */
 @Data
 @Jacksonized
 @AllArgsConstructor
 @NoArgsConstructor
-class AssemblyPartRelationship extends RelationshipSubmodel {
+class SingleLevelBomAsPlanned extends RelationshipSubmodel {
 
     private String catenaXId;
     private Set<ChildData> childParts;
@@ -66,17 +67,16 @@ class AssemblyPartRelationship extends RelationshipSubmodel {
     @NoArgsConstructor
     /* package */ static class ChildData {
 
-        private ZonedDateTime assembledOn;
+        private ZonedDateTime createdOn;
         private Quantity quantity;
         private ZonedDateTime lastModifiedOn;
-        private String lifecycleContext;
         private String childCatenaXId;
 
         public Relationship toRelationship(final String catenaXId) {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
                                                                       .childCatenaXId(GlobalAssetIdentification.of(this.childCatenaXId))
-                                                                      .lifecycleContext(BomLifecycle.AS_BUILT)
-                                                                      .assembledOn(this.assembledOn)
+                                                                      .lifecycleContext(BomLifecycle.AS_PLANNED)
+                                                                      .assembledOn(this.createdOn)
                                                                       .lastModifiedOn(this.lastModifiedOn);
 
             if (thereIsQuantity()) {
@@ -95,7 +95,7 @@ class AssemblyPartRelationship extends RelationshipSubmodel {
             return Relationship.builder()
                                .catenaXId(GlobalAssetIdentification.of(catenaXId))
                                .linkedItem(linkedItem.build())
-                               .aspectType(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString())
+                               .aspectType(AspectType.SINGLE_LEVEL_BOM_AS_PLANNED.toString())
                                .build();
         }
 
@@ -128,4 +128,6 @@ class AssemblyPartRelationship extends RelationshipSubmodel {
             }
         }
     }
+
+
 }

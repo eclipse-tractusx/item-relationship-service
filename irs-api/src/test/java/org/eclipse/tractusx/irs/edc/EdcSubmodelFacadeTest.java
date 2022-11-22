@@ -41,16 +41,20 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import com.github.jknack.handlebars.internal.Files;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.RelationshipAspect;
+import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
+import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
+import org.eclipse.tractusx.irs.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.exceptions.TimeoutException;
 import org.eclipse.tractusx.irs.services.AsyncPollingService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,7 +64,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class EdcSubmodelFacadeTest {
+class EdcSubmodelFacadeTest extends LocalTestDataConfigurationAware {
 
     private static final String ENDPOINT_ADDRESS = "dummyAddress/urn:123456/submodel";
 
@@ -80,6 +84,10 @@ class EdcSubmodelFacadeTest {
     private final EdcConfiguration config = new EdcConfiguration();
 
     private EdcSubmodelFacade testee;
+
+    EdcSubmodelFacadeTest() throws IOException {
+        super();
+    }
 
     @BeforeEach
     void setUp() {
@@ -134,6 +142,92 @@ class EdcSubmodelFacadeTest {
         return Files.read(resourceAsStream, StandardCharsets.UTF_8);
     }
 
+    @Test
+    void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndAssemblyPartRelationship() throws Exception {
+        final String catenaXId = "urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b";
+        prepareTestdata(catenaXId, "_assemblyPartRelationship");
+
+        final List<Relationship> submodelResponse = testee.getRelationships("dummyAddress/" + catenaXId + "/submodel",
+                RelationshipAspect.AssemblyPartRelationship).get(5, TimeUnit.SECONDS);
+
+        assertThat(submodelResponse).isNotEmpty();
+        assertThat(submodelResponse.get(0).getCatenaXId().getGlobalAssetId()).isEqualTo(catenaXId);
+        assertThat(submodelResponse).hasSize(32);
+
+        final List<String> childIds = submodelResponse.stream()
+                                                      .map(Relationship::getLinkedItem)
+                                                      .map(LinkedItem::getChildCatenaXId)
+                                                      .map(GlobalAssetIdentification::getGlobalAssetId)
+                                                      .collect(Collectors.toList());
+        assertThat(childIds).containsAnyOf("urn:uuid:0d8da814-fcee-4b5e-b251-fc400da32399",
+                "urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873", "urn:uuid:0d039178-90a1-4329-843e-04ca0475a56e");
+    }
+
+    @Test
+    void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsPlanned() throws Exception {
+        final String catenaXId = "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c";
+        prepareTestdata(catenaXId, "_singleLevelBomAsPlanned");
+
+        final List<Relationship> submodelResponse = testee.getRelationships("dummyAddress/" + catenaXId + "/submodel",
+                RelationshipAspect.SingleLevelBomAsPlanned).get(5, TimeUnit.SECONDS);
+
+        assertThat(submodelResponse.get(0).getCatenaXId().getGlobalAssetId()).isEqualTo(catenaXId);
+        assertThat(submodelResponse).hasSize(1);
+
+        final List<String> childIds = submodelResponse.stream()
+                                                      .map(Relationship::getLinkedItem)
+                                                      .map(LinkedItem::getChildCatenaXId)
+                                                      .map(GlobalAssetIdentification::getGlobalAssetId)
+                                                      .collect(Collectors.toList());
+        assertThat(childIds).containsAnyOf("urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97");
+    }
+
+    @Test
+    void shouldReturnEmptyRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelUsageAsBuilt() throws Exception {
+        final String catenaXId = "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c";
+        prepareTestdata(catenaXId, "_singleLevelUsageAsBuilt");
+
+        final List<Relationship> submodelResponse = testee.getRelationships("dummyAddress/" + catenaXId + "/submodel",
+                RelationshipAspect.SingleLevelUsageAsBuilt).get(5, TimeUnit.SECONDS);
+
+        assertThat(submodelResponse).isEmpty();
+    }
+
+    @Test
+    void shouldReturnEmptyRelationshipsWhenRequestingWithNotExistingCatenaXIdAndAssemblyPartRelationship()
+            throws Exception {
+        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+        prepareTestdata(catenaXId, "_assemblyPartRelationship");
+
+        final List<Relationship> submodelResponse = testee.getRelationships("dummyAddress/" + catenaXId + "/submodel",
+                RelationshipAspect.AssemblyPartRelationship).get(5, TimeUnit.SECONDS);
+
+        assertThat(submodelResponse).isEmpty();
+    }
+
+    @Test
+    void shouldReturnRawSerialPartTypizationWhenExisting() throws Exception {
+        final String catenaXId = "urn:uuid:7eb7daf6-0c54-455b-aab7-bd5ca252f6ee";
+        prepareTestdata(catenaXId, "_serialPartTypization");
+
+        final String submodelResponse = testee.getSubmodelRawPayload("dummyAddress/" + catenaXId + "/submodel")
+                                              .get(5, TimeUnit.SECONDS);
+
+        assertThat(submodelResponse).startsWith(
+                "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"manufacturerId\"}");
+    }
+
+    private void prepareTestdata(final String catenaXId, final String submodelDataSuffix) throws ContractNegotiationException, IOException {
+        when(contractNegotiationService.negotiate(any(), any())).thenReturn(
+                NegotiationResponse.builder().contractAgreementId("agreementId").build());
+        final EndpointDataReference ref = mock(EndpointDataReference.class);
+        endpointDataReferenceStorage.put("agreementId", ref);
+        final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator(
+                localTestDataConfiguration.cxTestDataContainer());
+        final String data = jsonUtil.asString(
+                submodelTestdataCreator.createSubmodelForId(catenaXId + submodelDataSuffix));
+        when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(data);
+    }
 }
 
 class TimeMachine extends Clock {

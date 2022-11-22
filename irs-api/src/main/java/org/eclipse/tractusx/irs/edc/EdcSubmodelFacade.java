@@ -28,8 +28,6 @@ import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.RelationshipAspect;
-import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.RelationshipSubmodel;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
@@ -59,6 +57,13 @@ public class EdcSubmodelFacade {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start("Get EDC Submodel task for relationships, endpoint " + submodelEndpointAddress);
 
+        final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
+
+        return startSubmodelDataRetrieval(traversalAspectType, negotiationResponse.getContractAgreementId(), stopWatch);
+    }
+
+    private NegotiationResponse fetchNegotiationResponse(final String submodelEndpointAddress)
+            throws EdcClientException {
         final int indexOfUrn = findIndexOf(submodelEndpointAddress, config.getSubmodelUrnPrefix());
         final int indexOfSubModel = findIndexOf(submodelEndpointAddress, config.getSubmodelPath());
 
@@ -71,27 +76,28 @@ public class EdcSubmodelFacade {
         final String target = submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
         log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerConnectorUrl,
                 target);
-        final NegotiationResponse negotiationResponse = contractNegotiationService.negotiate(providerConnectorUrl,
-                target);
-
-        return startSubmodelDataRetrieval(traversalAspectType, negotiationResponse.getContractAgreementId(), stopWatch);
+        return contractNegotiationService.negotiate(providerConnectorUrl, target);
     }
 
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(
             final RelationshipAspect traversalAspectType, final String contractAgreementId, final StopWatch stopWatch) {
 
-        return pollingService.<List<Relationship>>createJob()
-                             .action(() -> retrieveSubmodelData(traversalAspectType, config.getSubmodelPath(),
-                                     contractAgreementId, stopWatch))
-                             .timeToLive(config.getSubmodelRequestTtl())
-                             .description("waiting for submodel retrieval")
-                             .build()
-                             .schedule();
+        return pollingService.<List<Relationship>>createJob().action(() -> {
+            final Optional<String> data = retrieveSubmodelData(config.getSubmodelPath(), contractAgreementId,
+                    stopWatch);
+            if (data.isPresent()) {
+                final RelationshipSubmodel relationshipSubmodel = jsonUtil.fromString(data.get(),
+                        traversalAspectType.getSubmodelClazz());
+
+                return Optional.of(relationshipSubmodel.asRelationships());
+            }
+            return Optional.empty();
+        }).timeToLive(config.getSubmodelRequestTtl()).description("waiting for submodel retrieval").build().schedule();
 
     }
 
-    private Optional<List<Relationship>> retrieveSubmodelData(final RelationshipAspect traversalAspectType,
-            final String submodel, final String contractAgreementId, final StopWatch stopWatch) {
+    private Optional<String> retrieveSubmodelData(final String submodel, final String contractAgreementId,
+            final StopWatch stopWatch) {
         log.info("Retrieving dataReference from storage for contractAgreementId {}", contractAgreementId);
         final Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.get(contractAgreementId);
 
@@ -100,22 +106,31 @@ public class EdcSubmodelFacade {
             log.info("Retrieving data from EDC data plane with dataReference {}:{}", ref.getAuthKey(),
                     ref.getAuthCode());
             final String data = edcDataPlaneClient.getData(ref, submodel);
-
-            final RelationshipSubmodel relationshipSubmodel = jsonUtil.fromString(data,
-                    traversalAspectType.getSubmodelClazz());
-
-            final List<Relationship> relationships = relationshipSubmodel.asRelationships();
-
             stopWatch.stop();
             log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
 
-            return Optional.of(relationships);
+            return Optional.of(data);
         }
         return Optional.empty();
     }
 
     private int findIndexOf(final String endpointAddress, final String str) {
         return endpointAddress.indexOf(str);
+    }
+
+    public CompletableFuture<String> getSubmodelRawPayload(final String submodelEndpointAddress)
+            throws EdcClientException {
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + submodelEndpointAddress);
+
+        final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
+        return pollingService.<String>createJob()
+                             .action(() -> retrieveSubmodelData(config.getSubmodelPath(),
+                                     negotiationResponse.getContractAgreementId(), stopWatch))
+                             .timeToLive(config.getSubmodelRequestTtl())
+                             .description("waiting for submodel retrieval")
+                             .build()
+                             .schedule();
     }
 
 }

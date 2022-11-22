@@ -24,13 +24,13 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
-import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Tombstone;
@@ -38,6 +38,8 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
+import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.InvalidSchemaException;
@@ -54,12 +56,12 @@ import org.springframework.web.client.RestClientException;
 @Slf4j
 public class SubmodelDelegate extends AbstractDelegate {
 
-    private final SubmodelFacade submodelFacade;
+    private final EdcSubmodelFacade submodelFacade;
     private final SemanticsHubFacade semanticsHubFacade;
     private final JsonValidatorService jsonValidatorService;
     private final JsonUtil jsonUtil;
 
-    public SubmodelDelegate(final AbstractDelegate nextStep, final SubmodelFacade submodelFacade,
+    public SubmodelDelegate(final AbstractDelegate nextStep, final EdcSubmodelFacade submodelFacade,
             final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService,
             final JsonUtil jsonUtil) {
         super(nextStep);
@@ -129,7 +131,7 @@ public class SubmodelDelegate extends AbstractDelegate {
                                 RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts(),
                                 ProcessStep.SCHEMA_VALIDATION));
                 log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
-            } catch (InvalidSchemaException | RestClientException e) {
+            } catch (InvalidSchemaException | EdcClientException e) {
                 itemContainerBuilder.tombstone(
                         Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e, 0,
                                 ProcessStep.SCHEMA_REQUEST));
@@ -139,7 +141,14 @@ public class SubmodelDelegate extends AbstractDelegate {
         return submodels;
     }
 
-    private String requestSubmodelAsString(final Endpoint endpoint) {
-        return submodelFacade.getSubmodelRawPayload(endpoint.getProtocolInformation().getEndpointAddress());
+    private String requestSubmodelAsString(final Endpoint endpoint) throws EdcClientException {
+        try {
+            return submodelFacade.getSubmodelRawPayload(endpoint.getProtocolInformation().getEndpointAddress()).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return null;
+        } catch (ExecutionException e) {
+            throw new EdcClientException(e);
+        }
     }
 }
