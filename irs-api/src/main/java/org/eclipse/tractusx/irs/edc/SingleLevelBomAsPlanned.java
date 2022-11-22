@@ -38,7 +38,6 @@ import org.eclipse.tractusx.irs.component.MeasurementUnit;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
-import org.eclipse.tractusx.irs.edc.RelationshipSubmodel;
 
 /**
  * SingleLevelBomAsPlanned
