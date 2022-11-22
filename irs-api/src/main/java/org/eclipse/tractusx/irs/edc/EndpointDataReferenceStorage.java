@@ -66,10 +66,14 @@ public class EndpointDataReferenceStorage {
         return Optional.ofNullable(storageMap.remove(contractAgreementId)).map(ExpiringContainer::getDataReference);
     }
 
+    /**
+     * Stores the data reference with its creation date.
+     */
+    @Value
+    private static class ExpiringContainer {
+        private final Instant creationTimestamp;
+        private final EndpointDataReference dataReference;
+    }
+
 }
 
-@Value
-class ExpiringContainer {
-    private final Instant creationTimestamp;
-    private final EndpointDataReference dataReference;
-}
