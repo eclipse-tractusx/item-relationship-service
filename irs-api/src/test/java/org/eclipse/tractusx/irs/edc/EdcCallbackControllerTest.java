@@ -28,12 +28,13 @@ import static org.mockito.Mockito.when;
 import java.util.Map;
 
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 
 class EdcCallbackControllerTest {
 
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage();
-    private final EdcCallbackController testee = new EdcCallbackController(storage);
+    private final EdcCallbackController testee = new EdcCallbackController(storage, new JsonUtil());
 
     @Test
     void shouldStoreAgreementId() {
