@@ -22,8 +22,6 @@
 package org.eclipse.tractusx.irs.edc;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
@@ -39,15 +37,16 @@ class EdcCallbackControllerTest {
     @Test
     void shouldStoreAgreementId() {
         // arrange
-        final var ref = mock(EndpointDataReference.class);
-        when(ref.getProperties()).thenReturn(Map.of("cid", "testId"));
+        final var ref = EndpointDataReference.Builder.newInstance()
+                                                     .endpoint("test")
+                                                     .properties(Map.of("cid", "testId"))
+                                                     .build();
 
         // act
         testee.receiveEdcCallback(ref);
 
         // assert
         final var result = storage.get("testId");
-
         assertThat(result).isNotNull().contains(ref);
     }
 }
