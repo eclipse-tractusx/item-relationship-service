@@ -48,6 +48,7 @@ public class EdcDataPlaneClient {
     private final RestTemplate simpleRestTemplate;
 
     public String getData(final EndpointDataReference dataReference, final String subUrl) {
+
         final String url = getUrl(dataReference.getEndpoint(), subUrl);
 
         final String response = simpleRestTemplate.exchange(
@@ -71,7 +72,9 @@ public class EdcDataPlaneClient {
     private HttpHeaders headers(final EndpointDataReference dataReference) {
         final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        headers.add(dataReference.getAuthKey(), dataReference.getAuthCode());
+        if (dataReference.getAuthKey() != null) {
+            headers.add(dataReference.getAuthKey(), dataReference.getAuthCode());
+        }
         return headers;
     }
 

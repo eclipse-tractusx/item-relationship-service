@@ -76,7 +76,6 @@ public class ContractNegotiationService {
                              .build();
     }
 
-
     public NegotiationResponse negotiate(final String providerConnectorUrl, final String target)
             throws ContractNegotiationException {
         log.info("Get catalog from EDC provider.");
@@ -107,14 +106,19 @@ public class ContractNegotiationService {
                 negotiationId);
         final NegotiationResponse response = Objects.requireNonNull(getNegotiationResponse(responseFuture));
 
+        final var destination = TransferProcessDataDestination.builder()
+                                                              .type(TransferProcessDataDestination.DEFAULT_TYPE)
+                                                              .build();
         final var request = TransferProcessRequest.builder()
                                                   .requestId(UUID.randomUUID().toString())
+                                                  .protocol(TransferProcessRequest.DEFAULT_PROTOCOL)
+                                                  .managedResources(TransferProcessRequest.DEFAULT_MANAGED_RESOURCES)
                                                   .connectorId(catalog.getId())
                                                   .connectorAddress(
                                                           providerConnectorUrl + config.getControlplaneProviderSuffix())
                                                   .contractId(response.getContractAgreementId())
                                                   .assetId(target)
-                                                  .dataDestination(TransferProcessDataDestination.builder().build())
+                                                  .dataDestination(destination)
                                                   .build();
 
         final TransferProcessId transferProcessId = edcControlPlaneClient.startTransferProcess(request);

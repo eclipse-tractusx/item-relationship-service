@@ -33,6 +33,7 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class TransferProcessDataDestination {
 
-    private String type = "HttpProxy";
+    public static final String DEFAULT_TYPE = "HttpProxy";
+    private String type;
 
 }
