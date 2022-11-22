@@ -73,7 +73,7 @@ class DigitalTwinRegistryFacadeTest extends LocalTestDataConfigurationAware {
                 catenaXId);
         final List<SubmodelDescriptor> shellEndpoints = aasShellDescriptor.getSubmodelDescriptors();
 
-        assertThat(shellEndpoints).isNotNull().hasSize(2);
+        assertThat(shellEndpoints).isNotNull().hasSize(3);
         final Endpoint endpoint = shellEndpoints.get(0).getEndpoints().get(0);
 
         assertThat(endpoint.getProtocolInformation().getEndpointAddress()).contains(catenaXId);
@@ -148,7 +148,7 @@ class DigitalTwinRegistryFacadeTest extends LocalTestDataConfigurationAware {
 
         final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryFacade.getAAShellDescriptor(catenaXId).getSubmodelDescriptors();
 
-        assertThat(shellEndpoints).isNotNull().hasSize(2);
+        assertThat(shellEndpoints).isNotNull().hasSize(3);
         final SubmodelDescriptor endpoint = shellEndpoints.get(0);
 
         assertThat(endpoint.getSemanticId().getValue()).containsExactly(assemblyPartRelationshipURN);

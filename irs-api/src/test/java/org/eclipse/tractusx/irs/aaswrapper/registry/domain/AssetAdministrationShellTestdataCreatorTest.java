@@ -57,7 +57,7 @@ class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigura
                                                     .getProtocolInformation()
                                                     .getEndpointAddress();
 
-        assertThat(aasDescriptor.getSubmodelDescriptors()).hasSize(2);
+        assertThat(aasDescriptor.getSubmodelDescriptors()).hasSize(3);
         assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getEndpoints()).isNotNull();
         assertThat(endpointAddress).isEqualTo(catenaXId + "_assemblyPartRelationship");
 
