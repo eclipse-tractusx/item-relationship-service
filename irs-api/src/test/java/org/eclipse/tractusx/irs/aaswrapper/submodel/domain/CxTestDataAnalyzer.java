@@ -48,7 +48,7 @@ class CxTestDataAnalyzer extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void parseAndPrintExpectedDataResults() {
+    void parseAndPrintExpectedDataResultsAsBuilt() {
         final TestParameters testParameters = TestParameters.builder()
                 .globalAssetId("urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b")
                 .bomLifecycle(BomLifecycle.AS_BUILT)
@@ -64,6 +64,28 @@ class CxTestDataAnalyzer extends LocalTestDataConfigurationAware {
         long expectedNumberOfRelationships = countExpectedNumberOfRelationshipsFor(testParameters.globalAssetId, RelationshipAspect.from(testParameters.bomLifecycle, testParameters.direction));
         long expectedNumberOfSubmodels = countExpectedNumberOfSubmodelsFor(testParameters.globalAssetId, testParameters);
 
+        log.info("Results for globalAssetId {} and bomLifecycle {} with direction {}", testParameters.globalAssetId, testParameters.bomLifecycle, testParameters.direction);
+        log.info("Expected number of relationships: " + expectedNumberOfRelationships);
+        log.info("Expected number of submodels: " + expectedNumberOfSubmodels);
+
+        assertThat(expectedNumberOfRelationships).isNotNull();
+        assertThat(expectedNumberOfSubmodels).isNotNull();
+    }
+
+    @Test
+    void parseAndPrintExpectedDataResultsAsPlanned() {
+        final TestParameters testParameters = TestParameters.builder()
+                                                            .globalAssetId("urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c")
+                                                            .bomLifecycle(BomLifecycle.AS_PLANNED)
+                                                            .direction(Direction.DOWNWARD)
+                                                            .shouldCountSingleLevelBomAsPlanned(Boolean.TRUE)
+                                                            .shouldCountPartAsPlanned(Boolean.TRUE)
+                                                            .build();
+
+        long expectedNumberOfRelationships = countExpectedNumberOfRelationshipsFor(testParameters.globalAssetId, RelationshipAspect.from(testParameters.bomLifecycle, testParameters.direction));
+        long expectedNumberOfSubmodels = countExpectedNumberOfSubmodelsFor(testParameters.globalAssetId, testParameters);
+
+        log.info("Results for globalAssetId {} and bomLifecycle {} with direction {}", testParameters.globalAssetId, testParameters.bomLifecycle, testParameters.direction);
         log.info("Expected number of relationships: " + expectedNumberOfRelationships);
         log.info("Expected number of submodels: " + expectedNumberOfSubmodels);
 
@@ -74,23 +96,23 @@ class CxTestDataAnalyzer extends LocalTestDataConfigurationAware {
     private long countExpectedNumberOfRelationshipsFor(final String catenaXId, final RelationshipAspect relationshipAspect) {
         final Optional<CxTestDataContainer.CxTestData> cxTestData = cxTestDataContainer.getByCatenaXId(catenaXId);
 
-        Optional<Map<String, Object>> submodel = Optional.empty();
+        Optional<Map<String, Object>> submodelData = Optional.empty();
 
         if (relationshipAspect.equals(RelationshipAspect.AssemblyPartRelationship)) {
-            submodel = cxTestData.flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship);
+            submodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship);
         } else if (relationshipAspect.equals(RelationshipAspect.SingleLevelBomAsPlanned)) {
-            submodel = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned);
+            submodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned);
         }
 
-        if (submodel.isPresent()) {
-            final RelationshipSubmodel relationshipSubmodel = objectMapper.convertValue(submodel, relationshipAspect.getSubmodelClazz());
+        if (submodelData.isPresent()) {
+            final RelationshipSubmodel relationshipSubmodel = objectMapper.convertValue(submodelData, relationshipAspect.getSubmodelClazz());
             final long countRelationships = relationshipSubmodel.asRelationships().size();
             final AtomicLong counter = new AtomicLong(countRelationships);
 
             relationshipSubmodel.asRelationships().forEach(relationship -> {
-                final long expectedNumberOfChildRelationships = countExpectedNumberOfRelationshipsFor(relationship.getLinkedItem().getChildCatenaXId().getGlobalAssetId(), relationshipAspect);
+                final String childGlobalAssetId = relationship.getLinkedItem().getChildCatenaXId().getGlobalAssetId();
+                final long expectedNumberOfChildRelationships = countExpectedNumberOfRelationshipsFor(childGlobalAssetId, relationshipAspect);
                 counter.addAndGet(expectedNumberOfChildRelationships);
-
             });
 
             return counter.get();
@@ -101,32 +123,42 @@ class CxTestDataAnalyzer extends LocalTestDataConfigurationAware {
 
     private long countExpectedNumberOfSubmodelsFor(final String catenaXId, final TestParameters testParameters) {
         final Optional<CxTestDataContainer.CxTestData> cxTestData = cxTestDataContainer.getByCatenaXId(catenaXId);
+        final RelationshipAspect relationshipAspect = RelationshipAspect.from(testParameters.bomLifecycle, testParameters.direction);
+
+        Optional<Map<String, Object>> submodelData = Optional.empty();
 
         final AtomicLong counter = new AtomicLong();
 
-        checkAndIncrementCounter(testParameters.shouldCountSerialPartTypization,
-                cxTestData.flatMap(CxTestDataContainer.CxTestData::getSerialPartTypization), counter);
-        checkAndIncrementCounter(testParameters.shouldCountBatch,
-                cxTestData.flatMap(CxTestDataContainer.CxTestData::getBatch), counter);
-        checkAndIncrementCounter(testParameters.shouldCountMaterialForRecycling,
-                cxTestData.flatMap(CxTestDataContainer.CxTestData::getMaterialForRecycling), counter);
-        checkAndIncrementCounter(testParameters.shouldCountProductDescription,
-                cxTestData.flatMap(CxTestDataContainer.CxTestData::getProductDescription), counter);
-        checkAndIncrementCounter(testParameters.shouldCountPhysicalDimension,
-                cxTestData.flatMap(CxTestDataContainer.CxTestData::getPhysicalDimension), counter);
+        if (relationshipAspect.equals(RelationshipAspect.AssemblyPartRelationship)) {
+            submodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship);
+            checkAndIncrementCounter(testParameters.shouldCountAssemblyPartRelationship, submodelData, counter);
 
-        final Optional<Map<String, Object>> assemblyPart = cxTestData.flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship);
-        if (assemblyPart.isPresent()) {
-            checkAndIncrementCounter(testParameters.shouldCountAssemblyPartRelationship, assemblyPart, counter);
+            checkAndIncrementCounter(testParameters.shouldCountSerialPartTypization,
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getSerialPartTypization), counter);
+            checkAndIncrementCounter(testParameters.shouldCountBatch,
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getBatch), counter);
+            checkAndIncrementCounter(testParameters.shouldCountMaterialForRecycling,
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getMaterialForRecycling), counter);
+            checkAndIncrementCounter(testParameters.shouldCountProductDescription,
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getProductDescription), counter);
+            checkAndIncrementCounter(testParameters.shouldCountPhysicalDimension,
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getPhysicalDimension), counter);
+        } else if (relationshipAspect.equals(RelationshipAspect.SingleLevelBomAsPlanned)) {
+            submodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned);
+            checkAndIncrementCounter(testParameters.shouldCountSingleLevelBomAsPlanned, submodelData, counter);
 
-            final AssemblyPartRelationship assemblyPartRelationship = objectMapper.convertValue(assemblyPart, AssemblyPartRelationship.class);
-            if (assemblyPartRelationship.getChildParts() != null) {
-                assemblyPartRelationship.getChildParts().forEach(childData -> {
-                    final long expectedNumberOfChildSubmodels = countExpectedNumberOfSubmodelsFor(childData.getChildCatenaXId(), testParameters);
-                    counter.addAndGet(expectedNumberOfChildSubmodels);
-                });
-                return counter.get();
-            }
+            checkAndIncrementCounter(testParameters.shouldCountPartAsPlanned,
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getPartAsPlanned), counter);
+        }
+
+        if (submodelData.isPresent()) {
+            final RelationshipSubmodel relationshipSubmodel = objectMapper.convertValue(submodelData, relationshipAspect.getSubmodelClazz());
+            relationshipSubmodel.asRelationships().forEach(relationship -> {
+                final String childGlobalAssetId = relationship.getLinkedItem().getChildCatenaXId().getGlobalAssetId();
+                final long expectedNumberOfChildSubmodels = countExpectedNumberOfSubmodelsFor(childGlobalAssetId, testParameters);
+                counter.addAndGet(expectedNumberOfChildSubmodels);
+            });
+            return counter.get();
         }
         return 0;
     }
@@ -148,6 +180,8 @@ class CxTestDataAnalyzer extends LocalTestDataConfigurationAware {
         final boolean shouldCountMaterialForRecycling;
         final boolean shouldCountProductDescription;
         final boolean shouldCountPhysicalDimension;
+        final boolean shouldCountSingleLevelBomAsPlanned;
+        final boolean shouldCountPartAsPlanned;
     }
 
 }
