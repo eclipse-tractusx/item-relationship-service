@@ -80,12 +80,15 @@ class EdcSubmodelFacadeLocalStub implements EdcSubmodelFacade {
     }
 
     @Override
-    public CompletableFuture<String> getSubmodelRawPayload(String submodelEndpointAddress) {
+    public CompletableFuture<String> getSubmodelRawPayload(final String submodelEndpointAddress) {
         final Map<String, Object> submodel = testdataCreator.createSubmodelForId(submodelEndpointAddress);
         return CompletableFuture.completedFuture(jsonUtil.asString(submodel));
     }
 }
 
+/**
+ * Public API facade for EDC domain
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -147,7 +150,7 @@ class EdcSubmodelFacadeImpl implements EdcSubmodelFacade {
     private Optional<String> retrieveSubmodelData(final String submodel, final String contractAgreementId,
             final StopWatch stopWatch) {
         log.info("Retrieving dataReference from storage for contractAgreementId {}", contractAgreementId);
-        final Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.get(contractAgreementId);
+        final Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.remove(contractAgreementId);
 
         if (dataReference.isPresent()) {
             final EndpointDataReference ref = dataReference.get();
