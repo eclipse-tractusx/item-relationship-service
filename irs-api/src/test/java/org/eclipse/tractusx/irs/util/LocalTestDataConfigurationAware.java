@@ -27,6 +27,7 @@ public class LocalTestDataConfigurationAware {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         final CxTestDataContainer cxTestDataContainer = objectMapper.readValue(file, CxTestDataContainer.class);
         when(localTestDataConfiguration.cxTestDataContainer()).thenReturn(cxTestDataContainer);
