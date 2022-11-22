@@ -72,8 +72,9 @@ public class EdcDataPlaneClient {
     private HttpHeaders headers(final EndpointDataReference dataReference) {
         final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        if (dataReference.getAuthKey() != null) {
-            headers.add(dataReference.getAuthKey(), dataReference.getAuthCode());
+        final var authKey = dataReference.getAuthKey();
+        if (authKey != null) {
+            headers.add(authKey, dataReference.getAuthCode());
         }
         return headers;
     }
