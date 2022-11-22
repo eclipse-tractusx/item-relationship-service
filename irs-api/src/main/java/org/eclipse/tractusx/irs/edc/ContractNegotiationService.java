@@ -95,7 +95,7 @@ public class ContractNegotiationService {
         final NegotiationRequest negotiationRequest = NegotiationRequest.builder()
                                                                         .connectorId(catalog.getId())
                                                                         .connectorAddress(providerConnectorUrl
-                                                                                + config.getControlPlaneProviderSuffix())
+                                                                                + config.getControlplaneProviderSuffix())
                                                                         .offer(contractOfferRequest)
                                                                         .build();
 
@@ -111,7 +111,7 @@ public class ContractNegotiationService {
                                                   .requestId(UUID.randomUUID().toString())
                                                   .connectorId(catalog.getId())
                                                   .connectorAddress(
-                                                          providerConnectorUrl + config.getControlPlaneProviderSuffix())
+                                                          providerConnectorUrl + config.getControlplaneProviderSuffix())
                                                   .contractId(response.getContractAgreementId())
                                                   .assetId(target)
                                                   .dataDestination(TransferProcessDataDestination.builder().build())

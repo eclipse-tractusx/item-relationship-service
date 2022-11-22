@@ -60,16 +60,16 @@ public class EdcControlPlaneClient {
 
     /* package */ Catalog getCatalog(final String providerConnectorUrl) {
         final var catalogUrl =
-                config.getControlPlaneEndpointData() + "/catalog?providerUrl={providerUrl}&limit={limit}";
-        final var providerUrl = providerConnectorUrl + config.getControlPlaneProviderSuffix();
-        final var limit = config.getControlPlaneCatalogLimit();
+                config.getControlplaneEndpointData() + "/catalog?providerUrl={providerUrl}&limit={limit}";
+        final var providerUrl = providerConnectorUrl + config.getControlplaneProviderSuffix();
+        final var limit = config.getControlplaneCatalogLimit();
 
         return simpleRestTemplate.exchange(catalogUrl, HttpMethod.GET, new HttpEntity<>(null, headers()), Catalog.class,
                 providerUrl, limit).getBody();
     }
 
     /* package */ NegotiationId startNegotiations(final NegotiationRequest request) {
-        return simpleRestTemplate.exchange(config.getControlPlaneEndpointData() + "/contractnegotiations",
+        return simpleRestTemplate.exchange(config.getControlplaneEndpointData() + "/contractnegotiations",
                 HttpMethod.POST, new HttpEntity<>(request, headers()), NegotiationId.class).getBody();
     }
 
@@ -81,7 +81,7 @@ public class EdcControlPlaneClient {
                                  log.info("Check negotiations status");
 
                                  final NegotiationResponse response = simpleRestTemplate.exchange(
-                                         config.getControlPlaneEndpointData() + "/contractnegotiations/"
+                                         config.getControlplaneEndpointData() + "/contractnegotiations/"
                                                  + negotiationId.getValue(), HttpMethod.GET, objectHttpEntity,
                                          NegotiationResponse.class).getBody();
 
@@ -93,14 +93,14 @@ public class EdcControlPlaneClient {
                                  return Optional.empty();
                              })
                              .description("wait for negotiation confirmation")
-                             .timeToLive(config.getControlPlaneRequestTtl())
+                             .timeToLive(config.getControlplaneRequestTtl())
                              .build()
                              .schedule();
 
     }
 
     /* package */ TransferProcessId startTransferProcess(final TransferProcessRequest request) {
-        return simpleRestTemplate.exchange(config.getControlPlaneEndpointData() + "/transferprocess", HttpMethod.POST,
+        return simpleRestTemplate.exchange(config.getControlplaneEndpointData() + "/transferprocess", HttpMethod.POST,
                 new HttpEntity<>(request, headers()), TransferProcessId.class).getBody();
     }
 
@@ -114,7 +114,7 @@ public class EdcControlPlaneClient {
                                  log.info("Check Transfer Process status");
 
                                  final TransferProcessResponse response = simpleRestTemplate.exchange(
-                                         config.getControlPlaneEndpointData() + "/transferprocess/"
+                                         config.getControlplaneEndpointData() + "/transferprocess/"
                                                  + transferProcessId.getValue(), HttpMethod.GET, objectHttpEntity,
                                          TransferProcessResponse.class).getBody();
 
@@ -127,7 +127,7 @@ public class EdcControlPlaneClient {
 
                              })
                              .description("wait for transfer process completion")
-                             .timeToLive(config.getControlPlaneRequestTtl())
+                             .timeToLive(config.getControlplaneRequestTtl())
                              .build()
                              .schedule();
 
@@ -136,7 +136,7 @@ public class EdcControlPlaneClient {
     private HttpHeaders headers() {
         final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        headers.add(config.getControlPlaneApiKeyHeader(), config.getControlPlaneApiKeySecret());
+        headers.add(config.getControlplaneApiKeyHeader(), config.getControlplaneApiKeySecret());
         return headers;
     }
 

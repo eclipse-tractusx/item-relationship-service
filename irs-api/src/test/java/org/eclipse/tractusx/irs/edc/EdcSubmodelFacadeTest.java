@@ -91,12 +91,12 @@ class EdcSubmodelFacadeTest extends LocalTestDataConfigurationAware {
 
     @BeforeEach
     void setUp() {
-        config.setControlPlaneEndpointData("https://irs-consumer-controlplane.dev.demo.catena-x.net/data");
+        config.setControlplaneEndpointData("https://irs-consumer-controlplane.dev.demo.catena-x.net/data");
         config.setSubmodelPath("/submodel");
         config.setSubmodelUrnPrefix("/urn");
         config.setSubmodelRequestTtl(Duration.ofMinutes(10));
-        config.setControlPlaneRequestTtl(Duration.ofMinutes(10));
-        testee = new EdcSubmodelFacade(config, contractNegotiationService, edcDataPlaneClient,
+        config.setControlplaneRequestTtl(Duration.ofMinutes(10));
+        testee = new EdcSubmodelFacadeImpl(config, contractNegotiationService, edcDataPlaneClient,
                 endpointDataReferenceStorage, jsonUtil, pollingService);
     }
 

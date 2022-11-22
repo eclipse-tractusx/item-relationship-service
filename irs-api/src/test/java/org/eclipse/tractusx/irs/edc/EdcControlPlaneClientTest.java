@@ -69,12 +69,12 @@ class EdcControlPlaneClientTest {
 
     @BeforeEach
     void setUp() {
-        config.setControlPlaneEndpointData("https://irs-consumer-controlplane.dev.demo.catena-x.net/data");
+        config.setControlplaneEndpointData("https://irs-consumer-controlplane.dev.demo.catena-x.net/data");
         config.setSubmodelPath("/submodel");
         config.setSubmodelUrnPrefix("/urn");
         config.setSubmodelRequestTtl(Duration.ofMinutes(10));
-        config.setControlPlaneRequestTtl(Duration.ofMinutes(10));
-        config.setControlPlaneApiKeyHeader("Test");
+        config.setControlplaneRequestTtl(Duration.ofMinutes(10));
+        config.setControlplaneApiKeyHeader("Test");
     }
 
     @Test

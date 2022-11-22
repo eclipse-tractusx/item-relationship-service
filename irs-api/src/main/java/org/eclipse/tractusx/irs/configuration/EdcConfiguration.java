@@ -36,17 +36,17 @@ import org.springframework.stereotype.Component;
 @Data
 public class EdcConfiguration {
 
-    private String controlPlaneEndpointData;
+    private String controlplaneEndpointData;
 
-    private String controlPlaneProviderSuffix;
+    private String controlplaneProviderSuffix;
 
-    private int controlPlaneCatalogLimit;
+    private int controlplaneCatalogLimit;
 
-    private Duration controlPlaneRequestTtl;
+    private Duration controlplaneRequestTtl;
 
-    private String controlPlaneApiKeyHeader;
+    private String controlplaneApiKeyHeader;
 
-    private String controlPlaneApiKeySecret;
+    private String controlplaneApiKeySecret;
 
     private Duration submodelRequestTtl;
 

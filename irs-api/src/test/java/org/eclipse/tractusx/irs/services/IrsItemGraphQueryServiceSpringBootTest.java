@@ -79,6 +79,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @MockBean
     private JsonValidatorService jsonValidatorService;
 
+
     @Test
     void registerJobWithoutDepthShouldBuildFullTree() {
         // given
@@ -214,7 +215,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     }
 
     @Test
-    public void checkMetricsRecordingTest() {
+    void checkMetricsRecordingTest() {
         meterRegistryService.incrementJobFailed();
         meterRegistryService.incrementJobRunning();
         meterRegistryService.incrementJobSuccessful();

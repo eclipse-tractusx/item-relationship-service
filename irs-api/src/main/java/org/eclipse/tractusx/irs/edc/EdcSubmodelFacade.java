@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.irs.edc;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -30,20 +31,66 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
+import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.services.AsyncPollingService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
 /**
  * Public API facade for EDC domain
  */
-@Slf4j
+public interface EdcSubmodelFacade {
+    CompletableFuture<List<Relationship>> getRelationships(String submodelEndpointAddress,
+            RelationshipAspect traversalAspectType) throws EdcClientException;
+
+    CompletableFuture<String> getSubmodelRawPayload(String submodelEndpointAddress) throws EdcClientException;
+}
+
+/**
+ * Submodel facade stub used in local environment
+ */
 @Service
+@Profile({ "local",
+           "stubtest"
+})
+class EdcSubmodelFacadeLocalStub implements EdcSubmodelFacade {
+
+    private final JsonUtil jsonUtil;
+    private final SubmodelTestdataCreator testdataCreator;
+
+    /* package */ EdcSubmodelFacadeLocalStub(final JsonUtil jsonUtil, final CxTestDataContainer cxTestDataContainer) {
+        this.jsonUtil = jsonUtil;
+        this.testdataCreator = new SubmodelTestdataCreator(cxTestDataContainer);
+    }
+
+    @Override
+    public CompletableFuture<List<Relationship>> getRelationships(final String submodelEndpointAddress,
+            final RelationshipAspect traversalAspectType) throws EdcClientException {
+        if ("urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(submodelEndpointAddress)) {
+            throw new EdcClientException("Dummy Exception");
+        }
+
+        return CompletableFuture.completedFuture(
+                testdataCreator.createSubmodelForId(submodelEndpointAddress, traversalAspectType.getSubmodelClazz())
+                               .asRelationships());
+    }
+
+    @Override
+    public CompletableFuture<String> getSubmodelRawPayload(String submodelEndpointAddress) {
+        final Map<String, Object> submodel = testdataCreator.createSubmodelForId(submodelEndpointAddress);
+        return CompletableFuture.completedFuture(jsonUtil.asString(submodel));
+    }
+}
+
+@Service
+@Slf4j
 @RequiredArgsConstructor
-public class EdcSubmodelFacade {
+@Profile({ "!local && !stubtest" })
+class EdcSubmodelFacadeImpl implements EdcSubmodelFacade {
 
     private final EdcConfiguration config;
     private final ContractNegotiationService contractNegotiationService;
@@ -52,6 +99,7 @@ public class EdcSubmodelFacade {
     private final JsonUtil jsonUtil;
     private final AsyncPollingService pollingService;
 
+    @Override
     public CompletableFuture<List<Relationship>> getRelationships(final String submodelEndpointAddress,
             final RelationshipAspect traversalAspectType) throws EdcClientException {
         final StopWatch stopWatch = new StopWatch();
@@ -118,6 +166,7 @@ public class EdcSubmodelFacade {
         return endpointAddress.indexOf(str);
     }
 
+    @Override
     public CompletableFuture<String> getSubmodelRawPayload(final String submodelEndpointAddress)
             throws EdcClientException {
         final StopWatch stopWatch = new StopWatch();
