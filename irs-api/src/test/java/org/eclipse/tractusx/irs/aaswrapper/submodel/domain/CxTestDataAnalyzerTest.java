@@ -37,11 +37,11 @@ import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.Test;
 
 @Slf4j
-class CxTestDataAnalyzer extends LocalTestDataConfigurationAware {
+class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
 
     private final CxTestDataContainer cxTestDataContainer;
 
-    CxTestDataAnalyzer() throws IOException {
+    CxTestDataAnalyzerTest() throws IOException {
         super();
 
         cxTestDataContainer = localTestDataConfiguration.cxTestDataContainer();;
@@ -61,8 +61,8 @@ class CxTestDataAnalyzer extends LocalTestDataConfigurationAware {
                 .shouldCountPhysicalDimension(Boolean.TRUE)
                 .build();
 
-        long expectedNumberOfRelationships = countExpectedNumberOfRelationshipsFor(testParameters.globalAssetId, RelationshipAspect.from(testParameters.bomLifecycle, testParameters.direction));
-        long expectedNumberOfSubmodels = countExpectedNumberOfSubmodelsFor(testParameters.globalAssetId, testParameters);
+        final Long expectedNumberOfRelationships = countExpectedNumberOfRelationshipsFor(testParameters.globalAssetId, RelationshipAspect.from(testParameters.bomLifecycle, testParameters.direction));
+        final Long expectedNumberOfSubmodels = countExpectedNumberOfSubmodelsFor(testParameters.globalAssetId, testParameters);
 
         log.info("Results for globalAssetId {} and bomLifecycle {} with direction {}", testParameters.globalAssetId, testParameters.bomLifecycle, testParameters.direction);
         log.info("Expected number of relationships: " + expectedNumberOfRelationships);
@@ -82,8 +82,8 @@ class CxTestDataAnalyzer extends LocalTestDataConfigurationAware {
                                                             .shouldCountPartAsPlanned(Boolean.TRUE)
                                                             .build();
 
-        long expectedNumberOfRelationships = countExpectedNumberOfRelationshipsFor(testParameters.globalAssetId, RelationshipAspect.from(testParameters.bomLifecycle, testParameters.direction));
-        long expectedNumberOfSubmodels = countExpectedNumberOfSubmodelsFor(testParameters.globalAssetId, testParameters);
+        final Long expectedNumberOfRelationships = countExpectedNumberOfRelationshipsFor(testParameters.globalAssetId, RelationshipAspect.from(testParameters.bomLifecycle, testParameters.direction));
+        final Long expectedNumberOfSubmodels = countExpectedNumberOfSubmodelsFor(testParameters.globalAssetId, testParameters);
 
         log.info("Results for globalAssetId {} and bomLifecycle {} with direction {}", testParameters.globalAssetId, testParameters.bomLifecycle, testParameters.direction);
         log.info("Expected number of relationships: " + expectedNumberOfRelationships);
@@ -93,7 +93,7 @@ class CxTestDataAnalyzer extends LocalTestDataConfigurationAware {
         assertThat(expectedNumberOfSubmodels).isNotNull();
     }
 
-    private long countExpectedNumberOfRelationshipsFor(final String catenaXId, final RelationshipAspect relationshipAspect) {
+    private Long countExpectedNumberOfRelationshipsFor(final String catenaXId, final RelationshipAspect relationshipAspect) {
         final Optional<CxTestDataContainer.CxTestData> cxTestData = cxTestDataContainer.getByCatenaXId(catenaXId);
 
         Optional<Map<String, Object>> submodelData = Optional.empty();
@@ -118,10 +118,10 @@ class CxTestDataAnalyzer extends LocalTestDataConfigurationAware {
             return counter.get();
         }
 
-        return 0;
+        return 0l;
     }
 
-    private long countExpectedNumberOfSubmodelsFor(final String catenaXId, final TestParameters testParameters) {
+    private Long countExpectedNumberOfSubmodelsFor(final String catenaXId, final TestParameters testParameters) {
         final Optional<CxTestDataContainer.CxTestData> cxTestData = cxTestDataContainer.getByCatenaXId(catenaXId);
         final RelationshipAspect relationshipAspect = RelationshipAspect.from(testParameters.bomLifecycle, testParameters.direction);
 
@@ -160,7 +160,7 @@ class CxTestDataAnalyzer extends LocalTestDataConfigurationAware {
             });
             return counter.get();
         }
-        return 0;
+        return 0l;
     }
 
     private void checkAndIncrementCounter(final boolean shouldCountSubmodel, final Optional<Map<String, Object>> submodel, final AtomicLong counter) {
