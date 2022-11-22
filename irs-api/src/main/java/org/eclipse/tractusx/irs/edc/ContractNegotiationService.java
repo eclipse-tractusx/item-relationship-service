@@ -57,6 +57,24 @@ public class ContractNegotiationService {
 
     private final EdcControlPlaneClient edcControlPlaneClient;
 
+    private static ContractOffer findOffer(final String target, final Catalog catalog) {
+        return catalog.getContractOffers()
+                      .stream()
+                      .filter(contractOffer -> contractOffer.getAsset().getId().equals(target))
+                      .findFirst()
+                      .orElseThrow(NoSuchElementException::new);
+    }
+
+    private static Policy policyFor(final String target) {
+        return Policy.Builder.newInstance()
+                             .permission(Permission.Builder.newInstance()
+                                                           .target(target)
+                                                           .action(Action.Builder.newInstance().type("USE").build())
+                                                           .build())
+                             .type(PolicyType.SET)
+                             .build();
+    }
+
     public NegotiationResponse negotiate(final String providerConnectorUrl, final String target)
             throws ContractNegotiationException {
         log.info("Get catalog from EDC provider.");
@@ -99,7 +117,10 @@ public class ContractNegotiationService {
         final TransferProcessId transferProcessId = edcControlPlaneClient.startTransferProcess(request);
 
         // can be added to cache after completed
-        edcControlPlaneClient.getTransferProcess(transferProcessId);
+        edcControlPlaneClient.getTransferProcess(transferProcessId).exceptionally(throwable -> {
+            log.error("Error while receiving transfer process", throwable);
+            return null;
+        });
         log.info("Transfer process completed for transferProcessId: {}", transferProcessId.getValue());
         return response;
     }
@@ -114,24 +135,6 @@ public class ContractNegotiationService {
             throw new ContractNegotiationException(e);
         }
         return null;
-    }
-
-    private static ContractOffer findOffer(final String target, final Catalog catalog) {
-        return catalog.getContractOffers()
-                      .stream()
-                      .filter(contractOffer -> contractOffer.getAsset().getId().equals(target))
-                      .findFirst()
-                      .orElseThrow(NoSuchElementException::new);
-    }
-
-    private static Policy policyFor(final String target) {
-        return Policy.Builder.newInstance()
-                             .permission(Permission.Builder.newInstance()
-                                                           .target(target)
-                                                           .action(Action.Builder.newInstance().type("USE").build())
-                                                           .build())
-                             .type(PolicyType.SET)
-                             .build();
     }
 
 }
