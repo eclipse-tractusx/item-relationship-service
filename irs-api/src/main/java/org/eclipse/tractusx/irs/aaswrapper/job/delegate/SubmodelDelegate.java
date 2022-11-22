@@ -76,29 +76,22 @@ public class SubmodelDelegate extends AbstractDelegate {
             final JobParameter jobData, final AASTransferProcess aasTransferProcess, final String itemId) {
 
         itemContainerBuilder.build().getShells().stream().findFirst().ifPresent(shell -> {
-            try {
-                final List<SubmodelDescriptor> aasSubmodelDescriptors = shell.getSubmodelDescriptors();
-                log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
+            final List<SubmodelDescriptor> aasSubmodelDescriptors = shell.getSubmodelDescriptors();
+            log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
 
-                final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.filterDescriptorsByAspectTypes(
-                        jobData.getAspects().stream().map(AspectType::toString).collect(Collectors.toList()));
+            final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.filterDescriptorsByAspectTypes(
+                    jobData.getAspects().stream().map(AspectType::toString).collect(Collectors.toList()));
 
-                if (jobData.isCollectAspects()) {
-                    log.info("Collecting Submodels.");
-                    filteredSubmodelDescriptorsByAspectType.forEach(
-                            submodelDescriptor -> itemContainerBuilder.submodels(
-                                    getSubmodels(submodelDescriptor, itemContainerBuilder, itemId)));
-                }
-                log.debug("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
-                log.debug("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
-
-                shell.setSubmodelDescriptors(filteredSubmodelDescriptorsByAspectType);
-
-            } catch (RestClientException e) {
-                log.info("Submodel Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-                itemContainerBuilder.tombstone(
-                        Tombstone.from(itemId, null, e, retryCount, ProcessStep.SUBMODEL_REQUEST));
+            if (jobData.isCollectAspects()) {
+                log.info("Collecting Submodels.");
+                filteredSubmodelDescriptorsByAspectType.forEach(submodelDescriptor -> itemContainerBuilder.submodels(
+                        getSubmodels(submodelDescriptor, itemContainerBuilder, itemId)));
             }
+            log.debug("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
+            log.debug("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
+
+            shell.setSubmodelDescriptors(filteredSubmodelDescriptorsByAspectType);
+
         });
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
@@ -131,11 +124,16 @@ public class SubmodelDelegate extends AbstractDelegate {
                                 RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts(),
                                 ProcessStep.SCHEMA_VALIDATION));
                 log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
-            } catch (InvalidSchemaException | RestClientException | EdcClientException e) {
+            } catch (InvalidSchemaException | RestClientException e) {
                 itemContainerBuilder.tombstone(
                         Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e, 0,
                                 ProcessStep.SCHEMA_REQUEST));
                 log.info("Cannot load JSON schema for validation. Creating Tombstone.");
+            } catch (EdcClientException e) {
+                log.info("Submodel Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
+                itemContainerBuilder.tombstone(
+                        Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e, 0,
+                                ProcessStep.SUBMODEL_REQUEST));
             }
         });
         return submodels;
