@@ -21,6 +21,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
@@ -33,5 +34,6 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class NegotiationId {
 
+    @JsonProperty("id")
     private String value;
 }

@@ -26,7 +26,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,12 +43,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class EdcCallbackController {
 
     private final EndpointDataReferenceStorage storage;
+    private final JsonUtil jsonUtil;
 
     @PostMapping("/endpoint-data-reference")
-    public void receiveEdcCallback(final EndpointDataReference dataReference) {
+    public void receiveEdcCallback(final @RequestBody EndpointDataReference dataReference) {
+        log.debug("Received EndpointDataReference: {}", jsonUtil.asString(dataReference));
         final var contractAgreementId = dataReference.getProperties().get("cid");
         storage.put(contractAgreementId, dataReference);
         log.info("Endpoint Data Reference received and cached for agreement: {}", contractAgreementId);
     }
-
 }

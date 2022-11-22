@@ -53,11 +53,11 @@ public class EdcControlPlaneClient {
 
     public static final int MAXIMUM_TASK_RUNTIME_MINUTES = 10;
 
-    private static final String CONSUMER_CONTROL_PLANE_DATA_ENDPOINT = "https://irs-consumer-controlplane.dev.demo.catena-x.net/data";
+    private static final String CONSUMER_CONTROL_PLANE_DATA_ENDPOINT = "http://irs-local-edc-controlplane:8181/data";
 
     /* package */ static final String CONTROL_PLANE_SUFFIX = "/api/v1/ids/data";
     private static final String EDC_HEADER = "X-Api-Key";
-    private static final String EDC_TOKEN = "";
+    private static final String EDC_TOKEN = "123456";
     public static final String STATUS_CONFIRMED = "CONFIRMED";
     public static final String STATUS_COMPLETED = "COMPLETED";
     private final RestTemplate simpleRestTemplate;
