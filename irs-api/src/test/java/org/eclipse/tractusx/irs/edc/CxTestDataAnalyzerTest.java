@@ -19,7 +19,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
+package org.eclipse.tractusx.irs.edc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,7 +48,7 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
     CxTestDataAnalyzerTest() throws IOException {
         super();
 
-        cxTestDataContainer = localTestDataConfiguration.cxTestDataContainer();;
+        cxTestDataContainer = localTestDataConfiguration.cxTestDataContainer();
     }
 
     @Test
@@ -175,7 +175,7 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
             return counter.get();
         }
 
-        return 0l;
+        return 0L;
     }
 
     private List<Relationship> getRelationshipFor(final String catenaXId, final RelationshipAspect relationshipAspect) {
@@ -244,7 +244,7 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
             });
             return counter.get();
         }
-        return 0l;
+        return 0L;
     }
 
     private List<Map<String, Object>> getSubmodelsFor(final String catenaXId, final TestParameters testParameters) {
