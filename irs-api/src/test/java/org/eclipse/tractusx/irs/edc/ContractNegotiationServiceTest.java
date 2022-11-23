@@ -33,15 +33,18 @@ import java.util.concurrent.CompletableFuture;
 import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
+import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.model.NegotiationId;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessId;
+import org.eclipse.tractusx.irs.edc.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,6 +56,9 @@ class ContractNegotiationServiceTest {
 
     @Mock
     private EdcControlPlaneClient edcControlPlaneClient;
+
+    @Spy
+    private EdcConfiguration config = new EdcConfiguration();
 
     @Test
     void shouldNegotiateSuccessfully() throws ContractNegotiationException {
@@ -67,6 +73,8 @@ class ContractNegotiationServiceTest {
         when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(response);
         when(edcControlPlaneClient.startTransferProcess(any())).thenReturn(
                 TransferProcessId.builder().value("transferProcessId").build());
+        when(edcControlPlaneClient.getTransferProcess(any())).thenReturn(
+                CompletableFuture.completedFuture(TransferProcessResponse.builder().build()));
 
         // act
         NegotiationResponse result = testee.negotiate(CONNECTOR_URL, assetId);

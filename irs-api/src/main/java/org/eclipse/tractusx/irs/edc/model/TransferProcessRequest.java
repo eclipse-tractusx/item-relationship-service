@@ -34,14 +34,17 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class TransferProcessRequest {
 
+    public static final String DEFAULT_PROTOCOL = "ids-multipart";
+    public static final String DEFAULT_MANAGED_RESOURCES = "false";
+
     @JsonProperty("id")
     private String requestId;
     private String connectorId;
     private String connectorAddress;
     private String contractId;
     private String assetId;
-    private String protocol = "ids-multipart";
-    private String managedResources = "false";
+    private String protocol;
+    private String managedResources;
     private TransferProcessDataDestination dataDestination;
 
 

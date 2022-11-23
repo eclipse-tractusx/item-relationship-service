@@ -28,11 +28,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
+import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.model.NegotiationId;
 import org.eclipse.tractusx.irs.edc.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
@@ -40,6 +42,7 @@ import org.eclipse.tractusx.irs.edc.model.TransferProcessId;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.services.AsyncPollingService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -59,9 +62,24 @@ class EdcControlPlaneClientTest {
     @Spy
     private final AsyncPollingService pollingService = new AsyncPollingService(Clock.systemUTC(),
             Executors.newSingleThreadScheduledExecutor());
-
+    @Spy
+    private final EdcConfiguration config = new EdcConfiguration();
     @InjectMocks
     private EdcControlPlaneClient testee;
+
+    @BeforeEach
+    void setUp() {
+        config.setControlplane(new EdcConfiguration.ControlplaneConfig());
+        config.getControlplane().setEndpoint(new EdcConfiguration.ControlplaneConfig.EndpointConfig());
+        config.getControlplane().getEndpoint().setData("https://irs-consumer-controlplane.dev.demo.catena-x.net/data");
+        config.getControlplane().setRequestTtl(Duration.ofMinutes(10));
+        config.getControlplane().setApiKey(new EdcConfiguration.ControlplaneConfig.ApiKeyConfig());
+
+        config.setSubmodel(new EdcConfiguration.SubmodelConfig());
+        config.getSubmodel().setPath("/submodel");
+        config.getSubmodel().setUrnPrefix("/urn");
+        config.getSubmodel().setRequestTtl(Duration.ofMinutes(10));
+    }
 
     @Test
     void shouldReturnValidCatalog() {

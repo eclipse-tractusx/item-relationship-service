@@ -19,7 +19,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
+package org.eclipse.tractusx.irs.edc;
 
 import java.util.List;
 

@@ -44,17 +44,16 @@ import org.springframework.web.client.RestTemplate;
 public class EdcDataPlaneClient {
 
     private static final Pattern RESPONSE_PATTERN = Pattern.compile("\\{\"data\":\"(?<embeddedData>.*)\"\\}");
+    private final RestTemplate edcRestTemplate;
 
-    private final RestTemplate simpleRestTemplate;
+
 
     public String getData(final EndpointDataReference dataReference, final String subUrl) {
+
         final String url = getUrl(dataReference.getEndpoint(), subUrl);
 
-        final String response = simpleRestTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                new HttpEntity<>(null, headers(dataReference)),
-                String.class).getBody();
+        final String response = edcRestTemplate.exchange(url, HttpMethod.GET,
+                new HttpEntity<>(null, headers(dataReference)), String.class).getBody();
 
         log.info("Extracting raw embeddedData from EDC data plane response");
         return extractData(response);
@@ -71,7 +70,10 @@ public class EdcDataPlaneClient {
     private HttpHeaders headers(final EndpointDataReference dataReference) {
         final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        headers.add(dataReference.getAuthKey(), dataReference.getAuthCode());
+        final var authKey = dataReference.getAuthKey();
+        if (authKey != null) {
+            headers.add(authKey, dataReference.getAuthCode());
+        }
         return headers;
     }
 

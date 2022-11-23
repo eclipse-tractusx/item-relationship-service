@@ -38,11 +38,11 @@ import org.eclipse.tractusx.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.RelationshipDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.SubmodelDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
-import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.JobTTL;
+import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.persistence.MinioBlobPersistence;
@@ -91,7 +91,6 @@ public class JobConfiguration {
         return Clock.systemUTC();
     }
 
-
     @Profile("!test")
     @Bean
     public BlobPersistence blobStore(final BlobstoreConfiguration config) throws BlobPersistenceException {
@@ -117,12 +116,12 @@ public class JobConfiguration {
 
     @Bean
     public RelationshipDelegate relationshipDelegate(final SubmodelDelegate submodelDelegate,
-            final SubmodelFacade submodelFacade) {
+            final EdcSubmodelFacade submodelFacade) {
         return new RelationshipDelegate(submodelDelegate, submodelFacade);
     }
 
     @Bean
-    public SubmodelDelegate submodelDelegate(final BpdmDelegate bpdmDelegate, final SubmodelFacade submodelFacade,
+    public SubmodelDelegate submodelDelegate(final BpdmDelegate bpdmDelegate, final EdcSubmodelFacade submodelFacade,
             final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService) {
         return new SubmodelDelegate(bpdmDelegate, submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil());
     }
@@ -131,4 +130,6 @@ public class JobConfiguration {
     public BpdmDelegate bpdmDelegate(final BpdmFacade bpdmFacade) {
         return new BpdmDelegate(bpdmFacade);
     }
+
+
 }

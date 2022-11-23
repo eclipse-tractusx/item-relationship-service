@@ -21,8 +21,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
-import static org.eclipse.tractusx.irs.edc.EdcControlPlaneClient.CONTROL_PLANE_SUFFIX;
-
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.UUID;
@@ -37,6 +35,7 @@ import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.dataspaceconnector.policy.model.PolicyType;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
+import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.model.ContractOfferRequest;
 import org.eclipse.tractusx.irs.edc.model.NegotiationId;
 import org.eclipse.tractusx.irs.edc.model.NegotiationRequest;
@@ -56,6 +55,8 @@ import org.springframework.stereotype.Service;
 public class ContractNegotiationService {
 
     private final EdcControlPlaneClient edcControlPlaneClient;
+
+    private final EdcConfiguration config;
 
     private static ContractOffer findOffer(final String target, final Catalog catalog) {
         return catalog.getContractOffers()
@@ -93,7 +94,7 @@ public class ContractNegotiationService {
         final NegotiationRequest negotiationRequest = NegotiationRequest.builder()
                                                                         .connectorId(catalog.getId())
                                                                         .connectorAddress(providerConnectorUrl
-                                                                                + CONTROL_PLANE_SUFFIX)
+                                                                                + config.getControlplane().getProviderSuffix())
                                                                         .offer(contractOfferRequest)
                                                                         .build();
 
@@ -105,13 +106,19 @@ public class ContractNegotiationService {
                 negotiationId);
         final NegotiationResponse response = Objects.requireNonNull(getNegotiationResponse(responseFuture));
 
+        final var destination = TransferProcessDataDestination.builder()
+                                                              .type(TransferProcessDataDestination.DEFAULT_TYPE)
+                                                              .build();
         final var request = TransferProcessRequest.builder()
                                                   .requestId(UUID.randomUUID().toString())
+                                                  .protocol(TransferProcessRequest.DEFAULT_PROTOCOL)
+                                                  .managedResources(TransferProcessRequest.DEFAULT_MANAGED_RESOURCES)
                                                   .connectorId(catalog.getId())
-                                                  .connectorAddress(providerConnectorUrl + CONTROL_PLANE_SUFFIX)
+                                                  .connectorAddress(
+                                                          providerConnectorUrl + config.getControlplane().getProviderSuffix())
                                                   .contractId(response.getContractAgreementId())
                                                   .assetId(target)
-                                                  .dataDestination(TransferProcessDataDestination.builder().build())
+                                                  .dataDestination(destination)
                                                   .build();
 
         final TransferProcessId transferProcessId = edcControlPlaneClient.startTransferProcess(request);

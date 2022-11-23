@@ -19,7 +19,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
+package org.eclipse.tractusx.irs.edc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
+import org.eclipse.tractusx.irs.edc.RelationshipAspect;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -35,7 +36,7 @@ class RelationshipAspectTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    public void shouldFindCorrectRelationshipAspect(final BomLifecycle bomLifecycle, final Direction direction, final RelationshipAspect expected) {
+    void shouldFindCorrectRelationshipAspect(final BomLifecycle bomLifecycle, final Direction direction, final RelationshipAspect expected) {
         final RelationshipAspect from = RelationshipAspect.from(bomLifecycle, direction);
 
         assertThat(from).isEqualTo(expected);

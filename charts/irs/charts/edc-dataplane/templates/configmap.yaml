@@ -15,7 +15,7 @@ data:
     web.http.control.port={{ .Values.edc.endpoints.control.port }}
     web.http.control.path={{ .Values.edc.endpoints.control.path }}
     edc.api.auth.key={{ .Values.edc.api.auth.key }}
-    edc.receiver.http.endpoint=http://{{ .Release.Name }}-irs-aaswrapper:9192/callback/endpoint-data-reference
+    edc.receiver.http.endpoint=http://{{ .Release.Name }}-irs-helm:8080/irs/endpoint-data-reference
     edc.dataplane.token.validation.endpoint=http://{{ .Release.Name }}-edc-controlplane:8182/validation/token
     edc.vault.hashicorp.timeout.seconds=30
     edc.vault.hashicorp.health.check.enabled=true

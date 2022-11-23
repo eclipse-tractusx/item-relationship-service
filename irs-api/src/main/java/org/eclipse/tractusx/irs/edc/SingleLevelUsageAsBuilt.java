@@ -19,7 +19,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
+package org.eclipse.tractusx.irs.edc;
 
 import java.time.ZonedDateTime;
 import java.util.Collection;
@@ -40,41 +40,41 @@ import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 
 /**
- * SingleLevelBomAsPlanned
+ * SingleLevelUsageAsBuilt
  */
 @Data
 @Jacksonized
 @AllArgsConstructor
 @NoArgsConstructor
-class SingleLevelBomAsPlanned extends RelationshipSubmodel {
+class SingleLevelUsageAsBuilt extends RelationshipSubmodel {
 
     private String catenaXId;
-    private Set<ChildData> childParts;
+    private Set<ParentData> parentParts;
 
     @Override
     public List<Relationship> asRelationships() {
-        return Optional.ofNullable(this.childParts).stream().flatMap(Collection::stream)
-                       .map(childData -> childData.toRelationship(this.catenaXId))
+        return Optional.ofNullable(this.parentParts).stream().flatMap(Collection::stream)
+                       .map(parentData -> parentData.toRelationship(this.catenaXId))
                        .collect(Collectors.toList());
     }
 
     /**
-     * ChildData
+     * ParentData
      */
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    /* package */ static class ChildData {
+    /* package */ static class ParentData {
 
         private ZonedDateTime createdOn;
         private Quantity quantity;
         private ZonedDateTime lastModifiedOn;
-        private String childCatenaXId;
+        private String parentCatenaXId;
 
         public Relationship toRelationship(final String catenaXId) {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
-                                                                      .childCatenaXId(GlobalAssetIdentification.of(this.childCatenaXId))
-                                                                      .lifecycleContext(BomLifecycle.AS_PLANNED)
+                                                                      .childCatenaXId(GlobalAssetIdentification.of(catenaXId))
+                                                                      .lifecycleContext(BomLifecycle.AS_BUILT)
                                                                       .assembledOn(this.createdOn)
                                                                       .lastModifiedOn(this.lastModifiedOn);
 
@@ -92,9 +92,9 @@ class SingleLevelBomAsPlanned extends RelationshipSubmodel {
             }
 
             return Relationship.builder()
-                               .catenaXId(GlobalAssetIdentification.of(catenaXId))
+                               .catenaXId(GlobalAssetIdentification.of(this.parentCatenaXId))
                                .linkedItem(linkedItem.build())
-                               .aspectType(AspectType.SINGLE_LEVEL_BOM_AS_PLANNED.toString())
+                               .aspectType(AspectType.SINGLE_LEVEL_USAGE_AS_BUILT.toString())
                                .build();
         }
 
@@ -127,6 +127,4 @@ class SingleLevelBomAsPlanned extends RelationshipSubmodel {
             }
         }
     }
-
-
 }

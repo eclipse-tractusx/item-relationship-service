@@ -19,21 +19,16 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
+package org.eclipse.tractusx.irs.edc;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
-import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.client.RestClientException;
 
 class SubmodelTestdataCreatorTest extends LocalTestDataConfigurationAware {
 
@@ -65,13 +60,4 @@ class SubmodelTestdataCreatorTest extends LocalTestDataConfigurationAware {
         childParts.forEach(childData -> assertThat(childIDs).contains(childData.getChildCatenaXId()));
     }
 
-    @Test
-    void shouldThrowErrorWhenCallingTestId() {
-        final String catenaXId = "urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446";
-        final SubmodelClientLocalStub client = new SubmodelClientLocalStub(new JsonUtil(), mock(
-                CxTestDataContainer.class));
-
-        assertThatExceptionOfType(RestClientException.class).isThrownBy(
-                () -> client.getSubmodel(catenaXId, AssemblyPartRelationship.class));
-    }
 }

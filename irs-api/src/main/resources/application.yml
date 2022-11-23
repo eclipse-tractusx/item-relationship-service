@@ -93,7 +93,7 @@ resilience4j:
   retry:
     configs:
       default:
-        maxRetryAttempts: 3
+        maxAttempts: 3
         waitDuration: 10s
         enableExponentialBackoff: true
         exponentialBackoffMultiplier: 2
@@ -103,10 +103,21 @@ resilience4j:
       submodel:
         baseConfig: default
 
-aasWrapper:
-  host: "${AASWRAPPER_HOST:}"
-  username: ${AASWRAPPER_USERNAME:}
-  password: ${AASWRAPPER_PASSWORD:}
+edc:
+  controlplane:
+    request-ttl: ${EDC_CONTROLPLANE_REQUEST_TTL:PT10M}
+    endpoint:
+      data: ${EDC_CONTROLPLANE_ENDPOINT_DATA:}
+    provider-suffix: ${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/ids/data}
+    catalog-limit: ${EDC_CONTROLPLANE_CATALOG_LIMIT:1000}
+    api-key:
+      header: ${EDC_API_KEY_HEADER:}
+      secret: ${EDC_API_KEY_SECRET:}
+
+  submodel:
+    request-ttl: ${EDC_SUBMODEL_REQUEST_TTL:PT10M}
+    path: ${EDC_SUBMODEL_PATH:/submodel}
+    urn-prefix: ${EDC_SUBMODEL_URN_PREFIX:/urn}
 
 digitalTwinRegistry:
   url: "${DIGITALTWINREGISTRY_URL:}"

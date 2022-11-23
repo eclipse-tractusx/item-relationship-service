@@ -19,16 +19,23 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.aaswrapper.submodel.domain;
+package org.eclipse.tractusx.irs.edc;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.EDC_REST_TEMPLATE;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.time.Duration;
+
 import io.github.resilience4j.retry.RetryRegistry;
+import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.tractusx.irs.TestConfig;
+import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -46,42 +53,45 @@ import org.springframework.web.client.RestTemplate;
 class SubmodelExponentialRetryTest {
 
     @Autowired
-    private SubmodelClient submodelClient;
+    private EdcSubmodelFacade submodelClient;
 
     @MockBean
-    @Qualifier("basicAuthRestTemplate")
+    @Qualifier(EDC_REST_TEMPLATE)
     private RestTemplate restTemplate;
 
     @Autowired
     private RetryRegistry retryRegistry;
 
+
     @Test
     void shouldRetryExecutionOfGetSubmodelOnClientMaxAttemptTimes() {
         // Arrange
-        given(restTemplate.getForEntity(any(), any())).willThrow(
+        given(restTemplate.exchange(any(), any(), any(), eq(Catalog.class), any(), any())).willThrow(
                 new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception"));
 
         // Act
-        assertThrows(HttpServerErrorException.class,
-                () -> submodelClient.getSubmodel("http://test.com/urn:uuid:12345/submodel?content=value",
-                        Object.class));
+        assertThatThrownBy(() -> submodelClient.getSubmodelRawPayload(
+                "http://test.com/urn:uuid:12345/submodel?content=value")).hasCauseInstanceOf(
+                HttpServerErrorException.class);
 
         // Assert
-        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getForEntity(any(), any());
+        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(), any(), any(),
+                eq(Catalog.class), any(), any());
     }
 
     @Test
     void shouldRetryOnAnyRuntimeException() {
         // Arrange
-        given(restTemplate.getForEntity(any(), any())).willThrow(new RuntimeException("AASWrapper remote exception"));
+        given(restTemplate.exchange(any(), any(), any(), eq(Catalog.class), any(), any())).willThrow(
+                new RuntimeException("AASWrapper remote exception"));
 
         // Act
-        assertThrows(RuntimeException.class,
-                () -> submodelClient.getSubmodel("http://test.com/urn:uuid:12345/submodel?content=value",
-                        Object.class));
+        assertThatThrownBy(() -> submodelClient.getSubmodelRawPayload(
+                "http://test.com/urn:uuid:12345/submodel?content=value")).hasCauseInstanceOf(RuntimeException.class);
 
         // Assert
-        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).getForEntity(any(), any());
+        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(), any(), any(),
+                eq(Catalog.class), any(), any());
     }
 
 }

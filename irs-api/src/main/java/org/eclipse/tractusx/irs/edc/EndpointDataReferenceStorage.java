@@ -21,10 +21,15 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lombok.Value;
 import org.springframework.stereotype.Service;
 
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
@@ -35,14 +40,40 @@ import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference
 @Service
 public class EndpointDataReferenceStorage {
 
-    private final Map<String, EndpointDataReference> storageMap = new ConcurrentHashMap<>();
+    private static final Duration STORAGE_DURATION = Duration.ofHours(1);
+
+    private final Map<String, ExpiringContainer> storageMap = new ConcurrentHashMap<>();
 
     public void put(final String contractAgreementId, final EndpointDataReference dataReference) {
-        storageMap.put(contractAgreementId, dataReference);
+        storageMap.put(contractAgreementId, new ExpiringContainer(Instant.now(), dataReference));
+        cleanup();
     }
 
-    public Optional<EndpointDataReference> get(final String contractAgreementId) {
-        return Optional.ofNullable(storageMap.get(contractAgreementId));
+    /**
+     * Cleans up all dangling references which were not collected after the STORAGE_DURATION.
+     */
+    private void cleanup() {
+        final Set<String> keys = new HashSet<>(storageMap.keySet());
+        keys.forEach(key -> {
+            final Instant creationTimestamp = storageMap.get(key).getCreationTimestamp();
+            if (Instant.now().isAfter(creationTimestamp.plus(STORAGE_DURATION))) {
+                storageMap.remove(key);
+            }
+        });
+    }
+
+    public Optional<EndpointDataReference> remove(final String contractAgreementId) {
+        return Optional.ofNullable(storageMap.remove(contractAgreementId)).map(ExpiringContainer::getDataReference);
+    }
+
+    /**
+     * Stores the data reference with its creation date.
+     */
+    @Value
+    private static class ExpiringContainer {
+        private final Instant creationTimestamp;
+        private final EndpointDataReference dataReference;
     }
 
 }
+
