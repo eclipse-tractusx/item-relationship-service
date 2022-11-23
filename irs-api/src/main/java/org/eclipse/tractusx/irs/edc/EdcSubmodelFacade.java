@@ -38,6 +38,9 @@ import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
+/**
+ * Public API Facade for submodel domain
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
