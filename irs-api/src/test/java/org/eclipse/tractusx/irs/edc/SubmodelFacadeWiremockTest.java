@@ -22,22 +22,27 @@
 package org.eclipse.tractusx.irs.edc;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.any;
-import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.givenThat;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
 
+import java.time.Clock;
+import java.time.Duration;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import io.github.resilience4j.retry.RetryRegistry;
 import org.assertj.core.api.ThrowableAssert;
+import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
 import org.eclipse.tractusx.irs.exceptions.EdcClientException;
-import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
+import org.eclipse.tractusx.irs.services.AsyncPollingService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,23 +53,35 @@ import org.springframework.web.client.RestTemplate;
 class SubmodelFacadeWiremockTest {
 
     private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
-    private final JsonUtil jsonUtil = new JsonUtil();
-
-    private final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
-    private final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
-
-    private final RestTemplate restTemplate = new RestTemplate();
     private WireMockServer wireMockServer;
+
     private EdcSubmodelFacade submodelFacade;
+
+    private final EdcConfiguration config = new EdcConfiguration();
+    private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage();
 
     @BeforeEach
     void configureSystemUnderTest() {
         this.wireMockServer = new WireMockServer(options().dynamicPort());
         this.wireMockServer.start();
         configureFor(this.wireMockServer.port());
-        //        SubmodelClient submodelClient = new SubmodelClientImpl(restTemplate, buildApiMethodUrl() + "/api/service",
-        //                jsonUtil, meterRegistry, retryRegistry);
-        this.submodelFacade = new EdcSubmodelFacadeImpl(null, null, null, null, null, null);
+
+        config.setControlplaneEndpointData(buildApiMethodUrl());
+        config.setSubmodelUrnPrefix("/urn");
+        config.setSubmodelPath("/submodel");
+        config.setControlplaneRequestTtl(Duration.ofSeconds(5));
+
+        final RestTemplate restTemplate = new RestTemplate();
+        final AsyncPollingService pollingService = new AsyncPollingService(Clock.systemUTC(),
+                Executors.newScheduledThreadPool(1));
+        final EdcControlPlaneClient controlPlaneClient = new EdcControlPlaneClient(restTemplate, pollingService,
+                config);
+        final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
+        final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
+                config);
+
+        this.submodelFacade = new EdcSubmodelFacadeImpl(config, contractNegotiationService, dataPlaneClient, storage,
+                new JsonUtil(), pollingService);
     }
 
     @AfterEach
@@ -76,9 +93,12 @@ class SubmodelFacadeWiremockTest {
     void shouldReturnAssemblyPartRelationshipAsString()
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
-        givenThat(any(anyUrl()).willReturn(aResponse().withStatus(200)
-                                                      .withHeader("Content-Type", "application/json;charset=UTF-8")
-                                                      .withBodyFile("assemblyPartRelationship.json")));
+        prepareNegotiation();
+        givenThat(get(urlPathEqualTo("/submodel")).willReturn(aResponse().withStatus(200)
+                                                                         .withHeader("Content-Type",
+                                                                                 "application/json;charset=UTF-8")
+                                                                         .withBodyFile(
+                                                                                 "assemblyPartRelationship.json")));
 
         // Act
         final String submodel = submodelFacade.getSubmodelRawPayload(url).get();
@@ -87,13 +107,50 @@ class SubmodelFacadeWiremockTest {
         assertThat(submodel).contains("\"catenaXId\": \"urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978\"");
     }
 
+    private void prepareNegotiation() {
+        final var contentType = "application/json;charset=UTF-8";
+        final var pathCatalog = "/catalog";
+        final var pathNegotiate = "/contractnegotiations";
+        final var pathStartTransfer = "/transferprocess";
+        givenThat(get(urlPathEqualTo(pathCatalog)).willReturn(aResponse().withStatus(200)
+                                                                         .withHeader("Content-Type", contentType)
+                                                                         .withBodyFile("edc/responseCatalog.json")));
+
+        givenThat(post(urlPathEqualTo(pathNegotiate)).willReturn(aResponse().withStatus(200)
+                                                                            .withHeader("Content-Type", contentType)
+                                                                            .withBodyFile(
+                                                                                    "edc/responseStartNegotiation.json")));
+
+        final var negotiationId = "1cbaec6e-c316-4e3e-8258-c07a648cc44a";
+        givenThat(get(urlPathEqualTo(pathNegotiate + "/" + negotiationId)).willReturn(aResponse().withStatus(200)
+                                                                                                 .withHeader(
+                                                                                                         "Content-Type",
+                                                                                                         contentType)
+                                                                                                 .withBodyFile(
+                                                                                                         "edc/responseGetNegotiationConfirmed.json")));
+
+        givenThat(post(urlPathEqualTo(pathStartTransfer)).willReturn(aResponse().withStatus(200)
+                                                                                .withHeader("Content-Type", contentType)
+                                                                                .withBodyFile(
+                                                                                        "edc/responseStartTransferprocess.json")));
+        final var contractAgreementId = "1bbaec6e-c316-4e1e-8258-c07a648cc43c";
+        final EndpointDataReference ref = EndpointDataReference.Builder.newInstance()
+                                                                       .authKey("testkey")
+                                                                       .authCode("testcode")
+                                                                       .endpoint(buildApiMethodUrl())
+                                                                       .build();
+        storage.put(contractAgreementId, ref);
+    }
+
     @Test
     void shouldReturnMaterialForRecyclingAsString()
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
-        givenThat(any(anyUrl()).willReturn(aResponse().withStatus(200)
-                                                      .withHeader("Content-Type", "application/json;charset=UTF-8")
-                                                      .withBodyFile("materialForRecycling.json")));
+        prepareNegotiation();
+        givenThat(get(urlPathEqualTo("/submodel")).willReturn(aResponse().withStatus(200)
+                                                                         .withHeader("Content-Type",
+                                                                                 "application/json;charset=UTF-8")
+                                                                         .withBodyFile("materialForRecycling.json")));
 
         // Act
         final String submodel = submodelFacade.getSubmodelRawPayload(url).get();
@@ -106,9 +163,11 @@ class SubmodelFacadeWiremockTest {
     void shouldReturnObjectAsStringWhenResponseNotJSON()
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
-        givenThat(any(anyUrl()).willReturn(aResponse().withStatus(200)
-                                                      .withHeader("Content-Type", "application/json;charset=UTF-8")
-                                                      .withBody("test")));
+        prepareNegotiation();
+        givenThat(get(urlPathEqualTo("/submodel")).willReturn(aResponse().withStatus(200)
+                                                                         .withHeader("Content-Type",
+                                                                                 "application/json;charset=UTF-8")
+                                                                         .withBody("test")));
 
         // Act
         final String submodel = submodelFacade.getSubmodelRawPayload(url).get();
@@ -120,29 +179,37 @@ class SubmodelFacadeWiremockTest {
     @Test
     void shouldThrowExceptionWhenResponse_400() {
         // Arrange
-        givenThat(any(anyUrl()).willReturn(aResponse().withStatus(400)
-                                                      .withHeader("Content-Type", "application/json;charset=UTF-8")
-                                                      .withBody("{ error: '400'}")));
+        prepareNegotiation();
+        givenThat(get(urlPathEqualTo("/submodel")).willReturn(aResponse().withStatus(400)
+                                                                         .withHeader("Content-Type",
+                                                                                 "application/json;charset=UTF-8")
+                                                                         .withBody("{ error: '400'}")));
 
         // Act
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelRawPayload(url);
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelRawPayload(url)
+                                                                                      .get(5, TimeUnit.SECONDS);
 
         // Assert
-        assertThatExceptionOfType(RestClientException.class).isThrownBy(throwingCallable);
+        assertThatExceptionOfType(ExecutionException.class).isThrownBy(throwingCallable)
+                                                           .withCauseInstanceOf(RestClientException.class);
     }
 
     @Test
     void shouldThrowExceptionWhenResponse_500() {
         // Arrange
-        givenThat(any(anyUrl()).willReturn(aResponse().withStatus(500)
-                                                      .withHeader("Content-Type", "application/json;charset=UTF-8")
-                                                      .withBody("{ error: '500'}")));
+        prepareNegotiation();
+        givenThat(get(urlPathEqualTo("/submodel")).willReturn(aResponse().withStatus(500)
+                                                                         .withHeader("Content-Type",
+                                                                                 "application/json;charset=UTF-8")
+                                                                         .withBody("{ error: '500'}")));
 
         // Act
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelRawPayload(url);
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelRawPayload(url)
+                                                                                      .get(5, TimeUnit.SECONDS);
 
         // Assert
-        assertThatExceptionOfType(RestClientException.class).isThrownBy(throwingCallable);
+        assertThatExceptionOfType(ExecutionException.class).isThrownBy(throwingCallable)
+                                                           .withCauseInstanceOf(RestClientException.class);
     }
 
     private String buildApiMethodUrl() {

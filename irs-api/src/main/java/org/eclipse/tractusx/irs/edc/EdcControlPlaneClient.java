@@ -136,7 +136,10 @@ public class EdcControlPlaneClient {
     private HttpHeaders headers() {
         final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        headers.add(config.getControlplaneApiKeyHeader(), config.getControlplaneApiKeySecret());
+        final String apiKeyHeader = config.getControlplaneApiKeyHeader();
+        if (apiKeyHeader != null) {
+            headers.add(apiKeyHeader, config.getControlplaneApiKeySecret());
+        }
         return headers;
     }
 
