@@ -64,7 +64,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class EdcSubmodelFacadeTest extends LocalTestDataConfigurationAware {
+class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     private static final String ENDPOINT_ADDRESS = "dummyAddress/urn:123456/submodel";
 
@@ -83,9 +83,9 @@ class EdcSubmodelFacadeTest extends LocalTestDataConfigurationAware {
     @Spy
     private final EdcConfiguration config = new EdcConfiguration();
 
-    private EdcSubmodelFacade testee;
+    private EdcSubmodelClient testee;
 
-    EdcSubmodelFacadeTest() throws IOException {
+    EdcSubmodelClientTest() throws IOException {
         super();
     }
 
@@ -96,7 +96,7 @@ class EdcSubmodelFacadeTest extends LocalTestDataConfigurationAware {
         config.setSubmodelUrnPrefix("/urn");
         config.setSubmodelRequestTtl(Duration.ofMinutes(10));
         config.setControlplaneRequestTtl(Duration.ofMinutes(10));
-        testee = new EdcSubmodelFacadeImpl(config, contractNegotiationService, edcDataPlaneClient,
+        testee = new EdcSubmodelClientImpl(config, contractNegotiationService, edcDataPlaneClient,
                 endpointDataReferenceStorage, jsonUtil, pollingService);
     }
 

@@ -58,9 +58,8 @@ import org.springframework.web.client.RestTemplate;
 public class RestTemplateConfig {
 
     public static final String OAUTH_REST_TEMPLATE = "oAuthRestTemplate";
-    public static final String BASIC_AUTH_REST_TEMPLATE = "basicAuthRestTemplate";
     public static final String NO_ERROR_REST_TEMPLATE = "noErrorRestTemplate";
-
+    public static final String EDC_REST_TEMPLATE = "edcRestTemplate";
     private static final String CLIENT_REGISTRATION_ID = "keycloak";
     private static final int TIMEOUT_SECONDS = 90;
 
@@ -68,7 +67,7 @@ public class RestTemplateConfig {
     private final ClientRegistrationRepository clientRegistrationRepository;
 
     @Bean(OAUTH_REST_TEMPLATE)
-    /* package */ RestTemplate oAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
+        /* package */ RestTemplate oAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
         final var clientRegistration = clientRegistrationRepository.findByRegistrationId(CLIENT_REGISTRATION_ID);
 
         return restTemplateBuilder.additionalInterceptors(
@@ -79,10 +78,10 @@ public class RestTemplateConfig {
     }
 
     @Bean(NO_ERROR_REST_TEMPLATE)
-    /* package */ RestTemplate noErrorRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
+        /* package */ RestTemplate noErrorRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
         final RestTemplate restTemplate = restTemplateBuilder.setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                                                      .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                                                      .build();
+                                                             .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                                             .build();
 
         restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
             /**
@@ -100,7 +99,7 @@ public class RestTemplateConfig {
     }
 
     @Bean
-    /* package */ OAuth2AuthorizedClientManager authorizedClientManager() {
+        /* package */ OAuth2AuthorizedClientManager authorizedClientManager() {
         final var authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
                                                                                   .clientCredentials()
                                                                                   .build();
@@ -125,10 +124,8 @@ public class RestTemplateConfig {
         @Override
         public ClientHttpResponse intercept(final HttpRequest request, final byte[] body,
                 final ClientHttpRequestExecution execution) throws IOException {
-            final OAuth2AuthorizeRequest oAuth2AuthorizeRequest = OAuth2AuthorizeRequest
-                    .withClientRegistrationId(clientRegistration.getRegistrationId())
-                    .principal(clientRegistration.getClientName())
-                    .build();
+            final OAuth2AuthorizeRequest oAuth2AuthorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId(
+                    clientRegistration.getRegistrationId()).principal(clientRegistration.getClientName()).build();
 
             final OAuth2AuthorizedClient client = manager.authorize(oAuth2AuthorizeRequest);
 
@@ -149,12 +146,11 @@ public class RestTemplateConfig {
         }
     }
 
-    @Bean
-        /* package */ RestTemplate simpleRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
-        return restTemplateBuilder
-                .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                .build();
+    @Bean(EDC_REST_TEMPLATE)
+    /* package */ RestTemplate edcRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
+        return restTemplateBuilder.setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .build();
     }
 
 }

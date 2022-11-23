@@ -55,7 +55,7 @@ class SubmodelFacadeWiremockTest {
     private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
     private WireMockServer wireMockServer;
 
-    private EdcSubmodelFacade submodelFacade;
+    private EdcSubmodelClient submodelFacade;
 
     private final EdcConfiguration config = new EdcConfiguration();
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage();
@@ -80,7 +80,7 @@ class SubmodelFacadeWiremockTest {
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
                 config);
 
-        this.submodelFacade = new EdcSubmodelFacadeImpl(config, contractNegotiationService, dataPlaneClient, storage,
+        this.submodelFacade = new EdcSubmodelClientImpl(config, contractNegotiationService, dataPlaneClient, storage,
                 new JsonUtil(), pollingService);
     }
 

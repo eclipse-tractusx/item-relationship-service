@@ -33,7 +33,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
@@ -52,7 +51,7 @@ class RelationshipDelegateTest {
     @Test
     void shouldFillItemContainerWithRelationshipAndAddChildIdsToProcess() throws EdcClientException {
         // given
-        when(submodelFacade.getRelationships(anyString(), any())).thenReturn(CompletableFuture.completedFuture(Collections.singletonList(relationship())));
+        when(submodelFacade.getRelationships(anyString(), any())).thenReturn(Collections.singletonList(relationship()));
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder().shell(shellDescriptor(
                 List.of(submodelDescriptor(assemblyPartRelationshipAspectName, "address"))));
         final AASTransferProcess aasTransferProcess = new AASTransferProcess();

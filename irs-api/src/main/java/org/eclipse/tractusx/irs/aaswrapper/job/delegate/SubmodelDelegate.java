@@ -24,7 +24,6 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import io.github.resilience4j.retry.RetryRegistry;
@@ -140,13 +139,6 @@ public class SubmodelDelegate extends AbstractDelegate {
     }
 
     private String requestSubmodelAsString(final Endpoint endpoint) throws EdcClientException {
-        try {
-            return submodelFacade.getSubmodelRawPayload(endpoint.getProtocolInformation().getEndpointAddress()).get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return null;
-        } catch (ExecutionException e) {
-            throw new EdcClientException(e);
-        }
+        return submodelFacade.getSubmodelRawPayload(endpoint.getProtocolInformation().getEndpointAddress());
     }
 }

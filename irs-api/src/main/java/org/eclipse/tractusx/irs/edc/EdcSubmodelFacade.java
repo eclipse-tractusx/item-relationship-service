@@ -21,168 +21,88 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
+import java.net.SocketTimeoutException;
+import java.net.URI;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
+import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.tractusx.irs.component.Relationship;
-import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
-import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
-import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.exceptions.EdcClientException;
-import org.eclipse.tractusx.irs.services.AsyncPollingService;
-import org.eclipse.tractusx.irs.util.JsonUtil;
-import org.springframework.context.annotation.Profile;
+import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StopWatch;
+import org.springframework.web.client.ResourceAccessException;
 
-/**
- * Public API facade for EDC domain
- */
-public interface EdcSubmodelFacade {
-    CompletableFuture<List<Relationship>> getRelationships(String submodelEndpointAddress,
-            RelationshipAspect traversalAspectType) throws EdcClientException;
-
-    CompletableFuture<String> getSubmodelRawPayload(String submodelEndpointAddress) throws EdcClientException;
-}
-
-/**
- * Submodel facade stub used in local environment
- */
-@Service
-@Profile({ "local",
-           "stubtest"
-})
-class EdcSubmodelFacadeLocalStub implements EdcSubmodelFacade {
-
-    private final JsonUtil jsonUtil;
-    private final SubmodelTestdataCreator testdataCreator;
-
-    /* package */ EdcSubmodelFacadeLocalStub(final JsonUtil jsonUtil, final CxTestDataContainer cxTestDataContainer) {
-        this.jsonUtil = jsonUtil;
-        this.testdataCreator = new SubmodelTestdataCreator(cxTestDataContainer);
-    }
-
-    @Override
-    public CompletableFuture<List<Relationship>> getRelationships(final String submodelEndpointAddress,
-            final RelationshipAspect traversalAspectType) throws EdcClientException {
-        if ("urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(submodelEndpointAddress)) {
-            throw new EdcClientException("Dummy Exception");
-        }
-
-        return CompletableFuture.completedFuture(
-                testdataCreator.createSubmodelForId(submodelEndpointAddress, traversalAspectType.getSubmodelClazz())
-                               .asRelationships());
-    }
-
-    @Override
-    public CompletableFuture<String> getSubmodelRawPayload(final String submodelEndpointAddress) {
-        final Map<String, Object> submodel = testdataCreator.createSubmodelForId(submodelEndpointAddress);
-        return CompletableFuture.completedFuture(jsonUtil.asString(submodel));
-    }
-}
-
-/**
- * Public API facade for EDC domain
- */
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Profile({ "!local && !stubtest" })
-class EdcSubmodelFacadeImpl implements EdcSubmodelFacade {
+public class EdcSubmodelFacade {
 
-    private final EdcConfiguration config;
-    private final ContractNegotiationService contractNegotiationService;
-    private final EdcDataPlaneClient edcDataPlaneClient;
-    private final EndpointDataReferenceStorage endpointDataReferenceStorage;
-    private final JsonUtil jsonUtil;
-    private final AsyncPollingService pollingService;
+    private final OutboundMeterRegistryService meterRegistryService;
+    private final RetryRegistry retryRegistry;
+    private final UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
+    private final EdcSubmodelClient facade;
 
-    @Override
-    public CompletableFuture<List<Relationship>> getRelationships(final String submodelEndpointAddress,
+    public List<Relationship> getRelationships(final String submodelEndpointAddress,
             final RelationshipAspect traversalAspectType) throws EdcClientException {
-        final StopWatch stopWatch = new StopWatch();
-        stopWatch.start("Get EDC Submodel task for relationships, endpoint " + submodelEndpointAddress);
-
-        final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
-
-        return startSubmodelDataRetrieval(traversalAspectType, negotiationResponse.getContractAgreementId(), stopWatch);
-    }
-
-    private NegotiationResponse fetchNegotiationResponse(final String submodelEndpointAddress)
-            throws EdcClientException {
-        final int indexOfUrn = findIndexOf(submodelEndpointAddress, config.getSubmodelUrnPrefix());
-        final int indexOfSubModel = findIndexOf(submodelEndpointAddress, config.getSubmodelPath());
-
-        if (indexOfUrn == -1 || indexOfSubModel == -1) {
-            throw new EdcClientException(
-                    "Cannot rewrite endpoint address, malformed format: " + submodelEndpointAddress);
-        }
-
-        final String providerConnectorUrl = submodelEndpointAddress.substring(0, indexOfUrn);
-        final String target = submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
-        log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerConnectorUrl,
-                target);
-        return contractNegotiationService.negotiate(providerConnectorUrl, target);
-    }
-
-    private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(
-            final RelationshipAspect traversalAspectType, final String contractAgreementId, final StopWatch stopWatch) {
-
-        return pollingService.<List<Relationship>>createJob().action(() -> {
-            final Optional<String> data = retrieveSubmodelData(config.getSubmodelPath(), contractAgreementId,
-                    stopWatch);
-            if (data.isPresent()) {
-                final RelationshipSubmodel relationshipSubmodel = jsonUtil.fromString(data.get(),
-                        traversalAspectType.getSubmodelClazz());
-
-                return Optional.of(relationshipSubmodel.asRelationships());
+        return execute(submodelEndpointAddress, () -> {
+            try {
+                return facade.getRelationships(submodelEndpointAddress, traversalAspectType).get();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return Collections.emptyList();
+            } catch (ExecutionException e) {
+                if (e.getCause() instanceof EdcClientException) {
+                    throw (EdcClientException) e.getCause();
+                }
+                throw new EdcClientException(e.getCause());
             }
-            return Optional.empty();
-        }).timeToLive(config.getSubmodelRequestTtl()).description("waiting for submodel retrieval").build().schedule();
-
+        });
     }
 
-    private Optional<String> retrieveSubmodelData(final String submodel, final String contractAgreementId,
-            final StopWatch stopWatch) {
-        log.info("Retrieving dataReference from storage for contractAgreementId {}", contractAgreementId);
-        final Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.remove(contractAgreementId);
+    public String getSubmodelRawPayload(final String submodelEndpointAddress) throws EdcClientException {
+        return execute(submodelEndpointAddress, () -> {
+            try {
+                return facade.getSubmodelRawPayload(submodelEndpointAddress).get();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return null;
+            } catch (ExecutionException e) {
+                throw new EdcClientException(e.getCause());
+            }
+        });
+    }
 
-        if (dataReference.isPresent()) {
-            final EndpointDataReference ref = dataReference.get();
-            log.info("Retrieving data from EDC data plane with dataReference {}:{}", ref.getAuthKey(),
-                    ref.getAuthCode());
-            final String data = edcDataPlaneClient.getData(ref, submodel);
-            stopWatch.stop();
-            log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
-
-            return Optional.of(data);
+    private <T> T execute(final String endpointAddress, final CheckedSupplier<T> supplier) throws EdcClientException {
+        if (!urlValidator.isValid(endpointAddress)) {
+            throw new IllegalArgumentException(String.format("Malformed endpoint address '%s'", endpointAddress));
         }
-        return Optional.empty();
+        final String host = URI.create(endpointAddress).getHost();
+        final Retry retry = retryRegistry.retry(host, "default");
+        try {
+            return Retry.decorateCallable(retry, () -> {
+                try {
+                    return supplier.get();
+                } catch (ResourceAccessException e) {
+                    if (e.getCause() instanceof SocketTimeoutException) {
+                        meterRegistryService.incrementSubmodelTimeoutCounter(endpointAddress);
+                    }
+                    throw e;
+                }
+            }).call();
+        } catch (EdcClientException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EdcClientException(e);
+        }
     }
 
-    private int findIndexOf(final String endpointAddress, final String str) {
-        return endpointAddress.indexOf(str);
+    private interface CheckedSupplier<T> {
+        T get() throws EdcClientException;
     }
-
-    @Override
-    public CompletableFuture<String> getSubmodelRawPayload(final String submodelEndpointAddress)
-            throws EdcClientException {
-        final StopWatch stopWatch = new StopWatch();
-        stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + submodelEndpointAddress);
-
-        final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
-        return pollingService.<String>createJob()
-                             .action(() -> retrieveSubmodelData(config.getSubmodelPath(),
-                                     negotiationResponse.getContractAgreementId(), stopWatch))
-                             .timeToLive(config.getSubmodelRequestTtl())
-                             .description("waiting for submodel retrieval")
-                             .build()
-                             .schedule();
-    }
-
 }
