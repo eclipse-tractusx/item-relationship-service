@@ -41,6 +41,8 @@ spec:
             - name: tmp
               mountPath: /tmp
           env:
+            - name: SERVER_TRUSTED_PORT
+              value: {{ .Values.service.trustedPort }}
             - name: IRS_API_URL
               value: "{{ .Values.irsUrl }}"
             - name: MINIO_URL

@@ -33,6 +33,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.tractusx.irs.IrsApplication;
 
 /**
  * Filter do differ between trusted and untrusted calls
@@ -41,15 +43,12 @@ import lombok.extern.slf4j.Slf4j;
 public class TrustedEndpointsFilter implements Filter {
 
     private final int trustedPortNum;
-    private final String trustedPathPrefix;
 
-    /* package */ TrustedEndpointsFilter(final String trustedPort, final String trustedPathPrefix) {
-        if (trustedPort != null && trustedPathPrefix != null && !"null".equals(trustedPathPrefix)) {
+    /* package */ TrustedEndpointsFilter(final String trustedPort) {
+        if (StringUtils.isNotEmpty(trustedPort)) {
             trustedPortNum = Integer.parseInt(trustedPort);
-            this.trustedPathPrefix = trustedPathPrefix;
         } else {
             trustedPortNum = 0;
-            this.trustedPathPrefix = "";
         }
     }
 
@@ -81,6 +80,7 @@ public class TrustedEndpointsFilter implements Filter {
     }
 
     private boolean isRequestForTrustedEndpoint(final ServletRequest servletRequest) {
-        return ((HttpServletRequestWrapper) servletRequest).getRequestURI().startsWith(trustedPathPrefix);
+        return ((HttpServletRequestWrapper) servletRequest).getRequestURI()
+                                                           .startsWith(IrsApplication.API_PREFIX_INTERNAL);
     }
 }

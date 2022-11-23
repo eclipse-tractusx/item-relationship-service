@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.tractusx.irs.IrsApplication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.TomcatServletWebServerFactoryCustomizer;
@@ -106,6 +105,6 @@ public class TrustedPortConfiguration {
     @Bean
     public FilterRegistrationBean<TrustedEndpointsFilter> trustedEndpointsFilter() {
         return new FilterRegistrationBean<>(
-                new TrustedEndpointsFilter(trustedPort, IrsApplication.API_PREFIX_INTERNAL));
+                new TrustedEndpointsFilter(trustedPort));
     }
 }
