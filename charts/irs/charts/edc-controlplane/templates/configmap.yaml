@@ -24,7 +24,7 @@ data:
     edc.ids.catalog.id=urn:catalog:default
     edc.ids.endpoint={{ .Values.edc.controlplane.url }}/api/v1/ids
     edc.ids.endpoint.audience={{ .Values.edc.controlplane.url }}/api/v1/ids/data
-    edc.receiver.http.endpoint=http://{{ .Release.Name }}-irs-helm:8080/irs/endpoint-data-reference
+    edc.receiver.http.endpoint=http://{{ .Release.Name }}-irs-helm:8081/internal/endpoint-data-reference
     edc.transfer.dataplane.sync.endpoint=http://{{ .Release.Name }}-edc-dataplane:8185/api/public
     edc.transfer.proxy.endpoint={{ .Values.edc.dataplane.url }}/api/public
     edc.transfer.proxy.token.signer.privatekey.alias={{ .Values.edc.transfer.proxy.token.signer.privatekey.alias }}

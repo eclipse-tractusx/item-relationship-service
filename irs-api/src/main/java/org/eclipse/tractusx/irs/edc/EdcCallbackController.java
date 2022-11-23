@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
-@RequestMapping(IrsApplication.API_PREFIX)
+@RequestMapping(IrsApplication.API_PREFIX_INTERNAL)
 @Hidden
 @RequiredArgsConstructor
 public class EdcCallbackController {
