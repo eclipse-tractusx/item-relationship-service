@@ -36,21 +36,56 @@ import org.springframework.stereotype.Component;
 @Data
 public class EdcConfiguration {
 
-    private String controlplaneEndpointData;
+    private ControlplaneConfig controlplane = new ControlplaneConfig();
+    private SubmodelConfig submodel = new SubmodelConfig();
 
-    private String controlplaneProviderSuffix;
+    /**
+     * Container for controlplane config
+     */
+    @Data
+    public static class ControlplaneConfig {
+        private EndpointConfig endpoint = new EndpointConfig();
 
-    private int controlplaneCatalogLimit;
+        private String providerSuffix;
 
-    private Duration controlplaneRequestTtl;
+        private int catalogLimit;
 
-    private String controlplaneApiKeyHeader;
+        private Duration requestTtl;
 
-    private String controlplaneApiKeySecret;
+        private ApiKeyConfig apiKey = new ApiKeyConfig();
 
-    private Duration submodelRequestTtl;
+        /**
+         * Container for controlplane endpoint config
+         */
+        @Data
+        public static class EndpointConfig {
+            private String data;
 
-    private String submodelPath;
+        }
 
-    private String submodelUrnPrefix;
+        /**
+         * Container for controlplane  apikey config
+         */
+        @Data
+        public static class ApiKeyConfig {
+            private String header;
+            private String secret;
+
+        }
+    }
+
+    /**
+     * Container for submodel config
+     */
+    @Data
+    public static class SubmodelConfig {
+
+        private Duration requestTtl;
+
+        private String path;
+
+        private String urnPrefix;
+    }
+
+
 }

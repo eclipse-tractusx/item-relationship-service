@@ -66,10 +66,14 @@ class SubmodelFacadeWiremockTest {
         this.wireMockServer.start();
         configureFor(this.wireMockServer.port());
 
-        config.setControlplaneEndpointData(buildApiMethodUrl());
-        config.setSubmodelUrnPrefix("/urn");
-        config.setSubmodelPath("/submodel");
-        config.setControlplaneRequestTtl(Duration.ofSeconds(5));
+        config.setControlplane(new EdcConfiguration.ControlplaneConfig());
+        config.getControlplane().setEndpoint(new EdcConfiguration.ControlplaneConfig.EndpointConfig());
+        config.getControlplane().getEndpoint().setData(buildApiMethodUrl());
+        config.getControlplane().setRequestTtl(Duration.ofSeconds(5));
+        config.setSubmodel(new EdcConfiguration.SubmodelConfig());
+        config.getSubmodel().setPath("/submodel");
+        config.getSubmodel().setUrnPrefix("/urn");
+
 
         final RestTemplate restTemplate = new RestTemplate();
         final AsyncPollingService pollingService = new AsyncPollingService(Clock.systemUTC(),

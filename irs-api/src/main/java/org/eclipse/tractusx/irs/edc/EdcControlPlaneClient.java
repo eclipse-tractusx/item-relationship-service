@@ -61,16 +61,16 @@ public class EdcControlPlaneClient {
 
     /* package */ Catalog getCatalog(final String providerConnectorUrl) {
         final var catalogUrl =
-                config.getControlplaneEndpointData() + "/catalog?providerUrl={providerUrl}&limit={limit}";
-        final var providerUrl = providerConnectorUrl + config.getControlplaneProviderSuffix();
-        final var limit = config.getControlplaneCatalogLimit();
+                config.getControlplane().getEndpoint().getData() + "/catalog?providerUrl={providerUrl}&limit={limit}";
+        final var providerUrl = providerConnectorUrl + config.getControlplane().getProviderSuffix();
+        final var limit = config.getControlplane().getCatalogLimit();
 
         return edcRestTemplate.exchange(catalogUrl, HttpMethod.GET, new HttpEntity<>(null, headers()), Catalog.class,
                 providerUrl, limit).getBody();
     }
 
     /* package */ NegotiationId startNegotiations(final NegotiationRequest request) {
-        return edcRestTemplate.exchange(config.getControlplaneEndpointData() + "/contractnegotiations",
+        return edcRestTemplate.exchange(config.getControlplane().getEndpoint().getData() + "/contractnegotiations",
                 HttpMethod.POST, new HttpEntity<>(request, headers()), NegotiationId.class).getBody();
     }
 
@@ -82,9 +82,10 @@ public class EdcControlPlaneClient {
                                  log.info("Check negotiations status");
 
                                  final NegotiationResponse response = edcRestTemplate.exchange(
-                                         config.getControlplaneEndpointData() + "/contractnegotiations/"
-                                                 + negotiationId.getValue(), HttpMethod.GET, objectHttpEntity,
-                                         NegotiationResponse.class).getBody();
+                                                                                             config.getControlplane().getEndpoint().getData() + "/contractnegotiations/"
+                                                                                                     + negotiationId.getValue(), HttpMethod.GET, objectHttpEntity,
+                                                                                             NegotiationResponse.class)
+                                                                                     .getBody();
 
                                  log.info("Response status of negotiation: {}", response);
 
@@ -94,15 +95,15 @@ public class EdcControlPlaneClient {
                                  return Optional.empty();
                              })
                              .description("wait for negotiation confirmation")
-                             .timeToLive(config.getControlplaneRequestTtl())
+                             .timeToLive(config.getControlplane().getRequestTtl())
                              .build()
                              .schedule();
 
     }
 
     /* package */ TransferProcessId startTransferProcess(final TransferProcessRequest request) {
-        return edcRestTemplate.exchange(config.getControlplaneEndpointData() + "/transferprocess", HttpMethod.POST,
-                new HttpEntity<>(request, headers()), TransferProcessId.class).getBody();
+        return edcRestTemplate.exchange(config.getControlplane().getEndpoint().getData() + "/transferprocess",
+                HttpMethod.POST, new HttpEntity<>(request, headers()), TransferProcessId.class).getBody();
     }
 
     /* package */ CompletableFuture<TransferProcessResponse> getTransferProcess(
@@ -115,7 +116,7 @@ public class EdcControlPlaneClient {
                                  log.info("Check Transfer Process status");
 
                                  final TransferProcessResponse response = edcRestTemplate.exchange(
-                                         config.getControlplaneEndpointData() + "/transferprocess/"
+                                         config.getControlplane().getEndpoint().getData() + "/transferprocess/"
                                                  + transferProcessId.getValue(), HttpMethod.GET, objectHttpEntity,
                                          TransferProcessResponse.class).getBody();
 
@@ -128,7 +129,7 @@ public class EdcControlPlaneClient {
 
                              })
                              .description("wait for transfer process completion")
-                             .timeToLive(config.getControlplaneRequestTtl())
+                             .timeToLive(config.getControlplane().getRequestTtl())
                              .build()
                              .schedule();
 
@@ -137,9 +138,9 @@ public class EdcControlPlaneClient {
     private HttpHeaders headers() {
         final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        final String apiKeyHeader = config.getControlplaneApiKeyHeader();
+        final String apiKeyHeader = config.getControlplane().getApiKey().getHeader();
         if (apiKeyHeader != null) {
-            headers.add(apiKeyHeader, config.getControlplaneApiKeySecret());
+            headers.add(apiKeyHeader, config.getControlplane().getApiKey().getSecret());
         }
         return headers;
     }

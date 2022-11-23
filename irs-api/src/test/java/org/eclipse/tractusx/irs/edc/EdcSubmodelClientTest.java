@@ -91,11 +91,15 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     @BeforeEach
     void setUp() {
-        config.setControlplaneEndpointData("https://irs-consumer-controlplane.dev.demo.catena-x.net/data");
-        config.setSubmodelPath("/submodel");
-        config.setSubmodelUrnPrefix("/urn");
-        config.setSubmodelRequestTtl(Duration.ofMinutes(10));
-        config.setControlplaneRequestTtl(Duration.ofMinutes(10));
+        config.setControlplane(new EdcConfiguration.ControlplaneConfig());
+        config.getControlplane().setEndpoint(new EdcConfiguration.ControlplaneConfig.EndpointConfig());
+        config.getControlplane().getEndpoint().setData("https://irs-consumer-controlplane.dev.demo.catena-x.net/data");
+        config.getControlplane().setRequestTtl(Duration.ofMinutes(10));
+
+        config.setSubmodel(new EdcConfiguration.SubmodelConfig());
+        config.getSubmodel().setPath("/submodel");
+        config.getSubmodel().setUrnPrefix("/urn");
+        config.getSubmodel().setRequestTtl(Duration.ofMinutes(10));
         testee = new EdcSubmodelClientImpl(config, contractNegotiationService, edcDataPlaneClient,
                 endpointDataReferenceStorage, jsonUtil, pollingService);
     }
@@ -217,7 +221,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"manufacturerId\"}");
     }
 
-    private void prepareTestdata(final String catenaXId, final String submodelDataSuffix) throws ContractNegotiationException, IOException {
+    private void prepareTestdata(final String catenaXId, final String submodelDataSuffix)
+            throws ContractNegotiationException, IOException {
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);

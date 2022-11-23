@@ -94,7 +94,7 @@ public class ContractNegotiationService {
         final NegotiationRequest negotiationRequest = NegotiationRequest.builder()
                                                                         .connectorId(catalog.getId())
                                                                         .connectorAddress(providerConnectorUrl
-                                                                                + config.getControlplaneProviderSuffix())
+                                                                                + config.getControlplane().getProviderSuffix())
                                                                         .offer(contractOfferRequest)
                                                                         .build();
 
@@ -115,7 +115,7 @@ public class ContractNegotiationService {
                                                   .managedResources(TransferProcessRequest.DEFAULT_MANAGED_RESOURCES)
                                                   .connectorId(catalog.getId())
                                                   .connectorAddress(
-                                                          providerConnectorUrl + config.getControlplaneProviderSuffix())
+                                                          providerConnectorUrl + config.getControlplane().getProviderSuffix())
                                                   .contractId(response.getContractAgreementId())
                                                   .assetId(target)
                                                   .dataDestination(destination)

@@ -102,23 +102,21 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private final JsonUtil jsonUtil;
     private final AsyncPollingService pollingService;
 
-
     @Override
     public CompletableFuture<List<Relationship>> getRelationships(final String submodelEndpointAddress,
-        final RelationshipAspect traversalAspectType) throws EdcClientException {
+            final RelationshipAspect traversalAspectType) throws EdcClientException {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start("Get EDC Submodel task for relationships, endpoint " + submodelEndpointAddress);
 
         final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
 
-        return startSubmodelDataRetrieval(traversalAspectType, negotiationResponse.getContractAgreementId(),
-                stopWatch);
+        return startSubmodelDataRetrieval(traversalAspectType, negotiationResponse.getContractAgreementId(), stopWatch);
     }
 
     private NegotiationResponse fetchNegotiationResponse(final String submodelEndpointAddress)
             throws EdcClientException {
-        final int indexOfUrn = findIndexOf(submodelEndpointAddress, config.getSubmodelUrnPrefix());
-        final int indexOfSubModel = findIndexOf(submodelEndpointAddress, config.getSubmodelPath());
+        final int indexOfUrn = findIndexOf(submodelEndpointAddress, config.getSubmodel().getUrnPrefix());
+        final int indexOfSubModel = findIndexOf(submodelEndpointAddress, config.getSubmodel().getPath());
 
         if (indexOfUrn == -1 || indexOfSubModel == -1) {
             throw new EdcClientException(
@@ -135,17 +133,22 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(
             final RelationshipAspect traversalAspectType, final String contractAgreementId, final StopWatch stopWatch) {
 
-        return pollingService.<List<Relationship>>createJob().action(() -> {
-            final Optional<String> data = retrieveSubmodelData(config.getSubmodelPath(), contractAgreementId,
-                    stopWatch);
-            if (data.isPresent()) {
-                final RelationshipSubmodel relationshipSubmodel = jsonUtil.fromString(data.get(),
-                        traversalAspectType.getSubmodelClazz());
+        return pollingService.<List<Relationship>>createJob()
+                             .action(() -> {
+                                 final Optional<String> data = retrieveSubmodelData(config.getSubmodel().getPath(),
+                                         contractAgreementId, stopWatch);
+                                 if (data.isPresent()) {
+                                     final RelationshipSubmodel relationshipSubmodel = jsonUtil.fromString(data.get(),
+                                             traversalAspectType.getSubmodelClazz());
 
-                return Optional.of(relationshipSubmodel.asRelationships());
-            }
-            return Optional.empty();
-        }).timeToLive(config.getSubmodelRequestTtl()).description("waiting for submodel retrieval").build().schedule();
+                                     return Optional.of(relationshipSubmodel.asRelationships());
+                                 }
+                                 return Optional.empty();
+                             })
+                             .timeToLive(config.getSubmodel().getRequestTtl())
+                             .description("waiting for submodel retrieval")
+                             .build()
+                             .schedule();
 
     }
 
@@ -179,13 +182,12 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
         final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
         return pollingService.<String>createJob()
-                             .action(() -> retrieveSubmodelData(config.getSubmodelPath(),
+                             .action(() -> retrieveSubmodelData(config.getSubmodel().getPath(),
                                      negotiationResponse.getContractAgreementId(), stopWatch))
-                             .timeToLive(config.getSubmodelRequestTtl())
+                             .timeToLive(config.getSubmodel().getRequestTtl())
                              .description("waiting for submodel retrieval")
                              .build()
                              .schedule();
     }
-
 
 }

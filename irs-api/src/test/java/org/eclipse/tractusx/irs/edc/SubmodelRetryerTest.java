@@ -62,17 +62,6 @@ class SubmodelExponentialRetryTest {
     @Autowired
     private RetryRegistry retryRegistry;
 
-    @Autowired
-    private EdcConfiguration config;
-
-    @BeforeEach
-    void setUp() {
-        config.setControlplaneEndpointData("http://localhost/data");
-        config.setSubmodelPath("/submodel");
-        config.setSubmodelUrnPrefix("/urn");
-        config.setSubmodelRequestTtl(Duration.ofMinutes(1));
-        config.setControlplaneRequestTtl(Duration.ofMinutes(1));
-    }
 
     @Test
     void shouldRetryExecutionOfGetSubmodelOnClientMaxAttemptTimes() {
