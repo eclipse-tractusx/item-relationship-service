@@ -1,0 +1,16 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+ component [**RecursiveJobHandler**] <<Component>> as RecursiveJobHandler {
+    component [**AASRecursiveJobHandler**] <<Component>> as AASRecursiveJobHandler
+    component [**TreeRecursiveLogic**] <<Component>> as TreeRecursiveLogic
+    component [**ItemTreesAssembler**] <<Component>> as ItemTreesAssembler
+
+ }
+
+() "BlobStore\nInterface" as StoreInterface
+AASRecursiveJobHandler .> TreeRecursiveLogic
+TreeRecursiveLogic .> ItemTreesAssembler
+TreeRecursiveLogic --( StoreInterface
+@enduml

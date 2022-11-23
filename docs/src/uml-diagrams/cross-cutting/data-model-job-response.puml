@@ -1,4 +1,6 @@
 @startuml
+skinparam monochrome true
+skinparam shadowing false
 entity Jobs {
     ---
     * job : Job

@@ -4,49 +4,10 @@
 
 The isolated environment contains the IRS as well as the surrounding services, excluding the external IAM.
 
-
 [plantuml, target=isolated, format=svg]
 ....
-@startuml
-skinparam monochrome true
-skinparam shadowing false
-skinparam nodesep 100
-skinparam ranksep 20
-
-cloud Keycloak
-
-node "Kubernetes Cluster" as k8s {
-
-    component IRS
-    component Minio
-    component "AAS Wrapper" as aasw
-    component "DT Registry" as dtr
-    component "EDC Consumer" as consumer
-    component "EDC Provider" as provider
-    database "Consumer DB" as cdb
-    database "Provider DB" as pdb
-    component "DAPS" as daps
-    collections "Submodel Provider" as submodel
-
-
-    IRS --> Minio
-    IRS --> aasw
-    IRS --> dtr
-    IRS --> daps
-    aasw -- consumer
-    consumer -- provider
-    provider -- submodel
-    consumer - cdb
-    provider - pdb
-
-}
-
-IRS -> Keycloak
-
-@enduml
+include::../../../uml-diagrams/deployment-view/level-0-dev.puml[]
 ....
-
-
 
 == Integrated environment
 
@@ -55,36 +16,5 @@ The integrated environment contains the IRS and is integrated with the rest of t
 
 [plantuml, target=integrated, format=svg]
 ....
-@startuml
-skinparam monochrome true
-skinparam shadowing false
-skinparam nodesep 100
-skinparam ranksep 20
-
-cloud "Digital Twin Registry" as dtr
-cloud "EDC Providers" as providers
-cloud Keycloak
-cloud "HashiCorp Vault" as vault
-
-node "IRS Kubernetes Cluster" as k8s {
-
-    component IRS
-    component Minio
-    component "AAS Wrapper" as aasw
-    component "EDC Consumer" as consumer
-    database "Consumer DB" as cdb
-
-    IRS --> Minio
-    IRS --> aasw
-    aasw -- consumer
-    cdb - consumer
-
-}
-
-IRS -> Keycloak
-IRS --> dtr
-consumer --> providers
-consumer -- vault
-
-@enduml
+include::../../../uml-diagrams/deployment-view/level-0-int.puml[]
 ....

@@ -8,28 +8,7 @@ The IRS REST controller to provide a RESTful web service.
 
 [plantuml, target=level-2-controller, format=svg]
 ....
-@startuml
-skinparam monochrome true
-skinparam shadowing false
-
- component [**Controller**] <<System>> as Controller {
-    component [**IrsController**] <<Component>> as IrsController
-    component [**IrsItemGraphQueryService**] <<Component>> as IrsItemGraphQueryService
-        port "IRS API" as API_PORT
-    component [**JobOrchestrator**] <<Component>> as JobOrchestrator
-    interface JobStore
-    interface BlobPersistence
-    IrsController .>  IrsItemGraphQueryService
-
-
-    }
-    actor IrsApiConsumer
-        IrsController <..> JobOrchestrator
-        IrsController -up- API_PORT
-        IrsApiConsumer -(0- API_PORT
-        IrsItemGraphQueryService -( JobStore
-        IrsItemGraphQueryService --( BlobPersistence
-@enduml
+include::../../../uml-diagrams/building-block-view/level-2-int.puml[]
 ....
 
 === Component description
@@ -62,23 +41,9 @@ The *RecursiveJobHandler* component provide the logic to build jobs with recursi
 
 [plantuml, target=level-2-jobhandler, format=svg]
 ....
-@startuml
-skinparam monochrome true
-skinparam shadowing false
-
- component [**RecursiveJobHandler**] <<Component>> as RecursiveJobHandler {
-    component [**AASRecursiveJobHandler**] <<Component>> as AASRecursiveJobHandler
-    component [**TreeRecursiveLogic**] <<Component>> as TreeRecursiveLogic
-    component [**ItemTreesAssembler**] <<Component>> as ItemTreesAssembler
-
- }
-
-() "BlobStore\nInterface" as StoreInterface
-AASRecursiveJobHandler .> TreeRecursiveLogic
-TreeRecursiveLogic .> ItemTreesAssembler
-TreeRecursiveLogic --( StoreInterface
-@enduml
+include::../../../uml-diagrams/building-block-view/level-2-int-recursive-job-handler.puml[]
 ....
+
 
 === Component description
 
@@ -103,58 +68,9 @@ TreeRecursiveLogic --( StoreInterface
 The TransferProcessManager creates executions and provides them to the executor service. Each execution contains HTTP requests to the asset administration shell registry and to the submodel interface.
 
 === Component diagram
-
-[plantuml, target=level-2-transferprocess, format=svg]
+[plantuml, target=level-2-transfer-process-management, format=svg]
 ....
-@startuml
-skinparam monochrome true
-skinparam shadowing false
-skinparam nodesep 10
-skinparam ranksep 100
-
-
-component [**TransferProcessManagement**] <<Component>> as TransferProcessManagement {
-    component [**AASTransferProcessManager**] <<Component>> as TransferProcessManager
-    component [**DigitalTwinRegistryFacade**] <<Component>> as DTRFacade {
-        component [**DigitalTwinRegistryClient**] <<Component>> as DTRClient
-    }
-    component [**SubmodelFacade**] <<Component>> as SubmodelFacade {
-        component [**SubmodelClient**] <<Component>> as SubmodelClient
-    }
-    component [**ExecutorService**] <<Component>> as ExecutorService
-}
-
-component [**AASWrapper**] <<System>> as AASWrapper
-node "Digital Twin Registry" {
-    [**AAS Registry**] <<Component>> as AASR
-}
-
-node "SubmodelServer" {
-    [**SubmodelServer**] <<Component>> as SMS
-}
-
-
-DTRFacade --0)- TransferProcessManager
-SubmodelFacade --0)- TransferProcessManager
-ExecutorService <...> TransferProcessManager
-
-interface "Registry API" as RegAPI
-RegAPI -- AASR
-DTRClient ----( RegAPI
-
-interface "Wrapper API" as WrAPI
-WrAPI -- AASWrapper
-SubmodelClient ----( WrAPI
-
-interface "SubmodelAPI" as SMSAPI
-SMSAPI -- SMS
-AASWrapper --( SMSAPI
-
-database BlobStore
-TransferProcessManager -left-( BlobStoreInterface
-'BlobStoreInterface - TransferProcessManager
-BlobStoreInterface <...> BlobStore
-@enduml
+include::../../../uml-diagrams/building-block-view/level-2-int-transfer-process-management.puml[]
 ....
 
 === Component description
