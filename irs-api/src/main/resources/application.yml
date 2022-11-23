@@ -1,6 +1,6 @@
 server:
   port: 8080
-  trustedPort: 8081
+  trustedPort: 8181
 
 spring:
   application:

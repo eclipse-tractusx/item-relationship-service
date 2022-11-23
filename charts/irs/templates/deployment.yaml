@@ -103,7 +103,7 @@ spec:
               containerPort: 8080
               protocol: TCP
             - name: httpTrusted
-              containerPort: 8081
+              containerPort: 8181
               protocol: TCP
             - name: actuator
               containerPort: 4004

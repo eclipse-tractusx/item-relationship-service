@@ -45,10 +45,10 @@ public class TrustedPortConfiguration {
     @Value("${server.port:8080}")
     private String serverPort;
 
-    @Value("${management.port:${server.port:8080}}")
+    @Value("${management.server.port:${server.port:8080}}")
     private String managementPort;
 
-    @Value("${server.trustedPort:null}")
+    @Value("${server.trustedPort}")
     private String trustedPort;
 
     @Bean
