@@ -42,7 +42,7 @@ edc:
     provider:
       suffix: /api/v1/ids/data
     catalog:
-      limit: 1000
+      limit: "1000"
     apikey:
       header: X-Api-Key
       secret: "123456"
@@ -83,6 +83,8 @@ irs-grafana:
 ##############################
 postgresql:
   auth:
+    username: edc
+    database: edc
     postgresPassword: <path:traceability-irs/data/dev/controlplane#databasepassword>
     password: <path:traceability-irs/data/dev/controlplane#databasepassword>
 
@@ -111,6 +113,7 @@ edc-controlplane:
 
   edc:
     postgresql:
+      user: edc
       password: <path:traceability-irs/data/dev/controlplane#databasepassword>
     transfer:
       proxy:

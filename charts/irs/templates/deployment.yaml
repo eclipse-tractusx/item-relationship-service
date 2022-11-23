@@ -84,7 +84,7 @@ spec:
             - name: EDC_CONTROLPLANE_PROVIDER_SUFFIX
               value: {{ .Values.edc.controlplane.provider.suffix }}
             - name: EDC_CONTROLPLANE_CATALOG_LIMIT
-              value: {{ .Values.edc.controlplane.catalog.limit }}
+              value: {{ .Values.edc.controlplane.catalog.limit | quote }}
             - name: EDC_API_KEY_HEADER
               value: {{ .Values.edc.controlplane.apikey.header }}
             - name: EDC_API_KEY_SECRET
