@@ -65,7 +65,7 @@ public class TrustedPortConfiguration {
     private Connector[] additionalConnector() {
 
         if (StringUtils.isEmpty(this.trustedPort) || "null".equals(trustedPort)) {
-            return null;
+            return new Connector[0];
         }
 
         Set<String> defaultPorts = new HashSet<>();
