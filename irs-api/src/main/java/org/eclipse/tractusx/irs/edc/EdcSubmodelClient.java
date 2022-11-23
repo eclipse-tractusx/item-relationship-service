@@ -21,13 +21,18 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
+import java.net.SocketTimeoutException;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
@@ -35,10 +40,12 @@ import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.services.AsyncPollingService;
+import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
+import org.springframework.web.client.ResourceAccessException;
 
 /**
  * Public API facade for EDC domain
@@ -101,16 +108,22 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private final EndpointDataReferenceStorage endpointDataReferenceStorage;
     private final JsonUtil jsonUtil;
     private final AsyncPollingService pollingService;
+    private final OutboundMeterRegistryService meterRegistryService;
+    private final RetryRegistry retryRegistry;
+    private final UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
 
     @Override
     public CompletableFuture<List<Relationship>> getRelationships(final String submodelEndpointAddress,
             final RelationshipAspect traversalAspectType) throws EdcClientException {
-        final StopWatch stopWatch = new StopWatch();
-        stopWatch.start("Get EDC Submodel task for relationships, endpoint " + submodelEndpointAddress);
+        return execute(submodelEndpointAddress, () -> {
+            final StopWatch stopWatch = new StopWatch();
+            stopWatch.start("Get EDC Submodel task for relationships, endpoint " + submodelEndpointAddress);
 
-        final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
+            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
 
-        return startSubmodelDataRetrieval(traversalAspectType, negotiationResponse.getContractAgreementId(), stopWatch);
+            return startSubmodelDataRetrieval(traversalAspectType, negotiationResponse.getContractAgreementId(),
+                    stopWatch);
+        });
     }
 
     private NegotiationResponse fetchNegotiationResponse(final String submodelEndpointAddress)
@@ -177,17 +190,51 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     @Override
     public CompletableFuture<String> getSubmodelRawPayload(final String submodelEndpointAddress)
             throws EdcClientException {
-        final StopWatch stopWatch = new StopWatch();
-        stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + submodelEndpointAddress);
+        return execute(submodelEndpointAddress, () -> {
+            final StopWatch stopWatch = new StopWatch();
+            stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + submodelEndpointAddress);
 
-        final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
-        return pollingService.<String>createJob()
-                             .action(() -> retrieveSubmodelData(config.getSubmodel().getPath(),
-                                     negotiationResponse.getContractAgreementId(), stopWatch))
-                             .timeToLive(config.getSubmodel().getRequestTtl())
-                             .description("waiting for submodel retrieval")
-                             .build()
-                             .schedule();
+            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
+            return pollingService.<String>createJob()
+                                 .action(() -> retrieveSubmodelData(config.getSubmodel().getPath(),
+                                         negotiationResponse.getContractAgreementId(), stopWatch))
+                                 .timeToLive(config.getSubmodel().getRequestTtl())
+                                 .description("waiting for submodel retrieval")
+                                 .build()
+                                 .schedule();
+        });
     }
 
+    @SuppressWarnings({"PMD.AvoidRethrowingException", "PMD.AvoidCatchingGenericException"})
+    private <T> T execute(final String endpointAddress, final CheckedSupplier<T> supplier) throws EdcClientException {
+        if (!urlValidator.isValid(endpointAddress)) {
+            throw new IllegalArgumentException(String.format("Malformed endpoint address '%s'", endpointAddress));
+        }
+        final String host = URI.create(endpointAddress).getHost();
+        final Retry retry = retryRegistry.retry(host, "default");
+        try {
+            return Retry.decorateCallable(retry, () -> {
+                try {
+                    return supplier.get();
+                } catch (ResourceAccessException e) {
+                    if (e.getCause() instanceof SocketTimeoutException) {
+                        meterRegistryService.incrementSubmodelTimeoutCounter(endpointAddress);
+                    }
+                    throw e;
+                }
+            }).call();
+        } catch (EdcClientException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EdcClientException(e);
+        }
+    }
+
+    /**
+     * Functional interface for a supplier that may throw a checked exception.
+     * @param <T> the returned type
+     */
+    private interface CheckedSupplier<T> {
+        T get() throws EdcClientException;
+    }
 }

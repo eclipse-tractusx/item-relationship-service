@@ -21,22 +21,15 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
-import java.net.SocketTimeoutException;
-import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import io.github.resilience4j.retry.Retry;
-import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.exceptions.EdcClientException;
-import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.ResourceAccessException;
 
 /**
  * Public API Facade for submodel domain
@@ -46,66 +39,34 @@ import org.springframework.web.client.ResourceAccessException;
 @RequiredArgsConstructor
 public class EdcSubmodelFacade {
 
-    private final OutboundMeterRegistryService meterRegistryService;
-    private final RetryRegistry retryRegistry;
-    private final UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
-    private final EdcSubmodelClient facade;
+    private final EdcSubmodelClient client;
 
+    @SuppressWarnings("PMD.PreserveStackTrace")
     public List<Relationship> getRelationships(final String submodelEndpointAddress,
             final RelationshipAspect traversalAspectType) throws EdcClientException {
-        return execute(submodelEndpointAddress, () -> {
-            try {
-                return facade.getRelationships(submodelEndpointAddress, traversalAspectType).get();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return Collections.emptyList();
-            } catch (ExecutionException e) {
-                if (e.getCause() instanceof EdcClientException) {
-                    throw (EdcClientException) e.getCause();
-                }
-                throw new EdcClientException(e.getCause());
-            }
-        });
-    }
-
-    public String getSubmodelRawPayload(final String submodelEndpointAddress) throws EdcClientException {
-        return execute(submodelEndpointAddress, () -> {
-            try {
-                return facade.getSubmodelRawPayload(submodelEndpointAddress).get();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return null;
-            } catch (ExecutionException e) {
-                throw new EdcClientException(e.getCause());
-            }
-        });
-    }
-
-    private <T> T execute(final String endpointAddress, final CheckedSupplier<T> supplier) throws EdcClientException {
-        if (!urlValidator.isValid(endpointAddress)) {
-            throw new IllegalArgumentException(String.format("Malformed endpoint address '%s'", endpointAddress));
-        }
-        final String host = URI.create(endpointAddress).getHost();
-        final Retry retry = retryRegistry.retry(host, "default");
         try {
-            return Retry.decorateCallable(retry, () -> {
-                try {
-                    return supplier.get();
-                } catch (ResourceAccessException e) {
-                    if (e.getCause() instanceof SocketTimeoutException) {
-                        meterRegistryService.incrementSubmodelTimeoutCounter(endpointAddress);
-                    }
-                    throw e;
-                }
-            }).call();
-        } catch (EdcClientException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new EdcClientException(e);
+            return client.getRelationships(submodelEndpointAddress, traversalAspectType).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return Collections.emptyList();
+        } catch (ExecutionException e) {
+            if (e.getCause() instanceof EdcClientException) {
+                throw (EdcClientException) e.getCause();
+            }
+            throw new EdcClientException(e.getCause());
         }
     }
 
-    private interface CheckedSupplier<T> {
-        T get() throws EdcClientException;
+    @SuppressWarnings("PMD.PreserveStackTrace")
+    public String getSubmodelRawPayload(final String submodelEndpointAddress) throws EdcClientException {
+        try {
+            return client.getSubmodelRawPayload(submodelEndpointAddress).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return null;
+        } catch (ExecutionException e) {
+            throw new EdcClientException(e.getCause());
+        }
     }
+
 }

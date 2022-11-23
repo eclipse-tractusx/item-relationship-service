@@ -59,6 +59,10 @@ class AssetAdministrationShellTestdataCreator {
         cxTestData.get().getSerialPartTypization().ifPresent(submodel -> submodelDescriptors.add(createSerialPartTypizationSubmodelDescriptor(catenaXId)));
         cxTestData.get().getSingleLevelBomAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelBomAsPlannedSubmodelDescriptor(catenaXId)));
         cxTestData.get().getPartAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createPartAsPlannedSubmodelDescriptor(catenaXId)));
+        cxTestData.get().getBatch().ifPresent(submodel -> submodelDescriptors.add(createBatchSubmodelDescriptor(catenaXId)));
+        cxTestData.get().getMaterialForRecycling().ifPresent(submodel -> submodelDescriptors.add(createMaterialForRecyclingSubmodelDescriptor(catenaXId)));
+        cxTestData.get().getProductDescription().ifPresent(submodel -> submodelDescriptors.add(createProductDescriptionSubmodelDescriptor(catenaXId)));
+        cxTestData.get().getPhysicalDimension().ifPresent(submodel -> submodelDescriptors.add(createPhysicalDimensionSubmodelDescriptor(catenaXId)));
 
         final Reference globalAssetId = Reference.builder().value(List.of(catenaXId)).build();
         return AssetAdministrationShellDescriptor.builder()
@@ -89,6 +93,26 @@ class AssetAdministrationShellTestdataCreator {
     private SubmodelDescriptor createPartAsPlannedSubmodelDescriptor(final String catenaXId) {
         return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.part_as_planned:1.0.0",
                 "partAsPlanned");
+    }
+
+    private SubmodelDescriptor createBatchSubmodelDescriptor(final String catenaXId) {
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.batch:1.0.0",
+                "batch");
+    }
+
+    private SubmodelDescriptor createMaterialForRecyclingSubmodelDescriptor(final String catenaXId) {
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.material_for_recycling:1.0.0",
+                "materialForRecycling");
+    }
+
+    private SubmodelDescriptor createProductDescriptionSubmodelDescriptor(final String catenaXId) {
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.product_description:1.0.0",
+                "productDescription");
+    }
+
+    private SubmodelDescriptor createPhysicalDimensionSubmodelDescriptor(final String catenaXId) {
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.physical_dimension:1.0.0",
+                "physicalDimension");
     }
 
     private SubmodelDescriptor createSubmodelDescriptor(final String catenaXId, final String submodelUrn,

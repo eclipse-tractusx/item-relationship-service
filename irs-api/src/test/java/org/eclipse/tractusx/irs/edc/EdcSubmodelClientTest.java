@@ -44,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.github.jknack.handlebars.internal.Files;
+import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.LinkedItem;
@@ -53,6 +54,7 @@ import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.exceptions.TimeoutException;
 import org.eclipse.tractusx.irs.services.AsyncPollingService;
+import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
 import org.jetbrains.annotations.NotNull;
@@ -66,7 +68,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
-    private static final String ENDPOINT_ADDRESS = "dummyAddress/urn:123456/submodel";
+    private static final String ENDPOINT_ADDRESS = "http://localhost/urn:123456/submodel";
 
     @Mock
     private ContractNegotiationService contractNegotiationService;
@@ -85,6 +87,10 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     private EdcSubmodelClient testee;
 
+    @Mock
+    private OutboundMeterRegistryService meterRegistry;
+    private final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
+
     EdcSubmodelClientTest() throws IOException {
         super();
     }
@@ -101,7 +107,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         config.getSubmodel().setUrnPrefix("/urn");
         config.getSubmodel().setRequestTtl(Duration.ofMinutes(10));
         testee = new EdcSubmodelClientImpl(config, contractNegotiationService, edcDataPlaneClient,
-                endpointDataReferenceStorage, jsonUtil, pollingService);
+                endpointDataReferenceStorage, jsonUtil, pollingService, meterRegistry, retryRegistry);
     }
 
     @Test
@@ -151,7 +157,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String catenaXId = "urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b";
         prepareTestdata(catenaXId, "_assemblyPartRelationship");
 
-        final List<Relationship> submodelResponse = testee.getRelationships("dummyAddress/" + catenaXId + "/submodel",
+        final List<Relationship> submodelResponse = testee.getRelationships("http://localhost/" + catenaXId + "/submodel",
                 RelationshipAspect.AssemblyPartRelationship).get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isNotEmpty();
@@ -172,7 +178,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String catenaXId = "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c";
         prepareTestdata(catenaXId, "_singleLevelBomAsPlanned");
 
-        final List<Relationship> submodelResponse = testee.getRelationships("dummyAddress/" + catenaXId + "/submodel",
+        final List<Relationship> submodelResponse = testee.getRelationships("http://localhost/" + catenaXId + "/submodel",
                 RelationshipAspect.SingleLevelBomAsPlanned).get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse.get(0).getCatenaXId().getGlobalAssetId()).isEqualTo(catenaXId);
@@ -191,7 +197,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String catenaXId = "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c";
         prepareTestdata(catenaXId, "_singleLevelUsageAsBuilt");
 
-        final List<Relationship> submodelResponse = testee.getRelationships("dummyAddress/" + catenaXId + "/submodel",
+        final List<Relationship> submodelResponse = testee.getRelationships("http://localhost/" + catenaXId + "/submodel",
                 RelationshipAspect.SingleLevelUsageAsBuilt).get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isEmpty();
@@ -203,7 +209,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
         prepareTestdata(catenaXId, "_assemblyPartRelationship");
 
-        final List<Relationship> submodelResponse = testee.getRelationships("dummyAddress/" + catenaXId + "/submodel",
+        final List<Relationship> submodelResponse = testee.getRelationships("http://localhost/" + catenaXId + "/submodel",
                 RelationshipAspect.AssemblyPartRelationship).get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isEmpty();
@@ -214,7 +220,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String catenaXId = "urn:uuid:7eb7daf6-0c54-455b-aab7-bd5ca252f6ee";
         prepareTestdata(catenaXId, "_serialPartTypization");
 
-        final String submodelResponse = testee.getSubmodelRawPayload("dummyAddress/" + catenaXId + "/submodel")
+        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/" + catenaXId + "/submodel")
                                               .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).startsWith(

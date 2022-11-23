@@ -30,6 +30,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -38,11 +39,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import io.github.resilience4j.retry.RetryRegistry;
 import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
 import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.services.AsyncPollingService;
+import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,11 +69,8 @@ class SubmodelFacadeWiremockTest {
         this.wireMockServer.start();
         configureFor(this.wireMockServer.port());
 
-        config.setControlplane(new EdcConfiguration.ControlplaneConfig());
-        config.getControlplane().setEndpoint(new EdcConfiguration.ControlplaneConfig.EndpointConfig());
         config.getControlplane().getEndpoint().setData(buildApiMethodUrl());
         config.getControlplane().setRequestTtl(Duration.ofSeconds(5));
-        config.setSubmodel(new EdcConfiguration.SubmodelConfig());
         config.getSubmodel().setPath("/submodel");
         config.getSubmodel().setUrnPrefix("/urn");
 
@@ -84,8 +84,10 @@ class SubmodelFacadeWiremockTest {
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
                 config);
 
+        final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
+        final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
         this.submodelFacade = new EdcSubmodelClientImpl(config, contractNegotiationService, dataPlaneClient, storage,
-                new JsonUtil(), pollingService);
+                new JsonUtil(), pollingService, meterRegistry, retryRegistry);
     }
 
     @AfterEach

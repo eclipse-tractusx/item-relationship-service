@@ -73,6 +73,7 @@ securityContext:
   runAsNonRoot: true
   # -- The container's process will run with the specified uid
   runAsUser: 10001
+  runAsGroup: 10001
 
 livenessProbe:
   # -- Whether to enable kubernetes [liveness-probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)

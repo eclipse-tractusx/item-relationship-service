@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.given;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspectAndCollectAspects;
+import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithGlobalAssetIdAndDepth;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepth;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -42,6 +43,7 @@ import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.RegisterJob;
+import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
@@ -100,9 +102,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobWithCollectAspectsShouldIncludeSubmodels() throws InvalidSchemaException {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
-        final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
-                List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP));
-        final int expectedRelationshipsSizeFullTree = 1; // stub
+        final RegisterJob registerJob = registerJobWithGlobalAssetIdAndDepth("urn:uuid:2687fd84-825d-4923-b1ab-66b70f002929", 0,
+                List.of(AspectType.BATCH, AspectType.MATERIAL_FOR_RECYCLING, AspectType.ASSEMBLY_PART_RELATIONSHIP), true);
+        final int expectedSubmodelsSizeFullTree = 3; // stub
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);
@@ -111,7 +113,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         given().ignoreException(EntityNotFoundException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
-               .until(() -> getSubmodelsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFullTree));
+               .until(() -> getSubmodelsSize(registeredJob.getJobId()), equalTo(expectedSubmodelsSizeFullTree));
     }
 
     @Test

@@ -216,4 +216,5 @@ registry:
       persistence:
         enabled: false
   registry:
+    idpIssuerUri:
     dockerSecret:
