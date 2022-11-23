@@ -45,7 +45,7 @@ edc:
       limit: 1000
     apikey:
       header: X-Api-Key
-      secret: 123456
+      secret: "123456"
   submodel:
     request:
       ttl: PT10M
