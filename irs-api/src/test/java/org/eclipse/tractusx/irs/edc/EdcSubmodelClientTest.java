@@ -44,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.github.jknack.handlebars.internal.Files;
+import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.LinkedItem;
@@ -53,6 +54,7 @@ import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.exceptions.TimeoutException;
 import org.eclipse.tractusx.irs.services.AsyncPollingService;
+import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
 import org.jetbrains.annotations.NotNull;
@@ -85,6 +87,11 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     private EdcSubmodelClient testee;
 
+    @Mock
+    private OutboundMeterRegistryService meterRegistry;
+    @Mock
+    private RetryRegistry retryRegistry;
+
     EdcSubmodelClientTest() throws IOException {
         super();
     }
@@ -101,7 +108,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         config.getSubmodel().setUrnPrefix("/urn");
         config.getSubmodel().setRequestTtl(Duration.ofMinutes(10));
         testee = new EdcSubmodelClientImpl(config, contractNegotiationService, edcDataPlaneClient,
-                endpointDataReferenceStorage, jsonUtil, pollingService);
+                endpointDataReferenceStorage, jsonUtil, pollingService, meterRegistry, retryRegistry);
     }
 
     @Test

@@ -91,7 +91,6 @@ public class JobConfiguration {
         return Clock.systemUTC();
     }
 
-
     @Profile("!test")
     @Bean
     public BlobPersistence blobStore(final BlobstoreConfiguration config) throws BlobPersistenceException {
@@ -131,4 +130,6 @@ public class JobConfiguration {
     public BpdmDelegate bpdmDelegate(final BpdmFacade bpdmFacade) {
         return new BpdmDelegate(bpdmFacade);
     }
+
+
 }
