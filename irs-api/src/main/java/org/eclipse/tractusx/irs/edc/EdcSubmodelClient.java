@@ -205,6 +205,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         });
     }
 
+    @SuppressWarnings({"PMD.AvoidRethrowingException", "PMD.AvoidCatchingGenericException"})
     private <T> T execute(final String endpointAddress, final CheckedSupplier<T> supplier) throws EdcClientException {
         if (!urlValidator.isValid(endpointAddress)) {
             throw new IllegalArgumentException(String.format("Malformed endpoint address '%s'", endpointAddress));
@@ -229,6 +230,10 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         }
     }
 
+    /**
+     * Functional interface for a supplier that may throw a checked exception.
+     * @param <T> the returned type
+     */
     private interface CheckedSupplier<T> {
         T get() throws EdcClientException;
     }

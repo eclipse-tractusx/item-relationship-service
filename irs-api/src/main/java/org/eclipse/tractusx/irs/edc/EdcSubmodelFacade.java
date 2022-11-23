@@ -41,6 +41,7 @@ public class EdcSubmodelFacade {
 
     private final EdcSubmodelClient client;
 
+    @SuppressWarnings("PMD.PreserveStackTrace")
     public List<Relationship> getRelationships(final String submodelEndpointAddress,
             final RelationshipAspect traversalAspectType) throws EdcClientException {
         try {
@@ -56,6 +57,7 @@ public class EdcSubmodelFacade {
         }
     }
 
+    @SuppressWarnings("PMD.PreserveStackTrace")
     public String getSubmodelRawPayload(final String submodelEndpointAddress) throws EdcClientException {
         try {
             return client.getSubmodelRawPayload(submodelEndpointAddress).get();
