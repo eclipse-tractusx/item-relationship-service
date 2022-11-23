@@ -60,6 +60,14 @@ class SubmodelTestdataCreator {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned).orElse(Map.of());
         } else if (endpointAddress.contains("partAsPlanned")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getPartAsPlanned).orElse(Map.of());
+        } else if (endpointAddress.contains("batch")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getBatch).orElse(Map.of());
+        } else if (endpointAddress.contains("materialForRecycling")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getMaterialForRecycling).orElse(Map.of());
+        } else if (endpointAddress.contains("productDescription")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getProductDescription).orElse(Map.of());
+        } else if (endpointAddress.contains("physicalDimension")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getPhysicalDimension).orElse(Map.of());
         }
         return Map.of();
     }
