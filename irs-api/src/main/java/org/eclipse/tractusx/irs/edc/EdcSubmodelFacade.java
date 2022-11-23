@@ -50,10 +50,11 @@ public class EdcSubmodelFacade {
             Thread.currentThread().interrupt();
             return Collections.emptyList();
         } catch (ExecutionException e) {
-            if (e.getCause() instanceof EdcClientException) {
-                throw (EdcClientException) e.getCause();
+            final Throwable cause = e.getCause();
+            if (cause instanceof EdcClientException) {
+                throw (EdcClientException) cause;
             }
-            throw new EdcClientException(e.getCause());
+            throw new EdcClientException(cause);
         }
     }
 
@@ -65,7 +66,11 @@ public class EdcSubmodelFacade {
             Thread.currentThread().interrupt();
             return null;
         } catch (ExecutionException e) {
-            throw new EdcClientException(e.getCause());
+            final Throwable cause = e.getCause();
+            if (cause instanceof EdcClientException) {
+                throw (EdcClientException) cause;
+            }
+            throw new EdcClientException(cause);
         }
     }
 
