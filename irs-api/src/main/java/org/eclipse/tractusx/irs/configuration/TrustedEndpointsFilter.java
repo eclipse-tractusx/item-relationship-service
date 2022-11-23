@@ -81,6 +81,6 @@ public class TrustedEndpointsFilter implements Filter {
 
     private boolean isRequestForTrustedEndpoint(final ServletRequest servletRequest) {
         return ((HttpServletRequestWrapper) servletRequest).getRequestURI()
-                                                           .startsWith(IrsApplication.API_PREFIX_INTERNAL);
+                                                           .startsWith("/" + IrsApplication.API_PREFIX_INTERNAL);
     }
 }
