@@ -21,6 +21,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,10 +45,8 @@ public class TrustedPortConfiguration {
     @Value("${server.port:8080}")
     private String serverPort;
 
-
     @Value("${management.port:${server.port:8080}}")
     private String managementPort;
-
 
     @Value("${server.trustedPort:null}")
     private String trustedPort;
@@ -55,44 +54,47 @@ public class TrustedPortConfiguration {
     @Bean
     public WebServerFactoryCustomizer<?> servletContainer() {
 
-        Connector[] additionalConnectors = this.additionalConnector();
+        final Connector[] additionalConnectors = this.additionalConnector();
 
-        ServerProperties serverProperties = new ServerProperties();
+        final ServerProperties serverProperties = new ServerProperties();
         return new TomcatMultiConnectorServletWebServerFactoryCustomizer(serverProperties, additionalConnectors);
     }
 
-
     private Connector[] additionalConnector() {
 
-        if (StringUtils.isEmpty(this.trustedPort) || "null".equals(trustedPort)) {
+        if (StringUtils.isEmpty(this.trustedPort)) {
             return new Connector[0];
         }
 
-        Set<String> defaultPorts = new HashSet<>();
+        final Set<String> defaultPorts = new HashSet<>();
         defaultPorts.add(serverPort);
         defaultPorts.add(managementPort);
 
-        if (!defaultPorts.contains(trustedPort)) {
-            Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+        if (defaultPorts.contains(trustedPort)) {
+            return new Connector[0];
+        } else {
+            final Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
             connector.setScheme("http");
             connector.setPort(Integer.parseInt(trustedPort));
-            return new Connector[]{connector};
-        } else {
-            return new Connector[]{};
+            return new Connector[] { connector };
         }
     }
 
-    private static class TomcatMultiConnectorServletWebServerFactoryCustomizer extends
-            TomcatServletWebServerFactoryCustomizer {
+    /**
+     * Customizer for additional connectors
+     */
+    private static class TomcatMultiConnectorServletWebServerFactoryCustomizer
+            extends TomcatServletWebServerFactoryCustomizer {
         private final Connector[] additionalConnectors;
 
-        TomcatMultiConnectorServletWebServerFactoryCustomizer(ServerProperties serverProperties, Connector[] additionalConnectors) {
+        /* package */ TomcatMultiConnectorServletWebServerFactoryCustomizer(final ServerProperties serverProperties,
+                final Connector... additionalConnectors) {
             super(serverProperties);
-            this.additionalConnectors = additionalConnectors;
+            this.additionalConnectors = Arrays.copyOf(additionalConnectors, additionalConnectors.length);
         }
 
         @Override
-        public void customize(TomcatServletWebServerFactory factory) {
+        public void customize(final TomcatServletWebServerFactory factory) {
             super.customize(factory);
 
             if (additionalConnectors != null && additionalConnectors.length > 0) {
@@ -101,9 +103,9 @@ public class TrustedPortConfiguration {
         }
     }
 
-
     @Bean
     public FilterRegistrationBean<TrustedEndpointsFilter> trustedEndpointsFilter() {
-        return new FilterRegistrationBean<>(new TrustedEndpointsFilter(trustedPort, IrsApplication.API_PREFIX_INTERNAL));
+        return new FilterRegistrationBean<>(
+                new TrustedEndpointsFilter(trustedPort, IrsApplication.API_PREFIX_INTERNAL));
     }
 }

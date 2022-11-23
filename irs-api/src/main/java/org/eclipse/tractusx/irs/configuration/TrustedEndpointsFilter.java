@@ -40,19 +40,22 @@ import org.apache.catalina.connector.ResponseFacade;
 @Slf4j
 public class TrustedEndpointsFilter implements Filter {
 
-    private int trustedPortNum = 0;
-    private String trustedPathPrefix;
+    private final int trustedPortNum;
+    private final String trustedPathPrefix;
 
-    TrustedEndpointsFilter(String trustedPort, String trustedPathPrefix) {
+    /* package */ TrustedEndpointsFilter(final String trustedPort, final String trustedPathPrefix) {
         if (trustedPort != null && trustedPathPrefix != null && !"null".equals(trustedPathPrefix)) {
             trustedPortNum = Integer.parseInt(trustedPort);
             this.trustedPathPrefix = trustedPathPrefix;
+        } else {
+            trustedPortNum = 0;
+            this.trustedPathPrefix = "";
         }
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-            throws IOException, ServletException {
+    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
+            final FilterChain filterChain) throws IOException, ServletException {
         if (trustedPortNum != 0) {
 
             if (isRequestForTrustedEndpoint(servletRequest) && servletRequest.getLocalPort() != trustedPortNum) {
@@ -73,7 +76,7 @@ public class TrustedEndpointsFilter implements Filter {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    private boolean isRequestForTrustedEndpoint(ServletRequest servletRequest) {
+    private boolean isRequestForTrustedEndpoint(final ServletRequest servletRequest) {
         return ((RequestFacade) servletRequest).getRequestURI().startsWith(trustedPathPrefix);
     }
 }
