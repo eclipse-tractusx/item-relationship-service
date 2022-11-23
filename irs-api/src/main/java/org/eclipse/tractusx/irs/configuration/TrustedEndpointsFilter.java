@@ -28,11 +28,11 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.connector.RequestFacade;
-import org.apache.catalina.connector.ResponseFacade;
 
 /**
  * Filter do differ between trusted and untrusted calls
@@ -60,14 +60,14 @@ public class TrustedEndpointsFilter implements Filter {
 
             if (isRequestForTrustedEndpoint(servletRequest) && servletRequest.getLocalPort() != trustedPortNum) {
                 log.warn("denying request for trusted endpoint on untrusted port");
-                ((ResponseFacade) servletResponse).setStatus(HttpServletResponse.SC_NOT_FOUND);
+                ((HttpServletResponseWrapper) servletResponse).setStatus(HttpServletResponse.SC_NOT_FOUND);
                 servletResponse.getOutputStream().close();
                 return;
             }
 
             if (!isRequestForTrustedEndpoint(servletRequest) && servletRequest.getLocalPort() == trustedPortNum) {
                 log.warn("denying request for untrusted endpoint on trusted port");
-                ((ResponseFacade) servletResponse).setStatus(HttpServletResponse.SC_NOT_FOUND);
+                ((HttpServletResponseWrapper) servletResponse).setStatus(HttpServletResponse.SC_NOT_FOUND);
                 servletResponse.getOutputStream().close();
                 return;
             }
@@ -77,6 +77,6 @@ public class TrustedEndpointsFilter implements Filter {
     }
 
     private boolean isRequestForTrustedEndpoint(final ServletRequest servletRequest) {
-        return ((RequestFacade) servletRequest).getRequestURI().startsWith(trustedPathPrefix);
+        return ((HttpServletRequestWrapper) servletRequest).getRequestURI().startsWith(trustedPathPrefix);
     }
 }
