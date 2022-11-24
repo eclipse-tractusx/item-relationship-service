@@ -41,14 +41,20 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class TrustedPortConfiguration {
-    @Value("${server.port:8080}")
-    private String serverPort;
+    private final String serverPort;
 
-    @Value("${management.server.port:${server.port:8080}}")
-    private String managementPort;
+    private final String managementPort;
 
-    @Value("${server.trustedPort}")
-    private String trustedPort;
+    private final String trustedPort;
+
+    public TrustedPortConfiguration(@Value("${server.port:8080}") final String serverPort,
+            @Value("${management.server.port:${server.port:8080}}") final String managementPort,
+            @Value("${server.trustedPort}") final String trustedPort) {
+
+        this.serverPort = serverPort;
+        this.managementPort = managementPort;
+        this.trustedPort = trustedPort;
+    }
 
     @Bean
     public WebServerFactoryCustomizer<?> servletContainer() {
@@ -104,7 +110,6 @@ public class TrustedPortConfiguration {
 
     @Bean
     public FilterRegistrationBean<TrustedEndpointsFilter> trustedEndpointsFilter() {
-        return new FilterRegistrationBean<>(
-                new TrustedEndpointsFilter(trustedPort));
+        return new FilterRegistrationBean<>(new TrustedEndpointsFilter(trustedPort));
     }
 }
