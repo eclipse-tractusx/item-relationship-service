@@ -45,6 +45,9 @@ The hostname where the EDC consumer controlplane will be made available.
 === <dataplane-url>
 The hostname where the EDC consumer dataplane will be made available.
 
+=== <edc-controlplane-endpoint-data>
+The EDC consumer controlplane endpoint URL for data management, including the protocol.
+
 
 == DAPS configuration
 EDC requires a DAPS instance to function correctly. For more information on this, please refer to the https://github.com/catenax-ng/product-DAPS[DAPS] or the https://github.com/catenax-ng/product-edc[EDC] documentation.
@@ -115,10 +118,3 @@ Login username for Grafana. To be defined by you.
 
 === <grafana-password>
 Login password for Grafana. To be defined by you.
-
-=== <aas-wrapper-username>
-Basic authentication of the AAS Wrapper API. You can leave this empty if no basic auth is configured for the AAS Wrapper.
-
-=== <aas-wrapper-password>
-Basic authentication of the AAS Wrapper API. You can leave this empty if no basic auth is configured for the AAS Wrapper.
-

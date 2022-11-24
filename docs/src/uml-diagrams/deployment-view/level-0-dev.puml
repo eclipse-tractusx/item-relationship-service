@@ -10,7 +10,6 @@ node "Kubernetes Cluster" as k8s {
 
     component IRS
     component Minio
-    component "AAS Wrapper" as aasw
     component "DT Registry" as dtr
     component "EDC Consumer" as consumer
     component "EDC Provider" as provider
@@ -21,10 +20,9 @@ node "Kubernetes Cluster" as k8s {
 
 
     IRS --> Minio
-    IRS --> aasw
+    IRS --> consumer
     IRS --> dtr
     IRS --> daps
-    aasw -- consumer
     consumer -- provider
     provider -- submodel
     consumer - cdb

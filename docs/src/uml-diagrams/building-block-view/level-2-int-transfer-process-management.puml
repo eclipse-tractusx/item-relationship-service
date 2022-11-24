@@ -16,7 +16,6 @@ component [**TransferProcessManagement**] <<Component>> as TransferProcessManage
     component [**ExecutorService**] <<Component>> as ExecutorService
 }
 
-component [**AASWrapper**] <<System>> as AASWrapper
 node "Digital Twin Registry" {
     [**AAS Registry**] <<Component>> as AASR
 }
@@ -34,13 +33,10 @@ interface "Registry API" as RegAPI
 RegAPI -- AASR
 DTRClient ----( RegAPI
 
-interface "Wrapper API" as WrAPI
-WrAPI -- AASWrapper
-SubmodelClient ----( WrAPI
 
 interface "SubmodelAPI" as SMSAPI
 SMSAPI -- SMS
-AASWrapper --( SMSAPI
+SubmodelClient ----( SMSAPI
 
 database BlobStore
 TransferProcessManager -left-( BlobStoreInterface

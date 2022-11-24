@@ -32,6 +32,7 @@ securityContext:
 service:
   type: ClusterIP
   port: 8080
+  trustedPort: 8181
   actuatorPort: 4004
 
 autoscaling:
@@ -125,19 +126,19 @@ keycloak:
 edc:
   controlplane:
     endpoint:
-      data:
+      data: <edc-controlplane-endpoint-data>
     request:
-      ttl: PT10M
+      ttl: PT10M # Requests to controlplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
     provider:
       suffix: /api/v1/ids/data
     catalog:
-      limit: 1000
+      limit: 1000 # Max number of catalog items to retrieve from the controlplane
     apikey:
-      header:
-      secret: test
+      header: "X-Api-Key" # Name of the EDC api key header field
+      secret: <edc-api-key>
   submodel:
     request:
-      ttl: PT10M
+      ttl: PT10M # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
     path: /submodel
     urnprefix: /urn
 
