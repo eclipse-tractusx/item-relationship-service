@@ -97,6 +97,8 @@ resilience4j:
         waitDuration: 10s
         enableExponentialBackoff: true
         exponentialBackoffMultiplier: 2
+        ignore-exceptions:
+          - org.springframework.web.client.HttpClientErrorException.NotFound
     instances:
       registry:
         baseConfig: default
