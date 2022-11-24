@@ -32,6 +32,7 @@ securityContext:
 service:
   type: ClusterIP
   port: 8080
+  trustedPort: 8181
   actuatorPort: 4004
 
 autoscaling:
