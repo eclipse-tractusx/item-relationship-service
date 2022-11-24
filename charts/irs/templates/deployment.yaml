@@ -42,11 +42,11 @@ spec:
               mountPath: /tmp
           env:
             - name: SERVER_TRUSTED_PORT
-              value: {{ .Values.service.trustedPort }}
+              value: {{ .Values.service.trustedPort | quote }}
             - name: IRS_API_URL
               value: "{{ .Values.irsUrl }}"
             - name: MINIO_URL
-              value: "http://{{ .Release.Name }}-irs-minio:9000"
+              value: "http://{{ .Release.Name }}-minio:9000"
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -104,7 +104,7 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
-            - name: httpTrusted
+            - name: http-trusted
               containerPort: 8181
               protocol: TCP
             - name: actuator

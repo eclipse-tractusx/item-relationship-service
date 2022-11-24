@@ -1,5 +1,5 @@
-{{- if .Values.global.enableGrafana -}}
-{{- if .Values.dashboards }}
+{{- if .Values.grafana.enabled -}}
+{{- if .Values.grafana.importDashboards }}
 {{ $files := .Files }}
 apiVersion: v1
 kind: ConfigMap
@@ -7,9 +7,10 @@ metadata:
   name: {{ include "grafana.fullname" . }}-configmap-dashboards
   namespace: {{ .Values.namespace }}
   labels:
+    grafana_dashboard: "1"
     {{- include "grafana.labels" . | nindent 4 }}
 data:
-  {{- range $k, $v := .Values.dashboards }}
+  {{- range $k, $v := .Values.grafana.importDashboards }}
   {{ $k }}-dashboard.json: |
 {{ ($files.Get $v) | indent 4 }}
   {{- end }}
