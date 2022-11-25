@@ -46,7 +46,7 @@ spec:
             - name: IRS_API_URL
               value: "{{ .Values.irsUrl }}"
             - name: MINIO_URL
-              value: "http://{{ .Release.Name }}-minio:9000"
+              value: {{ tpl .Values.minioUrl . }}
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -80,7 +80,7 @@ spec:
             - name: BPDM_URL
               value: {{ .Values.bpdm.url }}
             - name: EDC_CONTROLPLANE_ENDPOINT_DATA
-              value: {{ .Values.edc.controlplane.endpoint.data | default (printf "http://%s%s" .Release.Name "-edc-controlplane:8181/data") }}
+              value: {{ tpl .Values.edc.controlplane.endpoint.data . | default (printf "http://%s%s" .Release.Name "-edc-controlplane:8181/data") }}
             - name: EDC_CONTROLPLANE_REQUEST_TTL
               value: {{ .Values.edc.controlplane.request.ttl }}
             - name: EDC_CONTROLPLANE_PROVIDER_SUFFIX

@@ -85,7 +85,7 @@ readinessProbe:
 #####################
 irsUrl: "https://<irs-url>"
 ingress:
-  enabled: true
+  enabled: false
   className: "nginx"
   annotations:
     nginx.ingress.kubernetes.io/ssl-passthrough: "false"
@@ -111,6 +111,7 @@ bpdm:
   url: https://<bpdm-url>
 minioUser: <minio-username>
 minioPassword: <minio-password>
+minioUrl: "http://{{ .Release.Name }}-minio:9000"
 keycloak:
   oauth2:
     clientId: <keycloak-client-id>
@@ -120,7 +121,7 @@ keycloak:
 edc:
   controlplane:
     endpoint:
-      data: #<edc-controlplane-endpoint-data>
+      data: "" #<edc-controlplane-endpoint-data>
     request:
       ttl: PT10M # Requests to controlplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
     provider:
@@ -129,7 +130,7 @@ edc:
       limit: 1000 # Max number of catalog items to retrieve from the controlplane
     apikey:
       header: "X-Api-Key" # Name of the EDC api key header field
-      secret: <edc-api-key>
+      secret: "" #<edc-api-key>
   submodel:
     request:
       ttl: PT10M # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
@@ -161,8 +162,8 @@ grafana:
   persistence:
     enabled: false
 
-  user: #<grafana-username>
-  password: #<grafana-password>
+  user: <grafana-username>
+  password: <grafana-password>
 
   admin:
     existingSecret: "{{ .Release.Name }}-irs-helm"
