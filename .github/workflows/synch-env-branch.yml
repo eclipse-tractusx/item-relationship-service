@@ -12,11 +12,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          ref: helm-environments
 
-      - name: Create PR
+      - name: Merge main into helm-environments
         run: |
-          gh pr create -B helm-environments -H main \
-          --title Merge main into helm-environments \
-          --body 'Created by Github action'
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git merge main
+          git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
