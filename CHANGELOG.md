@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Known knowns
+- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
+
+## [1.6.0] - 2022-11-25
 ### Added
 - EDC client implementation (for negotiation and data exchange)
 - New callback endpoint for EDC (path: /internal/endpoint-data-reference)
@@ -13,9 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Removed the need for the API wrapper by directly communicating with the EDC control and data plane.
-
-### Known knowns
-- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
 ## [1.5.0] - 2022-11-11
 ### Added
