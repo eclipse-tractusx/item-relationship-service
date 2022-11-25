@@ -29,7 +29,6 @@ import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,7 +38,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -60,9 +58,8 @@ import org.springframework.web.client.RestTemplate;
 public class RestTemplateConfig {
 
     public static final String OAUTH_REST_TEMPLATE = "oAuthRestTemplate";
-    public static final String BASIC_AUTH_REST_TEMPLATE = "basicAuthRestTemplate";
     public static final String NO_ERROR_REST_TEMPLATE = "noErrorRestTemplate";
-
+    public static final String EDC_REST_TEMPLATE = "edcRestTemplate";
     private static final String CLIENT_REGISTRATION_ID = "keycloak";
     private static final int TIMEOUT_SECONDS = 90;
 
@@ -70,7 +67,7 @@ public class RestTemplateConfig {
     private final ClientRegistrationRepository clientRegistrationRepository;
 
     @Bean(OAUTH_REST_TEMPLATE)
-    /* package */ RestTemplate oAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
+        /* package */ RestTemplate oAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
         final var clientRegistration = clientRegistrationRepository.findByRegistrationId(CLIENT_REGISTRATION_ID);
 
         return restTemplateBuilder.additionalInterceptors(
@@ -80,22 +77,11 @@ public class RestTemplateConfig {
                                   .build();
     }
 
-    @Bean(BASIC_AUTH_REST_TEMPLATE)
-    /* package */ RestTemplate basicAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder,
-            @Value("${aasWrapper.username}") final String aasWrapperUsername,
-            @Value("${aasWrapper.password}") final String aasWrapperPassword) {
-        return restTemplateBuilder.additionalInterceptors(
-                                          new BasicAuthenticationInterceptor(aasWrapperUsername, aasWrapperPassword))
-                                  .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                                  .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                                  .build();
-    }
-
     @Bean(NO_ERROR_REST_TEMPLATE)
-    /* package */ RestTemplate noErrorRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
+        /* package */ RestTemplate noErrorRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
         final RestTemplate restTemplate = restTemplateBuilder.setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                                                      .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                                                      .build();
+                                                             .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                                             .build();
 
         restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
             /**
@@ -113,7 +99,7 @@ public class RestTemplateConfig {
     }
 
     @Bean
-    /* package */ OAuth2AuthorizedClientManager authorizedClientManager() {
+        /* package */ OAuth2AuthorizedClientManager authorizedClientManager() {
         final var authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
                                                                                   .clientCredentials()
                                                                                   .build();
@@ -138,10 +124,8 @@ public class RestTemplateConfig {
         @Override
         public ClientHttpResponse intercept(final HttpRequest request, final byte[] body,
                 final ClientHttpRequestExecution execution) throws IOException {
-            final OAuth2AuthorizeRequest oAuth2AuthorizeRequest = OAuth2AuthorizeRequest
-                    .withClientRegistrationId(clientRegistration.getRegistrationId())
-                    .principal(clientRegistration.getClientName())
-                    .build();
+            final OAuth2AuthorizeRequest oAuth2AuthorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId(
+                    clientRegistration.getRegistrationId()).principal(clientRegistration.getClientName()).build();
 
             final OAuth2AuthorizedClient client = manager.authorize(oAuth2AuthorizeRequest);
 
@@ -160,6 +144,13 @@ public class RestTemplateConfig {
         private String buildAuthorizationHeaderValue(final OAuth2AccessToken accessToken) {
             return accessToken.getTokenType().getValue() + " " + accessToken.getTokenValue();
         }
+    }
+
+    @Bean(EDC_REST_TEMPLATE)
+    /* package */ RestTemplate edcRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
+        return restTemplateBuilder.setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .build();
     }
 
 }

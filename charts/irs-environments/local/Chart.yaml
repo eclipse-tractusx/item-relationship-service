@@ -17,6 +17,9 @@ type: application
 version: 1.0.0
 
 dependencies:
+  - name: irs-edc-consumer
+    repository: "file://../../edc-consumer"
+    version: 1.0.0
   - name: irs-helm
-    repository: https://eclipse-tractusx.github.io/item-relationship-service
-    version: 2.3.0
+    repository: "file://../../irs"
+    version: 3.0.0

@@ -8,75 +8,86 @@ You can define the URLs as well as most of the secrets yourself.
 
 The Keycloak, DAPS and Vault configuration / secrets depend on your setup and might need to be provided externally.
 
-== Helm configuration (values.yaml)
+== Helm configuration IRS (values.yaml)
 
 [source,yaml]
 ----
-include::../../../../charts/irs/values.yaml[lines=85..-1]
+include::../../../../charts/irs/values.yaml[lines=83..-1]
 ----
 <1> Use this to enable or disable the monitoring components
-<2> This block can be removed if Grafana is disabled
 
-== Values explained
-=== <irs-url>
+=== Values explained
+==== <irs-url>
 The hostname where the IRS will be made available.
 
-=== <digital-twin-registry-url>
+==== <digital-twin-registry-url>
 The URL of the Digital Twin Registry. The IRS uses this service to fetch AAS shells.
 
-=== <semantics-hub-url>
+==== <semantics-hub-url>
 The URL of the SemanticsHub. The IRS uses this service to fetch aspect schemas for payload validation.
 
-=== <bpdm-url>
+==== <bpdm-url>
 The URL of the BPDM service. The IRS uses this service to fetch business partner information based on BPNs.
 
-=== <keycloak-token-uri>
+==== <keycloak-token-uri>
 The URL of the Keycloak token API. Used by the IRS for token creation to authenticate with other services.
 
-=== <keycloak-jwkset-uri>
+==== <keycloak-jwkset-uri>
 The URL of the Keycloak JWK Set. Used by the IRS to validate tokens when the IRS API is called.
 
-=== <grafana-url>
+==== <grafana-url>
 The hostname where Grafana will be made available.
 
-=== <controlplane-url>
-The hostname where the EDC consumer controlplane will be made available.
-
-=== <dataplane-url>
-The hostname where the EDC consumer dataplane will be made available.
+==== <edc-controlplane-endpoint-data>
+The EDC consumer controlplane endpoint URL for data management, including the protocol.
+If left empty, this defaults to the internal endpoint of the controlplane provided by the irs-edc-consumer Helm chart.
 
 
-== DAPS configuration
+== EDC consumer configuration
+If you want to provide your own EDC consumer, add the following entries to your values.yaml:
+
+[source,yaml]
+----
+include::../../../../charts/edc-consumer/values.yaml[]
+----
+
+=== Values explained
 EDC requires a DAPS instance to function correctly. For more information on this, please refer to the https://github.com/catenax-ng/product-DAPS[DAPS] or the https://github.com/catenax-ng/product-edc[EDC] documentation.
 
-=== <vault-url>
+==== <controlplane-url>
+The hostname where the EDC consumer controlplane will be made available.
+
+==== <dataplane-url>
+The hostname where the EDC consumer dataplane will be made available.
+
+==== <vault-url>
 The base URL of the Vault instance.
 EDC requires a running instance of HashiCorp Vault to store the DAPS certificate and private key.
 
-=== <vault-secret-store-path>
+==== <vault-secret-store-path>
 The path to the secret store in Vault where the DAPS certificate and key can be found.
 
 _Example: /v1/team-name_
 
-=== <daps-certificate-name>
+==== <daps-certificate-name>
 The name of the DAPS certificate in the Vault.
 
 _Example: irs-daps-certificate_
 
-=== <daps-privatekey-name>
+==== <daps-privatekey-name>
 The name of the DAPS private key in the Vault.
 
 _Example: irs-daps-private-key_
 
-=== <daps-client-id>
+==== <daps-client-id>
 The DAPS client ID.
 
-=== <daps-jwks-url>
+==== <daps-jwks-url>
 The URL of the DAPS JWK Set.
 
 _Example: https://daps-hostname/.well-known/jwks.json_
 
-=== <daps-token-url>
+==== <daps-token-url>
 The URL of the DAPS token API.
 
 _Example: https://daps-hostname/token_
@@ -115,10 +126,3 @@ Login username for Grafana. To be defined by you.
 
 === <grafana-password>
 Login password for Grafana. To be defined by you.
-
-=== <aas-wrapper-username>
-Basic authentication of the AAS Wrapper API. You can leave this empty if no basic auth is configured for the AAS Wrapper.
-
-=== <aas-wrapper-password>
-Basic authentication of the AAS Wrapper API. You can leave this empty if no basic auth is configured for the AAS Wrapper.
-

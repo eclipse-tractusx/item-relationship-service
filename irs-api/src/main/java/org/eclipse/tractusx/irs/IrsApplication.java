@@ -47,6 +47,11 @@ public class IrsApplication {
     public static final String API_PREFIX = "irs";
 
     /**
+     * The URL prefix for IRS internal URLs (not publicly available)
+     */
+    public static final String API_PREFIX_INTERNAL = "internal";
+
+    /**
      * Entry point.
      *
      * @param args command line arguments.

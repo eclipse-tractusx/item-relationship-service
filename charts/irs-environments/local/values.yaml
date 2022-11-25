@@ -1,6 +1,3 @@
-global:
-  enablePrometheus: false
-  enableGrafana: false
 irs-helm:
   #####################
   # IRS Configuration #
@@ -22,26 +19,22 @@ irs-helm:
       clientSecret:
       clientTokenUri:
       jwkSetUri:
-  aasWrapper:
-    username: test
-    password: test
+  edc:
+    controlplane:
+      apikey:
+        secret: "123456"
+      endpoint:
+        data: ""
 
   #######################
   # Minio Configuration #
   #######################
-  irs-minio:
-    minioUser: testtest
-    minioPassword: testtest
+  minio:
+    rootUser: testtest
+    rootPassword: testtest
 
-  ############################
-  # AASWrapper Configuration #
-  ############################
-  irs-aaswrapper:
-    edc:
-      api:
-        auth:
-          key: "123456"
 
+irs-edc-consumer:
   ##############################
   # EDC Postgres Configuration #
   ##############################
@@ -52,6 +45,8 @@ irs-helm:
     auth:
       postgresPassword: test
       password: test
+      username: edc
+      database: edc
 
   ##################################
   # EDC Controlplane Configuration #
@@ -61,6 +56,9 @@ irs-helm:
       - enabled: false
 
     edc:
+      receiver:
+        callback:
+          url: "http://{{ .Release.Name }}-irs-helm:8181/internal/endpoint-data-reference"
       postgresql:
         password: test
         user: edc
@@ -216,5 +214,5 @@ registry:
       persistence:
         enabled: false
   registry:
-    idpIssuerUri:
+    idpIssuerUri: https://centralidp.int.demo.catena-x.net/auth/realms/CX-Central
     dockerSecret:
