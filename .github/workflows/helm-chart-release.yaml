@@ -9,11 +9,6 @@ on:
       - 'charts/**'
 
 jobs:
-  strategy:
-    matrix:
-      charts:
-        - irs
-        - irs-with-edc
   get-helm-charts-versions:
     outputs:
       latest_version: ${{ steps.step1.outputs.latest_version }}
@@ -68,6 +63,9 @@ jobs:
         run: |
           cd charts/irs
           helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add minio https://charts.min.io/
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo add grafana https://grafana.github.io/helm-charts
           helm dependency update
 
       - name: Run chart-releaser
