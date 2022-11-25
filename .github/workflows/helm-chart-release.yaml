@@ -9,6 +9,11 @@ on:
       - 'charts/**'
 
 jobs:
+  strategy:
+    matrix:
+      charts:
+        - irs
+        - irs-with-edc
   get-helm-charts-versions:
     outputs:
       latest_version: ${{ steps.step1.outputs.latest_version }}

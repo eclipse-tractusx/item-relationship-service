@@ -93,6 +93,9 @@ startupProbe:
 
 ## EDC endpoints exposed by the control-plane
 edc:
+  receiver:
+    callback:
+      url:
   postgresql:
     password:
   transfer:
