@@ -158,7 +158,7 @@ minio:
 # Grafana Configuration #
 #########################
 grafana:
-  enabled: false
+  enabled: false #<1>
   persistence:
     enabled: false
 
@@ -193,7 +193,7 @@ grafana:
 # Prometheus Configuration #
 ############################
 prometheus:
-  enabled: false
+  enabled: false #<1>
   alertmanager:
     enabled: false
   prometheus-node-exporter:
