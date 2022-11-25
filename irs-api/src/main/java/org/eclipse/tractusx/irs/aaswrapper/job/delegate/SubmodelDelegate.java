@@ -117,18 +117,18 @@ public class SubmodelDelegate extends AbstractDelegate {
                                     new IllegalArgumentException("Submodel payload validation failed. " + errors), 0,
                                     ProcessStep.SCHEMA_VALIDATION));
                 }
-            } catch (JsonParseException e) {
+            } catch (final JsonParseException e) {
                 itemContainerBuilder.tombstone(
                         Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e,
                                 RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts(),
                                 ProcessStep.SCHEMA_VALIDATION));
                 log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
-            } catch (InvalidSchemaException | RestClientException e) {
+            } catch (final InvalidSchemaException | RestClientException e) {
                 itemContainerBuilder.tombstone(
                         Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e, 0,
                                 ProcessStep.SCHEMA_REQUEST));
                 log.info("Cannot load JSON schema for validation. Creating Tombstone.");
-            } catch (EdcClientException e) {
+            } catch (final EdcClientException e) {
                 log.info("Submodel Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
                 itemContainerBuilder.tombstone(
                         Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e, 0,
