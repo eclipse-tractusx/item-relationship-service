@@ -115,7 +115,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.5.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.6.0...HEAD
+[1.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.5.0...1.6.0
 [1.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.4.0...1.5.0
 [1.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.3.0...1.4.0
 [1.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.2.0...1.3.0
