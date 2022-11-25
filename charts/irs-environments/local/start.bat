@@ -4,8 +4,7 @@ helm install irs-local charts/irs-environments/local/ -n product-traceability-ir
 
 echo Waiting for the deployments to be available...
 kubectl wait deployment -n product-traceability-irs --for condition=Available --timeout=90s irs-local-submodelservers
-kubectl wait deployment -n product-traceability-irs --for condition=Available --timeout=90s irs-local-irs-minio
-kubectl wait deployment -n product-traceability-irs --for condition=Available --timeout=90s irs-local-irs-aaswrapper
+kubectl wait deployment -n product-traceability-irs --for condition=Available --timeout=90s irs-local-minio
 kubectl wait deployment -n product-traceability-irs --for condition=Available --timeout=90s irs-local-edc-controlplane
 kubectl wait deployment -n product-traceability-irs --for condition=Available --timeout=90s irs-local-edc-controlplane-provider
 kubectl wait deployment -n product-traceability-irs --for condition=Available --timeout=90s irs-local-edc-dataplane

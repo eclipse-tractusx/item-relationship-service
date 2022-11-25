@@ -21,6 +21,8 @@ irs-helm:
       jwkSetUri:
   edc:
     controlplane:
+      apikey:
+        secret: "123456"
       endpoint:
         data: ""
 
