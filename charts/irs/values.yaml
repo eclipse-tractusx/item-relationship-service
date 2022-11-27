@@ -159,6 +159,8 @@ minio:
 #########################
 grafana:
   enabled: false #<1>
+  rbac:
+    create: false
   persistence:
     enabled: false
 
@@ -194,6 +196,8 @@ grafana:
 ############################
 prometheus:
   enabled: false #<1>
+  rbac:
+    create: false
   alertmanager:
     enabled: false
   prometheus-node-exporter:

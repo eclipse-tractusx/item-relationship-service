@@ -48,10 +48,7 @@ irs-helm:
     ingress:
       enabled: true
       hosts:
-        - host: "irs-grafana.dev.demo.catena-x.net"
-          paths:
-            - path: /
-              pathType: ImplementationSpecific
+        - "irs-grafana.dev.demo.catena-x.net"
       tls:
         - hosts:
             - "irs-grafana.dev.demo.catena-x.net"
