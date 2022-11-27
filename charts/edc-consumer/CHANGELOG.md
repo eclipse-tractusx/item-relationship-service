@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2022-11-27
+### Fixed
+- Fixed the default callback URL config, which resulted in a Helm template error
+
+
 ## [1.0.0] - 2022-11-25
 ### Added
 - Introducing this Helm chart to provide the EDC consumer.
