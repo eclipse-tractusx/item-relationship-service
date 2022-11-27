@@ -62,7 +62,7 @@ jobs:
           echo "Exported $chartVersion helm charts version"
 
   release:
-    needs: "get-helm-charts-versions"
+    needs: ["get-helm-charts-versions-irs", "get-helm-charts-versions-edc"]
     if: needs.get-helm-charts-versions-irs.outputs.latest_version != needs.get-helm-charts-versions-irs.outputs.current_version || needs.get-helm-charts-versions-edc.outputs.latest_version != needs.get-helm-charts-versions-edc.outputs.current_version
     # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
     # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
