@@ -39,7 +39,48 @@ entries:
     urls:
     - https://github.com/catenax-ng/product-item-relationship-service/releases/download/irs-0.1.0/irs-0.1.0.tgz
     version: 0.1.0
+  irs-edc-consumer:
+  - apiVersion: v2
+    appVersion: 0.1.2
+    created: "2022-11-28T08:33:47.308367585Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 1.x.x
+    description: IRS Helm chart for the EDC consumer
+    digest: 217b3c0b1e944523bbffa4eacb5134fd579398764d62b90ca665c54dad47c3b9
+    name: irs-edc-consumer
+    type: application
+    urls:
+    - https://github.com/eclipse-tractusx/item-relationship-service/releases/download/irs-edc-consumer-1.0.1/irs-edc-consumer-1.0.1.tgz
+    version: 1.0.1
   irs-helm:
+  - apiVersion: v2
+    appVersion: 1.6.0
+    created: "2022-11-28T08:33:47.51805305Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 1.x.x
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.min.io/
+      version: 5.0.1
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 17.0.1
+    - condition: grafana.enabled
+      name: grafana
+      repository: https://grafana.github.io/helm-charts
+      version: 6.44.8
+    description: IRS Helm chart for Kubernetes
+    digest: d8448f37dd0684631ec5d2f34f8eeca44c62b42d515ab83886efb8052a4f10e6
+    name: irs-helm
+    type: application
+    urls:
+    - https://github.com/eclipse-tractusx/item-relationship-service/releases/download/irs-helm-3.0.1/irs-helm-3.0.1.tgz
+    version: 3.0.1
   - apiVersion: v2
     appVersion: 1.5.0
     created: "2022-11-15T11:24:55.989490833Z"
@@ -68,4 +109,4 @@ entries:
     urls:
     - https://github.com/catenax-ng/product-item-relationship-service/releases/download/irs-helm-2.0.0/irs-helm-2.0.0.tgz
     version: 2.0.0
-generated: "2022-11-15T11:24:55.989509043Z"
+generated: "2022-11-28T08:33:47.51806935Z"
