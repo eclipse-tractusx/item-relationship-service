@@ -21,7 +21,6 @@ def tombstones_are_not_empty(response):
 
 
 def relationships_are_empty(response):
-    print(response.json().get("relationships"))
     print("Check if relationships are empty", len(response.json().get("relationships")))
     assert len(response.json().get("relationships")) == 0
 
@@ -45,11 +44,34 @@ def submodels_are_not_empty(response):
     assert len(response.json().get("submodels")) != 0
 
 
-def errors_for_globalAssetId_are_correct(response):
+def errors_for_invalid_globalAssetId_are_correct(response):
     print(response.json().get("errors"))
     error_list = response.json().get("errors")
     assert 'globalAssetId:size must be between 45 and 45' in error_list
     assert 'globalAssetId:must match \"^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\"' in error_list
+
+
+def errors_for_unknown_globalAssetId_are_correct(response):
+    error_list = response.json().get("tombstones")
+    print(error_list)
+
+    for i in error_list:
+        print("Given tombstone: -- ", i, " --")
+        catenaXId = i.get("catenaXId")
+        print("Given catenaXID: ", catenaXId)
+        processingErrorStep = i.get("processingError").get("processStep")
+        print("Processstep in ProcessingError: ", processingErrorStep)
+        processingErrorDetail = i.get("processingError").get("errorDetail")
+        print("ErrorMessage: ", processingErrorDetail)
+        processingErrorLastAttempt = i.get("processingError").get("lastAttempt")
+        print("LastAttempt: ", processingErrorLastAttempt)
+        processingErrorRetryCounter = i.get("processingError").get("retryCounter")
+        print("RetryCounter: ", processingErrorRetryCounter)
+    assert 'urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa' in catenaXId
+    assert 'DigitalTwinRequest' in processingErrorStep
+    assert '404 : "{"error":{"message":"Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found","path":"/registry/shell-descriptors/urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa","details":{}}}"' in processingErrorDetail
+    assert processingErrorLastAttempt is not None
+    assert 3 is processingErrorRetryCounter
 
 
 def status_of_jobs_are_as_expected(response, expected_status):
