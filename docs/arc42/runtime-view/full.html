@@ -443,6 +443,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
+<li><a href="#_overall">Overall</a>
+<ul class="sectlevel2">
+<li><a href="#_submodel">Submodel</a></li>
+<li><a href="#_job_orchestration_flow">Job orchestration flow</a></li>
+</ul>
+</li>
 <li><a href="#_scenario_1_create_job">Scenario 1: Create job</a>
 <ul class="sectlevel2">
 <li><a href="#_overview">Overview</a></li>
@@ -471,6 +477,41 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section covers the main processes of the IRS and explains how data is transfered and processed when a job is executed.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_overall">Overall</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section describes the overall flow of the IRS</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="overall.svg" alt="overall" width="1347" height="1005">
+</div>
+</div>
+<div class="sect2">
+<h3 id="_submodel">Submodel</h3>
+<div class="paragraph">
+<p>This section describes how the IRS fetches submodel payload.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="submodel-processing.svg" alt="submodel processing" width="1365" height="721">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_job_orchestration_flow">Job orchestration flow</h3>
+<div class="paragraph">
+<p>This section describes the job orchestration in IRS.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="job-orchestration.svg" alt="job orchestration" width="2804" height="1441">
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -570,7 +611,7 @@ Only if the job is in state "COMPLETED" or if the caller has set the parameter "
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-11-15 11:29:41 UTC
+Last updated 2022-11-28 08:33:01 UTC
 </div>
 </div>
 </body>

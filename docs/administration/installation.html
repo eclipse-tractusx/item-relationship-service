@@ -671,8 +671,11 @@ pre.rouge {
 <a href="https://eclipse-tractusx.github.io/item-relationship-service/index.yaml" class="bare">https://eclipse-tractusx.github.io/item-relationship-service/index.yaml</a></p>
 </div>
 <div class="paragraph">
-<p>Use the latest release of the "irs" chart.
+<p>Use the latest release of the "irs-helm" chart.
 It contains all required dependencies.</p>
+</div>
+<div class="paragraph">
+<p>If you also want to set up your own EDC consumer, use the "irs-edc-consumer" chart.</p>
 </div>
 <div class="paragraph">
 <p>Supply the required configuration properties (see chapter <a href="configuration.html#_configuration">Configuration</a>) in a values.yaml file or override the settings directly.</p>
@@ -711,7 +714,10 @@ It contains all required dependencies.</p>
 <pre class="rouge highlight"><code data-lang="yaml"><span class="na">dependencies</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">irs-helm</span>
     <span class="na">repository</span><span class="pi">:</span> <span class="s">https://eclipse-tractusx.github.io/item-relationship-service</span>
-    <span class="na">version</span><span class="pi">:</span> <span class="s">2.x.x</span></code></pre>
+    <span class="na">version</span><span class="pi">:</span> <span class="s">3.x.x</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">irs-edc-consumer</span> <span class="c1"># optional</span>
+    <span class="na">repository</span><span class="pi">:</span> <span class="s">https://eclipse-tractusx.github.io/item-relationship-service</span>
+    <span class="na">version</span><span class="pi">:</span> <span class="s">1.x.x</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -725,7 +731,7 @@ It contains all required dependencies.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-11-15 11:29:41 UTC
+Last updated 2022-11-28 08:33:01 UTC
 </div>
 </div>
 </body>
