@@ -1,11 +1,215 @@
 {
 	"info": {
-		"_postman_id": "5cdacd41-b391-4cbc-bac5-0e29c27c54ee",
+		"_postman_id": "dd300b73-1ad8-41b8-b62c-b2b68ad9f302",
 		"name": "IRS DEMO Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "19870399"
 	},
 	"item": [
+		{
+			"name": "DigitalTwinRegistry/Wrapper",
+			"item": [
+				{
+					"name": "Get Shell by aasIdentifier",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DIGITAL_TWIN_REGISTRY}}/registry/shell-descriptors/:aasIdentifier",
+							"host": [
+								"{{DIGITAL_TWIN_REGISTRY}}"
+							],
+							"path": [
+								"registry",
+								"shell-descriptors",
+								":aasIdentifier"
+							],
+							"variable": [
+								{
+									"key": "aasIdentifier",
+									"value": "urn:uuid:a72cae69-69f7-4827-b734-76e6aab9d581"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Registry By BPN",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells",
+							"host": [
+								"{{DIGITAL_TWIN_REGISTRY}}"
+							],
+							"path": [
+								"lookup",
+								"shells"
+							],
+							"query": [
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003AYRE\"}],",
+									"description": "BMW OEM A",
+									"disabled": true
+								},
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003AVTH\"}],",
+									"description": "Mercedes OEM B",
+									"disabled": true
+								},
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003AZQP\"}]",
+									"description": "SAP OEM C",
+									"disabled": true
+								},
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B2OM\"}],",
+									"description": "ZF Tier A",
+									"disabled": true
+								},
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B3NX\"}],",
+									"description": "ZF Sub Tier A",
+									"disabled": true
+								},
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B5MJ\"}],",
+									"description": "Bosch Tier B",
+									"disabled": true
+								},
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B0Q0\"}],",
+									"description": "BASF N-Tier A",
+									"disabled": true
+								},
+								{
+									"key": "assetIds",
+									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003AXS3\"}],",
+									"description": "Henkel Sub Tier B",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Registry By VAN",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells?assetIds=[{\"key\":\"VAN\",\"value\": \"OMA-TGFAYUHXFLHHUQQMPLTE\"}]",
+							"host": [
+								"{{DIGITAL_TWIN_REGISTRY}}"
+							],
+							"path": [
+								"lookup",
+								"shells"
+							],
+							"query": [
+								{
+									"key": "assetIds",
+									"value": "[{\"key\":\"VAN\",\"value\": \"OMA-TGFAYUHXFLHHUQQMPLTE\"}]"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Registry By globalAssetId",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells?assetIds=[{\"key\":\"globalAssetId\",\"value\":\"{{GLOBAL_ASSET_ID}}\"}]",
+							"host": [
+								"{{DIGITAL_TWIN_REGISTRY}}"
+							],
+							"path": [
+								"lookup",
+								"shells"
+							],
+							"query": [
+								{
+									"key": "assetIds",
+									"value": "[{\"key\":\"globalAssetId\",\"value\":\"{{GLOBAL_ASSET_ID}}\"}]"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Registry",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"query\": {\r\n    \"assetIds\": [\r\n        {\r\n            \"value\" : \"OMA-TGFAYUHXFLHHUQQMPLTE\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-TGETGMWPZFMNWOSFSUTB\",\r\n            \"key\" : \"VAN\"\r\n        }\r\n        ,\r\n        {\r\n            \"value\" : \"OMA-LFVTNWIDZPPRXGZEFEMN\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-TYFEAJPWMOXNDYYJTHOB\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-NRWQMZQXSKSZCRWDMWHF\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-FUQTIGXCVPVLRJAZXXYZ\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-DDGCCSBNEIVZDMXEMMTH\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-VXXHAGYPPYCLXANZCZXX\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-TGFAYUHXFLHHUQQMPLTE\",\r\n            \"key\" : \"VAN\"\r\n        }\r\n    ]\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells/query",
+							"host": [
+								"{{DIGITAL_TWIN_REGISTRY}}"
+							],
+							"path": [
+								"lookup",
+								"shells",
+								"query"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
 		{
 			"name": "IRS Test Collection",
 			"item": [
@@ -1081,17 +1285,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{KEYCLOAK_HOST}}/auth/realms/CX-Central/protocol/openid-connect/token",
+							"raw": "{{KEYCLOAK_TOKEN_URL}}",
 							"host": [
-								"{{KEYCLOAK_HOST}}"
-							],
-							"path": [
-								"auth",
-								"realms",
-								"CX-Central",
-								"protocol",
-								"openid-connect",
-								"token"
+								"{{KEYCLOAK_TOKEN_URL}}"
 							]
 						}
 					},
@@ -1427,6 +1623,161 @@
 			]
 		},
 		{
+			"name": "Semantics Hub",
+			"item": [
+				{
+					"name": "Get all models",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://semantics.int.demo.catena-x.net/hub/api/v1/models?pageSize=100",
+							"protocol": "https",
+							"host": [
+								"semantics",
+								"int",
+								"demo",
+								"catena-x",
+								"net"
+							],
+							"path": [
+								"hub",
+								"api",
+								"v1",
+								"models"
+							],
+							"query": [
+								{
+									"key": "pageSize",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get SerialPartTypization",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://semantics.int.demo.catena-x.net/hub/api/v1/models/urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization",
+							"protocol": "https",
+							"host": [
+								"semantics",
+								"int",
+								"demo",
+								"catena-x",
+								"net"
+							],
+							"path": [
+								"hub",
+								"api",
+								"v1",
+								"models",
+								"urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get SerialPartTypization Json Schema",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://semantics.int.demo.catena-x.net/hub/api/v1/models/urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization/json-schema",
+							"protocol": "https",
+							"host": [
+								"semantics",
+								"int",
+								"demo",
+								"catena-x",
+								"net"
+							],
+							"path": [
+								"hub",
+								"api",
+								"v1",
+								"models",
+								"urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization",
+								"json-schema"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Business partner data management",
+			"item": [
+				{
+					"name": "Get business partner by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://catenax-bpdm-int.demo.catena-x.net/v1/api/catena/business-partner/:bpn?idType=BPN",
+							"protocol": "https",
+							"host": [
+								"catenax-bpdm-int",
+								"demo",
+								"catena-x",
+								"net"
+							],
+							"path": [
+								"v1",
+								"api",
+								"catena",
+								"business-partner",
+								":bpn"
+							],
+							"query": [
+								{
+									"key": "idType",
+									"value": "BPN"
+								}
+							],
+							"variable": [
+								{
+									"key": "bpn",
+									"value": "BPNL00000003AYRE"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "ESR Spike",
 			"item": [
 				{
@@ -1457,7 +1808,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{IRS_HOST}}/esr/esr-statistics/:globalAssetId/:BomLifecycle/:certificate/submodel",
+							"raw": "{{IRS_HOST}}/esr/esr-statistics/:globalAssetId/:bomLifecycle/:certificate/submodel",
 							"host": [
 								"{{IRS_HOST}}"
 							],
@@ -1465,22 +1816,22 @@
 								"esr",
 								"esr-statistics",
 								":globalAssetId",
-								":BomLifecycle",
+								":bomLifecycle",
 								":certificate",
 								"submodel"
 							],
 							"variable": [
 								{
 									"key": "globalAssetId",
-									"value": null
+									"value": "urn:uuid:993b2dd2-be30-4455-835d-1cd26bd1635c"
 								},
 								{
-									"key": "BomLifecycle",
-									"value": null
+									"key": "bomLifecycle",
+									"value": "asBuilt"
 								},
 								{
 									"key": "certificate",
-									"value": null
+									"value": "ISO14001"
 								}
 							]
 						}
@@ -1518,14 +1869,12 @@
 				"exec": [
 					"var CLIENT_ID = pm.environment.get(\"CLIENT_ID\");",
 					"var CLIENT_SECRET = pm.environment.get(\"CLIENT_SECRET\");",
-					"var KEYCLOAK_HOST = pm.environment.get(\"KEYCLOAK_HOST\");",
-					"var KEYCLOAK_TOKEN_PATH = pm.environment.get(\"KEYCLOAK_TOKEN_PATH\");",
-					"var KEYCLOAK_HOST_FULL = KEYCLOAK_HOST + KEYCLOAK_TOKEN_PATH",
+					"var KEYCLOAK_TOKEN_URL = pm.environment.get(\"KEYCLOAK_TOKEN_URL\");",
 					"",
 					"var bodyString = \"grant_type=client_credentials&client_id=\"+CLIENT_ID+\"&client_secret=\"+CLIENT_SECRET",
 					"",
 					"const echoPostRequest = {",
-					"  url: KEYCLOAK_HOST_FULL,",
+					"  url: KEYCLOAK_TOKEN_URL,",
 					"  method: 'POST',",
 					"  header: 'Content-Type:application/x-www-form-urlencoded',",
 					"  body: {",
