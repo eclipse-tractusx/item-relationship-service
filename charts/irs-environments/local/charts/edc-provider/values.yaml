@@ -1,0 +1,77 @@
+##############################
+# EDC Postgres Configuration #
+##############################
+postgresql-provider:
+  auth:
+    database: edc
+    username: edc
+    postgresPassword:
+    password:
+  primary:
+    resources:
+      limits:
+        cpu: 1.5
+        memory: 1.5Gi
+
+##################################
+# EDC Controlplane Configuration #
+##################################
+edc-controlplane-provider:
+  ingresses:
+    - enabled: false
+  edc:
+    postgresql:
+      user: edc
+      password:
+    transfer:
+      proxy:
+        token:
+          verifier:
+            publickey:
+              alias:
+          signer:
+            privatekey:
+              alias:
+    api:
+      auth:
+        key: ""
+    controlplane:
+      url: ""
+    dataplane:
+      url: ""
+  configuration:
+    properties: |-
+      edc.oauth.client.id=
+      edc.oauth.private.key.alias=
+      edc.oauth.provider.jwks.url=
+      edc.oauth.public.key.alias=
+      edc.oauth.token.url=
+      edc.vault.hashicorp.url=
+      edc.vault.hashicorp.token=
+      edc.vault.hashicorp.api.secret.path=
+      edc.data.encryption.keys.alias=
+      edc.data.encryption.algorithm=NONE
+
+###############################
+# EDC Dataplane Configuration #
+###############################
+edc-dataplane-provider:
+  edc:
+    api:
+      auth:
+        key: ""
+  ## Ingress declaration to expose the network service.
+  ingresses:
+    - enabled: false
+
+  configuration:
+    properties: |-
+      edc.oauth.client.id=
+      edc.oauth.private.key.alias=
+      edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
+      edc.oauth.provider.jwks.url=
+      edc.oauth.public.key.alias=
+      edc.oauth.token.url=
+      edc.vault.hashicorp.url=
+      edc.vault.hashicorp.token=
+      edc.vault.hashicorp.api.secret.path=
