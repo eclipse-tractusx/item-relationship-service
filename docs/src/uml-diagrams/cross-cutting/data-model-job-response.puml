@@ -1,0 +1,215 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+entity Jobs {
+    ---
+    * job : Job
+    relationships : Collection<Relationship>
+    shells : Collection<Shells>
+}
+
+entity Job {
+     * jobID: String (UUID)
+     * globalAssetId: String (UUID)
+     ---
+     * jobStatus: JobState ("Finished")
+     * createdOn: DateTime
+     * requestURL: URI
+     startedOn: DateTime
+     lastModifiedOn: DateTime
+     jobFinished": DateTime
+     owner: String
+     summary : Summary
+     queryParameter : QueryParameter
+     exception : Exception
+}
+
+entity Summary {
+    ---
+    asyncFetchedItems : AsyncFetchedItems
+}
+
+entity AsyncFetchedItems {
+    ---
+    * queued : Number (Default :0)
+    * running : Number (Default :0)
+    * complete : Number (Default :0)
+    * failed : Number (Default :0)
+}
+
+entity QueryParameter {
+     ---
+     bomLifecycle: BomLifecycle
+     aspect : Collection<AspectType>
+     depth: Number
+     direction: Direction
+}
+
+QueryParameter ||--  Direction
+QueryParameter ||--  BomLifecycle
+QueryParameter }|--  AspectType
+Summary ||--  AsyncFetchedItems
+Job ||-- QueryParameter
+
+
+enum Direction {
+    ---
+    UPWARD
+    DOWNWARD
+}
+
+enum BomLifecycle {
+    ---
+    asBuilt,
+    asMaintained
+}
+
+enum AspectType {
+    ---
+    SerialPartTypization
+	AssemblyPartRelationship
+	PartDimension
+	SupplyRelationData
+	PCFCoreData
+	PCFTechnicalData
+	MarketPlaceOffer
+	MaterialAspect
+	BatteryPass
+	ProductDescriptionVehicle
+	ProductDescriptionBattery
+	ReturnRequest
+	CertificateOfDestruction
+	CertificateOfDismantler
+	Address
+	Contact
+}
+
+entity Exception {
+    ---
+    exception : List<Throwable>
+    errorDetail : String
+    exceptionDate : Date
+    statusCode : StatusCodeEnum
+}
+
+enum  StatusCodeEnum {
+    100
+    404
+    500
+    ...
+}
+
+enum JobState {
+    ---
+    UNSAVED
+    INITIAL
+    IN_PROGRESS
+    TRANSFERS_FINISHED
+    COMPLETED
+    ERROR
+}
+
+entity Relationship {
+   * catenaXId : String (urn:uuid:uuid4)
+--
+  * linkedItem : LinkedItem
+ }
+
+entity LinkedItem {
+    quantity : Quanity
+    assembledOn: Date
+    lastModifiedOn : Date
+}
+
+entity SingleLevelBomAsPlanned {
+    * catenaXId : String (urn:uuid:uuid4)
+    ---
+    lifecycleContext: BomLifecycle
+}
+
+entity AssemblyPartRelationship  {
+    * catenaXId : String (urn:uuid:uuid4)
+    --
+    lifecycleContext: BomLifecycle
+}
+
+entity SingleLevelUsageAsBuilt  {
+    * catenaXId : String (urn:uuid:uuid4)
+    --
+}
+
+entity Quantity {
+    quantityNumber  : Number
+    measurementUnit : MeasurementUnit
+}
+
+entity MeasurementUnit {
+    --
+    datatypeURI : URI
+    lexicalValue : String (? enum )
+}
+
+Quantity  ||-- MeasurementUnit
+LinkedItem ||-- Quantity
+
+entity Shells {
+    shell : Collection<Shell>
+}
+
+entity Description {
+     language: String,
+     text: String
+}
+
+entity GenericDescriptor {
+     * identification : String
+     idShort: String
+     specificAssetIds : Map<String, String>
+     description : Collection<Description>
+}
+
+entity Shell {
+    globalAssetId : GlobalAssetId
+}
+
+entity GlobalAssetId {
+    value : String
+}
+
+entity SubmodelDescriptor {
+    semanticId : GlobalAssetId
+    endpoints : Collection<Endpoint>
+}
+
+entity Endpoint {
+    interface: String
+    protocolInformation : ProtocolInformation
+}
+
+enum ProtocolInformation {
+     endpointAddress: URI
+     endpointProtocol: String
+     endpointProtocolVersion: String
+}
+
+Jobs ||-- Job
+Jobs }|-- Relationship
+Jobs }|-- Shells
+Job ||-- JobState
+Job ||-- Summary
+Job ||--  Exception
+Shells }|-- Shell
+GenericDescriptor }|-- Description
+Shell ||-- GlobalAssetId
+GenericDescriptor <|-- Shell
+GenericDescriptor <|-- SubmodelDescriptor
+Endpoint ||--  ProtocolInformation
+Relationship }o-- LinkedItem
+SubmodelDescriptor }o-- Endpoint
+Exception ||-- StatusCodeEnum
+
+LinkedItem <|-- AssemblyPartRelationship
+LinkedItem <|-- SingleLevelUsageAsBuilt
+LinkedItem <|-- SingleLevelBomAsPlanned
+
+@enduml

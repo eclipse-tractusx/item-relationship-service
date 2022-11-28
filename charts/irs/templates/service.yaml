@@ -12,6 +12,10 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    - port: {{ .Values.service.trustedPort }}
+      targetPort: http-trusted
+      protocol: TCP
+      name: http-trusted
     - port: {{ .Values.service.actuatorPort }}
       targetPort: actuator
       protocol: TCP

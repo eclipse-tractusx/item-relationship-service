@@ -1,12 +1,10 @@
-global:
-  enablePrometheus: true
-  enableGrafana: true
 irs-helm:
   #####################
   # IRS Configuration #
   #####################
   irsUrl: "https://irs.dev.demo.catena-x.net"
   ingress:
+    enabled: true
     hosts:
       - host: "irs.dev.demo.catena-x.net"
         paths:
@@ -30,44 +28,43 @@ irs-helm:
       clientSecret: <path:traceability-irs/data/dev/keycloak/oauth2#clientSecret>
       clientTokenUri: <path:traceability-irs/data/dev/keycloak/oauth2#tokenUri>
       jwkSetUri: <path:traceability-irs/data/dev/keycloak/oauth2#jwkSetUri>
-  aasWrapper:
-    username: <path:traceability-irs/data/dev/aasProxy/submodel#username>
-    password: <path:traceability-irs/data/dev/aasProxy/submodel#password>
+  edc:
+    controlplane:
+      apikey:
+        secret: "123456"
 
   #######################
   # Minio Configuration #
   #######################
-  irs-minio:
-    minioUser: <path:traceability-irs/data/dev/minio#minioUser>
-    minioPassword: <path:traceability-irs/data/dev/minio#minioPassword>
-
-  ############################
-  # AASWrapper Configuration #
-  ############################
-  irs-aaswrapper:
-    edc:
-      api:
-        auth:
-          key: "123456"
+  minio:
+    rootUser: <path:traceability-irs/data/dev/minio#minioUser>
+    rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
 
   #########################
   # Grafana Configuration #
   #########################
-  irs-grafana:
+  grafana:
+    enabled: true
     ingress:
+      enabled: true
       hosts:
-        - host: "irs-grafana.dev.demo.catena-x.net"
-          paths:
-            - path: /
-              pathType: ImplementationSpecific
+        - "irs-grafana.dev.demo.catena-x.net"
       tls:
         - hosts:
             - "irs-grafana.dev.demo.catena-x.net"
           secretName: tls-secret
 
-    username: <path:traceability-irs/data/dev/grafana#username>
+    user: <path:traceability-irs/data/dev/grafana#username>
     password: <path:traceability-irs/data/dev/grafana#password>
 
+  ############################
+  # Prometheus Configuration #
+  ############################
+  prometheus:
+    enabled: true
+
+
+irs-edc-consumer:
   ##############################
   # EDC Postgres Configuration #
   ##############################

@@ -2,42 +2,13 @@
 
 The deployment contains the components required to connect the IRS to an existing Catena-X network. This includes:
 
-* IRS with Minio
-* AAS Wrapper
-* EDC Consumer (controlplane & dataplane)
+* IRS with Minio - part of the "irs-helm" Helm chart
+* EDC Consumer (controlplane & dataplane) - part of the "irs-edc-consumer" Helm chart
 
 Everything else needs to be provided externally.
 
 
 [plantuml, target=integrated-overview, format=svg]
 ....
-skinparam monochrome true
-skinparam shadowing false
-skinparam nodesep 100
-skinparam ranksep 20
-
-cloud "Digital Twin Registry" as dtr
-cloud "EDC Providers" as providers
-cloud Keycloak
-cloud "HashiCorp Vault" as vault
-
-node "IRS Kubernetes Cluster" as k8s {
-
-    component IRS
-    component Minio
-    component "AAS Wrapper" as aasw
-    component "EDC Consumer" as consumer
-    database "Consumer DB" as cdb
-
-    IRS --> Minio
-    IRS --> aasw
-    aasw -- consumer
-    cdb - consumer
-
-}
-
-IRS -> Keycloak
-IRS --> dtr
-consumer --> providers
-consumer -- vault
+include::../../uml-diagrams/deployment-view/level-0-int.puml[]
 ....

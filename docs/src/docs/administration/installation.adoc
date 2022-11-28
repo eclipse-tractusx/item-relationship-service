@@ -3,8 +3,10 @@
 The IRS Helm repository can be found here:
 https://eclipse-tractusx.github.io/item-relationship-service/index.yaml
 
-Use the latest release of the "irs" chart.
+Use the latest release of the "irs-helm" chart.
 It contains all required dependencies.
+
+If you also want to set up your own EDC consumer, use the "irs-edc-consumer" chart.
 
 Supply the required configuration properties (see chapter xref:configuration.adoc#_configuration[Configuration]) in a values.yaml file or override the settings directly.
 
@@ -28,7 +30,10 @@ Create a new Helm chart and use the IRS as a dependency.
 dependencies:
   - name: irs-helm
     repository: https://eclipse-tractusx.github.io/item-relationship-service
-    version: 2.x.x
+    version: 3.x.x
+  - name: irs-edc-consumer # optional
+    repository: https://eclipse-tractusx.github.io/item-relationship-service
+    version: 1.x.x
 
 Then provide your configuration as the values.yaml of that chart.
 

@@ -30,7 +30,6 @@ import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
-import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Tombstone;
@@ -38,6 +37,8 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
+import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.InvalidSchemaException;
@@ -54,12 +55,12 @@ import org.springframework.web.client.RestClientException;
 @Slf4j
 public class SubmodelDelegate extends AbstractDelegate {
 
-    private final SubmodelFacade submodelFacade;
+    private final EdcSubmodelFacade submodelFacade;
     private final SemanticsHubFacade semanticsHubFacade;
     private final JsonValidatorService jsonValidatorService;
     private final JsonUtil jsonUtil;
 
-    public SubmodelDelegate(final AbstractDelegate nextStep, final SubmodelFacade submodelFacade,
+    public SubmodelDelegate(final AbstractDelegate nextStep, final EdcSubmodelFacade submodelFacade,
             final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService,
             final JsonUtil jsonUtil) {
         super(nextStep);
@@ -74,29 +75,22 @@ public class SubmodelDelegate extends AbstractDelegate {
             final JobParameter jobData, final AASTransferProcess aasTransferProcess, final String itemId) {
 
         itemContainerBuilder.build().getShells().stream().findFirst().ifPresent(shell -> {
-            try {
-                final List<SubmodelDescriptor> aasSubmodelDescriptors = shell.getSubmodelDescriptors();
-                log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
+            final List<SubmodelDescriptor> aasSubmodelDescriptors = shell.getSubmodelDescriptors();
+            log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
 
-                final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.filterDescriptorsByAspectTypes(
-                        jobData.getAspects().stream().map(AspectType::toString).collect(Collectors.toList()));
+            final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.filterDescriptorsByAspectTypes(
+                    jobData.getAspects().stream().map(AspectType::toString).collect(Collectors.toList()));
 
-                if (jobData.isCollectAspects()) {
-                    log.info("Collecting Submodels.");
-                    filteredSubmodelDescriptorsByAspectType.forEach(
-                            submodelDescriptor -> itemContainerBuilder.submodels(
-                                    getSubmodels(submodelDescriptor, itemContainerBuilder, itemId)));
-                }
-                log.debug("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
-                log.debug("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
-
-                shell.setSubmodelDescriptors(filteredSubmodelDescriptorsByAspectType);
-
-            } catch (RestClientException e) {
-                log.info("Submodel Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-                itemContainerBuilder.tombstone(
-                        Tombstone.from(itemId, null, e, retryCount, ProcessStep.SUBMODEL_REQUEST));
+            if (jobData.isCollectAspects()) {
+                log.info("Collecting Submodels.");
+                filteredSubmodelDescriptorsByAspectType.forEach(submodelDescriptor -> itemContainerBuilder.submodels(
+                        getSubmodels(submodelDescriptor, itemContainerBuilder, itemId)));
             }
+            log.debug("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
+            log.debug("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
+
+            shell.setSubmodelDescriptors(filteredSubmodelDescriptorsByAspectType);
+
         });
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
@@ -123,23 +117,28 @@ public class SubmodelDelegate extends AbstractDelegate {
                                     new IllegalArgumentException("Submodel payload validation failed. " + errors), 0,
                                     ProcessStep.SCHEMA_VALIDATION));
                 }
-            } catch (JsonParseException e) {
+            } catch (final JsonParseException e) {
                 itemContainerBuilder.tombstone(
                         Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e,
                                 RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts(),
                                 ProcessStep.SCHEMA_VALIDATION));
                 log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
-            } catch (InvalidSchemaException | RestClientException e) {
+            } catch (final InvalidSchemaException | RestClientException e) {
                 itemContainerBuilder.tombstone(
                         Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e, 0,
                                 ProcessStep.SCHEMA_REQUEST));
                 log.info("Cannot load JSON schema for validation. Creating Tombstone.");
+            } catch (final EdcClientException e) {
+                log.info("Submodel Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
+                itemContainerBuilder.tombstone(
+                        Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e, 0,
+                                ProcessStep.SUBMODEL_REQUEST));
             }
         });
         return submodels;
     }
 
-    private String requestSubmodelAsString(final Endpoint endpoint) {
+    private String requestSubmodelAsString(final Endpoint endpoint) throws EdcClientException {
         return submodelFacade.getSubmodelRawPayload(endpoint.getProtocolInformation().getEndpointAddress());
     }
 }

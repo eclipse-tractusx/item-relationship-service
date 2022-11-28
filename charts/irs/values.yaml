@@ -32,20 +32,11 @@ securityContext:
 service:
   type: ClusterIP
   port: 8080
+  trustedPort: 8181
   actuatorPort: 4004
 
 autoscaling:
   enabled: false
-
-ingress:
-  enabled: true
-  className: "nginx"
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-  hosts: [ ]
-  tls: [ ]
 
 # Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
 # @url: https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-resource-requests-and-limits
@@ -89,129 +80,144 @@ readinessProbe:
   successThreshold: 1
   timeoutSeconds: 1
 
-######################
-# Application config #
-######################
-global:
-  enablePrometheus: false
-  enableGrafana: false
 #####################
 # IRS Configuration #
 #####################
-irsUrl:
-
+irsUrl: "https://<irs-url>"
+ingress:
+  enabled: false
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  hosts:
+    - host: "<irs-url>"
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - "<irs-url>"
+      secretName: tls-secret
 digitalTwinRegistry:
-  url:
+  url: https://<digital-twin-registry-url>
 semanticsHub:
-  url:
+  url: https://<semantics-hub-url>
   defaultUrns: >
     urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
 #    ,urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship
 bpdm:
-  url:
-minioUser:
-minioPassword:
+  url: https://<bpdm-url>
+minioUser: <minio-username>
+minioPassword: <minio-password>
+minioUrl: "http://{{ .Release.Name }}-minio:9000"
 keycloak:
   oauth2:
-    clientId:
-    clientSecret:
-    clientTokenUri:
-    jwkSetUri:
-aasWrapper:
-  username:
-  password:
+    clientId: <keycloak-client-id>
+    clientSecret: <keycloak-client-secret>
+    clientTokenUri: <keycloak-token-uri>
+    jwkSetUri: <keycloak-jwkset-uri>
+edc:
+  controlplane:
+    endpoint:
+      data: "" #<edc-controlplane-endpoint-data>
+    request:
+      ttl: PT10M # Requests to controlplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
+    provider:
+      suffix: /api/v1/ids/data
+    catalog:
+      limit: 1000 # Max number of catalog items to retrieve from the controlplane
+    apikey:
+      header: "X-Api-Key" # Name of the EDC api key header field
+      secret: "" #<edc-api-key>
+  submodel:
+    request:
+      ttl: PT10M # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
+    path: /submodel
+    urnprefix: /urn
+
 
 #######################
 # Minio Configuration #
 #######################
-irs-minio:
-  minioUser:
-  minioPassword:
+minio:
+  enabled: true
+  mode: standalone
+  resources:
+    requests:
+      memory: 4Gi
+  rootUser: <minio-username>
+  rootPassword: <minio-password>
 
-############################
-# AASWrapper Configuration #
-############################
-irs-aaswrapper:
-  edc:
-    api:
-      auth:
-        key:
+  environment:
+    MINIO_PROMETHEUS_JOB_ID: minio-actuator
+    MINIO_PROMETHEUS_URL: http://prometheus:9090
 
 #########################
 # Grafana Configuration #
 #########################
-irs-grafana:
-  ingress: {}
-  username:
-  password:
+grafana:
+  enabled: false #<1>
+  rbac:
+    create: false
+  persistence:
+    enabled: false
 
-##############################
-# EDC Postgres Configuration #
-##############################
-postgresql:
-  auth:
-    username: edc
-    database: edc
-    postgresPassword:
-    password:
+  user: <grafana-username>
+  password: <grafana-password>
 
-##################################
-# EDC Controlplane Configuration #
-##################################
-edc-controlplane:
-  ingresses: []
-  edc:
-    postgresql:
-      user: edc
-      password:
-    transfer:
-      proxy:
-        token:
-          verifier:
-            publickey:
-              alias:
-          signer:
-            privatekey:
-              alias:
-    api:
-      auth:
-        key:
-    controlplane:
-      url:
-    dataplane:
-      url:
-  configuration:
-    properties: |-
-      edc.oauth.client.id=
-      edc.oauth.private.key.alias=
-      edc.oauth.provider.jwks.url=
-      edc.oauth.public.key.alias=
-      edc.oauth.token.url=
-      edc.vault.hashicorp.url=
-      edc.vault.hashicorp.token=
-      edc.vault.hashicorp.api.secret.path=
-      edc.data.encryption.keys.alias=
-      edc.data.encryption.algorithm=NONE
+  admin:
+    existingSecret: "{{ .Release.Name }}-irs-helm"
+    userKey: grafanaUser
+    passwordKey: grafanaPassword
 
-###############################
-# EDC Dataplane Configuration #
-###############################
-edc-dataplane:
-  edc:
-    api:
-      auth:
-        key:
-  ## Ingress declaration to expose the network service.
-  ingresses: []
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: "http://{{ .Release.Name }}-prometheus-server"
+          isDefault: true
+  sidecar:
+    dashboards:
+      enabled: true
 
-  configuration:
-    properties: |-
-      edc.oauth.client.id=
-      edc.oauth.private.key.alias=
-      edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
-      edc.oauth.provider.jwks.url=
-      edc.oauth.public.key.alias=
-      edc.oauth.token.url=
-      edc.vault.hashicorp.url=
-      edc.vault.hashicorp.token=
-      edc.vault.hashicorp.api.secret.path=
+  importDashboards:
+    minio: dashboards/minio-dashboard.json
+    outbound: dashboards/irs-outbound-requests.json
+    irsmonitoring: dashboards/resource-monitoring-dashboard.json
+    irsjobs: dashboards/irs-jobs-dashboard.json
+    irsapi: dashboards/irs-api-dashboard.json
+
+############################
+# Prometheus Configuration #
+############################
+prometheus:
+  enabled: false #<1>
+  rbac:
+    create: false
+  alertmanager:
+    enabled: false
+  prometheus-node-exporter:
+    enabled: false
+  kubeStateMetrics:
+    enabled: false
+  prometheus-pushgateway:
+    enabled: false
+  configmapReload:
+    prometheus:
+      enabled: false
+
+  extraScrapeConfigs: |
+    - job_name: 'spring-actuator'
+      metrics_path: '/actuator/prometheus'
+      scrape_interval: 5s
+      static_configs:
+        - targets: [ '{{ .Release.Name }}-irs-helm:4004' ]
+
+    - job_name: 'minio-actuator'
+      metrics_path: /minio/v2/metrics/cluster
+      static_configs:
+        - targets: [ '{{ .Release.Name }}-minio:9000' ]

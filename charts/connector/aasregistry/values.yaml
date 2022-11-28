@@ -30,7 +30,7 @@ registry:
   host: irs-aas-registry.dev.demo.catena-x.net
   ## If 'authentication' is set to false, no OAuth authentication is enforced
   authentication: false
-  idpIssuerUri: https://centralidp.demo.catena-x.net/auth/realms/CX-Central
+  idpIssuerUri: <path:traceability-irs/data/dev/aasregistry#idpIssuerUri>
   service:
     port: 8080
     type: ClusterIP
