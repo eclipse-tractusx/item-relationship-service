@@ -31,6 +31,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
@@ -72,6 +73,8 @@ class DigitalTwinDelegateTest {
         assertThat(result).isNotNull();
         assertThat(result.getTombstones()).hasSize(1);
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getRetryCounter()).isEqualTo(
+                RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts());
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.DIGITAL_TWIN_REQUEST);
     }

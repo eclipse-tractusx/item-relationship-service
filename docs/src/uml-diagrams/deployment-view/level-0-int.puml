@@ -13,13 +13,11 @@ node "IRS Kubernetes Cluster" as k8s {
 
     component IRS
     component Minio
-    component "AAS Wrapper" as aasw
     component "EDC Consumer" as consumer
     database "Consumer DB" as cdb
 
     IRS --> Minio
-    IRS --> aasw
-    aasw -- consumer
+    IRS --> consumer
     cdb - consumer
 
 }

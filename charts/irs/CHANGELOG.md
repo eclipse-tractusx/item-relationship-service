@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.1] - 2022-11-27
+### Changed
+- Updated default config for Prometheus / Grafana by disabling automatic RBAC creation
+
+## [3.0.0] - 2022-11-25
+
+### Changed
+- Replaced the custom charts for Grafana, Prometheus and Minio with dependencies on stock charts. Please see the updated documentation for the new configuration layout.
+
+### Removed
+- Removed EDC from deployment. Instead, a new Helm chart is available which contains the EDC consumer: "irs-edc-consumer"
+- Removed API wrapper from deployment
+
 ## [2.3.0]
 ### Changed
 - Update IRS version to 1.5.0
