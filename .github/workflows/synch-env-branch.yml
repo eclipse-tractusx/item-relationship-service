@@ -22,7 +22,7 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git fetch origin
-          git merge origin/main
+          git merge origin/main -m "Merge remote-tracking branch 'origin/main' into helm-environments"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
