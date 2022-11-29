@@ -2,7 +2,9 @@ name: "Sync main to IRS-Env"
 
 on:
   push:
-    branches: main
+    branches:
+      - main
+      - feature/TRI-854-fix-branch-sync-action
 
 jobs:
   sync-branches:
