@@ -32,6 +32,7 @@ securityContext:
 service:
   type: ClusterIP
   port: 8080
+  trustedPort: 8181
   actuatorPort: 4004
 
 autoscaling:
@@ -79,18 +80,12 @@ readinessProbe:
   successThreshold: 1
   timeoutSeconds: 1
 
-######################
-# Application config #
-######################
-global:
-  enablePrometheus: false #<1>
-  enableGrafana: false #<1>
 #####################
 # IRS Configuration #
 #####################
 irsUrl: "https://<irs-url>"
 ingress:
-  enabled: true
+  enabled: false
   className: "nginx"
   annotations:
     nginx.ingress.kubernetes.io/ssl-passthrough: "false"
@@ -116,151 +111,113 @@ bpdm:
   url: https://<bpdm-url>
 minioUser: <minio-username>
 minioPassword: <minio-password>
+minioUrl: "http://{{ .Release.Name }}-minio:9000"
 keycloak:
   oauth2:
     clientId: <keycloak-client-id>
     clientSecret: <keycloak-client-secret>
     clientTokenUri: <keycloak-token-uri>
     jwkSetUri: <keycloak-jwkset-uri>
-aasWrapper:
-  username: <aas-wrapper-username>
-  password: <aas-wrapper-password>
+edc:
+  controlplane:
+    endpoint:
+      data: "" #<edc-controlplane-endpoint-data>
+    request:
+      ttl: PT10M # Requests to controlplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
+    provider:
+      suffix: /api/v1/ids/data
+    catalog:
+      limit: 1000 # Max number of catalog items to retrieve from the controlplane
+    apikey:
+      header: "X-Api-Key" # Name of the EDC api key header field
+      secret: "" #<edc-api-key>
+  submodel:
+    request:
+      ttl: PT10M # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
+    path: /submodel
+    urnprefix: /urn
+
 
 #######################
 # Minio Configuration #
 #######################
-irs-minio:
-  minioUser: <minio-username>
-  minioPassword: <minio-password>
+minio:
+  enabled: true
+  mode: standalone
+  resources:
+    requests:
+      memory: 4Gi
+  rootUser: <minio-username>
+  rootPassword: <minio-password>
 
-############################
-# AASWrapper Configuration #
-############################
-irs-aaswrapper:
-  edc:
-    api:
-      auth:
-        key: "<edc-api-key>"
+  environment:
+    MINIO_PROMETHEUS_JOB_ID: minio-actuator
+    MINIO_PROMETHEUS_URL: http://prometheus:9090
 
 #########################
 # Grafana Configuration #
 #########################
-irs-grafana:  #<2>
-  ingress:
-    hosts:
-      - host: "<grafana-url>"
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls:
-      - hosts:
-          - "<grafana-url>"
-        secretName: tls-secret
+grafana:
+  enabled: false #<1>
+  rbac:
+    create: false
+  persistence:
+    enabled: false
 
-    username: <grafana-username>
-    password: <grafana-password>
+  user: <grafana-username>
+  password: <grafana-password>
 
-##############################
-# EDC Postgres Configuration #
-##############################
-postgresql:
-  auth:
-    username: <postgres-username>
-    database: <postgres-database>
-    postgresPassword: <postgres-admin-password>
-    password: <postgres-password>
+  admin:
+    existingSecret: "{{ .Release.Name }}-irs-helm"
+    userKey: grafanaUser
+    passwordKey: grafanaPassword
 
-##################################
-# EDC Controlplane Configuration #
-##################################
-edc-controlplane:
-  ingresses:
-    - enabled: true
-      hostname: "<controlplane-url>"
-      annotations:
-        nginx.ingress.kubernetes.io/ssl-passthrough: "false"
-        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      endpoints:
-        - ids
-        - data
-      className: ""
-      tls:
-        - hosts:
-            - "<controlplane-url>"
-          secretName: tls-secret
-      certManager:
-        issuer: ""
-        clusterIssuer: ""
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: "http://{{ .Release.Name }}-prometheus-server"
+          isDefault: true
+  sidecar:
+    dashboards:
+      enabled: true
 
-  edc:
-    postgresql:
-      user: <postgres-username>
-      password: <postgres-password>
-    transfer:
-      proxy:
-        token:
-          verifier:
-            publickey:
-              alias: <daps-certificate-name>
-          signer:
-            privatekey:
-              alias: <daps-privatekey-name>
-    api:
-      auth:
-        key: "<edc-api-key>"
-    controlplane:
-      url: "https://<controlplane-url>"
-    dataplane:
-      url: "https://<dataplane-url>"
-  configuration:
-    properties: |-
-      edc.oauth.client.id=<daps-client-id>
-      edc.oauth.private.key.alias=<daps-privatekey-name>
-      edc.oauth.provider.jwks.url=<daps-jwks-url>
-      edc.oauth.public.key.alias=<daps-certificate-name>
-      edc.oauth.token.url=<daps-token-url>
-      edc.vault.hashicorp.url=<vault-url>
-      edc.vault.hashicorp.token=<vault-token>
-      edc.vault.hashicorp.api.secret.path=<vault-secret-store-path>
-      edc.data.encryption.keys.alias=<daps-privatekey-name>
-      edc.data.encryption.algorithm=NONE
+  importDashboards:
+    minio: dashboards/minio-dashboard.json
+    outbound: dashboards/irs-outbound-requests.json
+    irsmonitoring: dashboards/resource-monitoring-dashboard.json
+    irsjobs: dashboards/irs-jobs-dashboard.json
+    irsapi: dashboards/irs-api-dashboard.json
 
-###############################
-# EDC Dataplane Configuration #
-###############################
-edc-dataplane:
-  edc:
-    api:
-      auth:
-        key: "<edc-api-key>"
-  ## Ingress declaration to expose the network service.
-    ingresses:
-      - enabled: true
-        hostname: "<dataplane-url>"
-        annotations:
-          nginx.ingress.kubernetes.io/ssl-passthrough: "false"
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-        endpoints:
-          - public
-        className: "nginx"
-        tls:
-          - hosts:
-              - "<dataplane-url>"
-            secretName: tls-secret
-        certManager:
-          issuer: ""
-          clusterIssuer: "
+############################
+# Prometheus Configuration #
+############################
+prometheus:
+  enabled: false #<1>
+  rbac:
+    create: false
+  alertmanager:
+    enabled: false
+  prometheus-node-exporter:
+    enabled: false
+  kubeStateMetrics:
+    enabled: false
+  prometheus-pushgateway:
+    enabled: false
+  configmapReload:
+    prometheus:
+      enabled: false
 
-    configuration:
-      properties: |-
-        edc.oauth.client.id=<daps-client-id>
-        edc.oauth.private.key.alias=<daps-privatekey-name>
-        edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
-        edc.oauth.provider.jwks.url=<daps-jwks-url>
-        edc.oauth.public.key.alias=<daps-certificate-name>
-        edc.oauth.token.url=<daps-token-url>
-        edc.vault.hashicorp.url=<vault-url>
-        edc.vault.hashicorp.token=<vault-token>
-        edc.vault.hashicorp.api.secret.path=<vault-secret-store-path>
+  extraScrapeConfigs: |
+    - job_name: 'spring-actuator'
+      metrics_path: '/actuator/prometheus'
+      scrape_interval: 5s
+      static_configs:
+        - targets: [ '{{ .Release.Name }}-irs-helm:4004' ]
+
+    - job_name: 'minio-actuator'
+      metrics_path: /minio/v2/metrics/cluster
+      static_configs:
+        - targets: [ '{{ .Release.Name }}-minio:9000' ]

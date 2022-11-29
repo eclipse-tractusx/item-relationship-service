@@ -84,5 +84,21 @@ public class CxTestDataContainer {
         public Optional<Map<String, Object>> getSingleLevelBomAsPlanned() {
             return singleLevelBomAsPlanned != null ? singleLevelBomAsPlanned.stream().findFirst() : Optional.empty();
         }
+
+        public Optional<Map<String, Object>> getBatch() {
+            return batch != null ? batch.stream().findFirst() : Optional.empty();
+        }
+
+        public Optional<Map<String, Object>> getMaterialForRecycling() {
+            return materialForRecycling != null ? materialForRecycling.stream().findFirst() : Optional.empty();
+        }
+
+        public Optional<Map<String, Object>> getProductDescription() {
+            return productDescription != null ? productDescription.stream().findFirst() : Optional.empty();
+        }
+
+        public Optional<Map<String, Object>> getPhysicalDimension() {
+            return physicalDimension != null ? physicalDimension.stream().findFirst() : Optional.empty();
+        }
     }
 }

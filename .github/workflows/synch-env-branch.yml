@@ -1,0 +1,25 @@
+name: "Sync main to IRS-Env"
+
+on:
+  push:
+    branches: main
+
+jobs:
+  sync-branches:
+    name: Sync branches
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: helm-environments
+
+      - name: Merge main into helm-environments
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git merge origin/main
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

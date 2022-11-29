@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
-import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.RelationshipAspect;
-import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.SubmodelFacade;
+import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.RelationshipAspect;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.LinkedItem;
@@ -36,8 +36,8 @@ import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
+import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.exceptions.JsonParseException;
-import org.springframework.web.client.RestClientException;
 
 /**
  * Builds relationship array for AAShell from previous step.
@@ -47,17 +47,17 @@ import org.springframework.web.client.RestClientException;
 @Slf4j
 public class RelationshipDelegate extends AbstractDelegate {
 
-    private final SubmodelFacade submodelFacade;
+    private final EdcSubmodelFacade submodelFacade;
 
     public RelationshipDelegate(final AbstractDelegate nextStep,
-            final SubmodelFacade submodelFacade) {
+            final EdcSubmodelFacade submodelFacade) {
         super(nextStep);
         this.submodelFacade = submodelFacade;
     }
 
     @Override
-    public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder, final JobParameter jobData,
-            final AASTransferProcess aasTransferProcess, final String itemId) {
+    public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder,
+            final JobParameter jobData, final AASTransferProcess aasTransferProcess, final String itemId) {
 
         final RelationshipAspect relationshipAspect = RelationshipAspect.from(jobData.getBomLifecycle(), jobData.getDirection());
         itemContainerBuilder.build().getShells().stream().findFirst().ifPresent(
@@ -70,11 +70,11 @@ public class RelationshipDelegate extends AbstractDelegate {
 
                     aasTransferProcess.addIdsToProcess(childIds);
                     itemContainerBuilder.relationships(relationships);
-                } catch (RestClientException | IllegalArgumentException e) {
+                } catch (final EdcClientException e) {
                     log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                             address);
                     itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount, ProcessStep.SUBMODEL_REQUEST));
-                } catch (JsonParseException e) {
+                } catch (final JsonParseException e) {
                     log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
                     itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount, ProcessStep.SUBMODEL_REQUEST));
                 }
@@ -86,9 +86,9 @@ public class RelationshipDelegate extends AbstractDelegate {
 
     private List<String> getChildIds(final List<Relationship> relationships) {
         return relationships.stream()
-                           .map(Relationship::getLinkedItem)
-                           .map(LinkedItem::getChildCatenaXId)
-                           .map(GlobalAssetIdentification::getGlobalAssetId)
-                           .collect(Collectors.toList());
+                            .map(Relationship::getLinkedItem)
+                            .map(LinkedItem::getChildCatenaXId)
+                            .map(GlobalAssetIdentification::getGlobalAssetId)
+                            .collect(Collectors.toList());
     }
 }

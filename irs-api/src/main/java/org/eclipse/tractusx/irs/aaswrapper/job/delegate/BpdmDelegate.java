@@ -67,7 +67,7 @@ public class BpdmDelegate extends AbstractDelegate {
                                             itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0, ProcessStep.BPDM_REQUEST));
                                         }
                                 ));
-        } catch (RestClientException e) {
+        } catch (final RestClientException e) {
             log.info("Business Partner endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
             itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount, ProcessStep.BPDM_REQUEST));
         }

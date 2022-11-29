@@ -34,8 +34,8 @@ import java.util.List;
 
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
-import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
+import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
@@ -45,7 +45,7 @@ import org.springframework.web.client.RestClientException;
 
 class SubmodelDelegateTest {
 
-    final SubmodelFacade submodelFacade = mock(SubmodelFacade.class);
+    final EdcSubmodelFacade submodelFacade = mock(EdcSubmodelFacade.class);
     final SemanticsHubFacade semanticsHubFacade = mock(SemanticsHubFacade.class);
     final JsonValidatorService jsonValidatorService = mock(JsonValidatorService.class);
     final SubmodelDelegate submodelDelegate = new SubmodelDelegate(null, submodelFacade,

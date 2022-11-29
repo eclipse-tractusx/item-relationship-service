@@ -21,7 +21,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration;
 
+import java.time.Clock;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -36,11 +38,11 @@ import org.eclipse.tractusx.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.RelationshipDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.SubmodelDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
-import org.eclipse.tractusx.irs.aaswrapper.submodel.domain.SubmodelFacade;
 import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.JobTTL;
+import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.persistence.MinioBlobPersistence;
@@ -61,6 +63,8 @@ import org.springframework.context.annotation.Profile;
 @SuppressWarnings({ "PMD.ExcessiveImports" })
 public class JobConfiguration {
 
+    public static final int EXECUTOR_CORE_POOL_SIZE = 5;
+
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
             final DigitalTwinDelegate digitalTwinDelegate, final BlobPersistence blobStore, final JobStore jobStore,
@@ -75,6 +79,16 @@ public class JobConfiguration {
         final JobTTL jobTTL = new JobTTL(ttlCompletedJobs, ttlFailedJobs);
 
         return new JobOrchestrator<>(manager, jobStore, handler, meterService, applicationEventPublisher, jobTTL);
+    }
+
+    @Bean
+    public ScheduledExecutorService scheduledExecutorService() {
+        return Executors.newScheduledThreadPool(EXECUTOR_CORE_POOL_SIZE);
+    }
+
+    @Bean
+    public Clock clock() {
+        return Clock.systemUTC();
     }
 
     @Profile("!test")
@@ -102,12 +116,12 @@ public class JobConfiguration {
 
     @Bean
     public RelationshipDelegate relationshipDelegate(final SubmodelDelegate submodelDelegate,
-            final SubmodelFacade submodelFacade) {
+            final EdcSubmodelFacade submodelFacade) {
         return new RelationshipDelegate(submodelDelegate, submodelFacade);
     }
 
     @Bean
-    public SubmodelDelegate submodelDelegate(final BpdmDelegate bpdmDelegate, final SubmodelFacade submodelFacade,
+    public SubmodelDelegate submodelDelegate(final BpdmDelegate bpdmDelegate, final EdcSubmodelFacade submodelFacade,
             final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService) {
         return new SubmodelDelegate(bpdmDelegate, submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil());
     }
@@ -116,4 +130,6 @@ public class JobConfiguration {
     public BpdmDelegate bpdmDelegate(final BpdmFacade bpdmFacade) {
         return new BpdmDelegate(bpdmFacade);
     }
+
+
 }

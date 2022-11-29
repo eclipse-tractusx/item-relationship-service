@@ -21,7 +21,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.exceptions;
 
-
 /**
  * General entity not found exception.
  */
