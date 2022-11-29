@@ -67,11 +67,11 @@ def errors_for_unknown_globalAssetId_are_correct(response):
         print("LastAttempt: ", processingErrorLastAttempt)
         processingErrorRetryCounter = i.get("processingError").get("retryCounter")
         print("RetryCounter: ", processingErrorRetryCounter)
-    assert 'urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa' in catenaXId
-    assert 'DigitalTwinRequest' in processingErrorStep
-    assert '404 : "{"error":{"message":"Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found","path":"/registry/shell-descriptors/urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa","details":{}}}"' in processingErrorDetail
-    assert processingErrorLastAttempt is not None
-    assert 3 is processingErrorRetryCounter
+        assert 'urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa' in catenaXId
+        assert 'DigitalTwinRequest' in processingErrorStep
+        assert '404 : "{"error":{"message":"Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found","path":"/registry/shell-descriptors/urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa","details":{}}}"' in processingErrorDetail
+        assert processingErrorLastAttempt is not None
+        assert 3 is processingErrorRetryCounter
 
 
 def status_of_jobs_are_as_expected(response, expected_status):
