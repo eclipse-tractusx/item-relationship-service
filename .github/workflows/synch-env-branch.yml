@@ -2,7 +2,8 @@ name: "Sync main to IRS-Env"
 
 on:
   push:
-    branches: main
+    branches:
+      - main
 
 jobs:
   sync-branches:
@@ -19,7 +20,8 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git merge origin/main
+          git fetch origin
+          git merge origin/main -m "Merge remote-tracking branch 'origin/main' into helm-environments" --allow-unrelated-histories
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
