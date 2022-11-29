@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feature/TRI-854-fix-branch-sync-action
 
 jobs:
   sync-branches:
