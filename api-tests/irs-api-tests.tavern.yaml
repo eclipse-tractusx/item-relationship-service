@@ -568,8 +568,8 @@ stages:
       json:
         globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         aspects:
-          - AddressAspect
-          - DiagnosticData
+          - Batch
+          - CertificateOfDestruction
         collectAspects: true
       method: POST
       headers:
@@ -799,7 +799,7 @@ stages:
       save:
         json:
           job_id: jobId
-    delay_after: 320
+    delay_after: 340
 
   - name: fetch response for created job and check details
     request:
