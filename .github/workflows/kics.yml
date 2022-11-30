@@ -9,10 +9,10 @@ on:
   pull_request:
     branches: main
     paths-ignore:
-      - "**/*.md"
-      - "**/*.txt"
+      - '**/*.md'
+      - '**/*.txt'
   schedule:
-    - cron: "0 0 * * *"
+    - cron: '0 0 * * *' # Once a day
 
 jobs:
   analyze:

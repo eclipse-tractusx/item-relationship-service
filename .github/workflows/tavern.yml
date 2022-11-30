@@ -1,7 +1,7 @@
 name: Tavern IRS API test
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Trigger manually
     inputs:
       irs-host:
         type: choice

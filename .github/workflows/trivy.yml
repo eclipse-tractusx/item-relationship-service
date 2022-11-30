@@ -4,6 +4,7 @@
 name: "Trivy vulnerability scanner"
 
 on:
+  workflow_dispatch: # Trigger manually
   push:
     branches: main
     paths-ignore:
@@ -12,13 +13,10 @@ on:
   pull_request:
     branches: main
     paths-ignore:
-      - "**/*.md"
-      - "**/*.txt"
+      - '**/*.md'
+      - '**/*.txt'
   schedule:
-    # Once a day
-    - cron: "0 0 * * *"
-  workflow_dispatch:
-  # Trigger manually
+    - cron: '0 0 * * *' # Once a day
 
 jobs:
   analyze-config:
