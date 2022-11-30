@@ -3,6 +3,9 @@ name: "KICS security and vulnerability scanner"
 on:
   push:
     branches: main
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
   pull_request:
     branches: main
     paths-ignore:
