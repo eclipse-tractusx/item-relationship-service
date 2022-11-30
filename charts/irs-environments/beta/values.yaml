@@ -102,11 +102,11 @@ irs-helm:
         url: "https://irs-consumer-dataplane.beta.demo.catena-x.net"
     configuration:
       properties: |-
-        edc.oauth.client.id=D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09:keyid:D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09
+        edc.oauth.client.id=
         edc.oauth.private.key.alias=irs-beta-daps-key
-        edc.oauth.provider.jwks.url=https://daps1.int.demo.catena-x.net/.well-known/jwks.json
+        edc.oauth.provider.jwks.url=https://daps.beta.demo.catena-x.net/.well-known/jwks.json
         edc.oauth.public.key.alias=irs-beta-daps-cert
-        edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
+        edc.oauth.token.url=https://daps.beta.demo.catena-x.net/token
         edc.vault.hashicorp.url=https://vault.demo.catena-x.net
         edc.vault.hashicorp.token=<path:traceability-irs/data/beta/controlplane#vaultToken>
         edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
@@ -152,12 +152,12 @@ irs-helm:
 
     configuration:
       properties: |-
-        edc.oauth.client.id=D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09:keyid:D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09
+        edc.oauth.client.id=
         edc.oauth.private.key.alias=irs-beta-daps-key
         edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
-        edc.oauth.provider.jwks.url=https://daps1.int.demo.catena-x.net/.well-known/jwks.json
+        edc.oauth.provider.jwks.url=https://daps.beta.demo.catena-x.net/.well-known/jwks.json
         edc.oauth.public.key.alias=irs-beta-daps-cert
-        edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
+        edc.oauth.token.url=https://daps.beta.demo.catena-x.net/token
         edc.vault.hashicorp.url=https://vault.demo.catena-x.net
         edc.vault.hashicorp.token=<path:traceability-irs/data/beta/controlplane#vaultToken>
         edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
