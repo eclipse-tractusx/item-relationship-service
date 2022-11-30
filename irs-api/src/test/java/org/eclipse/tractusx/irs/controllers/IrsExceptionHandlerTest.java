@@ -51,7 +51,7 @@ class IrsExceptionHandlerTest {
     private MockMvc mockMvc;
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void handleAll() throws Exception {
         when(service.registerItemJob(any())).thenThrow(InternalServerError.class);
 

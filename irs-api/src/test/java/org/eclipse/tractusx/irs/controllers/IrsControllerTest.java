@@ -86,7 +86,7 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void initiateJobForGlobalAssetId() throws Exception {
         final UUID returnedJob = UUID.randomUUID();
         when(service.registerItemJob(any())).thenReturn(JobHandle.builder().jobId(returnedJob).build());
@@ -100,7 +100,7 @@ class IrsControllerTest {
 
     @ParameterizedTest
     @MethodSource("corruptedJobs")
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenRegisterJobBodyNotValid(final RegisterJob registerJob) throws Exception {
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
                                               .content(new ObjectMapper().writeValueAsString(registerJob)))
@@ -108,7 +108,7 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void getJobsByJobState() throws Exception {
         final JobStatusResult returnedJob = JobStatusResult.builder()
                                                            .jobId(UUID.randomUUID())
@@ -131,7 +131,7 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void cancelJobById() throws Exception {
         final Job canceledJob = Job.builder().jobId(jobId).jobState(JobState.CANCELED).build();
 
@@ -141,7 +141,7 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void cancelJobById_throwEntityNotFoundException() throws Exception {
         given(this.service.cancelJobById(jobId)).willThrow(
                 new EntityNotFoundException("No job exists with id " + jobId));
@@ -152,7 +152,7 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void getJobWithMalformedIdShouldReturnBadRequest() throws Exception {
         final String jobIdMalformed = UUID.randomUUID() + "MALFORMED";
 
@@ -160,7 +160,7 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenRegisterJobWithMalformedAspectJson() throws Exception {
         final String requestBody = "{ \"aspects\": [ \"MALFORMED\" ], \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\" }";
 
@@ -169,7 +169,7 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenCancelingAlreadyCompletedJob() throws Exception {
         given(this.service.cancelJobById(jobId)).willThrow(new IllegalStateException(
                 format("Cannot transition from state %s to %s", JobState.COMPLETED, JobState.CANCELED)));
