@@ -98,6 +98,23 @@ class IrsControllerTest {
                     .andExpect(content().string(containsString(returnedJob.toString())));
     }
 
+    @Test
+    void shouldReturnUnauthorizedStatusWhenAuthenticationIsMissing() throws Exception {
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(new ObjectMapper().writeValueAsString(
+                                                      registerJobWithoutDepthAndAspect())))
+                    .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(authorities = "view_irs_wrong_authority")
+    void shouldReturnForbiddenStatusWhenRequiredAuthorityIsMissing() throws Exception {
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(new ObjectMapper().writeValueAsString(
+                                                      registerJobWithoutDepthAndAspect())))
+                    .andExpect(status().isForbidden());
+    }
+
     @ParameterizedTest
     @MethodSource("corruptedJobs")
     @WithMockUser(authorities = "view_irs")

@@ -23,12 +23,13 @@ package org.eclipse.tractusx.irs.configuration.converter;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.nimbusds.jose.shaded.json.JSONArray;
+import com.nimbusds.jose.shaded.json.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -60,6 +61,7 @@ public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthen
     /**
      * Parsing JWT - retrieving resource_access claim with IRS roles.
      */
+    @Slf4j
     /* package */ static class IrsTokenParser {
 
         private static final String RESOURCE_ACCESS_CLAIM = "resource_access";
@@ -71,24 +73,20 @@ public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthen
          * @param jwt source
          * @return list of roles from token
          */
-        public Collection<GrantedAuthority> extractIrsRolesFromToken(final Jwt jwt) {
-            final Map<String, Object> resourceAccessClaim = Optional.ofNullable(jwt.getClaimAsMap(RESOURCE_ACCESS_CLAIM))
-                                                                    .orElse(Map.of());
-
-            if (resourceAccessClaim.containsKey(IRS_RESOURCE_ACCESS)) {
-                final Map<String, List<String>> irsResourceAccess = (Map<String, List<String>>) resourceAccessClaim.get(IRS_RESOURCE_ACCESS);
-
-                return irsResourceAccess.get(ROLES)
-                                        .stream()
-                                        .map(SimpleGrantedAuthority::new)
-                                        .collect(Collectors.toList());
-            }
-            
-            return Collections.emptyList();
+        public Collection<SimpleGrantedAuthority> extractIrsRolesFromToken(final Jwt jwt) {
+            return Optional.ofNullable(jwt.getClaim(RESOURCE_ACCESS_CLAIM))
+                    .map(JSONObject.class::cast)
+                    .map(accesses -> accesses.get(IRS_RESOURCE_ACCESS))
+                    .map(JSONObject.class::cast)
+                    .map(irsAccesses -> irsAccesses.get(ROLES))
+                    .map(JSONArray.class::cast)
+                    .map(roles -> roles.stream()
+                                       .map(String.class::cast)
+                                       .map(SimpleGrantedAuthority::new)
+                                       .collect(Collectors.toSet()))
+                    .orElse(Collections.emptySet());
         }
-
     }
-
 
 }
 
