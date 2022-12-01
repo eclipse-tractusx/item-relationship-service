@@ -4,19 +4,19 @@
 name: "Trivy vulnerability scanner"
 
 on:
+  workflow_dispatch: # Trigger manually
   push:
-    branches: [ main, master ]
-  pull_request:
-  # The branches below must be a subset of the branches above
-    branches: [ main, master ]
+    branches: main
     paths-ignore:
-      - "**/*.md"
-      - "**/*.txt"
+      - '**/*.md'
+      - '**/*.txt'
+  pull_request:
+    branches: main
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
   schedule:
-    # Once a day
-    - cron: "0 0 * * *"
-  workflow_dispatch:
-  # Trigger manually
+    - cron: '0 0 * * *' # Once a day
 
 jobs:
   analyze-config:

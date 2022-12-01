@@ -2,8 +2,17 @@ name: "OWASP dependency scanner"
 
 on:
   push:
+    branches: main
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+  pull_request:
+    branches: main
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
   schedule:
-    - cron:  "0 0 * * *"
+    - cron: '0 0 * * *' # Once a day
 
 jobs:
   analyze:
