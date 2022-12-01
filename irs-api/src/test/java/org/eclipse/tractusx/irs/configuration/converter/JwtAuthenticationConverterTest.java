@@ -8,6 +8,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+import com.nimbusds.jose.shaded.json.JSONArray;
+import com.nimbusds.jose.shaded.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,8 +31,10 @@ class JwtAuthenticationConverterTest {
     }
 
     Jwt jwt() {
-        final Map<String, Object> irsResourceAccess = Map.of("Cl20-CX-IRS", Map.of("roles", List.of("view_irs")));
-        final Map<String, Object> claims = Map.of("resource_access", irsResourceAccess, SUB, "sub", "clientId", "clientId");
+        final JSONArray irsRoles = new JSONArray();
+        irsRoles.addAll(List.of("view_irs"));
+        final Map<String, Object> irsResourceAccess = Map.of("Cl20-CX-IRS", new JSONObject(Map.of("roles", irsRoles)));
+        final Map<String, Object> claims = Map.of("resource_access",  new JSONObject(irsResourceAccess), SUB, "sub", "clientId", "clientId");
 
         return new Jwt("token", Instant.now(), Instant.now().plusSeconds(30), Map.of("alg", "none"),
                 claims);
