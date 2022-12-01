@@ -17,23 +17,58 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 class JwtAuthenticationConverterTest {
 
+    private final JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+
     @Test
     void shouldParseJwtTokenAndFindViewIrsRole() {
         // given
-        final Jwt jwt = jwt();
-
-        // when
-        final AbstractAuthenticationToken convert = new JwtAuthenticationConverter().convert(jwt);
-
-        // then
-        assertThat(convert.getAuthorities()).isNotNull();
-        assertThat(convert.getAuthorities()).contains(new SimpleGrantedAuthority("view_irs"));
-    }
-
-    Jwt jwt() {
         final JSONArray irsRoles = new JSONArray();
         irsRoles.addAll(List.of("view_irs"));
         final Map<String, Object> irsResourceAccess = Map.of("Cl20-CX-IRS", new JSONObject(Map.of("roles", irsRoles)));
+        final Jwt jwt = jwt(irsResourceAccess);
+
+        // when
+        final AbstractAuthenticationToken authenticationToken = jwtAuthenticationConverter.convert(jwt);
+
+        // then
+        assertThat(authenticationToken).isNotNull();
+        assertThat(authenticationToken.getAuthorities()).isNotNull();
+        assertThat(authenticationToken.getAuthorities()).contains(new SimpleGrantedAuthority("view_irs"));
+    }
+
+    @Test
+    void shouldParseJwtTokenAndNotFindIrsRolesWhenWrongKey() {
+        // given
+        final Map<String, Object> irsResourceAccess = Map.of("Cl20-CX-IRS-WRONG-KEY", new JSONObject(Map.of("roles", new JSONArray())));
+        final Jwt jwt = jwt(irsResourceAccess);
+
+        // when
+        final AbstractAuthenticationToken authenticationToken = jwtAuthenticationConverter.convert(jwt);
+
+        // then
+        assertThat(authenticationToken).isNotNull();
+        assertThat(authenticationToken.getAuthorities()).isNotNull();
+        assertThat(authenticationToken.getAuthorities()).isEmpty();
+    }
+
+    @Test
+    void shouldParseJwtTokenAndNotFindIrsRolesWhenWrongRolesKey() {
+        // given
+        final JSONArray irsRoles = new JSONArray();
+        irsRoles.addAll(List.of("view_irs"));
+        final Map<String, Object> irsResourceAccess = Map.of("Cl20-CX-IRS", new JSONObject(Map.of("rolesWrong", irsRoles)));
+        final Jwt jwt = jwt(irsResourceAccess);
+
+        // when
+        final AbstractAuthenticationToken authenticationToken = jwtAuthenticationConverter.convert(jwt);
+
+        // then
+        assertThat(authenticationToken).isNotNull();
+        assertThat(authenticationToken.getAuthorities()).isNotNull();
+        assertThat(authenticationToken.getAuthorities()).isEmpty();
+    }
+
+    Jwt jwt(final Map<String, Object> irsResourceAccess) {
         final Map<String, Object> claims = Map.of("resource_access",  new JSONObject(irsResourceAccess), SUB, "sub", "clientId", "clientId");
 
         return new Jwt("token", Instant.now(), Instant.now().plusSeconds(30), Map.of("alg", "none"),

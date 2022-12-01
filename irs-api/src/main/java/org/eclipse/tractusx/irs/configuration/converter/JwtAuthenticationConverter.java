@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.configuration.converter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,9 +50,11 @@ public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthen
 
     @Override
     public AbstractAuthenticationToken convert(final @NotNull Jwt source) {
+        final Collection<GrantedAuthority> grantedAuthorities = jwtGrantedAuthoritiesConverter.convert(source);
+
         final Collection<GrantedAuthority> authorities =
             Stream.concat(
-                jwtGrantedAuthoritiesConverter.convert(source).stream(),
+                grantedAuthorities != null ? grantedAuthorities.stream() : Stream.empty(),
                 irsTokenParser.extractIrsRolesFromToken(source).stream()
             ).collect(Collectors.toSet());
 
@@ -73,7 +76,7 @@ public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthen
          * @param jwt source
          * @return list of roles from token
          */
-        public Collection<SimpleGrantedAuthority> extractIrsRolesFromToken(final Jwt jwt) {
+        public Set<SimpleGrantedAuthority> extractIrsRolesFromToken(final Jwt jwt) {
             return Optional.ofNullable(jwt.getClaim(RESOURCE_ACCESS_CLAIM))
                     .map(JSONObject.class::cast)
                     .map(accesses -> accesses.get(IRS_RESOURCE_ACCESS))
