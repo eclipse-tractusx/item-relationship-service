@@ -13,15 +13,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          ref: helm-environments
 
-      - name: Merge main into helm-environments
+      - name: Merge main into catena-x-environments
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git fetch origin
-          git merge origin/main -m "Merge remote-tracking branch 'origin/main' into helm-environments" --allow-unrelated-histories
+          git checkout main
+          git pull
+          git checkout catena-x-environments
+          git merge main
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
