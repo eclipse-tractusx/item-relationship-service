@@ -90,10 +90,10 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final List<MultiTransferJob> jobs = jobStates.isEmpty() ? jobStore.findAll() : jobStore.findByStates(jobStates);
         return jobs.stream()
                    .map(job -> JobStatusResult.builder()
-                                              .jobId(job.getJob().getJobId())
-                                              .jobState(job.getJob().getJobState())
+                                              .id(job.getJob().getId())
+                                              .state(job.getJob().getState())
                                               .startedOn(job.getJob().getStartedOn())
-                                              .jobCompleted(job.getJob().getJobCompleted())
+                                              .completedOn(job.getJob().getCompletedOn())
                                               .build())
                    .collect(Collectors.toList());
     }
@@ -157,7 +157,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             final var bpns = new ArrayList<Bpn>();
 
             if (jobIsCompleted(multiJob)) {
-                final var container = retrieveJobResultRelationships(multiJob.getJob().getJobId());
+                final var container = retrieveJobResultRelationships(multiJob.getJob().getId());
                 relationships.addAll(container.getRelationships());
                 tombstones.addAll(container.getTombstones());
                 shells.addAll(container.getShells());
@@ -175,7 +175,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             }
 
             log.info("Found job with id {} in status {} with {} relationships, {} tombstones and {} submodels", jobId,
-                    multiJob.getJob().getJobState(), relationships.size(), tombstones.size(), submodels.size());
+                    multiJob.getJob().getState(), relationships.size(), tombstones.size(), submodels.size());
 
             return Jobs.builder()
                        .job(multiJob.getJob()
@@ -203,7 +203,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         final Map<JobState, Long> stateCount = jobs.stream()
                                                    .map(MultiTransferJob::getJob)
-                                                   .map(Job::getJobState)
+                                                   .map(Job::getState)
                                                    .collect(Collectors.groupingBy(Function.identity(),
                                                            Collectors.counting()));
 
@@ -276,7 +276,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     private boolean jobIsCompleted(final MultiTransferJob multiJob) {
-        return multiJob.getJob().getJobState().equals(JobState.COMPLETED);
+        return multiJob.getJob().getState().equals(JobState.COMPLETED);
     }
 
 }

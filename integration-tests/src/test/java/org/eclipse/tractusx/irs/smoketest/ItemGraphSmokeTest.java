@@ -134,8 +134,8 @@ class ItemGraphSmokeTest {
 
         final Job partialJob = getPartialJobs.getJob();
         assertThat(partialJob).isNotNull();
-        assertThat(partialJob.getJobId()).isNotNull();
-        assertThat(partialJob.getJobState()).isIn(JobState.COMPLETED, JobState.RUNNING, JobState.TRANSFERS_FINISHED);
+        assertThat(partialJob.getId()).isNotNull();
+        assertThat(partialJob.getState()).isIn(JobState.COMPLETED, JobState.RUNNING, JobState.TRANSFERS_FINISHED);
 
         final GlobalAssetIdentification globalAsset = partialJob.getGlobalAssetId();
         assertThat(globalAsset.getGlobalAssetId()).isEqualTo(GLOBAL_ASSET_ID);
@@ -153,7 +153,7 @@ class ItemGraphSmokeTest {
                                    .get("/irs/jobs/" + createdJobId)
                                    .as(Jobs.class)
                                    .getJob()
-                                   .getJobState()
+                                   .getState()
                                    .equals(JobState.COMPLETED));
 
         final Response pollResponse = given().spec(authenticationRequest)
@@ -169,7 +169,7 @@ class ItemGraphSmokeTest {
 
         assertThat(completedJobs).isNotNull();
         assertThat(completedJobs.getJob()).isNotNull();
-        assertThat(completedJobs.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
+        assertThat(completedJobs.getJob().getState()).isEqualTo(JobState.COMPLETED);
         assertThat(completedJobs.getRelationships().size()).isNotNegative();
         assertThat(completedJobs.getShells()).isNotEmpty();
         assertThat(completedJobs.getTombstones().size()).isNotNegative();

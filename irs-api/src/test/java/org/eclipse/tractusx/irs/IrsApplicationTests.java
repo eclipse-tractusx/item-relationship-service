@@ -95,7 +95,7 @@ class IrsApplicationTests {
                   .atMost(10, TimeUnit.SECONDS)
                   .pollInterval(100, TimeUnit.MILLISECONDS)
                   .until(() -> jobStore.find(response.getJobId())
-                                       .map(s -> s.getJob().getJobState())
+                                       .map(s -> s.getJob().getState())
                                        .map(state -> state == JobState.COMPLETED)
                                        .orElse(false));
 

@@ -82,8 +82,8 @@ public class PersistentJobStore extends BaseJobStore {
     protected void put(final String jobId, final MultiTransferJob job) {
         final byte[] blob = toBlob(job);
         try {
-            if (!isLastStateSameAsCurrentState(jobId, job.getJob().getJobState())) {
-                meterService.recordJobStateMetric(job.getJob().getJobState());
+            if (!isLastStateSameAsCurrentState(jobId, job.getJob().getState())) {
+                meterService.recordJobStateMetric(job.getJob().getState());
             }
             blobStore.putBlob(toBlobId(jobId), blob);
         } catch (BlobPersistenceException e) {
@@ -125,7 +125,7 @@ public class PersistentJobStore extends BaseJobStore {
 
     private Boolean isLastStateSameAsCurrentState(final String jobId, final JobState state) {
         final Optional<MultiTransferJob> optJob = get(jobId);
-        return optJob.isPresent() && optJob.get().getJob().getJobState() == state;
+        return optJob.isPresent() && optJob.get().getJob().getState() == state;
     }
 
 }

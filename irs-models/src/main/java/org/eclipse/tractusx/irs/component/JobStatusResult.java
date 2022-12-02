@@ -41,12 +41,12 @@ public class JobStatusResult {
     /**
      * Job identifier
      */
-    private UUID jobId;
+    private UUID id;
 
     /**
      * Current state of the job
      */
-    private JobState jobState;
+    private JobState state;
 
     /**
      * Timestamp when the job was started
@@ -58,6 +58,6 @@ public class JobStatusResult {
      * Timestamp when the job was completed
      */
     @Schema(implementation = ZonedDateTime.class)
-    private ZonedDateTime jobCompleted;
+    private ZonedDateTime completedOn;
 
 }

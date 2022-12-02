@@ -53,10 +53,10 @@ public class Job {
 
     @NotNull
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
-    @Schema(description = "JobId of the job.", minLength = INPUT_FIELD_MIN_LENGTH,
+    @Schema(description = "Id of the job.", minLength = INPUT_FIELD_MIN_LENGTH,
             maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class,
             pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i")
-    private UUID jobId;
+    private UUID id;
 
     @NotNull
     @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
@@ -66,7 +66,7 @@ public class Job {
     private GlobalAssetIdentification globalAssetId;
 
     @NotBlank
-    private JobState jobState;
+    private JobState state;
 
     @Schema(description = "Job error details.", implementation = JobErrorDetails.class)
     private JobErrorDetails exception;
@@ -93,7 +93,7 @@ public class Job {
      * Mark the time the was completed
      */
     @Schema(implementation = ZonedDateTime.class)
-    private ZonedDateTime jobCompleted;
+    private ZonedDateTime completedOn;
 
     /**
      * Owner of the job

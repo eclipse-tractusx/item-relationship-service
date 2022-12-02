@@ -83,8 +83,8 @@ class JobProcessingEventListener {
     @SuppressWarnings("PMD.UseConcurrentHashMap")
     private URI buildCallbackUri(final JobProcessingFinishedEvent jobProcessingFinishedEvent) {
         final Map<String, Object> uriVariables = new HashMap<>();
-        uriVariables.put("jobId", jobProcessingFinishedEvent.getJobId());
-        uriVariables.put("jobState", jobProcessingFinishedEvent.getJobState());
+        uriVariables.put("id", jobProcessingFinishedEvent.getJobId());
+        uriVariables.put("state", jobProcessingFinishedEvent.getJobState());
 
         final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(jobProcessingFinishedEvent.getCallbackUrl());
         uriComponentsBuilder.uriVariables(uriVariables);

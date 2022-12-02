@@ -69,7 +69,7 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
     public void complete(final MultiTransferJob job) {
         log.info("Completed retrieval for Job {}", job.getJobIdString());
         final var completedTransfers = job.getCompletedTransfers();
-        final var targetBlobName = job.getJob().getJobId();
+        final var targetBlobName = job.getJob().getId();
         logic.assemblePartialItemGraphBlobs(completedTransfers, targetBlobName.toString());
     }
 
