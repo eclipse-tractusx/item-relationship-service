@@ -102,7 +102,7 @@ irs-helm:
         url: "https://irs-consumer-dataplane.beta.demo.catena-x.net"
     configuration:
       properties: |-
-        edc.oauth.client.id=
+        edc.oauth.client.id=<path:traceability-irs/data/beta/controlplane#dapsClientId>
         edc.oauth.private.key.alias=irs-beta-daps-key
         edc.oauth.provider.jwks.url=https://daps.beta.demo.catena-x.net/.well-known/jwks.json
         edc.oauth.public.key.alias=irs-beta-daps-cert
@@ -152,7 +152,7 @@ irs-helm:
 
     configuration:
       properties: |-
-        edc.oauth.client.id=
+        edc.oauth.client.id=<path:traceability-irs/data/beta/controlplane#dapsClientId>
         edc.oauth.private.key.alias=irs-beta-daps-key
         edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
         edc.oauth.provider.jwks.url=https://daps.beta.demo.catena-x.net/.well-known/jwks.json
