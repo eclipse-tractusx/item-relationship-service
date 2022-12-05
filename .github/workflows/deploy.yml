@@ -1,0 +1,33 @@
+name: Deploy to ArgoCD
+
+on:
+  workflow_dispatch: # Trigger manually
+    input:
+      environment:
+        type: choice
+        options:
+          - 'dev'
+          - 'int'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: clowdhaus/argo-cd-action/@main
+        with:
+          version: 2.4.11
+          command: "app create irs-test-${environment}"
+          options: |
+            --client 
+            --auth-token ${{ secrets.ARGOCD_TOKEN }} 
+            --upsert 
+            --project project-traceability-irs
+            --dest-server https://kubernetes.default.svc
+            --dest-namespace product-traceability-irs
+            --revision HEAD
+            --path charts/irs-environments/${{ input.environment }}
+            --repo https://github.com/catenax-ng/tx-item-relationship-service
+            --config-management-plugin argocd-vault-plugin-helm-args
+            --plugin-env AVP_SECRET=vault-secret
