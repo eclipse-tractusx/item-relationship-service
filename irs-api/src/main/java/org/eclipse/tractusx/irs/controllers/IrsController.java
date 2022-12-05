@@ -54,6 +54,7 @@ import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -112,6 +113,7 @@ public class IrsController {
     @IrsTimer("registerjob")
     @PostMapping("/jobs")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('view_irs')")
     public JobHandle registerJobForGlobalAssetId(final @Valid @RequestBody RegisterJob request) {
         return itemJobService.registerItemJob(request);
     }
@@ -162,6 +164,7 @@ public class IrsController {
     })
     @IrsTimer("getjob")
     @GetMapping("/jobs/{id}")
+    @PreAuthorize("hasAuthority('view_irs')")
     public Jobs getJobById(
             @Parameter(description = "Id of the job.", schema = @Schema(implementation = UUID.class), name = "id",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
@@ -205,6 +208,7 @@ public class IrsController {
     })
     @IrsTimer("canceljob")
     @PutMapping("/jobs/{id}")
+    @PreAuthorize("hasAuthority('view_irs')")
     public Job cancelJobByJobId(
             @Parameter(description = "Id of the job.", schema = @Schema(implementation = UUID.class), name = "id",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
@@ -251,6 +255,7 @@ public class IrsController {
     })
     @IrsTimer("getjobbystate")
     @GetMapping("/jobs")
+    @PreAuthorize("hasAuthority('view_irs')")
     public List<JobStatusResult> getJobsByJobState(
             @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
                                                explode = Explode.FALSE, array = @ArraySchema(
