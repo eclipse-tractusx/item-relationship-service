@@ -1,7 +1,6 @@
 name: Deploy to ArgoCD
 
 on:
-  push:
   workflow_dispatch: # Trigger manually
     input:
       environment:
@@ -16,19 +15,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: clowdhaus/argo-cd-action/@main
-        with:
-          version: 2.4.11
-          command: "app create irs-test-${environment}"
-          options: |
-            --client 
-            --auth-token ${{ secrets.ARGOCD_TOKEN }} 
-            --upsert 
-            --project project-traceability-irs
-            --dest-server https://kubernetes.default.svc
-            --dest-namespace product-traceability-irs
-            --revision HEAD
-            --path charts/irs-environments/${{ github.event.inputs.environment || 'dev' }}
-            --repo https://github.com/catenax-ng/tx-item-relationship-service
-            --config-management-plugin argocd-vault-plugin-helm-args
-            --plugin-env AVP_SECRET=vault-secret
+      - run: |
+          curl 
+          --request POST 
+          -H "Content-Type: application/json"
+          -H "Authorization: Bearer ${{ secrets.ARGOCD_TOKEN }}"
+          --url https://argo.dev.demo.catena-x.net/api/v1/applications
+          --data-binary "@charts/irs-environments/dev/argo-app.json"
