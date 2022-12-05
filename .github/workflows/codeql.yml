@@ -65,6 +65,11 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      - name: Setup Java JDK 17
+        uses: actions/setup-java@v1.3.0
+        with:
+          java-version: 17
+
       - name: Print
         run: |
           mvn -v
@@ -81,7 +86,6 @@ jobs:
       #    uses a compiled language
       - name: Build Package
         run: |
-          echo mvn -v
           mvn clean package --batch-mode -DskipTests
 
       - name: Perform CodeQL Analysis
