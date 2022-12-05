@@ -38,6 +38,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobStatusResult;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
@@ -52,6 +53,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class IrsItemGraphQueryServiceTest {
@@ -132,14 +134,14 @@ class IrsItemGraphQueryServiceTest {
         final MultiTransferJob multiTransferJob = MultiTransferJob.builder().job(generate.fakeJob(JobState.COMPLETED)).build();
         when(jobStore.findByStates(states)).thenReturn(List.of(multiTransferJob));
 
-        final List<JobStatusResult> jobs = testee.getJobsByJobState(states);
+        final PageResult jobs = testee.getJobsByJobState(states, Pageable.ofSize(10));
 
         assertNotNull(jobs);
-        assertThat(jobs).hasSize(1);
-        assertThat(jobs.get(0).getId()).isNotNull();
-        assertThat(jobs.get(0).getState()).isEqualTo(JobState.COMPLETED);
-        assertThat(jobs.get(0).getStartedOn()).isNotNull();
-        assertThat(jobs.get(0).getCompletedOn()).isNotNull();
+        assertThat(jobs.content()).hasSize(1);
+        assertThat(jobs.content().get(0).getId()).isNotNull();
+        assertThat(jobs.content().get(0).getState()).isEqualTo(JobState.COMPLETED);
+        assertThat(jobs.content().get(0).getStartedOn()).isNotNull();
+        assertThat(jobs.content().get(0).getCompletedOn()).isNotNull();
     }
 
 }

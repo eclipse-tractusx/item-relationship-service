@@ -19,30 +19,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.services;
+package org.eclipse.tractusx.irs.component;
 
 import java.util.List;
-import java.util.UUID;
 
-import lombok.NonNull;
-import org.eclipse.tractusx.irs.component.Job;
-import org.eclipse.tractusx.irs.component.JobHandle;
-import org.eclipse.tractusx.irs.component.Jobs;
-import org.eclipse.tractusx.irs.component.PageResult;
-import org.eclipse.tractusx.irs.component.RegisterJob;
-import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.springframework.data.domain.Pageable;
+import org.springframework.beans.support.PagedListHolder;
 
 /**
- * IIrsItemGraphQueryService interface
+ * Paginated results for {@link JobStatusResult} content
  */
-public interface IIrsItemGraphQueryService {
+public record PageResult(
+        List<JobStatusResult> content,
+        Integer pageNumber,
+        Integer pageCount,
+        Integer pageSize,
+        Integer totalElements) {
 
-    JobHandle registerItemJob(@NonNull RegisterJob request);
-
-    PageResult getJobsByJobState(@NonNull List<JobState> jobStates, Pageable pageable);
-
-    Job cancelJobById(@NonNull UUID jobId);
-
-    Jobs getJobForJobId(UUID jobId, boolean includePartialResults);
+    public PageResult(final PagedListHolder<JobStatusResult> pagedListHolder) {
+        this(pagedListHolder.getPageList(), pagedListHolder.getPage(), pagedListHolder.getPageCount(), pagedListHolder.getPageSize(), pagedListHolder.getNrOfElements());
+    }
 }
+

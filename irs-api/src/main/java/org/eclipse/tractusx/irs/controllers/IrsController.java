@@ -45,14 +45,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.IrsApplication;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
-import org.eclipse.tractusx.irs.component.JobStatusResult;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.IrsTimer;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.springdoc.api.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -218,18 +219,18 @@ public class IrsController {
         return this.itemJobService.cancelJobById(id);
     }
 
-    @Operation(description = "Returns jobIds for requested job states.", operationId = "getJobIdsByJobStates",
-               summary = "Returns jobIds for requested job states.",
+    @Operation(description = "Returns paginated jobs with state and execution times.", operationId = "getJobsByJobStates",
+               summary = "Returns paginated jobs with state and execution times.",
                security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
-                                         description = "List of job ids and status for requested job states.",
-                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(
-                                                 schema = @Schema(implementation = JobStatusResult.class), maxItems = Integer.MAX_VALUE),
+                                         description = "Paginated list of jobs with state and execution times for requested job states.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = PageResult.class),
                                                               examples = @ExampleObject(name = "complete",
                                                                                         ref = "#/components/examples/complete-job-list-processing-state"))
                                          }),
-                            @ApiResponse(responseCode = "400", description = "Returns jobIds for requested job states failed.",
+                            @ApiResponse(responseCode = "400", description = "Return jobs for requested job states failed.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -247,23 +248,16 @@ public class IrsController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-403"))
                                          }),
-                            @ApiResponse(responseCode = "404", description = "Job with the requested state not found.",
-                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                                              schema = @Schema(implementation = ErrorResponse.class),
-                                                              examples = @ExampleObject(name = "error",
-                                                                                        ref = "#/components/examples/error-response-404"))
-                                         }),
     })
     @IrsTimer("getjobbystate")
     @GetMapping("/jobs")
     @PreAuthorize("hasAuthority('view_irs')")
-    public List<JobStatusResult> getJobsByJobState(
+    public PageResult getJobsByJobState(
             @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
-                                               explode = Explode.FALSE, array = @ArraySchema(
-                    schema = @Schema(implementation = JobState.class), maxItems = Integer.MAX_VALUE)) @RequestParam(value = "jobStates",
-                                                                                      required = false,
-                                                                                      defaultValue = "") final List<JobState> jobStates) {
-        return itemJobService.getJobsByJobState(jobStates);
+               explode = Explode.FALSE, array = @ArraySchema(schema = @Schema(implementation = JobState.class), maxItems = Integer.MAX_VALUE))
+            @RequestParam(value = "jobStates", required = false, defaultValue = "") final List<JobState> jobStates,
+            @ParameterObject final Pageable pageable) {
+        return itemJobService.getJobsByJobState(jobStates, pageable);
     }
 
 }
