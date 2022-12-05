@@ -78,6 +78,7 @@ jobs:
       #    uses a compiled language
       - name: Build Package
         run: |
+          echo mvn -v
           mvn clean package --batch-mode -DskipTests
 
       - name: Perform CodeQL Analysis

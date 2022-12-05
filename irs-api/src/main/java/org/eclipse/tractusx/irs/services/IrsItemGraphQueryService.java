@@ -249,9 +249,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private ItemContainer retrievePartialResults(final MultiTransferJob multiJob) {
         final List<TransferProcess> completedTransfers = multiJob.getCompletedTransfers();
-        final List<String> transferIds = completedTransfers.stream()
-                                                           .map(TransferProcess::getId)
-                                                           .collect(Collectors.toList());
+        final List<String> transferIds = completedTransfers.stream().map(TransferProcess::getId).toList();
 
         final var relationships = new ArrayList<Relationship>();
         final var tombstones = new ArrayList<Tombstone>();
