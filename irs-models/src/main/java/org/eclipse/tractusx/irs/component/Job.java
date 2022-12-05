@@ -45,7 +45,7 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 @AllArgsConstructor
 @ToString
 @Jacksonized
-@SuppressWarnings("PMD.ShortClassName")
+@SuppressWarnings({"PMD.ShortClassName", "PMD.ShortVariable"})
 public class Job {
 
     private static final int INPUT_FIELD_MIN_LENGTH = 36;

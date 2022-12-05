@@ -36,6 +36,7 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 @Value
 @Jacksonized
 @Builder(toBuilder = true)
+@SuppressWarnings("PMD.ShortVariable")
 public class JobStatusResult {
 
     /**
