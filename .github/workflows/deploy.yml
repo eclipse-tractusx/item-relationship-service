@@ -1,6 +1,7 @@
 name: Deploy to ArgoCD
 
 on:
+  push:
   workflow_dispatch: # Trigger manually
     input:
       environment:
@@ -27,7 +28,7 @@ jobs:
             --dest-server https://kubernetes.default.svc
             --dest-namespace product-traceability-irs
             --revision HEAD
-            --path charts/irs-environments/${{ input.environment }}
+            --path charts/irs-environments/${{ input.environment || 'dev' }}
             --repo https://github.com/catenax-ng/tx-item-relationship-service
             --config-management-plugin argocd-vault-plugin-helm-args
             --plugin-env AVP_SECRET=vault-secret
