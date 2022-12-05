@@ -73,7 +73,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(IrsApplication.API_PREFIX)
 @RequiredArgsConstructor
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals",
-                    "PMD.ExcessiveImports"
+                    "PMD.ExcessiveImports",
+                    "PMD.ShortVariable"
 })
 public class IrsController {
 
@@ -118,20 +119,20 @@ public class IrsController {
         return itemJobService.registerItemJob(request);
     }
 
-    @Operation(description = "Return job with optional item graph result for requested jobId.",
+    @Operation(description = "Return job with optional item graph result for requested id.",
                operationId = "getJobForJobId",
-               summary = "Return job with optional item graph result for requested jobId.",
+               summary = "Return job with optional item graph result for requested id.",
                security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
-                                         description = "Return job with item graph for the requested jobId.",
+                                         description = "Return job with item graph for the requested id.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = Jobs.class),
                                                               examples = @ExampleObject(name = "complete",
                                                                                         ref = "#/components/examples/complete-job-result"))
                                          }),
                             @ApiResponse(responseCode = "206",
-                                         description = "Return job with current processed item graph for the requested jobId.",
+                                         description = "Return job with current processed item graph for the requested id.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = Jobs.class),
                                                               examples = @ExampleObject(name = "complete",
@@ -163,17 +164,17 @@ public class IrsController {
                                          }),
     })
     @IrsTimer("getjob")
-    @GetMapping("/jobs/{jobId}")
+    @GetMapping("/jobs/{id}")
     @PreAuthorize("hasAuthority('view_irs')")
     public Jobs getJobById(
-            @Parameter(description = "JobId of the job.", schema = @Schema(implementation = UUID.class), name = "jobId",
+            @Parameter(description = "Id of the job.", schema = @Schema(implementation = UUID.class), name = "id",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
-                                                                               max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID jobId,
+                                                                               max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID id,
             @Parameter(
                     description = "<true> Return job with current processed item graph. <false> Return job with item graph if job is in state <COMPLETED>, otherwise job.") @Schema(
                     implementation = Boolean.class, defaultValue = "true") @RequestParam(value = "returnUncompletedJob",
                                                                                          required = false) final boolean returnUncompletedJob) {
-        return itemJobService.getJobForJobId(jobId, returnUncompletedJob);
+        return itemJobService.getJobForJobId(id, returnUncompletedJob);
     }
 
     @Operation(description = "Cancel job for requested jobId.", operationId = "cancelJobByJobId",
@@ -207,14 +208,14 @@ public class IrsController {
                                          }),
     })
     @IrsTimer("canceljob")
-    @PutMapping("/jobs/{jobId}")
+    @PutMapping("/jobs/{id}")
     @PreAuthorize("hasAuthority('view_irs')")
     public Job cancelJobByJobId(
-            @Parameter(description = "JobId of the job.", schema = @Schema(implementation = UUID.class), name = "jobId",
+            @Parameter(description = "Id of the job.", schema = @Schema(implementation = UUID.class), name = "id",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
-                                                                               max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID jobId) {
+                                                                               max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID id) {
 
-        return this.itemJobService.cancelJobById(jobId);
+        return this.itemJobService.cancelJobById(id);
     }
 
     @Operation(description = "Returns jobIds for requested job states.", operationId = "getJobIdsByJobStates",

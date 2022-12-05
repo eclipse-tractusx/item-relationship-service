@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - IRS API now requires 'view_irs' resource access inside Keycloak JWT token.
+- New 2.0.0 version of IRS API. Main goal was to remove 'job' prefix from attribute names
+    - change 'jobId' to 'id' in GET calls
+    - change 'jobState' to 'state' in GET calls
+    - change 'jobCompleted' to 'completedOn' in GET calls
+    - change 'jobId' to 'id' and 'jobState' to 'state' in callback URI variables
 
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved

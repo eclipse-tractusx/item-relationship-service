@@ -99,7 +99,7 @@ class IrsFunctionalTest {
                                                      .until(getJobDetails(jobHandle),
                                                              jobs -> jobs.isPresent() && jobs.get()
                                                                                              .getJob()
-                                                                                             .getJobState()
+                                                                                             .getState()
                                                                                              .equals(JobState.COMPLETED));
 
         assertThat(finishedJob).isPresent();

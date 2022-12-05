@@ -43,7 +43,6 @@ import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.RegisterJob;
-import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
@@ -156,8 +155,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
         final String idAsString = String.valueOf(jobId);
         final MultiTransferJob multiTransferJob = MultiTransferJob.builder()
                                                                   .job(Job.builder()
-                                                                          .jobId(UUID.fromString(idAsString))
-                                                                          .jobState(JobState.UNSAVED)
+                                                                          .id(UUID.fromString(idAsString))
+                                                                          .state(JobState.UNSAVED)
                                                                           .exception(JobErrorDetails.builder()
                                                                                                     .errorDetail(
                                                                                                             "Job should be canceled")
@@ -174,7 +173,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         final Optional<MultiTransferJob> fetchedJob = jobStore.find(idAsString);
         assertThat(fetchedJob).isNotEmpty();
 
-        final JobState state = fetchedJob.get().getJob().getJobState();
+        final JobState state = fetchedJob.get().getJob().getState();
         assertThat(state).isEqualTo(JobState.CANCELED);
 
         final ZonedDateTime lastModifiedOn = fetchedJob.get().getJob().getLastModifiedOn();

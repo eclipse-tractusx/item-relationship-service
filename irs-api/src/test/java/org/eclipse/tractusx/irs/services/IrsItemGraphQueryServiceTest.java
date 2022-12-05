@@ -115,7 +115,7 @@ class IrsItemGraphQueryServiceTest {
         final Job canceledJob = testee.cancelJobById(jobId);
 
         assertNotNull(canceledJob);
-        assertEquals(canceledJob.getJobState().name(), JobState.CANCELED.name());
+        assertEquals(canceledJob.getState().name(), JobState.CANCELED.name());
     }
 
     @Test
@@ -136,10 +136,10 @@ class IrsItemGraphQueryServiceTest {
 
         assertNotNull(jobs);
         assertThat(jobs).hasSize(1);
-        assertThat(jobs.get(0).getJobId()).isNotNull();
-        assertThat(jobs.get(0).getJobState()).isEqualTo(JobState.COMPLETED);
+        assertThat(jobs.get(0).getId()).isNotNull();
+        assertThat(jobs.get(0).getState()).isEqualTo(JobState.COMPLETED);
         assertThat(jobs.get(0).getStartedOn()).isNotNull();
-        assertThat(jobs.get(0).getJobCompleted()).isNotNull();
+        assertThat(jobs.get(0).getCompletedOn()).isNotNull();
     }
 
 }

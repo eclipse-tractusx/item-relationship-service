@@ -165,9 +165,9 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         }
         final var job = jobEntry.get();
 
-        if (job.getJob().getJobState() != JobState.RUNNING) {
-            log.info("Ignoring transfer complete event for job {} in state {} ", job.getJob().getJobId(),
-                    job.getJob().getJobState());
+        if (job.getJob().getState() != JobState.RUNNING) {
+            log.info("Ignoring transfer complete event for job {} in state {} ", job.getJob().getId(),
+                    job.getJob().getState());
             return;
         }
 
@@ -258,11 +258,11 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
     private void publishJobProcessingFinishedEventIfFinished(final String jobId) {
         jobStore.find(jobId).ifPresent(job -> {
-            if (job.getJob().getJobState().equals(JobState.COMPLETED) || job.getJob()
-                                                                            .getJobState()
-                                                                            .equals(JobState.ERROR)) {
+            if (job.getJob().getState().equals(JobState.COMPLETED) || job.getJob()
+                                                                         .getState()
+                                                                         .equals(JobState.ERROR)) {
                 applicationEventPublisher.publishEvent(
-                        new JobProcessingFinishedEvent(job.getJobIdString(), job.getJob().getJobState(),
+                        new JobProcessingFinishedEvent(job.getJobIdString(), job.getJob().getState(),
                                 job.getJobParameter().getCallbackUrl()));
             }
         });
@@ -293,11 +293,11 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         }
 
         return Job.builder()
-                  .jobId(UUID.randomUUID())
+                  .id(UUID.randomUUID())
                   .globalAssetId(GlobalAssetIdentification.of(globalAssetId))
                   .createdOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
-                  .jobState(JobState.UNSAVED)
+                  .state(JobState.UNSAVED)
                   .owner(securityHelperService.getClientIdClaim())
                   .jobParameter(jobData)
                   .build();

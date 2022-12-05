@@ -61,7 +61,7 @@ class MultiTransferJobTest {
         MultiTransferJob job2 = generate.job(JobState.INITIAL);
         MultiTransferJob newJob = job2.toBuilder().transitionInProgress().build();
 
-        assertThat(newJob.getJob().getJobState()).isEqualTo(JobState.RUNNING);
+        assertThat(newJob.getJob().getState()).isEqualTo(JobState.RUNNING);
     }
 
 }

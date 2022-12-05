@@ -135,15 +135,15 @@ public class TestMother {
 
     public Job fakeJob(JobState state) {
         return Job.builder()
-                  .jobId(UUID.randomUUID())
+                  .id(UUID.randomUUID())
                   .globalAssetId(GlobalAssetIdentification.of(UUID.randomUUID().toString()))
-                  .jobState(state)
+                  .state(state)
                   .createdOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .startedOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .owner(faker.lorem().characters())
                   .lastModifiedOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .jobParameter(jobParameter())
-                  .jobCompleted(ZonedDateTime.now(ZoneId.of("UTC")))
+                  .completedOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .build();
     }
 

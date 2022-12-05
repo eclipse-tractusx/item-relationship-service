@@ -96,7 +96,7 @@ class JobOrchestratorTest {
         assertThat(job2).usingRecursiveComparison()
                         .ignoringFields("job.job.jobId")
                         .isEqualTo(MultiTransferJob.builder()
-                                                   .job(job2.getJob().toBuilder().jobState(JobState.UNSAVED).build())
+                                                   .job(job2.getJob().toBuilder().state(JobState.UNSAVED).build())
                                                    .build());
     }
 

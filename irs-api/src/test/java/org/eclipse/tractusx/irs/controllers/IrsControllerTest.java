@@ -128,10 +128,10 @@ class IrsControllerTest {
     @WithMockUser(authorities = "view_irs")
     void getJobsByJobState() throws Exception {
         final JobStatusResult returnedJob = JobStatusResult.builder()
-                                                           .jobId(UUID.randomUUID())
-                                                           .jobState(JobState.COMPLETED)
+                                                           .id(UUID.randomUUID())
+                                                           .state(JobState.COMPLETED)
                                                            .startedOn(ZonedDateTime.now(ZoneId.of("UTC")))
-                                                           .jobCompleted(ZonedDateTime.now(ZoneId.of("UTC")))
+                                                           .completedOn(ZonedDateTime.now(ZoneId.of("UTC")))
                                                            .build();
 
         final String returnJobAsString = objectMapper.writeValueAsString(returnedJob);
@@ -141,16 +141,16 @@ class IrsControllerTest {
         this.mockMvc.perform(get("/irs/jobs"))
                     .andExpect(status().isOk())
                     .andExpect(content().string(containsString(returnJobAsString)))
-                    .andExpect(content().string(containsString(returnedJob.getJobId().toString())))
-                    .andExpect(content().string(containsString(returnedJob.getJobState().toString())))
+                    .andExpect(content().string(containsString(returnedJob.getId().toString())))
+                    .andExpect(content().string(containsString(returnedJob.getState().toString())))
                     .andExpect(content().string(containsString(returnedJob.getStartedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))))
-                    .andExpect(content().string(containsString(returnedJob.getJobCompleted().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))));
+                    .andExpect(content().string(containsString(returnedJob.getCompletedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))));
     }
 
     @Test
     @WithMockUser(authorities = "view_irs")
     void cancelJobById() throws Exception {
-        final Job canceledJob = Job.builder().jobId(jobId).jobState(JobState.CANCELED).build();
+        final Job canceledJob = Job.builder().id(jobId).state(JobState.CANCELED).build();
 
         when(this.service.cancelJobById(jobId)).thenReturn(canceledJob);
 

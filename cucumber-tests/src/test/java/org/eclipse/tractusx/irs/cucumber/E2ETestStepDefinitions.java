@@ -151,7 +151,7 @@ public class E2ETestStepDefinitions {
                                    .get("/irs/jobs/" + jobId)
                                    .as(Jobs.class)
                                    .getJob()
-                                   .getJobState()
+                                   .getState()
                                    .equals(JobState.value(status)));
 
         completedJob = given().spec(authProperties.getNewAuthenticationRequestSpecification())

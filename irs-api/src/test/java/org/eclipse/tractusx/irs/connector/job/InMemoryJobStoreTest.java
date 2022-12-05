@@ -36,7 +36,6 @@ import org.eclipse.tractusx.irs.component.JobErrorDetails;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.util.TestMother;
 import net.datafaker.Faker;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
@@ -92,7 +91,7 @@ class InMemoryJobStoreTest {
         sut.addTransferProcess(job.getJobIdString(), processId1);
         refreshJob();
         assertThat(job.getTransferProcessIds()).containsExactly(processId1);
-        assertThat(job.getJob().getJobState()).isEqualTo(JobState.RUNNING);
+        assertThat(job.getJob().getState()).isEqualTo(JobState.RUNNING);
     }
 
     @Test
@@ -154,7 +153,7 @@ class InMemoryJobStoreTest {
 
         // Assert
         refreshJob();
-        assertThat(job.getJob().getJobState()).isEqualTo(JobState.RUNNING);
+        assertThat(job.getJob().getState()).isEqualTo(JobState.RUNNING);
     }
 
     @Test
@@ -170,7 +169,7 @@ class InMemoryJobStoreTest {
 
         // Assert
         refreshJob();
-        assertThat(job.getJob().getJobState()).isEqualTo(JobState.TRANSFERS_FINISHED);
+        assertThat(job.getJob().getState()).isEqualTo(JobState.TRANSFERS_FINISHED);
     }
 
     @Test
@@ -181,7 +180,7 @@ class InMemoryJobStoreTest {
         sut.completeJob(otherJobId, this::doNothing);
         refreshJob();
         // Assert
-        assertThat(job.getJob().getJobState()).isEqualTo(JobState.INITIAL);
+        assertThat(job.getJob().getState()).isEqualTo(JobState.INITIAL);
     }
 
     private void doNothing(final MultiTransferJob multiTransferJob) {
@@ -197,9 +196,9 @@ class InMemoryJobStoreTest {
         // Assert
         refreshJob();
         refreshJob2();
-        assertThat(job.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
-        assertTrue(Optional.ofNullable(job.getJob().getJobCompleted()).isPresent());
-        assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
+        assertThat(job.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertTrue(Optional.ofNullable(job.getJob().getCompletedOn()).isPresent());
+        assertThat(job2.getJob().getState()).isEqualTo(JobState.INITIAL);
     }
 
     @Test
@@ -212,8 +211,8 @@ class InMemoryJobStoreTest {
         sut.completeJob(job.getJobIdString(), this::doNothing);
         // Assert
         refreshJob();
-        assertThat(job.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
-        assertTrue(Optional.ofNullable(job.getJob().getJobCompleted()).isPresent());
+        assertThat(job.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertTrue(Optional.ofNullable(job.getJob().getCompletedOn()).isPresent());
     }
 
     @Test
@@ -225,7 +224,7 @@ class InMemoryJobStoreTest {
         sut.completeJob(job.getJobIdString(), this::doNothing);
         // Assert
         refreshJob();
-        assertThat(job.getJob().getJobState()).isEqualTo(JobState.RUNNING);
+        assertThat(job.getJob().getState()).isEqualTo(JobState.RUNNING);
     }
 
     @Test
@@ -236,7 +235,7 @@ class InMemoryJobStoreTest {
         sut.markJobInError(otherJobId, errorDetail, errorDetail);
         // Assert
         refreshJob();
-        assertThat(job.getJob().getJobState()).isEqualTo(JobState.INITIAL);
+        assertThat(job.getJob().getState()).isEqualTo(JobState.INITIAL);
     }
 
     @Test
@@ -249,11 +248,11 @@ class InMemoryJobStoreTest {
         // Assert
         refreshJob();
         refreshJob2();
-        assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
-        assertThat(job2.getJob().getJobState()).isEqualTo(JobState.INITIAL);
+        assertThat(job.getJob().getState()).isEqualTo(JobState.ERROR);
+        assertThat(job2.getJob().getState()).isEqualTo(JobState.INITIAL);
         assertThat(job.getJob().getException().getErrorDetail()).isEqualTo(errorDetail);
         assertThat(job.getJob().getException().getException()).isEqualTo(errorDetail);
-        assertTrue(Optional.ofNullable(job.getJob().getJobCompleted()).isPresent());
+        assertTrue(Optional.ofNullable(job.getJob().getCompletedOn()).isPresent());
     }
 
     @Test
@@ -266,8 +265,8 @@ class InMemoryJobStoreTest {
         sut.markJobInError(job.getJobIdString(), errorDetail, errorDetail);
         // Assert
         refreshJob();
-        assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
-        assertTrue(Optional.ofNullable(job.getJob().getJobCompleted()).isPresent());
+        assertThat(job.getJob().getState()).isEqualTo(JobState.ERROR);
+        assertTrue(Optional.ofNullable(job.getJob().getCompletedOn()).isPresent());
     }
 
     @Test
@@ -279,8 +278,8 @@ class InMemoryJobStoreTest {
         sut.markJobInError(job.getJobIdString(), errorDetail, errorDetail);
         // Assert
         refreshJob();
-        assertThat(job.getJob().getJobState()).isEqualTo(JobState.ERROR);
-        assertTrue(Optional.ofNullable(job.getJob().getJobCompleted()).isPresent());
+        assertThat(job.getJob().getState()).isEqualTo(JobState.ERROR);
+        assertTrue(Optional.ofNullable(job.getJob().getCompletedOn()).isPresent());
     }
 
     @Test
@@ -296,8 +295,8 @@ class InMemoryJobStoreTest {
                 nowPlusFiveHours);
         // Assert
         assertThat(completedJobs).hasSize(1);
-        assertThat(completedJobs.get(0).getJob().getJobState()).isEqualTo(JobState.COMPLETED);
-        assertTrue(Optional.ofNullable(completedJobs.get(0).getJob().getJobCompleted()).isPresent());
+        assertThat(completedJobs.get(0).getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertTrue(Optional.ofNullable(completedJobs.get(0).getJob().getCompletedOn()).isPresent());
     }
 
     @Test
@@ -312,8 +311,8 @@ class InMemoryJobStoreTest {
                 nowPlusFiveHours);
         // Assert
         assertThat(failedJobs).hasSize(1);
-        assertThat(failedJobs.get(0).getJob().getJobState()).isEqualTo(JobState.ERROR);
-        assertTrue(Optional.ofNullable(failedJobs.get(0).getJob().getJobCompleted()).isPresent());
+        assertThat(failedJobs.get(0).getJob().getState()).isEqualTo(JobState.ERROR);
+        assertTrue(Optional.ofNullable(failedJobs.get(0).getJob().getCompletedOn()).isPresent());
     }
 
     @Test
@@ -331,7 +330,7 @@ class InMemoryJobStoreTest {
         sut.create(job);
         final Optional<MultiTransferJob> multiTransferJob = sut.get(job.getJobIdString());
         assertThat(multiTransferJob).isPresent();
-        assertThat(multiTransferJob.get().getJob().getJobState()).isEqualTo(JobState.INITIAL);
+        assertThat(multiTransferJob.get().getJob().getState()).isEqualTo(JobState.INITIAL);
     }
 
     @Test
@@ -340,7 +339,7 @@ class InMemoryJobStoreTest {
         sut.addTransferProcess(job.getJobIdString(), processId1);
         final Optional<MultiTransferJob> multiTransferJob = sut.get(job.getJobIdString());
         assertThat(multiTransferJob).isPresent();
-        assertThat(multiTransferJob.get().getJob().getJobState()).isEqualTo(JobState.RUNNING);
+        assertThat(multiTransferJob.get().getJob().getState()).isEqualTo(JobState.RUNNING);
     }
 
     @Test
@@ -392,10 +391,10 @@ class InMemoryJobStoreTest {
         final MultiTransferJob storedJob = multiTransferJob.get();
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(storedJob.getJobIdString()).isEqualTo(job.getJobIdString());
-            softly.assertThat(storedJob.getJob().getJobState()).isEqualTo(JobState.INITIAL);
+            softly.assertThat(storedJob.getJob().getState()).isEqualTo(JobState.INITIAL);
             softly.assertThat(storedJob.getJob().getException().getErrorDetail())
                   .isEqualTo(job.getJob().getException().getErrorDetail());
-            softly.assertThat(storedJob.getJob().getJobCompleted()).isEqualTo(job.getJob().getJobCompleted());
+            softly.assertThat(storedJob.getJob().getCompletedOn()).isEqualTo(job.getJob().getCompletedOn());
             softly.assertThat(storedJob.getJobParameter()).isEqualTo(job.getJobParameter());
             softly.assertThat(storedJob.getCompletedTransfers()).isEqualTo(job.getCompletedTransfers());
         });
@@ -405,9 +404,9 @@ class InMemoryJobStoreTest {
     private MultiTransferJob createJob(final String jobId) {
         return MultiTransferJob.builder()
                                .job(Job.builder()
-                                       .jobId(UUID.fromString(jobId))
-                                       .jobState(JobState.UNSAVED)
-                                       .jobCompleted(ZonedDateTime.now())
+                                       .id(UUID.fromString(jobId))
+                                       .state(JobState.UNSAVED)
+                                       .completedOn(ZonedDateTime.now())
                                        .exception(JobErrorDetails.builder()
                                                                  .exception("SomeError")
                                                                  .exceptionDate(ZonedDateTime.now())
@@ -434,7 +433,7 @@ class InMemoryJobStoreTest {
         final MultiTransferJob storedJob = multiTransferJob.get();
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(storedJob.getJobIdString()).isEqualTo(job.getJobIdString());
-            softly.assertThat(storedJob.getJob().getJobState()).isEqualTo(JobState.COMPLETED);
+            softly.assertThat(storedJob.getJob().getState()).isEqualTo(JobState.COMPLETED);
             softly.assertThat(storedJob.getJob().getException().getErrorDetail())
                   .isEqualTo(job.getJob().getException().getErrorDetail());
             softly.assertThat(storedJob.getJobParameter()).isEqualTo(job.getJobParameter());
@@ -461,7 +460,7 @@ class InMemoryJobStoreTest {
 
         // Act
         sut.addTransferProcess(job.getJobId().toString(), processId1);
-        MultiTransferJob job2 = sut.find(job.getJob().getJobId().toString()).get();
+        MultiTransferJob job2 = sut.find(job.getJob().getId().toString()).get();
 
         // Assert
         assertThat(job2.getJob().getLastModifiedOn()).isAfter(job1.getJob().getLastModifiedOn());
