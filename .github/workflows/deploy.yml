@@ -15,10 +15,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: |
-          curl 
+      - run: >
+          curl
+          --request DELETE 
+          -H "Content-Type: application/json"
+          -H "Authorization: Bearer ${{ secrets.ARGOCD_TOKEN }}"
+          --url https://argo.dev.demo.catena-x.net/api/v1/applications/irs-${{ github.event.inputs.environment || dev }}
+
+      - run: >
+          curl
           --request POST 
           -H "Content-Type: application/json"
           -H "Authorization: Bearer ${{ secrets.ARGOCD_TOKEN }}"
           --url https://argo.dev.demo.catena-x.net/api/v1/applications
-          --data-binary "@charts/irs-environments/dev/argo-app.json"
+          --data-binary "@charts/irs-environments/${{ github.event.inputs.environment || dev }}/argo-app.json"

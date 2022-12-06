@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "name": "irs-int"
+  },
+  "spec": {
+    "destination": {
+      "namespace": "product-traceability-irs",
+      "server": "https://kubernetes.default.svc"
+    },
+    "project": "project-traceability-irs",
+    "source": {
+      "plugin": {
+        "name": "argocd-vault-plugin-helm-args",
+        "env": [
+          {
+            "name": "AVP_SECRET",
+            "value": "vault-secret"
+          },
+          {
+            "name": "helm_args",
+            "value": "-f values.yaml"
+          }
+        ]
+      },
+      "path": "charts/irs-environments/int",
+      "repoURL": "https://github.com/catenax-ng/tx-item-relationship-service",
+      "targetRevision": "catena-x-environments"
+    },
+    "syncPolicy": {
+      "automated": {
+        "allowEmpty": true,
+        "prune": true,
+        "selfHeal": true
+      }
+    }
+  }
+}
