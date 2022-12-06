@@ -80,7 +80,6 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @MockBean
     private JsonValidatorService jsonValidatorService;
 
-
     @Test
     void registerJobWithoutDepthShouldBuildFullTree() {
         // given

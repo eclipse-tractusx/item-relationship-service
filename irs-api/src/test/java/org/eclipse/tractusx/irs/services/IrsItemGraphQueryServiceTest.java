@@ -36,7 +36,6 @@ import java.util.UUID;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.Job;
-import org.eclipse.tractusx.irs.component.JobStatusResult;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.Relationship;
@@ -129,7 +128,7 @@ class IrsItemGraphQueryServiceTest {
     }
 
     @Test
-    void shouldReturnFoundJob() {
+    void shouldReturnFoundJobs() {
         final List<JobState> states = List.of(JobState.COMPLETED);
         final MultiTransferJob multiTransferJob = MultiTransferJob.builder().job(generate.fakeJob(JobState.COMPLETED)).build();
         when(jobStore.findByStates(states)).thenReturn(List.of(multiTransferJob));
@@ -142,6 +141,10 @@ class IrsItemGraphQueryServiceTest {
         assertThat(jobs.content().get(0).getState()).isEqualTo(JobState.COMPLETED);
         assertThat(jobs.content().get(0).getStartedOn()).isNotNull();
         assertThat(jobs.content().get(0).getCompletedOn()).isNotNull();
+        assertThat(jobs.pageSize()).isEqualTo(10);
+        assertThat(jobs.pageNumber()).isEqualTo(0);
+        assertThat(jobs.pageCount()).isEqualTo(1);
+        assertThat(jobs.totalElements()).isEqualTo(1);
     }
 
 }
