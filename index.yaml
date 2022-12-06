@@ -107,7 +107,7 @@ entries:
     name: irs-helm
     type: application
     urls:
-    - https://github.com/catenax-ng/tx-item-relationship-service/releases/download/irs-helm-2.1.0/irs-helm-2.1.0.tgz
+    - https://github.com/eclipse-tractusx/item-relationship-service/releases/download/irs-helm-2.1.0/irs-helm-2.1.0.tgz
     version: 2.1.0      
   - apiVersion: v2
     appVersion: 1.2.0
