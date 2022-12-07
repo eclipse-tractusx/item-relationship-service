@@ -34,14 +34,14 @@ jobs:
           curl
           --request DELETE 
           -H "Content-Type: application/json"
-          -H "Authorization: Bearer $ARGOCD_TOKEN"
-          --url "https://argo.$ARGOCD_ENV.demo.catena-x.net/api/v1/applications/irs-$ARGOCD_ENV"
+          -H "Authorization: Bearer ${{ env.ARGOCD_TOKEN }}"
+          --url "https://argo.${{ env.ARGOCD_ENV }}.demo.catena-x.net/api/v1/applications/irs-${{ env.ARGOCD_ENV }}"
 
       - name: Deploy new app
         run: >
           curl
           --request POST 
           -H "Content-Type: application/json"
-          -H "Authorization: Bearer $ARGOCD_TOKEN"
-          --url "https://argo.$ARGOCD_ENV.demo.catena-x.net/api/v1/applications"
-          --data-binary "@charts/irs-environments/$ARGOCD_ENV/argo-app.json"
+          -H "Authorization: Bearer ${{ env.ARGOCD_TOKEN }}"
+          --url "https://argo.${{ env.ARGOCD_ENV }}.demo.catena-x.net/api/v1/applications"
+          --data-binary "@charts/irs-environments/${{ env.ARGOCD_ENV }}/argo-app.json"
