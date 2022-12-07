@@ -1,6 +1,7 @@
 name: Deploy to ArgoCD
 
 on:
+  push:
   workflow_dispatch: # Trigger manually
     input:
       environment:
@@ -15,17 +16,32 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: >
+      - name: Set environment
+        run: |
+          echo "ARGOCD_ENV=${{ github.event.inputs.environment || dev }}" >> $GITHUB_ENV
+
+      - name: Set secrets for DEV
+        if: github.event.inputs.environment == 'dev'
+        run: |
+          echo "ARGOCD_TOKEN=${{ secrets.ARGOCD_TOKEN_DEV }}" >> $GITHUB_ENV
+
+      - name: Set secrets for INT
+        if: github.event.inputs.environment == 'int'
+        run: echo "ARGOCD_TOKEN=${{ secrets.ARGOCD_TOKEN_INT }}" >> $GITHUB_ENV
+
+      - name: Remove running deployment
+        run: >
           curl
           --request DELETE 
           -H "Content-Type: application/json"
-          -H "Authorization: Bearer ${{ secrets.ARGOCD_TOKEN }}"
-          --url https://argo.dev.demo.catena-x.net/api/v1/applications/irs-${{ github.event.inputs.environment || dev }}
+          -H "Authorization: Bearer $ARGOCD_TOKEN"
+          --url "https://argo.$ARGOCD_ENV.demo.catena-x.net/api/v1/applications/irs-$ARGOCD_ENV"
 
-      - run: >
+      - name: Deploy new app
+        run: >
           curl
           --request POST 
           -H "Content-Type: application/json"
-          -H "Authorization: Bearer ${{ secrets.ARGOCD_TOKEN }}"
-          --url https://argo.dev.demo.catena-x.net/api/v1/applications
-          --data-binary "@charts/irs-environments/${{ github.event.inputs.environment || dev }}/argo-app.json"
+          -H "Authorization: Bearer $ARGOCD_TOKEN"
+          --url "https://argo.$ARGOCD_ENV.demo.catena-x.net/api/v1/applications"
+          --data-binary "@charts/irs-environments/$ARGOCD_ENV/argo-app.json"
