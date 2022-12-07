@@ -21,7 +21,7 @@ jobs:
           echo "ARGOCD_ENV=${{ github.event.inputs.environment || 'dev' }}" >> $GITHUB_ENV
 
       - name: Set secrets for DEV
-        if: github.event.inputs.environment == 'dev'
+        if: github.event.inputs.environment == null || github.event.inputs.environment == 'dev'
         run: |
           echo "ARGOCD_TOKEN=${{ secrets.ARGOCD_TOKEN_DEV }}" >> $GITHUB_ENV
 
