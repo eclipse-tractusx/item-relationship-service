@@ -39,6 +39,7 @@ import org.eclipse.tractusx.irs.component.JobStatusResult;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.MeasurementUnit;
+import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.ProcessingError;
 import org.eclipse.tractusx.irs.component.Quantity;
 import org.eclipse.tractusx.irs.component.Relationship;
@@ -58,6 +59,7 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -109,12 +111,12 @@ public class OpenApiExamples {
     }
 
     private Example createJobListProcessingState() {
-        return toExample(List.of(JobStatusResult.builder()
-                                                .id(UUID.fromString(JOB_HANDLE_ID_1))
-                                                .state(JobState.COMPLETED)
-                                                .startedOn(EXAMPLE_ZONED_DATETIME)
-                                                .completedOn(EXAMPLE_ZONED_DATETIME)
-                                                .build()));
+        return toExample(new PageResult(new PagedListHolder<>(List.of(JobStatusResult.builder()
+                               .id(UUID.fromString(JOB_HANDLE_ID_1))
+                               .state(JobState.COMPLETED)
+                               .startedOn(EXAMPLE_ZONED_DATETIME)
+                               .completedOn(EXAMPLE_ZONED_DATETIME)
+                               .build()))));
     }
 
     private JobHandle createJobHandle(final String name) {

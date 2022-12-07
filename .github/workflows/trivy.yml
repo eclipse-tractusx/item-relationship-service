@@ -34,7 +34,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: "config"
-          # ignore-unfixed: true
+          ignore-unfixed: true
           exit-code: "1"
           hide-progress: false
           format: "sarif"

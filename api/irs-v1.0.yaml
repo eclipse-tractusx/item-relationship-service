@@ -12,8 +12,8 @@ security:
 paths:
   /irs/jobs:
     get:
-      description: Returns jobIds for requested job states.
-      operationId: getJobIdsByJobStates
+      description: Returns paginated jobs with state and execution times.
+      operationId: getJobsByJobStates
       parameters:
         - description: Requested job states.
           explode: false
@@ -33,6 +33,31 @@ paths:
                 - CANCELED
                 - ERROR
             maxItems: 2147483647
+        - description: Zero-based page index (0..N)
+          in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - description: The size of the page to be returned
+          in: query
+          name: size
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+        - description: "Sorting criteria in the format: property,(asc|desc). Default\
+            \ sort order is ascending. Multiple sort criteria are supported."
+          in: query
+          name: sort
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         "200":
           content:
@@ -41,11 +66,9 @@ paths:
                 complete:
                   $ref: '#/components/examples/complete-job-list-processing-state'
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/JobStatusResult'
-                maxItems: 2147483647
-          description: List of job ids and status for requested job states.
+                $ref: '#/components/schemas/PageResult'
+          description: Paginated list of jobs with state and execution times for requested
+            job states.
         "400":
           content:
             application/json:
@@ -54,7 +77,7 @@ paths:
                   $ref: '#/components/examples/error-response-400'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Returns jobIds for requested job states failed.
+          description: Return jobs for requested job states failed.
         "401":
           content:
             application/json:
@@ -73,19 +96,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorized failed.
-        "404":
-          content:
-            application/json:
-              examples:
-                error:
-                  $ref: '#/components/examples/error-response-404'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: Job with the requested state not found.
       security:
       - oAuth2:
         - profile email
-      summary: Returns jobIds for requested job states.
+      summary: Returns paginated jobs with state and execution times.
       tags:
         - Item Relationship Service
     post:
@@ -324,10 +338,15 @@ components:
         tombstones: [ ]
     complete-job-list-processing-state:
       value:
-      - completedOn: 2022-02-03T14:48:54.709Z
-        id: 6c311d29-5753-46d4-b32c-19b918ea93b0
-        startedOn: 2022-02-03T14:48:54.709Z
-        state: COMPLETED
+        content:
+          - completedOn: 2022-02-03T14:48:54.709Z
+            id: 6c311d29-5753-46d4-b32c-19b918ea93b0
+            startedOn: 2022-02-03T14:48:54.709Z
+            state: COMPLETED
+        pageCount: 1
+        pageNumber: 0
+        pageSize: 10
+        totalElements: 1
     complete-job-result:
       value:
         bpns:
@@ -1050,6 +1069,26 @@ components:
           type: string
         lexicalValue:
           type: string
+    PageResult:
+      type: object
+      additionalProperties: false
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobStatusResult'
+        pageCount:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int32
     ProcessingError:
       type: object
       additionalProperties: false

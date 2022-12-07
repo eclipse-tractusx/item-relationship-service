@@ -90,7 +90,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+        </dependency>
 
         <!-- ############################################################################ -->
         <!-- MANUAL SPRING UPDATES - CHECK WHEN UPDATING SPRING BOOT IF NECESSARY ANYMORE -->
