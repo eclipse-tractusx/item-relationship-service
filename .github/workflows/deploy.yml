@@ -11,7 +11,7 @@ on:
           - 'int'
 
 jobs:
-  test:
+  redeploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -35,7 +35,7 @@ jobs:
           --request DELETE 
           -H "Content-Type: application/json"
           -H "Authorization: Bearer ${{ env.ARGOCD_TOKEN }}"
-          --url "https://argo.${{ env.ARGOCD_ENV }}.demo.catena-x.net/api/v1/applications/irs-${{ env.ARGOCD_ENV }}"
+          --url "https://argo.${{ env.ARGOCD_ENV }}.demo.catena-x.net/api/v1/applications/irs-${{ env.ARGOCD_ENV }}?cascade=true"
 
       - name: Deploy new app
         run: >
