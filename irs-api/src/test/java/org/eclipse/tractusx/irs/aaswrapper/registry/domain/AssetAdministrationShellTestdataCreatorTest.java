@@ -45,7 +45,7 @@ class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigura
 
     @Test
     void shouldReturnAssetAdministrationShellDescriptorWhenRequestingWithCatenaXId() {
-        final String catenaXId = "urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b";
+        final String catenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
 
         final AssetAdministrationShellDescriptor aasDescriptor = assetAdministrationShellTestdataCreator.createDummyAssetAdministrationShellDescriptorForId(
                 catenaXId);
@@ -57,7 +57,7 @@ class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigura
                                                     .getProtocolInformation()
                                                     .getEndpointAddress();
 
-        assertThat(aasDescriptor.getSubmodelDescriptors()).hasSize(3);
+        assertThat(aasDescriptor.getSubmodelDescriptors()).isNotEmpty();
         assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getEndpoints()).isNotNull();
         assertThat(endpointAddress).isEqualTo(catenaXId + "_assemblyPartRelationship");
 

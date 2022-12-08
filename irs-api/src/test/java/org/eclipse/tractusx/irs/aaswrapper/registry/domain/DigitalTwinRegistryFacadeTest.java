@@ -67,16 +67,16 @@ class DigitalTwinRegistryFacadeTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() {
-        final String catenaXId = "urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b";
+        final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
 
         final AssetAdministrationShellDescriptor aasShellDescriptor = digitalTwinRegistryFacade.getAAShellDescriptor(
-                catenaXId);
+                existingCatenaXId);
         final List<SubmodelDescriptor> shellEndpoints = aasShellDescriptor.getSubmodelDescriptors();
 
-        assertThat(shellEndpoints).isNotNull().hasSize(3);
+        assertThat(shellEndpoints).isNotNull().isNotEmpty();
         final Endpoint endpoint = shellEndpoints.get(0).getEndpoints().get(0);
 
-        assertThat(endpoint.getProtocolInformation().getEndpointAddress()).contains(catenaXId);
+        assertThat(endpoint.getProtocolInformation().getEndpointAddress()).contains(existingCatenaXId);
         assertThat(shellEndpoints.get(0).getSemanticId().getValue()).containsExactly(assemblyPartRelationshipURN);
         assertThat(shellEndpoints.get(1).getSemanticId().getValue()).containsExactly(serialPartTypizationURN);
     }
@@ -144,11 +144,11 @@ class DigitalTwinRegistryFacadeTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldReturnSubmodelEndpointsWhenFilteringByAspectType() {
-        final String catenaXId = "urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b";
+        final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
 
-        final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryFacade.getAAShellDescriptor(catenaXId).getSubmodelDescriptors();
+        final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryFacade.getAAShellDescriptor(existingCatenaXId).getSubmodelDescriptors();
 
-        assertThat(shellEndpoints).isNotNull().hasSize(3);
+        assertThat(shellEndpoints).isNotNull().isNotEmpty();
         final SubmodelDescriptor endpoint = shellEndpoints.get(0);
 
         assertThat(endpoint.getSemanticId().getValue()).containsExactly(assemblyPartRelationshipURN);

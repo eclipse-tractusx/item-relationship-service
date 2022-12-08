@@ -154,23 +154,15 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndAssemblyPartRelationship() throws Exception {
-        final String catenaXId = "urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b";
-        prepareTestdata(catenaXId, "_assemblyPartRelationship");
+        final String existingCatenaXId = "urn:uuid:15090ed9-0b5c-4761-ad71-c085cf84fa63";
+        prepareTestdata(existingCatenaXId, "_assemblyPartRelationship");
 
-        final List<Relationship> submodelResponse = testee.getRelationships("http://localhost/" + catenaXId + "/submodel",
+        final List<Relationship> submodelResponse = testee.getRelationships("http://localhost/" + existingCatenaXId + "/submodel",
                 RelationshipAspect.AssemblyPartRelationship).get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isNotEmpty();
-        assertThat(submodelResponse.get(0).getCatenaXId().getGlobalAssetId()).isEqualTo(catenaXId);
+        assertThat(submodelResponse.get(0).getCatenaXId().getGlobalAssetId()).isEqualTo(existingCatenaXId);
         assertThat(submodelResponse).hasSize(32);
-
-        final List<String> childIds = submodelResponse.stream()
-                                                      .map(Relationship::getLinkedItem)
-                                                      .map(LinkedItem::getChildCatenaXId)
-                                                      .map(GlobalAssetIdentification::getGlobalAssetId)
-                                                      .collect(Collectors.toList());
-        assertThat(childIds).containsAnyOf("urn:uuid:0d8da814-fcee-4b5e-b251-fc400da32399",
-                "urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873", "urn:uuid:0d039178-90a1-4329-843e-04ca0475a56e");
     }
 
     @Test
@@ -217,10 +209,10 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldReturnRawSerialPartTypizationWhenExisting() throws Exception {
-        final String catenaXId = "urn:uuid:7eb7daf6-0c54-455b-aab7-bd5ca252f6ee";
-        prepareTestdata(catenaXId, "_serialPartTypization");
+        final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
+        prepareTestdata(existingCatenaXId, "_serialPartTypization");
 
-        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/" + catenaXId + "/submodel")
+        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/" + existingCatenaXId + "/submodel")
                                               .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).startsWith(
