@@ -29,19 +29,11 @@ jobs:
         if: github.event.inputs.environment == 'int'
         run: echo "ARGOCD_TOKEN=${{ secrets.ARGOCD_TOKEN_INT }}" >> $GITHUB_ENV
 
-      - name: Remove running deployment
-        run: >
-          curl
-          --request DELETE 
-          -H "Content-Type: application/json"
-          -H "Authorization: Bearer ${{ env.ARGOCD_TOKEN }}"
-          --url "https://argo.${{ env.ARGOCD_ENV }}.demo.catena-x.net/api/v1/applications/irs-${{ env.ARGOCD_ENV }}?cascade=true"
-
       - name: Deploy new app
         run: >
           curl
           --request POST 
           -H "Content-Type: application/json"
           -H "Authorization: Bearer ${{ env.ARGOCD_TOKEN }}"
-          --url "https://argo.${{ env.ARGOCD_ENV }}.demo.catena-x.net/api/v1/applications"
+          --url "https://argo.${{ env.ARGOCD_ENV }}.demo.catena-x.net/api/v1/applications?upsert=true"
           --data-binary "@charts/irs-environments/${{ env.ARGOCD_ENV }}/argo-app.json"
