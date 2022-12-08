@@ -37,3 +37,31 @@ jobs:
           -H "Authorization: Bearer ${{ env.ARGOCD_TOKEN }}"
           --url "https://argo.${{ env.ARGOCD_ENV }}.demo.catena-x.net/api/v1/applications?upsert=true"
           --data-binary "@charts/irs-environments/${{ env.ARGOCD_ENV }}/argo-app.json"
+          -sSf
+          
+
+      - name: Poll for successful deployment
+        run: |
+          interval_in_seconds=5
+          build_url=https://argo.${{ env.ARGOCD_ENV }}.demo.catena-x.net/api/v1/applications/irs-${{ env.ARGOCD_ENV }}
+          status_path=".status.health.status"
+          NEXT_WAIT_TIME=0
+          sleep $interval_in_seconds;
+
+          printf "\nPolling '${build_url%\?*}' every $interval_in_seconds seconds, until 'Healthy'\n"
+          until [ $NEXT_WAIT_TIME -eq 20 ];
+          do
+            status=$(curl $build_url -H "Authorization: Bearer ${{ env.ARGOCD_TOKEN }}" -s | jq $status_path);
+            printf "\r$(date +%H:%M:%S): $status";
+            if [[ "$status" == "\"Healthy\"" || "$status" == "\"failed\"" ]]; then
+              if [[ "$status" == "\"failed\"" ]]; then
+                printf "\nDeployment failed!\n"
+              else
+                printf "\nDeployment successful!\n";
+              fi
+              break;
+            fi;
+            NEXT_WAIT_TIME=$((NEXT_WAIT_TIME+1));
+            sleep $interval_in_seconds;
+          done
+          [ $NEXT_WAIT_TIME -lt 20 ]
