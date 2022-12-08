@@ -1,7 +1,6 @@
 name: Deploy to ArgoCD
 
 on:
-  push:
   workflow_dispatch: # Trigger manually
     input:
       environment:
