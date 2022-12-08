@@ -53,9 +53,10 @@ jobs:
           do
             status=$(curl $build_url -H "Authorization: Bearer ${{ env.ARGOCD_TOKEN }}" -s | jq $status_path);
             printf "\r$(date +%H:%M:%S): $status";
-            if [[ "$status" == "\"Healthy\"" || "$status" == "\"failed\"" ]]; then
-              if [[ "$status" == "\"failed\"" ]]; then
+            if [[ "$status" == "\"Healthy\"" || "$status" == "\"Degraded\"" ]]; then
+              if [[ "$status" == "\"Degraded\"" ]]; then
                 printf "\nDeployment failed!\n"
+                exit 1
               else
                 printf "\nDeployment successful!\n";
               fi
