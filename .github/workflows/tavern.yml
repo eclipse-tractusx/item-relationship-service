@@ -43,7 +43,7 @@ jobs:
           KEYCLOAK_HOST: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI }}
           KEYCLOAK_CLIENT_ID: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_ID }}
           KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_SECRET }}
-          GLOBAL_ASSET_ID: ${{ github.event.inputs.global-asset-id || 'urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0' }}
+          GLOBAL_ASSET_ID: ${{ github.event.inputs.global-asset-id || 'urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454' }}
         run: |
           python -m pytest api-tests/irs-api-tests.tavern.yaml --junitxml=tavern-results.xml
 
