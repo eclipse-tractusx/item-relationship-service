@@ -120,7 +120,7 @@ paths:
                   $ref: '#/components/examples/job-handle'
               schema:
                 $ref: '#/components/schemas/JobHandle'
-          description: Returns jobId of registered job.
+          description: Returns id of registered job.
         "400":
           content:
             application/json:
@@ -510,7 +510,7 @@ components:
         tombstones: [ ]
     job-handle:
       value:
-        jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
+        id: 6c311d29-5753-46d4-b32c-19b918ea93b0
     job-result-without-uncompleted-result-tree:
       value:
         bpns:
@@ -906,10 +906,10 @@ components:
       type: object
       additionalProperties: false
       properties:
-        jobId:
+        id:
           type: string
           format: uuid
-          description: JobId of the job.
+          description: Id of the job.
           maxLength: 36
           minLength: 36
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"

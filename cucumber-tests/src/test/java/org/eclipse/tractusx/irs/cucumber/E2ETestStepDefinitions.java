@@ -136,8 +136,8 @@ public class E2ETestStepDefinitions {
                                                     .extract()
                                                     .as(JobHandle.class);
 
-        assertThat(createdJobResponse.getJobId()).isNotNull();
-        jobId = createdJobResponse.getJobId();
+        assertThat(createdJobResponse.getId()).isNotNull();
+        jobId = createdJobResponse.getId();
     }
 
     @Then("I check, if the job has status {string} within {int} minutes")

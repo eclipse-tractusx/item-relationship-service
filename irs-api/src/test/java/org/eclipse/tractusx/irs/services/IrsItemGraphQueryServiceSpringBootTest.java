@@ -93,7 +93,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         given().ignoreException(EntityNotFoundException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
-               .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFullTree));
+               .until(() -> getRelationshipsSize(registeredJob.getId()), equalTo(expectedRelationshipsSizeFullTree));
     }
 
     @Test
@@ -111,7 +111,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         given().ignoreException(EntityNotFoundException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
-               .until(() -> getSubmodelsSize(registeredJob.getJobId()), equalTo(expectedSubmodelsSizeFullTree));
+               .until(() -> getSubmodelsSize(registeredJob.getId()), equalTo(expectedSubmodelsSizeFullTree));
     }
 
     @Test
@@ -129,7 +129,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         given().ignoreException(EntityNotFoundException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
-               .until(() -> getTombstonesSize(registeredJob.getJobId()), equalTo(expectedTombstonesSizeFullTree));
+               .until(() -> getTombstonesSize(registeredJob.getId()), equalTo(expectedTombstonesSizeFullTree));
     }
 
     @Test
@@ -145,7 +145,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         given().ignoreException(EntityNotFoundException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
-               .until(() -> getRelationshipsSize(registeredJob.getJobId()),
+               .until(() -> getRelationshipsSize(registeredJob.getId()),
                        equalTo(expectedRelationshipsSizeFirstDepth));
     }
 

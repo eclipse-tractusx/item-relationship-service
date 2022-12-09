@@ -86,7 +86,7 @@ public class IrsController {
                security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Item Relationship Service" },
                description = "Register an IRS job to retrieve an item graph for given {globalAssetId}.")
-    @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Returns jobId of registered job.",
+    @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Returns id of registered job.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = JobHandle.class),
                                                               examples = { @ExampleObject(name = "complete",

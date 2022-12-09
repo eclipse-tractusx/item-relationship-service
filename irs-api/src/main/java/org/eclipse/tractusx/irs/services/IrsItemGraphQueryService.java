@@ -136,7 +136,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
             final String jobId = jobInitiateResponse.getJobId();
-            return JobHandle.builder().jobId(UUID.fromString(jobId)).build();
+            return JobHandle.builder().id(UUID.fromString(jobId)).build();
         } else {
             throw new IllegalArgumentException("Could not start job: " + jobInitiateResponse.getError());
         }
