@@ -14,7 +14,7 @@ on:
       global-asset-id:
         type: string
         description: Global Asset ID to use for the tests
-        default: 'urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0'
+        default: 'urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454'
         required: true
   schedule:
     - cron: '0 1 * * 1-5' # At 01:00 on every day-of-week from Monday through Friday.
