@@ -116,7 +116,7 @@ class ItemGraphSmokeTest {
 
         assertThat(createdJobResponse).isNotNull();
 
-        final UUID createdJobId = createdJobResponse.getJobId();
+        final UUID createdJobId = createdJobResponse.getId();
         assertThat(createdJobId).isNotNull();
 
         // Integration test Scenario 2 STEP 2

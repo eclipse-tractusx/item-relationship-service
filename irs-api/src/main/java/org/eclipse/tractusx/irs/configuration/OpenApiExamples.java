@@ -120,7 +120,7 @@ public class OpenApiExamples {
     }
 
     private JobHandle createJobHandle(final String name) {
-        return JobHandle.builder().jobId(UUID.fromString(name)).build();
+        return JobHandle.builder().id(UUID.fromString(name)).build();
     }
 
     private Example createFailedJobResult() {

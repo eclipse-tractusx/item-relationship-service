@@ -91,7 +91,7 @@ class IrsControllerTest {
     @WithMockUser(authorities = "view_irs")
     void initiateJobForGlobalAssetId() throws Exception {
         final UUID returnedJob = UUID.randomUUID();
-        when(service.registerItemJob(any())).thenReturn(JobHandle.builder().jobId(returnedJob).build());
+        when(service.registerItemJob(any())).thenReturn(JobHandle.builder().id(returnedJob).build());
 
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
                                               .content(new ObjectMapper().writeValueAsString(

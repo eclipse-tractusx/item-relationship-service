@@ -134,7 +134,7 @@ class IrsFunctionalTest {
         return () -> {
             try {
                 thereIsJwtAuthentication();
-                return Optional.ofNullable(controller.getJobById(jobHandle.getJobId(), true));
+                return Optional.ofNullable(controller.getJobById(jobHandle.getId(), true));
             } catch (Exception e) {
                 e.printStackTrace();
                 return Optional.empty();
