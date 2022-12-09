@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.0] - 2022-12-09
+### Changed
+- Update IRS version to 2.0.0
+
 ## [3.0.1] - 2022-11-27
 ### Changed
 - Updated default config for Prometheus / Grafana by disabling automatic RBAC creation
