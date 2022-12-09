@@ -39,6 +39,7 @@ import org.springframework.web.client.RestClientException;
  * Class to create AssetAdministrationShell Testdata
  * As AASWrapper is not deployed, we are using this class to Stub responses
  */
+@SuppressWarnings({ "PMD.TooManyMethods" })
 class AssetAdministrationShellTestdataCreator {
 
     private final CxTestDataContainer cxTestDataContainer;
@@ -57,6 +58,7 @@ class AssetAdministrationShellTestdataCreator {
         final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
         cxTestData.get().getAssemblyPartRelationship().ifPresent(submodel -> submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId)));
         cxTestData.get().getSerialPartTypization().ifPresent(submodel -> submodelDescriptors.add(createSerialPartTypizationSubmodelDescriptor(catenaXId)));
+        cxTestData.get().getSingleLevelUsageAsBuilt().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelUsageAsBuiltSubmodelDescriptor(catenaXId)));
         cxTestData.get().getSingleLevelBomAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelBomAsPlannedSubmodelDescriptor(catenaXId)));
         cxTestData.get().getPartAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createPartAsPlannedSubmodelDescriptor(catenaXId)));
         cxTestData.get().getBatch().ifPresent(submodel -> submodelDescriptors.add(createBatchSubmodelDescriptor(catenaXId)));
@@ -78,6 +80,11 @@ class AssetAdministrationShellTestdataCreator {
     private SubmodelDescriptor createAssemblyPartRelationshipSubmodelDescriptor(final String catenaXId) {
         return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.assembly_part_relationship:1.0.0",
                 "assemblyPartRelationship");
+    }
+
+    private SubmodelDescriptor createSingleLevelUsageAsBuiltSubmodelDescriptor(final String catenaXId) {
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.single_level_usage_as_built:1.0.0",
+                "singleLevelUsageAsBuilt");
     }
 
     private SubmodelDescriptor createSerialPartTypizationSubmodelDescriptor(final String catenaXId) {

@@ -49,6 +49,8 @@ import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
+import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.exceptions.ContractNegotiationException;
@@ -173,9 +175,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final List<Relationship> submodelResponse = testee.getRelationships("http://localhost/" + catenaXId + "/submodel",
                 RelationshipAspect.SingleLevelBomAsPlanned).get(5, TimeUnit.SECONDS);
 
-        assertThat(submodelResponse.get(0).getCatenaXId().getGlobalAssetId()).isEqualTo(catenaXId);
-        assertThat(submodelResponse).hasSize(1);
-
+        assertThat(submodelResponse).isNotEmpty();
         final List<String> childIds = submodelResponse.stream()
                                                       .map(Relationship::getLinkedItem)
                                                       .map(LinkedItem::getChildCatenaXId)
@@ -186,13 +186,13 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldReturnEmptyRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelUsageAsBuilt() throws Exception {
-        final String catenaXId = "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c";
+        final String catenaXId = "urn:uuid:d7977805-ef52-43c4-9e1d-2f7f0e82c17c";
         prepareTestdata(catenaXId, "_singleLevelUsageAsBuilt");
 
         final List<Relationship> submodelResponse = testee.getRelationships("http://localhost/" + catenaXId + "/submodel",
                 RelationshipAspect.SingleLevelUsageAsBuilt).get(5, TimeUnit.SECONDS);
 
-        assertThat(submodelResponse).isEmpty();
+        assertThat(submodelResponse).isNotEmpty();
     }
 
     @Test
@@ -217,6 +217,30 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         assertThat(submodelResponse).startsWith(
                 "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"manufacturerId\"}");
+    }
+
+    @Test
+    void shouldReturnSameRelationshipsForDifferentDirections() throws Exception {
+        final String parentCatenaXId = "urn:uuid:bd661150-8491-4442-943b-3e6e96fb0049";
+        final BomLifecycle asBuilt = BomLifecycle.AS_BUILT;
+
+        prepareTestdata(parentCatenaXId, "_assemblyPartRelationship");
+        final List<Relationship> assemblyPartRelationships = testee.getRelationships("http://localhost/" + parentCatenaXId + "/submodel",
+                RelationshipAspect.from(asBuilt, Direction.DOWNWARD)).get(5, TimeUnit.SECONDS);
+
+        final GlobalAssetIdentification childCatenaXId = assemblyPartRelationships.stream()
+                                                                          .findAny()
+                                                                          .map(Relationship::getLinkedItem)
+                                                                          .map(LinkedItem::getChildCatenaXId).orElseThrow();
+
+        prepareTestdata(childCatenaXId.getGlobalAssetId(), "_singleLevelUsageAsBuilt");
+        final List<Relationship> singleLevelUsageRelationships = testee.getRelationships("http://localhost/" + childCatenaXId.getGlobalAssetId() + "/submodel",
+                RelationshipAspect.from(asBuilt, Direction.UPWARD)).get(5, TimeUnit.SECONDS);
+
+        assertThat(assemblyPartRelationships).isNotEmpty();
+        assertThat(singleLevelUsageRelationships).isNotEmpty();
+        assertThat(assemblyPartRelationships.get(0).getCatenaXId()).isEqualTo(singleLevelUsageRelationships.get(0).getCatenaXId());
+        assertThat(assemblyPartRelationships.get(0).getLinkedItem().getChildCatenaXId()).isEqualTo(singleLevelUsageRelationships.get(0).getLinkedItem().getChildCatenaXId());
     }
 
     private void prepareTestdata(final String catenaXId, final String submodelDataSuffix)
