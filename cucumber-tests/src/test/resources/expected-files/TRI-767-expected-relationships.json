@@ -1,7 +1,7 @@
 {
     "relationships": [
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -13,12 +13,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:8ae3c8a9-2c80-4223-a798-db94c854465b"
+                "childCatenaXId": "urn:uuid:03556cd3-ae2a-48ad-a6a4-89631f8d41c8"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -30,12 +30,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:9abcceb1-02ed-4384-83bb-e3f5b3be77d4"
+                "childCatenaXId": "urn:uuid:d6142601-5e09-45fe-9b42-e53cf8cd458c"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -47,12 +47,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:ef4ef0e2-4658-464c-ad1e-eae5afb77942"
+                "childCatenaXId": "urn:uuid:5fd291cf-e8df-4a46-8a8d-5054dbc3d1bf"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -64,12 +64,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:50edf0fc-95a7-40b3-ad43-9156f3b81768"
+                "childCatenaXId": "urn:uuid:b21cfd5b-dcf4-46fa-9227-3eb693567dd8"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -81,12 +81,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:57ced45e-4f98-4aa4-bb67-6f7c51b90a4b"
+                "childCatenaXId": "urn:uuid:ae2ad2b8-ed83-42b8-9953-3d37e224b3d7"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -98,12 +98,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:18f9d1ef-100e-4c0a-bb83-a407c644fcba"
+                "childCatenaXId": "urn:uuid:492781f5-62ff-4fb2-876c-3498e2844d13"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -115,12 +115,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:73477f4a-f49f-4306-b30f-3ab36ef72e6f"
+                "childCatenaXId": "urn:uuid:cc8e9448-b294-46e7-8110-337e8bfa3001"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -132,12 +132,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:3940c819-dd95-422b-aa32-f7d3f1930de8"
+                "childCatenaXId": "urn:uuid:51ff7c73-34e9-45d4-816c-d92578843e68"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -149,12 +149,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:f2e6d0cd-5a9a-451d-a583-510c5209f64c"
+                "childCatenaXId": "urn:uuid:fa5804f1-8d4e-437c-aca2-a5491be61758"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -166,12 +166,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:ec215159-fae3-47d8-98c6-d67b7ffe7c0c"
+                "childCatenaXId": "urn:uuid:badddd8a-0abf-4457-9d33-6eb05a3ac0ef"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -183,12 +183,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:6c2f4f41-3924-43da-969d-1afee232194c"
+                "childCatenaXId": "urn:uuid:8eb9285f-5b10-4d5a-af7e-44e7fb0520f1"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -200,12 +200,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:b32a9cda-b026-4715-b253-c08a7d11b840"
+                "childCatenaXId": "urn:uuid:7bbbc63f-ba86-4e1c-ad78-6bdb4a125783"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -217,12 +217,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:0391b219-9bf5-44cc-89af-e5db399a7d21"
+                "childCatenaXId": "urn:uuid:8914a66e-b59b-405f-afff-b97d71ebece3"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -234,12 +234,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:7b2484b1-21b5-434a-aa2b-fd5434cc7ae3"
+                "childCatenaXId": "urn:uuid:a0f6803c-e4dc-4cda-8ad2-91cc57868449"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -251,12 +251,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:868df1e0-b497-4059-a0d3-3899630020da"
+                "childCatenaXId": "urn:uuid:5371bcac-94d0-4254-9292-6666b8e28204"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -268,12 +268,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:67885579-9ddc-4daa-b59e-d7348e9581d3"
+                "childCatenaXId": "urn:uuid:04b8c677-a058-4393-94c1-5c5a48a27535"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -285,12 +285,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:8fc21b03-1796-44af-bd52-c6998bfae1bb"
+                "childCatenaXId": "urn:uuid:36131844-36f1-426d-ba5d-a7ddcbb509d2"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -302,12 +302,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:d3ab8367-7d12-4991-bd89-cea117a62297"
+                "childCatenaXId": "urn:uuid:309a2b1a-0061-4895-b587-f72b3d725f8f"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -319,12 +319,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:087372bf-e9f0-49e6-98e8-0ce98140605c"
+                "childCatenaXId": "urn:uuid:a5d13a5a-5d77-4e74-810f-a9332cc19665"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -336,12 +336,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:f3f33eec-d7ed-44b5-8cf2-752b6c2c22ca"
+                "childCatenaXId": "urn:uuid:1e35e091-3d3d-421e-9c7e-14cf1c9442a6"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -353,12 +353,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:ad1f1627-a57e-481f-9cff-10990674f486"
+                "childCatenaXId": "urn:uuid:66769f42-4905-424c-8f35-f072fab5a734"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -370,12 +370,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:643ff5cd-4468-4041-95d9-eeb2cc42c487"
+                "childCatenaXId": "urn:uuid:93bb7e1e-1a1a-437a-90c4-b2830cb19290"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -387,12 +387,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:fbd019cc-6eda-4416-a668-e5d83271781d"
+                "childCatenaXId": "urn:uuid:ceb6b964-5779-49c1-b5e9-0ee70528fcbd"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -404,12 +404,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:00ce78e5-3bf3-4847-92c1-28771e83f998"
+                "childCatenaXId": "urn:uuid:7b87f5d6-f75e-40f1-a439-779ae9f57a21"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -421,12 +421,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:09c48e81-5c73-4e1a-85a2-0bf2fff4dada"
+                "childCatenaXId": "urn:uuid:9940dd40-a292-4a27-9733-08b1ca750149"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -438,12 +438,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:e35161e7-803d-4746-9528-db9d9814c692"
+                "childCatenaXId": "urn:uuid:a1082992-cc3b-4da1-af6b-aa692ed71461"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -455,12 +455,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:5c48d1a1-bc81-4a9d-84db-53fc9c69e677"
+                "childCatenaXId": "urn:uuid:3e300930-0e1c-459c-8914-1ac631176716"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -472,12 +472,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:8c21d03f-b15e-427f-9cd0-c23701ed8f9c"
+                "childCatenaXId": "urn:uuid:8e916bb5-34cb-48cc-bb30-3dea756a25b0"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -489,12 +489,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:98484975-27ed-4c79-ad94-c82c2c0360e8"
+                "childCatenaXId": "urn:uuid:6c7bdfd8-7116-46da-b8e2-7322acd64042"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -506,12 +506,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:e83c5a1f-7558-4978-990f-9c796224ce63"
+                "childCatenaXId": "urn:uuid:c4cd2818-b616-4a28-b327-7e7e449fbdae"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -523,12 +523,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:b995cae9-0196-4ab5-b768-798eda1b5726"
+                "childCatenaXId": "urn:uuid:98c92d24-0d86-4dfa-97bb-1f67794fc9f9"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -540,12 +540,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:867a1fd9-6a8b-4f56-a5ef-2b61f12f8bce"
+                "childCatenaXId": "urn:uuid:e1ea599a-255d-4abf-a385-70f63cbe9794"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -557,12 +557,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:a9d00358-d560-4a4b-98cc-d3a4d61c253b"
+                "childCatenaXId": "urn:uuid:cd55d855-754f-4a60-935a-88768f0ed2fb"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
+            "catenaXId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -574,12 +574,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:d7d61cd8-27b2-4707-a4c2-d735cf1a0dcd"
+                "childCatenaXId": "urn:uuid:e0566a95-a34f-44e0-a562-f5db3367f7f3"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:50edf0fc-95a7-40b3-ad43-9156f3b81768",
+            "catenaXId": "urn:uuid:51ff7c73-34e9-45d4-816c-d92578843e68",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -591,97 +591,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:ba9cdc50-eae0-49d7-bd5e-36711b3f57e6"
+                "childCatenaXId": "urn:uuid:393f7bf3-c73f-4b0d-86ee-f5be8aa338c4"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:9abcceb1-02ed-4384-83bb-e3f5b3be77d4",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:68766b51-f794-4033-bcb1-f635ed309cd4"
-            },
-            "aspectType": "AssemblyPartRelationship"
-        },
-        {
-            "catenaXId": "urn:uuid:9abcceb1-02ed-4384-83bb-e3f5b3be77d4",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.2001,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:68c9b1bf-b2c1-456a-883c-2aac5f5cb5f4"
-            },
-            "aspectType": "AssemblyPartRelationship"
-        },
-        {
-            "catenaXId": "urn:uuid:9abcceb1-02ed-4384-83bb-e3f5b3be77d4",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.3301,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:816f9c8d-6ef1-439e-89de-ef1d34481c17"
-            },
-            "aspectType": "AssemblyPartRelationship"
-        },
-        {
-            "catenaXId": "urn:uuid:57ced45e-4f98-4aa4-bb67-6f7c51b90a4b",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:133a0c0d-c5f1-4b2d-a5df-18765c55fba5"
-            },
-            "aspectType": "AssemblyPartRelationship"
-        },
-        {
-            "catenaXId": "urn:uuid:57ced45e-4f98-4aa4-bb67-6f7c51b90a4b",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.2014,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:1ac0b95c-c8e1-49e3-842b-eae13822a7ce"
-            },
-            "aspectType": "AssemblyPartRelationship"
-        },
-        {
-            "catenaXId": "urn:uuid:57ced45e-4f98-4aa4-bb67-6f7c51b90a4b",
+            "catenaXId": "urn:uuid:51ff7c73-34e9-45d4-816c-d92578843e68",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 0.2341,
@@ -693,12 +608,80 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:2687fd84-825d-4923-b1ab-66b70f002929"
+                "childCatenaXId": "urn:uuid:b86bfe10-6a4f-41be-8a00-6f11ce38702e"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:f2e6d0cd-5a9a-451d-a583-510c5209f64c",
+            "catenaXId": "urn:uuid:51ff7c73-34e9-45d4-816c-d92578843e68",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 0.2014,
+                    "measurementUnit": {
+                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                        "lexicalValue": "unit:kilogram"
+                    }
+                },
+                "lifecycleContext": "asBuilt",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:4b2b21d0-8fed-4d32-b262-f75c5b846df8"
+            },
+            "aspectType": "AssemblyPartRelationship"
+        },
+        {
+            "catenaXId": "urn:uuid:393f7bf3-c73f-4b0d-86ee-f5be8aa338c4",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 0.1908,
+                    "measurementUnit": {
+                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                        "lexicalValue": "unit:kilogram"
+                    }
+                },
+                "lifecycleContext": "asBuilt",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:5eb6d06a-f873-4ada-9fac-8431ad5a600d"
+            },
+            "aspectType": "AssemblyPartRelationship"
+        },
+        {
+            "catenaXId": "urn:uuid:93bb7e1e-1a1a-437a-90c4-b2830cb19290",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 0.3301,
+                    "measurementUnit": {
+                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                        "lexicalValue": "unit:kilogram"
+                    }
+                },
+                "lifecycleContext": "asBuilt",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:620b64c1-3505-4740-b64e-32da0f1b82e5"
+            },
+            "aspectType": "AssemblyPartRelationship"
+        },
+        {
+            "catenaXId": "urn:uuid:93bb7e1e-1a1a-437a-90c4-b2830cb19290",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 0.2001,
+                    "measurementUnit": {
+                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                        "lexicalValue": "unit:kilogram"
+                    }
+                },
+                "lifecycleContext": "asBuilt",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:a14aa6a4-5be6-45d2-8544-b179baeeed7d"
+            },
+            "aspectType": "AssemblyPartRelationship"
+        },
+        {
+            "catenaXId": "urn:uuid:93bb7e1e-1a1a-437a-90c4-b2830cb19290",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
@@ -710,12 +693,12 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:936e9f19-e777-4acb-881d-fe0ff722343b"
+                "childCatenaXId": "urn:uuid:0ea1aa79-10d4-4df1-8a5a-5b7eafd26163"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:68766b51-f794-4033-bcb1-f635ed309cd4",
+            "catenaXId": "urn:uuid:0ea1aa79-10d4-4df1-8a5a-5b7eafd26163",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 0.1908,
@@ -727,24 +710,41 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:edfe4b76-0be3-4934-8afd-ff9e7fb27aa0"
+                "childCatenaXId": "urn:uuid:1d312e57-7a0f-47c0-8586-5b5c890d0bcf"
             },
             "aspectType": "AssemblyPartRelationship"
         },
         {
-            "catenaXId": "urn:uuid:133a0c0d-c5f1-4b2d-a5df-18765c55fba5",
+            "catenaXId": "urn:uuid:ceb6b964-5779-49c1-b5e9-0ee70528fcbd",
             "linkedItem": {
                 "quantity": {
-                    "quantityNumber": 0.1908,
+                    "quantityNumber": 1.0,
                     "measurementUnit": {
                         "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:kilogram"
+                        "lexicalValue": "unit:piece"
                     }
                 },
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:a2e2913b-4007-4288-a1ca-4b2252fa70d3"
+                "childCatenaXId": "urn:uuid:a4a26b9c-9460-4cc5-8645-85916b86adb0"
+            },
+            "aspectType": "AssemblyPartRelationship"
+        },
+        {
+            "catenaXId": "urn:uuid:3e300930-0e1c-459c-8914-1ac631176716",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 1.0,
+                    "measurementUnit": {
+                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                        "lexicalValue": "unit:piece"
+                    }
+                },
+                "lifecycleContext": "asBuilt",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:8f9d8c7f-6d7a-48f1-9959-9fa3a1a7a891"
             },
             "aspectType": "AssemblyPartRelationship"
         }
