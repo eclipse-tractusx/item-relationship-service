@@ -50,13 +50,13 @@ class SubmodelTestdataCreatorTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldReturnAssemblyPartRelationshipWithPreDefinedChildrenWhenRequestingWithCatenaXId() {
-        final String catenaXId = "urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873";
+        final String catenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
         final AssemblyPartRelationship assemblyPartRelationship = submodelTestdataCreator.createSubmodelForId(
                 catenaXId + "_assemblyPartRelationship", AssemblyPartRelationship.class);
 
         final Set<AssemblyPartRelationship.ChildData> childParts = assemblyPartRelationship.getChildParts();
         assertThat(childParts).hasSize(1);
-        final List<String> childIDs = List.of("urn:uuid:ee5f6ca1-011d-4421-960a-4521b69b3503");
+        final List<String> childIDs = List.of("urn:uuid:10bba299-87d1-4335-90d5-a48015de7a32");
         childParts.forEach(childData -> assertThat(childIDs).contains(childData.getChildCatenaXId()));
     }
 

@@ -47,6 +47,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.JobStatusResult;
+import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
@@ -56,6 +57,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -86,10 +88,10 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void initiateJobForGlobalAssetId() throws Exception {
         final UUID returnedJob = UUID.randomUUID();
-        when(service.registerItemJob(any())).thenReturn(JobHandle.builder().jobId(returnedJob).build());
+        when(service.registerItemJob(any())).thenReturn(JobHandle.builder().id(returnedJob).build());
 
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
                                               .content(new ObjectMapper().writeValueAsString(
@@ -98,9 +100,26 @@ class IrsControllerTest {
                     .andExpect(content().string(containsString(returnedJob.toString())));
     }
 
+    @Test
+    void shouldReturnUnauthorizedStatusWhenAuthenticationIsMissing() throws Exception {
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(new ObjectMapper().writeValueAsString(
+                                                      registerJobWithoutDepthAndAspect())))
+                    .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(authorities = "view_irs_wrong_authority")
+    void shouldReturnForbiddenStatusWhenRequiredAuthorityIsMissing() throws Exception {
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(new ObjectMapper().writeValueAsString(
+                                                      registerJobWithoutDepthAndAspect())))
+                    .andExpect(status().isForbidden());
+    }
+
     @ParameterizedTest
     @MethodSource("corruptedJobs")
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenRegisterJobBodyNotValid(final RegisterJob registerJob) throws Exception {
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
                                               .content(new ObjectMapper().writeValueAsString(registerJob)))
@@ -108,32 +127,32 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void getJobsByJobState() throws Exception {
         final JobStatusResult returnedJob = JobStatusResult.builder()
-                                                           .jobId(UUID.randomUUID())
-                                                           .jobState(JobState.COMPLETED)
+                                                           .id(UUID.randomUUID())
+                                                           .state(JobState.COMPLETED)
                                                            .startedOn(ZonedDateTime.now(ZoneId.of("UTC")))
-                                                           .jobCompleted(ZonedDateTime.now(ZoneId.of("UTC")))
+                                                           .completedOn(ZonedDateTime.now(ZoneId.of("UTC")))
                                                            .build();
 
         final String returnJobAsString = objectMapper.writeValueAsString(returnedJob);
 
-        when(service.getJobsByJobState(any())).thenReturn(List.of(returnedJob));
+        when(service.getJobsByJobState(any(), any())).thenReturn(new PageResult(new PagedListHolder<>(List.of(returnedJob))));
 
         this.mockMvc.perform(get("/irs/jobs"))
                     .andExpect(status().isOk())
                     .andExpect(content().string(containsString(returnJobAsString)))
-                    .andExpect(content().string(containsString(returnedJob.getJobId().toString())))
-                    .andExpect(content().string(containsString(returnedJob.getJobState().toString())))
+                    .andExpect(content().string(containsString(returnedJob.getId().toString())))
+                    .andExpect(content().string(containsString(returnedJob.getState().toString())))
                     .andExpect(content().string(containsString(returnedJob.getStartedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))))
-                    .andExpect(content().string(containsString(returnedJob.getJobCompleted().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))));
+                    .andExpect(content().string(containsString(returnedJob.getCompletedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))));
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void cancelJobById() throws Exception {
-        final Job canceledJob = Job.builder().jobId(jobId).jobState(JobState.CANCELED).build();
+        final Job canceledJob = Job.builder().id(jobId).state(JobState.CANCELED).build();
 
         when(this.service.cancelJobById(jobId)).thenReturn(canceledJob);
 
@@ -141,7 +160,7 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void cancelJobById_throwEntityNotFoundException() throws Exception {
         given(this.service.cancelJobById(jobId)).willThrow(
                 new EntityNotFoundException("No job exists with id " + jobId));
@@ -152,7 +171,7 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void getJobWithMalformedIdShouldReturnBadRequest() throws Exception {
         final String jobIdMalformed = UUID.randomUUID() + "MALFORMED";
 
@@ -160,7 +179,7 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenRegisterJobWithMalformedAspectJson() throws Exception {
         final String requestBody = "{ \"aspects\": [ \"MALFORMED\" ], \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\" }";
 
@@ -169,7 +188,7 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenCancelingAlreadyCompletedJob() throws Exception {
         given(this.service.cancelJobById(jobId)).willThrow(new IllegalStateException(
                 format("Cannot transition from state %s to %s", JobState.COMPLETED, JobState.CANCELED)));

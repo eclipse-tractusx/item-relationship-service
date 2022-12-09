@@ -54,7 +54,7 @@ public class CxTestDataContainer {
         private String catenaXId;
         @JsonProperty("urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization")
         private List<Map<String, Object>> serialPartTypization;
-        @JsonProperty("urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship")
+        @JsonProperty("urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship")
         private List<Map<String, Object>> assemblyPartRelationship;
         @JsonProperty("urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned")
         private List<Map<String, Object>> partAsPlanned;

@@ -19,10 +19,8 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git fetch --no-tags --progress
-          git checkout --progress --force -B main origin/main
-          git pull
           git checkout --progress -b catena-x-environments origin/catena-x-environments
-          git merge main
+          git merge origin/main
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

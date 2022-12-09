@@ -22,7 +22,11 @@
 package org.eclipse.tractusx.irs;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.oauth2.jwt.JwtClaimNames.SUB;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -39,10 +43,16 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.TestPropertySourceUtils;
@@ -79,6 +89,7 @@ class IrsFunctionalTest {
     @Test
     void shouldStartJobAndRetrieveResult() {
         final RegisterJob registerJob = TestMother.registerJobWithoutDepth();
+        thereIsJwtAuthentication();
 
         final JobHandle jobHandle = controller.registerJobForGlobalAssetId(registerJob);
         final Optional<Jobs> finishedJob = Awaitility.await()
@@ -88,7 +99,7 @@ class IrsFunctionalTest {
                                                      .until(getJobDetails(jobHandle),
                                                              jobs -> jobs.isPresent() && jobs.get()
                                                                                              .getJob()
-                                                                                             .getJobState()
+                                                                                             .getState()
                                                                                              .equals(JobState.COMPLETED));
 
         assertThat(finishedJob).isPresent();
@@ -105,11 +116,25 @@ class IrsFunctionalTest {
         assertThat(finishedJob.get().getJob().getOwner()).isNotBlank();
     }
 
+    private void thereIsJwtAuthentication() {
+        final JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwt(), List.of(new SimpleGrantedAuthority("view_irs")));
+        jwtAuthenticationToken.setAuthenticated(true);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
+        SecurityContextHolder.setContext(securityContext);
+    }
+
+    Jwt jwt() {
+        return new Jwt("token", Instant.now(), Instant.now().plusSeconds(30), Map.of("alg", "none"),
+                Map.of(SUB, "sub", "clientId", "clientId"));
+    }
+
     @NotNull
     private Callable<Optional<Jobs>> getJobDetails(final JobHandle jobHandle) {
         return () -> {
             try {
-                return Optional.ofNullable(controller.getJobById(jobHandle.getJobId(), true));
+                thereIsJwtAuthentication();
+                return Optional.ofNullable(controller.getJobById(jobHandle.getId(), true));
             } catch (Exception e) {
                 e.printStackTrace();
                 return Optional.empty();

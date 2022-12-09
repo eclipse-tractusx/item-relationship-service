@@ -76,13 +76,13 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<AspectType> aspectTypes) {
-        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873", depth, aspectTypes,
+        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", depth, aspectTypes,
                 false);
     }
 
     public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth,
             final List<AspectType> aspectTypes) {
-        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:b2d7176c-c48b-42f4-b485-31a2b64a0873", depth, aspectTypes,
+        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", depth, aspectTypes,
                 true);
     }
 
@@ -135,15 +135,15 @@ public class TestMother {
 
     public Job fakeJob(JobState state) {
         return Job.builder()
-                  .jobId(UUID.randomUUID())
+                  .id(UUID.randomUUID())
                   .globalAssetId(GlobalAssetIdentification.of(UUID.randomUUID().toString()))
-                  .jobState(state)
+                  .state(state)
                   .createdOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .startedOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .owner(faker.lorem().characters())
                   .lastModifiedOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .jobParameter(jobParameter())
-                  .jobCompleted(ZonedDateTime.now(ZoneId.of("UTC")))
+                  .completedOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .build();
     }
 

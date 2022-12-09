@@ -32,14 +32,14 @@ class JobProcessingEventListenerTest {
     @Test
     void shouldCallCallbackUrlIfIsValidAndStateCompleted() throws URISyntaxException {
         // given
-        final String callbackUrlTemplate = "https://hostname.com/callback?jobId={jobId}&jobState={jobState}";
+        final String callbackUrlTemplate = "https://hostname.com/callback?id={id}&state={state}";
         final String jobId = UUID.randomUUID().toString();
         final JobState jobState = JobState.COMPLETED;
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId, jobState, callbackUrlTemplate);
 
         // when
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
-        final String expectedCallbackUrl = "https://hostname.com/callback?jobId=" + jobId + "&jobState=" + jobState;
+        final String expectedCallbackUrl = "https://hostname.com/callback?id=" + jobId + "&state=" + jobState;
 
         // then
         verify(this.restTemplate, times(1)).getForEntity(eq(new URI(expectedCallbackUrl)), eq(Void.class));
@@ -48,7 +48,7 @@ class JobProcessingEventListenerTest {
     @Test
     void shouldCallCallbackUrlIfIsValidAndStateError() throws URISyntaxException {
         // given
-        final String callbackUrlTemplate = "http://qwerty.de/{jobId}/{jobState}";
+        final String callbackUrlTemplate = "http://qwerty.de/{id}/{state}";
         final String jobId = UUID.randomUUID().toString();
         final JobState jobState = JobState.ERROR;
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId, jobState, callbackUrlTemplate);
@@ -80,13 +80,13 @@ class JobProcessingEventListenerTest {
     @Test
     void shouldCallCallbackUrlIfUrlIsValidAndWithOnePlaceholder() throws URISyntaxException {
         // given
-        final String callbackUrlTemplate = "https://hostname.com/callback?jobId={jobId}";
+        final String callbackUrlTemplate = "https://hostname.com/callback?id={id}";
         final String jobId = UUID.randomUUID().toString();
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId, JobState.COMPLETED, callbackUrlTemplate);
 
         // when
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
-        final String expectedCallbackUrl = "https://hostname.com/callback?jobId=" + jobId;
+        final String expectedCallbackUrl = "https://hostname.com/callback?id=" + jobId;
 
         // then
         verify(this.restTemplate, times(1)).getForEntity(eq(new URI(expectedCallbackUrl)), eq(Void.class));
@@ -95,7 +95,7 @@ class JobProcessingEventListenerTest {
     @Test
     void shouldNotCallCallbackUrlIfIsNotValid() {
         // given
-        final String callbackUrlTemplate = "wrongCallbackUrl/jobId={jobId}";
+        final String callbackUrlTemplate = "wrongCallbackUrl/id={id}";
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(UUID.randomUUID().toString(), JobState.COMPLETED, callbackUrlTemplate);
 
         // when
