@@ -1,1950 +1,1750 @@
 {
     "submodels": [
         {
-            "identification": "urn:uuid:f5c75551-357e-425d-a319-6bb29cce0a4b",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+            "catenaXId": "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+            "childParts": [
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "SR-07",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "OMBKSFAKRYSEOMTIB",
-                        "key": "partInstanceId"
-                    },
-                    {
-                        "value": "OMBKSFAKRYSEOMTIB",
-                        "key": "van"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2014-03-30T23:12:59.000Z",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:6bd19830-3f63-4915-906d-0dd26196b7a6"
                 },
-                "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-                "partTypeInformation": {
-                    "manufacturerPartId": "SR-07",
-                    "classification": "product",
-                    "nameAtManufacturer": "Vehicle Combustion"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:97ed9695-96b0-480d-9732-998673920155",
-            "aspectType": "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship",
-            "payload": {
-                "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-                "childParts": [
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:4921d6d6-bb0e-488a-bfcb-43aa98f770f1"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:2a1bd6c6-69c3-41b6-8154-596a79567017"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:f2588c21-e82b-4049-8795-06e0a7cf63bd"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:719fa2fe-5462-43d0-a240-7ead01808de7"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:504cc0c4-4199-43bf-83d5-7ce575cf2170"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:e4ee6157-108d-4dc5-b47b-08a317d1e2c5"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:7c4993ad-9bed-46c8-a9b4-261073a0a3b5"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:fcfdf8a6-80ed-4345-a52d-ae440c0a2bd5"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:890757b8-e562-4e0c-94f7-bd0806dd258f"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:000eee07-2df6-4e67-bc6a-6dd6b30d1dea"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:d71d22bf-1fca-49a4-aa39-3b2c4563327e"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:97ddc65b-cb98-44e3-a21e-4940159dda34"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:d03c22a1-0ccc-4aee-912a-d52386f76b33"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:307651fd-71f7-42cc-a644-f82ecb10ee24"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:84e40758-b27c-4838-a498-4d52772cbf29"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:2bbd4409-1fd9-429d-bb7c-7297b67a4e34"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:81ee63b0-0a37-42a3-bd7f-3a311cf9e067"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:e7bba1ca-c0e5-4e17-92eb-366ab7a9db92"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:a45d70f9-79f4-4247-9d96-2b42d3e30b9b"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:61ed1b73-f75f-4001-a7d3-43b7b48627df"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:78a179e1-edb0-419a-bbea-6219015dcd92"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:9fb82cbb-972b-4b04-a283-186ca45b2bd8"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:72a486fa-3ca0-4dc7-8c3a-893ed56ff874"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:773a790c-3265-4a0d-a376-ba6892d1af6e"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:3eea3fe0-fc9f-4ad9-b00d-24bf05e551e2"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:79426a34-3f11-422f-a5d4-c9f78637b00b"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:2098f1c4-92af-4141-af33-36f125f2b342"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:fecce9a1-64a0-4bda-8ff9-1bb1abe8b3a2"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:b5af1191-be7d-4a06-be65-45abab1003b8"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:0f006414-e0e8-40a4-85ed-c126322b3b61"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:7743b60c-a868-41e9-afab-ab2465734f20"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:260bafea-867b-4160-a2d2-b6f0ed52dd36"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:cafdcb5d-4ed8-40e0-8af4-2b986a08ca7d"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:a1c33cc3-60c2-4b06-a929-2c3ef8d09dd2"
-                    }
-                ]
-            }
-        },
-        {
-            "identification": "urn:uuid:52df5f49-3604-4dc2-b72a-013b4bb04185",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "58471477-24",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-908148776563602876724750",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:9663defa-684b-4e75-80d5-82d001ab217a"
                 },
-                "catenaXId": "urn:uuid:2bbd4409-1fd9-429d-bb7c-7297b67a4e34",
-                "partTypeInformation": {
-                    "manufacturerPartId": "58471477-24",
-                    "customerPartId": "58471477-24",
-                    "classification": "component",
-                    "nameAtManufacturer": "Exterior mirror right",
-                    "nameAtCustomer": "Exterior mirror right"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:adfc463f-28be-48cd-85ea-1b0c263da430",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "13769860-47",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-646893736267377485163715",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:9107e586-9bfa-4c82-b81c-6c8ae0ee36f6"
                 },
-                "catenaXId": "urn:uuid:d71d22bf-1fca-49a4-aa39-3b2c4563327e",
-                "partTypeInformation": {
-                    "manufacturerPartId": "13769860-47",
-                    "customerPartId": "13769860-47",
-                    "classification": "component",
-                    "nameAtManufacturer": "Fender left",
-                    "nameAtCustomer": "Fender right"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:daf3c1a3-ce92-49f5-91f8-e0f5c723e8ed",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "78141846-87",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-386314672759223767813755",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:66488d8e-893a-4f4d-b650-e921ad5223e0"
                 },
-                "catenaXId": "urn:uuid:72a486fa-3ca0-4dc7-8c3a-893ed56ff874",
-                "partTypeInformation": {
-                    "manufacturerPartId": "78141846-87",
-                    "customerPartId": "78141846-87",
-                    "classification": "component",
-                    "nameAtManufacturer": "Starter motor",
-                    "nameAtCustomer": "Starter motor"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:e0f60357-45f7-47d8-b92c-920f4e7e4d6f",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "36643162-35",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-167672725207122083674446",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:a7fc6773-b3f2-4b9e-b0ca-586cbbd51dd9"
                 },
-                "catenaXId": "urn:uuid:97ddc65b-cb98-44e3-a21e-4940159dda34",
-                "partTypeInformation": {
-                    "manufacturerPartId": "36643162-35",
-                    "customerPartId": "36643162-35",
-                    "classification": "component",
-                    "nameAtManufacturer": "Fender right",
-                    "nameAtCustomer": "Fender right"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:863a5fdf-5883-4b00-af0f-a3502452fe2a",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "43501996-98",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-879915865025278893925907",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:aacf2b0e-5de2-4952-862e-2b47a12e59bc"
                 },
-                "catenaXId": "urn:uuid:e7bba1ca-c0e5-4e17-92eb-366ab7a9db92",
-                "partTypeInformation": {
-                    "manufacturerPartId": "43501996-98",
-                    "customerPartId": "43501996-98",
-                    "classification": "component",
-                    "nameAtManufacturer": "Dashboard",
-                    "nameAtCustomer": "Dashboard"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:f652c160-0761-465e-b2bc-8fff4e055030",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "00871379-44",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-722446122435002273647930",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:571cca8d-ceda-458e-a51c-69bcf53fa1ad"
                 },
-                "catenaXId": "urn:uuid:0f006414-e0e8-40a4-85ed-c126322b3b61",
-                "partTypeInformation": {
-                    "manufacturerPartId": "00871379-44",
-                    "customerPartId": "00871379-44",
-                    "classification": "component",
-                    "nameAtManufacturer": "Chassis",
-                    "nameAtCustomer": "Chassis"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:69f30b5b-5b25-4941-8f71-df140f794eff",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "88111709-49",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-893278288069568267061701",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:94f95beb-2d2e-4275-af82-ef601d25e7db"
                 },
-                "catenaXId": "urn:uuid:b5af1191-be7d-4a06-be65-45abab1003b8",
-                "partTypeInformation": {
-                    "manufacturerPartId": "88111709-49",
-                    "customerPartId": "88111709-49",
-                    "classification": "component",
-                    "nameAtManufacturer": "Axle part rear",
-                    "nameAtCustomer": "Axle part rear"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:98428cbb-4931-4c56-a2a8-4d9793a82a48",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "09002013-68",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-070172261725229389714140",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:5ca6c6f0-3ac2-4b90-b88c-a28935646d55"
                 },
-                "catenaXId": "urn:uuid:81ee63b0-0a37-42a3-bd7f-3a311cf9e067",
-                "partTypeInformation": {
-                    "manufacturerPartId": "09002013-68",
-                    "customerPartId": "09002013-68",
-                    "classification": "component",
-                    "nameAtManufacturer": "Trailer coupling",
-                    "nameAtCustomer": "Tailer coupling"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:0457d5cf-9e7f-43a4-a6a7-829e6849c557",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "94421589-82",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-199366043992660584843192",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:d4e9558c-f75b-437d-8bd5-83fe14bdeeaf"
                 },
-                "catenaXId": "urn:uuid:890757b8-e562-4e0c-94f7-bd0806dd258f",
-                "partTypeInformation": {
-                    "manufacturerPartId": "94421589-82",
-                    "customerPartId": "94421589-82",
-                    "classification": "component",
-                    "nameAtManufacturer": "Engine hood",
-                    "nameAtCustomer": "Engine hood"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:f41725d2-3aa0-4f5d-8f87-8de2442c82c1",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "32494586-73",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-462085552967082714371063",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:f473c6ec-3920-433a-89cd-c3b914ed6963"
                 },
-                "catenaXId": "urn:uuid:2a1bd6c6-69c3-41b6-8154-596a79567017",
-                "partTypeInformation": {
-                    "manufacturerPartId": "32494586-73",
-                    "customerPartId": "32494586-73",
-                    "classification": "component",
-                    "nameAtManufacturer": "Differential Gear",
-                    "nameAtCustomer": "Differential Gear"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:2dba39d7-5d79-4c62-8cb6-ad130a5b5dcb",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "45863316-60",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-538013715297606720098957",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:1294c992-af34-4779-b13c-5cae0fd521fb"
                 },
-                "catenaXId": "urn:uuid:260bafea-867b-4160-a2d2-b6f0ed52dd36",
-                "partTypeInformation": {
-                    "manufacturerPartId": "45863316-60",
-                    "customerPartId": "45863316-60",
-                    "classification": "component",
-                    "nameAtManufacturer": "Tires",
-                    "nameAtCustomer": "Tires"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:2d8cbb25-b183-475c-a8a7-aa62dd8a55cf",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "22768257-25",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-240876855803097128400146",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:cb1e4dcd-31a0-47df-994b-f0f541cbaf9f"
                 },
-                "catenaXId": "urn:uuid:307651fd-71f7-42cc-a644-f82ecb10ee24",
-                "partTypeInformation": {
-                    "manufacturerPartId": "22768257-25",
-                    "customerPartId": "22768257-25",
-                    "classification": "component",
-                    "nameAtManufacturer": "Bumper rear",
-                    "nameAtCustomer": "Bumper rear"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:49a2b951-3591-4640-81aa-ebe7eca6b030",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "77795937-13",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-564001268648866994483869",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:0bfbebba-8a1c-41a3-8199-b1075f327f7a"
                 },
-                "catenaXId": "urn:uuid:a45d70f9-79f4-4247-9d96-2b42d3e30b9b",
-                "partTypeInformation": {
-                    "manufacturerPartId": "77795937-13",
-                    "customerPartId": "77795937-13",
-                    "classification": "component",
-                    "nameAtManufacturer": "Steering wheel",
-                    "nameAtCustomer": "Steering wheel"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:9df8b494-80c8-47d5-bd3f-763de4f750a5",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "78744126-74",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-324542046671255047372057",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:da6d0c77-2318-4cf0-b72a-602b758c4893"
                 },
-                "catenaXId": "urn:uuid:2098f1c4-92af-4141-af33-36f125f2b342",
-                "partTypeInformation": {
-                    "manufacturerPartId": "78744126-74",
-                    "customerPartId": "78744126-74",
-                    "classification": "component",
-                    "nameAtManufacturer": "Taillight front",
-                    "nameAtCustomer": "Taillight front"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:1c0dc9f0-7bbe-4e91-bbc3-d4d677b07e99",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "85023955-75",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-064969896800237848819039",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:719cff6f-8425-4a9a-a20f-1ddf92873d57"
                 },
-                "catenaXId": "urn:uuid:000eee07-2df6-4e67-bc6a-6dd6b30d1dea",
-                "partTypeInformation": {
-                    "manufacturerPartId": "85023955-75",
-                    "customerPartId": "85023955-75",
-                    "classification": "component",
-                    "nameAtManufacturer": "Tailgate",
-                    "nameAtCustomer": "Tailgate"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:aa9c8617-70ca-4935-9792-034520e4cb53",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "19073706-76",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-539036725320951616116252",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:744ec0a4-575b-47b4-9c97-b5eaad60b51e"
                 },
-                "catenaXId": "urn:uuid:78a179e1-edb0-419a-bbea-6219015dcd92",
-                "partTypeInformation": {
-                    "manufacturerPartId": "19073706-76",
-                    "customerPartId": "19073706-76",
-                    "classification": "component",
-                    "nameAtManufacturer": "Indicator right",
-                    "nameAtCustomer": "Indicator right"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:ad908218-758e-4529-9b8a-5f0350047c19",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "73849201-61",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-083052568348899541197941",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:34d50337-e11f-4f41-9a48-87cc986d5449"
                 },
-                "catenaXId": "urn:uuid:719fa2fe-5462-43d0-a240-7ead01808de7",
-                "partTypeInformation": {
-                    "manufacturerPartId": "73849201-61",
-                    "customerPartId": "73849201-61",
-                    "classification": "component",
-                    "nameAtManufacturer": "Catalysator",
-                    "nameAtCustomer": "Catalysator"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:35b99c22-8de0-4c7f-8382-2d1929ddbff5",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "61184040-23",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-826529578552558325865643",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:de9d233e-c371-490b-b02b-092756ccdd42"
                 },
-                "catenaXId": "urn:uuid:79426a34-3f11-422f-a5d4-c9f78637b00b",
-                "partTypeInformation": {
-                    "manufacturerPartId": "61184040-23",
-                    "customerPartId": "61184040-23",
-                    "classification": "component",
-                    "nameAtManufacturer": "Taillight rear",
-                    "nameAtCustomer": "Taillight rear"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:0096ca7a-233c-48a1-b7e5-ab756d66ee82",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "67034319-44",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-093632624435445274574834",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:eab9525d-79c0-4c3c-83dd-4815f2703ed1"
                 },
-                "catenaXId": "urn:uuid:f2588c21-e82b-4049-8795-06e0a7cf63bd",
-                "partTypeInformation": {
-                    "manufacturerPartId": "67034319-44",
-                    "customerPartId": "67034319-44",
-                    "classification": "component",
-                    "nameAtManufacturer": "Turbocharger",
-                    "nameAtCustomer": "Turbocharger"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:81b5294c-a447-4431-be99-4efcf9088b09",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "65529521-37",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-075513358163357493109718",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:82260db6-7ac1-4b61-9b98-e193cfbfcca4"
                 },
-                "catenaXId": "urn:uuid:84e40758-b27c-4838-a498-4d52772cbf29",
-                "partTypeInformation": {
-                    "manufacturerPartId": "65529521-37",
-                    "customerPartId": "65529521-37",
-                    "classification": "component",
-                    "nameAtManufacturer": "Exterior mirror left",
-                    "nameAtCustomer": "Exterior mirror left"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:b1ec78a6-d772-481a-8aa6-0cd8b44d195e",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "20125432-59",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-271630709164214690650633",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:cbb53a71-fba4-4753-868b-e91721d8f7b1"
                 },
-                "catenaXId": "urn:uuid:61ed1b73-f75f-4001-a7d3-43b7b48627df",
-                "partTypeInformation": {
-                    "manufacturerPartId": "20125432-59",
-                    "customerPartId": "20125432-59",
-                    "classification": "component",
-                    "nameAtManufacturer": "Indicator left",
-                    "nameAtCustomer": "Indicator left"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:08868094-b587-4b15-96c3-bd8e07f54078",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "08901347-87",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-302718244054482918723795",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:0e90d4a6-8ccc-483b-a786-bfac2a2d6553"
                 },
-                "catenaXId": "urn:uuid:7743b60c-a868-41e9-afab-ab2465734f20",
-                "partTypeInformation": {
-                    "manufacturerPartId": "08901347-87",
-                    "customerPartId": "08901347-87",
-                    "classification": "component",
-                    "nameAtManufacturer": "Rims",
-                    "nameAtCustomer": "Rims"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:c4556be3-987d-46f6-9c34-d99a2841719c",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "81324139-23",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-638111336634345368870915",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:12236481-0285-44d8-810f-766c676a0298"
                 },
-                "catenaXId": "urn:uuid:773a790c-3265-4a0d-a376-ba6892d1af6e",
-                "partTypeInformation": {
-                    "manufacturerPartId": "81324139-23",
-                    "customerPartId": "81324139-23",
-                    "classification": "component",
-                    "nameAtManufacturer": "Alternator",
-                    "nameAtCustomer": "Alternator"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:6c2751d5-bdab-4919-9d22-07fe248934da",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "28673126-98",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-200055536647191451152446",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:1b96d3d5-05e7-4da7-9915-2ed834316ca4"
                 },
-                "catenaXId": "urn:uuid:fcfdf8a6-80ed-4345-a52d-ae440c0a2bd5",
-                "partTypeInformation": {
-                    "manufacturerPartId": "28673126-98",
-                    "customerPartId": "28673126-98",
-                    "classification": "component",
-                    "nameAtManufacturer": "Door r-r",
-                    "nameAtCustomer": "Door rear-right"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:a1069d9c-90ee-4dcc-ad94-a79b944b6037",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "54165444-59",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-802534848713482605851178",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:fc7f69b3-27d8-40a8-866e-e4e79608d788"
                 },
-                "catenaXId": "urn:uuid:d03c22a1-0ccc-4aee-912a-d52386f76b33",
-                "partTypeInformation": {
-                    "manufacturerPartId": "54165444-59",
-                    "customerPartId": "54165444-59",
-                    "classification": "component",
-                    "nameAtManufacturer": "Bumper front",
-                    "nameAtCustomer": "Bumper front"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:1afe5332-3b90-45e8-8c75-072dc2baa5b3",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "15635759-16",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-963656354707307302875798",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:4870af61-d8e5-4923-b8b9-e43bab6e555b"
                 },
-                "catenaXId": "urn:uuid:7c4993ad-9bed-46c8-a9b4-261073a0a3b5",
-                "partTypeInformation": {
-                    "manufacturerPartId": "15635759-16",
-                    "customerPartId": "15635759-16",
-                    "classification": "component",
-                    "nameAtManufacturer": "Door r-l",
-                    "nameAtCustomer": "Door rear-left"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:54c6cf01-3b88-414b-8033-fbc15790b7b7",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "57929013-09",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-918989812727935150231376",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:c1bbd0b8-b1df-40c5-b19a-714798799ffe"
                 },
-                "catenaXId": "urn:uuid:3eea3fe0-fc9f-4ad9-b00d-24bf05e551e2",
-                "partTypeInformation": {
-                    "manufacturerPartId": "57929013-09",
-                    "customerPartId": "57929013-09",
-                    "classification": "component",
-                    "nameAtManufacturer": "AC compressor",
-                    "nameAtCustomer": "Air conditioning compressor"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:df94baf6-ba7c-4866-bd13-8fa71b2e39e4",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "45415162-57",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-011521004327099577969476",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:b2805664-6d1e-481a-b270-bc75cb67ad63"
                 },
-                "catenaXId": "urn:uuid:9fb82cbb-972b-4b04-a283-186ca45b2bd8",
-                "partTypeInformation": {
-                    "manufacturerPartId": "45415162-57",
-                    "customerPartId": "45415162-57",
-                    "classification": "component",
-                    "nameAtManufacturer": "Led headlight",
-                    "nameAtCustomer": "Led headlight"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:186991a2-ffe0-49d0-b41f-8c063af5de36",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "12093297-03",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-429253287102049252374382",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:682f4e8e-2157-45ed-8833-0e51d6f4b555"
                 },
-                "catenaXId": "urn:uuid:fecce9a1-64a0-4bda-8ff9-1bb1abe8b3a2",
-                "partTypeInformation": {
-                    "manufacturerPartId": "12093297-03",
-                    "customerPartId": "12093297-03",
-                    "classification": "component",
-                    "nameAtManufacturer": "Axle part front",
-                    "nameAtCustomer": "Axle part front"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:723c9179-c9a7-4488-990e-4b1343e48e22",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003CSGV",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "22782277-50",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-243840928872492356056649",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:b584ac7a-73b0-4d8b-8dff-a14dad6a8787"
                 },
-                "catenaXId": "urn:uuid:504cc0c4-4199-43bf-83d5-7ce575cf2170",
-                "partTypeInformation": {
-                    "manufacturerPartId": "22782277-50",
-                    "customerPartId": "22782277-50",
-                    "classification": "component",
-                    "nameAtManufacturer": "Door f-l",
-                    "nameAtCustomer": "Door front-left"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:8859b71e-5723-49b9-8157-d797e4b9588d",
-            "aspectType": "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship",
-            "payload": {
-                "catenaXId": "urn:uuid:504cc0c4-4199-43bf-83d5-7ce575cf2170",
-                "childParts": [
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:19488393-c309-4f69-babb-ec2a2414e567"
-                    }
-                ]
-            }
-        },
-        {
-            "identification": "urn:uuid:d6cbb08c-2106-48fb-986f-9ed32942e250",
-            "aspectType": "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
-            "payload": {
-                "diameter": "560",
-                "length": "843",
-                "width": "762",
-                "weight": "180",
-                "height": "711"
-            }
-        },
-        {
-            "identification": "urn:uuid:871c3018-cc76-4dd7-9686-baa00f3531f9",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AVTH",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "10030939-59",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-774702498878060917369279",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:625d9e00-b1c2-4d98-a9a7-fea9f00d2521"
                 },
-                "catenaXId": "urn:uuid:4921d6d6-bb0e-488a-bfcb-43aa98f770f1",
-                "partTypeInformation": {
-                    "manufacturerPartId": "10030939-59",
-                    "customerPartId": "10030939-59",
-                    "classification": "component",
-                    "nameAtManufacturer": "Engine",
-                    "nameAtCustomer": "Engine"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:228a4570-9306-46af-83eb-dfebd152ad5b",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B5MJ",
-                        "key": "manufacturerId"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
                     },
-                    {
-                        "value": "22687V8-83",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-686376458181124273671236",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:dc658148-64f5-4840-a42f-80396a42afe3"
                 },
-                "catenaXId": "urn:uuid:a1c33cc3-60c2-4b06-a929-2c3ef8d09dd2",
-                "partTypeInformation": {
-                    "manufacturerPartId": "22687V8-83",
-                    "customerPartId": "22687V8-83",
-                    "classification": "component",
-                    "nameAtManufacturer": "ECU",
-                    "nameAtCustomer": "ECU"
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
+                    },
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:6ae4b780-c6dd-4c3c-adf8-b57b5cc8e3da"
                 }
-            }
+            ]
         },
         {
-            "identification": "urn:uuid:6ec4edf2-98e4-4a93-a002-7f16237067b9",
-            "aspectType": "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship",
-            "payload": {
-                "catenaXId": "urn:uuid:a1c33cc3-60c2-4b06-a929-2c3ef8d09dd2",
-                "childParts": [
-                    {
-                        "quantity": {
-                            "quantityNumber": "0.3301",
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:kilogram"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:f38af026-2030-4da6-bcce-6af211400feb"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:6b7688db-ca94-4056-9e94-98b8f49bbf5e"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": "0.2001",
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:kilogram"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:f6dc159a-c93d-4a61-a9c6-4985e6ffca31"
-                    }
-                ]
-            }
-        },
-        {
-            "identification": "urn:uuid:cb76b2ac-0ad8-4677-973a-a4b28d0631bc",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000000BJTL",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "95657762-59",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-889156440760940480818067",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
                 },
-                "catenaXId": "urn:uuid:19488393-c309-4f69-babb-ec2a2414e567",
-                "partTypeInformation": {
-                    "manufacturerPartId": "95657762-59",
-                    "customerPartId": "95657762-59",
-                    "classification": "component",
-                    "nameAtManufacturer": "Door Key",
-                    "nameAtCustomer": "Door Key"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:97401abe-2b7a-4180-840e-ae273214a705",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "52344G6-17",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-988449408817847876659669",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                {
+                    "value": "DI-16",
+                    "key": "manufacturerPartId"
                 },
-                "catenaXId": "urn:uuid:f6dc159a-c93d-4a61-a9c6-4985e6ffca31",
-                "partTypeInformation": {
-                    "manufacturerPartId": "52344G6-17",
-                    "customerPartId": "52344G6-17",
-                    "classification": "component",
-                    "nameAtManufacturer": "Engineering Plastics",
-                    "nameAtCustomer": "Engineering Plastics"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:a7686344-8d0f-48a5-8f1e-05cd035e5ce5",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003CSGV",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "95657362-64",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-904523309637402603975870",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                {
+                    "value": "OMCBYLPHNDTUQYOHK",
+                    "key": "partInstanceId"
                 },
-                "catenaXId": "urn:uuid:e4ee6157-108d-4dc5-b47b-08a317d1e2c5",
-                "partTypeInformation": {
-                    "manufacturerPartId": "33740332-54",
-                    "customerPartId": "33740332-54",
-                    "classification": "component",
-                    "nameAtManufacturer": "Door f-r",
-                    "nameAtCustomer": "Door front-right"
+                {
+                    "value": "OMCBYLPHNDTUQYOHK",
+                    "key": "van"
                 }
+            ],
+            "manufacturingInformation": {
+                "date": "2016-09-21T11:53:57.000Z",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+            "partTypeInformation": {
+                "manufacturerPartId": "DI-16",
+                "classification": "product",
+                "nameAtManufacturer": "Vehicle Combustion"
             }
         },
         {
-            "identification": "urn:uuid:e78158c7-0992-4a07-9d38-efc9888a82ed",
-            "aspectType": "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship",
-            "payload": {
-                "catenaXId": "urn:uuid:e4ee6157-108d-4dc5-b47b-08a317d1e2c5",
-                "childParts": [
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:f680d61e-5c04-4dd1-9f7f-995719f20a48"
-                    }
-                ]
-            }
-        },
-        {
-            "identification": "urn:uuid:cd50d9ad-8b2c-45b4-ae10-119fbb5cfa67",
-            "aspectType": "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship",
-            "payload": {
-                "catenaXId": "urn:uuid:cafdcb5d-4ed8-40e0-8af4-2b986a08ca7d",
-                "childParts": [
-                    {
-                        "quantity": {
-                            "quantityNumber": "0.2014",
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:kilogram"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:57ff38c0-ba9b-42e0-8950-1b1c062efe04"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": 1,
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:piece"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:56f09d9a-7004-46e8-a7e1-5a4a4caecced"
-                    },
-                    {
-                        "quantity": {
-                            "quantityNumber": "0.2341",
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:kilogram"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:b5a3dc95-c4a3-482f-b5ef-89af7d6e6348"
-                    }
-                ]
-            }
-        },
-        {
-            "identification": "urn:uuid:b655ee04-a45e-4d83-85fd-b6db41054365",
-            "aspectType": "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
-            "payload": {
-                "diameter": "380",
-                "length": "810",
-                "width": "590",
-                "weight": "85",
-                "height": "610"
-            }
-        },
-        {
-            "identification": "urn:uuid:3f566e36-ba6a-44ed-9a3a-f6da96dd8652",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B2OM",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "1O222E8-43",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-952083473031443415352403",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
                 },
-                "catenaXId": "urn:uuid:cafdcb5d-4ed8-40e0-8af4-2b986a08ca7d",
-                "partTypeInformation": {
-                    "manufacturerPartId": "1O222E8-43",
-                    "customerPartId": "1O222E8-43",
-                    "classification": "component",
-                    "nameAtManufacturer": "Transmission",
-                    "nameAtCustomer": "Transmission"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:3c4443b5-b2be-4a89-8451-89104bd76028",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000000BJTL",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "95657762-59",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-447398973469390545470164",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                {
+                    "value": "77795937-13",
+                    "key": "manufacturerPartId"
                 },
-                "catenaXId": "urn:uuid:f680d61e-5c04-4dd1-9f7f-995719f20a48",
-                "partTypeInformation": {
-                    "manufacturerPartId": "95657762-59",
-                    "customerPartId": "95657762-59",
-                    "classification": "component",
-                    "nameAtManufacturer": "Door Key",
-                    "nameAtCustomer": "Door Key"
+                {
+                    "value": "NO-228987054676435453412325",
+                    "key": "partInstanceId"
                 }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:de9d233e-c371-490b-b02b-092756ccdd42",
+            "partTypeInformation": {
+                "manufacturerPartId": "77795937-13",
+                "customerPartId": "77795937-13",
+                "classification": "component",
+                "nameAtManufacturer": "Steering wheel",
+                "nameAtCustomer": "Steering wheel"
             }
         },
         {
-            "identification": "urn:uuid:b109b9fc-48e9-4436-b9e3-8e8297e3dcb6",
-            "aspectType": "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship",
-            "payload": {
-                "catenaXId": "urn:uuid:b5a3dc95-c4a3-482f-b5ef-89af7d6e6348",
-                "childParts": []
-            }
-        },
-        {
-            "identification": "urn:uuid:12914990-8662-4994-b1bd-9df34a7a77f3",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B3NX",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "60410Y4-22",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-962799430095473385519860",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
                 },
-                "catenaXId": "urn:uuid:6b7688db-ca94-4056-9e94-98b8f49bbf5e",
-                "partTypeInformation": {
-                    "manufacturerPartId": "60410Y4-22",
-                    "customerPartId": "60410Y4-22",
-                    "classification": "component",
-                    "nameAtManufacturer": "Sensor",
-                    "nameAtCustomer": "Sensor"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:6887f302-53c8-443e-a77a-dca078266ac4",
-            "aspectType": "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship",
-            "payload": {
-                "catenaXId": "urn:uuid:6b7688db-ca94-4056-9e94-98b8f49bbf5e",
-                "childParts": [
-                    {
-                        "quantity": {
-                            "quantityNumber": "0.1908",
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:kilogram"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:e6165b71-d315-4282-b874-bd35331d1dde"
-                    }
-                ]
-            }
-        },
-        {
-            "identification": "urn:uuid:d8ca82d5-b10d-4ec9-8321-7f9f475ad730",
-            "aspectType": "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship",
-            "payload": {
-                "catenaXId": "urn:uuid:56f09d9a-7004-46e8-a7e1-5a4a4caecced",
-                "childParts": [
-                    {
-                        "quantity": {
-                            "quantityNumber": "0.1908",
-                            "measurementUnit": {
-                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                                "lexicalValue": "unit:kilogram"
-                            }
-                        },
-                        "lifecycleContext": "AsBuilt",
-                        "assembledOn": "2022-02-03T14:48:54.709Z",
-                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                        "childCatenaXId": "urn:uuid:107d88d1-f24c-4f73-b099-254950609e91"
-                    }
-                ]
-            }
-        },
-        {
-            "identification": "urn:uuid:95511b93-ce70-41ca-b8cd-4930fae42229",
-            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B3NX",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "73940B2-37",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "NO-030296983042821237477955",
-                        "key": "partInstanceId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "DEU"
+                {
+                    "value": "45863316-60",
+                    "key": "manufacturerPartId"
                 },
-                "catenaXId": "urn:uuid:56f09d9a-7004-46e8-a7e1-5a4a4caecced",
-                "partTypeInformation": {
-                    "manufacturerPartId": "73940B2-37",
-                    "customerPartId": "73940B2-37",
-                    "classification": "component",
-                    "nameAtManufacturer": "Sensor",
-                    "nameAtCustomer": "Sensor"
+                {
+                    "value": "NO-383031694883957480024383",
+                    "key": "partInstanceId"
                 }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:625d9e00-b1c2-4d98-a9a7-fea9f00d2521",
+            "partTypeInformation": {
+                "manufacturerPartId": "45863316-60",
+                "customerPartId": "45863316-60",
+                "classification": "component",
+                "nameAtManufacturer": "Tires",
+                "nameAtCustomer": "Tires"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "28673126-98",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-769452578547908494693969",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:94f95beb-2d2e-4275-af82-ef601d25e7db",
+            "partTypeInformation": {
+                "manufacturerPartId": "28673126-98",
+                "customerPartId": "28673126-98",
+                "classification": "component",
+                "nameAtManufacturer": "Door r-r",
+                "nameAtCustomer": "Door rear-right"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "19073706-76",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-465118501506511726597363",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:82260db6-7ac1-4b61-9b98-e193cfbfcca4",
+            "partTypeInformation": {
+                "manufacturerPartId": "19073706-76",
+                "customerPartId": "19073706-76",
+                "classification": "component",
+                "nameAtManufacturer": "Indicator right",
+                "nameAtCustomer": "Indicator right"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "85023955-75",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-483981471906326819012285",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:d4e9558c-f75b-437d-8bd5-83fe14bdeeaf",
+            "partTypeInformation": {
+                "manufacturerPartId": "85023955-75",
+                "customerPartId": "85023955-75",
+                "classification": "component",
+                "nameAtManufacturer": "Tailgate",
+                "nameAtCustomer": "Tailgate"
+            }
+        },
+        {
+            "catenaXId": "urn:uuid:a7fc6773-b3f2-4b9e-b0ca-586cbbd51dd9",
+            "childParts": [
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
+                    },
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:80dd9f05-d4e0-4b14-9436-d9a31865b2a8"
+                }
+            ]
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003CSGV",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "22782277-50",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-492358453378932046169873",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:a7fc6773-b3f2-4b9e-b0ca-586cbbd51dd9",
+            "partTypeInformation": {
+                "manufacturerPartId": "22782277-50",
+                "customerPartId": "22782277-50",
+                "classification": "component",
+                "nameAtManufacturer": "Door f-l",
+                "nameAtCustomer": "Door front-left"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000000BJTL",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "95657762-59",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-074211028117767199853993",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:80dd9f05-d4e0-4b14-9436-d9a31865b2a8",
+            "partTypeInformation": {
+                "manufacturerPartId": "95657762-59",
+                "customerPartId": "95657762-59",
+                "classification": "component",
+                "nameAtManufacturer": "Door Key",
+                "nameAtCustomer": "Door Key"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "10030939-59",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-381494136658703739908155",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:6bd19830-3f63-4915-906d-0dd26196b7a6",
+            "partTypeInformation": {
+                "manufacturerPartId": "10030939-59",
+                "customerPartId": "10030939-59",
+                "classification": "component",
+                "nameAtManufacturer": "Engine",
+                "nameAtCustomer": "Engine"
+            }
+        },
+        {
+            "diameter": 560,
+            "length": 843,
+            "width": 762,
+            "weight": 180,
+            "height": 711
+        },
+        {
+            "catenaXId": "urn:uuid:dc658148-64f5-4840-a42f-80396a42afe3",
+            "childParts": [
+                {
+                    "quantity": {
+                        "quantityNumber": "0.2014",
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:kilogram"
+                        }
+                    },
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:1c9e90dc-1135-402c-8a4f-11b4e6e8ca6e"
+                },
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
+                    },
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:6ac8d26d-332f-450b-b281-2db2e4ed161a"
+                },
+                {
+                    "quantity": {
+                        "quantityNumber": "0.2341",
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:kilogram"
+                        }
+                    },
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:44516a17-96a6-48ea-be5f-9c20b71f8220"
+                }
+            ]
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003B2OM",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "1O222E8-43",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-454520675807492820351595",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:dc658148-64f5-4840-a42f-80396a42afe3",
+            "partTypeInformation": {
+                "manufacturerPartId": "1O222E8-43",
+                "customerPartId": "1O222E8-43",
+                "classification": "component",
+                "nameAtManufacturer": "Transmission",
+                "nameAtCustomer": "Transmission"
+            }
+        },
+        {
+            "diameter": 380,
+            "length": 810,
+            "width": 590,
+            "weight": 85,
+            "height": 610
+        },
+        {
+            "catenaXId": "urn:uuid:44516a17-96a6-48ea-be5f-9c20b71f8220",
+            "childParts": []
+        },
+        {
+            "catenaXId": "urn:uuid:6ac8d26d-332f-450b-b281-2db2e4ed161a",
+            "childParts": [
+                {
+                    "quantity": {
+                        "quantityNumber": "0.1908",
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:kilogram"
+                        }
+                    },
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:4cf755d5-c54d-4049-bd34-ccb566bd7d08"
+                }
+            ]
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003B3NX",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "66755R5-14",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-585940955748527736354913",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:6ac8d26d-332f-450b-b281-2db2e4ed161a",
+            "partTypeInformation": {
+                "manufacturerPartId": "66755R5-14",
+                "customerPartId": "66755R5-14",
+                "classification": "component",
+                "nameAtManufacturer": "Sensor",
+                "nameAtCustomer": "Sensor"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "15635759-16",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-313649659285446108570445",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:571cca8d-ceda-458e-a51c-69bcf53fa1ad",
+            "partTypeInformation": {
+                "manufacturerPartId": "15635759-16",
+                "customerPartId": "15635759-16",
+                "classification": "component",
+                "nameAtManufacturer": "Door r-l",
+                "nameAtCustomer": "Door rear-left"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "13769860-47",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-992059506619147345195164",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:f473c6ec-3920-433a-89cd-c3b914ed6963",
+            "partTypeInformation": {
+                "manufacturerPartId": "13769860-47",
+                "customerPartId": "13769860-47",
+                "classification": "component",
+                "nameAtManufacturer": "Fender left",
+                "nameAtCustomer": "Fender right"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "58471477-24",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-256006458590897684674690",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:719cff6f-8425-4a9a-a20f-1ddf92873d57",
+            "partTypeInformation": {
+                "manufacturerPartId": "58471477-24",
+                "customerPartId": "58471477-24",
+                "classification": "component",
+                "nameAtManufacturer": "Exterior mirror right",
+                "nameAtCustomer": "Exterior mirror right"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "78141846-87",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-159932335465198259357175",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:0e90d4a6-8ccc-483b-a786-bfac2a2d6553",
+            "partTypeInformation": {
+                "manufacturerPartId": "78141846-87",
+                "customerPartId": "78141846-87",
+                "classification": "component",
+                "nameAtManufacturer": "Starter motor",
+                "nameAtCustomer": "Starter motor"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "88111709-49",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-673420918684432228459139",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:b2805664-6d1e-481a-b270-bc75cb67ad63",
+            "partTypeInformation": {
+                "manufacturerPartId": "88111709-49",
+                "customerPartId": "88111709-49",
+                "classification": "component",
+                "nameAtManufacturer": "Axle part rear",
+                "nameAtCustomer": "Axle part rear"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "12093297-03",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-482943843990617202683900",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:c1bbd0b8-b1df-40c5-b19a-714798799ffe",
+            "partTypeInformation": {
+                "manufacturerPartId": "12093297-03",
+                "customerPartId": "12093297-03",
+                "classification": "component",
+                "nameAtManufacturer": "Axle part front",
+                "nameAtCustomer": "Axle part front"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "20125432-59",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-777927484786811719267774",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:eab9525d-79c0-4c3c-83dd-4815f2703ed1",
+            "partTypeInformation": {
+                "manufacturerPartId": "20125432-59",
+                "customerPartId": "20125432-59",
+                "classification": "component",
+                "nameAtManufacturer": "Indicator left",
+                "nameAtCustomer": "Indicator left"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "57929013-09",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-506968858375705670698906",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:1b96d3d5-05e7-4da7-9915-2ed834316ca4",
+            "partTypeInformation": {
+                "manufacturerPartId": "57929013-09",
+                "customerPartId": "57929013-09",
+                "classification": "component",
+                "nameAtManufacturer": "AC compressor",
+                "nameAtCustomer": "Air conditioning compressor"
+            }
+        },
+        {
+            "catenaXId": "urn:uuid:aacf2b0e-5de2-4952-862e-2b47a12e59bc",
+            "childParts": [
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
+                    },
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:d25ba21d-55d8-4ba0-9a3e-2df4f199a08a"
+                }
+            ]
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003CSGV",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "95657362-64",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-269076507870504883857636",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:aacf2b0e-5de2-4952-862e-2b47a12e59bc",
+            "partTypeInformation": {
+                "manufacturerPartId": "33740332-54",
+                "customerPartId": "33740332-54",
+                "classification": "component",
+                "nameAtManufacturer": "Door f-r",
+                "nameAtCustomer": "Door front-right"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000000BJTL",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "95657762-59",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-002875190805601631753761",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:d25ba21d-55d8-4ba0-9a3e-2df4f199a08a",
+            "partTypeInformation": {
+                "manufacturerPartId": "95657762-59",
+                "customerPartId": "95657762-59",
+                "classification": "component",
+                "nameAtManufacturer": "Door Key",
+                "nameAtCustomer": "Door Key"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "54165444-59",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-117123994992309633101883",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:cb1e4dcd-31a0-47df-994b-f0f541cbaf9f",
+            "partTypeInformation": {
+                "manufacturerPartId": "54165444-59",
+                "customerPartId": "54165444-59",
+                "classification": "component",
+                "nameAtManufacturer": "Bumper front",
+                "nameAtCustomer": "Bumper front"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "45415162-57",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-178373350581495890032030",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:cbb53a71-fba4-4753-868b-e91721d8f7b1",
+            "partTypeInformation": {
+                "manufacturerPartId": "45415162-57",
+                "customerPartId": "45415162-57",
+                "classification": "component",
+                "nameAtManufacturer": "Led headlight",
+                "nameAtCustomer": "Led headlight"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "32494586-73",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-158280180102316527774467",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:9663defa-684b-4e75-80d5-82d001ab217a",
+            "partTypeInformation": {
+                "manufacturerPartId": "32494586-73",
+                "customerPartId": "32494586-73",
+                "classification": "component",
+                "nameAtManufacturer": "Differential Gear",
+                "nameAtCustomer": "Differential Gear"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "67034319-44",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-572960754949710555167656",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:9107e586-9bfa-4c82-b81c-6c8ae0ee36f6",
+            "partTypeInformation": {
+                "manufacturerPartId": "67034319-44",
+                "customerPartId": "67034319-44",
+                "classification": "component",
+                "nameAtManufacturer": "Turbocharger",
+                "nameAtCustomer": "Turbocharger"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "22768257-25",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-154372580381393251774908",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:0bfbebba-8a1c-41a3-8199-b1075f327f7a",
+            "partTypeInformation": {
+                "manufacturerPartId": "22768257-25",
+                "customerPartId": "22768257-25",
+                "classification": "component",
+                "nameAtManufacturer": "Bumper rear",
+                "nameAtCustomer": "Bumper rear"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "36643162-35",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-414351818865518400825673",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:1294c992-af34-4779-b13c-5cae0fd521fb",
+            "partTypeInformation": {
+                "manufacturerPartId": "36643162-35",
+                "customerPartId": "36643162-35",
+                "classification": "component",
+                "nameAtManufacturer": "Fender right",
+                "nameAtCustomer": "Fender right"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "43501996-98",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-793594087536635898069838",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:34d50337-e11f-4f41-9a48-87cc986d5449",
+            "partTypeInformation": {
+                "manufacturerPartId": "43501996-98",
+                "customerPartId": "43501996-98",
+                "classification": "component",
+                "nameAtManufacturer": "Dashboard",
+                "nameAtCustomer": "Dashboard"
+            }
+        },
+        {
+            "catenaXId": "urn:uuid:6ae4b780-c6dd-4c3c-adf8-b57b5cc8e3da",
+            "childParts": [
+                {
+                    "quantity": {
+                        "quantityNumber": "0.3301",
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:kilogram"
+                        }
+                    },
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:d0545b54-8839-4b13-b6c5-f19f0b7c9105"
+                },
+                {
+                    "quantity": {
+                        "quantityNumber": 1,
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:piece"
+                        }
+                    },
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:eabe1577-a594-409f-9da3-92dfa5b89354"
+                },
+                {
+                    "quantity": {
+                        "quantityNumber": "0.2001",
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:kilogram"
+                        }
+                    },
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:04baed27-a656-4cee-be2a-d2c99fa9c574"
+                }
+            ]
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003B5MJ",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "45869M7-69",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-534035086445797049897887",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:6ae4b780-c6dd-4c3c-adf8-b57b5cc8e3da",
+            "partTypeInformation": {
+                "manufacturerPartId": "45869M7-69",
+                "customerPartId": "45869M7-69",
+                "classification": "component",
+                "nameAtManufacturer": "ECU",
+                "nameAtCustomer": "ECU"
+            }
+        },
+        {
+            "catenaXId": "urn:uuid:eabe1577-a594-409f-9da3-92dfa5b89354",
+            "childParts": [
+                {
+                    "quantity": {
+                        "quantityNumber": "0.1908",
+                        "measurementUnit": {
+                            "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                            "lexicalValue": "unit:kilogram"
+                        }
+                    },
+                    "lifecycleContext": "AsBuilt",
+                    "createdOn": "2022-02-03T14:48:54.709Z",
+                    "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                    "childCatenaXId": "urn:uuid:b6496465-27fc-489e-9470-855215868bb2"
+                }
+            ]
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003B3NX",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "45862S2-48",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-150179965154423831568535",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:eabe1577-a594-409f-9da3-92dfa5b89354",
+            "partTypeInformation": {
+                "manufacturerPartId": "45862S2-48",
+                "customerPartId": "45862S2-48",
+                "classification": "component",
+                "nameAtManufacturer": "Sensor",
+                "nameAtCustomer": "Sensor"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003B0Q0",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "92115H1-78",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-179789149406444356724807",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:04baed27-a656-4cee-be2a-d2c99fa9c574",
+            "partTypeInformation": {
+                "manufacturerPartId": "92115H1-78",
+                "customerPartId": "92115H1-78",
+                "classification": "component",
+                "nameAtManufacturer": "Engineering Plastics",
+                "nameAtCustomer": "Engineering Plastics"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "94421589-82",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-833143677077218520998127",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:5ca6c6f0-3ac2-4b90-b88c-a28935646d55",
+            "partTypeInformation": {
+                "manufacturerPartId": "94421589-82",
+                "customerPartId": "94421589-82",
+                "classification": "component",
+                "nameAtManufacturer": "Engine hood",
+                "nameAtCustomer": "Engine hood"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "09002013-68",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-502228708594450719353786",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:744ec0a4-575b-47b4-9c97-b5eaad60b51e",
+            "partTypeInformation": {
+                "manufacturerPartId": "09002013-68",
+                "customerPartId": "09002013-68",
+                "classification": "component",
+                "nameAtManufacturer": "Trailer coupling",
+                "nameAtCustomer": "Tailer coupling"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "61184040-23",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-561937303475455770405543",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:fc7f69b3-27d8-40a8-866e-e4e79608d788",
+            "partTypeInformation": {
+                "manufacturerPartId": "61184040-23",
+                "customerPartId": "61184040-23",
+                "classification": "component",
+                "nameAtManufacturer": "Taillight rear",
+                "nameAtCustomer": "Taillight rear"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "73849201-61",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-042618127666918570970235",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:66488d8e-893a-4f4d-b650-e921ad5223e0",
+            "partTypeInformation": {
+                "manufacturerPartId": "73849201-61",
+                "customerPartId": "73849201-61",
+                "classification": "component",
+                "nameAtManufacturer": "Catalysator",
+                "nameAtCustomer": "Catalysator"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "78744126-74",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-845276168850633063410003",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:4870af61-d8e5-4923-b8b9-e43bab6e555b",
+            "partTypeInformation": {
+                "manufacturerPartId": "78744126-74",
+                "customerPartId": "78744126-74",
+                "classification": "component",
+                "nameAtManufacturer": "Taillight front",
+                "nameAtCustomer": "Taillight front"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "00871379-44",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-933687301502317538061233",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:682f4e8e-2157-45ed-8833-0e51d6f4b555",
+            "partTypeInformation": {
+                "manufacturerPartId": "00871379-44",
+                "customerPartId": "00871379-44",
+                "classification": "component",
+                "nameAtManufacturer": "Chassis",
+                "nameAtCustomer": "Chassis"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "65529521-37",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-040964449149119380741575",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:da6d0c77-2318-4cf0-b72a-602b758c4893",
+            "partTypeInformation": {
+                "manufacturerPartId": "65529521-37",
+                "customerPartId": "65529521-37",
+                "classification": "component",
+                "nameAtManufacturer": "Exterior mirror left",
+                "nameAtCustomer": "Exterior mirror left"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "08901347-87",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-196930078703628145562555",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:b584ac7a-73b0-4d8b-8dff-a14dad6a8787",
+            "partTypeInformation": {
+                "manufacturerPartId": "08901347-87",
+                "customerPartId": "08901347-87",
+                "classification": "component",
+                "nameAtManufacturer": "Rims",
+                "nameAtCustomer": "Rims"
+            }
+        },
+        {
+            "localIdentifiers": [
+                {
+                    "value": "BPNL00000003AZQP",
+                    "key": "manufacturerId"
+                },
+                {
+                    "value": "81324139-23",
+                    "key": "manufacturerPartId"
+                },
+                {
+                    "value": "NO-447510894747375170043335",
+                    "key": "partInstanceId"
+                }
+            ],
+            "manufacturingInformation": {
+                "date": "2022-02-04T14:48:54",
+                "country": "DEU"
+            },
+            "catenaXId": "urn:uuid:12236481-0285-44d8-810f-766c676a0298",
+            "partTypeInformation": {
+                "manufacturerPartId": "81324139-23",
+                "customerPartId": "81324139-23",
+                "classification": "component",
+                "nameAtManufacturer": "Alternator",
+                "nameAtCustomer": "Alternator"
             }
         }
     ]
