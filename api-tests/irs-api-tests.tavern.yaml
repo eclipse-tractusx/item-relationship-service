@@ -38,7 +38,7 @@ stages:
         content-type: application/json
       save:
         json:
-          job_id: jobId
+          job_id: id
     delay_after: 3
 
   - name: fetch response for created job
@@ -100,7 +100,7 @@ stages:
         content-type: application/json
       save:
         json:
-          job_id: jobId
+          job_id: id
     delay_after: 320
 
   - name: fetch response for created job
@@ -116,7 +116,7 @@ stages:
       status_code: 200
       json:
         job:
-          jobState: COMPLETED
+          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:submodels_are_not_empty
         - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
@@ -168,7 +168,7 @@ stages:
         content-type: application/json
       save:
         json:
-          job_id: jobId
+          job_id: id
     delay_after: 300
 
   - name: fetch response for created job
@@ -184,7 +184,7 @@ stages:
       status_code: 200
       json:
         job:
-          jobState: COMPLETED
+          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:submodels_are_empty
         - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
@@ -283,12 +283,12 @@ stages:
     response:
       status_code: 201
       json:
-        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        id: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
       headers:
         content-type: application/json
       save:
         json:
-          job_id: jobId
+          job_id: id
     delay_after: 240
 
   - name: fetch response for created job and check details
@@ -304,7 +304,7 @@ stages:
       status_code: 200
       json:
         job:
-          jobState: COMPLETED
+          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
@@ -357,12 +357,12 @@ stages:
     response:
       status_code: 201
       json:
-        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        id: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
       headers:
         content-type: application/json
       save:
         json:
-          job_id: jobId
+          job_id: id
     delay_after: 320
 
   - name: fetch response for created job and check details
@@ -378,7 +378,7 @@ stages:
       status_code: 200
       json:
         job:
-          jobState: COMPLETED
+          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
@@ -430,12 +430,12 @@ stages:
     response:
       status_code: 201
       json:
-        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        id: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
       headers:
         content-type: application/json
       save:
         json:
-          job_id: jobId
+          job_id: id
     delay_after: 240
 
   - name: fetch response for created job and check details
@@ -451,7 +451,7 @@ stages:
       status_code: 200
       json:
         job:
-          jobState: COMPLETED
+          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
@@ -504,12 +504,12 @@ stages:
     response:
       status_code: 201
       json:
-        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        id: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
       headers:
         content-type: application/json
       save:
         json:
-          job_id: jobId
+          job_id: id
     delay_after: 240
 
   - name: fetch response for created job and check details
@@ -525,7 +525,7 @@ stages:
       status_code: 200
       json:
         job:
-          jobState: COMPLETED
+          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
@@ -578,12 +578,12 @@ stages:
     response:
       status_code: 201
       json:
-        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        id: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
       headers:
         content-type: application/json
       save:
         json:
-          job_id: jobId
+          job_id: id
     delay_after: 300
 
   - name: fetch response for created job and check details
@@ -599,7 +599,7 @@ stages:
       status_code: 200
       json:
         job:
-          jobState: COMPLETED
+          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
@@ -652,12 +652,12 @@ stages:
     response:
       status_code: 201
       json:
-        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        id: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
       headers:
         content-type: application/json
       save:
         json:
-          job_id: jobId
+          job_id: id
     delay_after: 240
 
   - name: fetch response for created job and check details
@@ -673,7 +673,7 @@ stages:
       status_code: 200
       json:
         job:
-          jobState: COMPLETED
+          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
@@ -793,12 +793,12 @@ stages:
     response:
       status_code: 201
       json:
-        jobId: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        id: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
       headers:
         content-type: application/json
       save:
         json:
-          job_id: jobId
+          job_id: id
     delay_after: 340
 
   - name: fetch response for created job and check details
@@ -814,7 +814,7 @@ stages:
       status_code: 200
       json:
         job:
-          jobState: COMPLETED
+          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
@@ -914,7 +914,7 @@ stages:
 
   - name: get all COMPLETED jobs
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=COMPLETED"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=COMPLETED"
       method: GET
       headers:
         content-type: application/json
@@ -959,7 +959,7 @@ stages:
 
   - name: get all ERROR jobs
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=ERROR"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=ERROR"
       method: GET
       headers:
         content-type: application/json
@@ -1004,7 +1004,7 @@ stages:
 
   - name: get all INITIAL jobs
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=INITIAL"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=INITIAL"
       method: GET
       headers:
         content-type: application/json
@@ -1069,7 +1069,7 @@ stages:
 
   - name: get all RUNNING jobs
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=RUNNING"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=RUNNING"
       method: GET
       headers:
         content-type: application/json
@@ -1264,7 +1264,7 @@ stages:
 ---
 
 
-test_name: Make sure search for running jobs returns no jobCompleted timestamp
+test_name: Make sure search for running jobs returns no completedOn timestamp
 
 strict:
   - headers:off
@@ -1291,7 +1291,7 @@ stages:
 
   - name: get all jobs with status UNSAVED, INITIAL, RUNNING, TRANSFERS_FINISHED and CANCELED
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=UNSAVED, INITIAL, RUNNING, TRANSFERS_FINISHED, CANCELED"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=UNSAVED, INITIAL, RUNNING, TRANSFERS_FINISHED, CANCELED"
       method: GET
       headers:
         content-type: application/json
@@ -1300,7 +1300,7 @@ stages:
       status_code: 200
       verify_response_with:
         - function: api-tests.tavern_helpers:check_startedOn_timestamp_exists
-        - function: api-tests.tavern_helpers:check_jobCompleted_timestamp_not_exists
+        - function: api-tests.tavern_helpers:check_completedOn_timestamp_not_exists
       headers:
         content-type: application/json
 
@@ -1308,7 +1308,7 @@ stages:
 ---
 
 
-test_name: Make sure search for completed jobs returns jobCompleted timestamp
+test_name: Make sure search for completed jobs returns completedOn timestamp
 
 strict:
   - headers:off
@@ -1335,7 +1335,7 @@ stages:
 
   - name: get all jobs with status COMPLETED and ERROR
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=COMPLETED, ERROR"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=COMPLETED, ERROR"
       method: GET
       headers:
         content-type: application/json
@@ -1344,7 +1344,7 @@ stages:
       status_code: 200
       verify_response_with:
         - function: api-tests.tavern_helpers:check_startedOn_timestamp_exists
-        - function: api-tests.tavern_helpers:check_jobCompleted_timestamp_exists
+        - function: api-tests.tavern_helpers:check_completedOn_timestamp_exists
       headers:
         content-type: application/json
 
@@ -1352,7 +1352,7 @@ stages:
 ---
 
 
-test_name: Make sure search for completed jobs returns startedOn timestamp smaller than jobCompleted timestamp
+test_name: Make sure search for completed jobs returns startedOn timestamp smaller than completedOn timestamp
 
 strict:
   - headers:off
@@ -1379,7 +1379,7 @@ stages:
 
   - name: get all jobs with status COMPLETED and ERROR
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=COMPLETED, ERROR"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=COMPLETED, ERROR"
       method: GET
       headers:
         content-type: application/json
@@ -1388,8 +1388,8 @@ stages:
       status_code: 200
       verify_response_with:
         - function: api-tests.tavern_helpers:check_startedOn_timestamp_exists
-        - function: api-tests.tavern_helpers:check_jobCompleted_timestamp_exists
-        - function: api-tests.tavern_helpers:check_startedOn_is_smaller_than_jobCompleted
+        - function: api-tests.tavern_helpers:check_completedOn_timestamp_exists
+        - function: api-tests.tavern_helpers:check_startedOn_is_smaller_than_completedOn
       headers:
         content-type: application/json
 
@@ -1491,7 +1491,7 @@ stages:
         content-type: application/json
       save:
         json:
-          job_id: jobId
+          job_id: id
     delay_after: 50
 
   - name: fetch response for created job
@@ -1507,7 +1507,7 @@ stages:
       status_code: 200
       json:
         job:
-          jobState: COMPLETED
+          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:submodels_are_empty
         - function: api-tests.tavern_helpers:relationships_are_empty
