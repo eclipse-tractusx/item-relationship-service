@@ -1,0 +1,163 @@
+global:
+  enablePrometheus: false
+  enableGrafana: false
+irs-helm:
+  #####################
+  # IRS Configuration #
+  #####################
+  irsUrl: "https://irs.beta.demo.catena-x.net"
+  ingress:
+    hosts:
+      - host: "irs.beta.demo.catena-x.net"
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - "irs.beta.demo.catena-x.net"
+        secretName: tls-secret
+  digitalTwinRegistry:
+    url: https://semantics.beta.demo.catena-x.net/registry
+  semanticsHub:
+    url: https://semantics.beta.demo.catena-x.net/hub/api/v1
+  bpdm:
+    url:  https://partners-pool.beta.demo.catena-x.net
+  minioUser: <path:traceability-irs/data/beta/minio#minioUser>
+  minioPassword: <path:traceability-irs/data/beta/minio#minioPassword>
+  keycloak:
+    oauth2:
+      clientId: <path:traceability-irs/data/beta/keycloak/oauth2#clientId>
+      clientSecret: <path:traceability-irs/data/beta/keycloak/oauth2#clientSecret>
+      clientTokenUri: <path:traceability-irs/data/beta/keycloak/oauth2#tokenUri>
+      jwkSetUri: <path:traceability-irs/data/beta/keycloak/oauth2#jwkSetUri>
+  aasWrapper:
+    username: <path:traceability-irs/data/beta/aasProxy/submodel#username>
+    password: <path:traceability-irs/data/beta/aasProxy/submodel#password>
+
+  #######################
+  # Minio Configuration #
+  #######################
+  irs-minio:
+    minioUser: <path:traceability-irs/data/beta/minio#minioUser>
+    minioPassword: <path:traceability-irs/data/beta/minio#minioPassword>
+
+  ############################
+  # AASWrapper Configuration #
+  ############################
+  irs-aaswrapper:
+    edc:
+      api:
+        auth:
+          key: <path:traceability-irs/data/beta/controlplane#apiKey>
+
+  ##############################
+  # EDC Postgres Configuration #
+  ##############################
+  postgresql:
+    auth:
+      postgresPassword: <path:traceability-irs/data/beta/controlplane#databasepassword>
+      password: <path:traceability-irs/data/beta/controlplane#databasepassword>
+
+  ##################################
+  # EDC Controlplane Configuration #
+  ##################################
+  edc-controlplane:
+    ingresses:
+      - enabled: true
+        hostname: "irs-consumer-controlplane.beta.demo.catena-x.net"
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        endpoints:
+          - ids
+          - data
+        className: ""
+        tls:
+          - hosts:
+              - "irs-consumer-controlplane.beta.demo.catena-x.net"
+            secretName: tls-secret
+        certManager:
+          issuer: ""
+          clusterIssuer: ""
+
+    edc:
+      postgresql:
+        password: <path:traceability-irs/data/beta/controlplane#databasepassword>
+      transfer:
+        proxy:
+          token:
+            verifier:
+              publickey:
+                alias: irs-beta-daps-cert
+            signer:
+              privatekey:
+                alias: irs-beta-daps-key
+      api:
+        auth:
+          key: <path:traceability-irs/data/beta/controlplane#apiKey>
+      controlplane:
+        url: "https://irs-consumer-controlplane.beta.demo.catena-x.net"
+      dataplane:
+        url: "https://irs-consumer-dataplane.beta.demo.catena-x.net"
+    configuration:
+      properties: |-
+        edc.oauth.client.id=<path:traceability-irs/data/beta/controlplane#dapsClientId>
+        edc.oauth.private.key.alias=irs-beta-daps-key
+        edc.oauth.provider.jwks.url=https://daps.beta.demo.catena-x.net/.well-known/jwks.json
+        edc.oauth.public.key.alias=irs-beta-daps-cert
+        edc.oauth.token.url=https://daps.beta.demo.catena-x.net/token
+        edc.vault.hashicorp.url=https://vault.demo.catena-x.net
+        edc.vault.hashicorp.token=<path:traceability-irs/data/beta/controlplane#vaultToken>
+        edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
+        edc.data.encryption.keys.alias=irs-beta-daps-key
+        edc.data.encryption.algorithm=NONE
+
+  ###############################
+  # EDC Dataplane Configuration #
+  ###############################
+  edc-dataplane:
+    edc:
+      api:
+        auth:
+          key: <path:traceability-irs/data/beta/controlplane#apiKey>
+    ## Ingress declaration to expose the network service.
+    ingresses:
+      ## Public / Internet facing Ingress
+      - enabled: true
+        # -- The hostname to be used to precisely map incoming traffic onto the underlying network service
+        hostname: "irs-consumer-dataplane.beta.demo.catena-x.net"
+        # -- Additional ingress annotations to add
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        # -- EDC endpoints exposed by this ingress resource
+        endpoints:
+          - public
+        # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
+        className: "nginx"
+        # -- Enables TLS on the ingress resource
+        tls:
+          - hosts:
+              - "irs-consumer-dataplane.beta.demo.catena-x.net"
+            # Default secret for certificate creation already provided to your namespace
+            secretName: tls-secret
+        ## Adds [cert-manager](https://cert-manager.io/docs/) annotations to the ingress resource
+        certManager:
+          # -- If preset enables certificate generation via cert-manager namespace scoped issuer
+          issuer: ""
+          # -- If preset enables certificate generation via cert-manager cluster-wide issuer
+          clusterIssuer: ""
+
+    configuration:
+      properties: |-
+        edc.oauth.client.id=<path:traceability-irs/data/beta/controlplane#dapsClientId>
+        edc.oauth.private.key.alias=irs-beta-daps-key
+        edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
+        edc.oauth.provider.jwks.url=https://daps.beta.demo.catena-x.net/.well-known/jwks.json
+        edc.oauth.public.key.alias=irs-beta-daps-cert
+        edc.oauth.token.url=https://daps.beta.demo.catena-x.net/token
+        edc.vault.hashicorp.url=https://vault.demo.catena-x.net
+        edc.vault.hashicorp.token=<path:traceability-irs/data/beta/controlplane#vaultToken>
+        edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
