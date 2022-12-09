@@ -22,4 +22,4 @@ dependencies:
     version: 1.0.1
   - name: irs-helm
     repository: "file://../../irs"
-    version: 3.0.1
+    version: 4.0.0
