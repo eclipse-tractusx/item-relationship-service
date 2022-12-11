@@ -43,6 +43,7 @@ import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.JobStatusResult;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Submodel;
@@ -63,6 +64,10 @@ import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
 import org.eclipse.tractusx.irs.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -86,16 +91,35 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     private final MeterRegistryService meterRegistryService;
 
     @Override
-    public List<JobStatusResult> getJobsByJobState(final @NonNull List<JobState> jobStates) {
+    public PageResult getJobsByJobState(final @NonNull List<JobState> jobStates, final Pageable pageable) {
         final List<MultiTransferJob> jobs = jobStates.isEmpty() ? jobStore.findAll() : jobStore.findByStates(jobStates);
-        return jobs.stream()
-                   .map(job -> JobStatusResult.builder()
-                                              .jobId(job.getJob().getJobId())
-                                              .jobState(job.getJob().getJobState())
-                                              .startedOn(job.getJob().getStartedOn())
-                                              .jobCompleted(job.getJob().getJobCompleted())
-                                              .build())
-                   .collect(Collectors.toList());
+        final List<JobStatusResult> jobStatusResults = jobs.stream()
+                                                           .map(job -> JobStatusResult.builder()
+                                                                                      .id(job.getJob().getId())
+                                                                                      .state(job.getJob().getState())
+                                                                                      .startedOn(job.getJob().getStartedOn())
+                                                                                      .completedOn(job.getJob().getCompletedOn())
+                                                                                      .build())
+                                                           .toList();
+
+        return new PageResult(paginateAndSortResults(pageable, jobStatusResults));
+    }
+
+    private PagedListHolder<JobStatusResult> paginateAndSortResults(final Pageable pageable,
+            final List<JobStatusResult> results) {
+        final PagedListHolder<JobStatusResult> pageListHolder = new PagedListHolder<>(new ArrayList<>(results));
+
+        final Sort sort = pageable.getSortOr(Sort.by(Sort.Direction.DESC, "startedOn"));
+        if (sort.isSorted()) {
+            sort.stream().findFirst().ifPresent(order -> {
+                pageListHolder.setSort(new MutableSortDefinition(order.getProperty(), true, order.isAscending()));
+                pageListHolder.resort();
+            });
+        }
+        pageListHolder.setPage(pageable.getPageNumber());
+        pageListHolder.setPageSize(pageable.getPageSize());
+
+        return pageListHolder;
     }
 
     @Override
@@ -112,7 +136,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
             final String jobId = jobInitiateResponse.getJobId();
-            return JobHandle.builder().jobId(UUID.fromString(jobId)).build();
+            return JobHandle.builder().id(UUID.fromString(jobId)).build();
         } else {
             throw new IllegalArgumentException("Could not start job: " + jobInitiateResponse.getError());
         }
@@ -157,7 +181,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             final var bpns = new ArrayList<Bpn>();
 
             if (jobIsCompleted(multiJob)) {
-                final var container = retrieveJobResultRelationships(multiJob.getJob().getJobId());
+                final var container = retrieveJobResultRelationships(multiJob.getJob().getId());
                 relationships.addAll(container.getRelationships());
                 tombstones.addAll(container.getTombstones());
                 shells.addAll(container.getShells());
@@ -175,7 +199,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             }
 
             log.info("Found job with id {} in status {} with {} relationships, {} tombstones and {} submodels", jobId,
-                    multiJob.getJob().getJobState(), relationships.size(), tombstones.size(), submodels.size());
+                    multiJob.getJob().getState(), relationships.size(), tombstones.size(), submodels.size());
 
             return Jobs.builder()
                        .job(multiJob.getJob()
@@ -203,7 +227,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         final Map<JobState, Long> stateCount = jobs.stream()
                                                    .map(MultiTransferJob::getJob)
-                                                   .map(Job::getJobState)
+                                                   .map(Job::getState)
                                                    .collect(Collectors.groupingBy(Function.identity(),
                                                            Collectors.counting()));
 
@@ -225,9 +249,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private ItemContainer retrievePartialResults(final MultiTransferJob multiJob) {
         final List<TransferProcess> completedTransfers = multiJob.getCompletedTransfers();
-        final List<String> transferIds = completedTransfers.stream()
-                                                           .map(TransferProcess::getId)
-                                                           .collect(Collectors.toList());
+        final List<String> transferIds = completedTransfers.stream().map(TransferProcess::getId).toList();
 
         final var relationships = new ArrayList<Relationship>();
         final var tombstones = new ArrayList<Tombstone>();
@@ -276,7 +298,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     private boolean jobIsCompleted(final MultiTransferJob multiJob) {
-        return multiJob.getJob().getJobState().equals(JobState.COMPLETED);
+        return multiJob.getJob().getState().equals(JobState.COMPLETED);
     }
 
 }

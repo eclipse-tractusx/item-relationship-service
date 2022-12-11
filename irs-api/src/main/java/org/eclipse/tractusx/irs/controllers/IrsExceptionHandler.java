@@ -33,6 +33,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -137,6 +138,17 @@ public class IrsExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                              .body(ErrorResponse.builder()
                                                 .withStatusCode(HttpStatus.BAD_REQUEST)
+                                                .withMessage(exception.getMessage())
+                                                .build());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(final AccessDeniedException exception) {
+        log.info(exception.getClass().getName(), exception);
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                             .body(ErrorResponse.builder()
+                                                .withStatusCode(HttpStatus.FORBIDDEN)
                                                 .withMessage(exception.getMessage())
                                                 .build());
     }

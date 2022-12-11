@@ -66,7 +66,7 @@ class AssemblyPartRelationship extends RelationshipSubmodel {
     @NoArgsConstructor
     /* package */ static class ChildData {
 
-        private ZonedDateTime assembledOn;
+        private ZonedDateTime createdOn;
         private Quantity quantity;
         private ZonedDateTime lastModifiedOn;
         private String lifecycleContext;
@@ -76,7 +76,7 @@ class AssemblyPartRelationship extends RelationshipSubmodel {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
                                                                       .childCatenaXId(GlobalAssetIdentification.of(this.childCatenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_BUILT)
-                                                                      .assembledOn(this.assembledOn)
+                                                                      .assembledOn(this.createdOn)
                                                                       .lastModifiedOn(this.lastModifiedOn);
 
             if (thereIsQuantity()) {

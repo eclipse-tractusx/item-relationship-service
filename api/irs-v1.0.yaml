@@ -3,7 +3,7 @@ info:
   description: The API of the Item Relationship Service (IRS) for retrieving item
     graphs along the value chain of CATENA-X partners.
   title: IRS API
-  version: "1.0"
+  version: "2.0"
 servers:
   - url: http://localhost:8080
 security:
@@ -12,8 +12,8 @@ security:
 paths:
   /irs/jobs:
     get:
-      description: Returns jobIds for requested job states.
-      operationId: getJobIdsByJobStates
+      description: Returns paginated jobs with state and execution times.
+      operationId: getJobsByJobStates
       parameters:
         - description: Requested job states.
           explode: false
@@ -33,6 +33,31 @@ paths:
                 - CANCELED
                 - ERROR
             maxItems: 2147483647
+        - description: Zero-based page index (0..N)
+          in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - description: The size of the page to be returned
+          in: query
+          name: size
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+        - description: "Sorting criteria in the format: property,(asc|desc). Default\
+            \ sort order is ascending. Multiple sort criteria are supported."
+          in: query
+          name: sort
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         "200":
           content:
@@ -41,11 +66,9 @@ paths:
                 complete:
                   $ref: '#/components/examples/complete-job-list-processing-state'
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/JobStatusResult'
-                maxItems: 2147483647
-          description: List of job ids and status for requested job states.
+                $ref: '#/components/schemas/PageResult'
+          description: Paginated list of jobs with state and execution times for requested
+            job states.
         "400":
           content:
             application/json:
@@ -54,7 +77,7 @@ paths:
                   $ref: '#/components/examples/error-response-400'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Returns jobIds for requested job states failed.
+          description: Return jobs for requested job states failed.
         "401":
           content:
             application/json:
@@ -73,19 +96,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorized failed.
-        "404":
-          content:
-            application/json:
-              examples:
-                error:
-                  $ref: '#/components/examples/error-response-404'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: Job with the requested state not found.
       security:
       - oAuth2:
         - profile email
-      summary: Returns jobIds for requested job states.
+      summary: Returns paginated jobs with state and execution times.
       tags:
         - Item Relationship Service
     post:
@@ -106,7 +120,7 @@ paths:
                   $ref: '#/components/examples/job-handle'
               schema:
                 $ref: '#/components/schemas/JobHandle'
-          description: Returns jobId of registered job.
+          description: Returns id of registered job.
         "400":
           content:
             application/json:
@@ -140,15 +154,15 @@ paths:
       summary: "Register an IRS job to retrieve an item graph for given {globalAssetId}."
       tags:
         - Item Relationship Service
-  /irs/jobs/{jobId}:
+  /irs/jobs/{id}:
     get:
-      description: Return job with optional item graph result for requested jobId.
+      description: Return job with optional item graph result for requested id.
       operationId: getJobForJobId
       parameters:
-        - description: JobId of the job.
+        - description: Id of the job.
           example: 6c311d29-5753-46d4-b32c-19b918ea93b0
           in: path
-          name: jobId
+          name: id
           required: true
           schema:
             type: string
@@ -172,7 +186,7 @@ paths:
                   $ref: '#/components/examples/complete-job-result'
               schema:
                 $ref: '#/components/schemas/Jobs'
-          description: Return job with item graph for the requested jobId.
+          description: Return job with item graph for the requested id.
         "206":
           content:
             application/json:
@@ -182,7 +196,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Jobs'
           description: Return job with current processed item graph for the requested
-            jobId.
+            id.
         "400":
           content:
             application/json:
@@ -222,17 +236,17 @@ paths:
       security:
       - oAuth2:
         - profile email
-      summary: Return job with optional item graph result for requested jobId.
+      summary: Return job with optional item graph result for requested id.
       tags:
         - Item Relationship Service
     put:
       description: Cancel job for requested jobId.
       operationId: cancelJobByJobId
       parameters:
-        - description: JobId of the job.
+        - description: Id of the job.
           example: 6c311d29-5753-46d4-b32c-19b918ea93b0
           in: path
-          name: jobId
+          name: id
           required: true
           schema:
             type: string
@@ -294,14 +308,14 @@ components:
       value:
         bpns: []
         job:
+          completedOn: 2022-02-03T14:48:54.709Z
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
             errorDetail: Timeout while requesting Digital Registry
             exception: IrsTimeoutException
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-          jobCompleted: 2022-02-03T14:48:54.709Z
-          jobId: e5347c88-a921-11ec-b909-0242ac120002
+          id: e5347c88-a921-11ec-b909-0242ac120002
           jobParameter:
             aspects:
               - SerialPartTypization
@@ -310,10 +324,10 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
-          jobState: CANCELED
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           startedOn: 2022-02-03T14:48:54.709Z
+          state: CANCELED
           summary:
             asyncFetchedItems:
               completed: 0
@@ -324,24 +338,29 @@ components:
         tombstones: [ ]
     complete-job-list-processing-state:
       value:
-      - jobCompleted: 2022-02-03T14:48:54.709Z
-        jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
-        jobState: COMPLETED
-        startedOn: 2022-02-03T14:48:54.709Z
+        content:
+          - completedOn: 2022-02-03T14:48:54.709Z
+            id: 6c311d29-5753-46d4-b32c-19b918ea93b0
+            startedOn: 2022-02-03T14:48:54.709Z
+            state: COMPLETED
+        pageCount: 1
+        pageNumber: 0
+        pageSize: 10
+        totalElements: 1
     complete-job-result:
       value:
         bpns:
         - manufacturerId: BPNL00000003AYRE
           manufacturerName: OEM A
         job:
+          completedOn: 2022-02-03T14:48:54.709Z
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
             errorDetail: Timeout while requesting Digital Registry
             exception: IrsTimeoutException
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-          jobCompleted: 2022-02-03T14:48:54.709Z
-          jobId: e5347c88-a921-11ec-b909-0242ac120002
+          id: e5347c88-a921-11ec-b909-0242ac120002
           jobParameter:
             aspects:
               - SerialPartTypization
@@ -350,10 +369,10 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
-          jobState: COMPLETED
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           startedOn: 2022-02-03T14:48:54.709Z
+          state: COMPLETED
           summary:
             asyncFetchedItems:
               completed: 0
@@ -468,7 +487,7 @@ components:
             exception: IrsTimeoutException
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-          jobId: e5347c88-a921-11ec-b909-0242ac120002
+          id: e5347c88-a921-11ec-b909-0242ac120002
           jobParameter:
             aspects:
               - SerialPartTypization
@@ -477,10 +496,10 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
-          jobState: ERROR
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           startedOn: 2022-02-03T14:48:54.709Z
+          state: ERROR
           summary:
             asyncFetchedItems:
               completed: 0
@@ -491,21 +510,21 @@ components:
         tombstones: [ ]
     job-handle:
       value:
-        jobId: 6c311d29-5753-46d4-b32c-19b918ea93b0
+        id: 6c311d29-5753-46d4-b32c-19b918ea93b0
     job-result-without-uncompleted-result-tree:
       value:
         bpns:
         - manufacturerId: BPNL00000003AYRE
           manufacturerName: OEM A
         job:
+          completedOn: 2022-02-03T14:48:54.709Z
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
             errorDetail: Timeout while requesting Digital Registry
             exception: IrsTimeoutException
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-          jobCompleted: 2022-02-03T14:48:54.709Z
-          jobId: e5347c88-a921-11ec-b909-0242ac120002
+          id: e5347c88-a921-11ec-b909-0242ac120002
           jobParameter:
             aspects:
               - SerialPartTypization
@@ -514,10 +533,10 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
-          jobState: COMPLETED
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           startedOn: 2022-02-03T14:48:54.709Z
+          state: COMPLETED
           summary:
             asyncFetchedItems:
               completed: 0
@@ -602,14 +621,14 @@ components:
       value:
         bpns: []
         job:
+          completedOn: 2022-02-03T14:48:54.709Z
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
             errorDetail: Timeout while requesting Digital Registry
             exception: IrsTimeoutException
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-          jobCompleted: 2022-02-03T14:48:54.709Z
-          jobId: e5347c88-a921-11ec-b909-0242ac120002
+          id: e5347c88-a921-11ec-b909-0242ac120002
           jobParameter:
             aspects:
               - SerialPartTypization
@@ -618,10 +637,10 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
-          jobState: RUNNING
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           startedOn: 2022-02-03T14:48:54.709Z
+          state: RUNNING
           summary:
             asyncFetchedItems:
               completed: 0
@@ -822,6 +841,9 @@ components:
       additionalProperties: false
       description: Executable unit with meta information and item graph result.
       properties:
+        completedOn:
+          type: string
+          format: date-time
         createdOn:
           type: string
           format: date-time
@@ -829,28 +851,15 @@ components:
           $ref: '#/components/schemas/JobErrorDetails'
         globalAssetId:
           $ref: '#/components/schemas/GlobalAssetIdentification'
-        jobCompleted:
-          type: string
-          format: date-time
-        jobId:
+        id:
           type: string
           format: uuid
-          description: JobId of the job.
+          description: Id of the job.
           maxLength: 36
           minLength: 36
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
         jobParameter:
           $ref: '#/components/schemas/JobParameter'
-        jobState:
-          type: string
-          enum:
-            - UNSAVED
-            - INITIAL
-            - RUNNING
-            - TRANSFERS_FINISHED
-            - COMPLETED
-            - CANCELED
-            - ERROR
         lastModifiedOn:
           type: string
           format: date-time
@@ -860,12 +869,22 @@ components:
         startedOn:
           type: string
           format: date-time
+        state:
+          type: string
+          enum:
+            - UNSAVED
+            - INITIAL
+            - RUNNING
+            - TRANSFERS_FINISHED
+            - COMPLETED
+            - CANCELED
+            - ERROR
         summary:
           $ref: '#/components/schemas/Summary'
       required:
         - globalAssetId
-        - jobId
-        - jobState
+        - id
+        - state
     JobErrorDetails:
       type: object
       additionalProperties: false
@@ -887,10 +906,10 @@ components:
       type: object
       additionalProperties: false
       properties:
-        jobId:
+        id:
           type: string
           format: uuid
-          description: JobId of the job.
+          description: Id of the job.
           maxLength: 36
           minLength: 36
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
@@ -951,25 +970,25 @@ components:
       type: object
       additionalProperties: false
       properties:
-        jobCompleted:
+        completedOn:
           type: string
           format: date-time
-        jobId:
+        id:
           type: string
           format: uuid
-        jobState:
-          type: string
-          enum:
-          - UNSAVED
-          - INITIAL
-          - RUNNING
-          - TRANSFERS_FINISHED
-          - COMPLETED
-          - CANCELED
-          - ERROR
         startedOn:
           type: string
           format: date-time
+        state:
+          type: string
+          enum:
+            - UNSAVED
+            - INITIAL
+            - RUNNING
+            - TRANSFERS_FINISHED
+            - COMPLETED
+            - CANCELED
+            - ERROR
     Jobs:
       type: object
       additionalProperties: false
@@ -1050,6 +1069,26 @@ components:
           type: string
         lexicalValue:
           type: string
+    PageResult:
+      type: object
+      additionalProperties: false
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobStatusResult'
+        pageCount:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int32
     ProcessingError:
       type: object
       additionalProperties: false

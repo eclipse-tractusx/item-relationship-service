@@ -243,41 +243,27 @@ if __name__ == "__main__":
         for tmp_key in tmp_keys:
             if "Batch" in tmp_key or "SerialPartTypization" in tmp_key:
                 specific_asset_ids = tmp_data[tmp_key][0]["localIdentifiers"]
-                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ",
-                                                                                                                 "")
+                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ", "")
             if "PartAsPlanned" in tmp_key:
-                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ",
-                                                                                                                 "")
+                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ", "")
                 specific_asset_ids.append({
                     "value": tmp_data[tmp_key][0]["partTypeInformation"]["manufacturerPartId"],
                     "key": "manufacturerPartId"
                 })
-            if "PartSiteInformationAsPlanned" in tmp_key:
-                specific_asset_ids.append({
-                    "value": tmp_data[tmp_key][0]["sites"][0]["catenaXSiteId"],
-                    "key": "catenaXSiteId"
-                })
-            elif "PartSiteInformation" in tmp_key:
-                specific_asset_ids.append({
-                    "value": tmp_data[tmp_key][0]["sites"][0]["externalSiteIdentifier"][0]["organization"],
-                    "key": "manufacturerId"
-                })
         print(name_at_manufacturer)
 
-        part_bpn = ""
-        for specific_asset_id in specific_asset_ids:
-            if specific_asset_id.get("key") == "manufacturerId":
-                part_bpn = specific_asset_id.get("value")
+        specific_asset_ids.append({
+            "key": "manufacturerId",
+            "value": tmp_data["bpnl"]
+        })
 
-        asr = "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship"
-
-        if esr_url and "AssemblyPartRelationship" in tmp_keys and "childParts" in tmp_data[asr][0] and tmp_data[asr][0][
-                "childParts"]:
-            tmp_data.update({
-                "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic": ""})
+        esr = "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic"
+        apr = "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship"
+        if esr_url and apr in tmp_keys and "childParts" in tmp_data[apr][0] and tmp_data[apr][0]["childParts"]:
+            tmp_data.update({esr: ""})
 
         for tmp_key in tmp_keys:
-            if "PlainObject" not in tmp_key and "catenaXId" not in tmp_key:
+            if "PlainObject" not in tmp_key and "catenaXId" not in tmp_key and "bpn" not in tmp_key:
                 # 1. Prepare submodel endpoint address
                 submodel_url = submodel_server_urls[contract_id % len(submodel_server_urls)]
                 submodel_upload_url = submodel_server_upload_urls[contract_id % len(submodel_server_upload_urls)]

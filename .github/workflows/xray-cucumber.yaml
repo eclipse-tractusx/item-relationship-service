@@ -1,8 +1,17 @@
 name: IRS Cucumber Xray execution
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Trigger manually
   push:
+    branches: main
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+  pull_request:
+    branches: main
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
 
 jobs:
   build:

@@ -77,12 +77,12 @@ public abstract class BaseJobStore implements JobStore {
     }
 
     private Predicate<MultiTransferJob> hasState(final JobState jobState) {
-        return job -> job.getJob().getJobState().equals(jobState);
+        return job -> job.getJob().getState().equals(jobState);
     }
 
     private Predicate<MultiTransferJob> isCompletionDateBefore(final ZonedDateTime localDateTime) {
         return job -> {
-            final ZonedDateTime completed = job.getJob().getJobCompleted();
+            final ZonedDateTime completed = job.getJob().getCompletedOn();
             return completed != null && completed.isBefore(localDateTime);
         };
     }
@@ -140,7 +140,7 @@ public abstract class BaseJobStore implements JobStore {
     public void completeJob(final String jobId, final Consumer<MultiTransferJob> completionAction) {
         log.info("Completing job {}", jobId);
         modifyJob(jobId, job -> {
-            final JobState jobState = job.getJob().getJobState();
+            final JobState jobState = job.getJob().getState();
             if (jobState == JobState.TRANSFERS_FINISHED || jobState == JobState.INITIAL) {
                 completionAction.accept(job);
                 return job.toBuilder().transitionComplete().build();
@@ -163,7 +163,7 @@ public abstract class BaseJobStore implements JobStore {
     }
 
     private Predicate<MultiTransferJob> hasState(final List<JobState> jobStates) {
-        return job -> jobStates.contains(job.getJob().getJobState());
+        return job -> jobStates.contains(job.getJob().getState());
     }
 
     @Override

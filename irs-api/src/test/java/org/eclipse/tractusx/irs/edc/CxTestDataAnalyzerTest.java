@@ -54,7 +54,7 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
     @Test
     void parseAndPrintExpectedDataResultsAsBuilt() {
         final TestParameters testParameters = TestParameters.builder()
-                                                            .globalAssetId("urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b")
+                                                            .globalAssetId("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b")
                                                             .bomLifecycle(BomLifecycle.AS_BUILT)
                                                             .direction(Direction.DOWNWARD)
                                                             .shouldCountAssemblyPartRelationship(Boolean.TRUE)
@@ -100,7 +100,7 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
     @Test
     void shouldGetSameNumberOfRelationshipsAndCreateExpectationFile() throws IOException {
         final TestParameters testParameters = TestParameters.builder()
-                                                            .globalAssetId("urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b")
+                                                            .globalAssetId("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b")
                                                             .bomLifecycle(BomLifecycle.AS_BUILT)
                                                             .direction(Direction.DOWNWARD)
                                                             .shouldCreateExpectedRelationshipsFile(Boolean.FALSE)

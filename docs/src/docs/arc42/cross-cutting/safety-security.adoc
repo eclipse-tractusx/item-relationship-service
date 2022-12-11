@@ -3,8 +3,7 @@
 == Authentication / Authorization
 === IRS API
 The IRS is secured using OAuth2.0 / Open ID Connect. Every request to the IRS API requires a valid bearer token.
-
-No special roles are required. Every user that can log in to the authentication provider may use the IRS API.
+Additionally every IRS API endpoint requires 'view_irs' role, that should be present in the token.
 
 === IRS as DTR client
 The IRS acts as a client for the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect. The IRS uses client credentials to authenticate requests to the DTR. Due to this, the IRS account needs to have access to every item in the DTR, unrelated to the permissions of the account calling the IRS API.

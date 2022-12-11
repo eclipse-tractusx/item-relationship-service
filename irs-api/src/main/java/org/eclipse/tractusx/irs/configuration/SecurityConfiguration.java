@@ -27,12 +27,12 @@ import java.time.Duration;
 import java.util.List;
 
 import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.configuration.converter.JwtAuthenticationConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -90,7 +90,9 @@ public class SecurityConfiguration {
             .antMatchers("/**")
             .authenticated()
             .and()
-            .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+            .oauth2ResourceServer(oauth2ResourceServer ->
+                oauth2ResourceServer.jwt().jwtAuthenticationConverter(new JwtAuthenticationConverter())
+            )
             .oauth2Client();
 
         return httpSecurity.build();

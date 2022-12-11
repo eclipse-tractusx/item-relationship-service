@@ -43,7 +43,6 @@ import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.RegisterJob;
-import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
@@ -81,7 +80,6 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @MockBean
     private JsonValidatorService jsonValidatorService;
 
-
     @Test
     void registerJobWithoutDepthShouldBuildFullTree() {
         // given
@@ -95,15 +93,15 @@ class IrsItemGraphQueryServiceSpringBootTest {
         given().ignoreException(EntityNotFoundException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
-               .until(() -> getRelationshipsSize(registeredJob.getJobId()), equalTo(expectedRelationshipsSizeFullTree));
+               .until(() -> getRelationshipsSize(registeredJob.getId()), equalTo(expectedRelationshipsSizeFullTree));
     }
 
     @Test
     void registerJobWithCollectAspectsShouldIncludeSubmodels() throws InvalidSchemaException {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
-        final RegisterJob registerJob = registerJobWithGlobalAssetIdAndDepth("urn:uuid:2687fd84-825d-4923-b1ab-66b70f002929", 0,
-                List.of(AspectType.BATCH, AspectType.MATERIAL_FOR_RECYCLING, AspectType.ASSEMBLY_PART_RELATIONSHIP), true);
+        final RegisterJob registerJob = registerJobWithGlobalAssetIdAndDepth("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", 0,
+                List.of(AspectType.SERIAL_PART_TYPIZATION, AspectType.PRODUCT_DESCRIPTION, AspectType.ASSEMBLY_PART_RELATIONSHIP), true);
         final int expectedSubmodelsSizeFullTree = 3; // stub
 
         // when
@@ -113,7 +111,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         given().ignoreException(EntityNotFoundException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
-               .until(() -> getSubmodelsSize(registeredJob.getJobId()), equalTo(expectedSubmodelsSizeFullTree));
+               .until(() -> getSubmodelsSize(registeredJob.getId()), equalTo(expectedSubmodelsSizeFullTree));
     }
 
     @Test
@@ -131,7 +129,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         given().ignoreException(EntityNotFoundException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
-               .until(() -> getTombstonesSize(registeredJob.getJobId()), equalTo(expectedTombstonesSizeFullTree));
+               .until(() -> getTombstonesSize(registeredJob.getId()), equalTo(expectedTombstonesSizeFullTree));
     }
 
     @Test
@@ -147,7 +145,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         given().ignoreException(EntityNotFoundException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
-               .until(() -> getRelationshipsSize(registeredJob.getJobId()),
+               .until(() -> getRelationshipsSize(registeredJob.getId()),
                        equalTo(expectedRelationshipsSizeFirstDepth));
     }
 
@@ -156,8 +154,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
         final String idAsString = String.valueOf(jobId);
         final MultiTransferJob multiTransferJob = MultiTransferJob.builder()
                                                                   .job(Job.builder()
-                                                                          .jobId(UUID.fromString(idAsString))
-                                                                          .jobState(JobState.UNSAVED)
+                                                                          .id(UUID.fromString(idAsString))
+                                                                          .state(JobState.UNSAVED)
                                                                           .exception(JobErrorDetails.builder()
                                                                                                     .errorDetail(
                                                                                                             "Job should be canceled")
@@ -174,7 +172,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         final Optional<MultiTransferJob> fetchedJob = jobStore.find(idAsString);
         assertThat(fetchedJob).isNotEmpty();
 
-        final JobState state = fetchedJob.get().getJob().getJobState();
+        final JobState state = fetchedJob.get().getJob().getState();
         assertThat(state).isEqualTo(JobState.CANCELED);
 
         final ZonedDateTime lastModifiedOn = fetchedJob.get().getJob().getLastModifiedOn();

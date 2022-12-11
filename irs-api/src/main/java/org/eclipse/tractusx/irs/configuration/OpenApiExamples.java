@@ -39,6 +39,7 @@ import org.eclipse.tractusx.irs.component.JobStatusResult;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.MeasurementUnit;
+import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.ProcessingError;
 import org.eclipse.tractusx.irs.component.Quantity;
 import org.eclipse.tractusx.irs.component.Relationship;
@@ -58,6 +59,7 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -109,24 +111,24 @@ public class OpenApiExamples {
     }
 
     private Example createJobListProcessingState() {
-        return toExample(List.of(JobStatusResult.builder()
-                                                .jobId(UUID.fromString(JOB_HANDLE_ID_1))
-                                                .jobState(JobState.COMPLETED)
-                                                .startedOn(EXAMPLE_ZONED_DATETIME)
-                                                .jobCompleted(EXAMPLE_ZONED_DATETIME)
-                                                .build()));
+        return toExample(new PageResult(new PagedListHolder<>(List.of(JobStatusResult.builder()
+                               .id(UUID.fromString(JOB_HANDLE_ID_1))
+                               .state(JobState.COMPLETED)
+                               .startedOn(EXAMPLE_ZONED_DATETIME)
+                               .completedOn(EXAMPLE_ZONED_DATETIME)
+                               .build()))));
     }
 
     private JobHandle createJobHandle(final String name) {
-        return JobHandle.builder().jobId(UUID.fromString(name)).build();
+        return JobHandle.builder().id(UUID.fromString(name)).build();
     }
 
     private Example createFailedJobResult() {
         return toExample(Jobs.builder()
                              .job(Job.builder()
-                                     .jobId(UUID.fromString(JOB_ID))
+                                     .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
-                                     .jobState(JobState.ERROR)
+                                     .state(JobState.ERROR)
                                      .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
@@ -141,14 +143,14 @@ public class OpenApiExamples {
     private Example createPartialJobResult() {
         return toExample(Jobs.builder()
                              .job(Job.builder()
-                                     .jobId(UUID.fromString(JOB_ID))
+                                     .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
-                                     .jobState(JobState.RUNNING)
+                                     .state(JobState.RUNNING)
                                      .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
-                                     .jobCompleted(EXAMPLE_ZONED_DATETIME)
+                                     .completedOn(EXAMPLE_ZONED_DATETIME)
                                      .summary(createSummary())
                                      .jobParameter(createJobParameter())
                                      .exception(createJobException())
@@ -184,14 +186,14 @@ public class OpenApiExamples {
     private Example createCompleteJobResult() {
         return toExample(Jobs.builder()
                              .job(Job.builder()
-                                     .jobId(UUID.fromString(JOB_ID))
+                                     .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
-                                     .jobState(JobState.COMPLETED)
+                                     .state(JobState.COMPLETED)
                                      .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
-                                     .jobCompleted(EXAMPLE_ZONED_DATETIME)
+                                     .completedOn(EXAMPLE_ZONED_DATETIME)
                                      .owner("")
                                      .summary(createSummary())
                                      .jobParameter(createJobParameter())
@@ -329,14 +331,14 @@ public class OpenApiExamples {
     private Example createCanceledJobResult() {
         return toExample(Jobs.builder()
                              .job(Job.builder()
-                                     .jobId(UUID.fromString(JOB_ID))
+                                     .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
-                                     .jobState(JobState.CANCELED)
+                                     .state(JobState.CANCELED)
                                      .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
-                                     .jobCompleted(EXAMPLE_ZONED_DATETIME)
+                                     .completedOn(EXAMPLE_ZONED_DATETIME)
                                      .jobParameter(createJobParameter())
                                      .exception(createJobException())
                                      .summary(createSummary())

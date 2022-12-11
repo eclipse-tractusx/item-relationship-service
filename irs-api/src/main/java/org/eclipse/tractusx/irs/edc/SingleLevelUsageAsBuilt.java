@@ -79,14 +79,10 @@ class SingleLevelUsageAsBuilt extends RelationshipSubmodel {
                                                                       .lastModifiedOn(this.lastModifiedOn);
 
             if (thereIsQuantity()) {
-                final String datatypeURI = thereIsMeasurementUnit() ? this.quantity.getMeasurementUnit().getDatatypeURI() : null;
-                final String lexicalValue = thereIsMeasurementUnit() ? this.quantity.getMeasurementUnit().getLexicalValue() : null;
-
                 linkedItem.quantity(org.eclipse.tractusx.irs.component.Quantity.builder()
                                                                                .quantityNumber(this.quantity.getQuantityNumber())
                                                                                .measurementUnit(MeasurementUnit.builder()
-                                                                                                               .datatypeURI(datatypeURI)
-                                                                                                               .lexicalValue(lexicalValue)
+                                                                                                               .lexicalValue(this.quantity.getMeasurementUnit())
                                                                                                                .build())
                                                                                .build());
             }
@@ -96,10 +92,6 @@ class SingleLevelUsageAsBuilt extends RelationshipSubmodel {
                                .linkedItem(linkedItem.build())
                                .aspectType(AspectType.SINGLE_LEVEL_USAGE_AS_BUILT.toString())
                                .build();
-        }
-
-        private boolean thereIsMeasurementUnit() {
-            return this.quantity != null && this.quantity.getMeasurementUnit() != null;
         }
 
         private boolean thereIsQuantity() {
@@ -114,17 +106,8 @@ class SingleLevelUsageAsBuilt extends RelationshipSubmodel {
         /* package */ static class Quantity {
 
             private Double quantityNumber;
-            private MeasurementUnit measurementUnit;
+            private String measurementUnit;
 
-            /**
-             * MeasurementUnit
-             */
-            @Data
-            @Jacksonized
-            /* package */ static class MeasurementUnit {
-                private String lexicalValue;
-                private String datatypeURI;
-            }
         }
     }
 }

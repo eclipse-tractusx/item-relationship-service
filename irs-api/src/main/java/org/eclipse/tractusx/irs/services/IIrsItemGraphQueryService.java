@@ -27,10 +27,11 @@ import java.util.UUID;
 import lombok.NonNull;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
-import org.eclipse.tractusx.irs.component.JobStatusResult;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.springframework.data.domain.Pageable;
 
 /**
  * IIrsItemGraphQueryService interface
@@ -39,7 +40,7 @@ public interface IIrsItemGraphQueryService {
 
     JobHandle registerItemJob(@NonNull RegisterJob request);
 
-    List<JobStatusResult> getJobsByJobState(@NonNull List<JobState> jobStates);
+    PageResult getJobsByJobState(@NonNull List<JobState> jobStates, Pageable pageable);
 
     Job cancelJobById(@NonNull UUID jobId);
 

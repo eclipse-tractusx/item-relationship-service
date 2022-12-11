@@ -43,7 +43,7 @@
         <vulnerabilityName>CVE-2022-33915</vulnerabilityName>
     </suppress>
     <suppress>
-        <notes>Irrelvant for IRS, see discussion here: https://github.com/github/securitylab/issues/669</notes>
+        <notes>Irrelevant for IRS, see discussion here: https://github.com/github/securitylab/issues/669</notes>
         <vulnerabilityName>CVE-2022-31514</vulnerabilityName>
     </suppress>
     <suppress>
@@ -73,6 +73,13 @@
         ]]></notes>
         <gav regex="true">org\.yaml:snakeyaml.*</gav>
         <vulnerabilityName>CVE-2022-38752</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        False positive, version in use (> 1.31) is not affected anymore.
+        ]]></notes>
+        <gav regex="true">org\.yaml:snakeyaml.*</gav>
+        <vulnerabilityName>CVE-2022-1471</vulnerabilityName>
     </suppress>
     <suppress>
         <notes><![CDATA[

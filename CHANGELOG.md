@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
+## [2.0.0] - 2022-12-09
+### Added
+- Added pagination to GET /irs/jobs endpoint (eg. {{IRS_HOST}}/irs/jobs?page=0&size=10&sort=completedOn,asc)
+
+### Changed
+- IRS API now requires 'view_irs' resource access inside Keycloak JWT token.
+- New 2.0.0 version of IRS API. Main goal was to remove 'job' prefix from attribute names
+    - change 'jobId' to 'id' in GET and POST calls
+    - change 'jobState' to 'state' in GET calls
+    - change 'jobCompleted' to 'completedOn' in GET calls
+    - change 'jobId' to 'id' and 'jobState' to 'state' in callback URI variables
+
 ## [1.6.0] - 2022-11-25
 ### Added
 - EDC client implementation (for negotiation and data exchange)
@@ -115,7 +127,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.6.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.6.0...2.0.0
 [1.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.5.0...1.6.0
 [1.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.4.0...1.5.0
 [1.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.3.0...1.4.0

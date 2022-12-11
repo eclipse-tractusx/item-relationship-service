@@ -82,7 +82,7 @@ public class MultiTransferJob {
 
     @JsonIgnore
     public UUID getJobId() {
-        return job.getJobId();
+        return job.getId();
     }
 
     @JsonIgnore
@@ -132,7 +132,7 @@ public class MultiTransferJob {
          */
         /* package */ MultiTransferJobBuilder transitionComplete() {
             return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL).job(
-                    job.toBuilder().jobCompleted(ZonedDateTime.now(ZoneOffset.UTC)).build());
+                    job.toBuilder().completedOn(ZonedDateTime.now(ZoneOffset.UTC)).build());
         }
 
         /**
@@ -141,8 +141,8 @@ public class MultiTransferJob {
         /* package */ MultiTransferJobBuilder transitionError(final @Nullable String errorDetail,
                 final String exceptionClassName) {
             this.job = this.job.toBuilder()
-                               .jobState(JobState.ERROR)
-                               .jobCompleted(ZonedDateTime.now(ZoneOffset.UTC))
+                               .state(JobState.ERROR)
+                               .completedOn(ZonedDateTime.now(ZoneOffset.UTC))
                                .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
                                .exception(JobErrorDetails.builder()
                                                          .errorDetail(errorDetail)
@@ -161,12 +161,12 @@ public class MultiTransferJob {
         }
 
         private MultiTransferJobBuilder transition(final JobState end, final JobState... starts) {
-            if (Arrays.stream(starts).noneMatch(s -> s == job.getJobState())) {
+            if (Arrays.stream(starts).noneMatch(s -> s == job.getState())) {
                 throw new IllegalStateException(
-                        format("Cannot transition from state %s to %s", job.getJobState(), end));
+                        format("Cannot transition from state %s to %s", job.getState(), end));
             }
-            log.info("Transitioning job {} from {} to {}", job.getJobId().toString(), job.getJobState(), end);
-            job = job.toBuilder().jobState(end).lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC)).build();
+            log.info("Transitioning job {} from {} to {}", job.getId().toString(), job.getState(), end);
+            job = job.toBuilder().state(end).lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC)).build();
             return this;
         }
     }

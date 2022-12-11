@@ -1,10 +1,14 @@
 name: IRS build
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Trigger manually
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
   push:
     branches:
-      - '**'
+      - main
     tags:
       - '**'
 

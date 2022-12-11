@@ -136,8 +136,8 @@ public class E2ETestStepDefinitions {
                                                     .extract()
                                                     .as(JobHandle.class);
 
-        assertThat(createdJobResponse.getJobId()).isNotNull();
-        jobId = createdJobResponse.getJobId();
+        assertThat(createdJobResponse.getId()).isNotNull();
+        jobId = createdJobResponse.getId();
     }
 
     @Then("I check, if the job has status {string} within {int} minutes")
@@ -151,7 +151,7 @@ public class E2ETestStepDefinitions {
                                    .get("/irs/jobs/" + jobId)
                                    .as(Jobs.class)
                                    .getJob()
-                                   .getJobState()
+                                   .getState()
                                    .equals(JobState.value(status)));
 
         completedJob = given().spec(authProperties.getNewAuthenticationRequestSpecification())
