@@ -105,6 +105,6 @@ public class Job {
     private Summary summary;
 
     @Schema(description = "The passed job parameters", implementation = JobParameter.class)
-    private JobParameter jobParameter;
+    private JobParameter parameter;
 
 }
