@@ -112,7 +112,7 @@ class IrsFunctionalTest {
         assertThat(finishedJob.get().getBpns()).hasSize(1);
         assertThat(finishedJob.get().getJob()).isNotNull();
         assertThat(finishedJob.get().getJob().getSummary()).isNotNull();
-        assertThat(finishedJob.get().getJob().getJobParameter()).isNotNull();
+        assertThat(finishedJob.get().getJob().getParameter()).isNotNull();
         assertThat(finishedJob.get().getJob().getOwner()).isNotBlank();
     }
 

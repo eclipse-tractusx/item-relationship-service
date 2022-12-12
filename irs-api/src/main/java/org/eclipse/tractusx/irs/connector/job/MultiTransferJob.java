@@ -97,7 +97,7 @@ public class MultiTransferJob {
 
     @JsonIgnore
     public JobParameter getJobParameter() {
-        return getJob().getJobParameter();
+        return getJob().getParameter();
     }
 
     /**
