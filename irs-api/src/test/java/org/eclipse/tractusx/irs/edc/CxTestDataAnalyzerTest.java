@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.irs.edc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer.CxTestData.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,11 +30,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
@@ -135,7 +138,7 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
                                                             .build();
 
         final Long expectedNumberOfSubmodels = countExpectedNumberOfSubmodelsFor(testParameters.globalAssetId, testParameters);
-        final List<Map<String, Object>> submodels = getSubmodelsFor(testParameters.globalAssetId, testParameters);
+        final List<Submodel> submodels = getSubmodelsFor(testParameters.globalAssetId, testParameters);
 
         log.info("Results for globalAssetId {} and bomLifecycle {} with direction {}", testParameters.globalAssetId, testParameters.bomLifecycle, testParameters.direction);
         log.info("Expected number of submodels: " + expectedNumberOfSubmodels);
@@ -219,6 +222,8 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
 
             checkAndIncrementCounter(testParameters.shouldCountSerialPartTypization,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getSerialPartTypization), counter);
+            checkAndIncrementCounter(testParameters.shouldCountSingleLevelUsageAsBuilt,
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelUsageAsBuilt), counter);
             checkAndIncrementCounter(testParameters.shouldCountBatch,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getBatch), counter);
             checkAndIncrementCounter(testParameters.shouldCountMaterialForRecycling,
@@ -247,41 +252,44 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
         return 0L;
     }
 
-    private List<Map<String, Object>> getSubmodelsFor(final String catenaXId, final TestParameters testParameters) {
+    private List<Submodel> getSubmodelsFor(final String catenaXId, final TestParameters testParameters) {
         final Optional<CxTestDataContainer.CxTestData> cxTestData = cxTestDataContainer.getByCatenaXId(catenaXId);
         final RelationshipAspect relationshipAspect = RelationshipAspect.from(testParameters.bomLifecycle, testParameters.direction);
 
         Optional<Map<String, Object>> relationshipSubmodelData = Optional.empty();
 
-        final List<Map<String, Object>> submodels = new ArrayList<>();
+        final List<Submodel> submodels = new ArrayList<>();
 
         if (relationshipAspect.equals(RelationshipAspect.AssemblyPartRelationship)) {
             relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship);
-            checkAndAddSubmodel(testParameters.shouldCountAssemblyPartRelationship, relationshipSubmodelData, submodels);
+            checkAndAddSubmodel(testParameters.shouldCountAssemblyPartRelationship, relationshipSubmodelData, submodels, ASSEMBLY_PART_ASPECT_TYPE);
 
             checkAndAddSubmodel(testParameters.shouldCountSerialPartTypization,
-                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getSerialPartTypization), submodels);
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getSerialPartTypization), submodels, SERIAL_PART_ASPECT_TYPE);
+            checkAndAddSubmodel(testParameters.shouldCountSingleLevelUsageAsBuilt,
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned), submodels, SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE);
             checkAndAddSubmodel(testParameters.shouldCountBatch,
-                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getBatch), submodels);
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getBatch), submodels, BATCH_ASPECT_TYPE);
             checkAndAddSubmodel(testParameters.shouldCountMaterialForRecycling,
-                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getMaterialForRecycling), submodels);
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getMaterialForRecycling), submodels, MATERIAL_FOR_RECYCLING_ASPECT_TYPE);
             checkAndAddSubmodel(testParameters.shouldCountProductDescription,
-                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getProductDescription), submodels);
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getProductDescription), submodels, PRODUCT_DESCRIPTION_ASPECT_TYPE);
             checkAndAddSubmodel(testParameters.shouldCountPhysicalDimension,
-                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getPhysicalDimension), submodels);
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getPhysicalDimension), submodels, PHYSICAL_DIMENSION_ASPECT_TYPE);
         } else if (relationshipAspect.equals(RelationshipAspect.SingleLevelBomAsPlanned)) {
             relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned);
-            checkAndAddSubmodel(testParameters.shouldCountSingleLevelBomAsPlanned, relationshipSubmodelData, submodels);
+            checkAndAddSubmodel(testParameters.shouldCountSingleLevelBomAsPlanned, relationshipSubmodelData, submodels,
+                    SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE);
 
             checkAndAddSubmodel(testParameters.shouldCountPartAsPlanned,
-                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getPartAsPlanned), submodels);
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getPartAsPlanned), submodels, PART_AS_PLANNED_ASPECT_TYPE);
         }
 
         if (relationshipSubmodelData.isPresent()) {
             final RelationshipSubmodel relationshipSubmodel = objectMapper.convertValue(relationshipSubmodelData, relationshipAspect.getSubmodelClazz());
             relationshipSubmodel.asRelationships().forEach(relationship -> {
                 final String childGlobalAssetId = relationship.getLinkedItem().getChildCatenaXId().getGlobalAssetId();
-                final List<Map<String, Object>> childSubmodels = getSubmodelsFor(childGlobalAssetId, testParameters);
+                final List<Submodel> childSubmodels = getSubmodelsFor(childGlobalAssetId, testParameters);
                 submodels.addAll(childSubmodels);
             });
         }
@@ -295,9 +303,10 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
         }
     }
 
-    private void checkAndAddSubmodel(final boolean shouldCountSubmodel, final Optional<Map<String, Object>> submodel, final List<Map<String, Object>> submodels) {
-        if (shouldCountSubmodel && submodel.isPresent()) {
-            submodels.add(submodel.get());
+    private void checkAndAddSubmodel(final boolean shouldCountSubmodel, final Optional<Map<String, Object>> payload,
+            final List<Submodel> submodels, final String aspectType) {
+        if (shouldCountSubmodel && payload.isPresent()) {
+            submodels.add(Submodel.from(UUID.randomUUID().toString(), aspectType, payload.get()));
         }
     }
 
@@ -314,6 +323,7 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
         final boolean shouldCountProductDescription;
         final boolean shouldCountPhysicalDimension;
         final boolean shouldCountSingleLevelBomAsPlanned;
+        final boolean shouldCountSingleLevelUsageAsBuilt;
         final boolean shouldCountPartAsPlanned;
 
         final boolean shouldCreateExpectedRelationshipsFile;

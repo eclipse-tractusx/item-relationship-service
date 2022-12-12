@@ -51,24 +51,35 @@ public class CxTestDataContainer {
     @SuppressWarnings("PMD.DataClass")
     @Data
     public static class CxTestData {
+
+        public static final String SERIAL_PART_ASPECT_TYPE = "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization";
+        public static final String ASSEMBLY_PART_ASPECT_TYPE = "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship";
+        public static final String SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt";
+        public static final String PART_AS_PLANNED_ASPECT_TYPE = "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned";
+        public static final String SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned";
+        public static final String BATCH_ASPECT_TYPE = "urn:bamm:io.catenax.batch:1.0.0#Batch";
+        public static final String MATERIAL_FOR_RECYCLING_ASPECT_TYPE = "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling";
+        public static final String PRODUCT_DESCRIPTION_ASPECT_TYPE = "urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription";
+        public static final String PHYSICAL_DIMENSION_ASPECT_TYPE = "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension";
+
         private String catenaXId;
-        @JsonProperty("urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization")
+        @JsonProperty(SERIAL_PART_ASPECT_TYPE)
         private List<Map<String, Object>> serialPartTypization;
-        @JsonProperty("urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship")
+        @JsonProperty(ASSEMBLY_PART_ASPECT_TYPE)
         private List<Map<String, Object>> assemblyPartRelationship;
-        @JsonProperty("urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt")
+        @JsonProperty(SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE)
         private List<Map<String, Object>> singleLevelUsageAsBuilt;
-        @JsonProperty("urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned")
+        @JsonProperty(PART_AS_PLANNED_ASPECT_TYPE)
         private List<Map<String, Object>> partAsPlanned;
-        @JsonProperty("urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned")
+        @JsonProperty(SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE)
         private List<Map<String, Object>> singleLevelBomAsPlanned;
-        @JsonProperty("urn:bamm:io.catenax.batch:1.0.0#Batch")
+        @JsonProperty(BATCH_ASPECT_TYPE)
         private List<Map<String, Object>> batch;
-        @JsonProperty("urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling")
+        @JsonProperty(MATERIAL_FOR_RECYCLING_ASPECT_TYPE)
         private List<Map<String, Object>> materialForRecycling;
-        @JsonProperty("urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription")
+        @JsonProperty(PRODUCT_DESCRIPTION_ASPECT_TYPE)
         private List<Map<String, Object>> productDescription;
-        @JsonProperty("urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension")
+        @JsonProperty(PHYSICAL_DIMENSION_ASPECT_TYPE)
         private List<Map<String, Object>> physicalDimension;
 
         public Optional<Map<String, Object>> getSerialPartTypization() {
