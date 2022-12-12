@@ -56,6 +56,8 @@ public class CxTestDataContainer {
         private List<Map<String, Object>> serialPartTypization;
         @JsonProperty("urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship")
         private List<Map<String, Object>> assemblyPartRelationship;
+        @JsonProperty("urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt")
+        private List<Map<String, Object>> singleLevelUsageAsBuilt;
         @JsonProperty("urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned")
         private List<Map<String, Object>> partAsPlanned;
         @JsonProperty("urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned")
@@ -75,6 +77,10 @@ public class CxTestDataContainer {
 
         public Optional<Map<String, Object>> getAssemblyPartRelationship() {
             return assemblyPartRelationship != null ? assemblyPartRelationship.stream().findFirst() : Optional.empty();
+        }
+
+        public Optional<Map<String, Object>> getSingleLevelUsageAsBuilt() {
+            return singleLevelUsageAsBuilt != null ? singleLevelUsageAsBuilt.stream().findFirst() : Optional.empty();
         }
 
         public Optional<Map<String, Object>> getPartAsPlanned() {
