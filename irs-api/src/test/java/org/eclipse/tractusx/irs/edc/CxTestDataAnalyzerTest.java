@@ -247,9 +247,8 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
                 final long expectedNumberOfChildSubmodels = countExpectedNumberOfSubmodelsFor(childGlobalAssetId, testParameters);
                 counter.addAndGet(expectedNumberOfChildSubmodels);
             });
-            return counter.get();
         }
-        return 0L;
+        return counter.get();
     }
 
     private List<Submodel> getSubmodelsFor(final String catenaXId, final TestParameters testParameters) {
