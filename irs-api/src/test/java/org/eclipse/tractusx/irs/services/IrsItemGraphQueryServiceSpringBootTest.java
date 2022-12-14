@@ -150,7 +150,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     }
 
     @Test
-    void cancelJobById() throws InterruptedException {
+    void cancelJobById() {
         final String idAsString = String.valueOf(jobId);
         final MultiTransferJob multiTransferJob = MultiTransferJob.builder()
                                                                   .job(Job.builder()
@@ -167,9 +167,6 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         jobStore.create(multiTransferJob);
 
-        // Simulate job processing
-        Thread.sleep(5);
-
         assertThat(service.cancelJobById(jobId)).isNotNull();
 
         final Optional<MultiTransferJob> fetchedJob = jobStore.find(idAsString);
@@ -179,7 +176,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         assertThat(state).isEqualTo(JobState.CANCELED);
 
         final ZonedDateTime lastModifiedOn = fetchedJob.get().getJob().getLastModifiedOn();
-        assertThat(lastModifiedOn).isNotNull().isBefore(ZonedDateTime.now());
+        assertThat(lastModifiedOn).isNotNull().isBeforeOrEqualTo(ZonedDateTime.now());
     }
 
     @Test
