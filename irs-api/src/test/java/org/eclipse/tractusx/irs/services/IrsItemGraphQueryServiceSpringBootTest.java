@@ -150,7 +150,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     }
 
     @Test
-    void cancelJobById() {
+    void cancelJobById() throws InterruptedException {
         final String idAsString = String.valueOf(jobId);
         final MultiTransferJob multiTransferJob = MultiTransferJob.builder()
                                                                   .job(Job.builder()
@@ -166,6 +166,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
                                                                   .build();
 
         jobStore.create(multiTransferJob);
+
+        // Simulate job processing
+        Thread.sleep(5);
 
         assertThat(service.cancelJobById(jobId)).isNotNull();
 
