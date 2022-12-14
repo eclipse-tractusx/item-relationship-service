@@ -27,8 +27,6 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
-import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.RelationshipAspect;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.LinkedItem;
@@ -36,6 +34,8 @@ import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
+import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.RelationshipAspect;
 import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 
@@ -64,11 +64,11 @@ public class RelationshipDelegate extends AbstractDelegate {
             shell -> shell.findRelationshipEndpointAddresses(AspectType.fromValue(relationshipAspect.name())).forEach(address -> {
                 try {
                     final List<Relationship> relationships = submodelFacade.getRelationships(address, relationshipAspect);
-                    final List<String> childIds = getChildIds(relationships);
+                    final List<String> idsToProcess = getIdsToProcess(relationships, relationshipAspect);
 
-                    log.info("Processing Relationships with {} children", childIds.size());
+                    log.info("Processing Relationships with {} items", idsToProcess.size());
 
-                    aasTransferProcess.addIdsToProcess(childIds);
+                    aasTransferProcess.addIdsToProcess(idsToProcess);
                     itemContainerBuilder.relationships(relationships);
                 } catch (final EdcClientException e) {
                     log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
@@ -82,6 +82,20 @@ public class RelationshipDelegate extends AbstractDelegate {
         );
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
+    }
+
+    private List<String> getIdsToProcess(final List<Relationship> relationships, final RelationshipAspect relationshipAspect) {
+        return switch (relationshipAspect) {
+            case AssemblyPartRelationship, SingleLevelBomAsPlanned -> getChildIds(relationships);
+            case SingleLevelUsageAsBuilt -> getParentIds(relationships);
+        };
+    }
+
+    private List<String> getParentIds(final List<Relationship> relationships) {
+        return relationships.stream()
+                            .map(Relationship::getCatenaXId)
+                            .map(GlobalAssetIdentification::getGlobalAssetId)
+                            .collect(Collectors.toList());
     }
 
     private List<String> getChildIds(final List<Relationship> relationships) {
