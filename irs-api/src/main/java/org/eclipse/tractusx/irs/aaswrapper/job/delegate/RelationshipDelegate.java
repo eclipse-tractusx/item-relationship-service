@@ -33,6 +33,7 @@ import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
+import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.RelationshipAspect;
@@ -64,7 +65,7 @@ public class RelationshipDelegate extends AbstractDelegate {
             shell -> shell.findRelationshipEndpointAddresses(AspectType.fromValue(relationshipAspect.name())).forEach(address -> {
                 try {
                     final List<Relationship> relationships = submodelFacade.getRelationships(address, relationshipAspect);
-                    final List<String> idsToProcess = getIdsToProcess(relationships, relationshipAspect);
+                    final List<String> idsToProcess = getIdsToProcess(relationships, relationshipAspect.getDirection());
 
                     log.info("Processing Relationships with {} items", idsToProcess.size());
 
@@ -84,10 +85,10 @@ public class RelationshipDelegate extends AbstractDelegate {
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
     }
 
-    private List<String> getIdsToProcess(final List<Relationship> relationships, final RelationshipAspect relationshipAspect) {
-        return switch (relationshipAspect) {
-            case AssemblyPartRelationship, SingleLevelBomAsPlanned -> getChildIds(relationships);
-            case SingleLevelUsageAsBuilt -> getParentIds(relationships);
+    private List<String> getIdsToProcess(final List<Relationship> relationships, final Direction direction) {
+        return switch (direction) {
+            case DOWNWARD -> getChildIds(relationships);
+            case UPWARD -> getParentIds(relationships);
         };
     }
 

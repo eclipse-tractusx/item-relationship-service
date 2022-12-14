@@ -32,12 +32,12 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
  * Relationship aspect types
  */
 @SuppressWarnings("PMD.FieldNamingConventions")
+@Getter
 public enum RelationshipAspect {
     SingleLevelBomAsPlanned(SingleLevelBomAsPlanned.class, BomLifecycle.AS_PLANNED, Direction.DOWNWARD),
     AssemblyPartRelationship(AssemblyPartRelationship.class, BomLifecycle.AS_BUILT, Direction.DOWNWARD),
     SingleLevelUsageAsBuilt(SingleLevelUsageAsBuilt.class, BomLifecycle.AS_BUILT, Direction.UPWARD);
 
-    @Getter
     private final Class<? extends RelationshipSubmodel> submodelClazz;
     private final BomLifecycle bomLifecycle;
     private final Direction direction;
