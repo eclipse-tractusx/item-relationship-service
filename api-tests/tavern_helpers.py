@@ -86,7 +86,7 @@ def status_of_jobs_are_as_expected(response, expected_status):
 def status_of_all_jobs_are_given(response):
     job_list = response.json().get("content")
     print("Job Liste:  ", job_list)
-    for i in response.json():
+    for i in job_list:
         actual_status = i.get("state")
         assert any(
             ["COMPLETED" in actual_status, "ERROR" in actual_status, "INITIAL" in actual_status, "CANCELED" in actual_status, "RUNNING" in actual_status]
@@ -127,21 +127,24 @@ def check_timestamps_for_not_completed_jobs(response):
 
 
 def check_startedOn_timestamp_exists(response):
-    for i in response.json():
+    response_list = response.json().get("content")
+    for i in response_list:
         startedOn = i.get("startedOn")
         print("Check if startedOn timestamp is existing.")
         assert startedOn is not None
 
 
 def check_completedOn_timestamp_not_exists(response):
-    for i in response.json():
+    response_list = response.json().get("content")
+    for i in response_list:
         completedOn = i.get("completedOn")
         print("Check if completedOn timestamp is missing.")
         assert completedOn is None
 
 
 def check_completedOn_timestamp_exists(response):
-    for i in response.json():
+    response_list = response.json().get("content")
+    for i in response_list:
         completedOn = i.get("completedOn")
         print("Check if completedOn timestamp is existing.")
         assert completedOn is not None
@@ -149,7 +152,8 @@ def check_completedOn_timestamp_exists(response):
 
 
 def check_startedOn_is_smaller_than_completedOn(response):
-    for i in response.json():
+    response_list = response.json().get("content")
+    for i in response_list:
         completedOn_timestamp = datetime.strptime(i.get("completedOn")[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
         startedOn_timestamp = datetime.strptime(i.get("startedOn")[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
         print(f"Check if startedOn timestamp '{startedOn_timestamp}' is smaller than completedOn timestamp '{completedOn_timestamp}'")
