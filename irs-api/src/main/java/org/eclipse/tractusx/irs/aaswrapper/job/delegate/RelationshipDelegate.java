@@ -22,7 +22,6 @@
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
@@ -96,7 +95,7 @@ public class RelationshipDelegate extends AbstractDelegate {
         return relationships.stream()
                             .map(Relationship::getCatenaXId)
                             .map(GlobalAssetIdentification::getGlobalAssetId)
-                            .collect(Collectors.toList());
+                            .toList();
     }
 
     private List<String> getChildIds(final List<Relationship> relationships) {
@@ -104,6 +103,6 @@ public class RelationshipDelegate extends AbstractDelegate {
                             .map(Relationship::getLinkedItem)
                             .map(LinkedItem::getChildCatenaXId)
                             .map(GlobalAssetIdentification::getGlobalAssetId)
-                            .collect(Collectors.toList());
+                            .toList();
     }
 }
