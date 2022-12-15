@@ -50,13 +50,16 @@ class SubmodelTestdataCreator {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
+    @SuppressWarnings({ "PMD.CyclomaticComplexity" })
     public Map<String, Object> createSubmodelForId(final String endpointAddress) {
         final String catenaXId = StringUtils.substringBefore(endpointAddress, "_");
         if (endpointAddress.contains("assemblyPartRelationship")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship).orElse(Map.of());
+        } else if (endpointAddress.contains("singleLevelUsageAsBuilt")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelUsageAsBuilt).orElse(Map.of());
         } else if (endpointAddress.contains("serialPartTypization")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSerialPartTypization).orElse(Map.of());
-        }  else if (endpointAddress.contains("singleLevelBomAsPlanned")) {
+        } else if (endpointAddress.contains("singleLevelBomAsPlanned")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned).orElse(Map.of());
         } else if (endpointAddress.contains("partAsPlanned")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getPartAsPlanned).orElse(Map.of());

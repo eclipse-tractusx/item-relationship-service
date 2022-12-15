@@ -316,7 +316,9 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
-          jobParameter:
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
+          parameter:
             aspects:
               - SerialPartTypization
               - AddressAspect
@@ -324,8 +326,6 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
-          lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           startedOn: 2022-02-03T14:48:54.709Z
           state: CANCELED
           summary:
@@ -361,7 +361,9 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
-          jobParameter:
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
+          parameter:
             aspects:
               - SerialPartTypization
               - AddressAspect
@@ -369,8 +371,6 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
-          lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           startedOn: 2022-02-03T14:48:54.709Z
           state: COMPLETED
           summary:
@@ -488,7 +488,9 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
-          jobParameter:
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
+          parameter:
             aspects:
               - SerialPartTypization
               - AddressAspect
@@ -496,8 +498,6 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
-          lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           startedOn: 2022-02-03T14:48:54.709Z
           state: ERROR
           summary:
@@ -525,7 +525,9 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
-          jobParameter:
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
+          parameter:
             aspects:
               - SerialPartTypization
               - AddressAspect
@@ -533,8 +535,6 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
-          lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           startedOn: 2022-02-03T14:48:54.709Z
           state: COMPLETED
           summary:
@@ -629,7 +629,9 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
-          jobParameter:
+          lastModifiedOn: 2022-02-03T14:48:54.709Z
+          owner: ""
+          parameter:
             aspects:
               - SerialPartTypization
               - AddressAspect
@@ -637,8 +639,6 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
-          lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           startedOn: 2022-02-03T14:48:54.709Z
           state: RUNNING
           summary:
@@ -858,14 +858,14 @@ components:
           maxLength: 36
           minLength: 36
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
-        jobParameter:
-          $ref: '#/components/schemas/JobParameter'
         lastModifiedOn:
           type: string
           format: date-time
         owner:
           type: string
           description: The IRS api consumer.
+        parameter:
+          $ref: '#/components/schemas/JobParameter'
         startedOn:
           type: string
           format: date-time

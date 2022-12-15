@@ -141,7 +141,7 @@ class JobOrchestratorTest {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.empty());
 
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getJobParameter());
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getParameter());
         var newJob = getStartedJob();
 
         // Assert
@@ -161,7 +161,7 @@ class JobOrchestratorTest {
         when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(okResponse);
 
         // Act
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getJobParameter());
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getParameter());
 
         // Assert
         var newJob = getStartedJob();

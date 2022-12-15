@@ -299,7 +299,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                   .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .state(JobState.UNSAVED)
                   .owner(securityHelperService.getClientIdClaim())
-                  .jobParameter(jobData)
+                  .parameter(jobData)
                   .build();
     }
 
