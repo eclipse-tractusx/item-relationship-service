@@ -1,752 +1,707 @@
 {
-    "relationships": [
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:d71d22bf-1fca-49a4-aa39-3b2c4563327e"
+    "relationships" : [ {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:de9d233e-c371-490b-b02b-092756ccdd42"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:97ddc65b-cb98-44e3-a21e-4940159dda34"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:625d9e00-b1c2-4d98-a9a7-fea9f00d2521"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:2bbd4409-1fd9-429d-bb7c-7297b67a4e34"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:94f95beb-2d2e-4275-af82-ef601d25e7db"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:e7bba1ca-c0e5-4e17-92eb-366ab7a9db92"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:82260db6-7ac1-4b61-9b98-e193cfbfcca4"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:72a486fa-3ca0-4dc7-8c3a-893ed56ff874"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:d4e9558c-f75b-437d-8bd5-83fe14bdeeaf"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:504cc0c4-4199-43bf-83d5-7ce575cf2170"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:a7fc6773-b3f2-4b9e-b0ca-586cbbd51dd9"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:0f006414-e0e8-40a4-85ed-c126322b3b61"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:6bd19830-3f63-4915-906d-0dd26196b7a6"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:2a1bd6c6-69c3-41b6-8154-596a79567017"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:dc658148-64f5-4840-a42f-80396a42afe3"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:a45d70f9-79f4-4247-9d96-2b42d3e30b9b"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:571cca8d-ceda-458e-a51c-69bcf53fa1ad"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:b5af1191-be7d-4a06-be65-45abab1003b8"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:f473c6ec-3920-433a-89cd-c3b914ed6963"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:81ee63b0-0a37-42a3-bd7f-3a311cf9e067"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:719cff6f-8425-4a9a-a20f-1ddf92873d57"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:a1c33cc3-60c2-4b06-a929-2c3ef8d09dd2"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:0e90d4a6-8ccc-483b-a786-bfac2a2d6553"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:260bafea-867b-4160-a2d2-b6f0ed52dd36"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:b2805664-6d1e-481a-b270-bc75cb67ad63"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:000eee07-2df6-4e67-bc6a-6dd6b30d1dea"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:c1bbd0b8-b1df-40c5-b19a-714798799ffe"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:890757b8-e562-4e0c-94f7-bd0806dd258f"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:eab9525d-79c0-4c3c-83dd-4815f2703ed1"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:2098f1c4-92af-4141-af33-36f125f2b342"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:1b96d3d5-05e7-4da7-9915-2ed834316ca4"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:78a179e1-edb0-419a-bbea-6219015dcd92"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:aacf2b0e-5de2-4952-862e-2b47a12e59bc"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:307651fd-71f7-42cc-a644-f82ecb10ee24"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:cb1e4dcd-31a0-47df-994b-f0f541cbaf9f"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:7743b60c-a868-41e9-afab-ab2465734f20"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:cbb53a71-fba4-4753-868b-e91721d8f7b1"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:719fa2fe-5462-43d0-a240-7ead01808de7"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:9663defa-684b-4e75-80d5-82d001ab217a"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:d03c22a1-0ccc-4aee-912a-d52386f76b33"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:9107e586-9bfa-4c82-b81c-6c8ae0ee36f6"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:79426a34-3f11-422f-a5d4-c9f78637b00b"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:0bfbebba-8a1c-41a3-8199-b1075f327f7a"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:7c4993ad-9bed-46c8-a9b4-261073a0a3b5"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:1294c992-af34-4779-b13c-5cae0fd521fb"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:cafdcb5d-4ed8-40e0-8af4-2b986a08ca7d"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:34d50337-e11f-4f41-9a48-87cc986d5449"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:f2588c21-e82b-4049-8795-06e0a7cf63bd"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:6ae4b780-c6dd-4c3c-adf8-b57b5cc8e3da"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:3eea3fe0-fc9f-4ad9-b00d-24bf05e551e2"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:5ca6c6f0-3ac2-4b90-b88c-a28935646d55"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:9fb82cbb-972b-4b04-a283-186ca45b2bd8"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:744ec0a4-575b-47b4-9c97-b5eaad60b51e"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:e4ee6157-108d-4dc5-b47b-08a317d1e2c5"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:fc7f69b3-27d8-40a8-866e-e4e79608d788"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:4921d6d6-bb0e-488a-bfcb-43aa98f770f1"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:66488d8e-893a-4f4d-b650-e921ad5223e0"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:84e40758-b27c-4838-a498-4d52772cbf29"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:4870af61-d8e5-4923-b8b9-e43bab6e555b"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:61ed1b73-f75f-4001-a7d3-43b7b48627df"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:682f4e8e-2157-45ed-8833-0e51d6f4b555"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:773a790c-3265-4a0d-a376-ba6892d1af6e"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:da6d0c77-2318-4cf0-b72a-602b758c4893"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:fecce9a1-64a0-4bda-8ff9-1bb1abe8b3a2"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:b584ac7a-73b0-4d8b-8dff-a14dad6a8787"
         },
-        {
-            "catenaXId": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:fcfdf8a6-80ed-4345-a52d-ae440c0a2bd5"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:12236481-0285-44d8-810f-766c676a0298"
         },
-        {
-            "catenaXId": "urn:uuid:504cc0c4-4199-43bf-83d5-7ce575cf2170",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:19488393-c309-4f69-babb-ec2a2414e567"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:a7fc6773-b3f2-4b9e-b0ca-586cbbd51dd9",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:80dd9f05-d4e0-4b14-9436-d9a31865b2a8"
         },
-        {
-            "catenaXId": "urn:uuid:a1c33cc3-60c2-4b06-a929-2c3ef8d09dd2",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:6b7688db-ca94-4056-9e94-98b8f49bbf5e"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:dc658148-64f5-4840-a42f-80396a42afe3",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 0.2341,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:kilogram"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:44516a17-96a6-48ea-be5f-9c20b71f8220"
         },
-        {
-            "catenaXId": "urn:uuid:a1c33cc3-60c2-4b06-a929-2c3ef8d09dd2",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.3301,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:f38af026-2030-4da6-bcce-6af211400feb"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:dc658148-64f5-4840-a42f-80396a42afe3",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 0.2014,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:kilogram"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:1c9e90dc-1135-402c-8a4f-11b4e6e8ca6e"
         },
-        {
-            "catenaXId": "urn:uuid:a1c33cc3-60c2-4b06-a929-2c3ef8d09dd2",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.2001,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:f6dc159a-c93d-4a61-a9c6-4985e6ffca31"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:dc658148-64f5-4840-a42f-80396a42afe3",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:6ac8d26d-332f-450b-b281-2db2e4ed161a"
         },
-        {
-            "catenaXId": "urn:uuid:e4ee6157-108d-4dc5-b47b-08a317d1e2c5",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:f680d61e-5c04-4dd1-9f7f-995719f20a48"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:6ac8d26d-332f-450b-b281-2db2e4ed161a",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 0.1908,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:kilogram"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:4cf755d5-c54d-4049-bd34-ccb566bd7d08"
         },
-        {
-            "catenaXId": "urn:uuid:cafdcb5d-4ed8-40e0-8af4-2b986a08ca7d",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:56f09d9a-7004-46e8-a7e1-5a4a4caecced"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:aacf2b0e-5de2-4952-862e-2b47a12e59bc",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:d25ba21d-55d8-4ba0-9a3e-2df4f199a08a"
         },
-        {
-            "catenaXId": "urn:uuid:cafdcb5d-4ed8-40e0-8af4-2b986a08ca7d",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.2341,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:b5a3dc95-c4a3-482f-b5ef-89af7d6e6348"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:6ae4b780-c6dd-4c3c-adf8-b57b5cc8e3da",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 1.0,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:piece"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:eabe1577-a594-409f-9da3-92dfa5b89354"
         },
-        {
-            "catenaXId": "urn:uuid:cafdcb5d-4ed8-40e0-8af4-2b986a08ca7d",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.2014,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:57ff38c0-ba9b-42e0-8950-1b1c062efe04"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:6ae4b780-c6dd-4c3c-adf8-b57b5cc8e3da",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 0.3301,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:kilogram"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:d0545b54-8839-4b13-b6c5-f19f0b7c9105"
         },
-        {
-            "catenaXId": "urn:uuid:6b7688db-ca94-4056-9e94-98b8f49bbf5e",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.1908,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:e6165b71-d315-4282-b874-bd35331d1dde"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:6ae4b780-c6dd-4c3c-adf8-b57b5cc8e3da",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 0.2001,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:kilogram"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:04baed27-a656-4cee-be2a-d2c99fa9c574"
         },
-        {
-            "catenaXId": "urn:uuid:56f09d9a-7004-46e8-a7e1-5a4a4caecced",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.1908,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:107d88d1-f24c-4f73-b099-254950609e91"
+        "aspectType" : "AssemblyPartRelationship"
+    }, {
+        "catenaXId" : "urn:uuid:eabe1577-a594-409f-9da3-92dfa5b89354",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 0.1908,
+                "measurementUnit" : {
+                    "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                    "lexicalValue" : "unit:kilogram"
+                }
             },
-            "aspectType": "AssemblyPartRelationship"
-        }
-    ]
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:b6496465-27fc-489e-9470-855215868bb2"
+        },
+        "aspectType" : "AssemblyPartRelationship"
+    } ]
 }
