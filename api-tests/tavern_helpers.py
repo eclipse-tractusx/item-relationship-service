@@ -173,3 +173,4 @@ def check_pagination_is_requested_correctly(response):
     assert response_list.get("pageCount") > 0
     assert response_list.get("pageSize") == 3
     assert response_list.get("totalElements") > 0
+    assert len(response.json().get("content")) == 3
