@@ -28,8 +28,10 @@ import java.util.Map;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
+import lombok.Builder;
 
-/* package */  class AuthenticationProperties {
+@Builder
+/* package */ class AuthenticationProperties {
     private final String uri;
     private final String clientId;
     private final String clientSecret;
