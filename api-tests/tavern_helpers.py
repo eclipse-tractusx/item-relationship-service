@@ -150,7 +150,6 @@ def check_completedOn_timestamp_exists(response):
         assert completedOn is not None
 
 
-
 def check_startedOn_is_smaller_than_completedOn(response):
     response_list = response.json().get("content")
     for i in response_list:
@@ -158,3 +157,19 @@ def check_startedOn_is_smaller_than_completedOn(response):
         startedOn_timestamp = datetime.strptime(i.get("startedOn")[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
         print(f"Check if startedOn timestamp '{startedOn_timestamp}' is smaller than completedOn timestamp '{completedOn_timestamp}'")
         assert startedOn_timestamp < completedOn_timestamp
+
+
+def check_pagination_details_exists(response):
+    response_list = response.json()
+    assert response_list.get("pageNumber") == 0
+    assert response_list.get("pageCount") > 0
+    assert response_list.get("pageSize") == 20
+    assert response_list.get("totalElements") > 0
+
+
+def check_pagination_is_requested_correctly(response):
+    response_list = response.json()
+    assert response_list.get("pageNumber") == 1
+    assert response_list.get("pageCount") > 0
+    assert response_list.get("pageSize") == 3
+    assert response_list.get("totalElements") > 0
