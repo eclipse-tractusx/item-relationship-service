@@ -21,14 +21,16 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 
-import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.OAUTH_REST_TEMPLATE;
+import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.DTR_REST_TEMPLATE;
 
 import java.net.SocketTimeoutException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import io.github.resilience4j.retry.annotation.Retry;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
@@ -68,7 +70,9 @@ interface DigitalTwinRegistryClient {
  * Digital Twin Registry Rest Client Stub used in local environment
  */
 @Service
-@Profile({ "local", "stubtest" })
+@Profile({ "local",
+           "stubtest"
+})
 class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
 
     private final AssetAdministrationShellTestdataCreator testdataCreator;
@@ -95,35 +99,64 @@ class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
 @Profile({ "!local && !stubtest" })
 class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient {
 
+    private static final String PLACEHOLDER_AAS_IDENTIFIER = "aasIdentifier";
+    private static final String PLACEHOLDER_ASSET_IDS = "assetIds";
     private final RestTemplate restTemplate;
-    private final String digitalTwinRegistryUrl;
+    private final String descriptorEndpoint;
+    private final String shellLookupEndpoint;
     private final OutboundMeterRegistryService meterRegistryService;
 
-    /* package */ DigitalTwinRegistryClientImpl(@Qualifier(OAUTH_REST_TEMPLATE) final RestTemplate restTemplate,
-            @Value("${digitalTwinRegistry.url:}") final String digitalTwinRegistryUrl,
+    /* package */ DigitalTwinRegistryClientImpl(@Qualifier(DTR_REST_TEMPLATE) final RestTemplate restTemplate,
+            @Value("${digitalTwinRegistry.descriptorEndpoint:}") final String descriptorEndpoint,
+            @Value("${digitalTwinRegistry.shellLookupEndpoint:}") final String shellLookupEndpoint,
             final OutboundMeterRegistryService meterRegistryService) {
         this.restTemplate = restTemplate;
-        this.digitalTwinRegistryUrl = digitalTwinRegistryUrl;
+        this.descriptorEndpoint = descriptorEndpoint;
+        this.shellLookupEndpoint = shellLookupEndpoint;
         this.meterRegistryService = meterRegistryService;
+
+        ensureUrlContainsPlaceholders(descriptorEndpoint, "digitalTwinRegistry.descriptorEndpoint",
+                PLACEHOLDER_AAS_IDENTIFIER);
+        ensureUrlContainsPlaceholders(shellLookupEndpoint, "digitalTwinRegistry.shellLookupEndpoint",
+                PLACEHOLDER_ASSET_IDS);
+    }
+
+    private void ensureUrlContainsPlaceholders(final String bpdmUrl, final String configPath,
+            final String... placeholders) {
+        if (StringUtils.isNotBlank(bpdmUrl)) {
+            for (var placeholder : placeholders) {
+                require(bpdmUrl, configPath, placeholder);
+            }
+        }
+    }
+
+    private static void require(final String bpdmUrl, final String configPath, final String placeholder) {
+        if (!bpdmUrl.contains(wrap(placeholder))) {
+            throw new IllegalStateException(
+                    "Configuration value for '" + configPath + "' must contain the URL placeholder '" + placeholder
+                            + "'!");
+        }
+    }
+
+    private static String wrap(final String placeholderIdType) {
+        return "{" + placeholderIdType + "}";
     }
 
     @Override
     @Retry(name = "registry")
     public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String aasIdentifier) {
-        final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(digitalTwinRegistryUrl);
-        uriBuilder.path("/registry/shell-descriptors/").path(aasIdentifier);
-
+        final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(descriptorEndpoint);
+        final Map<String, String> values = Map.of(PLACEHOLDER_AAS_IDENTIFIER, aasIdentifier);
         return execute(
-                () -> restTemplate.getForObject(uriBuilder.build().toUri(), AssetAdministrationShellDescriptor.class));
+                () -> restTemplate.getForObject(uriBuilder.build(values), AssetAdministrationShellDescriptor.class));
     }
 
     @Override
     @Retry(name = "registry")
     public List<String> getAllAssetAdministrationShellIdsByAssetLink(final List<IdentifierKeyValuePair> assetIds) {
-        final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(digitalTwinRegistryUrl);
-        uriBuilder.path("/lookup/shells").queryParam("assetIds", new JsonUtil().asString(assetIds));
-
-        return execute(() -> restTemplate.getForObject(uriBuilder.build().toUri(), List.class));
+        final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(shellLookupEndpoint);
+        final var values = Map.of(PLACEHOLDER_ASSET_IDS, new JsonUtil().asString(assetIds));
+        return execute(() -> restTemplate.getForObject(uriBuilder.build(values), List.class));
     }
 
     private <T> T execute(final Supplier<T> supplier) {

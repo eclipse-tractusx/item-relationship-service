@@ -65,6 +65,10 @@ springdoc:
 irs:
   apiUrl: "${IRS_API_URL:http://localhost:8080}"
   job:
+    callback:
+      timeout:
+        read: PT90S
+        connect: PT90S
     cleanup:
       scheduler:
         #          ┌───────────── second (0-59)
@@ -79,8 +83,8 @@ irs:
         failed: 0 0 * * * * # every hour
     jobstore:
       ttl:
-        failedInHours: 168 # 7 days
-        completedInHours: 168 # 7 days
+        failed: P7D # 7 days
+        completed: P7D # 7 days
       cron:
         expression: "*/10 * * * * ?" # every 10 seconds
 
@@ -121,12 +125,19 @@ edc:
     request-ttl: ${EDC_SUBMODEL_REQUEST_TTL:PT10M}
     path: ${EDC_SUBMODEL_PATH:/submodel}
     urn-prefix: ${EDC_SUBMODEL_URN_PREFIX:/urn}
+    timeout:
+      read: PT90S
+      connect: PT90S
 
 digitalTwinRegistry:
-  url: "${DIGITALTWINREGISTRY_URL:}"
+  descriptorEndpoint: ${DIGITALTWINREGISTRY_DESCRIPTOR_URL:} # /{aasIdentifier}
+  shellLookupEndpoint: ${DIGITALTWINREGISTRY_SHELL_LOOKUP_URL:} # ?assetIds={assetIds}
+  timeout:
+    read: PT90S
+    connect: PT90S
 
 semanticsHub:
-  url: "${SEMANTICSHUB_URL:}"
+  modelJsonSchemaEndpoint: "${SEMANTICSHUB_URL:}" # /models/{urn}/json-schema
   cleanup:
     #          ┌───────────── second (0-59)
     #          │ ┌───────────── minute (0 - 59)
@@ -138,7 +149,13 @@ semanticsHub:
     #          │ │ │  │ │ │
     scheduler: 0 0 23 * * * # every day at 23:00
   defaultUrns: "${SEMANTICSHUB_DEFAULT_URNS:urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization}"
+  timeout:
+    read: PT90S
+    connect: PT90S
 
 bpdm:
-  url: "${BPDM_URL:}"
+  bpnEndpoint: "${BPDM_URL:}" # /api/catena/legal-entities/{idValue}?idType={idType}
+  timeout:
+    read: PT90S
+    connect: PT90S
 

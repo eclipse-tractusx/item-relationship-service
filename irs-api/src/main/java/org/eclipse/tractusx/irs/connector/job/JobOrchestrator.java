@@ -197,8 +197,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     public void findAndCleanupCompletedJobs() {
         log.info("Running cleanup of completed jobs");
         final ZonedDateTime currentDateMinusSeconds = ZonedDateTime.now(ZoneOffset.UTC)
-                                                                   .minus(jobTTL.getTtlCompletedJobsInHours(),
-                                                                           ChronoUnit.HOURS);
+                                                                   .minus(jobTTL.getTtlCompletedJobs());
         final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
                 currentDateMinusSeconds);
 
@@ -212,8 +211,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         log.info("Running cleanup of failed jobs");
 
         final ZonedDateTime currentDateMinusSeconds = ZonedDateTime.now(ZoneOffset.UTC)
-                                                                   .minus(jobTTL.getTtlFailedJobsInHours(),
-                                                                           ChronoUnit.HOURS);
+                                                                   .minus(jobTTL.getTtlFailedJobs());
         final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR,
                 currentDateMinusSeconds);
 
@@ -225,13 +223,13 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         return jobs.stream()
                    .map(job -> deleteJobsAndDecreaseJobsInJobStoreMetrics(job.getJobIdString()))
                    .flatMap(Optional::stream)
-                   .collect(Collectors.toList());
+                   .toList();
     }
 
     private Optional<MultiTransferJob> deleteJobsAndDecreaseJobsInJobStoreMetrics(final String jobId) {
         final Optional<MultiTransferJob> optJob = jobStore.deleteJob(jobId);
         if (optJob.isPresent()) {
-            meterService.setNumberOfJobsInJobStore(Long.valueOf(jobStore.findAll().size()));
+            meterService.setNumberOfJobsInJobStore((long) jobStore.findAll().size());
         }
         return optJob;
     }
@@ -269,7 +267,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     private long startTransfers(final MultiTransferJob job, final Stream<T> dataRequests) /* throws JobErrorDetails */ {
-        return dataRequests.map(r -> startTransfer(job, r)).collect(Collectors.counting());
+        return dataRequests.map(r -> startTransfer(job, r)).count();
     }
 
     private TransferInitiateResponse startTransfer(final MultiTransferJob job,

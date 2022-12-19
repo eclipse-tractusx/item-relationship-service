@@ -50,7 +50,7 @@ class DigitalTwinRegistryClientImplTest {
     private final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
 
     private final DigitalTwinRegistryClientImpl digitalTwinRegistryClient = new DigitalTwinRegistryClientImpl(
-            restTemplate, "url", meterRegistry);
+            restTemplate, "url/{aasIdentifier}", "url/{assetIds}", meterRegistry);
 
     @Test
     void shouldCallExternalServiceOnceAndGetAssetAdministrationShellDescriptor() {

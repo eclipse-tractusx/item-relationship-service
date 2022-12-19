@@ -32,14 +32,15 @@ data:
               jwk-set-uri: {{ tpl .Values.keycloak.oauth2.jwkSetUri . | quote }}
 
     digitalTwinRegistry:
-      url: {{ tpl .Values.digitalTwinRegistry.url . | quote }}
+      descriptorEndpoint: {{ tpl .Values.digitalTwinRegistry.descriptorEndpoint . | quote }}
+      shellLookupEndpoint: {{ tpl .Values.digitalTwinRegistry.shellLookupEndpoint . | quote }}
 
     semanticsHub:
-      url: {{ tpl .Values.semanticsHub.url . | quote }}
+      modelJsonSchemaEndpoint: {{ tpl .Values.semanticsHub.modelJsonSchemaEndpoint . | quote }}
       defaultUrns: {{ tpl (.Values.semanticsHub.defaultUrns | default "") . | quote }}
 
     bpdm:
-      url: {{ tpl .Values.bpdm.url . | quote }}
+      bpnEndpoint: {{ tpl .Values.bpdm.bpnEndpoint . | quote }}
 
     edc:
       controlplane:
