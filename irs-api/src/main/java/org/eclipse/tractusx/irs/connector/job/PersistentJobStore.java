@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 import org.eclipse.tractusx.irs.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
@@ -60,7 +61,7 @@ public class PersistentJobStore extends BaseJobStore {
     @Override
     protected Optional<MultiTransferJob> get(final String jobId) {
         try {
-            return blobStore.getBlob(toBlobId(jobId)).map(this::toJob);
+            return blobStore.getBlob(toBlobId(jobId)).flatMap(this::toJob);
         } catch (BlobPersistenceException e) {
             log.error("Error while trying to get job from blobstore", e);
             return Optional.empty();
@@ -71,7 +72,7 @@ public class PersistentJobStore extends BaseJobStore {
     protected Collection<MultiTransferJob> getAll() {
         try {
             final Collection<byte[]> allBlobs = blobStore.findBlobByPrefix(JOB_PREFIX);
-            return allBlobs.stream().map(this::toJob).collect(Collectors.toList());
+            return allBlobs.stream().map(this::toJob).flatMap(Optional::stream).collect(Collectors.toList());
         } catch (BlobPersistenceException e) {
             log.error("Cannot search for jobs in blobstore", e);
             return Collections.emptyList();
@@ -94,7 +95,7 @@ public class PersistentJobStore extends BaseJobStore {
     @Override
     protected Optional<MultiTransferJob> remove(final String jobId) {
         try {
-            final Optional<MultiTransferJob> job = blobStore.getBlob(toBlobId(jobId)).map(this::toJob);
+            final Optional<MultiTransferJob> job = blobStore.getBlob(toBlobId(jobId)).flatMap(this::toJob);
 
             if (job.isPresent()) {
                 final List<String> ids = Stream.concat(job.get().getTransferProcessIds().stream(),
@@ -110,8 +111,13 @@ public class PersistentJobStore extends BaseJobStore {
         }
     }
 
-    private MultiTransferJob toJob(final byte[] blob) {
-        return json.fromString(new String(blob, StandardCharsets.UTF_8), MultiTransferJob.class);
+    private Optional<MultiTransferJob> toJob(final byte[] blob) {
+        try {
+            return Optional.of(json.fromString(new String(blob, StandardCharsets.UTF_8), MultiTransferJob.class));
+        } catch (JsonParseException exception) {
+            log.warn("Stored Job could not be parsed to Job object.");
+            return Optional.empty();
+        }
     }
 
     private byte[] toBlob(final MultiTransferJob job) {

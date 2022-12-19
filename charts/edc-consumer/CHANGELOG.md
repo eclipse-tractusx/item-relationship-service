@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2022-12-19
+### Changed
+- Updated EDC to 0.2.0
+- Renamed controlplane property `edc.ids.endpoint.audience` to `edc.oauth.endpoint.audience`
+
 ## [1.0.1] - 2022-11-27
 ### Fixed
 - Fixed the default callback URL config, which resulted in a Helm template error

@@ -1,6 +1,7 @@
 name: "Sync main to IRS-Env"
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -20,7 +21,7 @@ jobs:
           git config user.email github-actions@github.com
           git fetch --no-tags --progress
           git checkout --progress -b catena-x-environments origin/catena-x-environments
-          git merge origin/main
+          git merge origin/main --allow-unrelated-histories
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

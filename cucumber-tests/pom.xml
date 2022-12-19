@@ -88,6 +88,12 @@
             <version>4.2.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
