@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - fix/branch-sync-action
 
 jobs:
   sync-branches:
