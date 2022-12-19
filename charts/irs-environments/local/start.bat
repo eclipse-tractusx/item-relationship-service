@@ -17,7 +17,7 @@ start .\charts\irs-environments\local\forward-ports.bat
 
 echo Uploading testdata...
 python testdata-transform/transform-and-upload.py ^
-  -f testdata-transform/CX_Testdata_1.3.3-reduced-with-asPlanned.json ^
+  -f testdata-transform/CX_Testdata_v1.4.1-AsBuilt-reduced-with-asPlanned.json ^
   -s http://irs-local-submodelservers:8080 ^
   -su http://localhost:10199 ^
   -a http://localhost:10196 ^
