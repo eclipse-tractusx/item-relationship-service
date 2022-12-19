@@ -104,7 +104,7 @@ digitalTwinRegistry:
   url: https://<digital-twin-registry-url>
 semanticsHub:
   url: https://<semantics-hub-url>
-  defaultUrns: >
+  defaultUrns: >-
     urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
 #    ,urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship
 bpdm:
@@ -137,6 +137,8 @@ edc:
     path: /submodel
     urnprefix: /urn
 
+config:
+  # add additional configuration values here (overrides IRS Spring application.yaml)
 
 #######################
 # Minio Configuration #

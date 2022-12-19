@@ -16,8 +16,9 @@ spec:
       {{- include "irs.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-spring-app-config.yaml") . | sha256sum }}
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
@@ -40,13 +41,9 @@ spec:
           volumeMounts:
             - name: tmp
               mountPath: /tmp
+            - name: application-config
+              mountPath: /app/config
           env:
-            - name: SERVER_TRUSTED_PORT
-              value: {{ .Values.service.trustedPort | quote }}
-            - name: IRS_API_URL
-              value: "{{ .Values.irsUrl }}"
-            - name: MINIO_URL
-              value: {{ tpl .Values.minioUrl . }}
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -67,39 +64,11 @@ spec:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
                   key: keycloakClientSecret
-            - name: KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI
-              value: {{ .Values.keycloak.oauth2.clientTokenUri }}
-            - name: KEYCLOAK_OAUTH2_JWK_SET_URI
-              value: {{ .Values.keycloak.oauth2.jwkSetUri }}
-            - name: DIGITALTWINREGISTRY_URL
-              value: {{ .Values.digitalTwinRegistry.url }}
-            - name: SEMANTICSHUB_URL
-              value: {{ .Values.semanticsHub.url }}
-            - name: SEMANTICSHUB_DEFAULT_URNS
-              value: {{ .Values.semanticsHub.defaultUrns }}
-            - name: BPDM_URL
-              value: {{ .Values.bpdm.url }}
-            - name: EDC_CONTROLPLANE_ENDPOINT_DATA
-              value: {{ tpl .Values.edc.controlplane.endpoint.data . | default (printf "http://%s%s" .Release.Name "-edc-controlplane:8181/data") }}
-            - name: EDC_CONTROLPLANE_REQUEST_TTL
-              value: {{ .Values.edc.controlplane.request.ttl }}
-            - name: EDC_CONTROLPLANE_PROVIDER_SUFFIX
-              value: {{ .Values.edc.controlplane.provider.suffix }}
-            - name: EDC_CONTROLPLANE_CATALOG_LIMIT
-              value: {{ .Values.edc.controlplane.catalog.limit | quote }}
-            - name: EDC_API_KEY_HEADER
-              value: {{ .Values.edc.controlplane.apikey.header }}
             - name: EDC_API_KEY_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
                   key: edcApiSecret
-            - name: EDC_SUBMODEL_REQUEST_TTL
-              value: {{ .Values.edc.submodel.request.ttl }}
-            - name: EDC_SUBMODEL_PATH
-              value: {{ .Values.edc.submodel.path }}
-            - name: EDC_SUBMODEL_URN_PREFIX
-              value: {{ .Values.edc.submodel.urnprefix }}
           ports:
             - name: http
               containerPort: 8080
@@ -137,6 +106,12 @@ spec:
       volumes:
         - name: tmp
           emptyDir: {}
+        - name: application-config
+          configMap:
+            name: {{ include "irs.fullname" . }}-configmap
+            items:
+              - key: application.yaml
+                path: application.yaml
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

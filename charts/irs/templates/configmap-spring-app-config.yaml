@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "irs.fullname" . }}-configmap
+  namespace: {{ .Values.namespace }}
+data:
+  application.yaml: |-
+    server:
+      trustedPort: {{ .Values.service.trustedPort }}
+
+    irs:
+      apiUrl: {{ tpl .Values.irsUrl . | quote }}
+
+    blobstore:
+      endpoint: {{ tpl .Values.minioUrl . | quote }}
+      accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
+      secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
+
+    spring:
+      security:
+        oauth2:
+          client:
+            registration:
+              keycloak:
+                client-id: "${KEYCLOAK_OAUTH2_CLIENT_ID}" # taken from secret ENV
+                client-secret: "${KEYCLOAK_OAUTH2_CLIENT_SECRET}" # taken from secret ENV
+            provider:
+              keycloak:
+                token-uri: {{ tpl .Values.keycloak.oauth2.clientTokenUri . | quote }}
+          resourceserver:
+            jwt:
+              jwk-set-uri: {{ tpl .Values.keycloak.oauth2.jwkSetUri . | quote }}
+
+    digitalTwinRegistry:
+      url: {{ tpl .Values.digitalTwinRegistry.url . | quote }}
+
+    semanticsHub:
+      url: {{ tpl .Values.semanticsHub.url . | quote }}
+      defaultUrns: {{ tpl (.Values.semanticsHub.defaultUrns | default "") . | quote }}
+
+    bpdm:
+      url: {{ tpl .Values.bpdm.url . | quote }}
+
+    edc:
+      controlplane:
+        request-ttl: {{ .Values.edc.controlplane.request.ttl | default "PT10M" | quote }}
+        endpoint:
+          data: {{ tpl (.Values.edc.controlplane.endpoint.data | default (printf "http://%s%s" .Release.Name "-edc-controlplane:8181/data")) . | quote }}
+        provider-suffix: {{ tpl .Values.edc.controlplane.provider.suffix . | quote }}
+        catalog-limit: {{ .Values.edc.controlplane.catalog.limit }}
+        api-key:
+          header: {{ tpl (.Values.edc.controlplane.apikey.header | default "") . | quote }}
+          secret: ${EDC_API_KEY_SECRET:} # taken from secret ENV
+
+      submodel:
+        request-ttl: {{ tpl .Values.edc.submodel.request.ttl . | default "PT10M" | quote }}
+        path: {{ tpl (.Values.edc.submodel.path | default "/submodel") . | quote }}
+        urn-prefix: {{ tpl (.Values.edc.submodel.urnprefix | default "/urn") . | quote }}
+
+{{- if .Values.config -}}
+    # additional config entries
+    {{- tpl (toYaml .Values.config) . | nindent 4 }}
+{{- end }}
+
