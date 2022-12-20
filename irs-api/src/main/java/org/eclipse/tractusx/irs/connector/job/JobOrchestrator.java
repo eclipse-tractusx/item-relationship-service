@@ -25,11 +25,9 @@ import static org.eclipse.tractusx.irs.controllers.IrsAppConstants.JOB_EXECUTION
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;

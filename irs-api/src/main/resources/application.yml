@@ -120,6 +120,9 @@ edc:
     api-key:
       header: ${EDC_API_KEY_HEADER:}
       secret: ${EDC_API_KEY_SECRET:}
+    datareference:
+      storage:
+        duration: PT1H
 
   submodel:
     request-ttl: ${EDC_SUBMODEL_REQUEST_TTL:PT10M}

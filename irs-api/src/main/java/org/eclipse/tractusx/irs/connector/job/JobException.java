@@ -31,7 +31,7 @@ import org.eclipse.tractusx.irs.component.JobErrorDetails;
  * Job Exception with embedded JobErrorDetails
  */
 public class JobException extends RuntimeException {
-    private static final String DEFAULT_ERROR_MESSAGE = "Critical error occur!!";
+    private static final String DEFAULT_ERROR_MESSAGE = "Critical error occurred!";
 
     @Getter
     private final JobErrorDetails jobErrorDetails;

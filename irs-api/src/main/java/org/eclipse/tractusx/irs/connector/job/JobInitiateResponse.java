@@ -21,13 +21,12 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.connector.job;
 
-import java.util.Map;
-
 import lombok.Builder;
 import lombok.Value;
+import org.eclipse.tractusx.irs.component.JobParameter;
 
 /**
- * Represents the result of a {@link JobOrchestrator#startJob(Map)} operation.
+ * Represents the result of a {@link JobOrchestrator#startJob(String, JobParameter)} operation.
  */
 @Value
 @Builder(toBuilder = true)
