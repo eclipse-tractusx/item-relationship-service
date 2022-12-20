@@ -45,8 +45,9 @@ public class BpdmDelegate extends AbstractDelegate {
 
     private final BpdmFacade bpdmFacade;
 
-    public BpdmDelegate(final BpdmFacade bpdmFacade) {
-        super(null); // no next step
+    public BpdmDelegate(final AbstractDelegate nextStep,
+            final BpdmFacade bpdmFacade) {
+        super(nextStep); // no next step
         this.bpdmFacade = bpdmFacade;
     }
 
@@ -72,7 +73,12 @@ public class BpdmDelegate extends AbstractDelegate {
             itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount, ProcessStep.BPDM_REQUEST));
         }
 
-        return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
+        if (expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {
+            return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
+        }
+
+        // depth reached - stop processing
+        return itemContainerBuilder.build();
     }
 
     private void bpnFromManufacturerId(final ItemContainer.ItemContainerBuilder itemContainerBuilder,
@@ -92,6 +98,11 @@ public class BpdmDelegate extends AbstractDelegate {
             log.warn(message);
             itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0, ProcessStep.BPDM_REQUEST));
         });
+    }
+
+    private boolean expectedDepthOfTreeIsNotReached(final int expectedDepth, final int currentDepth) {
+        log.info("Expected tree depth is {}, current depth is {}", expectedDepth, currentDepth);
+        return currentDepth <= expectedDepth;
     }
 
 }

@@ -36,7 +36,6 @@ import java.util.Optional;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
-import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
@@ -46,7 +45,7 @@ import org.springframework.web.client.RestClientException;
 class BpdmDelegateTest {
 
     final BpdmFacade bpdmFacade = mock(BpdmFacade.class);
-    final BpdmDelegate bpdmDelegate = new BpdmDelegate(bpdmFacade);
+    final BpdmDelegate bpdmDelegate = new BpdmDelegate(null, bpdmFacade);
 
     @Test
     void shouldFillItemContainerWithBpn() {
@@ -57,7 +56,7 @@ class BpdmDelegateTest {
 
         // when
         final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameter(),
-                new AASTransferProcess(), "itemId");
+                new AASTransferProcess("id", 0), "itemId");
 
         // then
         assertThat(result).isNotNull();
@@ -73,7 +72,7 @@ class BpdmDelegateTest {
 
         // when
         final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameter(),
-                new AASTransferProcess(), "itemId");
+                new AASTransferProcess("id", 0), "itemId");
 
         // then
         assertThat(result).isNotNull();
@@ -92,7 +91,7 @@ class BpdmDelegateTest {
 
         // when
         final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameter(),
-                new AASTransferProcess(), "itemId");
+                new AASTransferProcess("id", 0), "itemId");
 
         // then
         assertThat(result).isNotNull();
@@ -111,7 +110,7 @@ class BpdmDelegateTest {
 
         // when
         final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameter(),
-                new AASTransferProcess(), "itemId");
+                new AASTransferProcess("id", 0), "itemId");
 
         // then
         assertThat(result).isNotNull();
@@ -129,7 +128,7 @@ class BpdmDelegateTest {
 
         // when
         final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameter(),
-                new AASTransferProcess(), "itemId");
+                new AASTransferProcess("id", 0), "itemId");
 
         // then
         assertThat(result).isNotNull();
@@ -147,7 +146,7 @@ class BpdmDelegateTest {
 
         // when
         final ItemContainer result = bpdmDelegate.process(itemContainerWithoutShell, jobParameter(),
-                new AASTransferProcess(), "itemId");
+                new AASTransferProcess("id", 0), "itemId");
 
         // then
         assertThat(result).isNotNull();
