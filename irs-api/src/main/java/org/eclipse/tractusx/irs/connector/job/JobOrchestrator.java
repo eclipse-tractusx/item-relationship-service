@@ -28,6 +28,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
@@ -265,7 +266,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     }
 
     private long startTransfers(final MultiTransferJob job, final Stream<T> dataRequests) /* throws JobErrorDetails */ {
-        return dataRequests.map(r -> startTransfer(job, r)).count();
+        return dataRequests.map(r -> startTransfer(job, r)).collect(Collectors.counting());
     }
 
     private TransferInitiateResponse startTransfer(final MultiTransferJob job,
