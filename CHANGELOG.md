@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Change 'jobParameter' to 'parameter' in GET calls in IRS API
+- Change 'jobState' to 'state' request parameter in GET call for jobs by state, 'jobState' is now deprecated
 
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
