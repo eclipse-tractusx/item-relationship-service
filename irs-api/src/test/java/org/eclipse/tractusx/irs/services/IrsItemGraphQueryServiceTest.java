@@ -168,4 +168,24 @@ class IrsItemGraphQueryServiceTest {
         verify(jobStore).findByStates(jobStates);
     }
 
+    @Test
+    void shouldTakeAllJobsWhenBothListEmpty() {
+        final List<JobState> states = List.of();
+        final List<JobState> jobStates = List.of();
+
+        testee.getJobsByState(states, jobStates, Pageable.ofSize(10));
+
+        verify(jobStore).findAll();
+    }
+
+    @Test
+    void shouldTakeStatesInsteadOfEmptyDeprecatedParameter() {
+        final List<JobState> states = List.of(JobState.COMPLETED);
+        final List<JobState> jobStates = List.of();
+
+        testee.getJobsByState(states, jobStates, Pageable.ofSize(10));
+
+        verify(jobStore).findByStates(states);
+    }
+
 }
