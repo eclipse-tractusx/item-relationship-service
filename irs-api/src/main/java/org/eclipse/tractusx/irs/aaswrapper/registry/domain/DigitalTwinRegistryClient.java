@@ -124,7 +124,7 @@ class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient {
     private void ensureUrlContainsPlaceholders(final String bpdmUrl, final String configPath,
             final String... placeholders) {
         if (StringUtils.isNotBlank(bpdmUrl)) {
-            for (var placeholder : placeholders) {
+            for (final var placeholder : placeholders) {
                 require(bpdmUrl, configPath, placeholder);
             }
         }
