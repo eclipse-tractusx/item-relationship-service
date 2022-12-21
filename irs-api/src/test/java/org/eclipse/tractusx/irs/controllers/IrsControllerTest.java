@@ -128,7 +128,7 @@ class IrsControllerTest {
 
     @Test
     @WithMockUser(authorities = "view_irs")
-    void getJobsByJobState() throws Exception {
+    void getJobsByState() throws Exception {
         final JobStatusResult returnedJob = JobStatusResult.builder()
                                                            .id(UUID.randomUUID())
                                                            .state(JobState.COMPLETED)
@@ -138,7 +138,7 @@ class IrsControllerTest {
 
         final String returnJobAsString = objectMapper.writeValueAsString(returnedJob);
 
-        when(service.getJobsByJobState(any(), any())).thenReturn(new PageResult(new PagedListHolder<>(List.of(returnedJob))));
+        when(service.getJobsByState(any(), any(), any())).thenReturn(new PageResult(new PagedListHolder<>(List.of(returnedJob))));
 
         this.mockMvc.perform(get("/irs/jobs"))
                     .andExpect(status().isOk())
