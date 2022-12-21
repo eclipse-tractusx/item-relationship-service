@@ -172,13 +172,25 @@ public class E2ETestStepDefinitions {
     }
 
     @And("I check, if number of {string} equals to {string}")
-    public void iCheckIfNumberOfEqualsTo(String valueType, String arg1) {
-        if ("tombstones".equals(valueType)) {
-            assertThat(completedJob.getTombstones()).hasSize(
-                    completedJob.getJob().getSummary().getAsyncFetchedItems().getFailed());
-        } else {
-            throw new PendingException();
-        }
+    public void iCheckIfNumberOfEqualsTo(String valueType, String summaryType) {
+        int nrOfValueType = switch (valueType) {
+            case "tombstones" -> completedJob.getTombstones().size();
+            case "submodels" -> completedJob.getSubmodels().size();
+            case "shells" -> completedJob.getShells().size();
+            case "relationships" -> completedJob.getRelationships().size();
+            case "bpns" -> completedJob.getBpns().size();
+            default -> throw new PendingException(String.format("Type: '%s' not supported.", valueType));
+        };
+        int nrOfItemsInSummary = switch (summaryType) {
+            case "summary/asyncFetchedItems/running" ->
+                    completedJob.getJob().getSummary().getAsyncFetchedItems().getRunning();
+            case "summary/asyncFetchedItems/completed" ->
+                    completedJob.getJob().getSummary().getAsyncFetchedItems().getCompleted();
+            case "summary/asyncFetchedItems/failed" ->
+                    completedJob.getJob().getSummary().getAsyncFetchedItems().getFailed();
+            default -> throw new PendingException(String.format("Type: '%s' not supported.", summaryType));
+        };
+        assertThat(nrOfValueType).isEqualTo(nrOfItemsInSummary);
     }
 
     @And("I check, if summary contains {int} completed and {int} failed items")
