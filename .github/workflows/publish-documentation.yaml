@@ -49,7 +49,7 @@ jobs:
 
       - name: Convert HTML to markdown
         env:
-          FILES: "administration/administration-guide" "arc42/full" "api-specification/api-specification"
+          FILES: "administration/administration-guide arc42/full api-specification/api-specification"
         run: |
           cd docs/target/generated-docs
           for file in ${FILES}; do \
@@ -63,4 +63,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: "./docs/target/generated-docs"
           destination_dir: "docs"
-
