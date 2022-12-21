@@ -63,14 +63,13 @@ public class RestTemplateConfig {
     public static final String SEMHUB_REST_TEMPLATE = "oAuthRestTemplate";
     public static final String NO_ERROR_REST_TEMPLATE = "noErrorRestTemplate";
     public static final String EDC_REST_TEMPLATE = "edcRestTemplate";
-    private static final String CLIENT_REGISTRATION_ID = "keycloak";
 
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final ClientRegistrationRepository clientRegistrationRepository;
 
     private RestTemplate oAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder, final Duration readTimeout,
-            final Duration connectTimeout) {
-        final var clientRegistration = clientRegistrationRepository.findByRegistrationId(CLIENT_REGISTRATION_ID);
+            final Duration connectTimeout, final String clientRegistrationId) {
+        final var clientRegistration = clientRegistrationRepository.findByRegistrationId(clientRegistrationId);
 
         return restTemplateBuilder.additionalInterceptors(
                                           new OAuthClientCredentialsRestTemplateInterceptor(authorizedClientManager(), clientRegistration))
@@ -82,22 +81,25 @@ public class RestTemplateConfig {
     @Bean(DTR_REST_TEMPLATE)
         /* package */ RestTemplate digitalTwinRegistryRestTemplate(final RestTemplateBuilder restTemplateBuilder,
             @Value("${digitalTwinRegistry.timeout.read}") final Duration readTimeout,
-            @Value("${digitalTwinRegistry.timeout.connect}") final Duration connectTimeout) {
-        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout);
+            @Value("${digitalTwinRegistry.timeout.connect}") final Duration connectTimeout,
+            @Value("${digitalTwinRegistry.oAuthClientId}") final String clientRegistrationId) {
+        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId);
     }
 
     @Bean(SEMHUB_REST_TEMPLATE)
         /* package */ RestTemplate semanticHubRestTemplate(final RestTemplateBuilder restTemplateBuilder,
             @Value("${semanticsHub.timeout.read}") final Duration readTimeout,
-            @Value("${semanticsHub.timeout.connect}") final Duration connectTimeout) {
-        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout);
+            @Value("${semanticsHub.timeout.connect}") final Duration connectTimeout,
+            @Value("${semanticsHub.oAuthClientId}") final String clientRegistrationId) {
+        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId);
     }
 
     @Bean(BPDM_REST_TEMPLATE)
         /* package */ RestTemplate bpdmRestTemplate(final RestTemplateBuilder restTemplateBuilder,
             @Value("${bpdm.timeout.read}") final Duration readTimeout,
-            @Value("${bpdm.timeout.connect}") final Duration connectTimeout) {
-        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout);
+            @Value("${bpdm.timeout.connect}") final Duration connectTimeout,
+            @Value("${bpdm.oAuthClientId}") final String clientRegistrationId) {
+        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId);
     }
 
     @Bean(NO_ERROR_REST_TEMPLATE)
