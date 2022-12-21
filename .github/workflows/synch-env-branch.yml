@@ -22,7 +22,7 @@ jobs:
           git fetch --no-tags --progress
           git checkout --progress -b catena-x-environments origin/catena-x-environments
           git fetch origin --recurse-submodules=no --progress --prune
-          git merge origin/main -v
+          git merge origin/main -v --allow-unrelated-histories
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
