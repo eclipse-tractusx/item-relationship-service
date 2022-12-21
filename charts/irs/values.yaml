@@ -142,7 +142,12 @@ edc:
     urnprefix: /urn
 
 config:
-  # add additional configuration values here (overrides IRS Spring application.yaml)
+  # If true, the config provided below will completely replace the configmap.
+  # In this case, you need to provide all required config values defined above yourself!
+  # If false, the custom config will just be appended to the configmap.
+  override: false
+  # Provide your custom configuration here (overrides IRS Spring application.yaml)
+  content:
 
 #######################
 # Minio Configuration #
