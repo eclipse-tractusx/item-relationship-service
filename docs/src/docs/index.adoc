@@ -1,7 +1,7 @@
 = Item Relationship Service Documentation
 
 == Administration Guide
-xref:administration/administration-guide.adoc[Administration Guide]
+xref:administration/administration-guide.adoc[]
 
 == API-Documentation
 xref:api-specification/api-specification.adoc[OpenApi specification]
