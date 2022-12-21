@@ -112,7 +112,7 @@ semanticsHub:
 #    ,urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship
 bpdm:
   url: https://<bpdm-url>
-  bpnEndpoint: "{{ tpl .Values.bpdm.url . }}/api/catena/legal-entities/{idValue}?idType={idType}"
+  bpnEndpoint: "{{ tpl .Values.bpdm.url . }}/api/catena/legal-entities/{partnerId}?idType={idType}"
 minioUser: <minio-username>
 minioPassword: <minio-password>
 minioUrl: "http://{{ .Release.Name }}-minio:9000"
