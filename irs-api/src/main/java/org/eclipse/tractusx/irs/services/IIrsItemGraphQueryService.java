@@ -40,7 +40,8 @@ public interface IIrsItemGraphQueryService {
 
     JobHandle registerItemJob(@NonNull RegisterJob request);
 
-    PageResult getJobsByJobState(@NonNull List<JobState> jobStates, Pageable pageable);
+    PageResult getJobsByState(@NonNull List<JobState> states, Pageable pageable);
+    PageResult getJobsByState(@NonNull List<JobState> states, @NonNull List<JobState> jobStates, Pageable pageable);
 
     Job cancelJobById(@NonNull UUID jobId);
 

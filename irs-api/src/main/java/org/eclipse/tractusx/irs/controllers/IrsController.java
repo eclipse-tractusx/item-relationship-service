@@ -252,12 +252,14 @@ public class IrsController {
     @IrsTimer("getjobbystate")
     @GetMapping("/jobs")
     @PreAuthorize("hasAuthority('view_irs')")
-    public PageResult getJobsByJobState(
+    public PageResult getJobsByState(
             @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
                explode = Explode.FALSE, array = @ArraySchema(schema = @Schema(implementation = JobState.class), maxItems = Integer.MAX_VALUE))
+            @RequestParam(value = "states", required = false, defaultValue = "") final List<JobState> states,
+            @Parameter(hidden = true)
             @RequestParam(value = "jobStates", required = false, defaultValue = "") final List<JobState> jobStates,
             @ParameterObject final Pageable pageable) {
-        return itemJobService.getJobsByJobState(jobStates, pageable);
+        return itemJobService.getJobsByState(states, jobStates, pageable);
     }
 
 }

@@ -18,7 +18,7 @@ paths:
         - description: Requested job states.
           explode: false
           in: query
-          name: jobStates
+          name: states
           required: false
           schema:
             type: array
