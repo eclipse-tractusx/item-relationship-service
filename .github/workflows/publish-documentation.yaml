@@ -42,6 +42,21 @@ jobs:
         run: |
           mvn -f docs/pom.xml --batch-mode generate-resources
 
+      - name: Install pandoc
+        run: |
+          sudo apt-get install pandoc 
+          which pandoc
+
+      - name: Convert HTML to markdown
+        env:
+          FILES: "administration/administration-guide" "arc42/full" "api-specification/api-specification"
+        run: |
+          cd docs/target/generated-docs
+          for file in ${FILES}; do \
+            pandoc -f html -t markdown_strict --wrap=preserve "${file}.html" -o "${file}.md"; \
+            sed -i 's/](#_/](#/' "${file}.md"; \
+            sed -i -E '/\[.*\]\(#.*\)/ s/_/-/g' "${file}.md"; done
+
       - name: GitHub Pages action
         uses: peaceiris/actions-gh-pages@v3.9.0
         with:
