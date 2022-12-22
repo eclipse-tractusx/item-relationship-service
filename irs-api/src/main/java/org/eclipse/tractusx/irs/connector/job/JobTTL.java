@@ -21,6 +21,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.connector.job;
 
+import java.time.Duration;
+
 import lombok.Value;
 
 /**
@@ -28,6 +30,6 @@ import lombok.Value;
  */
 @Value
 public class JobTTL {
-    private int ttlCompletedJobsInHours;
-    private int ttlFailedJobsInHours;
+    private Duration ttlCompletedJobs;
+    private Duration ttlFailedJobs;
 }

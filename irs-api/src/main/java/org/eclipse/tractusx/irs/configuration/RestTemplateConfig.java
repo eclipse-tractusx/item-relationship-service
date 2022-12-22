@@ -29,6 +29,7 @@ import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,30 +58,56 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class RestTemplateConfig {
 
-    public static final String OAUTH_REST_TEMPLATE = "oAuthRestTemplate";
+    public static final String DTR_REST_TEMPLATE = "oAuthRestTemplate";
+    public static final String BPDM_REST_TEMPLATE = "oAuthRestTemplate";
+    public static final String SEMHUB_REST_TEMPLATE = "oAuthRestTemplate";
     public static final String NO_ERROR_REST_TEMPLATE = "noErrorRestTemplate";
     public static final String EDC_REST_TEMPLATE = "edcRestTemplate";
-    private static final String CLIENT_REGISTRATION_ID = "keycloak";
-    private static final int TIMEOUT_SECONDS = 90;
 
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final ClientRegistrationRepository clientRegistrationRepository;
 
-    @Bean(OAUTH_REST_TEMPLATE)
-        /* package */ RestTemplate oAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
-        final var clientRegistration = clientRegistrationRepository.findByRegistrationId(CLIENT_REGISTRATION_ID);
+    private RestTemplate oAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder, final Duration readTimeout,
+            final Duration connectTimeout, final String clientRegistrationId) {
+        final var clientRegistration = clientRegistrationRepository.findByRegistrationId(clientRegistrationId);
 
         return restTemplateBuilder.additionalInterceptors(
                                           new OAuthClientCredentialsRestTemplateInterceptor(authorizedClientManager(), clientRegistration))
-                                  .setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                                  .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+                                  .setReadTimeout(readTimeout)
+                                  .setConnectTimeout(connectTimeout)
                                   .build();
     }
 
+    @Bean(DTR_REST_TEMPLATE)
+        /* package */ RestTemplate digitalTwinRegistryRestTemplate(final RestTemplateBuilder restTemplateBuilder,
+            @Value("${digitalTwinRegistry.timeout.read}") final Duration readTimeout,
+            @Value("${digitalTwinRegistry.timeout.connect}") final Duration connectTimeout,
+            @Value("${digitalTwinRegistry.oAuthClientId}") final String clientRegistrationId) {
+        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId);
+    }
+
+    @Bean(SEMHUB_REST_TEMPLATE)
+        /* package */ RestTemplate semanticHubRestTemplate(final RestTemplateBuilder restTemplateBuilder,
+            @Value("${semanticsHub.timeout.read}") final Duration readTimeout,
+            @Value("${semanticsHub.timeout.connect}") final Duration connectTimeout,
+            @Value("${semanticsHub.oAuthClientId}") final String clientRegistrationId) {
+        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId);
+    }
+
+    @Bean(BPDM_REST_TEMPLATE)
+        /* package */ RestTemplate bpdmRestTemplate(final RestTemplateBuilder restTemplateBuilder,
+            @Value("${bpdm.timeout.read}") final Duration readTimeout,
+            @Value("${bpdm.timeout.connect}") final Duration connectTimeout,
+            @Value("${bpdm.oAuthClientId}") final String clientRegistrationId) {
+        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId);
+    }
+
     @Bean(NO_ERROR_REST_TEMPLATE)
-        /* package */ RestTemplate noErrorRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
-        final RestTemplate restTemplate = restTemplateBuilder.setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                                                             .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+        /* package */ RestTemplate noErrorRestTemplate(final RestTemplateBuilder restTemplateBuilder,
+            @Value("${irs.job.callback.timeout.read}") final Duration readTimeout,
+            @Value("${irs.job.callback.timeout.connect}") final Duration connectTimeout) {
+        final RestTemplate restTemplate = restTemplateBuilder.setReadTimeout(readTimeout)
+                                                             .setConnectTimeout(connectTimeout)
                                                              .build();
 
         restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
@@ -147,10 +174,10 @@ public class RestTemplateConfig {
     }
 
     @Bean(EDC_REST_TEMPLATE)
-    /* package */ RestTemplate edcRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
-        return restTemplateBuilder.setReadTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                                  .setConnectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
-                                  .build();
+        /* package */ RestTemplate edcRestTemplate(final RestTemplateBuilder restTemplateBuilder,
+            @Value("${edc.submodel.timeout.read}") final Duration readTimeout,
+            @Value("${edc.submodel.timeout.connect}") final Duration connectTimeout) {
+        return restTemplateBuilder.setReadTimeout(readTimeout).setConnectTimeout(connectTimeout).build();
     }
 
 }

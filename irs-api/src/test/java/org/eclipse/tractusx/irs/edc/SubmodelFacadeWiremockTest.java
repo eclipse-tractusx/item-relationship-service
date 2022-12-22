@@ -61,7 +61,7 @@ class SubmodelFacadeWiremockTest {
     private EdcSubmodelClient submodelFacade;
 
     private final EdcConfiguration config = new EdcConfiguration();
-    private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage();
+    private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
 
     @BeforeEach
     void configureSystemUnderTest() {
@@ -73,7 +73,6 @@ class SubmodelFacadeWiremockTest {
         config.getControlplane().setRequestTtl(Duration.ofSeconds(5));
         config.getSubmodel().setPath("/submodel");
         config.getSubmodel().setUrnPrefix("/urn");
-
 
         final RestTemplate restTemplate = new RestTemplate();
         final AsyncPollingService pollingService = new AsyncPollingService(Clock.systemUTC(),

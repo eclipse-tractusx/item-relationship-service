@@ -8,6 +8,8 @@ You can define the URLs as well as most of the secrets yourself.
 
 The Keycloak, DAPS and Vault configuration / secrets depend on your setup and might need to be provided externally.
 
+include::irs-spring-config.adoc[leveloffset=+1]
+
 == Helm configuration IRS (values.yaml)
 
 [source,yaml]
