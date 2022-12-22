@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.irs.connector.job;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +32,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -73,7 +73,7 @@ public abstract class BaseJobStore implements JobStore {
         return readLock(() -> getAll().stream()
                                       .filter(hasState(jobState))
                                       .filter(isCompletionDateBefore(dateTime))
-                                      .collect(Collectors.toList()));
+                                      .toList());
     }
 
     private Predicate<MultiTransferJob> hasState(final JobState jobState) {
@@ -110,7 +110,7 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public List<MultiTransferJob> findAll() {
-        return readLock(() -> getAll().stream().collect(Collectors.toList()));
+        return readLock(() -> new ArrayList<>(getAll()));
     }
 
     @Override
@@ -120,7 +120,7 @@ public abstract class BaseJobStore implements JobStore {
             final var remainingTransfers = job.getTransferProcessIds()
                                               .stream()
                                               .filter(id -> !id.equals(process.getId()))
-                                              .collect(Collectors.toList());
+                                              .toList();
             final var newJob = job.toBuilder()
                                   .clearTransferProcessIds()
                                   .transferProcessIds(remainingTransfers)
@@ -159,7 +159,7 @@ public abstract class BaseJobStore implements JobStore {
 
     @Override
     public List<MultiTransferJob> findByStates(final List<JobState> jobStates) {
-        return readLock(() -> getAll().stream().filter(hasState(jobStates)).collect(Collectors.toList()));
+        return readLock(() -> getAll().stream().filter(hasState(jobStates)).toList());
     }
 
     private Predicate<MultiTransferJob> hasState(final List<JobState> jobStates) {

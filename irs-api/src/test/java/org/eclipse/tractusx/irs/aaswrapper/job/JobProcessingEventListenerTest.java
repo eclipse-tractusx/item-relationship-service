@@ -42,7 +42,7 @@ class JobProcessingEventListenerTest {
         final String expectedCallbackUrl = "https://hostname.com/callback?id=" + jobId + "&state=" + jobState;
 
         // then
-        verify(this.restTemplate, times(1)).getForEntity(eq(new URI(expectedCallbackUrl)), eq(Void.class));
+        verify(this.restTemplate, times(1)).getForEntity(new URI(expectedCallbackUrl), Void.class);
     }
 
     @Test
@@ -58,7 +58,7 @@ class JobProcessingEventListenerTest {
         final String expectedCallbackUrl = "http://qwerty.de/" + jobId + "/" + jobState;
 
         // then
-        verify(this.restTemplate, times(1)).getForEntity(eq(new URI(expectedCallbackUrl)), eq(Void.class));
+        verify(this.restTemplate, times(1)).getForEntity(new URI(expectedCallbackUrl), Void.class);
     }
 
     @Test
@@ -74,7 +74,7 @@ class JobProcessingEventListenerTest {
         final String expectedCallbackUrl = "https://hostname.com/";
 
         // then
-        verify(this.restTemplate, times(1)).getForEntity(eq(new URI(expectedCallbackUrl)), eq(Void.class));
+        verify(this.restTemplate, times(1)).getForEntity(new URI(expectedCallbackUrl), Void.class);
     }
 
     @Test
@@ -89,7 +89,7 @@ class JobProcessingEventListenerTest {
         final String expectedCallbackUrl = "https://hostname.com/callback?id=" + jobId;
 
         // then
-        verify(this.restTemplate, times(1)).getForEntity(eq(new URI(expectedCallbackUrl)), eq(Void.class));
+        verify(this.restTemplate, times(1)).getForEntity(new URI(expectedCallbackUrl), Void.class);
     }
 
     @Test

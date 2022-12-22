@@ -28,7 +28,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -175,7 +174,7 @@ public class MinioBlobPersistence implements BlobPersistence {
                             .flatMap(this::getItem)
                             .map(Item::objectName)
                             .flatMap(this::getBlobIfPresent)
-                            .collect(Collectors.toList());
+                            .toList();
     }
 
     @Override
