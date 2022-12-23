@@ -24,7 +24,6 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +78,7 @@ public class SubmodelDelegate extends AbstractDelegate {
             log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
 
             final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.filterDescriptorsByAspectTypes(
-                    jobData.getAspects().stream().map(AspectType::toString).collect(Collectors.toList()));
+                    jobData.getAspects().stream().map(AspectType::toString).toList());
 
             if (jobData.isCollectAspects()) {
                 log.info("Collecting Submodels.");

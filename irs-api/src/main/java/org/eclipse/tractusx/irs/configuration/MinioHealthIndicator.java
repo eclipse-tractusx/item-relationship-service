@@ -68,9 +68,8 @@ class MinioHealthIndicator implements HealthIndicator {
      * @return true if bucket exists, false otherwise
      */
     private boolean thereIsMinioConnection() {
-        if (blobPersistence instanceof MinioBlobPersistence) {
+        if (blobPersistence instanceof MinioBlobPersistence minioBlobPersistence) {
             try {
-                final MinioBlobPersistence minioBlobPersistence = (MinioBlobPersistence) blobPersistence;
                 minioBlobPersistence.createBucketIfNotExists(blobstoreConfiguration.getBucketName());
 
                 if (minioBlobPersistence.bucketExists(blobstoreConfiguration.getBucketName())) {
@@ -80,7 +79,6 @@ class MinioHealthIndicator implements HealthIndicator {
                 log.error("Lost connection to Minio", e);
             }
         }
-
         return false;
     }
 }

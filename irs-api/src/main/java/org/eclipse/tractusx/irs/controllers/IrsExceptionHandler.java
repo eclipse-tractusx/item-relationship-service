@@ -24,7 +24,6 @@ package org.eclipse.tractusx.irs.controllers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
@@ -78,7 +77,7 @@ public class IrsExceptionHandler {
                                              .getFieldErrors()
                                              .stream()
                                              .map(e -> e.getField() + ":" + e.getDefaultMessage())
-                                             .collect(Collectors.toList());
+                                             .toList();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                              .body(ErrorResponse.builder()
@@ -92,8 +91,8 @@ public class IrsExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException exception) {
         log.info(exception.getClass().getName(), exception);
 
-        if (exception.getRootCause() instanceof IllegalArgumentException) {
-            return handleIllegalArgumentException((IllegalArgumentException) exception.getRootCause());
+        if (exception.getRootCause() instanceof IllegalArgumentException illegalArgumentException) {
+            return handleIllegalArgumentException(illegalArgumentException);
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

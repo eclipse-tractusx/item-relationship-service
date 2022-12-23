@@ -38,7 +38,7 @@ class BpdmFacadeTest {
         final Optional<String> manufacturerName = bpdmFacade.findManufacturerName(manufacturerId);
 
         assertThat(manufacturerName).isNotEmpty();
-        assertThat(manufacturerName.get()).isEqualTo("OEM A");
+        assertThat(manufacturerName.get()).contains("OEM A");
     }
 
 }

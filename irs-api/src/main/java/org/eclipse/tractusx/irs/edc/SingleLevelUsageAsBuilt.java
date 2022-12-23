@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -55,7 +54,7 @@ class SingleLevelUsageAsBuilt extends RelationshipSubmodel {
     public List<Relationship> asRelationships() {
         return Optional.ofNullable(this.parentParts).stream().flatMap(Collection::stream)
                        .map(parentData -> parentData.toRelationship(this.catenaXId))
-                       .collect(Collectors.toList());
+                       .toList();
     }
 
     /**
