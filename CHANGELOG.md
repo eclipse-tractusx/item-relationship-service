@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Change 'jobParameter' to 'parameter' in GET calls in IRS API
 - Change 'jobStates' to 'states' request parameter in GET call for jobs by states, 'jobStates' is now deprecated
+- REST clients for DTR, SemHub and BPDM now use their own RestTemplates and configuration
+- application.yaml received some documentation
 
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved

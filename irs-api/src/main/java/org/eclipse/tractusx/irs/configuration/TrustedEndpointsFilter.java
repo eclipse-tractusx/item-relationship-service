@@ -59,8 +59,8 @@ public class TrustedEndpointsFilter implements Filter {
 
             if (isRequestForTrustedEndpoint(servletRequest) && servletRequest.getLocalPort() != trustedPortNum) {
                 log.warn("denying request for trusted endpoint on untrusted port");
-                if (servletResponse instanceof HttpServletResponseWrapper) {
-                    ((HttpServletResponseWrapper) servletResponse).setStatus(HttpServletResponse.SC_NOT_FOUND);
+                if (servletResponse instanceof HttpServletResponseWrapper httpServletResponse) {
+                    httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 }
                 servletResponse.getOutputStream().close();
                 return;
@@ -68,8 +68,8 @@ public class TrustedEndpointsFilter implements Filter {
 
             if (!isRequestForTrustedEndpoint(servletRequest) && servletRequest.getLocalPort() == trustedPortNum) {
                 log.warn("denying request for untrusted endpoint on trusted port");
-                if (servletResponse instanceof HttpServletResponseWrapper) {
-                    ((HttpServletResponseWrapper) servletResponse).setStatus(HttpServletResponse.SC_NOT_FOUND);
+                if (servletResponse instanceof HttpServletResponseWrapper httpServletResponse) {
+                    httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 }
                 servletResponse.getOutputStream().close();
                 return;

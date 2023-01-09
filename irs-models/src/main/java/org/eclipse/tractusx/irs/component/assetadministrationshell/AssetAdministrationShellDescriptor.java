@@ -130,7 +130,7 @@ public class AssetAdministrationShellDescriptor {
                                                                                 .anyMatch(type -> isMatching(
                                                                                         submodelDescriptor, type)))
 
-                                       .collect(Collectors.toList());
+                                       .toList();
     }
 
     private boolean isMatching(final SubmodelDescriptor submodelDescriptor, final String aspectTypeFilter) {

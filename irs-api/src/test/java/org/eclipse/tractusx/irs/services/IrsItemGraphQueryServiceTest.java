@@ -143,7 +143,7 @@ class IrsItemGraphQueryServiceTest {
         assertThat(jobs.content().get(0).getStartedOn()).isNotNull();
         assertThat(jobs.content().get(0).getCompletedOn()).isNotNull();
         assertThat(jobs.pageSize()).isEqualTo(10);
-        assertThat(jobs.pageNumber()).isEqualTo(0);
+        assertThat(jobs.pageNumber()).isZero();
         assertThat(jobs.pageCount()).isEqualTo(1);
         assertThat(jobs.totalElements()).isEqualTo(1);
     }

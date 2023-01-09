@@ -21,10 +21,12 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.bpdm;
 
-import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.OAUTH_REST_TEMPLATE;
+import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.BPDM_REST_TEMPLATE;
 
 import java.util.Collections;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -39,8 +41,9 @@ interface BpdmClient {
 
     /**
      * Find a business partner by the specified identifier.
+     *
      * @param idValue identifier value
-     * @param idType type of identifier
+     * @param idType  type of identifier
      * @return
      */
     BusinessPartnerResponse getBusinessPartner(String idValue, String idType);
@@ -51,7 +54,9 @@ interface BpdmClient {
  * Business Partner Data Management Rest Client Stub used in local environment
  */
 @Service
-@Profile({ "local", "test" })
+@Profile({ "local",
+           "test"
+})
 class BpdmClientLocalStub implements BpdmClient {
 
     @Override
@@ -70,20 +75,44 @@ class BpdmClientLocalStub implements BpdmClient {
 @Profile({ "!local && !test" })
 class BpdmClientImpl implements BpdmClient {
 
+    private static final String PLACEHOLDER_BPID = "partnerId";
+    private static final String PLACEHOLDER_ID_TYPE = "idType";
+
     private final RestTemplate restTemplate;
     private final String bpdmUrl;
 
-    /* package */ BpdmClientImpl(@Qualifier(OAUTH_REST_TEMPLATE) final RestTemplate restTemplate,
-            @Value("${bpdm.url:}") final String bpdmUrl) {
+    /* package */ BpdmClientImpl(@Qualifier(BPDM_REST_TEMPLATE) final RestTemplate restTemplate,
+            @Value("${bpdm.bpnEndpoint:}") final String bpdmUrl) {
         this.restTemplate = restTemplate;
         this.bpdmUrl = bpdmUrl;
+
+        if (StringUtils.isNotBlank(bpdmUrl)) {
+            ensureUrlContainsPlaceholders(bpdmUrl);
+        }
+    }
+
+    private void ensureUrlContainsPlaceholders(final String bpdmUrl) {
+        require(bpdmUrl, PLACEHOLDER_ID_TYPE);
+        require(bpdmUrl, PLACEHOLDER_BPID);
+    }
+
+    private static void require(final String bpdmUrl, final String placeholder) {
+        if (!bpdmUrl.contains(wrap(placeholder))) {
+            throw new IllegalStateException(
+                    "Configuration value for 'bpdm.bpnEndpoint' must contain the URL placeholder '" + placeholder
+                            + "'!");
+        }
+    }
+
+    private static String wrap(final String placeholderIdType) {
+        return "{" + placeholderIdType + "}";
     }
 
     @Override
     public BusinessPartnerResponse getBusinessPartner(final String idValue, final String idType) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(bpdmUrl);
-        uriBuilder.path("/api/catena/legal-entities/").path(idValue).queryParam("idType", idType);
+        final Map<String, String> values = Map.of(PLACEHOLDER_BPID, idValue, PLACEHOLDER_ID_TYPE, idType);
 
-        return restTemplate.getForObject(uriBuilder.build().toUri(), BusinessPartnerResponse.class);
+        return restTemplate.getForObject(uriBuilder.build(values), BusinessPartnerResponse.class);
     }
 }

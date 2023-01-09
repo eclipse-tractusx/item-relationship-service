@@ -40,8 +40,8 @@ public final class SecurityHelperService {
     }
 
     private String getClaimOrUnknown(final String claimName, final Authentication authentication) {
-        if (authentication instanceof JwtAuthenticationToken) {
-            final Jwt token = ((JwtAuthenticationToken) authentication).getToken();
+        if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
+            final Jwt token = jwtAuthenticationToken.getToken();
 
             return Optional.ofNullable(token.getClaim(claimName)).map(Object::toString).orElse(UNKNOWN);
         }

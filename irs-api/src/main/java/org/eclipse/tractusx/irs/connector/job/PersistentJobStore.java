@@ -72,7 +72,7 @@ public class PersistentJobStore extends BaseJobStore {
     protected Collection<MultiTransferJob> getAll() {
         try {
             final Collection<byte[]> allBlobs = blobStore.findBlobByPrefix(JOB_PREFIX);
-            return allBlobs.stream().map(this::toJob).flatMap(Optional::stream).collect(Collectors.toList());
+            return allBlobs.stream().map(this::toJob).flatMap(Optional::stream).toList();
         } catch (BlobPersistenceException e) {
             log.error("Cannot search for jobs in blobstore", e);
             return Collections.emptyList();
