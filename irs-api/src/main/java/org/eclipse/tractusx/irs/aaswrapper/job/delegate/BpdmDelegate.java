@@ -102,7 +102,7 @@ public class BpdmDelegate extends AbstractDelegate {
 
     private boolean expectedDepthOfTreeIsNotReached(final int expectedDepth, final int currentDepth) {
         log.info("Expected tree depth is {}, current depth is {}", expectedDepth, currentDepth);
-        return currentDepth <= expectedDepth;
+        return currentDepth < expectedDepth;
     }
 
 }
