@@ -47,7 +47,7 @@ public class BpdmDelegate extends AbstractDelegate {
 
     public BpdmDelegate(final AbstractDelegate nextStep,
             final BpdmFacade bpdmFacade) {
-        super(nextStep); // no next step
+        super(nextStep);
         this.bpdmFacade = bpdmFacade;
     }
 
