@@ -627,7 +627,7 @@ font-style: italic;
     <div class="app-desc">The API of the Item Relationship Service (IRS) for retrieving item graphs along the value chain of CATENA-X partners.</div>
     <div class="app-desc">More information: <a href="https://openapi-generator.tech">https://openapi-generator.tech</a></div>
     <div class="app-desc">Contact Info: <a href="team@openapitools.org">team@openapitools.org</a></div>
-    <div class="app-desc">Version: 1.0</div>
+    <div class="app-desc">Version: 2.0</div>
     <div class="app-desc">BasePath:</div>
     <div class="license-info">All rights reserved</div>
     <div class="license-url">http://apache.org/licenses/LICENSE-2.0.html</div>
@@ -643,9 +643,9 @@ font-style: italic;
   <div class="method-summary"></div>
   <h4><a href="#ItemRelationshipService">ItemRelationshipService</a></h4>
   <ul>
-  <li><a href="#cancelJobByJobId"><code><span class="http-method">put</span> /irs/jobs/{jobId}</code></a></li>
-  <li><a href="#getJobForJobId"><code><span class="http-method">get</span> /irs/jobs/{jobId}</code></a></li>
-  <li><a href="#getJobIdsByJobStates"><code><span class="http-method">get</span> /irs/jobs</code></a></li>
+  <li><a href="#cancelJobByJobId"><code><span class="http-method">put</span> /irs/jobs/{id}</code></a></li>
+  <li><a href="#getJobForJobId"><code><span class="http-method">get</span> /irs/jobs/{id}</code></a></li>
+  <li><a href="#getJobsByJobStates"><code><span class="http-method">get</span> /irs/jobs</code></a></li>
   <li><a href="#registerJobForGlobalAssetId"><code><span class="http-method">post</span> /irs/jobs</code></a></li>
   </ul>
 
@@ -653,15 +653,15 @@ font-style: italic;
   <div class="method"><a name="cancelJobByJobId"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
-    <pre class="put"><code class="huge"><span class="http-method">put</span> /irs/jobs/{jobId}</code></pre></div>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /irs/jobs/{id}</code></pre></div>
     <div class="method-summary">Cancel job for requested jobId. (<span class="nickname">cancelJobByJobId</span>)</div>
     <div class="method-notes">Cancel job for requested jobId.</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
-      <div class="param">jobId (required)</div>
+      <div class="param">id (required)</div>
 
-      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; JobId of the job. default: null format: uuid</div>
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Id of the job. default: null format: uuid</div>
     </div>  <!-- field-items -->
 
 
@@ -693,10 +693,8 @@ font-style: italic;
       "failed" : 314780940
     }
   },
-  "jobId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
-  "jobCompleted" : "2000-01-23T04:56:07.000+00:00",
-  "jobState" : "UNSAVED",
-  "jobParameter" : {
+  "completedOn" : "2000-01-23T04:56:07.000+00:00",
+  "parameter" : {
     "depth" : 171976544,
     "bomLifecycle" : "asBuilt",
     "collectAspects" : true,
@@ -707,6 +705,8 @@ font-style: italic;
   "globalAssetId" : {
     "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
   },
+  "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "state" : "UNSAVED",
   "createdOn" : "2000-01-23T04:56:07.000+00:00",
   "startedOn" : "2000-01-23T04:56:07.000+00:00",
   "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
@@ -727,10 +727,8 @@ font-style: italic;
       "failed" : 314780940
     }
   },
-  "jobId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
-  "jobCompleted" : "2000-01-23T04:56:07.000+00:00",
-  "jobState" : "UNSAVED",
-  "jobParameter" : {
+  "completedOn" : "2000-01-23T04:56:07.000+00:00",
+  "parameter" : {
     "depth" : 171976544,
     "bomLifecycle" : "asBuilt",
     "collectAspects" : true,
@@ -741,6 +739,8 @@ font-style: italic;
   "globalAssetId" : {
     "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
   },
+  "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "state" : "UNSAVED",
   "createdOn" : "2000-01-23T04:56:07.000+00:00",
   "startedOn" : "2000-01-23T04:56:07.000+00:00",
   "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
@@ -775,15 +775,15 @@ font-style: italic;
   <div class="method"><a name="getJobForJobId"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
-    <pre class="get"><code class="huge"><span class="http-method">get</span> /irs/jobs/{jobId}</code></pre></div>
-    <div class="method-summary">Return job with optional item graph result for requested jobId. (<span class="nickname">getJobForJobId</span>)</div>
-    <div class="method-notes">Return job with optional item graph result for requested jobId.</div>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /irs/jobs/{id}</code></pre></div>
+    <div class="method-summary">Return job with optional item graph result for requested id. (<span class="nickname">getJobForJobId</span>)</div>
+    <div class="method-notes">Return job with optional item graph result for requested id.</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
-      <div class="param">jobId (required)</div>
+      <div class="param">id (required)</div>
 
-      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; JobId of the job. default: null format: uuid</div>
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Id of the job. default: null format: uuid</div>
     </div>  <!-- field-items -->
 
 
@@ -3260,10 +3260,8 @@ font-style: italic;
         "failed" : 314780940
       }
     },
-    "jobId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
-    "jobCompleted" : "2000-01-23T04:56:07.000+00:00",
-    "jobState" : "UNSAVED",
-    "jobParameter" : {
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "parameter" : {
       "depth" : 171976544,
       "bomLifecycle" : "asBuilt",
       "collectAspects" : true,
@@ -3274,6 +3272,8 @@ font-style: italic;
     "globalAssetId" : {
       "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
     },
+    "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "state" : "UNSAVED",
     "createdOn" : "2000-01-23T04:56:07.000+00:00",
     "startedOn" : "2000-01-23T04:56:07.000+00:00",
     "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
@@ -3336,10 +3336,10 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Return job with item graph for the requested jobId.
+    Return job with item graph for the requested id.
         <a href="#Jobs">Jobs</a>
     <h4 class="field-label">206</h4>
-    Return job with current processed item graph for the requested jobId.
+    Return job with current processed item graph for the requested id.
         <a href="#Jobs">Jobs</a>
     <h4 class="field-label">400</h4>
     Return job failed.
@@ -3355,12 +3355,12 @@ font-style: italic;
         <a href="#ErrorResponse">ErrorResponse</a>
   </div> <!-- method -->
   <hr/>
-  <div class="method"><a name="getJobIdsByJobStates"/>
+  <div class="method"><a name="getJobsByJobStates"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /irs/jobs</code></pre></div>
-    <div class="method-summary">Returns jobIds for requested job states. (<span class="nickname">getJobIdsByJobStates</span>)</div>
-    <div class="method-notes">Returns jobIds for requested job states.</div>
+    <div class="method-summary">Returns paginated jobs with state and execution times. (<span class="nickname">getJobsByJobStates</span>)</div>
+    <div class="method-notes">Returns paginated jobs with state and execution times.</div>
 
 
 
@@ -3368,15 +3368,21 @@ font-style: italic;
 
     <h3 class="field-label">Query parameters</h3>
     <div class="field-items">
-      <div class="param">jobStates (optional)</div>
+      <div class="param">states (optional)</div>
 
-      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Requested job states. default: null </div>
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Requested job states. default: null </div><div class="param">page (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Zero-based page index (0..N) default: 0 </div><div class="param">size (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; The size of the page to be returned default: 20 </div><div class="param">sort (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. default: null </div>
     </div>  <!-- field-items -->
 
 
     <h3 class="field-label">Return type</h3>
     <div class="return-type">
-      array[<a href="#JobStatusResult">JobStatusResult</a>]
+      <a href="#PageResult">PageResult</a>
       
     </div>
 
@@ -3385,10 +3391,21 @@ font-style: italic;
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
-  "jobId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
-  "jobCompleted" : "2000-01-23T04:56:07.000+00:00",
-  "jobState" : "UNSAVED",
-  "startedOn" : "2000-01-23T04:56:07.000+00:00"
+  "pageCount" : 0,
+  "pageNumber" : 6,
+  "pageSize" : 1,
+  "content" : [ {
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "state" : "UNSAVED",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00"
+  }, {
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "state" : "UNSAVED",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00"
+  } ],
+  "totalElements" : 5
 }</code></pre>
 
     <h3 class="field-label">Produces</h3>
@@ -3400,19 +3417,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    List of job ids and status for requested job states.
-        
+    Paginated list of jobs with state and execution times for requested job states.
+        <a href="#PageResult">PageResult</a>
     <h4 class="field-label">400</h4>
-    Returns jobIds for requested job states failed.
+    Return jobs for requested job states failed.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">401</h4>
     Authorized failed.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">403</h4>
     Authorized failed.
-        <a href="#ErrorResponse">ErrorResponse</a>
-    <h4 class="field-label">404</h4>
-    Job with the requested state not found.
         <a href="#ErrorResponse">ErrorResponse</a>
   </div> <!-- method -->
   <hr/>
@@ -3452,7 +3466,7 @@ font-style: italic;
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
-  "jobId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+  "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
 }</code></pre>
 
     <h3 class="field-label">Produces</h3>
@@ -3464,7 +3478,7 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">201</h4>
-    Returns jobId of registered job.
+    Returns id of registered job.
         <a href="#JobHandle">JobHandle</a>
     <h4 class="field-label">400</h4>
     Job registration failed.
@@ -3500,6 +3514,7 @@ font-style: italic;
     <li><a href="#LangString"><code>LangString</code> - </a></li>
     <li><a href="#LinkedItem"><code>LinkedItem</code> - </a></li>
     <li><a href="#MeasurementUnit"><code>MeasurementUnit</code> - </a></li>
+    <li><a href="#PageResult"><code>PageResult</code> - </a></li>
     <li><a href="#ProcessingError"><code>ProcessingError</code> - </a></li>
     <li><a href="#ProtocolInformation"><code>ProtocolInformation</code> - </a></li>
     <li><a href="#Quantity"><code>Quantity</code> - </a></li>
@@ -3590,18 +3605,18 @@ font-style: italic;
     <h3><a name="Job"><code>Job</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'>Executable unit with meta information and item graph result.</div>
     <div class="field-items">
-      <div class="param">createdOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+      <div class="param">completedOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">createdOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
 <div class="param">exception (optional)</div><div class="param-desc"><span class="param-type"><a href="#JobErrorDetails">JobErrorDetails</a></span>  </div>
 <div class="param">globalAssetId </div><div class="param-desc"><span class="param-type"><a href="#GlobalAssetIdentification">GlobalAssetIdentification</a></span>  </div>
-<div class="param">jobCompleted (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
-<div class="param">jobId </div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span> JobId of the job. format: uuid</div>
-<div class="param">jobParameter (optional)</div><div class="param-desc"><span class="param-type"><a href="#JobParameter">JobParameter</a></span>  </div>
-<div class="param">jobState </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-        <div class="param-enum-header">Enum:</div>
-        <div class="param-enum">UNSAVED</div><div class="param-enum">INITIAL</div><div class="param-enum">RUNNING</div><div class="param-enum">TRANSFERS_FINISHED</div><div class="param-enum">COMPLETED</div><div class="param-enum">CANCELED</div><div class="param-enum">ERROR</div>
+<div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span> Id of the job. format: uuid</div>
 <div class="param">lastModifiedOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
 <div class="param">owner (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The IRS api consumer. </div>
+<div class="param">parameter (optional)</div><div class="param-desc"><span class="param-type"><a href="#JobParameter">JobParameter</a></span>  </div>
 <div class="param">startedOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">state </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">UNSAVED</div><div class="param-enum">INITIAL</div><div class="param-enum">RUNNING</div><div class="param-enum">TRANSFERS_FINISHED</div><div class="param-enum">COMPLETED</div><div class="param-enum">CANCELED</div><div class="param-enum">ERROR</div>
 <div class="param">summary (optional)</div><div class="param-desc"><span class="param-type"><a href="#Summary">Summary</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
@@ -3618,7 +3633,7 @@ font-style: italic;
     <h3><a name="JobHandle"><code>JobHandle</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">jobId (optional)</div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span> JobId of the job. format: uuid</div>
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span> Id of the job. format: uuid</div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3643,12 +3658,12 @@ font-style: italic;
     <h3><a name="JobStatusResult"><code>JobStatusResult</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">jobCompleted (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
-<div class="param">jobId (optional)</div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span>  format: uuid</div>
-<div class="param">jobState (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+      <div class="param">completedOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span>  format: uuid</div>
+<div class="param">startedOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">state (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
         <div class="param-enum-header">Enum:</div>
         <div class="param-enum">UNSAVED</div><div class="param-enum">INITIAL</div><div class="param-enum">RUNNING</div><div class="param-enum">TRANSFERS_FINISHED</div><div class="param-enum">COMPLETED</div><div class="param-enum">CANCELED</div><div class="param-enum">ERROR</div>
-<div class="param">startedOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3690,6 +3705,17 @@ font-style: italic;
     <div class="field-items">
       <div class="param">datatypeURI (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">lexicalValue (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="PageResult"><code>PageResult</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">content (optional)</div><div class="param-desc"><span class="param-type"><a href="#JobStatusResult">array[JobStatusResult]</a></span>  </div>
+<div class="param">pageCount (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">pageNumber (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">pageSize (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">totalElements (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3801,7 +3827,7 @@ font-style: italic;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-11-28 08:33:01 UTC
+Last updated 2023-01-10 11:56:34 UTC
 </div>
 </div>
 </body>
