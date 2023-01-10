@@ -100,7 +100,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobWithCollectAspectsShouldIncludeSubmodels() throws InvalidSchemaException {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
-        final RegisterJob registerJob = registerJobWithGlobalAssetIdAndDepth("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", 0,
+        final RegisterJob registerJob = registerJobWithGlobalAssetIdAndDepth("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", 100,
                 List.of(AspectType.SERIAL_PART_TYPIZATION, AspectType.PRODUCT_DESCRIPTION, AspectType.ASSEMBLY_PART_RELATIONSHIP), true);
         final int expectedSubmodelsSizeFullTree = 3; // stub
 
@@ -135,7 +135,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @Test
     void registerJobWithDepthShouldBuildTreeUntilGivenDepth() {
         // given
-        final RegisterJob registerJob = registerJobWithDepthAndAspect(0, null);
+        final RegisterJob registerJob = registerJobWithDepthAndAspect(1, null);
         final int expectedRelationshipsSizeFirstDepth = 1; // stub
 
         // when

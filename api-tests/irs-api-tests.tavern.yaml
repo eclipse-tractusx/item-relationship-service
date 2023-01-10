@@ -914,7 +914,7 @@ stages:
 
   - name: get all COMPLETED jobs
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=COMPLETED"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=COMPLETED"
       method: GET
       headers:
         content-type: application/json
@@ -959,7 +959,7 @@ stages:
 
   - name: get all ERROR jobs
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=ERROR"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=ERROR"
       method: GET
       headers:
         content-type: application/json
@@ -1004,7 +1004,7 @@ stages:
 
   - name: get all INITIAL jobs
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=INITIAL"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=INITIAL"
       method: GET
       headers:
         content-type: application/json
@@ -1069,7 +1069,7 @@ stages:
 
   - name: get all RUNNING jobs
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=RUNNING"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=RUNNING"
       method: GET
       headers:
         content-type: application/json
@@ -1291,7 +1291,7 @@ stages:
 
   - name: get all jobs with status UNSAVED, INITIAL, RUNNING, TRANSFERS_FINISHED and CANCELED
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=UNSAVED, INITIAL, RUNNING, TRANSFERS_FINISHED, CANCELED"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=UNSAVED, INITIAL, RUNNING, TRANSFERS_FINISHED, CANCELED"
       method: GET
       headers:
         content-type: application/json
@@ -1379,7 +1379,7 @@ stages:
 
   - name: get all jobs with status COMPLETED and ERROR
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobStates=COMPLETED, ERROR"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=COMPLETED, ERROR"
       method: GET
       headers:
         content-type: application/json
