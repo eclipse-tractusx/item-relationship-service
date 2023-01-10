@@ -59,10 +59,10 @@ public class SubmodelDelegate extends AbstractDelegate {
     private final JsonValidatorService jsonValidatorService;
     private final JsonUtil jsonUtil;
 
-    public SubmodelDelegate(final AbstractDelegate nextStep, final EdcSubmodelFacade submodelFacade,
+    public SubmodelDelegate(final EdcSubmodelFacade submodelFacade,
             final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService,
             final JsonUtil jsonUtil) {
-        super(nextStep);
+        super(null); // no next step
         this.submodelFacade = submodelFacade;
         this.semanticsHubFacade = semanticsHubFacade;
         this.jsonValidatorService = jsonValidatorService;

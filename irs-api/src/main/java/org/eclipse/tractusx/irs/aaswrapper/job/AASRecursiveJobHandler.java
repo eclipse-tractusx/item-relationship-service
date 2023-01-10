@@ -24,7 +24,6 @@ package org.eclipse.tractusx.irs.aaswrapper.job;
 import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.connector.job.RecursiveJobHandler;
 
@@ -52,17 +51,9 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
     public Stream<ItemDataRequest> recurse(final MultiTransferJob job, final AASTransferProcess transferProcess) {
         log.info("Starting recursive request for job {}", job.getJobIdString());
 
-        final JobParameter jobParameter = job.getJobParameter();
-        final int expectedDepth = jobParameter.getDepth();
-        final Integer currentDepth = transferProcess.getDepth();
-
-        if (expectedDepthOfTreeIsNotReached(expectedDepth, currentDepth)) {
-            return transferProcess.getIdsToProcess()
-                                  .stream()
-                                  .map(itemId -> ItemDataRequest.nextDepthNode(itemId, currentDepth));
-        }
-
-        return Stream.empty();
+        return transferProcess.getIdsToProcess()
+                              .stream()
+                              .map(itemId -> ItemDataRequest.nextDepthNode(itemId, transferProcess.getDepth()));
     }
 
     @Override
@@ -73,8 +64,4 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
         logic.assemblePartialItemGraphBlobs(completedTransfers, targetBlobName.toString());
     }
 
-    private boolean expectedDepthOfTreeIsNotReached(final Integer expectedDepth, final Integer currentDepth) {
-        log.info("Expected tree depth is {}, current depth is {}", expectedDepth, currentDepth);
-        return currentDepth < expectedDepth;
-    }
 }
