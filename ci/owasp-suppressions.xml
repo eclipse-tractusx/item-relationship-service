@@ -83,6 +83,20 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
+        IRS is not parsing user YAML input, thus this CVE is irrelevant.
+        ]]></notes>
+        <gav regex="true">org\.yaml:snakeyaml.*</gav>
+        <vulnerabilityName>CVE-2021-4235</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        IRS is not parsing user YAML input, thus this CVE is irrelevant.
+        ]]></notes>
+        <gav regex="true">org\.yaml:snakeyaml.*</gav>
+        <vulnerabilityName>CVE-2022-3064</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
         Only relevant if UNWRAP_SINGLE_VALUE_ARRAYS is activated, which is not the case here.
         ]]></notes>
         <gav regex="true">com\.fasterxml\.jackson\.core:jackson-databind.*</gav>
