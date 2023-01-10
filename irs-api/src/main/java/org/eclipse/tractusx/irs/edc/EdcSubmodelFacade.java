@@ -51,8 +51,8 @@ public class EdcSubmodelFacade {
             return Collections.emptyList();
         } catch (ExecutionException e) {
             final Throwable cause = e.getCause();
-            if (cause instanceof EdcClientException) {
-                throw (EdcClientException) cause;
+            if (cause instanceof EdcClientException exceptionCause) {
+                throw exceptionCause;
             }
             throw new EdcClientException(cause);
         }
@@ -67,8 +67,8 @@ public class EdcSubmodelFacade {
             return null;
         } catch (ExecutionException e) {
             final Throwable cause = e.getCause();
-            if (cause instanceof EdcClientException) {
-                throw (EdcClientException) cause;
+            if (cause instanceof EdcClientException exceptionCause) {
+                throw exceptionCause;
             }
             throw new EdcClientException(cause);
         }

@@ -35,7 +35,7 @@ import org.springframework.web.client.RestTemplate;
 class BpdmClientImplTest {
 
     private final RestTemplate restTemplate = mock(RestTemplate.class);
-    private final BpdmClient bpdmClient = new BpdmClientImpl(restTemplate, "url");
+    private final BpdmClient bpdmClient = new BpdmClientImpl(restTemplate, "url/{idType}/{partnerId}");
 
     @Test
     void shouldCallExternalServiceOnceAndGetBusinessPartnerResponse() {

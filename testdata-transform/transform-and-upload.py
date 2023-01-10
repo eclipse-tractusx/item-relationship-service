@@ -5,6 +5,7 @@ import json
 import math
 import time
 import uuid
+from copy import copy
 
 import requests
 from requests.adapters import HTTPAdapter, Retry
@@ -242,7 +243,7 @@ if __name__ == "__main__":
 
         for tmp_key in tmp_keys:
             if "Batch" in tmp_key or "SerialPartTypization" in tmp_key:
-                specific_asset_ids = tmp_data[tmp_key][0]["localIdentifiers"]
+                specific_asset_ids = copy(tmp_data[tmp_key][0]["localIdentifiers"])
                 name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ", "")
             if "PartAsPlanned" in tmp_key:
                 name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ", "")

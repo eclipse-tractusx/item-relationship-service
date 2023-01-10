@@ -11,8 +11,8 @@ irs:
         failed: 0 * * * * *
     jobstore:
       ttl:
-        failedInHours: 1
-        completedInHours: 1
+        failed: PT1H
+        completed: PT1H
 
 spring:
   security:

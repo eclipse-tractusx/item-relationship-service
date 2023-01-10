@@ -33,7 +33,7 @@
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- Dependencies -->
-        <springboot.version>2.7.5</springboot.version>
+        <springboot.version>2.7.7</springboot.version>
         <springcloud-feign.version>3.1.5</springcloud-feign.version>
         <springdoc.version>1.6.7</springdoc.version>
         <micrometer.version>1.10.0</micrometer.version>
@@ -53,7 +53,7 @@
         <checkstyle.version>10.4</checkstyle.version>
         <jacoco.version>0.8.8</jacoco.version>
         <pmd-plugin.version>3.19.0</pmd-plugin.version>
-        <owasp-plugin.version>7.3.0</owasp-plugin.version>
+        <owasp-plugin.version>7.4.4</owasp-plugin.version>
 
         <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
         <jar-plugin.version>3.3.0</jar-plugin.version>

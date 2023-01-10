@@ -64,30 +64,39 @@ public class E2ETestStepDefinitions {
     private ObjectMapper objectMapper;
     private AuthenticationProperties authProperties;
 
+    private AuthenticationProperties.AuthenticationPropertiesBuilder authenticationPropertiesBuilder;
+
     @Before
     public void setup() {
         registerJobBuilder = RegisterJob.builder();
+        authenticationPropertiesBuilder = AuthenticationProperties.builder();
+        authenticationPropertiesBuilder.grantType("client_credentials").tokenPath("access_token");
 
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
-    @Given("the environment is {string}")
-    public void theEnvironmentIs(String environment) {
-        final String clientId = System.getenv("KEYCLOAK_CLIENT_ID");
-        final String clientSecret = System.getenv("KEYCLOAK_CLIENT_SECRET");
-        final String keycloakUrl = System.getenv("KEYCLOAK_HOST");
-        final String irsUri;
-        if (environment.equals("DEV")) {
-            irsUri = System.getenv("IRS_DEV");
-        } else if (environment.equals("INT")) {
-            irsUri = System.getenv("IRS_INT");
+    @Given("the IRS URL {string}")
+    public void theIRSURL(String irsUrl) {
+        authenticationPropertiesBuilder.uri(irsUrl);
+    }
+
+    @And("the user {string} with authentication")
+    public void theUser(String clientId) throws PropertyNotFoundException {
+        authenticationPropertiesBuilder.clientId(clientId);
+        final String keycloakClientSecretKey = "KEYCLOAK_CLIENT_SECRET";
+        String clientSecret = System.getenv(keycloakClientSecretKey);
+        if (clientSecret != null) {
+            authenticationPropertiesBuilder.clientSecret(clientSecret);
         } else {
-            throw new PendingException(String.format("No implementation for environment: '%s'", environment));
+            throw new PropertyNotFoundException("Environment Variable missing: " + keycloakClientSecretKey);
         }
-        authProperties = new AuthenticationProperties(irsUri, clientId, clientSecret, keycloakUrl, "client_credentials",
-                "access_token");
+    }
+
+    @And("the keycloak token url {string}")
+    public void theKeycloakTokenUrl(String tokenUrl) {
+        authenticationPropertiesBuilder.keycloakUrl(tokenUrl);
     }
 
     @Given("I register an IRS job for globalAssetId {string}")
@@ -125,6 +134,7 @@ public class E2ETestStepDefinitions {
     @When("I get the job-id")
     public void iGetTheJobId() {
         final RegisterJob job = registerJobBuilder.build();
+        authProperties = authenticationPropertiesBuilder.build();
 
         final JobHandle createdJobResponse = given().spec(authProperties.getNewAuthenticationRequestSpecification())
                                                     .contentType(ContentType.JSON)
@@ -162,13 +172,25 @@ public class E2ETestStepDefinitions {
     }
 
     @And("I check, if number of {string} equals to {string}")
-    public void iCheckIfNumberOfEqualsTo(String valueType, String arg1) {
-        if ("tombstones".equals(valueType)) {
-            assertThat(completedJob.getTombstones()).hasSize(
-                    completedJob.getJob().getSummary().getAsyncFetchedItems().getFailed());
-        } else {
-            throw new PendingException();
-        }
+    public void iCheckIfNumberOfEqualsTo(String valueType, String summaryType) {
+        int nrOfValueType = switch (valueType) {
+            case "tombstones" -> completedJob.getTombstones().size();
+            case "submodels" -> completedJob.getSubmodels().size();
+            case "shells" -> completedJob.getShells().size();
+            case "relationships" -> completedJob.getRelationships().size();
+            case "bpns" -> completedJob.getBpns().size();
+            default -> throw new PendingException(String.format("Type: '%s' not supported.", valueType));
+        };
+        int nrOfItemsInSummary = switch (summaryType) {
+            case "summary/asyncFetchedItems/running" ->
+                    completedJob.getJob().getSummary().getAsyncFetchedItems().getRunning();
+            case "summary/asyncFetchedItems/completed" ->
+                    completedJob.getJob().getSummary().getAsyncFetchedItems().getCompleted();
+            case "summary/asyncFetchedItems/failed" ->
+                    completedJob.getJob().getSummary().getAsyncFetchedItems().getFailed();
+            default -> throw new PendingException(String.format("Type: '%s' not supported.", summaryType));
+        };
+        assertThat(nrOfValueType).isEqualTo(nrOfItemsInSummary);
     }
 
     @And("I check, if summary contains {int} completed and {int} failed items")
@@ -227,18 +249,13 @@ public class E2ETestStepDefinitions {
 
     @And("{string} are empty")
     public void areEmpty(String valueType) {
-        if ("tombstones".equals(valueType)) {
-            assertThat(completedJob.getTombstones()).isEmpty();
-        } else if ("submodels".equals(valueType)) {
-            assertThat(completedJob.getSubmodels()).isEmpty();
-        } else if ("relationships".equals(valueType)) {
-            assertThat(completedJob.getRelationships()).isEmpty();
-        } else if ("shells".equals(valueType)) {
-            assertThat(completedJob.getShells()).isEmpty();
-        } else if ("bpns".equals(valueType)) {
-            assertThat(completedJob.getBpns()).isEmpty();
-        } else {
-            throw new PendingException();
+        switch (valueType) {
+            case "tombstones" -> assertThat(completedJob.getTombstones()).isEmpty();
+            case "submodels" -> assertThat(completedJob.getSubmodels()).isEmpty();
+            case "relationships" -> assertThat(completedJob.getRelationships()).isEmpty();
+            case "shells" -> assertThat(completedJob.getShells()).isEmpty();
+            case "bpns" -> assertThat(completedJob.getBpns()).isEmpty();
+            default -> throw new PendingException();
         }
     }
 
@@ -247,5 +264,9 @@ public class E2ETestStepDefinitions {
         scenario.attach(jobId.toString(), MediaType.TEXT_PLAIN_VALUE, "jobId");
     }
 
-
+    private static class PropertyNotFoundException extends Exception {
+        public PropertyNotFoundException(final String message) {
+            super(message);
+        }
+    }
 }

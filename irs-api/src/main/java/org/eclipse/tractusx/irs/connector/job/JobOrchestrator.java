@@ -25,7 +25,6 @@ import static org.eclipse.tractusx.irs.controllers.IrsAppConstants.JOB_EXECUTION
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -197,8 +196,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     public void findAndCleanupCompletedJobs() {
         log.info("Running cleanup of completed jobs");
         final ZonedDateTime currentDateMinusSeconds = ZonedDateTime.now(ZoneOffset.UTC)
-                                                                   .minus(jobTTL.getTtlCompletedJobsInHours(),
-                                                                           ChronoUnit.HOURS);
+                                                                   .minus(jobTTL.getTtlCompletedJobs());
         final List<MultiTransferJob> completedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.COMPLETED,
                 currentDateMinusSeconds);
 
@@ -212,8 +210,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         log.info("Running cleanup of failed jobs");
 
         final ZonedDateTime currentDateMinusSeconds = ZonedDateTime.now(ZoneOffset.UTC)
-                                                                   .minus(jobTTL.getTtlFailedJobsInHours(),
-                                                                           ChronoUnit.HOURS);
+                                                                   .minus(jobTTL.getTtlFailedJobs());
         final List<MultiTransferJob> failedJobs = jobStore.findByStateAndCompletionDateOlderThan(JobState.ERROR,
                 currentDateMinusSeconds);
 
@@ -225,13 +222,13 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         return jobs.stream()
                    .map(job -> deleteJobsAndDecreaseJobsInJobStoreMetrics(job.getJobIdString()))
                    .flatMap(Optional::stream)
-                   .collect(Collectors.toList());
+                   .toList();
     }
 
     private Optional<MultiTransferJob> deleteJobsAndDecreaseJobsInJobStoreMetrics(final String jobId) {
         final Optional<MultiTransferJob> optJob = jobStore.deleteJob(jobId);
         if (optJob.isPresent()) {
-            meterService.setNumberOfJobsInJobStore(Long.valueOf(jobStore.findAll().size()));
+            meterService.setNumberOfJobsInJobStore((long) jobStore.findAll().size());
         }
         return optJob;
     }
@@ -299,7 +296,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                   .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .state(JobState.UNSAVED)
                   .owner(securityHelperService.getClientIdClaim())
-                  .jobParameter(jobData)
+                  .parameter(jobData)
                   .build();
     }
 

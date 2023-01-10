@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
@@ -40,9 +40,13 @@ import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference
 @Service
 public class EndpointDataReferenceStorage {
 
-    private static final Duration STORAGE_DURATION = Duration.ofHours(1);
-
     private final Map<String, ExpiringContainer> storageMap = new ConcurrentHashMap<>();
+    private final Duration storageDuration;
+
+    public EndpointDataReferenceStorage(
+            @Value("${edc.controlplane.datareference.storage.duration}") final Duration storageDuration) {
+        this.storageDuration = storageDuration;
+    }
 
     public void put(final String contractAgreementId, final EndpointDataReference dataReference) {
         storageMap.put(contractAgreementId, new ExpiringContainer(Instant.now(), dataReference));
@@ -56,7 +60,7 @@ public class EndpointDataReferenceStorage {
         final Set<String> keys = new HashSet<>(storageMap.keySet());
         keys.forEach(key -> {
             final Instant creationTimestamp = storageMap.get(key).getCreationTimestamp();
-            if (Instant.now().isAfter(creationTimestamp.plus(STORAGE_DURATION))) {
+            if (Instant.now().isAfter(creationTimestamp.plus(storageDuration))) {
                 storageMap.remove(key);
             }
         });
@@ -69,7 +73,7 @@ public class EndpointDataReferenceStorage {
     /**
      * Stores the data reference with its creation date.
      */
-    @Value
+    @lombok.Value
     private static class ExpiringContainer {
         private final Instant creationTimestamp;
         private final EndpointDataReference dataReference;

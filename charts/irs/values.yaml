@@ -102,13 +102,17 @@ ingress:
       secretName: tls-secret
 digitalTwinRegistry:
   url: https://<digital-twin-registry-url>
+  descriptorEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/registry/shell-descriptors/{aasIdentifier}"
+  shellLookupEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/lookup/shells?assetIds={assetIds}"
 semanticsHub:
   url: https://<semantics-hub-url>
-  defaultUrns: >
+  modelJsonSchemaEndpoint: "{{ tpl .Values.semanticsHub.url . }}/models/{urn}/json-schema"
+  defaultUrns: >-
     urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
 #    ,urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship
 bpdm:
   url: https://<bpdm-url>
+  bpnEndpoint: "{{ tpl .Values.bpdm.url . }}/api/catena/legal-entities/{partnerId}?idType={idType}"
 minioUser: <minio-username>
 minioPassword: <minio-password>
 minioUrl: "http://{{ .Release.Name }}-minio:9000"
@@ -137,6 +141,13 @@ edc:
     path: /submodel
     urnprefix: /urn
 
+config:
+  # If true, the config provided below will completely replace the configmap.
+  # In this case, you need to provide all required config values defined above yourself!
+  # If false, the custom config will just be appended to the configmap.
+  override: false
+  # Provide your custom configuration here (overrides IRS Spring application.yaml)
+  content:
 
 #######################
 # Minio Configuration #

@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.irs.configuration;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -69,8 +70,8 @@ public class JobConfiguration {
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
             final DigitalTwinDelegate digitalTwinDelegate, final BlobPersistence blobStore, final JobStore jobStore,
             final MeterRegistryService meterService, final ApplicationEventPublisher applicationEventPublisher,
-            @Value("${irs.job.jobstore.ttl.failedInHours:}") final int ttlFailedJobs,
-            @Value("${irs.job.jobstore.ttl.completedInHours:}") final int ttlCompletedJobs) {
+            @Value("${irs.job.jobstore.ttl.failed:}") final Duration ttlFailedJobs,
+            @Value("${irs.job.jobstore.ttl.completed:}") final Duration ttlCompletedJobs) {
 
         final var manager = new AASTransferProcessManager(digitalTwinDelegate, Executors.newCachedThreadPool(),
                 blobStore);

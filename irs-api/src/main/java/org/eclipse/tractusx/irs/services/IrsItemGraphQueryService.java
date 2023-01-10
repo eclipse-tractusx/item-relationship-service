@@ -91,8 +91,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     private final MeterRegistryService meterRegistryService;
 
     @Override
-    public PageResult getJobsByJobState(final @NonNull List<JobState> jobStates, final Pageable pageable) {
-        final List<MultiTransferJob> jobs = jobStates.isEmpty() ? jobStore.findAll() : jobStore.findByStates(jobStates);
+    public PageResult getJobsByState(final @NonNull List<JobState> states, final Pageable pageable) {
+        final List<MultiTransferJob> jobs = states.isEmpty() ? jobStore.findAll() : jobStore.findByStates(states);
         final List<JobStatusResult> jobStatusResults = jobs.stream()
                                                            .map(job -> JobStatusResult.builder()
                                                                                       .id(job.getJob().getId())
@@ -103,6 +103,12 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                                                            .toList();
 
         return new PageResult(paginateAndSortResults(pageable, jobStatusResults));
+    }
+
+    @Override
+    public PageResult getJobsByState(@NonNull final List<JobState> states, @NonNull final List<JobState> jobStates,
+            final Pageable pageable) {
+        return getJobsByState(states.isEmpty() ? jobStates : states, pageable);
     }
 
     private PagedListHolder<JobStatusResult> paginateAndSortResults(final Pageable pageable,

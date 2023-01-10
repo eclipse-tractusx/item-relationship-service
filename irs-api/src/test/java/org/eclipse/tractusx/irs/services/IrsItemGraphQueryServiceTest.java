@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.nio.charset.StandardCharsets;
@@ -133,7 +134,7 @@ class IrsItemGraphQueryServiceTest {
         final MultiTransferJob multiTransferJob = MultiTransferJob.builder().job(generate.fakeJob(JobState.COMPLETED)).build();
         when(jobStore.findByStates(states)).thenReturn(List.of(multiTransferJob));
 
-        final PageResult jobs = testee.getJobsByJobState(states, Pageable.ofSize(10));
+        final PageResult jobs = testee.getJobsByState(states, Pageable.ofSize(10));
 
         assertNotNull(jobs);
         assertThat(jobs.content()).hasSize(1);
@@ -142,9 +143,49 @@ class IrsItemGraphQueryServiceTest {
         assertThat(jobs.content().get(0).getStartedOn()).isNotNull();
         assertThat(jobs.content().get(0).getCompletedOn()).isNotNull();
         assertThat(jobs.pageSize()).isEqualTo(10);
-        assertThat(jobs.pageNumber()).isEqualTo(0);
+        assertThat(jobs.pageNumber()).isZero();
         assertThat(jobs.pageCount()).isEqualTo(1);
         assertThat(jobs.totalElements()).isEqualTo(1);
+    }
+
+    @Test
+    void shouldTakeStatesInsteadOfDeprecatedParameter() {
+        final List<JobState> states = List.of(JobState.COMPLETED);
+        final List<JobState> jobStates = List.of(JobState.RUNNING);
+
+        testee.getJobsByState(states, jobStates, Pageable.ofSize(10));
+
+        verify(jobStore).findByStates(states);
+    }
+
+    @Test
+    void shouldTakeDeprecatedParameterWhenCorrectOneIsEmpty() {
+        final List<JobState> states = List.of();
+        final List<JobState> jobStates = List.of(JobState.RUNNING);
+
+        testee.getJobsByState(states, jobStates, Pageable.ofSize(10));
+
+        verify(jobStore).findByStates(jobStates);
+    }
+
+    @Test
+    void shouldTakeAllJobsWhenBothListEmpty() {
+        final List<JobState> states = List.of();
+        final List<JobState> jobStates = List.of();
+
+        testee.getJobsByState(states, jobStates, Pageable.ofSize(10));
+
+        verify(jobStore).findAll();
+    }
+
+    @Test
+    void shouldTakeStatesInsteadOfEmptyDeprecatedParameter() {
+        final List<JobState> states = List.of(JobState.COMPLETED);
+        final List<JobState> jobStates = List.of();
+
+        testee.getJobsByState(states, jobStates, Pageable.ofSize(10));
+
+        verify(jobStore).findByStates(states);
     }
 
 }

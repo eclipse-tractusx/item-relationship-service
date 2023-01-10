@@ -23,6 +23,7 @@ package org.eclipse.tractusx.irs.edc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Duration;
 import java.util.Map;
 
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
@@ -31,7 +32,7 @@ import org.junit.jupiter.api.Test;
 
 class EdcCallbackControllerTest {
 
-    private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage();
+    private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
     private final EdcCallbackController testee = new EdcCallbackController(storage, new JsonUtil());
 
     @Test

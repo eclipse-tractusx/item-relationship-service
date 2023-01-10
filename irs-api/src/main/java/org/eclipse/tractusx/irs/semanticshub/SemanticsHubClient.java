@@ -21,6 +21,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.semanticshub;
 
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.configuration.RestTemplateConfig;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +39,7 @@ interface SemanticsHubClient {
 
     /**
      * Return Json Schema of requsted model by urn
+     *
      * @param urn of the model
      * @return Json Schema
      */
@@ -47,15 +51,14 @@ interface SemanticsHubClient {
  * Semantics Hub Rest Client Stub used in local environment
  */
 @Service
-@Profile({ "local", "test" })
+@Profile({ "local",
+           "test"
+})
 class SemanticsHubClientLocalStub implements SemanticsHubClient {
 
     @Override
     public String getModelJsonSchema(final String urn) {
-        return "{"
-                + "  \"$schema\": \"http://json-schema.org/draft-07/schema#\","
-                + "  \"type\": \"integer\""
-                + "}";
+        return "{" + "  \"$schema\": \"http://json-schema.org/draft-07/schema#\"," + "  \"type\": \"integer\"" + "}";
     }
 }
 
@@ -66,20 +69,38 @@ class SemanticsHubClientLocalStub implements SemanticsHubClient {
 @Profile({ "!local && !test" })
 class SemanticsHubClientImpl implements SemanticsHubClient {
 
+    private static final String PLACEHOLDER_URN = "urn";
+
     private final RestTemplate restTemplate;
     private final String semanticsHubUrl;
 
-    /* package */ SemanticsHubClientImpl(@Qualifier(RestTemplateConfig.OAUTH_REST_TEMPLATE) final RestTemplate restTemplate,
-            @Value("${semanticsHub.url:}") final String semanticsHubUrl) {
+    /* package */ SemanticsHubClientImpl(
+            @Qualifier(RestTemplateConfig.SEMHUB_REST_TEMPLATE) final RestTemplate restTemplate,
+            @Value("${semanticsHub.modelJsonSchemaEndpoint:}") final String semanticsHubUrl) {
         this.restTemplate = restTemplate;
         this.semanticsHubUrl = semanticsHubUrl;
+
+        if (StringUtils.isNotBlank(semanticsHubUrl)) {
+            requirePlaceholder(semanticsHubUrl);
+        }
+    }
+
+    private static void requirePlaceholder(final String url) {
+        if (!url.contains(wrap(SemanticsHubClientImpl.PLACEHOLDER_URN))) {
+            throw new IllegalStateException(
+                    "Configuration value for 'semanticsHub.modelJsonSchemaEndpoint' must contain the URL placeholder '"
+                            + SemanticsHubClientImpl.PLACEHOLDER_URN + "'!");
+        }
+    }
+
+    private static String wrap(final String placeholderIdType) {
+        return "{" + placeholderIdType + "}";
     }
 
     @Override
     public String getModelJsonSchema(final String urn) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(semanticsHubUrl);
-        uriBuilder.path("/models/").path(urn).path("/json-schema");
-
-        return restTemplate.getForObject(uriBuilder.build().toUri(), String.class);
+        final Map<String, String> values = Map.of(PLACEHOLDER_URN, urn);
+        return restTemplate.getForObject(uriBuilder.build(values), String.class);
     }
 }

@@ -141,13 +141,13 @@ class JobOrchestratorTest {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.empty());
 
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getJobParameter());
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getParameter());
         var newJob = getStartedJob();
 
         // Assert
         verifyNoInteractions(processManager);
         verify(jobStore).completeJob(eq(newJob.getJobIdString()), any());
-        verify(jobStore).find(eq(newJob.getJobIdString()));
+        verify(jobStore).find(newJob.getJobIdString());
         verifyNoMoreInteractions(jobStore);
 
         assertThat(response).isEqualTo(
@@ -161,7 +161,7 @@ class JobOrchestratorTest {
         when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(okResponse);
 
         // Act
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getJobParameter());
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getParameter());
 
         // Assert
         var newJob = getStartedJob();
@@ -204,7 +204,7 @@ class JobOrchestratorTest {
         verify(jobStore).create(jobCaptor.capture());
         verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), JOB_EXECUTION_FAILED,
                 "java.lang.RuntimeException");
-        verify(jobStore).find(eq(jobCaptor.getValue().getJobIdString()));
+        verify(jobStore).find(jobCaptor.getValue().getJobIdString());
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
 
@@ -226,7 +226,7 @@ class JobOrchestratorTest {
         verify(jobStore).create(jobCaptor.capture());
         verify(jobStore).markJobInError(jobCaptor.getValue().getJobIdString(), JOB_EXECUTION_FAILED,
                 "org.eclipse.tractusx.irs.connector.job.JobException");
-        verify(jobStore).find(eq(jobCaptor.getValue().getJobIdString()));
+        verify(jobStore).find(jobCaptor.getValue().getJobIdString());
         verifyNoMoreInteractions(jobStore);
         assertThat(response).isEqualTo(JobInitiateResponse.builder()
                                                           .jobId(jobCaptor.getValue().getJobIdString())
@@ -257,7 +257,7 @@ class JobOrchestratorTest {
         // Assert
         verify(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
         verify(jobStore).completeJob(eq(job.getJobIdString()), any());
-        verify(jobStore).find(eq(job.getJobIdString()));
+        verify(jobStore).find(job.getJobIdString());
         verifyNoInteractions(processManager);
         verifyNoMoreInteractions(jobStore);
     }
@@ -270,7 +270,7 @@ class JobOrchestratorTest {
         // Assert
         verify(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
         verify(jobStore).completeJob(eq(job.getJobIdString()), any());
-        verify(jobStore).find(eq(job.getJobIdString()));
+        verify(jobStore).find(job.getJobIdString());
         verifyNoMoreInteractions(jobStore);
         verifyNoMoreInteractions(handler);
     }
@@ -311,7 +311,7 @@ class JobOrchestratorTest {
         // Assert
         verify(jobStore).markJobInError(job.getJobIdString(), JOB_EXECUTION_FAILED,
                 "org.eclipse.tractusx.irs.connector.job.JobException");
-        verify(jobStore, times(2)).find(eq(job.getJobIdString()));
+        verify(jobStore, times(2)).find(job.getJobIdString());
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
     }
@@ -361,7 +361,7 @@ class JobOrchestratorTest {
         // temporarily created job should be deleted
         verify(jobStore).markJobInError(job.getJobIdString(), "Failed to start a transfer",
                 "org.eclipse.tractusx.irs.connector.job.JobException");
-        verify(jobStore).find(eq(job.getJobIdString()));
+        verify(jobStore).find(job.getJobIdString());
         verifyNoMoreInteractions(jobStore);
     }
 
@@ -376,7 +376,7 @@ class JobOrchestratorTest {
 
         // Assert
         verify(jobStore).markJobInError(job.getJobIdString(), JOB_EXECUTION_FAILED, "java.lang.RuntimeException");
-        verify(jobStore).find(eq(job.getJobIdString()));
+        verify(jobStore).find(job.getJobIdString());
         verifyNoMoreInteractions(jobStore);
         verifyNoInteractions(processManager);
     }

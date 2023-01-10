@@ -32,7 +32,9 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -444,7 +446,7 @@ class PersistentJobStoreTest {
                                                                  .exception("SomeError")
                                                                  .exceptionDate(ZonedDateTime.now())
                                                                  .build())
-                                       .jobParameter(jobParameter())
+                                       .parameter(jobParameter())
                                        .build())
                                .build();
     }
@@ -535,6 +537,21 @@ class PersistentJobStoreTest {
             argThat(s -> s.size() == 2) // jobId + processId
         );
         verify(blobStoreSpy, times(1)).delete(anyString(), anyList());
+    }
+
+    @Test
+    void shouldGetAllCorrectJobEvenCorruptedBlobIsStored() throws BlobPersistenceException {
+        // Arrange
+
+        String wrongJson = "{\"key\": \"value\"}";
+        blobStoreSpy.putBlob("job:123", wrongJson.getBytes(StandardCharsets.UTF_8));
+        sut.create(job);
+
+        // Act
+        Collection<MultiTransferJob> actual = sut.getAll();
+
+        // Assert
+        assertThat(actual).isNotEmpty();
     }
 
 }

@@ -35,7 +35,7 @@ import org.springframework.web.client.RestTemplate;
 class SemanticsHubClientImplTest {
 
     private final RestTemplate restTemplate = mock(RestTemplate.class);
-    private final SemanticsHubClientImpl semanticsHubClient = new SemanticsHubClientImpl(restTemplate, "url");
+    private final SemanticsHubClientImpl semanticsHubClient = new SemanticsHubClientImpl(restTemplate, "url/{urn}");
 
     @Test
     void shouldCallExternalServiceOnceAndGetJsonSchema() {
@@ -44,8 +44,7 @@ class SemanticsHubClientImplTest {
 
         final String resultJsonSchema = semanticsHubClient.getModelJsonSchema("urn");
 
-        assertThat(resultJsonSchema).isNotBlank();
-        assertThat(resultJsonSchema).contains("http://json-schema.org/draft-07/schema#");
+        assertThat(resultJsonSchema).isNotBlank().contains("http://json-schema.org/draft-07/schema#");
         verify(this.restTemplate, times(1)).getForObject(any(), eq(String.class));
     }
 

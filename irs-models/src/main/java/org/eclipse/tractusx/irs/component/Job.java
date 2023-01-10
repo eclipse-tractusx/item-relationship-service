@@ -28,6 +28,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -56,6 +57,7 @@ public class Job {
     @Schema(description = "Id of the job.", minLength = INPUT_FIELD_MIN_LENGTH,
             maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class,
             pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i")
+    @JsonAlias("jobId")
     private UUID id;
 
     @NotNull
@@ -66,6 +68,7 @@ public class Job {
     private GlobalAssetIdentification globalAssetId;
 
     @NotBlank
+    @JsonAlias("jobState")
     private JobState state;
 
     @Schema(description = "Job error details.", implementation = JobErrorDetails.class)
@@ -93,6 +96,7 @@ public class Job {
      * Mark the time the was completed
      */
     @Schema(implementation = ZonedDateTime.class)
+    @JsonAlias("jobCompleted")
     private ZonedDateTime completedOn;
 
     /**
@@ -105,6 +109,7 @@ public class Job {
     private Summary summary;
 
     @Schema(description = "The passed job parameters", implementation = JobParameter.class)
-    private JobParameter jobParameter;
+    @JsonAlias("jobParameter")
+    private JobParameter parameter;
 
 }
