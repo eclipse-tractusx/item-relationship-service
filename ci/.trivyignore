@@ -1,2 +1,5 @@
 # Only relevant if UNWRAP_SINGLE_VALUE_ARRAYS is activated, which is not the case here.
 CVE-2022-42003
+
+# HttpInvokerServiceExporter is not loaded as a bean in the IRS.
+CVE-2016-1000027
