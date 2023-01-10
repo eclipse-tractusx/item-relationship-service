@@ -102,4 +102,11 @@
         <gav regex="true">com\.fasterxml\.jackson\.core:jackson-databind.*</gav>
         <vulnerabilityName>CVE-2022-42003</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Accepted - potentially vulnerable library is only used in metric actuator, which is not reachable from outside.
+        ]]></notes>
+        <gav regex="true">org\.latencyutils.*</gav>
+        <vulnerabilityName>CVE-2021-4277</vulnerabilityName>
+    </suppress>
 </suppressions>

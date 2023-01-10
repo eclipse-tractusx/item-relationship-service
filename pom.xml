@@ -33,7 +33,7 @@
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- Dependencies -->
-        <springboot.version>2.7.5</springboot.version>
+        <springboot.version>2.7.7</springboot.version>
         <springcloud-feign.version>3.1.5</springcloud-feign.version>
         <springdoc.version>1.6.7</springdoc.version>
         <micrometer.version>1.10.0</micrometer.version>
