@@ -26,12 +26,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Set;
+
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import io.vavr.collection.Array;
-import io.vavr.collection.Seq;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,7 +54,7 @@ class OutboundMeterRegistryServiceTest {
         final Retry.EventPublisher publisher = mock(Retry.EventPublisher.class);
         when(retry.getEventPublisher()).thenReturn(publisher);
 
-        final Seq<Retry> seq = Array.empty();
+        final Set<Retry> seq = Set.of();
         when(retryRegistry.getAllRetries()).thenReturn(seq);
         testee = new OutboundMeterRegistryService(meterRegistry, retryRegistry);
 

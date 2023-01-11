@@ -34,6 +34,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -76,7 +77,7 @@ public class SecurityConfiguration {
                     .preload(true)
                     .requestMatcher(AnyRequestMatcher.INSTANCE);
 
-        httpSecurity.headers().xssProtection().xssProtectionEnabled(true).block(true);
+        httpSecurity.headers().xssProtection().headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK);
 
         httpSecurity.headers().frameOptions().sameOrigin();
 
@@ -84,10 +85,10 @@ public class SecurityConfiguration {
             .sessionManagement()
             .sessionCreationPolicy(STATELESS)
             .and()
-            .authorizeRequests()
-            .antMatchers(WHITELIST)
+            .authorizeHttpRequests()
+            .requestMatchers(WHITELIST)
             .permitAll()
-            .antMatchers("/**")
+            .requestMatchers("/**")
             .authenticated()
             .and()
             .oauth2ResourceServer(oauth2ResourceServer ->
