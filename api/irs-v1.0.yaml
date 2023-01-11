@@ -455,27 +455,27 @@ components:
               retryCounter: 0
     error-response-400:
       value:
-        errors:
+        error: Bad request
+        messages:
           - BadRequestException
-        message: Bad request
         statusCode: 400 BAD_REQUEST
     error-response-401:
       value:
-        errors:
+        error: Unauthorized
+        messages:
           - UnauthorizedException
-        message: Unauthorized
         statusCode: 401 UNAUTHORIZED
     error-response-403:
       value:
-        errors:
+        error: Forbidden
+        messages:
           - ForbiddenException
-        message: Forbidden
         statusCode: 403 FORBIDDEN
     error-response-404:
       value:
-        errors:
+        error: Not found
+        messages:
           - NotFoundException
-        message: Not found
         statusCode: 404 NOT_FOUND
     failed-job-result:
       value:
@@ -731,15 +731,15 @@ components:
       additionalProperties: false
       description: Error response.
       properties:
-        errors:
+        error:
+          type: string
+          description: Error.
+        messages:
           type: array
-          description: List of errors.
+          description: List of error messages.
           items:
             type: string
           maxItems: 2147483647
-        message:
-          type: string
-          description: Error message.
         statusCode:
           type: string
           description: Error code.
