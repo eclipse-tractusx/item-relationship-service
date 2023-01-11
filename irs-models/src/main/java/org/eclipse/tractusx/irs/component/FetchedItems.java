@@ -21,31 +21,31 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * Summary
+ * Describe the state of the fetched items
  */
+@Schema(description = "Statistics of job execution.")
 @Value
 @Builder(toBuilder = true)
-@Schema(description = "Summary of the job with statistics of the job processing.")
 @Jacksonized
-public class Summary {
+public class FetchedItems {
 
-    /**
-     * asyncFetchedItems
-     */
-    @Schema(description = "Summary of the fetched jobs", implementation = AsyncFetchedItems.class)
-    private AsyncFetchedItems asyncFetchedItems;
+    @Schema(description = "Number of completed items.", implementation = Integer.class)
+    @Min(0)
+    @Max(Integer.MAX_VALUE)
+    private Integer completed;
 
-    /**
-     * BPN lookup summary
-     */
-    @Schema(description = "Summary of the BPN lookups", implementation = AsyncFetchedItems.class)
-    private FetchedItems bpnLookups;
-
+    @Schema(description = "Number of failed items.", implementation = Integer.class)
+    @Min(0)
+    @Max(Integer.MAX_VALUE)
+    private Integer failed;
 
 }
