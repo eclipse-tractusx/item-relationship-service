@@ -125,6 +125,17 @@ public class TestMother {
                            .build();
     }
 
+    public static JobParameter jobParameterCollectBpns() {
+        return JobParameter.builder()
+                           .depth(0)
+                           .bomLifecycle(BomLifecycle.AS_BUILT)
+                           .direction(Direction.DOWNWARD)
+                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION,
+                                   AspectType.ASSEMBLY_PART_RELATIONSHIP))
+                           .lookupBPNs(true)
+                           .build();
+    }
+
     public static MeterRegistryService simpleMeterRegistryService() {
         return new MeterRegistryService(new SimpleMeterRegistry());
     }

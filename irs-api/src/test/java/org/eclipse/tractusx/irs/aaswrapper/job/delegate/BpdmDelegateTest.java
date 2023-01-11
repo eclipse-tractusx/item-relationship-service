@@ -23,6 +23,7 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
+import static org.eclipse.tractusx.irs.util.TestMother.jobParameterCollectBpns;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutEndpoint;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,7 +56,7 @@ class BpdmDelegateTest {
                 List.of(submodelDescriptorWithoutEndpoint("any"))));
 
         // when
-        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameter(),
+        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameterCollectBpns(),
                 new AASTransferProcess("id", 0), "itemId");
 
         // then
@@ -71,7 +72,7 @@ class BpdmDelegateTest {
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = itemContainerWithAssetId("ManufaAAAA", "BPNL00000003AYRE");
 
         // when
-        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameter(),
+        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameterCollectBpns(),
                 new AASTransferProcess("id", 0), "itemId");
 
         // then
@@ -90,7 +91,7 @@ class BpdmDelegateTest {
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = itemContainerWithAssetId("ManufacturerId", "dsfvzsdfvzsvdszvzdsvdszvdszvds");
 
         // when
-        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameter(),
+        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameterCollectBpns(),
                 new AASTransferProcess("id", 0), "itemId");
 
         // then
@@ -109,7 +110,7 @@ class BpdmDelegateTest {
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = itemContainerWithAssetId("ManufacturerId", "BPNL00000003AYRE");
 
         // when
-        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameter(),
+        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameterCollectBpns(),
                 new AASTransferProcess("id", 0), "itemId");
 
         // then
@@ -127,7 +128,7 @@ class BpdmDelegateTest {
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = itemContainerWithAssetId("ManufacturerId", "BPNL00000003AYRE");
 
         // when
-        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameter(),
+        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameterCollectBpns(),
                 new AASTransferProcess("id", 0), "itemId");
 
         // then
@@ -145,7 +146,7 @@ class BpdmDelegateTest {
         final ItemContainer.ItemContainerBuilder itemContainerWithoutShell = ItemContainer.builder();
 
         // when
-        final ItemContainer result = bpdmDelegate.process(itemContainerWithoutShell, jobParameter(),
+        final ItemContainer result = bpdmDelegate.process(itemContainerWithoutShell, jobParameterCollectBpns(),
                 new AASTransferProcess("id", 0), "itemId");
 
         // then
@@ -164,4 +165,36 @@ class BpdmDelegateTest {
                         .build());
     }
 
+    @Test
+    void shouldNotResolveBPNsWithoutFlag() {
+        // given
+        given(bpdmFacade.findManufacturerName(any())).willReturn(Optional.of("Tier A"));
+        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder().shell(shellDescriptor(
+                List.of(submodelDescriptorWithoutEndpoint("any"))));
+
+        // when
+        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameter(),
+                new AASTransferProcess("id", 0), "itemId");
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getBpns()).isEmpty();
+    }
+
+    @Test
+    void shouldResolveBPNsWhenFlagIsTrue() {
+        // given
+        given(bpdmFacade.findManufacturerName(any())).willReturn(Optional.of("Tier A"));
+        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder().shell(shellDescriptor(
+                List.of(submodelDescriptorWithoutEndpoint("any"))));
+
+        // when
+        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameterCollectBpns(),
+                new AASTransferProcess("id", 0), "itemId");
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getBpns()).isNotEmpty();
+        assertThat(result.getBpns().stream().findFirst().get().getManufacturerName()).isEqualTo("Tier A");
+    }
 }

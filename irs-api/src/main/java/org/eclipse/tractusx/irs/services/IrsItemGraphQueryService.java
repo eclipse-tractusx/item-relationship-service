@@ -159,6 +159,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                            .direction(direction)
                            .aspects(aspectTypeValues.isEmpty() ? List.of(bomLifecycle.getDefaultAspect()) : aspectTypeValues)
                            .collectAspects(request.isCollectAspects())
+                           .lookupBPNs(request.isLookupBPNs())
                            .callbackUrl(request.getCallbackUrl())
                            .build();
     }
