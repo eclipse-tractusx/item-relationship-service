@@ -48,7 +48,7 @@ class SubmodelDelegateTest {
     final EdcSubmodelFacade submodelFacade = mock(EdcSubmodelFacade.class);
     final SemanticsHubFacade semanticsHubFacade = mock(SemanticsHubFacade.class);
     final JsonValidatorService jsonValidatorService = mock(JsonValidatorService.class);
-    final SubmodelDelegate submodelDelegate = new SubmodelDelegate(null, submodelFacade,
+    final SubmodelDelegate submodelDelegate = new SubmodelDelegate(submodelFacade,
             semanticsHubFacade, jsonValidatorService, new JsonUtil());
 
     @Test
