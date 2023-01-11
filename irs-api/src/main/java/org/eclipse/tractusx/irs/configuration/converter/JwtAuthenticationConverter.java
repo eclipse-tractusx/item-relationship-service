@@ -27,9 +27,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import com.nimbusds.jose.shaded.json.JSONArray;
-import com.nimbusds.jose.shaded.json.JSONObject;
+import com.nimbusds.jose.shaded.gson.JsonArray;
+import com.nimbusds.jose.shaded.gson.JsonObject;
+import com.nimbusds.jose.shaded.gson.JsonPrimitive;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.convert.converter.Converter;
@@ -52,11 +54,9 @@ public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthen
     public AbstractAuthenticationToken convert(final @NotNull Jwt source) {
         final Collection<GrantedAuthority> grantedAuthorities = jwtGrantedAuthoritiesConverter.convert(source);
 
-        final Collection<GrantedAuthority> authorities =
-            Stream.concat(
+        final Collection<GrantedAuthority> authorities = Stream.concat(
                 grantedAuthorities != null ? grantedAuthorities.stream() : Stream.empty(),
-                irsTokenParser.extractIrsRolesFromToken(source).stream()
-            ).collect(Collectors.toSet());
+                irsTokenParser.extractIrsRolesFromToken(source).stream()).collect(Collectors.toSet());
 
         return new JwtAuthenticationToken(source, authorities);
     }
@@ -73,21 +73,23 @@ public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthen
 
         /**
          * Parsing JWT - retrieving resource_access claim with IRS roles.
+         *
          * @param jwt source
          * @return list of roles from token
          */
         public Set<SimpleGrantedAuthority> extractIrsRolesFromToken(final Jwt jwt) {
             return Optional.ofNullable(jwt.getClaim(RESOURCE_ACCESS_CLAIM))
-                    .map(JSONObject.class::cast)
-                    .map(accesses -> accesses.get(IRS_RESOURCE_ACCESS))
-                    .map(JSONObject.class::cast)
-                    .map(irsAccesses -> irsAccesses.get(ROLES))
-                    .map(JSONArray.class::cast)
-                    .map(roles -> roles.stream()
-                                       .map(String.class::cast)
-                                       .map(SimpleGrantedAuthority::new)
-                                       .collect(Collectors.toSet()))
-                    .orElse(Collections.emptySet());
+                           .map(JsonObject.class::cast)
+                           .map(accesses -> accesses.get(IRS_RESOURCE_ACCESS))
+                           .map(JsonObject.class::cast)
+                           .map(irsAccesses -> irsAccesses.get(ROLES))
+                           .map(JsonArray.class::cast)
+                           .map(roles -> StreamSupport.stream(roles.spliterator(), false)
+                                                      .map(JsonPrimitive.class::cast)
+                                                      .map(JsonPrimitive::getAsString)
+                                                      .map(SimpleGrantedAuthority::new)
+                                                      .collect(Collectors.toSet()))
+                           .orElse(Collections.emptySet());
         }
     }
 

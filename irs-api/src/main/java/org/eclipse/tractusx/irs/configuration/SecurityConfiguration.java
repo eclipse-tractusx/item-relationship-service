@@ -30,7 +30,7 @@ import org.eclipse.tractusx.irs.IrsApplication;
 import org.eclipse.tractusx.irs.configuration.converter.JwtAuthenticationConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -45,25 +45,24 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
-    private static final String[] WHITELIST  = {
-        "/actuator/health",
-        "/actuator/health/readiness",
-        "/actuator/health/liveness",
-        "/actuator/prometheus",
-        "/api/swagger-ui/**",
-        "/api/api-docs",
-        "/api/api-docs.yaml",
-        "/api/api-docs/swagger-config",
-        "/" + IrsApplication.API_PREFIX_INTERNAL + "/endpoint-data-reference"
+    private static final String[] WHITELIST = { "/actuator/health",
+                                                "/actuator/health/readiness",
+                                                "/actuator/health/liveness",
+                                                "/actuator/prometheus",
+                                                "/api/swagger-ui/**",
+                                                "/api/api-docs",
+                                                "/api/api-docs.yaml",
+                                                "/api/api-docs/swagger-config",
+                                                "/" + IrsApplication.API_PREFIX_INTERNAL + "/endpoint-data-reference"
     };
     private static final long HSTS_MAX_AGE_DAYS = 365;
 
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     @Bean
-    /* package */ SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
+        /* package */ SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
         httpSecurity.httpBasic().disable();
         httpSecurity.formLogin().disable();
         httpSecurity.csrf().disable();
@@ -81,30 +80,31 @@ public class SecurityConfiguration {
 
         httpSecurity.headers().frameOptions().sameOrigin();
 
-        httpSecurity
-            .sessionManagement()
-            .sessionCreationPolicy(STATELESS)
-            .and()
-            .authorizeHttpRequests()
-            .requestMatchers(WHITELIST)
-            .permitAll()
-            .requestMatchers("/**")
-            .authenticated()
-            .and()
-            .oauth2ResourceServer(oauth2ResourceServer ->
-                oauth2ResourceServer.jwt().jwtAuthenticationConverter(new JwtAuthenticationConverter())
-            )
-            .oauth2Client();
+        httpSecurity.sessionManagement()
+                    .sessionCreationPolicy(STATELESS);
+
+        httpSecurity.authorizeHttpRequests(auth -> auth
+                    .requestMatchers(WHITELIST)
+                    .permitAll()
+                    .requestMatchers("/**")
+                    .authenticated());
+
+        httpSecurity.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt()
+                                                                                      .jwtAuthenticationConverter(
+                                                                                              new JwtAuthenticationConverter()))
+                    .oauth2Client();
 
         return httpSecurity.build();
     }
 
     @Bean
-    /* package */ CorsConfigurationSource corsConfigurationSource() {
+        /* package */ CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(List.of("Access-Control-Allow-Headers", "Access-Control-Allow-Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Origin", "Cache-Control", "Content-Type", "Authorization"));
+        configuration.setAllowedHeaders(
+                List.of("Access-Control-Allow-Headers", "Access-Control-Allow-Origin", "Access-Control-Request-Method",
+                        "Access-Control-Request-Headers", "Origin", "Cache-Control", "Content-Type", "Authorization"));
         configuration.setAllowedMethods(List.of("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS"));
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
