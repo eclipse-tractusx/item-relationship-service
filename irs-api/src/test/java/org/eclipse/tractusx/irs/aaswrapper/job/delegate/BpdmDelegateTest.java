@@ -179,6 +179,7 @@ class BpdmDelegateTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getBpns()).isEmpty();
+        assertThat(result.getMetrics()).isEmpty();
     }
 
     @Test
@@ -196,5 +197,45 @@ class BpdmDelegateTest {
         assertThat(result).isNotNull();
         assertThat(result.getBpns()).isNotEmpty();
         assertThat(result.getBpns().stream().findFirst().get().getManufacturerName()).isEqualTo("Tier A");
+        assertThat(result.getMetrics()).isNotEmpty();
+        assertThat(result.getMetrics().stream().findFirst().get().getCompleted()).isOne();
+    }
+
+    @Test
+    void shouldIncrementFailedMetricWhenFacadeResultIsEmpty() {
+        // given
+        given(bpdmFacade.findManufacturerName(any())).willReturn(Optional.empty());
+        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder().shell(shellDescriptor(
+                List.of(submodelDescriptorWithoutEndpoint("any"))));
+
+        // when
+        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameterCollectBpns(),
+                new AASTransferProcess("id", 0), "itemId");
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getBpns()).isEmpty();
+        assertThat(result.getMetrics()).isNotEmpty();
+        assertThat(result.getMetrics().stream().findFirst().get().getFailed()).isOne();
+        assertThat(result.getMetrics().stream().findFirst().get().getCompleted()).isZero();
+    }
+
+    @Test
+    void shouldIncrementFailedMetricWhenExceptionIsThrown() {
+        // given
+        given(bpdmFacade.findManufacturerName(any())).willThrow(new RestClientException("test"));
+        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder().shell(shellDescriptor(
+                List.of(submodelDescriptorWithoutEndpoint("any"))));
+
+        // when
+        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameterCollectBpns(),
+                new AASTransferProcess("id", 0), "itemId");
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getBpns()).isEmpty();
+        assertThat(result.getMetrics()).isNotEmpty();
+        assertThat(result.getMetrics().stream().findFirst().get().getFailed()).isOne();
+        assertThat(result.getMetrics().stream().findFirst().get().getCompleted()).isZero();
     }
 }
