@@ -21,7 +21,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import lombok.extern.slf4j.Slf4j;
@@ -106,8 +105,7 @@ public class BpdmDelegate extends AbstractDelegate {
 
     private void bpnFromManufacturerId(final ItemContainer.ItemContainerBuilder itemContainerBuilder,
             final String manufacturerId, final String itemId, final RequestMetric metric) {
-        final Optional<String> manufacturerName = bpdmFacade.findManufacturerName(manufacturerId);
-        manufacturerName.ifPresentOrElse(name -> {
+        bpdmFacade.findManufacturerName(manufacturerId).ifPresentOrElse(name -> {
             final Bpn bpn = Bpn.of(manufacturerId, name);
             if (BPN_RGX.matcher(bpn.getManufacturerId() + bpn.getManufacturerName()).find()) {
                 metric.incrementCompleted();
