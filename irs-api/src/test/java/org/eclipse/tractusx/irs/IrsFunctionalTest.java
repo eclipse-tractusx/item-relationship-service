@@ -134,10 +134,10 @@ class IrsFunctionalTest {
 
         assertThat(finishedJob).isPresent();
         assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isEqualTo(2);
-        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getFailed()).isEqualTo(0);
-        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getRunning()).isEqualTo(0);
-        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isEqualTo(0);
-        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getFailed()).isEqualTo(0);
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getFailed()).isZero();
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getRunning()).isZero();
+        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isZero();
+        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getFailed()).isZero();
     }
     @Test
     void shouldFillSummaryWithBPNLookup() {
@@ -157,10 +157,10 @@ class IrsFunctionalTest {
 
         assertThat(finishedJob).isPresent();
         assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isEqualTo(2);
-        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getFailed()).isEqualTo(0);
-        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getRunning()).isEqualTo(0);
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getFailed()).isZero();
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getRunning()).isZero();
         assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isEqualTo(2);
-        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getFailed()).isEqualTo(0);
+        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getFailed()).isZero();
     }
 
     private void thereIsJwtAuthentication() {
