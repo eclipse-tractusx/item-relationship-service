@@ -116,6 +116,53 @@ class IrsFunctionalTest {
         assertThat(finishedJob.get().getJob().getOwner()).isNotBlank();
     }
 
+    @Test
+    void shouldFillSummaryWithoutBPNLookup() {
+        final RegisterJob registerJob = TestMother.registerJobWithoutDepth();
+        thereIsJwtAuthentication();
+
+        final JobHandle jobHandle = controller.registerJobForGlobalAssetId(registerJob);
+        final Optional<Jobs> finishedJob = Awaitility.await()
+                                                     .pollDelay(500, TimeUnit.MILLISECONDS)
+                                                     .pollInterval(500, TimeUnit.MILLISECONDS)
+                                                     .atMost(5, TimeUnit.SECONDS)
+                                                     .until(getJobDetails(jobHandle),
+                                                             jobs -> jobs.isPresent() && jobs.get()
+                                                                                             .getJob()
+                                                                                             .getState()
+                                                                                             .equals(JobState.COMPLETED));
+
+        assertThat(finishedJob).isPresent();
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isEqualTo(2);
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getFailed()).isEqualTo(0);
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getRunning()).isEqualTo(0);
+        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isEqualTo(0);
+        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getFailed()).isEqualTo(0);
+    }
+    @Test
+    void shouldFillSummaryWithBPNLookup() {
+        final RegisterJob registerJob = TestMother.registerJobWithLookupBPNs();
+        thereIsJwtAuthentication();
+
+        final JobHandle jobHandle = controller.registerJobForGlobalAssetId(registerJob);
+        final Optional<Jobs> finishedJob = Awaitility.await()
+                                                     .pollDelay(500, TimeUnit.MILLISECONDS)
+                                                     .pollInterval(500, TimeUnit.MILLISECONDS)
+                                                     .atMost(5, TimeUnit.SECONDS)
+                                                     .until(getJobDetails(jobHandle),
+                                                             jobs -> jobs.isPresent() && jobs.get()
+                                                                                             .getJob()
+                                                                                             .getState()
+                                                                                             .equals(JobState.COMPLETED));
+
+        assertThat(finishedJob).isPresent();
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isEqualTo(2);
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getFailed()).isEqualTo(0);
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getRunning()).isEqualTo(0);
+        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isEqualTo(2);
+        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getFailed()).isEqualTo(0);
+    }
+
     private void thereIsJwtAuthentication() {
         final JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwt(), List.of(new SimpleGrantedAuthority("view_irs")));
         jwtAuthenticationToken.setAuthenticated(true);

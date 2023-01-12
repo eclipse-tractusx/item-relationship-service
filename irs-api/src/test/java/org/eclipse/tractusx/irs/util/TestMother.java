@@ -77,22 +77,28 @@ public class TestMother {
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<AspectType> aspectTypes) {
         return registerJobWithGlobalAssetIdAndDepth("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", depth, aspectTypes,
-                false);
+                false, false);
     }
 
     public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth,
             final List<AspectType> aspectTypes) {
         return registerJobWithGlobalAssetIdAndDepth("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", depth, aspectTypes,
-                true);
+                true, false);
+    }
+
+    public static RegisterJob registerJobWithLookupBPNs() {
+        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", null,
+                List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP), false, true);
     }
 
     public static RegisterJob registerJobWithGlobalAssetIdAndDepth(final String globalAssetId, final Integer depth,
-            final List<AspectType> aspectTypes, final boolean collectAspects) {
+            final List<AspectType> aspectTypes, final boolean collectAspects, final boolean lookupBPNs) {
         final RegisterJob registerJob = new RegisterJob();
         registerJob.setGlobalAssetId(globalAssetId);
         registerJob.setDepth(depth);
         registerJob.setAspects(aspectTypes);
         registerJob.setCollectAspects(collectAspects);
+        registerJob.setLookupBPNs(lookupBPNs);
 
         return registerJob;
     }

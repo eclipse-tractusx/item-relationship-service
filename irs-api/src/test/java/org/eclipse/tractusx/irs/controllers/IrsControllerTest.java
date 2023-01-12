@@ -82,9 +82,9 @@ class IrsControllerTest {
 
     private static Stream<RegisterJob> corruptedJobs() {
         return Stream.of(registerJobWithDepthAndAspect(110, null),
-                registerJobWithGlobalAssetIdAndDepth("invalidGlobalAssetId", 0, null, false),
+                registerJobWithGlobalAssetIdAndDepth("invalidGlobalAssetId", 0, null, false, false),
                 registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0, null,
-                        false));
+                        false, false));
     }
 
     @Test
