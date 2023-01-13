@@ -258,7 +258,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                       .asyncFetchedItems(AsyncFetchedItems.builder()
                                                           .completed(completedTransfersSize)
                                                           .running(runningSize)
-                                                          .failed(tombstonesSize)
+                                                          .failed(tombstonesSize - bpnLookupFailed)
                                                           .build())
                       .bpnLookups(FetchedItems.builder().completed(bpnLookupCompleted).failed(bpnLookupFailed).build())
                       .build();
