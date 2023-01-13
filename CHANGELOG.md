@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added new job parameter flag "lookupBPNs" which toggles lookup of BPN numbers using the configured BPN URL
+- Added new summary item "bpnLookups" which tracks completed and failed BPN requests. Excluded these metrics from "asyncFetchedItems"
+
+### Known knowns
+- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
 ## [2.1.0] - 2023-01-11
 ### Changed
@@ -12,9 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change 'jobStates' to 'states' request parameter in GET call for jobs by states, 'jobStates' is now deprecated
 - REST clients for DTR, SemHub and BPDM now use their own RestTemplates and configuration
 - application.yaml received some documentation
-
-### Known knowns
-- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
 ## [2.0.0] - 2022-12-09
 ### Added
