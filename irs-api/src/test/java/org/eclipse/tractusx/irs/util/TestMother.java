@@ -81,7 +81,7 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithDirection(final String globalAssetId, final Direction direction) {
-        return registerJob(globalAssetId, 100, List.of(), false, direction);
+        return registerJob(globalAssetId, 100, List.of(), false, false, direction);
     }
 
     public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth,
