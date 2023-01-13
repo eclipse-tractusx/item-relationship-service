@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.configuration.RestTemplateConfig;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
@@ -36,6 +37,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -131,14 +133,18 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
 
     private Optional<String> readFromSemanticHub(final String urn) {
         if (StringUtils.isNotBlank(semanticsHubUrl)) {
-            final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(semanticsHubUrl);
-            final Map<String, String> values = Map.of(PLACEHOLDER_URN, urn);
-            return Optional.ofNullable(restTemplate.getForObject(uriBuilder.build(values), String.class));
+            try {
+                final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(semanticsHubUrl);
+                final Map<String, String> values = Map.of(PLACEHOLDER_URN, urn);
+                return Optional.ofNullable(restTemplate.getForObject(uriBuilder.build(values), String.class));
+            } catch (final RestClientException e) {
+                log.error("Unable to retrieve schema from semantic hub for urn '{}'", urn, e);
+            }
         }
         return Optional.empty();
     }
 
     private String normalize(final String urn) {
-        return urn.replaceAll("[^a-zA-Z0-9.-]", "_");
+        return FilenameUtils.getName(urn).replaceAll("[^a-zA-Z0-9.-]", "_");
     }
 }
