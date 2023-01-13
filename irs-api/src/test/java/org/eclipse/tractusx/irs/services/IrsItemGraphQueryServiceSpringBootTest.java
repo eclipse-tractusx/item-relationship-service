@@ -25,7 +25,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.given;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspectAndCollectAspects;
-import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithGlobalAssetIdAndDepth;
+import static org.eclipse.tractusx.irs.util.TestMother.registerJob;
+import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDirection;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepth;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -100,9 +101,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobWithCollectAspectsShouldIncludeSubmodels() throws InvalidSchemaException {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
-        final RegisterJob registerJob = registerJobWithGlobalAssetIdAndDepth("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", 100,
-                List.of(AspectType.SERIAL_PART_TYPIZATION, AspectType.PRODUCT_DESCRIPTION, AspectType.ASSEMBLY_PART_RELATIONSHIP), true,
-                false);
+        final RegisterJob registerJob = registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", 100,
+                List.of(AspectType.SERIAL_PART_TYPIZATION, AspectType.PRODUCT_DESCRIPTION, AspectType.ASSEMBLY_PART_RELATIONSHIP), true, false, Direction.DOWNWARD);
         final int expectedSubmodelsSizeFullTree = 3; // stub
 
         // when
@@ -138,6 +138,23 @@ class IrsItemGraphQueryServiceSpringBootTest {
         // given
         final RegisterJob registerJob = registerJobWithDepthAndAspect(1, null);
         final int expectedRelationshipsSizeFirstDepth = 1; // stub
+
+        // when
+        final JobHandle registeredJob = service.registerItemJob(registerJob);
+
+        // then
+        given().ignoreException(EntityNotFoundException.class)
+               .await()
+               .atMost(10, TimeUnit.SECONDS)
+               .until(() -> getRelationshipsSize(registeredJob.getId()),
+                       equalTo(expectedRelationshipsSizeFirstDepth));
+    }
+
+    @Test
+    void registerJobWithUpwardDirectionShouldBuildRelationships() {
+        // given
+        final RegisterJob registerJob = registerJobWithDirection("urn:uuid:a4a26b9c-9460-4cc5-8645-85916b86adb0", Direction.UPWARD);
+        final int expectedRelationshipsSizeFirstDepth = 2; // stub
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);

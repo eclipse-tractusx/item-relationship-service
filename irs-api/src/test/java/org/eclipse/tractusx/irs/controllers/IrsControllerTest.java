@@ -23,7 +23,7 @@ package org.eclipse.tractusx.irs.controllers;
 
 import static java.lang.String.format;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
-import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithGlobalAssetIdAndDepth;
+import static org.eclipse.tractusx.irs.util.TestMother.registerJob;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepthAndAspect;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -49,6 +49,7 @@ import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.JobStatusResult;
 import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.RegisterJob;
+import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
 import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
@@ -82,9 +83,9 @@ class IrsControllerTest {
 
     private static Stream<RegisterJob> corruptedJobs() {
         return Stream.of(registerJobWithDepthAndAspect(110, null),
-                registerJobWithGlobalAssetIdAndDepth("invalidGlobalAssetId", 0, null, false, false),
-                registerJobWithGlobalAssetIdAndDepth("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0, null,
-                        false, false));
+                registerJob("invalidGlobalAssetId", 0, null, false, false, Direction.DOWNWARD),
+                registerJob("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0, null,
+                        false, false, Direction.DOWNWARD));
     }
 
     @Test
