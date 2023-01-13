@@ -42,6 +42,7 @@ import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.InvalidSchemaException;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.eclipse.tractusx.irs.services.validation.ValidationResult;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.web.client.RestClientException;
@@ -122,7 +123,7 @@ public class SubmodelDelegate extends AbstractDelegate {
                                 RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts(),
                                 ProcessStep.SCHEMA_VALIDATION));
                 log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
-            } catch (final InvalidSchemaException | RestClientException e) {
+            } catch (final SchemaNotFoundException | InvalidSchemaException | RestClientException e) {
                 itemContainerBuilder.tombstone(
                         Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e, 0,
                                 ProcessStep.SCHEMA_REQUEST));

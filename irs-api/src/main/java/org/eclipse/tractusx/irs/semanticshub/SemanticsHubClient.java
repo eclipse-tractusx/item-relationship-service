@@ -21,10 +21,17 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.semanticshub;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.configuration.RestTemplateConfig;
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -43,7 +50,7 @@ interface SemanticsHubClient {
      * @param urn of the model
      * @return Json Schema
      */
-    String getModelJsonSchema(String urn);
+    String getModelJsonSchema(String urn) throws SchemaNotFoundException;
 
 }
 
@@ -66,6 +73,7 @@ class SemanticsHubClientLocalStub implements SemanticsHubClient {
  * Semantics Hub Rest Client Implementation
  */
 @Service
+@Slf4j
 @Profile({ "!local && !test" })
 class SemanticsHubClientImpl implements SemanticsHubClient {
 
@@ -73,12 +81,15 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
 
     private final RestTemplate restTemplate;
     private final String semanticsHubUrl;
+    private final String localModelDirectory;
 
     /* package */ SemanticsHubClientImpl(
             @Qualifier(RestTemplateConfig.SEMHUB_REST_TEMPLATE) final RestTemplate restTemplate,
-            @Value("${semanticsHub.modelJsonSchemaEndpoint:}") final String semanticsHubUrl) {
+            @Value("${semanticsHub.modelJsonSchemaEndpoint:}") final String semanticsHubUrl,
+            @Value("${semanticsHub.localModelDirectory:}") final String localModelDirectory) {
         this.restTemplate = restTemplate;
         this.semanticsHubUrl = semanticsHubUrl;
+        this.localModelDirectory = localModelDirectory;
 
         if (StringUtils.isNotBlank(semanticsHubUrl)) {
             requirePlaceholder(semanticsHubUrl);
@@ -98,9 +109,36 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
     }
 
     @Override
-    public String getModelJsonSchema(final String urn) {
-        final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(semanticsHubUrl);
-        final Map<String, String> values = Map.of(PLACEHOLDER_URN, urn);
-        return restTemplate.getForObject(uriBuilder.build(values), String.class);
+    public String getModelJsonSchema(final String urn) throws SchemaNotFoundException {
+        return readFromSemanticHub(urn).or(() -> readFromFilesystem(urn))
+                                       .orElseThrow(() -> new SchemaNotFoundException(
+                                               "Could not load model with URN " + urn));
+    }
+
+    private Optional<String> readFromFilesystem(final String urn) {
+        if (StringUtils.isNotBlank(localModelDirectory)) {
+            final Path path = Paths.get(localModelDirectory, normalize(urn));
+            if (path.toFile().exists()) {
+                try {
+                    return Optional.of(Files.readString(path));
+                } catch (IOException e) {
+                    log.error("Unable to read schema file at path '{}'", path, e);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    private Optional<String> readFromSemanticHub(final String urn) {
+        if (StringUtils.isNotBlank(semanticsHubUrl)) {
+            final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(semanticsHubUrl);
+            final Map<String, String> values = Map.of(PLACEHOLDER_URN, urn);
+            return Optional.ofNullable(restTemplate.getForObject(uriBuilder.build(values), String.class));
+        }
+        return Optional.empty();
+    }
+
+    private String normalize(final String urn) {
+        return urn.replaceAll("[^a-zA-Z0-9.-]", "_");
     }
 }

@@ -29,16 +29,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestTemplate;
 
 class SemanticsHubClientImplTest {
 
     private final RestTemplate restTemplate = mock(RestTemplate.class);
-    private final SemanticsHubClientImpl semanticsHubClient = new SemanticsHubClientImpl(restTemplate, "url/{urn}");
+    private final SemanticsHubClientImpl semanticsHubClient = new SemanticsHubClientImpl(restTemplate, "url/{urn}", "");
 
     @Test
-    void shouldCallExternalServiceOnceAndGetJsonSchema() {
+    void shouldCallExternalServiceOnceAndGetJsonSchema() throws SchemaNotFoundException {
         final String jsonSchemaMock = "{\"$schema\": \"http://json-schema.org/draft-07/schema#\", \"type\": \"integer\"}";
         doReturn(jsonSchemaMock).when(restTemplate).getForObject(any(), eq(String.class));
 

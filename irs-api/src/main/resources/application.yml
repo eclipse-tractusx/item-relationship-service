@@ -141,6 +141,11 @@ digitalTwinRegistry:
 
 semanticsHub:
   modelJsonSchemaEndpoint: "${SEMANTICSHUB_URL:}" # The endpoint to retrieve the json schema of a model, must contain the placeholder {urn}
+
+  # Path to directory on filesystem where semantic models can be loaded from. The filenames must match the URN of the models.
+  # Due to filesystem restrictions, all special characters (other than alphanumerics, "." and "-")
+  # need to be replaced with "_" in the filename.
+  localModelDirectory: ""
   cleanup:
     #          ┌───────────── second (0-59)
     #          │ ┌───────────── minute (0 - 59)
