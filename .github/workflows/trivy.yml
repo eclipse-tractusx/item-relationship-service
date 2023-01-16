@@ -5,16 +5,10 @@ name: "Trivy vulnerability scanner"
 
 on:
   workflow_dispatch: # Trigger manually
-  push:
-    branches: main
-    paths-ignore:
-      - '**/*.md'
-      - '**/*.txt'
-  pull_request:
-    branches: main
-    paths-ignore:
-      - '**/*.md'
-      - '**/*.txt'
+  workflow_run: # Trigger after workflow "IRS build" is finished
+    workflows: [ "IRS build" ]
+    types:
+      - completed
   schedule:
     - cron: '0 0 * * *' # Once a day
 
