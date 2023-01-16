@@ -65,6 +65,20 @@ jobs:
           # And the --mount option requires BuildKit.
           DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TARGET=${{ matrix.image }} --target ${{ matrix.image }} -t ${{ matrix.image }}:latest .
 
+      - name: Set image version
+        id: version
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Support PR ref versions
+          [[ "${{ github.ref }}" == "refs/pull/"* ]] && VERSION=PR-$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\)/merge,\1,')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo VERSION=$VERSION
+          echo "::set-output name=image_tag::$VERSION"
+
       - name: Log in to registry
         env:
           DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
@@ -80,18 +94,10 @@ jobs:
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          # Support PR ref versions
-          [[ "${{ github.ref }}" == "refs/pull/"* ]] && VERSION=PR-$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\)/merge,\1,')
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "main" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag ${{ matrix.image }} $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+
+          docker tag ${{ matrix.image }} $IMAGE_ID:${{ steps.version.outputs.image_tag }}
+          docker push $IMAGE_ID:${{ steps.version.outputs.image_tag }}
           
           docker tag ${{ matrix.image }} $IMAGE_ID:$GITHUB_SHA
           docker push $IMAGE_ID:$GITHUB_SHA
@@ -113,15 +119,14 @@ jobs:
           IMAGE_ID=tractusx/${{ matrix.image }}
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          # Support PR ref versions
-          [[ "${{ github.ref }}" == "refs/pull/"* ]] && VERSION=PR-$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\)/merge,\1,')
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "main" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag ${{ matrix.image }} $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+          
+          docker tag ${{ matrix.image }} $IMAGE_ID:${{ steps.version.outputs.image_tag }}
+          docker push $IMAGE_ID:${{ steps.version.outputs.image_tag }}
+
+      - name: trigger-trivy-image-scan
+        uses: ./.github/workflows/trivy-image-scan.yml
+        with:
+          image-tag: ${{ steps.version.outputs.image_tag }}
+          ref: ${{ github.ref }}
+          sha: ${{ github.sha }}
