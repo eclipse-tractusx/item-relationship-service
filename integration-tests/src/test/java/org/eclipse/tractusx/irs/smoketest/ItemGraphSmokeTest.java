@@ -92,7 +92,7 @@ class ItemGraphSmokeTest {
     void setUp() {
         final String accessToken = obtainAccessToken(credentialsProperties.getAuthorizationGrantType(),
                 credentialsProperties.getClientId(), credentialsProperties.getClientSecret(),
-                connectionProperties.getAccessToken());
+                connectionProperties.getAccessTokenUri());
 
         final RequestSpecBuilder builder = new RequestSpecBuilder();
         builder.addHeader("Authorization", "Bearer " + accessToken);
