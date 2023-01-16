@@ -109,6 +109,11 @@ public class E2ETestStepDefinitions {
         registerJobBuilder.collectAspects(Boolean.parseBoolean(collectAspects));
     }
 
+    @And("lookupBPNs {string}")
+    public void lookupBPNs(String lookupBPNs) {
+        registerJobBuilder.lookupBPNs(Boolean.parseBoolean(lookupBPNs));
+    }
+
     @And("depth {int}")
     public void depth(int depth) {
         registerJobBuilder.depth(depth);
@@ -193,10 +198,15 @@ public class E2ETestStepDefinitions {
         assertThat(nrOfValueType).isEqualTo(nrOfItemsInSummary);
     }
 
-    @And("I check, if summary contains {int} completed and {int} failed items")
-    public void iCheckIfSummaryContainsCompletedAndFailedItems(int completed, int failed) {
-        assertThat(completedJob.getJob().getSummary().getAsyncFetchedItems().getCompleted()).isEqualTo(completed);
-        assertThat(completedJob.getJob().getSummary().getAsyncFetchedItems().getFailed()).isEqualTo(failed);
+    @And("I check, if {string} contains {int} completed and {int} failed items")
+    public void iCheckIfSummaryContainsCompletedAndFailedItems(String summary, int completed, int failed) {
+        if ("summary".equals(summary)) {
+            assertThat(completedJob.getJob().getSummary().getAsyncFetchedItems().getCompleted()).isEqualTo(completed);
+            assertThat(completedJob.getJob().getSummary().getAsyncFetchedItems().getFailed()).isEqualTo(failed);
+        } else if ("bpn summary".equals(summary)) {
+            assertThat(completedJob.getJob().getSummary().getBpnLookups().getCompleted()).isEqualTo(completed);
+            assertThat(completedJob.getJob().getSummary().getBpnLookups().getFailed()).isEqualTo(failed);
+        }
     }
 
     @And("I check, if {string} are equal to {string}")
