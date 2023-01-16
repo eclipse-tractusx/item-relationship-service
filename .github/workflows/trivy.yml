@@ -5,10 +5,16 @@ name: "Trivy vulnerability scanner"
 
 on:
   workflow_dispatch: # Trigger manually
-  workflow_run: # Trigger after workflow "IRS build" is finished
-    workflows: [ "IRS build" ]
-    types:
-      - completed
+  push:
+    branches: main
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+  pull_request:
+    branches: main
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
   schedule:
     - cron: '0 0 * * *' # Once a day
 
@@ -41,51 +47,3 @@ jobs:
         if: always()
         with:
           sarif_file: "trivy-results1.sarif"
-
-  analyze-irs-api:
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Determine image version
-        id: version
-        run: |
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.head_ref || github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # Strip "v" prefix from tag name
-          [[ "${{ github.head_ref || github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          # Support PR ref versions
-          [[ "${{ github.ref }}" == "refs/pull/"* ]] && VERSION=PR-$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\)/merge,\1,')
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "main" ] && VERSION=latest
-          echo VERSION=$VERSION
-          echo "::set-output name=image_tag::$VERSION"
-
-      # It's also possible to scan your private registry with Trivy's built-in image scan.
-      # All you have to do is set ENV vars.
-      # Docker Hub needs TRIVY_USERNAME and TRIVY_PASSWORD.
-      # You don't need to set ENV vars when downloading from a public repository.
-      # For public images, no ENV vars must be set.
-      - name: Run Trivy vulnerability scanner
-        if: always()
-        uses: aquasecurity/trivy-action@master
-        with:
-          # Path to Docker image
-          image-ref: "ghcr.io/catenax-ng/irs-api:${{ steps.version.outputs.image_tag }} "
-          format: "sarif"
-          output: "trivy-results2.sarif"
-          exit-code: "1"
-          severity: "CRITICAL,HIGH"
-          trivyignores: ci/.trivyignore
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        if: always()
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: "trivy-results2.sarif"
