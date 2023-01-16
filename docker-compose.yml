@@ -11,7 +11,6 @@ services:
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
-    pid: "host"
     cap_drop:
       - NET_ADMIN
     healthcheck:
