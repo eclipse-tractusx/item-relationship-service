@@ -84,6 +84,9 @@ public class RegisterJob {
     @Schema(description = "Flag to specify whether aspects should be requested and collected. Default is false.")
     private boolean collectAspects;
 
+    @Schema(description = "Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false.")
+    private boolean lookupBPNs;
+
     @URL
     @Schema(description = "Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: jobId and jobState.",
             example = "https://hostname.com/callback?jobId={jobId}&jobState={jobState}")

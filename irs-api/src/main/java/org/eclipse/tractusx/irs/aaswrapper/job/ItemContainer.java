@@ -56,4 +56,7 @@ public class ItemContainer {
 
     @Singular
     private Set<Bpn> bpns;
+
+    @Singular
+    private List<RequestMetric> metrics;
 }
