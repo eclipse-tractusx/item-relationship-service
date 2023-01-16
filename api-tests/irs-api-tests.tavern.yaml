@@ -799,7 +799,7 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 400
+    delay_after: 340
 
   - name: fetch response for created job and check details
     request:
@@ -1335,7 +1335,7 @@ stages:
 
   - name: get all jobs with status COMPLETED and ERROR
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobState=COMPLETED, ERROR"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=COMPLETED, ERROR"
       method: GET
       headers:
         content-type: application/json

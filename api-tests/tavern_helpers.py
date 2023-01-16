@@ -174,3 +174,8 @@ def check_pagination_is_requested_correctly(response):
     assert response_list.get("pageSize") == 3
     assert response_list.get("totalElements") > 0
     assert len(response.json().get("content")) == 3
+
+def bpns_are_empty(response):
+    print(response.json().get("bpns"))
+    print("Check if bpns are empty", len(response.json().get("bpns")))
+    assert len(response.json().get("bpns")) == 0
