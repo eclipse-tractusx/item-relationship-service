@@ -19,33 +19,60 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component;
+package org.eclipse.tractusx.irs.aaswrapper.job;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
- * Summary
+ * Metrics to track requests to external services.
  */
-@Value
-@Builder(toBuilder = true)
-@Schema(description = "Summary of the job with statistics of the job processing.")
-@Jacksonized
-public class Summary {
+@Getter
+@ToString
+public class RequestMetric {
+    private Integer running;
+    private Integer completed;
+    private Integer failed;
+    private RequestType type;
+
+    public RequestMetric() {
+        this.running = 0;
+        this.completed = 0;
+        this.failed = 0;
+    }
+
+    public void setType(final RequestType type) {
+        this.type = type;
+    }
 
     /**
-     * asyncFetchedItems
+     * Increment running count by 1.
      */
-    @Schema(description = "Summary of the fetched jobs", implementation = AsyncFetchedItems.class)
-    private AsyncFetchedItems asyncFetchedItems;
+    public void incrementRunning() {
+        this.running += 1;
+    }
 
     /**
-     * BPN lookup summary
+     * Increment completed count by 1.
      */
-    @Schema(description = "Summary of the BPN lookups", implementation = AsyncFetchedItems.class)
-    private FetchedItems bpnLookups;
+    public void incrementCompleted() {
+        this.completed += 1;
+    }
 
+    /**
+     * Increment failed count by 1.
+     */
+    public void incrementFailed() {
+        this.failed += 1;
+    }
 
+    /**
+     * Type of tracked request. Can be used to filter for the different metrics.
+     */
+    public enum RequestType {
+        BPDM,
+        DITIGAL_TWIN,
+        RELATIONSHIP,
+        SUBMODEL
+    }
 }

@@ -108,12 +108,59 @@ class IrsFunctionalTest {
         assertThat(finishedJob.get().getShells()).isNotEmpty();
         assertThat(finishedJob.get().getShells()).hasSize(2);
         assertThat(finishedJob.get().getTombstones()).isEmpty();
-        assertThat(finishedJob.get().getBpns()).isNotEmpty();
-        assertThat(finishedJob.get().getBpns()).hasSize(1);
+        assertThat(finishedJob.get().getSubmodels()).isEmpty();
+        assertThat(finishedJob.get().getBpns()).isEmpty();
         assertThat(finishedJob.get().getJob()).isNotNull();
         assertThat(finishedJob.get().getJob().getSummary()).isNotNull();
         assertThat(finishedJob.get().getJob().getParameter()).isNotNull();
         assertThat(finishedJob.get().getJob().getOwner()).isNotBlank();
+    }
+
+    @Test
+    void shouldFillSummaryWithoutBPNLookup() {
+        final RegisterJob registerJob = TestMother.registerJobWithoutDepth();
+        thereIsJwtAuthentication();
+
+        final JobHandle jobHandle = controller.registerJobForGlobalAssetId(registerJob);
+        final Optional<Jobs> finishedJob = Awaitility.await()
+                                                     .pollDelay(500, TimeUnit.MILLISECONDS)
+                                                     .pollInterval(500, TimeUnit.MILLISECONDS)
+                                                     .atMost(5, TimeUnit.SECONDS)
+                                                     .until(getJobDetails(jobHandle),
+                                                             jobs -> jobs.isPresent() && jobs.get()
+                                                                                             .getJob()
+                                                                                             .getState()
+                                                                                             .equals(JobState.COMPLETED));
+
+        assertThat(finishedJob).isPresent();
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isEqualTo(2);
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getFailed()).isZero();
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getRunning()).isZero();
+        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isZero();
+        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getFailed()).isZero();
+    }
+    @Test
+    void shouldFillSummaryWithBPNLookup() {
+        final RegisterJob registerJob = TestMother.registerJobWithLookupBPNs();
+        thereIsJwtAuthentication();
+
+        final JobHandle jobHandle = controller.registerJobForGlobalAssetId(registerJob);
+        final Optional<Jobs> finishedJob = Awaitility.await()
+                                                     .pollDelay(500, TimeUnit.MILLISECONDS)
+                                                     .pollInterval(500, TimeUnit.MILLISECONDS)
+                                                     .atMost(5, TimeUnit.SECONDS)
+                                                     .until(getJobDetails(jobHandle),
+                                                             jobs -> jobs.isPresent() && jobs.get()
+                                                                                             .getJob()
+                                                                                             .getState()
+                                                                                             .equals(JobState.COMPLETED));
+
+        assertThat(finishedJob).isPresent();
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isEqualTo(2);
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getFailed()).isZero();
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getRunning()).isZero();
+        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isEqualTo(2);
+        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getFailed()).isZero();
     }
 
     private void thereIsJwtAuthentication() {

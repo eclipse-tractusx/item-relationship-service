@@ -6,8 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Added new job parameter flag "lookupBPNs" which toggles lookup of BPN numbers using the configured BPN URL
+- Added new summary item "bpnLookups" which tracks completed and failed BPN requests. Excluded these metrics from "asyncFetchedItems"
 - Model schema JSON files can now be provided locally as a backup to the Semantic Hub.
-  Use the new ``semanticsHub.localModelDirectory`` config entry to provide a folder with the models. 
+  Use the new ``semanticsHub.localModelDirectory`` config entry to provide a folder with the models.
+
+### Known knowns
+- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
 ## [2.1.0] - 2023-01-11
 ### Changed
@@ -15,9 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change 'jobStates' to 'states' request parameter in GET call for jobs by states, 'jobStates' is now deprecated
 - REST clients for DTR, SemHub and BPDM now use their own RestTemplates and configuration
 - application.yaml received some documentation
-
-### Known knowns
-- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
 ## [2.0.0] - 2022-12-09
 ### Added
