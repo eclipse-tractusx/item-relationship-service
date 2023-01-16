@@ -36,6 +36,7 @@ jobs:
           [[ "${{ github.ref }}" == "refs/pull/"* ]] && VERSION=PR-$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\)/merge,\1,')
           # Use Docker `latest` tag convention
           [ "$VERSION" == "main" ] && VERSION=latest
+          [[ ${{ github.event.inputs.image-tag }} != '' ]] && VERSION=$(echo "${{ github.event.inputs.image-tag }}")
           echo VERSION=$VERSION
           echo "::set-output name=image_tag::$VERSION"
 
