@@ -127,6 +127,8 @@ jobs:
           docker push $IMAGE_ID:${{ steps.version.outputs.image_tag }}
 
   trigger-trivy-image-scan:
+    needs:
+      - build_images
     uses: ./.github/workflows/trivy-image-scan.yml
     with:
       image-tag: ${{ needs.build_images.outputs.image_tag }}
