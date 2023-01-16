@@ -22,9 +22,11 @@
 package org.eclipse.tractusx.irs.semanticshub;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
 
@@ -95,6 +97,8 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
 
         if (StringUtils.isNotBlank(semanticsHubUrl)) {
             requirePlaceholder(semanticsHubUrl);
+        } else if (StringUtils.isBlank(localModelDirectory)) {
+            log.warn("No Semantic Hub URL or local model directory was provided. Cannot validate submodel payloads!");
         }
     }
 
@@ -145,6 +149,6 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
     }
 
     private String normalize(final String urn) {
-        return FilenameUtils.getName(urn).replaceAll("[^a-zA-Z0-9.-]", "_");
+        return Base64.getEncoder().encodeToString(FilenameUtils.getName(urn).getBytes(StandardCharsets.UTF_8));
     }
 }
