@@ -64,6 +64,9 @@ public class JobParameter {
     @Schema(implementation = Boolean.class)
     private boolean collectAspects;
 
+    @Schema(implementation = Boolean.class)
+    private boolean lookupBPNs;
+
     private String callbackUrl;
 
 }

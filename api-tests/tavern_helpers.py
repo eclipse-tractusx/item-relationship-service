@@ -45,8 +45,8 @@ def submodels_are_not_empty(response):
 
 
 def errors_for_invalid_globalAssetId_are_correct(response):
-    print(response.json().get("errors"))
-    error_list = response.json().get("errors")
+    print(response.json().get("messages"))
+    error_list = response.json().get("messages")
     assert 'globalAssetId:size must be between 45 and 45' in error_list
     assert 'globalAssetId:must match \"^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\"' in error_list
 
@@ -69,7 +69,7 @@ def errors_for_unknown_globalAssetId_are_correct(response):
         print("RetryCounter: ", processingErrorRetryCounter)
         assert 'urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa' in catenaXId
         assert 'DigitalTwinRequest' in processingErrorStep
-        assert '404 : "{"error":{"message":"Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found","path":"/registry/shell-descriptors/urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa","details":{}}}"' in processingErrorDetail
+        assert '404 : \"{\"error\":{\"message\":\"Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found\",\"path\":\"/registry/shell-descriptors/urn%3Auuid%3Acce14502-958a-42e1-8bb7-f4f41aaaaaaa\",\"details\":{}}}\"' in processingErrorDetail
         assert processingErrorLastAttempt is not None
         assert 3 is processingErrorRetryCounter
 
@@ -94,8 +94,8 @@ def status_of_all_jobs_are_given(response):
 
 
 def errors_for_unknown_requested_globalAssetId_are_correct(response):
-    print(response.json().get("errors"))
-    error_list = response.json().get("errors")
+    print(response.json().get("messages"))
+    error_list = response.json().get("messages")
     assert 'No job exists with id bc1b4f4f-aa00-4296-8738-e7913c95f2d9' in error_list
 
 

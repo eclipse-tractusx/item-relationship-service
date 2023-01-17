@@ -30,19 +30,20 @@ import lombok.Builder;
 import lombok.Value;
 import org.springframework.http.HttpStatus;
 
-/*** API error response. */
+/**
+ * API error response.
+ */
 @Schema(description = "Error response.")
 @Value
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = ErrorResponse.ErrorResponseBuilder.class)
-@SuppressWarnings("PMD.CommentRequired")
 public class ErrorResponse {
     @Schema(description = "Error code.")
     private HttpStatus statusCode;
 
-    @Schema(description = "Error message.")
-    private String message;
+    @Schema(description = "Error.")
+    private String error;
 
-    @ArraySchema(arraySchema = @Schema(description = "List of errors.", implementation = String.class), maxItems = Integer.MAX_VALUE)
-    private List<String> errors;
+    @ArraySchema(arraySchema = @Schema(description = "List of error messages.", implementation = String.class), maxItems = Integer.MAX_VALUE)
+    private List<String> messages;
 }

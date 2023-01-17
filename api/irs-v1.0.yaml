@@ -8,7 +8,7 @@ servers:
   - url: http://localhost:8080
 security:
   - oAuth2:
-    - profile email
+      - profile email
 paths:
   /irs/jobs:
     get:
@@ -50,7 +50,7 @@ paths:
             default: 20
             minimum: 1
         - description: "Sorting criteria in the format: property,(asc|desc). Default\
-            \ sort order is ascending. Multiple sort criteria are supported."
+          \ sort order is ascending. Multiple sort criteria are supported."
           in: query
           name: sort
           required: false
@@ -97,8 +97,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorized failed.
       security:
-      - oAuth2:
-        - profile email
+        - oAuth2:
+            - profile email
       summary: Returns paginated jobs with state and execution times.
       tags:
         - Item Relationship Service
@@ -149,8 +149,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorized failed.
       security:
-      - oAuth2:
-        - profile email
+        - oAuth2:
+            - profile email
       summary: "Register an IRS job to retrieve an item graph for given {globalAssetId}."
       tags:
         - Item Relationship Service
@@ -234,8 +234,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job with the requested jobId not found.
       security:
-      - oAuth2:
-        - profile email
+        - oAuth2:
+            - profile email
       summary: Return job with optional item graph result for requested id.
       tags:
         - Item Relationship Service
@@ -297,8 +297,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job for requested jobId not found.
       security:
-      - oAuth2:
-        - profile email
+        - oAuth2:
+            - profile email
       summary: Cancel job for requested jobId.
       tags:
         - Item Relationship Service
@@ -306,7 +306,7 @@ components:
   examples:
     canceled-job-result:
       value:
-        bpns: []
+        bpns: [ ]
         job:
           completedOn: 2022-02-03T14:48:54.709Z
           createdOn: 2022-02-03T14:48:54.709Z
@@ -326,6 +326,7 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
+            lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: CANCELED
           summary:
@@ -334,7 +335,7 @@ components:
               failed: 0
               running: 0
         relationships: [ ]
-        submodels: []
+        submodels: [ ]
         tombstones: [ ]
     complete-job-list-processing-state:
       value:
@@ -350,8 +351,8 @@ components:
     complete-job-result:
       value:
         bpns:
-        - manufacturerId: BPNL00000003AYRE
-          manufacturerName: OEM A
+          - manufacturerId: BPNL00000003AYRE
+            manufacturerName: OEM A
         job:
           completedOn: 2022-02-03T14:48:54.709Z
           createdOn: 2022-02-03T14:48:54.709Z
@@ -371,6 +372,7 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
+            lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: COMPLETED
           summary:
@@ -437,15 +439,15 @@ components:
             payload:
               catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
               childParts:
-              - assembledOn: 2022-02-03T14:48:54.709Z
-                childCatenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
-                lastModifiedOn: 2022-02-03T14:48:54.709Z
-                lifecycleContext: AsBuilt
-                quantity:
-                  measurementUnit:
-                    datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
-                    lexicalValue: piece
-                  quantityNumber: 1
+                - assembledOn: 2022-02-03T14:48:54.709Z
+                  childCatenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+                  lastModifiedOn: 2022-02-03T14:48:54.709Z
+                  lifecycleContext: AsBuilt
+                  quantity:
+                    measurementUnit:
+                      datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
+                      lexicalValue: piece
+                    quantityNumber: 1
         tombstones:
           - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
             endpointURL: https://catena-x.net/vehicle/partdetails/
@@ -455,31 +457,31 @@ components:
               retryCounter: 0
     error-response-400:
       value:
-        errors:
+        error: Bad request
+        messages:
           - BadRequestException
-        message: Bad request
         statusCode: 400 BAD_REQUEST
     error-response-401:
       value:
-        errors:
+        error: Unauthorized
+        messages:
           - UnauthorizedException
-        message: Unauthorized
         statusCode: 401 UNAUTHORIZED
     error-response-403:
       value:
-        errors:
+        error: Forbidden
+        messages:
           - ForbiddenException
-        message: Forbidden
         statusCode: 403 FORBIDDEN
     error-response-404:
       value:
-        errors:
+        error: Not found
+        messages:
           - NotFoundException
-        message: Not found
         statusCode: 404 NOT_FOUND
     failed-job-result:
       value:
-        bpns: []
+        bpns: [ ]
         job:
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
@@ -498,6 +500,7 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
+            lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: ERROR
           summary:
@@ -506,7 +509,7 @@ components:
               failed: 0
               running: 0
         relationships: [ ]
-        submodels: []
+        submodels: [ ]
         tombstones: [ ]
     job-handle:
       value:
@@ -514,8 +517,8 @@ components:
     job-result-without-uncompleted-result-tree:
       value:
         bpns:
-        - manufacturerId: BPNL00000003AYRE
-          manufacturerName: OEM A
+          - manufacturerId: BPNL00000003AYRE
+            manufacturerName: OEM A
         job:
           completedOn: 2022-02-03T14:48:54.709Z
           createdOn: 2022-02-03T14:48:54.709Z
@@ -535,6 +538,7 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
+            lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: COMPLETED
           summary:
@@ -601,15 +605,15 @@ components:
             payload:
               catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
               childParts:
-              - assembledOn: 2022-02-03T14:48:54.709Z
-                childCatenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
-                lastModifiedOn: 2022-02-03T14:48:54.709Z
-                lifecycleContext: AsBuilt
-                quantity:
-                  measurementUnit:
-                    datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
-                    lexicalValue: piece
-                  quantityNumber: 1
+                - assembledOn: 2022-02-03T14:48:54.709Z
+                  childCatenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+                  lastModifiedOn: 2022-02-03T14:48:54.709Z
+                  lifecycleContext: AsBuilt
+                  quantity:
+                    measurementUnit:
+                      datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
+                      lexicalValue: piece
+                    quantityNumber: 1
         tombstones:
           - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
             endpointURL: https://catena-x.net/vehicle/partdetails/
@@ -619,7 +623,7 @@ components:
               retryCounter: 0
     partial-job-result:
       value:
-        bpns: []
+        bpns: [ ]
         job:
           completedOn: 2022-02-03T14:48:54.709Z
           createdOn: 2022-02-03T14:48:54.709Z
@@ -639,6 +643,7 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
+            lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: RUNNING
           summary:
@@ -647,7 +652,7 @@ components:
               failed: 0
               running: 0
         relationships: [ ]
-        submodels: []
+        submodels: [ ]
         tombstones: [ ]
   schemas:
     AdministrativeInformation:
@@ -731,15 +736,15 @@ components:
       additionalProperties: false
       description: Error response.
       properties:
-        errors:
+        error:
+          type: string
+          description: Error.
+        messages:
           type: array
-          description: List of errors.
+          description: List of error messages.
           items:
             type: string
           maxItems: 2147483647
-        message:
-          type: string
-          description: Error message.
         statusCode:
           type: string
           description: Error code.
@@ -966,6 +971,8 @@ components:
           enum:
             - upward
             - downward
+        lookupBPNs:
+          type: boolean
     JobStatusResult:
       type: object
       additionalProperties: false
@@ -1193,8 +1200,8 @@ components:
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
-                      \ There are two uri variable placeholders that can be used: jobId and\
-                      \ jobState."
+            \ There are two uri variable placeholders that can be used: jobId and\
+            \ jobState."
           example: "https://hostname.com/callback?jobId={jobId}&jobState={jobState}"
         collectAspects:
           type: boolean
@@ -1221,6 +1228,10 @@ components:
           maxLength: 45
           minLength: 45
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        lookupBPNs:
+          type: boolean
+          description: Flag to specify whether BPNs should be collected and resolved
+            via the configured BPDM URL. Default is false.
       required:
         - globalAssetId
     Relationship:
@@ -1276,6 +1287,8 @@ components:
       description: Summary of the job with statistics of the job processing.
       properties:
         asyncFetchedItems:
+          $ref: '#/components/schemas/AsyncFetchedItems'
+        bpnLookups:
           $ref: '#/components/schemas/AsyncFetchedItems'
     Tombstone:
       type: object
