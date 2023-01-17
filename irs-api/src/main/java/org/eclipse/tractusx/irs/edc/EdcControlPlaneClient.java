@@ -59,14 +59,15 @@ public class EdcControlPlaneClient {
 
     private final EdcConfiguration config;
 
-    /* package */ Catalog getCatalog(final String providerConnectorUrl) {
+    /* package */ Catalog getCatalog(final String providerConnectorUrl, final int offset) {
         final var catalogUrl =
-                config.getControlplane().getEndpoint().getData() + "/catalog?providerUrl={providerUrl}&limit={limit}";
+                config.getControlplane().getEndpoint().getData() +
+                        "/catalog?providerUrl={providerUrl}&limit={limit}&offset={offset}";
         final var providerUrl = providerConnectorUrl + config.getControlplane().getProviderSuffix();
         final var limit = config.getControlplane().getCatalogLimit();
 
         return edcRestTemplate.exchange(catalogUrl, HttpMethod.GET, new HttpEntity<>(null, headers()), Catalog.class,
-                providerUrl, limit).getBody();
+                providerUrl, limit, offset).getBody();
     }
 
     /* package */ NegotiationId startNegotiations(final NegotiationRequest request) {

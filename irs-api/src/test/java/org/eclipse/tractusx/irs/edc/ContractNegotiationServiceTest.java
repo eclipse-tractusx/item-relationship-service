@@ -65,7 +65,36 @@ class ContractNegotiationServiceTest {
         // arrange
         final var assetId = "testTarget";
         final var catalog = mockCatalog(assetId);
-        when(edcControlPlaneClient.getCatalog(CONNECTOR_URL)).thenReturn(catalog);
+        when(edcControlPlaneClient.getCatalog(CONNECTOR_URL, 0)).thenReturn(catalog);
+        when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
+                NegotiationId.builder().value("negotiationId").build());
+        CompletableFuture<NegotiationResponse> response = CompletableFuture.completedFuture(
+                NegotiationResponse.builder().contractAgreementId("agreementId").build());
+        when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(response);
+        when(edcControlPlaneClient.startTransferProcess(any())).thenReturn(
+                TransferProcessId.builder().value("transferProcessId").build());
+        when(edcControlPlaneClient.getTransferProcess(any())).thenReturn(
+                CompletableFuture.completedFuture(TransferProcessResponse.builder().build()));
+
+        // act
+        NegotiationResponse result = testee.negotiate(CONNECTOR_URL, assetId);
+
+        // assert
+        assertThat(result).isNotNull();
+        assertThat(result.getContractAgreementId()).isEqualTo("agreementId");
+    }
+
+    @Test
+    void shouldNegotiateSuccessfullyWithCatalogOnSecondPage() throws ContractNegotiationException {
+        // arrange
+        final var assetId = "testTarget";
+        final var firstPage = mockCatalog("other");
+        final var catalog = mockCatalog(assetId);
+        final EdcConfiguration.ControlplaneConfig controlplaneConfig = new EdcConfiguration.ControlplaneConfig();
+        controlplaneConfig.setCatalogLimit(3);
+        config.setControlplane(controlplaneConfig);
+        when(edcControlPlaneClient.getCatalog(CONNECTOR_URL, 0)).thenReturn(firstPage);
+        when(edcControlPlaneClient.getCatalog(CONNECTOR_URL, 3)).thenReturn(catalog);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 NegotiationId.builder().value("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.completedFuture(
@@ -90,7 +119,7 @@ class ContractNegotiationServiceTest {
         final var asset = mock(Asset.class);
         when(asset.getId()).thenReturn(assetId);
         when(contractOffer.getAsset()).thenReturn(asset);
-        when(catalog.getContractOffers()).thenReturn(List.of(contractOffer));
+        when(catalog.getContractOffers()).thenReturn(List.of(contractOffer, contractOffer, contractOffer));
         return catalog;
     }
 
@@ -99,7 +128,7 @@ class ContractNegotiationServiceTest {
         // arrange
         final var assetId = "testTarget";
         final var catalog = mockCatalog(assetId);
-        when(edcControlPlaneClient.getCatalog(CONNECTOR_URL)).thenReturn(catalog);
+        when(edcControlPlaneClient.getCatalog(CONNECTOR_URL, 0)).thenReturn(catalog);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 NegotiationId.builder().value("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.failedFuture(
