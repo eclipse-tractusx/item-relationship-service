@@ -79,7 +79,7 @@ public class ContractNegotiationService {
     public NegotiationResponse negotiate(final String providerConnectorUrl, final String target)
             throws ContractNegotiationException {
 
-        ContractOfferInCatalogResponse contractResponse = findOfferInPageableCatalog(providerConnectorUrl, target);
+        final ContractOfferInCatalogResponse contractResponse = findOfferInPageableCatalog(providerConnectorUrl, target);
 
         final ContractOfferRequest contractOfferRequest = ContractOfferRequest.builder()
                                                                               .offerId(
@@ -131,7 +131,7 @@ public class ContractNegotiationService {
 
     private ContractOfferInCatalogResponse findOfferInPageableCatalog(final String providerConnectorUrl, final String target) {
         int offset = 0;
-        int limit = config.getControlplane().getCatalogLimit();
+        final int limit = config.getControlplane().getCatalogLimit();
 
         log.info("Get catalog from EDC provider.");
         Catalog pageableCatalog = edcControlPlaneClient.getCatalog(providerConnectorUrl, offset);
