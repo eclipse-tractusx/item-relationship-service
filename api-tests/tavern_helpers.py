@@ -179,3 +179,8 @@ def bpns_are_empty(response):
     print(response.json().get("bpns"))
     print("Check if bpns are empty", len(response.json().get("bpns")))
     assert len(response.json().get("bpns")) == 0
+
+def bpns_are_not_empty(response):
+    print(response.json().get("bpns"))
+    print("Check if bpns are not empty number:", len(response.json().get("bpns")))
+    assert len(response.json().get("bpns")) != 0
