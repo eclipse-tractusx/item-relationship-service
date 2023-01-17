@@ -61,8 +61,8 @@ public class EdcControlPlaneClient {
 
     /* package */ Catalog getCatalog(final String providerConnectorUrl, final int offset) {
         final var catalogUrl =
-                config.getControlplane().getEndpoint().getData() +
-                        "/catalog?providerUrl={providerUrl}&limit={limit}&offset={offset}";
+                config.getControlplane().getEndpoint().getData()
+                        + "/catalog?providerUrl={providerUrl}&limit={limit}&offset={offset}";
         final var providerUrl = providerConnectorUrl + config.getControlplane().getProviderSuffix();
         final var limit = config.getControlplane().getCatalogLimit();
 
