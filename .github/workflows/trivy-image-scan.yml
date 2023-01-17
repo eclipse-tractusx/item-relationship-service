@@ -45,7 +45,7 @@ jobs:
           # Use Docker `latest` tag convention
           [ "$VERSION" == "main" ] && VERSION=latest
           # Use input parameter 'image-tag' if present
-          [[ ${{ github.event.inputs.image-tag }} != '' ]] && VERSION=$(echo "${{ github.event.inputs.image-tag }}")
+          [[ "${{ github.event.inputs.image-tag }}" != '' ]] && VERSION=$(echo "${{ github.event.inputs.image-tag }}")
           echo VERSION=$VERSION
           echo "::set-output name=image_tag::$VERSION"
 
