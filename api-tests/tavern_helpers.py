@@ -174,3 +174,21 @@ def check_pagination_is_requested_correctly(response):
     assert response_list.get("pageSize") == 3
     assert response_list.get("totalElements") > 0
     assert len(response.json().get("content")) == 3
+
+def bpns_are_empty(response):
+    print(response.json().get("bpns"))
+    print("Check if bpns are empty", len(response.json().get("bpns")))
+    assert len(response.json().get("bpns")) == 0
+
+def bpns_are_not_empty(response):
+    print(response.json().get("bpns"))
+    print("Check if bpns are not empty number:", len(response.json().get("bpns")))
+    assert len(response.json().get("bpns")) != 0
+
+def summary_for_bpns_is_given(response):
+    print("Check if summary for bpns is given:")
+    bpnLookups = response.json().get('job').get('summary').get('bpnLookups')
+    print(bpnLookups)
+    print("completed:  ", bpnLookups.get('completed'))
+    assert bpnLookups.get('completed') != 0
+    assert bpnLookups.get('failed') == 0
