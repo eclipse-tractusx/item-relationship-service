@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added new job parameter flag "lookupBPNs" which toggles lookup of BPN numbers using the configured BPN URL
 - Added new summary item "bpnLookups" which tracks completed and failed BPN requests. Excluded these metrics from "asyncFetchedItems"
 
+### Fixed
+- BPNs array is now filled correctly when requesting a running job with parameter "returnUncompletedJob=true"
+
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
