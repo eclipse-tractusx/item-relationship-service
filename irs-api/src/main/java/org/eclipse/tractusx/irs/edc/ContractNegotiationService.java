@@ -21,6 +21,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -131,18 +132,18 @@ public class ContractNegotiationService {
 
     private ContractOfferInCatalogResponse findOfferInPageableCatalog(final String providerConnectorUrl, final String target) {
         int offset = 0;
-        final int limit = config.getControlplane().getCatalogLimit();
+        final int pageSize = config.getControlplane().getCatalogPageSize();
 
         log.info("Get catalog from EDC provider.");
         Catalog pageableCatalog = edcControlPlaneClient.getCatalog(providerConnectorUrl, offset);
 
-        boolean isLastPage = pageableCatalog.getContractOffers().size() < limit;
+        boolean isLastPage = pageableCatalog.getContractOffers().size() < pageSize;
         Optional<ContractOffer> optionalContractOffer = findOfferIfExist(target, pageableCatalog);
 
         while (!isLastPage && optionalContractOffer.isEmpty()) {
-            offset += limit;
+            offset += pageSize;
             pageableCatalog = edcControlPlaneClient.getCatalog(providerConnectorUrl, offset);
-            isLastPage = pageableCatalog.getContractOffers().size() < limit;
+            isLastPage = pageableCatalog.getContractOffers().size() < pageSize;
             optionalContractOffer = findOfferIfExist(target, pageableCatalog);
         }
 
@@ -154,7 +155,7 @@ public class ContractNegotiationService {
                 .builder()
                 .contractOffer(contractOffer)
                 .connectorId(connectorId).build())
-                                    .orElseThrow(IllegalArgumentException::new);
+                                    .orElseThrow(NoSuchElementException::new);
     }
 
 

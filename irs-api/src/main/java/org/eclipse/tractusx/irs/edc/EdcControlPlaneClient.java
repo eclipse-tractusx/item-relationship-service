@@ -64,7 +64,7 @@ public class EdcControlPlaneClient {
                 config.getControlplane().getEndpoint().getData()
                         + "/catalog?providerUrl={providerUrl}&limit={limit}&offset={offset}";
         final var providerUrl = providerConnectorUrl + config.getControlplane().getProviderSuffix();
-        final var limit = config.getControlplane().getCatalogLimit();
+        final var limit = config.getControlplane().getCatalogPageSize();
 
         return edcRestTemplate.exchange(catalogUrl, HttpMethod.GET, new HttpEntity<>(null, headers()), Catalog.class,
                 providerUrl, limit, offset).getBody();
