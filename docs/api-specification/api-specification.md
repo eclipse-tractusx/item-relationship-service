@@ -79,6 +79,11 @@ Content-Type: \*/\*
       },
       "owner" : "owner",
       "summary" : {
+        "bpnLookups" : {
+          "running" : 1280358508,
+          "completed" : 1294386358,
+          "failed" : 314780940
+        },
         "asyncFetchedItems" : {
           "running" : 1280358508,
           "completed" : 1294386358,
@@ -91,6 +96,7 @@ Content-Type: \*/\*
         "bomLifecycle" : "asBuilt",
         "collectAspects" : true,
         "aspects" : "AddressAspect",
+        "lookupBPNs" : true,
         "callbackUrl" : "callbackUrl",
         "direction" : "upward"
       },
@@ -116,6 +122,11 @@ Content-Type: application/json
       },
       "owner" : "owner",
       "summary" : {
+        "bpnLookups" : {
+          "running" : 1280358508,
+          "completed" : 1294386358,
+          "failed" : 314780940
+        },
         "asyncFetchedItems" : {
           "running" : 1280358508,
           "completed" : 1294386358,
@@ -128,6 +139,7 @@ Content-Type: application/json
         "bomLifecycle" : "asBuilt",
         "collectAspects" : true,
         "aspects" : "AddressAspect",
+        "lookupBPNs" : true,
         "callbackUrl" : "callbackUrl",
         "direction" : "upward"
       },
@@ -2655,6 +2667,11 @@ Content-Type: application/json
         },
         "owner" : "owner",
         "summary" : {
+          "bpnLookups" : {
+            "running" : 1280358508,
+            "completed" : 1294386358,
+            "failed" : 314780940
+          },
           "asyncFetchedItems" : {
             "running" : 1280358508,
             "completed" : 1294386358,
@@ -2667,6 +2684,7 @@ Content-Type: application/json
           "bomLifecycle" : "asBuilt",
           "collectAspects" : true,
           "aspects" : "AddressAspect",
+          "lookupBPNs" : true,
           "callbackUrl" : "callbackUrl",
           "direction" : "upward"
         },
@@ -3039,13 +3057,13 @@ protocolInformation (optional)
 
 Error response.
 
-errors (optional)
+error (optional)
 
-<span class="param-type">[array\[String\]](#string)</span> List of errors.
+<span class="param-type">[String](#string)</span> Error.
 
-message (optional)
+messages (optional)
 
-<span class="param-type">[String](#string)</span> Error message.
+<span class="param-type">[array\[String\]](#string)</span> List of error messages.
 
 statusCode (optional)
 
@@ -3389,6 +3407,10 @@ upward
 
 downward
 
+lookupBPNs (optional)
+
+<span class="param-type">[Boolean](#boolean)</span>
+
 ### <span id="JobStatusResult">`JobStatusResult` -</span> <a href="#__Models" class="up">Up</a>
 
 completedOn (optional)
@@ -3645,6 +3667,10 @@ globalAssetId
 
 <span class="param-type">[String](#string)</span> Id of global asset.
 
+lookupBPNs (optional)
+
+<span class="param-type">[Boolean](#boolean)</span> Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false.
+
 ### <span id="Relationship">`Relationship` -</span> <a href="#__Models" class="up">Up</a>
 
 Relationships between parent and child items.
@@ -3711,6 +3737,10 @@ asyncFetchedItems (optional)
 
 <span class="param-type">[AsyncFetchedItems](#AsyncFetchedItems)</span>
 
+bpnLookups (optional)
+
+<span class="param-type">[AsyncFetchedItems](#AsyncFetchedItems)</span>
+
 ### <span id="Tombstone">`Tombstone` -</span> <a href="#__Models" class="up">Up</a>
 
 Tombstone with information about request failure
@@ -3727,4 +3757,4 @@ processingError (optional)
 
 <span class="param-type">[ProcessingError](#ProcessingError)</span>
 
-Last updated 2023-01-10 11:56:34 UTC
+Last updated 2023-01-18 15:42:06 UTC

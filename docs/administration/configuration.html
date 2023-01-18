@@ -662,6 +662,7 @@ pre.rouge {
 <li><a href="#_helm_configuration_irs_values_yaml">Helm configuration IRS (values.yaml)</a>
 <ul class="sectlevel2">
 <li><a href="#_values_explained">Values explained</a></li>
+<li><a href="#_semantic_model_provisioning">Semantic Model Provisioning</a></li>
 </ul>
 </li>
 <li><a href="#_edc_consumer_configuration">EDC consumer configuration</a>
@@ -848,7 +849,12 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the digital twin registry client</span>
 
 <span class="na">semanticsHub</span><span class="pi">:</span>
-  <span class="na">modelJsonSchemaEndpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${SEMANTICSHUB_URL:}"</span> <span class="c1"># The endpoint to retrieve the json schema of a model, must contain the placeholder {urn}</span>
+  <span class="c1"># The endpoint to retrieve the json schema of a model from the semantic hub. If specified, must contain the placeholder {urn}.</span>
+  <span class="na">modelJsonSchemaEndpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${SEMANTICSHUB_URL:}"</span>
+
+  <span class="c1"># Path to directory on filesystem where semantic models can be loaded from.</span>
+  <span class="c1"># The filenames inside the directory must match the Base64 encoded URNs of the models.</span>
+  <span class="na">localModelDirectory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
   <span class="na">cleanup</span><span class="pi">:</span>
     <span class="c1">#          ┌───────────── second (0-59)</span>
     <span class="c1">#          │ ┌───────────── minute (0 - 59)</span>
@@ -910,6 +916,10 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">defaultUrns</span><span class="pi">:</span> <span class="pi">&gt;-</span>
     <span class="s">urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization</span>
 <span class="c1">#    ,urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship</span>
+  <span class="na">localModels</span><span class="pi">:</span>
+<span class="c1">#   Map of Base64 encoded strings of semantic models. The key must be the Base64 encoded full URN of the model.</span>
+<span class="c1">#   Example for urn:bamm:io.catenax.serial_part_typization:1.1.1#SerialPartTypization:</span>
+<span class="c1">#    dXJuOmJhbW06aW8uY2F0ZW5heC5zZXJpYWxfcGFydF90eXBpemF0aW9uOjEuMS4xI1NlcmlhbFBhcnRUeXBpemF0aW9u: ewoJIiRzY2hlbWEiOiAiaHR0cDovL2pzb24tc2NoZW1hLm9yZy9kcmFmdC0wNC9zY2hlbWEiLAoJInR5cGUiOiAib2JqZWN0IiwKCSJjb21wb25lbnRzIjogewoJCSJzY2hlbWFzIjogewoJCQkidXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF90eXBpemF0aW9uXzEuMS4xX0NhdGVuYVhJZFRyYWl0IjogewoJCQkJInR5cGUiOiAic3RyaW5nIiwKCQkJCSJwYXR0ZXJuIjogIiheWzAtOWEtZkEtRl17OH0tWzAtOWEtZkEtRl17NH0tWzAtOWEtZkEtRl17NH0tWzAtOWEtZkEtRl17NH0tWzAtOWEtZkEtRl17MTJ9JCl8KF51cm46dXVpZDpbMC05YS1mQS1GXXs4fS1bMC05YS1mQS1GXXs0fS1bMC05YS1mQS1GXXs0fS1bMC05YS1mQS1GXXs0fS1bMC05YS1mQS1GXXsxMn0kKSIKCQkJfSwKCQkJInVybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfdHlwaXphdGlvbl8xLjEuMV9LZXlDaGFyYWN0ZXJpc3RpYyI6IHsKCQkJCSJ0eXBlIjogInN0cmluZyIKCQkJfSwKCQkJInVybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfdHlwaXphdGlvbl8xLjEuMV9WYWx1ZUNoYXJhY3RlcmlzdGljIjogewoJCQkJInR5cGUiOiAic3RyaW5nIgoJCQl9LAoJCQkidXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF90eXBpemF0aW9uXzEuMS4xX0tleVZhbHVlTGlzdCI6IHsKCQkJCSJ0eXBlIjogIm9iamVjdCIsCgkJCQkicHJvcGVydGllcyI6IHsKCQkJCQkia2V5IjogewoJCQkJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0X3R5cGl6YXRpb25fMS4xLjFfS2V5Q2hhcmFjdGVyaXN0aWMiCgkJCQkJfSwKCQkJCQkidmFsdWUiOiB7CgkJCQkJCSIkcmVmIjogIiMvY29tcG9uZW50cy9zY2hlbWFzL3Vybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfdHlwaXphdGlvbl8xLjEuMV9WYWx1ZUNoYXJhY3RlcmlzdGljIgoJCQkJCX0KCQkJCX0sCgkJCQkicmVxdWlyZWQiOiBbCgkJCQkJImtleSIsCgkJCQkJInZhbHVlIgoJCQkJXQoJCQl9LAoJCQkidXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF90eXBpemF0aW9uXzEuMS4xX0xvY2FsSWRlbnRpZmllckNoYXJhY3RlcmlzdGljIjogewoJCQkJInR5cGUiOiAiYXJyYXkiLAoJCQkJIml0ZW1zIjogewoJCQkJCSIkcmVmIjogIiMvY29tcG9uZW50cy9zY2hlbWFzL3Vybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfdHlwaXphdGlvbl8xLjEuMV9LZXlWYWx1ZUxpc3QiCgkJCQl9LAoJCQkJInVuaXF1ZUl0ZW1zIjogdHJ1ZQoJCQl9LAoJCQkidXJuX2JhbW1faW8ub3Blbm1hbnVmYWN0dXJpbmdfY2hhcmFjdGVyaXN0aWNfMi4wLjBfVGltZXN0YW1wIjogewoJCQkJInR5cGUiOiAic3RyaW5nIiwKCQkJCSJwYXR0ZXJuIjogIi0/KFsxLTldWzAtOV17Myx9fDBbMC05XXszfSktKDBbMS05XXwxWzAtMl0pLSgwWzEtOV18WzEyXVswLTldfDNbMDFdKVQoKFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV06WzAtNV1bMC05XShcXC5bMC05XSspP3woMjQ6MDA6MDAoXFwuMCspPykpKFp8KFxcK3wtKSgoMFswLTldfDFbMC0zXSk6WzAtNV1bMC05XXwxNDowMCkpPyIKCQkJfSwKCQkJInVybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfdHlwaXphdGlvbl8xLjEuMV9Qcm9kdWN0aW9uQ291bnRyeUNvZGVUcmFpdCI6IHsKCQkJCSJ0eXBlIjogInN0cmluZyIsCgkJCQkicGF0dGVybiI6ICJeW0EtWl1bQS1aXVtBLVpdJCIKCQkJfSwKCQkJInVybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfdHlwaXphdGlvbl8xLjEuMV9NYW51ZmFjdHVyaW5nQ2hhcmFjdGVyaXN0aWMiOiB7CgkJCQkidHlwZSI6ICJvYmplY3QiLAoJCQkJInByb3BlcnRpZXMiOiB7CgkJCQkJImRhdGUiOiB7CgkJCQkJCSIkcmVmIjogIiMvY29tcG9uZW50cy9zY2hlbWFzL3Vybl9iYW1tX2lvLm9wZW5tYW51ZmFjdHVyaW5nX2NoYXJhY3RlcmlzdGljXzIuMC4wX1RpbWVzdGFtcCIKCQkJCQl9LAoJCQkJCSJjb3VudHJ5IjogewoJCQkJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0X3R5cGl6YXRpb25fMS4xLjFfUHJvZHVjdGlvbkNvdW50cnlDb2RlVHJhaXQiCgkJCQkJfQoJCQkJfSwKCQkJCSJyZXF1aXJlZCI6IFsKCQkJCQkiZGF0ZSIKCQkJCV0KCQkJfSwKCQkJInVybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfdHlwaXphdGlvbl8xLjEuMV9QYXJ0SWRDaGFyYWN0ZXJpc3RpYyI6IHsKCQkJCSJ0eXBlIjogInN0cmluZyIKCQkJfSwKCQkJInVybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfdHlwaXphdGlvbl8xLjEuMV9QYXJ0TmFtZUNoYXJhY3RlcmlzdGljIjogewoJCQkJInR5cGUiOiAic3RyaW5nIgoJCQl9LAoJCQkidXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF90eXBpemF0aW9uXzEuMS4xX0NsYXNzaWZpY2F0aW9uQ2hhcmFjdGVyaXN0aWMiOiB7CgkJCQkidHlwZSI6ICJzdHJpbmciLAoJCQkJImVudW0iOiBbCgkJCQkJInByb2R1Y3QiLAoJCQkJCSJyYXcgbWF0ZXJpYWwiLAoJCQkJCSJzb2Z0d2FyZSIsCgkJCQkJImFzc2VtYmx5IiwKCQkJCQkidG9vbCIsCgkJCQkJImNvbXBvbmVudCIKCQkJCV0KCQkJfSwKCQkJInVybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfdHlwaXphdGlvbl8xLjEuMV9QYXJ0VHlwZUluZm9ybWF0aW9uQ2hhcmFjdGVyaXN0aWMiOiB7CgkJCQkidHlwZSI6ICJvYmplY3QiLAoJCQkJInByb3BlcnRpZXMiOiB7CgkJCQkJIm1hbnVmYWN0dXJlclBhcnRJZCI6IHsKCQkJCQkJIiRyZWYiOiAiIy9jb21wb25lbnRzL3NjaGVtYXMvdXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF90eXBpemF0aW9uXzEuMS4xX1BhcnRJZENoYXJhY3RlcmlzdGljIgoJCQkJCX0sCgkJCQkJImN1c3RvbWVyUGFydElkIjogewoJCQkJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0X3R5cGl6YXRpb25fMS4xLjFfUGFydElkQ2hhcmFjdGVyaXN0aWMiCgkJCQkJfSwKCQkJCQkibmFtZUF0TWFudWZhY3R1cmVyIjogewoJCQkJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0X3R5cGl6YXRpb25fMS4xLjFfUGFydE5hbWVDaGFyYWN0ZXJpc3RpYyIKCQkJCQl9LAoJCQkJCSJuYW1lQXRDdXN0b21lciI6IHsKCQkJCQkJIiRyZWYiOiAiIy9jb21wb25lbnRzL3NjaGVtYXMvdXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF90eXBpemF0aW9uXzEuMS4xX1BhcnROYW1lQ2hhcmFjdGVyaXN0aWMiCgkJCQkJfSwKCQkJCQkiY2xhc3NpZmljYXRpb24iOiB7CgkJCQkJCSIkcmVmIjogIiMvY29tcG9uZW50cy9zY2hlbWFzL3Vybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfdHlwaXphdGlvbl8xLjEuMV9DbGFzc2lmaWNhdGlvbkNoYXJhY3RlcmlzdGljIgoJCQkJCX0KCQkJCX0sCgkJCQkicmVxdWlyZWQiOiBbCgkJCQkJIm1hbnVmYWN0dXJlclBhcnRJZCIsCgkJCQkJIm5hbWVBdE1hbnVmYWN0dXJlciIsCgkJCQkJImNsYXNzaWZpY2F0aW9uIgoJCQkJXQoJCQl9CgkJfQoJfSwKCSJwcm9wZXJ0aWVzIjogewoJCSJjYXRlbmFYSWQiOiB7CgkJCSIkcmVmIjogIiMvY29tcG9uZW50cy9zY2hlbWFzL3Vybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfdHlwaXphdGlvbl8xLjEuMV9DYXRlbmFYSWRUcmFpdCIKCQl9LAoJCSJsb2NhbElkZW50aWZpZXJzIjogewoJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0X3R5cGl6YXRpb25fMS4xLjFfTG9jYWxJZGVudGlmaWVyQ2hhcmFjdGVyaXN0aWMiCgkJfSwKCQkibWFudWZhY3R1cmluZ0luZm9ybWF0aW9uIjogewoJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0X3R5cGl6YXRpb25fMS4xLjFfTWFudWZhY3R1cmluZ0NoYXJhY3RlcmlzdGljIgoJCX0sCgkJInBhcnRUeXBlSW5mb3JtYXRpb24iOiB7CgkJCSIkcmVmIjogIiMvY29tcG9uZW50cy9zY2hlbWFzL3Vybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfdHlwaXphdGlvbl8xLjEuMV9QYXJ0VHlwZUluZm9ybWF0aW9uQ2hhcmFjdGVyaXN0aWMiCgkJfQoJfSwKCSJyZXF1aXJlZCI6IFsKCQkiY2F0ZW5hWElkIiwKCQkibG9jYWxJZGVudGlmaWVycyIsCgkJIm1hbnVmYWN0dXJpbmdJbmZvcm1hdGlvbiIsCgkJInBhcnRUeXBlSW5mb3JtYXRpb24iCgldCn0=</span>
 <span class="na">bpdm</span><span class="pi">:</span>
   <span class="na">url</span><span class="pi">:</span> <span class="s">https://&lt;bpdm-url&gt;</span>
   <span class="na">bpnEndpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">tpl</span><span class="nv"> </span><span class="s">.Values.bpdm.url</span><span class="nv"> </span><span class="s">.</span><span class="nv"> </span><span class="s">}}/api/catena/legal-entities/{partnerId}?idType={idType}"</span>
@@ -948,6 +958,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">override</span><span class="pi">:</span> <span class="no">false</span>
   <span class="c1"># Provide your custom configuration here (overrides IRS Spring application.yaml)</span>
   <span class="na">content</span><span class="pi">:</span>
+
 
 <span class="c1">#######################</span>
 <span class="c1"># Minio Configuration #</span>
@@ -1092,6 +1103,30 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <p>The EDC consumer controlplane endpoint URL for data management, including the protocol.
 If left empty, this defaults to the internal endpoint of the controlplane provided by the irs-edc-consumer Helm chart.</p>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_semantic_model_provisioning">Semantic Model Provisioning</h3>
+<div class="paragraph">
+<p>The IRS can retrieve semantic models in two ways:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>via the Semantic Hub, if you provide the URL</p>
+</li>
+<li>
+<p>via local schema files</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If you activate both features, IRS will first try to resolve the models via the Hub and use the
+local models as a fallback.</p>
+</div>
+<div class="paragraph">
+<p>If you want to use local schema files, you need to provide them directly in the <code>values.yaml</code> file. Use the param <code>semanticsHub.localModels</code> to specify a map of all the local schemas.
+The <strong>key</strong> of each entry is the <code>Base64</code> encoded URN of the model. The <strong>value</strong> is the <code>Base64</code> encoded content of the schema file itself. The entries will then be mounted into the IRS container and used on demand. For reference, see the example comment in the default <code>values.yaml</code>.</p>
 </div>
 </div>
 </div>
@@ -1374,7 +1409,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-01-10 11:56:34 UTC
+Last updated 2023-01-18 15:42:06 UTC
 </div>
 </div>
 </body>

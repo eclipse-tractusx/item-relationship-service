@@ -243,6 +243,11 @@ font-style: italic;
   },
   "owner" : "owner",
   "summary" : {
+    "bpnLookups" : {
+      "running" : 1280358508,
+      "completed" : 1294386358,
+      "failed" : 314780940
+    },
     "asyncFetchedItems" : {
       "running" : 1280358508,
       "completed" : 1294386358,
@@ -255,6 +260,7 @@ font-style: italic;
     "bomLifecycle" : "asBuilt",
     "collectAspects" : true,
     "aspects" : "AddressAspect",
+    "lookupBPNs" : true,
     "callbackUrl" : "callbackUrl",
     "direction" : "upward"
   },
@@ -277,6 +283,11 @@ font-style: italic;
   },
   "owner" : "owner",
   "summary" : {
+    "bpnLookups" : {
+      "running" : 1280358508,
+      "completed" : 1294386358,
+      "failed" : 314780940
+    },
     "asyncFetchedItems" : {
       "running" : 1280358508,
       "completed" : 1294386358,
@@ -289,6 +300,7 @@ font-style: italic;
     "bomLifecycle" : "asBuilt",
     "collectAspects" : true,
     "aspects" : "AddressAspect",
+    "lookupBPNs" : true,
     "callbackUrl" : "callbackUrl",
     "direction" : "upward"
   },
@@ -2810,6 +2822,11 @@ font-style: italic;
     },
     "owner" : "owner",
     "summary" : {
+      "bpnLookups" : {
+        "running" : 1280358508,
+        "completed" : 1294386358,
+        "failed" : 314780940
+      },
       "asyncFetchedItems" : {
         "running" : 1280358508,
         "completed" : 1294386358,
@@ -2822,6 +2839,7 @@ font-style: italic;
       "bomLifecycle" : "asBuilt",
       "collectAspects" : true,
       "aspects" : "AddressAspect",
+      "lookupBPNs" : true,
       "callbackUrl" : "callbackUrl",
       "direction" : "upward"
     },
@@ -3133,8 +3151,8 @@ font-style: italic;
     <h3><a name="ErrorResponse"><code>ErrorResponse</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'>Error response.</div>
     <div class="field-items">
-      <div class="param">errors (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> List of errors. </div>
-<div class="param">message (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Error message. </div>
+      <div class="param">error (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Error. </div>
+<div class="param">messages (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> List of error messages. </div>
 <div class="param">statusCode (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Error code. </div>
         <div class="param-enum-header">Enum:</div>
         <div class="param-enum">100 CONTINUE</div><div class="param-enum">101 SWITCHING_PROTOCOLS</div><div class="param-enum">102 PROCESSING</div><div class="param-enum">103 CHECKPOINT</div><div class="param-enum">200 OK</div><div class="param-enum">201 CREATED</div><div class="param-enum">202 ACCEPTED</div><div class="param-enum">203 NON_AUTHORITATIVE_INFORMATION</div><div class="param-enum">204 NO_CONTENT</div><div class="param-enum">205 RESET_CONTENT</div><div class="param-enum">206 PARTIAL_CONTENT</div><div class="param-enum">207 MULTI_STATUS</div><div class="param-enum">208 ALREADY_REPORTED</div><div class="param-enum">226 IM_USED</div><div class="param-enum">300 MULTIPLE_CHOICES</div><div class="param-enum">301 MOVED_PERMANENTLY</div><div class="param-enum">302 FOUND</div><div class="param-enum">302 MOVED_TEMPORARILY</div><div class="param-enum">303 SEE_OTHER</div><div class="param-enum">304 NOT_MODIFIED</div><div class="param-enum">305 USE_PROXY</div><div class="param-enum">307 TEMPORARY_REDIRECT</div><div class="param-enum">308 PERMANENT_REDIRECT</div><div class="param-enum">400 BAD_REQUEST</div><div class="param-enum">401 UNAUTHORIZED</div><div class="param-enum">402 PAYMENT_REQUIRED</div><div class="param-enum">403 FORBIDDEN</div><div class="param-enum">404 NOT_FOUND</div><div class="param-enum">405 METHOD_NOT_ALLOWED</div><div class="param-enum">406 NOT_ACCEPTABLE</div><div class="param-enum">407 PROXY_AUTHENTICATION_REQUIRED</div><div class="param-enum">408 REQUEST_TIMEOUT</div><div class="param-enum">409 CONFLICT</div><div class="param-enum">410 GONE</div><div class="param-enum">411 LENGTH_REQUIRED</div><div class="param-enum">412 PRECONDITION_FAILED</div><div class="param-enum">413 PAYLOAD_TOO_LARGE</div><div class="param-enum">413 REQUEST_ENTITY_TOO_LARGE</div><div class="param-enum">414 URI_TOO_LONG</div><div class="param-enum">414 REQUEST_URI_TOO_LONG</div><div class="param-enum">415 UNSUPPORTED_MEDIA_TYPE</div><div class="param-enum">416 REQUESTED_RANGE_NOT_SATISFIABLE</div><div class="param-enum">417 EXPECTATION_FAILED</div><div class="param-enum">418 I_AM_A_TEAPOT</div><div class="param-enum">419 INSUFFICIENT_SPACE_ON_RESOURCE</div><div class="param-enum">420 METHOD_FAILURE</div><div class="param-enum">421 DESTINATION_LOCKED</div><div class="param-enum">422 UNPROCESSABLE_ENTITY</div><div class="param-enum">423 LOCKED</div><div class="param-enum">424 FAILED_DEPENDENCY</div><div class="param-enum">425 TOO_EARLY</div><div class="param-enum">426 UPGRADE_REQUIRED</div><div class="param-enum">428 PRECONDITION_REQUIRED</div><div class="param-enum">429 TOO_MANY_REQUESTS</div><div class="param-enum">431 REQUEST_HEADER_FIELDS_TOO_LARGE</div><div class="param-enum">451 UNAVAILABLE_FOR_LEGAL_REASONS</div><div class="param-enum">500 INTERNAL_SERVER_ERROR</div><div class="param-enum">501 NOT_IMPLEMENTED</div><div class="param-enum">502 BAD_GATEWAY</div><div class="param-enum">503 SERVICE_UNAVAILABLE</div><div class="param-enum">504 GATEWAY_TIMEOUT</div><div class="param-enum">505 HTTP_VERSION_NOT_SUPPORTED</div><div class="param-enum">506 VARIANT_ALSO_NEGOTIATES</div><div class="param-enum">507 INSUFFICIENT_STORAGE</div><div class="param-enum">508 LOOP_DETECTED</div><div class="param-enum">509 BANDWIDTH_LIMIT_EXCEEDED</div><div class="param-enum">510 NOT_EXTENDED</div><div class="param-enum">511 NETWORK_AUTHENTICATION_REQUIRED</div>
@@ -3208,6 +3226,7 @@ font-style: italic;
 <div class="param">direction (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Item graph traversal direction. </div>
         <div class="param-enum-header">Enum:</div>
         <div class="param-enum">upward</div><div class="param-enum">downward</div>
+<div class="param">lookupBPNs (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3330,6 +3349,7 @@ font-style: italic;
         <div class="param-enum-header">Enum:</div>
         <div class="param-enum">upward</div><div class="param-enum">downward</div>
 <div class="param">globalAssetId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Id of global asset. </div>
+<div class="param">lookupBPNs (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false. </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3367,6 +3387,7 @@ font-style: italic;
     <div class='model-description'>Summary of the job with statistics of the job processing.</div>
     <div class="field-items">
       <div class="param">asyncFetchedItems (optional)</div><div class="param-desc"><span class="param-type"><a href="#AsyncFetchedItems">AsyncFetchedItems</a></span>  </div>
+<div class="param">bpnLookups (optional)</div><div class="param-desc"><span class="param-type"><a href="#AsyncFetchedItems">AsyncFetchedItems</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">

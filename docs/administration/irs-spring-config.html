@@ -804,7 +804,12 @@ pre.rouge {
     <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the digital twin registry client</span>
 
 <span class="na">semanticsHub</span><span class="pi">:</span>
-  <span class="na">modelJsonSchemaEndpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${SEMANTICSHUB_URL:}"</span> <span class="c1"># The endpoint to retrieve the json schema of a model, must contain the placeholder {urn}</span>
+  <span class="c1"># The endpoint to retrieve the json schema of a model from the semantic hub. If specified, must contain the placeholder {urn}.</span>
+  <span class="na">modelJsonSchemaEndpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${SEMANTICSHUB_URL:}"</span>
+
+  <span class="c1"># Path to directory on filesystem where semantic models can be loaded from.</span>
+  <span class="c1"># The filenames inside the directory must match the Base64 encoded URNs of the models.</span>
+  <span class="na">localModelDirectory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
   <span class="na">cleanup</span><span class="pi">:</span>
     <span class="c1">#          ┌───────────── second (0-59)</span>
     <span class="c1">#          │ ┌───────────── minute (0 - 59)</span>
@@ -832,7 +837,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-01-10 11:56:34 UTC
+Last updated 2023-01-18 15:42:06 UTC
 </div>
 </div>
 </body>
