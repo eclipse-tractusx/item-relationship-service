@@ -22,30 +22,83 @@
 package org.eclipse.tractusx.irs.semanticshub;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.io.File;
+import java.util.Objects;
+
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 class SemanticsHubClientImplTest {
 
     private final RestTemplate restTemplate = mock(RestTemplate.class);
-    private final SemanticsHubClientImpl semanticsHubClient = new SemanticsHubClientImpl(restTemplate, "url/{urn}");
 
     @Test
-    void shouldCallExternalServiceOnceAndGetJsonSchema() {
+    void shouldCallExternalServiceOnceAndGetJsonSchema() throws SchemaNotFoundException {
+        final var testee = new SemanticsHubClientImpl(restTemplate, "url/{urn}", "");
         final String jsonSchemaMock = "{\"$schema\": \"http://json-schema.org/draft-07/schema#\", \"type\": \"integer\"}";
         doReturn(jsonSchemaMock).when(restTemplate).getForObject(any(), eq(String.class));
 
-        final String resultJsonSchema = semanticsHubClient.getModelJsonSchema("urn");
+        final String resultJsonSchema = testee.getModelJsonSchema("urn");
 
         assertThat(resultJsonSchema).isNotBlank().contains("http://json-schema.org/draft-07/schema#");
         verify(this.restTemplate, times(1)).getForObject(any(), eq(String.class));
     }
 
+    @Test
+    void shouldReadJsonSchemaFromFilesystemOnly() throws SchemaNotFoundException {
+        final String path = Objects.requireNonNull(
+                getClass().getResource("/json-schema/assemblyPartRelationship-v1.1.0.json")).getPath();
+
+        final var testee = new SemanticsHubClientImpl(restTemplate, "", new File(path).getParent());
+
+        final String resultJsonSchema = testee.getModelJsonSchema("assemblyPartRelationship-v1.1.0.json");
+
+        assertThat(resultJsonSchema).isNotBlank().contains("http://json-schema.org/draft-04/schema");
+    }
+
+    @Test
+    void shouldReadJsonSchemaFromSemanticHubThenFilesystem() throws SchemaNotFoundException {
+        final String path = Objects.requireNonNull(
+                getClass().getResource("/json-schema/assemblyPartRelationship-v1.1.0.json")).getPath();
+
+        doThrow(HttpClientErrorException.class).when(restTemplate).getForObject(any(), eq(String.class));
+
+        final var testee = new SemanticsHubClientImpl(restTemplate, "url/{urn}", new File(path).getParent());
+
+        final String resultJsonSchema = testee.getModelJsonSchema("assemblyPartRelationship-v1.1.0.json");
+
+        assertThat(resultJsonSchema).isNotBlank().contains("http://json-schema.org/draft-04/schema");
+    }
+
+    @Test
+    void shouldThrowExceptionIfNothingConfigured() {
+        final var testee = new SemanticsHubClientImpl(restTemplate, "", "");
+
+        assertThatThrownBy(() -> testee.getModelJsonSchema("assemblyPartRelationship-v1.1.0.json")).isInstanceOf(
+                SchemaNotFoundException.class);
+    }
+
+    @Test
+    void shouldThrowExceptionIfNothingFound() {
+        final String path = Objects.requireNonNull(
+                getClass().getResource("/json-schema/assemblyPartRelationship-v1.1.0.json")).getPath();
+
+        final var testee = new SemanticsHubClientImpl(restTemplate, "url/{urn}", new File(path).getParent());
+
+        doThrow(HttpClientErrorException.class).when(restTemplate).getForObject(any(), eq(String.class));
+
+        assertThatThrownBy(() -> testee.getModelJsonSchema("doesnotexist-v1.1.0.json")).isInstanceOf(
+                SchemaNotFoundException.class);
+    }
 }

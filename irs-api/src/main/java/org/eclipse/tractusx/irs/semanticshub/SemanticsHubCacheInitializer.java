@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.semanticshub;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -54,11 +55,13 @@ class SemanticsHubCacheInitializer {
     public void initializeCacheValues() {
         log.debug("Initializing Semantics Hub Cache with values.");
 
-        try {
-            defaultUrns.forEach(semanticsHubFacade::getModelJsonSchema);
-        } catch (final HttpServerErrorException ex) {
-            log.error("Initialization of Semantics Hub Cache failed", ex);
-        }
+        defaultUrns.forEach(urn -> {
+            try {
+                semanticsHubFacade.getModelJsonSchema(urn);
+            } catch (final HttpServerErrorException | SchemaNotFoundException ex) {
+                log.error("Initialization of semantic hub cache failed for URN '{}'", urn, ex);
+            }
+        });
     }
 
     /**

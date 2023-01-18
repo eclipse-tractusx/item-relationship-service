@@ -40,6 +40,9 @@ data:
     semanticsHub:
       modelJsonSchemaEndpoint: {{ tpl .Values.semanticsHub.modelJsonSchemaEndpoint . | quote }}
       defaultUrns: {{ tpl (.Values.semanticsHub.defaultUrns | default "") . | quote }}
+      {{- if .Values.semanticsHub.localModels }}
+      localModelDirectory: /app/semantic-models
+      {{- end }}
 
     bpdm:
       bpnEndpoint: {{ tpl .Values.bpdm.bpnEndpoint . | quote }}
