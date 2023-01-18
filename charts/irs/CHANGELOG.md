@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- It is now possible to provide semantic schema files as Base64 strings which will be mounted to the IRS container and then loaded via the configuration. 
 
 ## [4.1.0] - 2023-01-11
 ### Changed

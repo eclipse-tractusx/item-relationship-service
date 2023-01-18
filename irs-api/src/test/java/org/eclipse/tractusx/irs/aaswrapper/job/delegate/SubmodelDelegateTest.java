@@ -39,6 +39,7 @@ import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
@@ -70,7 +71,7 @@ class SubmodelDelegateTest {
     }
 
     @Test
-    void shouldCatchJsonParseExceptionAndPutTombstone() {
+    void shouldCatchJsonParseExceptionAndPutTombstone() throws SchemaNotFoundException {
         // given
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder().shell(shellDescriptor(
                 List.of(submodelDescriptor("urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization",
@@ -93,7 +94,7 @@ class SubmodelDelegateTest {
     }
 
     @Test
-    void shouldCatchRestClientExceptionAndPutTombstone() {
+    void shouldCatchRestClientExceptionAndPutTombstone() throws SchemaNotFoundException {
         // given
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder().shell(shellDescriptor(
                 List.of(submodelDescriptor("urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization",

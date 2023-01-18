@@ -140,7 +140,12 @@ digitalTwinRegistry:
     connect: PT90S # HTTP connect timeout for the digital twin registry client
 
 semanticsHub:
-  modelJsonSchemaEndpoint: "${SEMANTICSHUB_URL:}" # The endpoint to retrieve the json schema of a model, must contain the placeholder {urn}
+  # The endpoint to retrieve the json schema of a model from the semantic hub. If specified, must contain the placeholder {urn}.
+  modelJsonSchemaEndpoint: "${SEMANTICSHUB_URL:}"
+
+  # Path to directory on filesystem where semantic models can be loaded from.
+  # The filenames inside the directory must match the Base64 encoded URNs of the models.
+  localModelDirectory: ""
   cleanup:
     #          ┌───────────── second (0-59)
     #          │ ┌───────────── minute (0 - 59)
