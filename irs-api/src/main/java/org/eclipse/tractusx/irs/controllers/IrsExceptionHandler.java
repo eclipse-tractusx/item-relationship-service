@@ -21,14 +21,13 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -58,8 +57,8 @@ public class IrsExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                              .body(ErrorResponse.builder()
                                                 .withStatusCode(HttpStatus.NOT_FOUND)
-                                                .withMessage(HttpStatus.NOT_FOUND.getReasonPhrase())
-                                                .withErrors(List.of(exception.getMessage()))
+                                                .withError(HttpStatus.NOT_FOUND.getReasonPhrase())
+                                                .withMessages(List.of(exception.getMessage()))
                                                 .build());
     }
 
@@ -82,8 +81,8 @@ public class IrsExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                              .body(ErrorResponse.builder()
                                                 .withStatusCode(HttpStatus.BAD_REQUEST)
-                                                .withMessage(IrsAppConstants.INVALID_ARGUMENTS)
-                                                .withErrors(errors)
+                                                .withError(IrsAppConstants.INVALID_ARGUMENTS)
+                                                .withMessages(errors)
                                                 .build());
     }
 
@@ -98,7 +97,7 @@ public class IrsExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                              .body(ErrorResponse.builder()
                                                 .withStatusCode(HttpStatus.BAD_REQUEST)
-                                                .withMessage(exception.getMessage())
+                                                .withError(exception.getMessage())
                                                 .build());
     }
 
@@ -109,7 +108,7 @@ public class IrsExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                              .body(ErrorResponse.builder()
                                                 .withStatusCode(HttpStatus.BAD_REQUEST)
-                                                .withMessage(exception.getMessage())
+                                                .withError(exception.getMessage())
                                                 .build());
     }
 
@@ -126,7 +125,7 @@ public class IrsExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                              .body(ErrorResponse.builder()
                                                 .withStatusCode(HttpStatus.BAD_REQUEST)
-                                                .withMessage(message)
+                                                .withError(message)
                                                 .build());
     }
 
@@ -137,7 +136,7 @@ public class IrsExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                              .body(ErrorResponse.builder()
                                                 .withStatusCode(HttpStatus.BAD_REQUEST)
-                                                .withMessage(exception.getMessage())
+                                                .withError(exception.getMessage())
                                                 .build());
     }
 
@@ -148,7 +147,7 @@ public class IrsExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                              .body(ErrorResponse.builder()
                                                 .withStatusCode(HttpStatus.FORBIDDEN)
-                                                .withMessage(exception.getMessage())
+                                                .withError(exception.getMessage())
                                                 .build());
     }
 
@@ -165,8 +164,7 @@ public class IrsExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                              .body(ErrorResponse.builder()
                                                 .withStatusCode(HttpStatus.INTERNAL_SERVER_ERROR)
-                                                .withMessage("Error Occurred")
-                                                .withErrors(new ArrayList<>())
+                                                .withError("Error Occurred")
                                                 .build());
     }
 }

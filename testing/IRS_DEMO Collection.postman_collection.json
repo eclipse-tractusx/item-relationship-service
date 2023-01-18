@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "b0df63d8-b1eb-4924-95c3-038cdf7408d2",
+		"_postman_id": "0088fe3a-c331-46e4-8a77-193a6033cd95",
 		"name": "IRS DEMO Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -873,6 +873,50 @@
 					"response": []
 				},
 				{
+					"name": "1.6.0 [Register Job with BPN lookup] https://{environment}/irs/jobs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"aspects\": [\n        \"SerialPartTypization\",\n        \"Batch\"\n    ],\n    \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\",\n    \"lookupBPNs\": false\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "2.0.0 [Search for completed Jobs]  http://${environment}/irs/jobs?jobStates=COMPLETED",
 					"event": [
 						{
@@ -1437,7 +1481,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n     \"aspects\": [\r\n         \"AssemblyPartRelationship\",\r\n         \"SerialPartTypization\"\r\n     ],\r\n     \"bomlLifecycle\":\"asBuilt\",\r\n     \"collectAspects\": true,\r\n     \"direction\":\"downward\",\r\n     \"depth\":10,\r\n     \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n}"
+							"raw": "{\r\n    \"aspects\": [\r\n        \"AssemblyPartRelationship\",\r\n        \"SerialPartTypization\",\r\n        \"Batch\"\r\n    ],\r\n    \"bomlLifecycle\": \"asBuilt\",\r\n    \"collectAspects\": true,\r\n    \"lookupBPNs\": true,\r\n    \"direction\": \"downward\",\r\n    \"depth\": 10,\r\n    \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n}"
 						},
 						"url": {
 							"raw": "{{IRS_HOST}}/irs/jobs",

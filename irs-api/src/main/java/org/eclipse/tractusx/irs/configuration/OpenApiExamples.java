@@ -79,26 +79,26 @@ public class OpenApiExamples {
     public void createExamples(final Components components) {
         components.addExamples("job-handle", toExample(createJobHandle(JOB_HANDLE_ID_1)));
         components.addExamples("error-response-400", toExample(ErrorResponse.builder()
-                                                                        .withErrors(List.of("BadRequestException"))
-                                                                        .withMessage("Bad request")
+                                                                        .withMessages(List.of("BadRequestException"))
+                                                                        .withError("Bad request")
                                                                         .withStatusCode(
                                                                                 HttpStatus.BAD_REQUEST)
                                                                         .build()));
         components.addExamples("error-response-401", toExample(ErrorResponse.builder()
-                                                                            .withErrors(List.of("UnauthorizedException"))
-                                                                            .withMessage("Unauthorized")
+                                                                            .withMessages(List.of("UnauthorizedException"))
+                                                                            .withError("Unauthorized")
                                                                             .withStatusCode(
                                                                                     HttpStatus.UNAUTHORIZED)
                                                                             .build()));
         components.addExamples("error-response-403", toExample(ErrorResponse.builder()
-                                                                            .withErrors(List.of("ForbiddenException"))
-                                                                            .withMessage("Forbidden")
+                                                                            .withMessages(List.of("ForbiddenException"))
+                                                                            .withError("Forbidden")
                                                                             .withStatusCode(
                                                                                     HttpStatus.FORBIDDEN)
                                                                             .build()));
         components.addExamples("error-response-404", toExample(ErrorResponse.builder()
-                                                                        .withErrors(List.of("NotFoundException"))
-                                                                        .withMessage("Not found")
+                                                                        .withMessages(List.of("NotFoundException"))
+                                                                        .withError("Not found")
                                                                         .withStatusCode(
                                                                                 HttpStatus.NOT_FOUND)
                                                                         .build()));

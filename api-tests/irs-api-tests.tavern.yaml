@@ -237,7 +237,7 @@ stages:
         function: api-tests.tavern_helpers:errors_for_invalid_globalAssetId_are_correct
       json:
         statusCode: BAD_REQUEST
-        message: Invalid Arguments.
+        error: Invalid Arguments.
       headers:
         content-type: application/json
 
@@ -726,8 +726,8 @@ stages:
       status_code: 400
       json:
         statusCode: BAD_REQUEST
-        message: "NoSuchElementException: Unsupported AspectType: UnknownAspect. Must be one of: AddressAspect, AssemblyPartRelationship, Batch, BatteryPass, CertificateOfDestruction, CertificateOfDismantler, ChargingProcess, ClaimData, DiagnosticData, EndOfLife, EsrCertificate, EsrCertificateStateStatistic, IdConversion, MarketplaceOffer, MaterialForHomologation, MaterialForRecycling, PartAsPlanned, PhysicalDimension, ProductDescription, ReturnRequest, SerialPartTypization, SingleLevelBomAsPlanned, SingleLevelUsageAsBuilt"
-        errors: null
+        error: "NoSuchElementException: Unsupported AspectType: UnknownAspect. Must be one of: AddressAspect, AssemblyPartRelationship, Batch, BatteryPass, CertificateOfDestruction, CertificateOfDismantler, ChargingProcess, ClaimData, DiagnosticData, EndOfLife, EsrCertificate, EsrCertificateStateStatistic, IdConversion, MarketplaceOffer, MaterialForHomologation, MaterialForRecycling, PartAsPlanned, PhysicalDimension, ProductDescription, ReturnRequest, SerialPartTypization, SingleLevelBomAsPlanned, SingleLevelUsageAsBuilt"
+        messages: null
       headers:
         content-type: application/json
 
@@ -878,8 +878,8 @@ stages:
       status_code: 400
       json:
         statusCode: BAD_REQUEST
-        message: "NoSuchElementException: Unsupported AspectType: {deprecated_aspect}. Must be one of: AddressAspect, AssemblyPartRelationship, Batch, BatteryPass, CertificateOfDestruction, CertificateOfDismantler, ChargingProcess, ClaimData, DiagnosticData, EndOfLife, EsrCertificate, EsrCertificateStateStatistic, IdConversion, MarketplaceOffer, MaterialForHomologation, MaterialForRecycling, PartAsPlanned, PhysicalDimension, ProductDescription, ReturnRequest, SerialPartTypization, SingleLevelBomAsPlanned, SingleLevelUsageAsBuilt"
-        errors: null
+        error: "NoSuchElementException: Unsupported AspectType: {deprecated_aspect}. Must be one of: AddressAspect, AssemblyPartRelationship, Batch, BatteryPass, CertificateOfDestruction, CertificateOfDismantler, ChargingProcess, ClaimData, DiagnosticData, EndOfLife, EsrCertificate, EsrCertificateStateStatistic, IdConversion, MarketplaceOffer, MaterialForHomologation, MaterialForRecycling, PartAsPlanned, PhysicalDimension, ProductDescription, ReturnRequest, SerialPartTypization, SingleLevelBomAsPlanned, SingleLevelUsageAsBuilt"
+        messages: null
       headers:
         content-type: application/json
 
@@ -1168,7 +1168,7 @@ stages:
       status_code: 400
       json:
         statusCode: BAD_REQUEST
-        message: UUID string too large
+        error: UUID string too large
       headers:
         content-type: application/json
 
@@ -1212,7 +1212,7 @@ stages:
       status_code: 404
       json:
         statusCode: NOT_FOUND
-        message: Not Found
+        error: Not Found
       verify_response_with:
         function: api-tests.tavern_helpers:errors_for_unknown_requested_globalAssetId_are_correct
       headers:
@@ -1439,8 +1439,8 @@ stages:
       status_code: 400
       json:
         statusCode: BAD_REQUEST
-        message: "NoSuchElementException: Unsupported BomLifecycle: asPlanned, asBuilt. Must be one of: asBuilt, asPlanned"
-        errors: null
+        error: "NoSuchElementException: Unsupported BomLifecycle: asPlanned, asBuilt. Must be one of: asBuilt, asPlanned"
+        messages: null
       headers:
         content-type: application/json
 
@@ -1492,7 +1492,7 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 50
+    delay_after: 10
 
   - name: fetch response for created job
     request:
