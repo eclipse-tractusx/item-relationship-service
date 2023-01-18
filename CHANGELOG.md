@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Model schema JSON files can now be provided locally as a backup to the Semantic Hub.
   Use the new ``semanticsHub.localModelDirectory`` config entry to provide a folder with the models.
 
+### Fixed
+- BPNs array is now filled correctly when requesting a running job with parameter "returnUncompletedJob=true"
+
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
