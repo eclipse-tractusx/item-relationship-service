@@ -1,5 +1,7 @@
 version: '3.8'
 
+# This file contains minio image that is used for local development purpose only.
+
 services:
   minio:
     image: quay.io/minio/minio:RELEASE.2022-04-01T03-41-39Z

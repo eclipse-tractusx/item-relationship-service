@@ -32,7 +32,7 @@ jobs:
           # Scanning directory .
           path: "."
           # Exclude paths or files from scan
-          exclude_paths: api/irs-v1.0.yaml,api-tests/irs-api-tests.tavern.yaml,charts/irs-environments/local/*
+          exclude_paths: docker-compose.yml,api/irs-v1.0.yaml,api-tests/irs-api-tests.tavern.yaml,charts/irs-environments/local/*
           # Fail on HIGH severity results
           fail_on: high
           # when provided with a directory on output_path
@@ -48,8 +48,7 @@ jobs:
           # token: ${{ secrets.GITHUB_TOKEN }}
           # enable_comments: true
           # Exclude accepted results from the build
-          exclude_results: "dda6420c385b33bef69f4db723fee4f469c93e851370c868a15af9bce5b3ec44,\
-            03df1ef13c69b0ada26fc5bbf35eabca288c5c3c93c0f5d918e41f4951ca8795" # docker-compose.yml + application-local.yml - local env minio password
+          exclude_results: "03df1ef13c69b0ada26fc5bbf35eabca288c5c3c93c0f5d918e41f4951ca8795" # application-local.yml - local env minio password
           # Exclude accepted queries from the build
           #exclude_queries: ""
 
