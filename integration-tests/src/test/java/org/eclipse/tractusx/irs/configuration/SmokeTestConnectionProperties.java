@@ -26,5 +26,5 @@ import lombok.Data;
 @Data
 public class SmokeTestConnectionProperties {
     private String baseUri;
-    private String accessToken;
+    private String accessTokenUri;
 }
