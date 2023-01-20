@@ -19,12 +19,20 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.configuration;
+package org.eclipse.tractusx.irs.edc.model;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Value;
+import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
 
-@Data
-public class SmokeTestConnectionProperties {
-    private String baseUri;
-    private String accessTokenUri;
+/**
+ * EDC catalog and contract offer response.
+ */
+@Value
+@Builder(toBuilder = true)
+public class ContractOfferInCatalogResponse {
+
+    private String connectorId;
+    private ContractOffer contractOffer;
+
 }

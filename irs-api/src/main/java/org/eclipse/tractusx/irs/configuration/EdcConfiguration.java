@@ -50,6 +50,8 @@ public class EdcConfiguration {
 
         private int catalogLimit;
 
+        private int catalogPageSize;
+
         private Duration requestTtl;
 
         private ApiKeyConfig apiKey = new ApiKeyConfig();

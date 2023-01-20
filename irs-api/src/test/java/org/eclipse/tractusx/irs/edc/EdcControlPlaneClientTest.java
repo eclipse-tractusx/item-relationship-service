@@ -89,7 +89,7 @@ class EdcControlPlaneClientTest {
                 ResponseEntity.of(Optional.of(catalog)));
 
         // act
-        final var result = testee.getCatalog("test");
+        final var result = testee.getCatalog("test", 0);
 
         // assert
         assertThat(result).isEqualTo(catalog);

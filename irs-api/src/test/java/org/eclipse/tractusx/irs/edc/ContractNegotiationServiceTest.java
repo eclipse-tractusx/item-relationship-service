@@ -27,8 +27,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
@@ -51,6 +53,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ContractNegotiationServiceTest {
 
     private static final String CONNECTOR_URL = "dummyConnectorUrl";
+    private static final Integer DEFAULT_PAGE_SIZE = 3;
     @InjectMocks
     private ContractNegotiationService testee;
 
@@ -65,7 +68,7 @@ class ContractNegotiationServiceTest {
         // arrange
         final var assetId = "testTarget";
         final var catalog = mockCatalog(assetId);
-        when(edcControlPlaneClient.getCatalog(CONNECTOR_URL)).thenReturn(catalog);
+        when(edcControlPlaneClient.getCatalog(CONNECTOR_URL, 0)).thenReturn(catalog);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 NegotiationId.builder().value("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.completedFuture(
@@ -84,13 +87,70 @@ class ContractNegotiationServiceTest {
         assertThat(result.getContractAgreementId()).isEqualTo("agreementId");
     }
 
+    @Test
+    void shouldNegotiateSuccessfullyWithCatalogOnSecondPage() throws ContractNegotiationException {
+        // arrange
+        final var assetId = "testTarget";
+        final var firstPage = mockCatalog("other");
+        final var catalog = mockCatalog(assetId);
+        setPageSizeInCatalog();
+        when(edcControlPlaneClient.getCatalog(CONNECTOR_URL, 0)).thenReturn(firstPage);
+        when(edcControlPlaneClient.getCatalog(CONNECTOR_URL, DEFAULT_PAGE_SIZE)).thenReturn(catalog);
+        when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
+                NegotiationId.builder().value("negotiationId").build());
+        CompletableFuture<NegotiationResponse> response = CompletableFuture.completedFuture(
+                NegotiationResponse.builder().contractAgreementId("agreementId").build());
+        when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(response);
+        when(edcControlPlaneClient.startTransferProcess(any())).thenReturn(
+                TransferProcessId.builder().value("transferProcessId").build());
+        when(edcControlPlaneClient.getTransferProcess(any())).thenReturn(
+                CompletableFuture.completedFuture(TransferProcessResponse.builder().build()));
+
+        // act
+        NegotiationResponse result = testee.negotiate(CONNECTOR_URL, assetId);
+
+        // assert
+        assertThat(result).isNotNull();
+        assertThat(result.getContractAgreementId()).isEqualTo("agreementId");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAssetIsMissingForBothPage() throws ContractNegotiationException {
+        // arrange
+        final var assetId = "testTarget";
+        final var firstPage = mockCatalog("other", DEFAULT_PAGE_SIZE);
+        final var secondPage = mockCatalog("other", 2);
+        setPageSizeInCatalog();
+        when(edcControlPlaneClient.getCatalog(CONNECTOR_URL, 0)).thenReturn(firstPage);
+        when(edcControlPlaneClient.getCatalog(CONNECTOR_URL, 3)).thenReturn(secondPage);
+
+        // act + assert
+        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, assetId))
+                .isInstanceOf(NoSuchElementException.class);
+
+    }
+
+    private void setPageSizeInCatalog() {
+        final EdcConfiguration.ControlplaneConfig controlplaneConfig = new EdcConfiguration.ControlplaneConfig();
+        controlplaneConfig.setCatalogPageSize(DEFAULT_PAGE_SIZE);
+        config.setControlplane(controlplaneConfig);
+    }
+
     private static Catalog mockCatalog(final String assetId) {
+        return mockCatalog(assetId, DEFAULT_PAGE_SIZE);
+    }
+
+
+    private static Catalog mockCatalog(final String assetId, final int numberOfElements) {
         final var catalog = mock(Catalog.class);
         final var contractOffer = mock(ContractOffer.class);
         final var asset = mock(Asset.class);
         when(asset.getId()).thenReturn(assetId);
         when(contractOffer.getAsset()).thenReturn(asset);
-        when(catalog.getContractOffers()).thenReturn(List.of(contractOffer));
+        when(catalog.getContractOffers()).thenReturn(IntStream.range(0, numberOfElements)
+                                                                      .boxed()
+                                                                      .map(i -> contractOffer)
+                                                                      .collect(Collectors.toList()));
         return catalog;
     }
 
@@ -99,7 +159,7 @@ class ContractNegotiationServiceTest {
         // arrange
         final var assetId = "testTarget";
         final var catalog = mockCatalog(assetId);
-        when(edcControlPlaneClient.getCatalog(CONNECTOR_URL)).thenReturn(catalog);
+        when(edcControlPlaneClient.getCatalog(CONNECTOR_URL, 0)).thenReturn(catalog);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 NegotiationId.builder().value("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.failedFuture(

@@ -283,6 +283,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final var shells = new ArrayList<AssetAdministrationShellDescriptor>();
         final var submodels = new ArrayList<Submodel>();
         final var metrics = new ArrayList<RequestMetric>();
+        final var bpns = new ArrayList<Bpn>();
 
         for (final String id : transferIds) {
             try {
@@ -294,6 +295,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                     shells.addAll(itemContainer.getShells());
                     submodels.addAll(itemContainer.getSubmodels());
                     metrics.addAll(itemContainer.getMetrics());
+                    bpns.addAll(itemContainer.getBpns());
                 });
 
             } catch (BlobPersistenceException e) {
@@ -307,6 +309,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                             .shells(shells)
                             .submodels(submodels)
                             .metrics(metrics)
+                            .bpns(bpns)
                             .build();
     }
 
