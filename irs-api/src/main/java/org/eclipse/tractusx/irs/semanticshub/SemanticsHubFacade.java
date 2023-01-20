@@ -23,6 +23,7 @@ package org.eclipse.tractusx.irs.semanticshub;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,7 @@ public class SemanticsHubFacade {
      * @return Json Schema
      */
     @Cacheable(value = SEMANTICS_HUB_CACHE_NAME, key = "#urn")
-    public String getModelJsonSchema(final String urn) {
+    public String getModelJsonSchema(final String urn) throws SchemaNotFoundException {
         log.info("Retrieving json schema for urn {}", urn);
         return this.semanticsHubClient.getModelJsonSchema(urn);
     }

@@ -19,24 +19,20 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.semanticshub;
+package org.eclipse.tractusx.irs.edc.model;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import lombok.Builder;
+import lombok.Value;
+import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
 
-import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
-import org.junit.jupiter.api.Test;
+/**
+ * EDC catalog and contract offer response.
+ */
+@Value
+@Builder(toBuilder = true)
+public class ContractOfferInCatalogResponse {
 
-class SemanticsHubFacadeTest {
-
-    private final SemanticsHubFacade semanticsHubFacade = new SemanticsHubFacade(new SemanticsHubClientLocalStub());
-
-    @Test
-    void shouldReturnModelJsonSchema() throws SchemaNotFoundException {
-        final String defaultUrn = "urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization";
-
-        final String modelJsonSchema = semanticsHubFacade.getModelJsonSchema(defaultUrn);
-
-        assertThat(modelJsonSchema).isNotBlank();
-    }
+    private String connectorId;
+    private ContractOffer contractOffer;
 
 }

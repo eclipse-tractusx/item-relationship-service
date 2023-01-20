@@ -44,6 +44,18 @@ The hostname where Grafana will be made available.
 The EDC consumer controlplane endpoint URL for data management, including the protocol.
 If left empty, this defaults to the internal endpoint of the controlplane provided by the irs-edc-consumer Helm chart.
 
+=== Semantic Model Provisioning
+The IRS can retrieve semantic models in two ways:
+
+1. via the Semantic Hub, if you provide the URL
+2. via local schema files
+
+If you activate both features, IRS will first try to resolve the models via the Hub and use the
+local models as a fallback.
+
+If you want to use local schema files, you need to provide them directly in the `values.yaml` file. Use the param `semanticsHub.localModels` to specify a map of all the local schemas.
+The *key* of each entry is the `Base64` encoded URN of the model. The *value* is the `Base64` encoded content of the schema file itself. The entries will then be mounted into the IRS container and used on demand. For reference, see the example comment in the default `values.yaml`.
+
 
 == EDC consumer configuration
 If you want to provide your own EDC consumer, add the following entries to your values.yaml:

@@ -19,24 +19,18 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.semanticshub;
+package org.eclipse.tractusx.irs.services.validation;
 
-import static org.assertj.core.api.Assertions.assertThat;
+/**
+ * Exception that describes that a schema could not be found.
+ */
+public class SchemaNotFoundException extends Exception {
 
-import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
-import org.junit.jupiter.api.Test;
-
-class SemanticsHubFacadeTest {
-
-    private final SemanticsHubFacade semanticsHubFacade = new SemanticsHubFacade(new SemanticsHubClientLocalStub());
-
-    @Test
-    void shouldReturnModelJsonSchema() throws SchemaNotFoundException {
-        final String defaultUrn = "urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization";
-
-        final String modelJsonSchema = semanticsHubFacade.getModelJsonSchema(defaultUrn);
-
-        assertThat(modelJsonSchema).isNotBlank();
+    /**
+     * Create a new SchemaNotFoundException
+     * @param message the error message
+     */
+    public SchemaNotFoundException(final String message) {
+        super(message);
     }
-
 }
