@@ -40,6 +40,7 @@ irs-helm:
     rootUser: <path:traceability-irs/data/beta/minio#minioUser>
     rootPassword: <path:traceability-irs/data/beta/minio#minioPassword>
 
+irs-edc-consumer:
   ##############################
   # EDC Postgres Configuration #
   ##############################
