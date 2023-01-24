@@ -36,7 +36,7 @@ irs-helm:
   #######################
   # Minio Configuration #
   #######################
-  irs-minio:
+  minio:
     rootUser: <path:traceability-irs/data/beta/minio#minioUser>
     rootPassword: <path:traceability-irs/data/beta/minio#minioPassword>
 
