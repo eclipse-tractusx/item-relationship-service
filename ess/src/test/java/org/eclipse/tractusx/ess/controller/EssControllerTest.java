@@ -39,7 +39,7 @@ class EssControllerTest {
     @Test
     @WithMockUser
     void helloTest() throws Exception {
-        final String path = "/hello";
+        final String path = "/ess/hello";
 
         this.mockMvc.perform(get(path))
                     .andExpect(status().isOk());
