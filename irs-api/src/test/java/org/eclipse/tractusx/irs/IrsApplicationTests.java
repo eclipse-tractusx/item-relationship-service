@@ -21,14 +21,18 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.awaitility.Awaitility;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
 import org.eclipse.tractusx.irs.component.JobParameter;
@@ -40,7 +44,6 @@ import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.persistence.BlobPersistence;
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -72,10 +75,14 @@ class IrsApplicationTests {
 
     @Test
     void generatedOpenApiMatchesContract() throws Exception {
-        final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml",
-                String.class);
-        final String fixedYaml = Files.readString(new File("../api/irs-v1.0.yaml").toPath(), UTF_8);
-        assertThat(generatedYaml).isEqualToIgnoringWhitespace(fixedYaml);
+        final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml", String.class);
+        final InputStream fixedYaml = Files.newInputStream(Path.of("../api/irs-v1.0.yaml"));
+
+        final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        final Map<String, Object> fixedYamlMap = mapper.readValue(fixedYaml, Map.class);
+        final Map<String, Object> generatedYamlMap = mapper.readValue(generatedYaml, Map.class);
+
+        assertThat(fixedYamlMap).isEqualTo(generatedYamlMap);
     }
 
     @Test
