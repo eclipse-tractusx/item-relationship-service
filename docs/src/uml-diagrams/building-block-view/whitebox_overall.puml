@@ -1,4 +1,4 @@
-The interfaces show how the components interact with each other and which interfaces the IRS is providing. 
+The interfaces show how the components interact with each other and which interfaces the IRS is providing.
 
 Component Diagram
 
@@ -10,7 +10,6 @@ skinparam spacing 50
 
 component [**IRSApplication**] <<System>> {
 	component [**IRS**] <<System>> as IRS
-	component [**AAS Wrapper**] <<System>> as AAS_W
 	component [**EDC Consumer**] <<System>> as EDC
 
 }
@@ -38,9 +37,8 @@ actor IrsApiConsumer
 
 IrsApiConsumer -right(0- IRS
 IrsApiConsumer <.r.> IAM_IRS
-IRS <.d.> AAS_W
+IRS <.d.> EDC
 IRS <.l.> IAM_IRS
-AAS_W <..> EDC
 IRS <.> DT_REG
 EDC <..> IAM_DAPS
 EDC <..> EDCProviderOEM
