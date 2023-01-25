@@ -9,6 +9,7 @@ COPY api api
 COPY .mvn .mvn
 COPY pom.xml .
 
+COPY ess ess
 COPY integration-tests integration-tests
 COPY irs-api irs-api
 COPY irs-models irs-models
