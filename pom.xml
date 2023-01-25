@@ -12,6 +12,7 @@
     <description>Root module containing other modules.</description>
 
     <modules>
+        <module>ess</module>
         <module>irs-testing</module>
         <module>irs-api</module>
         <module>irs-models</module>
