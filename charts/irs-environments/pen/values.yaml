@@ -24,10 +24,10 @@ irs-helm:
   minioPassword: <path:traceability-irs/data/int/minio#minioPassword>
   keycloak:
     oauth2:
-      clientId: <path:traceability-irs/data/int/keycloak/oauth2#clientId>
-      clientSecret: <path:traceability-irs/data/int/keycloak/oauth2#clientSecret>
-      clientTokenUri: <path:traceability-irs/data/int/keycloak/oauth2#tokenUri>
-      jwkSetUri: <path:traceability-irs/data/int/keycloak/oauth2#jwkSetUri>
+      clientId: <path:traceability-irs/data/pen/keycloak/oauth2#clientId>
+      clientSecret: <path:traceability-irs/data/pen/keycloak/oauth2#clientSecret>
+      clientTokenUri: <path:traceability-irs/data/pen/keycloak/oauth2#tokenUri>
+      jwkSetUri: <path:traceability-irs/data/pen/keycloak/oauth2#jwkSetUri>
   edc:
     controlplane:
       apikey:
