@@ -196,6 +196,7 @@ The IRS application is configured using the Spring configuration mechanism. The 
           data: ${EDC_CONTROLPLANE_ENDPOINT_DATA:} # URL of the EDC consumer controlplane data endpoint
         provider-suffix: ${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/ids/data} # Suffix to add to data requests to the EDC provider controlplane
         catalog-limit: ${EDC_CONTROLPLANE_CATALOG_LIMIT:1000} # Max number of items to fetch from the EDC provider catalog
+        catalog-page-size: ${EDC_CONTROLPLANE_CATALOG_PAGE_SIZE:50} # Number of items to fetch at one page from the EDC provider catalog when using pagination
         api-key:
           header: ${EDC_API_KEY_HEADER:} # API header key to use in communication with the EDC consumer controlplane
           secret: ${EDC_API_KEY_SECRET:} # API header secret to use in communication with the EDC consumer controlplane
@@ -688,4 +689,4 @@ Troubleshooting
 
 Coming soon…​
 
-Last updated 2023-01-18 15:42:06 UTC
+Last updated 2023-01-26 09:46:07 UTC

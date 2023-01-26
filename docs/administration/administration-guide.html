@@ -900,6 +900,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">data</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_DATA:}</span> <span class="c1"># URL of the EDC consumer controlplane data endpoint</span>
     <span class="na">provider-suffix</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/ids/data}</span> <span class="c1"># Suffix to add to data requests to the EDC provider controlplane</span>
     <span class="na">catalog-limit</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_CATALOG_LIMIT:1000}</span> <span class="c1"># Max number of items to fetch from the EDC provider catalog</span>
+    <span class="na">catalog-page-size</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_CATALOG_PAGE_SIZE:50}</span> <span class="c1"># Number of items to fetch at one page from the EDC provider catalog when using pagination</span>
     <span class="na">api-key</span><span class="pi">:</span>
       <span class="na">header</span><span class="pi">:</span> <span class="s">${EDC_API_KEY_HEADER:}</span> <span class="c1"># API header key to use in communication with the EDC consumer controlplane</span>
       <span class="na">secret</span><span class="pi">:</span> <span class="s">${EDC_API_KEY_SECRET:}</span> <span class="c1"># API header secret to use in communication with the EDC consumer controlplane</span>
@@ -1487,7 +1488,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-01-18 15:42:06 UTC
+Last updated 2023-01-26 09:46:07 UTC
 </div>
 </div>
 </body>
