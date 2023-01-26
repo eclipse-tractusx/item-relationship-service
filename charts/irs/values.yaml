@@ -161,6 +161,8 @@ config:
 minio:
   enabled: true
   mode: standalone
+  persistence:
+    size: 1Gi
   resources:
     requests:
       memory: 4Gi
