@@ -20,9 +20,6 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall.puml[]
 |IRS
 |The IRS consumes relationship information across the CX-Network and builds the graph view. Within this Documentation, the focus lies on the IRS
 
-|AAS Wrapper
-|The AAS Wrapper is a System, which simplifies the communication with the EDC and wraps the communication.
-
 |AAS Proxy
 |The AAS Proxy is a System, which enables the consumer to simplify the communication with other CX Partners.
 
