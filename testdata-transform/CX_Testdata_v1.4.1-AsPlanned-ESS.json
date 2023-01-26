@@ -45,30 +45,6 @@
               "createdOn": "2022-02-03T14:48:54.709Z",
               "lastModifiedOn": "2022-02-03T14:48:54.709Z",
               "childCatenaXId": "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c"
-            },
-            {
-              "quantity": {
-                "quantityNumber": "1",
-                "measurementUnit": {
-                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                  "lexicalValue": "unit:piece"
-                }
-              },
-              "createdOn": "2022-02-03T14:48:54.709Z",
-              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "childCatenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7"
-            },
-            {
-              "quantity": {
-                "quantityNumber": "1",
-                "measurementUnit": {
-                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                  "lexicalValue": "unit:piece"
-                }
-              },
-              "createdOn": "2022-02-03T14:48:54.709Z",
-              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "childCatenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b"
             }
           ]
         }
@@ -169,18 +145,6 @@
               "createdOn": "2022-02-03T14:48:54.709Z",
               "lastModifiedOn": "2022-02-03T14:48:54.709Z",
               "childCatenaXId": "urn:uuid:c7a2b803-f8fe-4b79-b6fc-967ce847c9a9"
-            },
-            {
-              "quantity": {
-                "quantityNumber": "0.11",
-                "measurementUnit": {
-                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                  "lexicalValue": "unit:kilogram"
-                }
-              },
-              "createdOn": "2022-02-03T14:48:54.709Z",
-              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "childCatenaXId": "urn:uuid:15d2fcc8-6439-4d1e-904b-e62b4d3bf323"
             }
           ]
         }
@@ -188,7 +152,7 @@
     },
     {
       "catenaXId": "urn:uuid:c7a2b803-f8fe-4b79-b6fc-967ce847c9a9",
-      "bpnl": "BPNL00000003AYRE",
+      "bpnl": "BPNL00000003B3NX",
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
@@ -274,360 +238,38 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:15d2fcc8-6439-4d1e-904b-e62b4d3bf323",
-      "bpnl": "BPNL00000003AXS3",
+      "catenaXId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
+      "bpnl": "BPNL00000003AVTH",
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
           "validityPeriod": {
-            "validFrom": "2017-02-10T10:35:10.000Z",
-            "validTo": "2024-01-30T00:15:14.000Z"
+            "validFrom": "2013-09-21T23:24:07.000Z",
+            "validTo": "2026-11-22T17:35:54.000Z"
           },
-          "catenaXId": "urn:uuid:15d2fcc8-6439-4d1e-904b-e62b4d3bf323",
+          "catenaXId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
           "partTypeInformation": {
-            "manufacturerPartId": "9A047C7-01",
+            "manufacturerPartId": "FJ-87",
             "classification": "product",
-            "nameAtManufacturer": "Sub Tier B Sealant"
+            "nameAtManufacturer": "Vehicle Model B"
           }
         }
       ],
       "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
-          "catenaXId": "urn:uuid:15d2fcc8-6439-4d1e-904b-e62b4d3bf323",
+          "catenaXId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
           "sites": [
             {
-              "functionValidUntil": "2024-04-12T03:22:39.000Z",
+              "functionValidUntil": "2025-03-23T05:10:13.000Z",
               "function": "production",
-              "functionValidFrom": "2019-04-23T20:50:29.000Z",
-              "catenaXSiteId": "BPNS00000003AXS3"
+              "functionValidFrom": "2018-12-09T05:11:28.000Z",
+              "catenaXSiteId": "BPNS000000815DMY"
             }
           ]
         }
       ],
       "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
         {
-          "catenaXId": "urn:uuid:15d2fcc8-6439-4d1e-904b-e62b4d3bf323",
-          "childParts": []
-        }
-      ]
-    },
-    {
-      "catenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7",
-      "bpnl": "BPNL00000003B2OM",
-      "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
-        {
-          "validityPeriod": {
-            "validFrom": "2013-04-01T00:18:40.000Z",
-            "validTo": "2025-07-06T08:58:34.000Z"
-          },
-          "catenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7",
-          "partTypeInformation": {
-            "manufacturerPartId": "32494586-73",
-            "classification": "product",
-            "nameAtManufacturer": "Tier A Gearbox"
-          }
-        }
-      ],
-      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
-        {
-          "catenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7",
-          "sites": [
-            {
-              "functionValidUntil": "2031-11-21T01:59:04.000Z",
-              "function": "production",
-              "functionValidFrom": "2013-09-04T06:14:54.000Z",
-              "catenaXSiteId": "BPNS00000003B2OM"
-            }
-          ]
-        }
-      ],
-      "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
-        {
-          "catenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7",
-          "childParts": [
-            {
-              "quantity": {
-                "quantityNumber": "1",
-                "measurementUnit": {
-                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                  "lexicalValue": "unit:piece"
-                }
-              },
-              "createdOn": "2022-02-03T14:48:54.709Z",
-              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "childCatenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc"
-            },
-            {
-              "quantity": {
-                "quantityNumber": "1",
-                "measurementUnit": {
-                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                  "lexicalValue": "unit:piece"
-                }
-              },
-              "createdOn": "2022-02-03T14:48:54.709Z",
-              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "childCatenaXId": "urn:uuid:4518c080-14fb-4252-b8de-4362d615868d"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
-      "bpnl": "BPNL00000003B3NX",
-      "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
-        {
-          "validityPeriod": {
-            "validFrom": "2015-03-15T17:25:20.000Z",
-            "validTo": "2027-12-12T17:07:52.000Z"
-          },
-          "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
-          "partTypeInformation": {
-            "manufacturerPartId": "6740244-02",
-            "classification": "product",
-            "nameAtManufacturer": "Sub Tier A Sensor"
-          }
-        }
-      ],
-      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
-        {
-          "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
-          "sites": [
-            {
-              "functionValidUntil": "2026-01-07T15:36:31.000Z",
-              "function": "production",
-              "functionValidFrom": "2015-04-29T17:11:59.000Z",
-              "catenaXSiteId": "BPNS00000003B3NX"
-            }
-          ]
-        }
-      ],
-      "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
-        {
-          "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
-          "childParts": [
-            {
-              "quantity": {
-                "quantityNumber": "1",
-                "measurementUnit": {
-                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                  "lexicalValue": "unit:piece"
-                }
-              },
-              "createdOn": "2022-02-03T14:48:54.709Z",
-              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "childCatenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "catenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e",
-      "bpnl": "BPNL00000003B0Q0",
-      "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
-        {
-          "validityPeriod": {
-            "validFrom": "2019-12-30T09:17:00.000Z",
-            "validTo": "2025-06-28T12:55:41.000Z"
-          },
-          "catenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e",
-          "partTypeInformation": {
-            "manufacturerPartId": "7A047KK-01",
-            "classification": "product",
-            "nameAtManufacturer": "N Tier A NTier Product"
-          }
-        }
-      ],
-      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
-        {
-          "catenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e",
-          "sites": [
-            {
-              "functionValidUntil": "2027-12-16T02:11:09.000Z",
-              "function": "production",
-              "functionValidFrom": "2016-07-03T19:23:35.000Z",
-              "catenaXSiteId": "BPNS00000003B0Q0"
-            }
-          ]
-        }
-      ],
-      "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
-        {
-          "catenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e",
-          "childParts": []
-        }
-      ]
-    },
-    {
-      "catenaXId": "urn:uuid:4518c080-14fb-4252-b8de-4362d615868d",
-      "bpnl": "BPNL00000003B0Q0",
-      "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
-        {
-          "validityPeriod": {
-            "validFrom": "2019-08-05T21:18:41.000Z",
-            "validTo": "2029-05-20T17:40:33.000Z"
-          },
-          "catenaXId": "urn:uuid:4518c080-14fb-4252-b8de-4362d615868d",
-          "partTypeInformation": {
-            "manufacturerPartId": "7A987KK-04",
-            "classification": "product",
-            "nameAtManufacturer": "N Tier A Plastics"
-          }
-        }
-      ],
-      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
-        {
-          "catenaXId": "urn:uuid:4518c080-14fb-4252-b8de-4362d615868d",
-          "sites": [
-            {
-              "functionValidUntil": "2024-05-06T20:49:32.000Z",
-              "function": "production",
-              "functionValidFrom": "2018-08-06T12:03:21.000Z",
-              "catenaXSiteId": "BPNS00000003B0Q0"
-            }
-          ]
-        }
-      ],
-      "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
-        {
-          "catenaXId": "urn:uuid:4518c080-14fb-4252-b8de-4362d615868d",
-          "childParts": []
-        }
-      ]
-    },
-    {
-      "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
-      "bpnl": "BPNL00000003B5MJ",
-      "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
-        {
-          "validityPeriod": {
-            "validFrom": "2020-03-28T02:37:02.000Z",
-            "validTo": "2026-10-10T19:22:52.000Z"
-          },
-          "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
-          "partTypeInformation": {
-            "manufacturerPartId": "ZX-55",
-            "classification": "product",
-            "nameAtManufacturer": "Tier B ECU1"
-          }
-        }
-      ],
-      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
-        {
-          "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
-          "sites": [
-            {
-              "functionValidUntil": "2028-11-10T20:21:31.000Z",
-              "function": "production",
-              "functionValidFrom": "2020-12-24T22:55:29.000Z",
-              "catenaXSiteId": "BPNS00000003B5MJ"
-            }
-          ]
-        }
-      ],
-      "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
-        {
-          "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
-          "childParts": [
-            {
-              "quantity": {
-                "quantityNumber": "1",
-                "measurementUnit": {
-                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                  "lexicalValue": "unit:piece"
-                }
-              },
-              "createdOn": "2022-02-03T14:48:54.709Z",
-              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "childCatenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc"
-            },
-            {
-              "quantity": {
-                "quantityNumber": "0.3301",
-                "measurementUnit": {
-                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                  "lexicalValue": "unit:kilogram"
-                }
-              },
-              "createdOn": "2022-02-03T14:48:54.709Z",
-              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "childCatenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "catenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
-      "bpnl": "BPNL00000003AXS3",
-      "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
-        {
-          "validityPeriod": {
-            "validFrom": "2014-07-30T07:17:16.000Z",
-            "validTo": "2028-03-27T22:34:57.000Z"
-          },
-          "catenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
-          "partTypeInformation": {
-            "manufacturerPartId": "6775244-06",
-            "classification": "product",
-            "nameAtManufacturer": "Sub Tier B Glue"
-          }
-        }
-      ],
-      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
-        {
-          "catenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
-          "sites": [
-            {
-              "functionValidUntil": "2026-03-11T19:58:28.000Z",
-              "function": "production",
-              "functionValidFrom": "2020-03-04T21:09:12.000Z",
-              "catenaXSiteId": "BPNS00000003AXS3"
-            }
-          ]
-        }
-      ],
-      "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
-        {
-          "catenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
-          "childParts": []
-        }
-      ]
-    },
-    {
-      "catenaXId": "urn:uuid:65e1554e-e5cd-4560-bac1-1352582122fb",
-      "bpnl": "BPNL00000003AZQP",
-      "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
-        {
-          "validityPeriod": {
-            "validFrom": "2016-03-31T00:20:37.000Z",
-            "validTo": "2027-01-17T01:39:30.000Z"
-          },
-          "catenaXId": "urn:uuid:65e1554e-e5cd-4560-bac1-1352582122fb",
-          "partTypeInformation": {
-            "manufacturerPartId": "XK-34",
-            "classification": "product",
-            "nameAtManufacturer": "Vehicle Model C"
-          }
-        }
-      ],
-      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
-        {
-          "catenaXId": "urn:uuid:65e1554e-e5cd-4560-bac1-1352582122fb",
-          "sites": [
-            {
-              "functionValidUntil": "2026-12-01T08:38:21.000Z",
-              "function": "production",
-              "functionValidFrom": "2016-03-22T14:03:32.000Z",
-              "catenaXSiteId": "BPNS000001111DMY"
-            }
-          ]
-        }
-      ],
-      "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
-        {
-          "catenaXId": "urn:uuid:65e1554e-e5cd-4560-bac1-1352582122fb",
+          "catenaXId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
           "childParts": [
             {
               "quantity": {
@@ -692,6 +334,43 @@
               "childCatenaXId": "urn:uuid:b1d46d01-e308-4bd3-863a-331e64751d76"
             }
           ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:b1d46d01-e308-4bd3-863a-331e64751d76",
+      "bpnl": "BPNL00000003AXS3",
+      "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
+        {
+          "validityPeriod": {
+            "validFrom": "2014-07-30T07:17:16.000Z",
+            "validTo": "2028-03-27T22:34:57.000Z"
+          },
+          "catenaXId": "urn:uuid:b1d46d01-e308-4bd3-863a-331e64751d76",
+          "partTypeInformation": {
+            "manufacturerPartId": "6775244-06",
+            "classification": "product",
+            "nameAtManufacturer": "Sub Tier B Glue"
+          }
+        }
+      ],
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:b1d46d01-e308-4bd3-863a-331e64751d76",
+          "sites": [
+            {
+              "functionValidUntil": "2026-03-11T19:58:28.000Z",
+              "function": "production",
+              "functionValidFrom": "2020-03-04T21:09:12.000Z",
+              "catenaXSiteId": "BPNS00000003AXS3"
+            }
+          ]
+        }
+      ],
+      "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:b1d46d01-e308-4bd3-863a-331e64751d76",
+          "childParts": []
         }
       ]
     }
