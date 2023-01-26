@@ -21,8 +21,10 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -82,6 +84,7 @@ class IrsApplicationTests {
         final Map<String, Object> fixedYamlMap = mapper.readValue(fixedYaml, Map.class);
         final Map<String, Object> generatedYamlMap = mapper.readValue(generatedYaml, Map.class);
 
+//        assertThat(generatedYaml).isEqualToIgnoringWhitespace(Files.readString(new File("../api/irs-v1.0.yaml").toPath(), UTF_8));
         assertThat(fixedYamlMap).isEqualTo(generatedYamlMap);
     }
 

@@ -12,9 +12,14 @@
 
     <artifactId>ess</artifactId>
     <name>ESS</name>
-    <description>ESS</description>
+    <description>Environmental- and Social Standards</description>
 
     <dependencies>
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-models</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
