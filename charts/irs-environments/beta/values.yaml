@@ -1,12 +1,10 @@
-global:
-  enablePrometheus: false
-  enableGrafana: false
 irs-helm:
   #####################
   # IRS Configuration #
   #####################
   irsUrl: "https://irs.beta.demo.catena-x.net"
   ingress:
+    enabled: true
     hosts:
       - host: "irs.beta.demo.catena-x.net"
         paths:
@@ -30,26 +28,19 @@ irs-helm:
       clientSecret: <path:traceability-irs/data/beta/keycloak/oauth2#clientSecret>
       clientTokenUri: <path:traceability-irs/data/beta/keycloak/oauth2#tokenUri>
       jwkSetUri: <path:traceability-irs/data/beta/keycloak/oauth2#jwkSetUri>
-  aasWrapper:
-    username: <path:traceability-irs/data/beta/aasProxy/submodel#username>
-    password: <path:traceability-irs/data/beta/aasProxy/submodel#password>
+  edc:
+    controlplane:
+      apikey:
+        secret: <path:traceability-irs/data/beta/controlplane#apiKey>
 
   #######################
   # Minio Configuration #
   #######################
-  irs-minio:
-    minioUser: <path:traceability-irs/data/beta/minio#minioUser>
-    minioPassword: <path:traceability-irs/data/beta/minio#minioPassword>
+  minio:
+    rootUser: <path:traceability-irs/data/beta/minio#minioUser>
+    rootPassword: <path:traceability-irs/data/beta/minio#minioPassword>
 
-  ############################
-  # AASWrapper Configuration #
-  ############################
-  irs-aaswrapper:
-    edc:
-      api:
-        auth:
-          key: <path:traceability-irs/data/beta/controlplane#apiKey>
-
+irs-edc-consumer:
   ##############################
   # EDC Postgres Configuration #
   ##############################
