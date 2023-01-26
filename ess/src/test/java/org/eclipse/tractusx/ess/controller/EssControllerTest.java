@@ -21,12 +21,19 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.controller;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.List;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -36,13 +43,40 @@ class EssControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Test
-    @WithMockUser
-    void helloTest() throws Exception {
-        final String path = "/ess/hello";
+    private final String path = "/irs/jobs/bpnInvestigation";
+    private final String globalAssetId = "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6";
+    private final String bpn = "BPNS000000000DDD";
 
-        this.mockMvc.perform(get(path))
-                    .andExpect(status().isOk());
+    @Test
+    @WithMockUser(authorities = "view_irs")
+    void shouldRegisterBpnInvestigationForValidRequest() throws Exception {
+        this.mockMvc.perform(post(path).with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(new ObjectMapper().writeValueAsString(reqBody(globalAssetId, List.of(bpn)))))
+                    .andExpect(status().isCreated());
     }
+
+    @Test
+    @WithMockUser(authorities = "view_irs")
+    void shouldReturnBadRequestForWrongGlobalAssetId() throws Exception {
+        this.mockMvc.perform(post(path).with(csrf())
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .content(new ObjectMapper().writeValueAsString(reqBody("wrongGlobalAssetId", List.of(bpn)))))
+                    .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(authorities = "view_irs")
+    void shouldReturnBadRequestForWrongBpn() throws Exception {
+        this.mockMvc.perform(post(path).with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(new ObjectMapper().writeValueAsString(reqBody(globalAssetId, List.of(bpn, "WRONG_BPN")))))
+                    .andExpect(status().isBadRequest());
+    }
+
+    RegisterBpnInvestigationJob reqBody(final String globalAssetId, final List<String> bpns) {
+        return RegisterBpnInvestigationJob.builder().globalAssetId(globalAssetId).incidentBpns(bpns).build();
+    }
+
 
 }
