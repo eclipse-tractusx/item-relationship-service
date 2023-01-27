@@ -79,19 +79,16 @@ include::../../../uml-diagrams/building-block-view/level-2-int-transfer-process-
 |Components |Description
 
 |TransferProcessManager
-|The TransferProcessManager manages the requests to the AASWrapper and DigitalTwinRegistry.
+|The TransferProcessManager manages the requests to the EDC and DigitalTwinRegistry.
 
 |DigitalTwinRegistryFacade
 |The DigitalTwinRegistryFacade calls the DigitalTwinRegistry to retrieve data form the AAS registry and transforms the response to internal data models.
 
 |SubmodelFacade
-|The SubmodelFacade calls the AASWrapper to retrieve data from the submodel server and transforms the response to internal data models.
+|The SubmodelFacade calls the EDC to retrieve data from the submodel server and transforms the response to internal data models.
 
 |BlobStore
 |The BlobStore is the database where the relationships and tombstones are stored for a requested item.
-
-|AASWrapper
-|The AASWrapper is the interface to the EDC Network. It manages negotiation of contracts and transfer of data.
 
 |DigitalTwinRegistry
 |The DigitalTwinRegistry is the central database of registered assets.
