@@ -183,7 +183,9 @@ if __name__ == "__main__":
                         required=False)
     parser.add_argument("-k", "--apikey", type=str, help="EDC provider api key", required=True)
     parser.add_argument("-e", "--esr", type=str, help="ESR URL", required=False)
-    parser.add_argument("--ess", help="Enable ESS data creation with invalid EDC URL", required=False, action='store_true')
+    parser.add_argument("--ess", help="Enable ESS data creation with invalid EDC URL", action='store_true',
+                        required=False)
+    parser.add_argument("--bpn", help="Faulty BPN which will create a non existing EDC endpoint", required=False)
 
     args = parser.parse_args()
     config = vars(args)
@@ -197,6 +199,7 @@ if __name__ == "__main__":
     edc_api_key = config.get("apikey")
     esr_url = config.get("esr")
     is_ess = config.get("ess")
+    bpnl_fail = config.get("bpn")
 
     if submodel_server_upload_urls is None:
         submodel_server_upload_urls = submodel_server_urls
@@ -217,9 +220,6 @@ if __name__ == "__main__":
         'X-Api-Key': edc_api_key,
         'Content-Type': 'application/json'
     }
-
-    # BPN which will create an invalid edc endpoint if "--ess" flag is present
-    bpnl_fail = "BPNL00000004FAIL"
 
     # Opening JSON file
     f = open(filepath)
