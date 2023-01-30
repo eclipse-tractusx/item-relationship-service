@@ -1,0 +1,142 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+autonumber "<b>[000]"
+
+
+participant Client as Client
+
+box "Tier" #LightGrey
+    participant IRSApi as IRSAPIOEM
+    participant IRS as IRS_OEM
+end box
+
+Client -> IRSAPIOEM : register bpnInvestigation (C-Xid/BPN)
+note left
+    POST /irs/jobs/bpnInvestigation
+    params:
+        {globalAssetId}
+        {bomLifecycle}
+        {callbackUrl}
+        {incidentBpns}
+end note
+
+participant EDC
+
+box "Tier1" #Grey
+    participant IRSAPI as IRSApi
+    participant IRS as IRS
+    participant SubmodelServer as SubmodelServer
+end box
+
+box "ESS" #DarkGrey
+    participant EssApi as  "ESS API"
+end box
+
+
+box "Shared Services"
+     participant DTRegistry as DTREGISTRY
+     participant DiscoveryService as "DiscoveryService (BPN -> EDC_Url)"
+end box
+
+
+
+activate IRSAPIOEM
+IRSAPIOEM -> IRS_OEM : register job
+activate IRS_OEM
+IRSAPIOEM <-- IRS_OEM : return {id} // jobId
+Client <-- IRSAPIOEM : return {id} // jobId
+
+IRS_OEM -> IRS_OEM : process registered job
+ref over IRS_OEM
+ -> essIncidentCheck (Parts BPNs, IncidentBPN)
+end ref
+opt ESSIncidentCheck == true
+    IRSAPIOEM <-- IRS_OEM : return {BPNInvestigationResponse}
+    Client <-- IRSAPIOEM : return {BPNInvestigationResponse} supplychainImpacted:Yes
+end opt
+
+IRS_OEM -> DTREGISTRY : request aas for {globalAssetId}
+activate DTREGISTRY
+
+IRS_OEM <-- DTREGISTRY : AAS for {globalAssetId}
+
+ref over IRS_OEM,DTREGISTRY, EDC, SubmodelServer
+       Create ItemGraph One-Level Down (Part-Child relationship)
+       bomLifecycle: asPlanned
+       Receive : AAS Shells for children
+end ref
+
+IRS_OEM -> IRS_OEM : Extract BPN from AAS
+ref over IRS_OEM
+ -> essIncidentCheck (Parts BPNs, IncidentBPN)
+end ref
+opt ESSIncidentCheck == true
+       IRSAPIOEM <-- IRS_OEM : return {BPNInvestigationResponse}
+       Client <-- IRSAPIOEM : return {BPNInvestigationResponse} supplychainImpacted:Yes
+   end opt
+
+loop forEach(bpn in BPNS)
+
+   IRS_OEM -> DiscoveryService : lookupEDCAddress(bpn)
+   ref over IRS_OEM
+         createNotificationRequestEDCUrl(EDCBaseUrl,  urn_of_the_semantic_model_for_ess_supplier_request)
+   end ref
+   IRS_OEM -> EDC : send ess-supplier-request
+   note left
+        ess-supplier-request:
+           {
+               "header": {
+                   "notificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
+                   "senderBpn": "BPNL00000003BW3S",
+                   "recipientBpn": "BPNL00000003BV4H",
+                   "senderEdc": "https://edc.company-xyz.io/BPNL00000003BW3S",
+                   "replyAssetId": "ess-response-asset",
+                   "replyAssetSubPath" : "optionalSubPath",
+                   "notificationType": "ess-supplier-request"
+
+               },
+               "content": {
+                   "incidentBpn" : "BPNS123456"
+                   "concernedCatenaXIds" : ["CxUUID"]
+               }
+           }
+       end note
+
+    EDC -> SubmodelServer : foward ess-supplier-request notification
+    activate SubmodelServer
+    SubmodelServer <- EDC : response code 201 (Error: 4xx)
+    note left
+        201	: Quality notification was received successfully
+        400	: Request body was malformed
+        401	: Not authorized
+        403	: Forbidden
+        405	: Method not allowed
+        409	: Could not accept the send notification, because a notification with that notificationId already exists
+        422	: Could not accept the send notification even though it is syntactically correct.
+    end note
+    opt response code != 201
+        ref over IRS_OEM
+            Error handling
+        end ref
+        IRSAPIOEM <-- IRS_OEM : return {BPNInvestigationResponse}
+        Client <-- IRSAPIOEM : return {BPNInvestigationResponse} essImpacted:Unknown
+    end opt
+
+     EDC <-- SubmodelServer : callback ess-supplier-response
+     IRS_OEM <-- EDC : receive callback ess-supplier-response
+     IRS_OEM --> IRS_OEM : analyze ess-supplier-response
+     ref over IRS_OEM
+         -> essIncidentCheck (Parts BPNs, IncidentBPN)
+     end ref
+     opt ESSIncidentCheck == true
+         IRSAPIOEM <-- IRS_OEM : return {BPNInvestigationResponse}
+         Client <-- IRSAPIOEM : return {BPNInvestigationResponse} supplyChainImpacted:Yes
+     end opt
+end loop
+
+    IRSAPIOEM <-- IRS_OEM : return {BPNInvestigationResponse}
+    Client <-- IRSAPIOEM : return {BPNInvestigationResponse} supplyChainImpacted:No
+
+@enduml
