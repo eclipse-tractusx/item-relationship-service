@@ -19,39 +19,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.ess.discovery;
+package org.eclipse.tractusx.ess.irs;
 
 import java.util.List;
-import java.util.Optional;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
 
 /**
- * Public API Facade for Discovery service domain
+ *  Irs Request for IRS API
  */
-@Service
-@RequiredArgsConstructor
-@Slf4j
-public class EdcDiscoveryFacade {
-
-    private final EdcDiscoveryClient edcDiscoveryClient;
-
-    /**
-     * Returns EDC base url or empty
-     * @param bpn number
-     * @return address
-     */
-    public Optional<String> getEdcBaseUrl(final String bpn) {
-        final EdcAddressResponse edcAddressResponse = edcDiscoveryClient.getEdcBaseUrl(bpn);
-
-        final List<String> endpoints = edcAddressResponse.getConnectorEndpoint();
-
-        return endpoints.stream()
-                        .filter(StringUtils::isNotBlank)
-                        .findFirst();
-    }
-
+@Value
+@Builder(toBuilder = true)
+@AllArgsConstructor
+class IrsRequest {
+    private String globalAssetId;
+    private String bomLifecycle;
+    private List<String> aspects;
+    private boolean collectAspects;
+    private int depth;
 }

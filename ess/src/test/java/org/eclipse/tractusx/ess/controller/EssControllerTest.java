@@ -21,18 +21,24 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.tractusx.ess.service.EssService;
+import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -43,6 +49,9 @@ class EssControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @MockBean
+    private EssService essService;
+
     private final String path = "/irs/jobs/bpnInvestigation";
     private final String globalAssetId = "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6";
     private final String bpn = "BPNS000000000DDD";
@@ -50,6 +59,8 @@ class EssControllerTest {
     @Test
     @WithMockUser(authorities = "view_irs")
     void shouldRegisterBpnInvestigationForValidRequest() throws Exception {
+        when(essService.startIrsJob(anyString(), any())).thenReturn(JobHandle.builder().id(UUID.randomUUID()).build());
+
         this.mockMvc.perform(post(path).with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(new ObjectMapper().writeValueAsString(reqBody(globalAssetId, List.of(bpn)))))

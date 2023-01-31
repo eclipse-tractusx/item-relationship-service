@@ -23,6 +23,8 @@ package org.eclipse.tractusx.ess.discovery;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 
 class EdcDiscoveryFacadeTest {
@@ -33,7 +35,7 @@ class EdcDiscoveryFacadeTest {
     void shouldReturnEdcBaseUrl() {
         final String bpn = "BPNS000000000DDD";
 
-        final String edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl(bpn);
+        final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl(bpn);
 
         assertThat(edcBaseUrl).isNotEmpty();
     }

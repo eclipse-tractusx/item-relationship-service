@@ -39,7 +39,7 @@ interface EdcDiscoveryClient {
      * @param bpn number
      * @return EDC addresses
      */
-    EdcAddressResponse getEdcBaseUrl(final String bpn);
+    EdcAddressResponse getEdcBaseUrl(String bpn);
 
 }
 
