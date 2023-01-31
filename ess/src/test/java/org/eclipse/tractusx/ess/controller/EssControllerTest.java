@@ -22,8 +22,10 @@
 package org.eclipse.tractusx.ess.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,6 +35,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.tractusx.ess.service.EssService;
 import org.eclipse.tractusx.irs.component.JobHandle;
+import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +67,16 @@ class EssControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(new ObjectMapper().writeValueAsString(reqBody(globalAssetId, List.of(bpn)))))
                     .andExpect(status().isCreated());
+    }
+
+    @Test
+    @WithMockUser(authorities = "view_irs")
+    void shouldGetJob() throws Exception {
+        final String jobId = UUID.randomUUID().toString();
+        when(essService.getIrsJob(eq(jobId))).thenReturn(Jobs.builder().build());
+
+        this.mockMvc.perform(get(path + "/" + jobId))
+                    .andExpect(status().isOk());
     }
 
     @Test
