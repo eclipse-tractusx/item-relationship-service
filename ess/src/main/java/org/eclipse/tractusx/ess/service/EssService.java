@@ -21,9 +21,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.service;
 
+import java.util.Collections;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.ess.discovery.EdcDiscoveryFacade;
@@ -69,20 +69,18 @@ public class EssService {
 //            incidentBpnCache.findByJobId()
         }
 
-        extendSubmodelsWithSupplyChain(irsJob, supplyChainImpacted);
-
-        return irsJob;
+        return extendJobWithSupplyChainSubmodel(irsJob, supplyChainImpacted);
     }
 
     private boolean isJobProcessingFinished(final Jobs irsJob) {
         return irsJob.getJob().getState().equals(JobState.COMPLETED);
     }
 
-    private void extendSubmodelsWithSupplyChain(final Jobs completedIrsJob, final SupplyChainImpacted supplyChainImpacted) {
-        completedIrsJob.getSubmodels().add(
-                Submodel.builder()
-                        .payload(new ObjectMapper().convertValue(supplyChainImpacted, Map.class))
-                        .build()
-        );
+    private Jobs extendJobWithSupplyChainSubmodel(final Jobs completedIrsJob, final SupplyChainImpacted supplyChainImpacted) {
+        final Submodel supplyChainImpactedSubmodel = Submodel.builder()
+                                                             .payload(Map.of("supplyChainImpacted", supplyChainImpacted))
+                                                             .build();
+
+        return completedIrsJob.toBuilder().submodels(Collections.singletonList(supplyChainImpactedSubmodel)).build();
     }
 }
