@@ -95,8 +95,107 @@
               "createdOn": "2022-02-03T14:48:54.709Z",
               "lastModifiedOn": "2022-02-03T14:48:54.709Z",
               "childCatenaXId": "urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97"
+            },
+            {
+              "quantity": {
+                "quantityNumber": "6",
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:piece"
+                }
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7"
             }
           ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7",
+      "bpnl": "BPNL00000003B6LU",
+      "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
+        {
+          "validityPeriod": {
+            "validFrom": "2013-04-01T00:18:40.000Z",
+            "validTo": "2025-07-06T08:58:34.000Z"
+          },
+          "catenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7",
+          "partTypeInformation": {
+            "manufacturerPartId": "32494586-73",
+            "classification": "product",
+            "nameAtManufacturer": "Tier A Gearbox"
+          }
+        }
+      ],
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7",
+          "sites": [
+            {
+              "functionValidUntil": "2031-11-21T01:59:04.000Z",
+              "function": "production",
+              "functionValidFrom": "2013-09-04T06:14:54.000Z",
+              "catenaXSiteId": "BPNS00000003B2OM"
+            }
+          ]
+        }
+      ],
+      "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7",
+          "childParts": [
+            {
+              "quantity": {
+                "quantityNumber": "1",
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:piece"
+                }
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
+      "bpnl": "BPNL00ARBITRARY3",
+      "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
+        {
+          "validityPeriod": {
+            "validFrom": "2015-03-15T17:25:20.000Z",
+            "validTo": "2027-12-12T17:07:52.000Z"
+          },
+          "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
+          "partTypeInformation": {
+            "manufacturerPartId": "6740244-02",
+            "classification": "product",
+            "nameAtManufacturer": "Sub Tier A Sensor"
+          }
+        }
+      ],
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
+          "sites": [
+            {
+              "functionValidUntil": "2026-01-07T15:36:31.000Z",
+              "function": "production",
+              "functionValidFrom": "2015-04-29T17:11:59.000Z",
+              "catenaXSiteId": "BPNS00000003B3NX"
+            }
+          ]
+        }
+      ],
+      "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
+          "childParts": []
         }
       ]
     },
