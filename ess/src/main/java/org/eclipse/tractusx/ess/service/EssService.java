@@ -60,7 +60,7 @@ public class EssService {
 //        1. Discover EDC Address
 //        2. ESSIncidentRequest supplier-request stuff
         if (isJobProcessingFinished(irsJob)) {
-
+            log.info("Job is completed. Starting SupplyChainImpacted processing for job {}.", irsJob.getJob().getId());
         }
 
         extendSubmodelsWithSupplyChain(irsJob, supplyChainImpacted);
@@ -69,7 +69,7 @@ public class EssService {
     }
 
     private boolean isJobProcessingFinished(final Jobs irsJob) {
-        return irsJob.getJob().getState().equals(JobState.RUNNING);
+        return irsJob.getJob().getState().equals(JobState.COMPLETED);
     }
 
     private void extendSubmodelsWithSupplyChain(final Jobs completedIrsJob, final SupplyChainImpacted supplyChainImpacted) {

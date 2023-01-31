@@ -67,7 +67,7 @@ class EdcDiscoveryClientImpl implements EdcDiscoveryClient {
     private final String discoveryAddressUrl;
 
     /* package */ EdcDiscoveryClientImpl(@Qualifier("discoveryRestTemplate") final RestTemplate restTemplate,
-            @Value("${discovery.endpoint:}") final String discoveryAddressUrl) {
+            @Value("${ess.discovery.endpoint:}") final String discoveryAddressUrl) {
         this.restTemplate = restTemplate;
         this.discoveryAddressUrl = discoveryAddressUrl;
     }

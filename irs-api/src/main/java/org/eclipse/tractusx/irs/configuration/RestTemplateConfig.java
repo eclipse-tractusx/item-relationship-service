@@ -105,9 +105,9 @@ public class RestTemplateConfig {
 
     @Bean(DISCOVERY_REST_TEMPLATE)
         /* package */ RestTemplate discoveryRestTemplate(final RestTemplateBuilder restTemplateBuilder,
-            @Value("${bpdm.timeout.read}") final Duration readTimeout,
-            @Value("${bpdm.timeout.connect}") final Duration connectTimeout,
-            @Value("${bpdm.oAuthClientId}") final String clientRegistrationId) {
+            @Value("${ess.discovery.timeout.read}") final Duration readTimeout,
+            @Value("${ess.discovery.timeout.connect}") final Duration connectTimeout,
+            @Value("${ess.discovery.oAuthClientId}") final String clientRegistrationId) {
         return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId);
     }
 

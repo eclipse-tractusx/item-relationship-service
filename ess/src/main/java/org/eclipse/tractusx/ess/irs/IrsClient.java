@@ -21,7 +21,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.irs;
 
-import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
