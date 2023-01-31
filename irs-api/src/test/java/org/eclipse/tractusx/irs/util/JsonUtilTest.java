@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 
-import org.eclipse.tractusx.irs.exceptions.JsonParseException;
+import org.eclipse.tractusx.irs.common.JsonParseException;
 import org.junit.jupiter.api.Test;
 
 class JsonUtilTest {

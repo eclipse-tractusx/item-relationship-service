@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.irs.configuration;
 
 import static java.util.Objects.isNull;
+import static org.eclipse.tractusx.edc.EdcSubmodelFacade.EDC_REST_TEMPLATE;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -62,7 +63,6 @@ public class RestTemplateConfig {
     public static final String BPDM_REST_TEMPLATE = "oAuthRestTemplate";
     public static final String SEMHUB_REST_TEMPLATE = "oAuthRestTemplate";
     public static final String NO_ERROR_REST_TEMPLATE = "noErrorRestTemplate";
-    public static final String EDC_REST_TEMPLATE = "edcRestTemplate";
 
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final ClientRegistrationRepository clientRegistrationRepository;
