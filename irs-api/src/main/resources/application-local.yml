@@ -24,8 +24,3 @@ spring:
         provider:
           keycloak:
             token-uri: http://localhost
-
-# ESS Module specific properties
-ess:
-  irs:
-    url: http://localhost:8080

@@ -63,7 +63,6 @@ public class RestTemplateConfig {
     public static final String SEMHUB_REST_TEMPLATE = "oAuthRestTemplate";
     public static final String NO_ERROR_REST_TEMPLATE = "noErrorRestTemplate";
     public static final String EDC_REST_TEMPLATE = "edcRestTemplate";
-    public static final String DISCOVERY_REST_TEMPLATE = "discoveryRestTemplate";
 
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final ClientRegistrationRepository clientRegistrationRepository;
@@ -100,14 +99,6 @@ public class RestTemplateConfig {
             @Value("${bpdm.timeout.read}") final Duration readTimeout,
             @Value("${bpdm.timeout.connect}") final Duration connectTimeout,
             @Value("${bpdm.oAuthClientId}") final String clientRegistrationId) {
-        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId);
-    }
-
-    @Bean(DISCOVERY_REST_TEMPLATE)
-        /* package */ RestTemplate discoveryRestTemplate(final RestTemplateBuilder restTemplateBuilder,
-            @Value("${ess.discovery.timeout.read}") final Duration readTimeout,
-            @Value("${ess.discovery.timeout.connect}") final Duration connectTimeout,
-            @Value("${ess.discovery.oAuthClientId}") final String clientRegistrationId) {
         return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId);
     }
 
