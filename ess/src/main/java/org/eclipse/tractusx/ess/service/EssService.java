@@ -30,8 +30,8 @@ import org.eclipse.tractusx.ess.discovery.EdcDiscoveryFacade;
 import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.component.Submodel;
-import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.springframework.stereotype.Service;
 
@@ -45,9 +45,14 @@ public class EssService {
 
     private final IrsFacade irsFacade;
     private final EdcDiscoveryFacade edcDiscoveryFacade;
+    private final IncidentBpnCache incidentBpnCache = new InMemoryIncidentBpnCache();
 
-    public JobHandle startIrsJob(final String globalAssetId, final BomLifecycle bomLifecycle) {
-        return irsFacade.startIrsJob(globalAssetId, bomLifecycle);
+    public JobHandle startIrsJob(final RegisterBpnInvestigationJob request) {
+        final JobHandle jobHandle = irsFacade.startIrsJob(request.getGlobalAssetId(), request.getBomLifecycle());
+
+        incidentBpnCache.store(jobHandle.getId(), request.getIncidentBpns());
+
+        return jobHandle;
     }
 
     public Jobs getIrsJob(final String jobId) {
@@ -61,6 +66,7 @@ public class EssService {
 //        2. ESSIncidentRequest supplier-request stuff
         if (isJobProcessingFinished(irsJob)) {
             log.info("Job is completed. Starting SupplyChainImpacted processing for job {}.", irsJob.getJob().getId());
+//            incidentBpnCache.findByJobId()
         }
 
         extendSubmodelsWithSupplyChain(irsJob, supplyChainImpacted);

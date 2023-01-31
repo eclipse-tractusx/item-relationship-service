@@ -100,7 +100,7 @@ class EssController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('view_irs')")
     public JobHandle registerBPNInvestigation(final @Valid @RequestBody RegisterBpnInvestigationJob request) {
-        return essService.startIrsJob(request.getGlobalAssetId(), request.getBomLifecycle());
+        return essService.startIrsJob(request);
     }
 
     @Operation(description = "Return job with additional supplyChainImpacted informations.",

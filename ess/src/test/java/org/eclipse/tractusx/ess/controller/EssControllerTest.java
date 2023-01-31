@@ -22,7 +22,6 @@
 package org.eclipse.tractusx.ess.controller;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -59,7 +58,7 @@ class EssControllerTest {
     @Test
     @WithMockUser(authorities = "view_irs")
     void shouldRegisterBpnInvestigationForValidRequest() throws Exception {
-        when(essService.startIrsJob(anyString(), any())).thenReturn(JobHandle.builder().id(UUID.randomUUID()).build());
+        when(essService.startIrsJob(any(RegisterBpnInvestigationJob.class))).thenReturn(JobHandle.builder().id(UUID.randomUUID()).build());
 
         this.mockMvc.perform(post(path).with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
