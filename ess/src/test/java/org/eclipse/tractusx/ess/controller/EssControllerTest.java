@@ -52,7 +52,7 @@ class EssControllerTest {
     @MockBean
     private EssService essService;
 
-    private final String path = "/irs/jobs/bpnInvestigation";
+    private final String path = "/ess/bpn/investigations";
     private final String globalAssetId = "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6";
     private final String bpn = "BPNS000000000DDD";
 

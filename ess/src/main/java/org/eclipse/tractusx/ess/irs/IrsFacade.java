@@ -36,17 +36,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class IrsFacade {
 
-    private static final int DEPTH = 1;
     private final IrsClient irsClient;
 
     public JobHandle startIrsJob(final String globalAssetId, final BomLifecycle bomLifecycle) {
-        final JobHandle response = irsClient.startJob(IrsRequest.builder()
-                                                                .globalAssetId(globalAssetId)
-                                                                .bomLifecycle(bomLifecycle != null
-                                                                               ? bomLifecycle.getName() : BomLifecycle.AS_PLANNED.getName())
-                                                                .depth(DEPTH)
-                                                                .collectAspects(false)
-                                                                .build());
+        final JobHandle response = irsClient.startJob(IrsRequest.bpnInvestigations(globalAssetId, bomLifecycle));
         log.info("Registered IRS job with jobId: {}", response.getId());
         return response;
     }

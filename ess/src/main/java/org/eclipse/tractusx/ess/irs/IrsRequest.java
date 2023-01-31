@@ -26,6 +26,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
+import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 
 /**
  *  Irs Request for IRS API
@@ -39,4 +40,14 @@ class IrsRequest {
     private List<String> aspects;
     private boolean collectAspects;
     private int depth;
+
+    static IrsRequest bpnInvestigations(final String globalAssetId, final BomLifecycle bomLifecycle) {
+        return IrsRequest.builder()
+                         .globalAssetId(globalAssetId)
+                         .bomLifecycle(bomLifecycle != null
+                                 ? bomLifecycle.getName() : BomLifecycle.AS_PLANNED.getName())
+                         .depth(1)
+                         .collectAspects(false)
+                         .build();
+    }
 }
