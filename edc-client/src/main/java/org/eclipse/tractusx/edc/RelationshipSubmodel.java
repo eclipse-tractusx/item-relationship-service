@@ -28,6 +28,6 @@ import org.eclipse.tractusx.irs.component.Relationship;
 /**
  * Abstract class for all Relationship submodels
  */
-public abstract class RelationshipSubmodel {
-    public abstract List<Relationship> asRelationships();
+public interface RelationshipSubmodel {
+    List<Relationship> asRelationships();
 }

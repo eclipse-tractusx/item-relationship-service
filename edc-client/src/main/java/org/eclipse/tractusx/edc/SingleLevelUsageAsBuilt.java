@@ -45,7 +45,7 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 @Jacksonized
 @AllArgsConstructor
 @NoArgsConstructor
-class SingleLevelUsageAsBuilt extends RelationshipSubmodel {
+class SingleLevelUsageAsBuilt implements RelationshipSubmodel {
 
     private String catenaXId;
     private Set<ParentData> parentParts;

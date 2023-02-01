@@ -209,7 +209,7 @@ public class TestMother {
                                                 .build();
 
         return new Relationship(GlobalAssetIdentification.of(UUID.randomUUID().toString()), linkedItem,
-                RelationshipAspect.AssemblyPartRelationship.name());
+                RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP.name());
     }
 
     public static Endpoint endpoint(String endpointAddress) {

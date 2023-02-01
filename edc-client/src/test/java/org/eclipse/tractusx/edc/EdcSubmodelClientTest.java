@@ -122,12 +122,12 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(assemblyPartRelationshipJson);
 
         // act
-        final var result = testee.getRelationships(ENDPOINT_ADDRESS, RelationshipAspect.AssemblyPartRelationship);
+        final var result = testee.getRelationships(ENDPOINT_ADDRESS, RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP);
         final List<Relationship> resultingRelationships = result.get(5, TimeUnit.SECONDS);
 
         // assert
         final List<Relationship> expectedRelationships = StringMapper.mapFromString(assemblyPartRelationshipJson,
-                RelationshipAspect.AssemblyPartRelationship.getSubmodelClazz()).asRelationships();
+                RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP.getSubmodelClazz()).asRelationships();
         assertThat(resultingRelationships).isNotNull().containsAll(expectedRelationships);
     }
 
@@ -138,7 +138,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
 
         // act
-        final var result = testee.getRelationships(ENDPOINT_ADDRESS, RelationshipAspect.AssemblyPartRelationship);
+        final var result = testee.getRelationships(ENDPOINT_ADDRESS, RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP);
         clock.travelToFuture(Duration.ofMinutes(20));
 
         // assert
@@ -163,7 +163,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         prepareTestdata(existingCatenaXId, "_assemblyPartRelationship");
 
         final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + existingCatenaXId + "/submodel", RelationshipAspect.AssemblyPartRelationship)
+                                                                  "http://localhost/" + existingCatenaXId + "/submodel", RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP)
                                                           .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isNotEmpty();
@@ -177,7 +177,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         prepareTestdata(catenaXId, "_singleLevelBomAsPlanned");
 
         final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + catenaXId + "/submodel", RelationshipAspect.SingleLevelBomAsPlanned)
+                                                                  "http://localhost/" + catenaXId + "/submodel", RelationshipAspect.SINGLE_LEVEL_BOM_AS_PLANNED)
                                                           .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isNotEmpty();
@@ -195,7 +195,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         prepareTestdata(catenaXId, "_singleLevelUsageAsBuilt");
 
         final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + catenaXId + "/submodel", RelationshipAspect.SingleLevelUsageAsBuilt)
+                                                                  "http://localhost/" + catenaXId + "/submodel", RelationshipAspect.SINGLE_LEVEL_USAGE_AS_BUILT)
                                                           .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isNotEmpty();
@@ -208,7 +208,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         prepareTestdata(catenaXId, "_assemblyPartRelationship");
 
         final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + catenaXId + "/submodel", RelationshipAspect.AssemblyPartRelationship)
+                                                                  "http://localhost/" + catenaXId + "/submodel", RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP)
                                                           .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isEmpty();
