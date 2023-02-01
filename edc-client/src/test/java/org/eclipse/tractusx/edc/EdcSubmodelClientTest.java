@@ -132,6 +132,24 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
+    void shouldSendNotificationSuccessfully() throws Exception {
+        // arrange
+        final EdcNotification notification = () -> "{test:1}";
+        when(contractNegotiationService.negotiate(any(), any())).thenReturn(
+                NegotiationResponse.builder().contractAgreementId("agreementId").build());
+        final EndpointDataReference ref = mock(EndpointDataReference.class);
+        endpointDataReferenceStorage.put("agreementId", ref);
+        when(edcDataPlaneClient.sendData(eq(ref), any(), eq(notification))).thenReturn(() -> true);
+
+        // act
+        final var result = testee.sendNotification(ENDPOINT_ADDRESS, notification);
+        final EdcNotificationResponse response = result.get(5, TimeUnit.SECONDS);
+
+        // assert
+        assertThat(response.deliveredSuccessfully()).isTrue();
+    }
+
+    @Test
     void shouldTimeOut() throws Exception {
         // arrange
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(

@@ -92,7 +92,6 @@ class EdcSubmodelFacadeTest {
         assertThat(Thread.currentThread().isInterrupted()).isTrue();
     }
 
-
     @Test
     void shouldThrowExecutionExceptionForSubmodel() throws EdcClientException {
         // arrange
@@ -134,6 +133,49 @@ class EdcSubmodelFacadeTest {
 
         // assert
         assertThat(Thread.currentThread().isInterrupted()).isTrue();
+    }
+
+    @Test
+    void shouldRestoreInterruptOnInterruptExceptionForNotification()
+            throws EdcClientException, ExecutionException, InterruptedException {
+        // arrange
+        final CompletableFuture<EdcNotificationResponse> future = mock(CompletableFuture.class);
+        final InterruptedException e = new InterruptedException();
+        when(future.get()).thenThrow(e);
+        when(client.sendNotification(any(), any())).thenReturn(future);
+
+        // act
+        testee.sendNotification("", null);
+
+        // assert
+        assertThat(Thread.currentThread().isInterrupted()).isTrue();
+    }
+
+    @Test
+    void shouldThrowExecutionExceptionForNotification() throws EdcClientException {
+        // arrange
+        final ExecutionException e = new ExecutionException(new EdcClientException("test"));
+        final CompletableFuture<EdcNotificationResponse> future = CompletableFuture.failedFuture(e);
+        when(client.sendNotification(any(), any())).thenReturn(future);
+
+        // act
+        ThrowableAssert.ThrowingCallable action = () -> testee.sendNotification("", null);
+
+        // assert
+        assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
+    }
+
+    @Test
+    void shouldThrowEdcClientExceptionForNotification() throws EdcClientException {
+        // arrange
+        final EdcClientException e = new EdcClientException("test");
+        when(client.sendNotification(any(), any())).thenThrow(e);
+
+        // act
+        ThrowableAssert.ThrowingCallable action = () -> testee.sendNotification("", null);
+
+        // assert
+        assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
     }
 
 }

@@ -76,4 +76,20 @@ public class EdcSubmodelFacade {
         }
     }
 
+    public EdcNotificationResponse sendNotification(final String submodelEndpointAddress,
+            final EdcNotification notification) throws EdcClientException {
+        try {
+            return client.sendNotification(submodelEndpointAddress, notification).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return null;
+        } catch (ExecutionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof EdcClientException exceptionCause) {
+                throw exceptionCause;
+            }
+            throw new EdcClientException(cause);
+        }
+    }
+
 }

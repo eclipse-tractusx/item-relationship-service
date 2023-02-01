@@ -32,6 +32,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -45,8 +46,6 @@ public class EdcDataPlaneClient {
 
     private static final Pattern RESPONSE_PATTERN = Pattern.compile("\\{\"data\":\"(?<embeddedData>.*)\"\\}");
     private final RestTemplate edcRestTemplate;
-
-
 
     public String getData(final EndpointDataReference dataReference, final String subUrl) {
 
@@ -88,4 +87,16 @@ public class EdcDataPlaneClient {
         return modifiedResponse;
     }
 
+    public EdcNotificationResponse sendData(final EndpointDataReference dataReference, final String subUrl,
+            final EdcNotification notification) {
+        final String url = getUrl(dataReference.getEndpoint(), subUrl);
+        final HttpHeaders headers = headers(dataReference);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.POST,
+                new HttpEntity<>(notification.toJson(), headers), String.class);
+        log.info("Call to {} returned with status code {}", url, response.getStatusCode());
+
+        return () -> response.getStatusCode().is2xxSuccessful();
+    }
 }

@@ -66,4 +66,24 @@ class EdcDataPlaneClientTest {
         assertThat(result).isEqualTo(expectedData);
 
     }
+
+    @Test
+    void shouldSendNotification() {
+        // arrange
+        final var expectedData = "testdata";
+        final EndpointDataReference dataRef = EndpointDataReference.Builder.newInstance()
+                                                                           .authKey("testkey")
+                                                                           .authCode("testcode")
+                                                                           .endpoint("testEndpoint")
+                                                                           .build();
+        when(restTemplate.exchange(any(), eq(HttpMethod.POST), any(), eq(String.class), any(Object.class))).thenReturn(
+                ResponseEntity.of(Optional.of(expectedData)));
+
+        // act
+        final EdcNotificationResponse result = testee.sendData(dataRef, "", () -> "{testJson: 1}");
+
+        // assert
+        assertThat(result.deliveredSuccessfully()).isTrue();
+
+    }
 }
