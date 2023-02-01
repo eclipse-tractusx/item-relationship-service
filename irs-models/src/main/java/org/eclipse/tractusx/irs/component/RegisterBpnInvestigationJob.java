@@ -28,6 +28,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -60,7 +61,7 @@ public class RegisterBpnInvestigationJob {
     private String globalAssetId;
 
     @NotEmpty
-    @Schema(description = "Array of BPN numbers.", example = "BPNS000000000DDD", implementation = String.class, pattern = BPN_REGEX)
+    @ArraySchema(schema = @Schema(description = "Array of BPN numbers.", example = "BPNS000000000DDD", implementation = String.class, pattern = BPN_REGEX), maxItems = Integer.MAX_VALUE)
     private List<@Pattern(regexp = BPN_REGEX) String> incidentBpns;
 
     @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)
