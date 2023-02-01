@@ -76,6 +76,7 @@ public class EdcSubmodelFacade {
         }
     }
 
+    @SuppressWarnings("PMD.PreserveStackTrace")
     public EdcNotificationResponse sendNotification(final String submodelEndpointAddress,
             final EdcNotification notification) throws EdcClientException {
         try {

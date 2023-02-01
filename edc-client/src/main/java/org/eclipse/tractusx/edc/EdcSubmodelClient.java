@@ -53,8 +53,8 @@ public interface EdcSubmodelClient {
 
     CompletableFuture<String> getSubmodelRawPayload(String submodelEndpointAddress) throws EdcClientException;
 
-    CompletableFuture<EdcNotificationResponse> sendNotification(final String submodelEndpointAddress,
-            final EdcNotification notification) throws EdcClientException;
+    CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress,
+            EdcNotification notification) throws EdcClientException;
 }
 
 /**
