@@ -75,9 +75,13 @@ public class EssServiceTest {
     void shouldReturnCreatedJobId() {
         final String globalAssetId = UUID.randomUUID().toString();
         final List<String> bpns = List.of("BPNS000000000DDD");
-        RegisterBpnInvestigationJob request = RegisterBpnInvestigationJob.builder().globalAssetId(globalAssetId).incidentBpns(bpns).build();
+        RegisterBpnInvestigationJob request = RegisterBpnInvestigationJob.builder()
+                                                                         .globalAssetId(globalAssetId)
+                                                                         .incidentBpns(bpns)
+                                                                         .build();
 
-        when(irsFacade.startIrsJob(eq(globalAssetId), any())).thenReturn(JobHandle.builder().id(UUID.randomUUID()).build());
+        when(irsFacade.startIrsJob(eq(globalAssetId), any())).thenReturn(
+                JobHandle.builder().id(UUID.randomUUID()).build());
 
         final JobHandle jobHandle = essService.startIrsJob(request);
 

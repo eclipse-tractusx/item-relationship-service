@@ -79,9 +79,11 @@ public class EssService {
         return irsJob.getJob().getState().equals(JobState.COMPLETED);
     }
 
-    private Jobs extendJobWithSupplyChainSubmodel(final Jobs completedIrsJob, final SupplyChainImpacted supplyChainImpacted) {
+    private Jobs extendJobWithSupplyChainSubmodel(final Jobs completedIrsJob,
+            final SupplyChainImpacted supplyChainImpacted) {
         final Submodel supplyChainImpactedSubmodel = Submodel.builder()
-                                                             .payload(Map.of("supplyChainImpacted", supplyChainImpacted))
+                                                             .payload(
+                                                                     Map.of("supplyChainImpacted", supplyChainImpacted))
                                                              .build();
 
         return completedIrsJob.toBuilder().submodels(Collections.singletonList(supplyChainImpactedSubmodel)).build();
