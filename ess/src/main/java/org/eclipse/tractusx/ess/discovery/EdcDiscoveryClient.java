@@ -22,9 +22,13 @@
 package org.eclipse.tractusx.ess.discovery;
 
 import java.util.Collections;
+import java.util.Map;
 
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -49,12 +53,29 @@ interface EdcDiscoveryClient {
 @Service
 class EdcDiscoveryClientLocalStub implements EdcDiscoveryClient {
 
+    private final EdcDiscoveryMockConfig edcDiscoveryMockConfig;
+
+    /* package */ EdcDiscoveryClientLocalStub(final EdcDiscoveryMockConfig edcDiscoveryMockConfig) {
+        this.edcDiscoveryMockConfig = edcDiscoveryMockConfig;
+    }
+
     @Override
     public EdcAddressResponse getEdcBaseUrl(final String bpn) {
+        final String connectorEndpoint = this.edcDiscoveryMockConfig.getMockEdcAddress().get(bpn);
         return EdcAddressResponse.builder()
                                  .bpn(bpn)
-                                 .connectorEndpoint(Collections.singletonList("http://edc-address.com"))
+                                 .connectorEndpoint(Collections.singletonList(connectorEndpoint))
                                  .build();
+    }
+
+    /**
+     * Config for BPN - EDC url mapping
+     */
+    @Configuration
+    @ConfigurationProperties("ess.discovery")
+    @Data
+    /* package */ static class EdcDiscoveryMockConfig {
+        private Map<String, String> mockEdcAddress;
     }
 }
 
