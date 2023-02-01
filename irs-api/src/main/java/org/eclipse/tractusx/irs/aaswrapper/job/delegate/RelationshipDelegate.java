@@ -61,7 +61,7 @@ public class RelationshipDelegate extends AbstractDelegate {
 
         final RelationshipAspect relationshipAspect = RelationshipAspect.from(jobData.getBomLifecycle(), jobData.getDirection());
         itemContainerBuilder.build().getShells().stream().findFirst().ifPresent(
-            shell -> shell.findRelationshipEndpointAddresses(AspectType.fromValue(relationshipAspect.name())).forEach(address -> {
+            shell -> shell.findRelationshipEndpointAddresses(AspectType.fromValue(relationshipAspect.getName())).forEach(address -> {
                 try {
                     final List<Relationship> relationships = submodelFacade.getRelationships(address, relationshipAspect);
                     final List<String> idsToProcess = getIdsToProcess(relationships, relationshipAspect.getDirection());
