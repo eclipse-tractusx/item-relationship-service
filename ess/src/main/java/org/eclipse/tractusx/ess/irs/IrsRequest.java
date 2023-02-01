@@ -41,7 +41,7 @@ class IrsRequest {
     private boolean collectAspects;
     private int depth;
 
-    static IrsRequest bpnInvestigations(final String globalAssetId, final BomLifecycle bomLifecycle) {
+    /* default */ static IrsRequest bpnInvestigations(final String globalAssetId, final BomLifecycle bomLifecycle) {
         return IrsRequest.builder()
                          .globalAssetId(globalAssetId)
                          .bomLifecycle(bomLifecycle != null
