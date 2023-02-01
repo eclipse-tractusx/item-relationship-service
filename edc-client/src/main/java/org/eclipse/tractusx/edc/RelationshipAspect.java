@@ -24,7 +24,9 @@ package org.eclipse.tractusx.edc;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 
@@ -33,26 +35,23 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
  */
 @SuppressWarnings("PMD.FieldNamingConventions")
 @Getter
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public enum RelationshipAspect {
-    SINGLE_LEVEL_BOM_AS_PLANNED(SingleLevelBomAsPlanned.class, BomLifecycle.AS_PLANNED, Direction.DOWNWARD),
-    ASSEMBLY_PART_RELATIONSHIP(AssemblyPartRelationship.class, BomLifecycle.AS_BUILT, Direction.DOWNWARD),
-    SINGLE_LEVEL_USAGE_AS_BUILT(SingleLevelUsageAsBuilt.class, BomLifecycle.AS_BUILT, Direction.UPWARD);
+    SINGLE_LEVEL_BOM_AS_PLANNED("SingleLevelBomAsPlanned", SingleLevelBomAsPlanned.class, BomLifecycle.AS_PLANNED,
+            Direction.DOWNWARD),
+    ASSEMBLY_PART_RELATIONSHIP("AssemblyPartRelationship", AssemblyPartRelationship.class, BomLifecycle.AS_BUILT,
+            Direction.DOWNWARD),
+    SINGLE_LEVEL_USAGE_AS_BUILT("SingleLevelUsageAsBuilt", SingleLevelUsageAsBuilt.class, BomLifecycle.AS_BUILT,
+            Direction.UPWARD);
 
+    private final String name;
     private final Class<? extends RelationshipSubmodel> submodelClazz;
     private final BomLifecycle bomLifecycle;
     private final Direction direction;
 
-    RelationshipAspect(final Class<? extends RelationshipSubmodel> submodelClazz,
-            final BomLifecycle bomLifecycle,
-            final Direction direction) {
-        this.submodelClazz = submodelClazz;
-        this.bomLifecycle = bomLifecycle;
-        this.direction = direction;
-    }
-
     /**
      * @param bomLifecycle lifecycle
-     * @param direction direction
+     * @param direction    direction
      * @return Returns traversal aspect type
      * asBuilt + downward => AssemblyPartRelationship
      * asPlanned + downward => SingleLevelBomAsPlanned
