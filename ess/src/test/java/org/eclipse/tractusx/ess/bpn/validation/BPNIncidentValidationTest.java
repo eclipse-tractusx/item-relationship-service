@@ -57,7 +57,7 @@ class BPNIncidentValidationTest {
     }
 
     @Test
-    void shouldReturnFalseWhenBPNsDoNotContainShellBPNs() {
+    void shouldReturnNoWhenBPNsDoNotContainShellBPNs() {
         // Arrange
         final List<String> bpns = List.of("BPNL000000XYZ123");
         String parentId = "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e";
@@ -78,7 +78,7 @@ class BPNIncidentValidationTest {
     }
 
     @Test
-    void shouldReturnTrueWhenBPNsContainShellBPNs() {
+    void shouldReturnYesWhenBPNsContainShellBPNs() {
         // Arrange
         final List<String> bpns = List.of("BPNL00000003B0Q0");
         String parentId = "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e";
@@ -99,7 +99,7 @@ class BPNIncidentValidationTest {
     }
 
     @Test
-    void shouldReturnTrueWhenNoChildrenAndParentContainsBPN() {
+    void shouldReturnYesWhenNoChildrenAndParentContainsBPN() {
         // Arrange
         final List<String> bpns = List.of("BPNL00000003AYRE");
         String parentId = "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e";
@@ -115,7 +115,7 @@ class BPNIncidentValidationTest {
     }
 
     @Test
-    void shouldReturnFalseWhenNoChildrenAndParentDoesNotContainBPN() {
+    void shouldReturnNoWhenNoChildrenAndParentDoesNotContainBPN() {
         // Arrange
         final List<String> bpns = List.of("BPNL00000003B0Q0");
         String parentId = "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e";
@@ -131,7 +131,7 @@ class BPNIncidentValidationTest {
     }
 
     @Test
-    void shouldReturnFalseWhenNoShells() {
+    void shouldReturnUnknownWhenJobContainsNoShells() {
         // Arrange
         final List<String> bpns = List.of("BPNL00000003B0Q0");
         String parentId = "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e";
