@@ -45,7 +45,7 @@ class EdcDiscoveryFacadeTest {
         final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl(bpn);
 
         assertThat(edcBaseUrl).isNotEmpty();
-        assertThat(edcBaseUrl.get()).isEqualTo(url);
+        assertThat(edcBaseUrl).contains(url);
     }
 
 }

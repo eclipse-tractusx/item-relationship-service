@@ -44,7 +44,7 @@ class IrsClientTest {
     private final RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 
     @Test
-    public void shouldStartJob() {
+    void shouldStartJob() {
         // given
         IrsClient irsClient = new IrsClient(restTemplate, URL);
         IrsRequest irsRequest = IrsRequest.builder().globalAssetId("global-id").bomLifecycle("asBuilt").build();
@@ -62,7 +62,7 @@ class IrsClientTest {
     }
 
     @Test
-    public void shouldFetchResponseWithEmptyList() {
+    void shouldFetchResponseWithEmptyList() {
         // given
         IrsClient irsClient = new IrsClient(restTemplate, URL);
         Jobs expectedResponse = Jobs.builder().job(Job.builder().id(UUID.randomUUID()).state(JobState.COMPLETED).build()).build();
