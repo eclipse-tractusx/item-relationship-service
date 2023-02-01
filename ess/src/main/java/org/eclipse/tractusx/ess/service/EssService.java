@@ -23,9 +23,11 @@ package org.eclipse.tractusx.ess.service;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.ess.bpn.validation.BPNIncidentValidation;
 import org.eclipse.tractusx.ess.discovery.EdcDiscoveryFacade;
 import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.component.JobHandle;
@@ -60,13 +62,14 @@ public class EssService {
 
         SupplyChainImpacted supplyChainImpacted = SupplyChainImpacted.UNKNOWN;
 
-//        TODO:
-//        Implement business logic
-//        1. Discover EDC Address
-//        2. ESSIncidentRequest supplier-request stuff
+        //        TODO:
+        //        Implement business logic
+        //        1. Discover EDC Address
+        //        2. ESSIncidentRequest supplier-request stuff
         if (isJobProcessingFinished(irsJob)) {
             log.info("Job is completed. Starting SupplyChainImpacted processing for job {}.", irsJob.getJob().getId());
-//            incidentBpnCache.findByJobId()
+            supplyChainImpacted = BPNIncidentValidation.jobContainsIncidentBPNs(irsJob,
+                    incidentBpnCache.findByJobId(UUID.fromString(jobId)));
         }
 
         return extendJobWithSupplyChainSubmodel(irsJob, supplyChainImpacted);
