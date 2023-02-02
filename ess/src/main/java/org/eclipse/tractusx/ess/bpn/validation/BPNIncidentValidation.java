@@ -22,10 +22,10 @@
 package org.eclipse.tractusx.ess.bpn.validation;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.ess.service.SupplyChainImpacted;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -33,6 +33,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdminist
 /**
  * Validation for BPNs.
  */
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BPNIncidentValidation {
 
@@ -47,25 +48,12 @@ public final class BPNIncidentValidation {
      * Unknown if an exception occurs while extracting the BPNs from the job.
      */
     public static SupplyChainImpacted jobContainsIncidentBPNs(final Jobs job, final List<String> incidentBPNs) {
-        final boolean parentBPNAffected;
-        final boolean childrenBPNsAffected;
-        try {
-            final AssetAdministrationShellDescriptor parentAAS = getParentAAS(job);
-            final String parentBPN = getManufacturerIdFromShell(parentAAS);
-            parentBPNAffected = incidentBPNs.contains(parentBPN);
-            if (parentBPNAffected) {
-                return SupplyChainImpacted.YES;
-            }
-
-            final List<AssetAdministrationShellDescriptor> childAASs = getChildAASs(job);
-            final List<String> childrenBPNs = getBPNsFromShells(childAASs);
-            childrenBPNsAffected = incidentBPNs.stream().anyMatch(childrenBPNs::contains);
-
-            if (childrenBPNsAffected) {
-                return SupplyChainImpacted.YES;
-            }
-        } catch (NoSuchElementException e) {
+        final List<String> bpnsFromShells = getBPNsFromShells(job.getShells());
+        if (bpnsFromShells.isEmpty()) {
             return SupplyChainImpacted.UNKNOWN;
+        }
+        if (incidentBPNs.stream().anyMatch(bpnsFromShells::contains)) {
+            return SupplyChainImpacted.YES;
         }
         return SupplyChainImpacted.NO;
     }
@@ -82,24 +70,5 @@ public final class BPNIncidentValidation {
 
     private static List<String> getBPNsFromShells(final List<AssetAdministrationShellDescriptor> shellDescriptors) {
         return shellDescriptors.stream().map(BPNIncidentValidation::getManufacturerIdFromShell).toList();
-    }
-
-    private static AssetAdministrationShellDescriptor getParentAAS(final Jobs job) {
-        final String globalAssetId = job.getJob().getGlobalAssetId().getGlobalAssetId();
-
-        return job.getShells()
-                  .stream()
-                  .filter(shellDescriptor -> shellDescriptor.getGlobalAssetId().getValue().contains(globalAssetId))
-                  .findFirst()
-                  .orElseThrow();
-    }
-
-    private static List<AssetAdministrationShellDescriptor> getChildAASs(final Jobs job) {
-        final String globalAssetId = job.getJob().getGlobalAssetId().getGlobalAssetId();
-
-        return job.getShells()
-                  .stream()
-                  .filter(shellDescriptor -> !shellDescriptor.getGlobalAssetId().getValue().contains(globalAssetId))
-                  .toList();
     }
 }
