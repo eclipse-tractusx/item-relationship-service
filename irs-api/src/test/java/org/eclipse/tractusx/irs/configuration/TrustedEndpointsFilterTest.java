@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.common.ApiConstants;
 import org.junit.jupiter.api.Test;
 
 class TrustedEndpointsFilterTest {
@@ -84,7 +85,7 @@ class TrustedEndpointsFilterTest {
         final var testee = new TrustedEndpointsFilter("8081");
         final var request = mock(HttpServletRequestWrapper.class);
         when(request.getLocalPort()).thenReturn(8080);
-        when(request.getRequestURI()).thenReturn("/" + IrsApplication.API_PREFIX_INTERNAL + "/test");
+        when(request.getRequestURI()).thenReturn("/" + ApiConstants.API_PREFIX_INTERNAL + "/test");
         final var response = mock(HttpServletResponseWrapper.class);
         final var stream = mock(ServletOutputStream.class);
         when(response.getOutputStream()).thenReturn(stream);
