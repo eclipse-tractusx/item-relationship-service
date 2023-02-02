@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.1]
+### Added
+- Added parameter ``edc.controlplane.catalog.pagesize`` for configuration of EDC catalog page size for pagination. Default value is 50.
+
+### Changed
+- Minio now uses 1Gi of storage by default.
+
 ## [4.2.0] - 2023-01-20
 ### Added
 - It is now possible to provide semantic schema files as Base64 strings which will be mounted to the IRS container and then loaded via the configuration. 

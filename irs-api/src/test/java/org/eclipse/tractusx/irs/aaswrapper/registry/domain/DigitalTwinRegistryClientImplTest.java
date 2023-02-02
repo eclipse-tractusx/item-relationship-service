@@ -38,7 +38,7 @@ import java.util.List;
 
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
-import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
+import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;

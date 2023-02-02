@@ -41,7 +41,13 @@ class IrsRequest {
     private boolean collectAspects;
     private int depth;
 
-    /* default */ static IrsRequest bpnInvestigations(final String globalAssetId, final BomLifecycle bomLifecycle) {
+    /**
+     * Predefined request body for SupplyChain processing
+     * @param globalAssetId id
+     * @param bomLifecycle lifecycle - default is asPlanned
+     * @return request body
+     */
+    /* package */ static IrsRequest bpnInvestigations(final String globalAssetId, final BomLifecycle bomLifecycle) {
         return IrsRequest.builder()
                          .globalAssetId(globalAssetId)
                          .bomLifecycle(bomLifecycle != null

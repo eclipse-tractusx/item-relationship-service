@@ -28,6 +28,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.ess.bpn.validation.BPNIncidentValidation;
+import org.eclipse.tractusx.edc.model.notification.EdcNotification;
 import org.eclipse.tractusx.ess.discovery.EdcDiscoveryFacade;
 import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.component.JobHandle;
@@ -62,10 +63,10 @@ public class EssService {
 
         SupplyChainImpacted supplyChainImpacted = SupplyChainImpacted.UNKNOWN;
 
-        //        TODO:
-        //        Implement business logic
-        //        1. Discover EDC Address
-        //        2. ESSIncidentRequest supplier-request stuff
+//        TODO:
+//        Implement business logic
+//        1. Discover EDC Address
+//        2. ESSIncidentRequest supplier-request stuff
         if (isJobProcessingFinished(irsJob)) {
             log.info("Job is completed. Starting SupplyChainImpacted processing for job {}.", irsJob.getJob().getId());
             supplyChainImpacted = BPNIncidentValidation.jobContainsIncidentBPNs(irsJob,
@@ -79,13 +80,15 @@ public class EssService {
         return irsJob.getJob().getState().equals(JobState.COMPLETED);
     }
 
-    private Jobs extendJobWithSupplyChainSubmodel(final Jobs completedIrsJob,
-            final SupplyChainImpacted supplyChainImpacted) {
+    private Jobs extendJobWithSupplyChainSubmodel(final Jobs completedIrsJob, final SupplyChainImpacted supplyChainImpacted) {
         final Submodel supplyChainImpactedSubmodel = Submodel.builder()
-                                                             .payload(
-                                                                     Map.of("supplyChainImpacted", supplyChainImpacted))
+                                                             .payload(Map.of("supplyChainImpacted", supplyChainImpacted))
                                                              .build();
 
         return completedIrsJob.toBuilder().submodels(Collections.singletonList(supplyChainImpactedSubmodel)).build();
+    }
+
+    public void handleNotificationCallback(final EdcNotification notification) {
+        // TODO: do something with it
     }
 }

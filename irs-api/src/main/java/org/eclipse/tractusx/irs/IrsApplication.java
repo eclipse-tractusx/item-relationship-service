@@ -41,7 +41,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan(
     basePackages = {
         "org.eclipse.tractusx.irs",
-        "org.eclipse.tractusx.ess"},
+        "org.eclipse.tractusx.ess",
+        "org.eclipse.tractusx.edc"
+    },
     excludeFilters = {
         @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
         @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class)})
@@ -56,11 +58,6 @@ public class IrsApplication {
      * The URL prefix for IRS API URLs.
      */
     public static final String API_PREFIX = "irs";
-
-    /**
-     * The URL prefix for IRS internal URLs (not publicly available)
-     */
-    public static final String API_PREFIX_INTERNAL = "internal";
 
     /**
      * Entry point.

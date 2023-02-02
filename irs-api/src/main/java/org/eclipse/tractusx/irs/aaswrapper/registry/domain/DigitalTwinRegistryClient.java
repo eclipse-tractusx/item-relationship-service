@@ -31,10 +31,10 @@ import java.util.function.Supplier;
 
 import io.github.resilience4j.retry.annotation.Retry;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.tractusx.irs.common.CxTestDataContainer;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
-import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
-import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
+import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;

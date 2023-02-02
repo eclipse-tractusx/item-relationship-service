@@ -12,6 +12,8 @@ COPY pom.xml .
 COPY ess ess
 COPY integration-tests integration-tests
 COPY irs-api irs-api
+COPY irs-common irs-common
+COPY edc-client edc-client
 COPY irs-models irs-models
 COPY irs-parent-spring-boot irs-parent-spring-boot
 COPY irs-testing irs-testing
