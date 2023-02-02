@@ -27,6 +27,8 @@ import java.util.concurrent.ExecutionException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.edc.model.notification.EdcNotification;
+import org.eclipse.tractusx.edc.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.edc.exceptions.EdcClientException;
 import org.springframework.stereotype.Service;

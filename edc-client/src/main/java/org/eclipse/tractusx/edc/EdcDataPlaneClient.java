@@ -28,6 +28,8 @@ import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.edc.model.notification.EdcNotification;
+import org.eclipse.tractusx.edc.model.notification.EdcNotificationResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -94,7 +96,7 @@ public class EdcDataPlaneClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.POST,
-                new HttpEntity<>(notification.toJson(), headers), String.class);
+                new HttpEntity<>(StringMapper.mapToString(notification), headers), String.class);
         log.info("Call to {} returned with status code {}", url, response.getStatusCode());
 
         return () -> response.getStatusCode().is2xxSuccessful();

@@ -19,11 +19,28 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.edc;
+package org.eclipse.tractusx.edc.model.notification;
+
+import java.util.Map;
+
+import javax.validation.constraints.NotNull;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
+import lombok.Getter;
 
 /**
  * A notification to send over EDC.
  */
-public interface EdcNotification {
-    String toJson();
+@Builder
+@Getter
+public class EdcNotification {
+
+    @NotNull
+    @Schema(description = "Header of the EDC notification", implementation = EdcNotificationHeader.class)
+    private final EdcNotificationHeader header;
+
+    @NotNull
+    private final Map<String, Object> content;
+
 }

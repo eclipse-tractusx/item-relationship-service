@@ -32,6 +32,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.assertj.core.api.ThrowableAssert;
+import org.eclipse.tractusx.edc.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.edc.exceptions.EdcClientException;
 import org.junit.jupiter.api.Test;

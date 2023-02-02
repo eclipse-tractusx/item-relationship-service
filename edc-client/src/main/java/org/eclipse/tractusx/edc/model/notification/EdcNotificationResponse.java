@@ -19,7 +19,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.edc;
+package org.eclipse.tractusx.edc.model.notification;
 
 /**
  * Contains the result of a sent notification.

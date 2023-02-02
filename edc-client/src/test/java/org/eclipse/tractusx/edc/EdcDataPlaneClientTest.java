@@ -29,6 +29,8 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.edc.model.notification.EdcNotification;
+import org.eclipse.tractusx.edc.model.notification.EdcNotificationResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -80,7 +82,7 @@ class EdcDataPlaneClientTest {
                 ResponseEntity.of(Optional.of(expectedData)));
 
         // act
-        final EdcNotificationResponse result = testee.sendData(dataRef, "", () -> "{testJson: 1}");
+        final EdcNotificationResponse result = testee.sendData(dataRef, "", EdcNotification.builder().build());
 
         // assert
         assertThat(result.deliveredSuccessfully()).isTrue();
