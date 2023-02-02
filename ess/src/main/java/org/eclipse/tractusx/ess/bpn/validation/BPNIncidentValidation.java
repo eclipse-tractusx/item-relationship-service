@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.ess.bpn.validation;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -43,15 +44,20 @@ public final class BPNIncidentValidation {
      * @param incidentBPNs the incident BPNs
      * @return Yes, if one or more of the BPNs of the job matches the incident BPNs.
      * No, if none of the job BPNs matches the incident BPNs.
-     * Unknown if job contains no AssetAdministrationShellDescriptors.
+     * Unknown if job contains no AssetAdministrationShellDescriptors
+     * or there was an error extracting the BPN.
      */
     public static SupplyChainImpacted jobContainsIncidentBPNs(final Jobs job, final List<String> incidentBPNs) {
-        final List<String> bpnsFromShells = getBPNsFromShells(job.getShells());
-        if (bpnsFromShells.isEmpty()) {
+        try {
+            final List<String> bpnsFromShells = getBPNsFromShells(job.getShells());
+            if (bpnsFromShells.isEmpty()) {
+                return SupplyChainImpacted.UNKNOWN;
+            }
+            if (incidentBPNs.stream().anyMatch(bpnsFromShells::contains)) {
+                return SupplyChainImpacted.YES;
+            }
+        } catch (NoSuchElementException e) {
             return SupplyChainImpacted.UNKNOWN;
-        }
-        if (incidentBPNs.stream().anyMatch(bpnsFromShells::contains)) {
-            return SupplyChainImpacted.YES;
         }
         return SupplyChainImpacted.NO;
     }

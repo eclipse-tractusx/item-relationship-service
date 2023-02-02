@@ -144,4 +144,28 @@ class BPNIncidentValidationTest {
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.UNKNOWN);
     }
+
+    @Test
+    void shouldReturnUnknownWhenJobContainsShellWithoutBPN() {
+        // Arrange
+        final List<String> bpns = List.of("BPNL00000003B0Q0");
+        String parentId = "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e";
+
+        final var shellDescriptor = AssetAdministrationShellDescriptor.builder()
+                                                                      .globalAssetId(Reference.builder()
+                                                                                              .value(List.of(parentId))
+                                                                                              .build())
+                                                                      .specificAssetIds(List.of())
+                                                                      .build();
+        final Jobs jobs = Jobs.builder()
+                              .job(Job.builder().globalAssetId(GlobalAssetIdentification.of(parentId)).build())
+                              .shells(List.of(shellDescriptor))
+                              .build();
+
+        // Act
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs, bpns);
+
+        // Assert
+        assertThat(actual).isEqualTo(SupplyChainImpacted.UNKNOWN);
+    }
 }
