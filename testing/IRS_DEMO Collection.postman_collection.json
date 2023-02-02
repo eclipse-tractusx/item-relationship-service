@@ -62,49 +62,49 @@
 							"query": [
 								{
 									"key": "assetIds",
-									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003AYRE\"}],",
+									"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003AYRE\"}],",
 									"description": "BMW OEM A",
 									"disabled": true
 								},
 								{
 									"key": "assetIds",
-									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003AVTH\"}],",
+									"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003AVTH\"}],",
 									"description": "Mercedes OEM B",
 									"disabled": true
 								},
 								{
 									"key": "assetIds",
-									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003AZQP\"}]",
+									"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003AZQP\"}]",
 									"description": "SAP OEM C",
 									"disabled": true
 								},
 								{
 									"key": "assetIds",
-									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B2OM\"}],",
+									"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003B2OM\"}],",
 									"description": "ZF Tier A",
 									"disabled": true
 								},
 								{
 									"key": "assetIds",
-									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B3NX\"}],",
+									"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003B3NX\"}],",
 									"description": "ZF Sub Tier A",
 									"disabled": true
 								},
 								{
 									"key": "assetIds",
-									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B5MJ\"}],",
+									"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003B5MJ\"}],",
 									"description": "Bosch Tier B",
 									"disabled": true
 								},
 								{
 									"key": "assetIds",
-									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003B0Q0\"}],",
+									"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003B0Q0\"}],",
 									"description": "BASF N-Tier A",
 									"disabled": true
 								},
 								{
 									"key": "assetIds",
-									"value": "[{\"key\": \"ManufacturerID\",\"value\":\"BPNL00000003AXS3\"}],",
+									"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003AXS3\"}],",
 									"description": "Henkel Sub Tier B",
 									"disabled": true
 								}

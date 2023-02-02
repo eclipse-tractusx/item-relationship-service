@@ -54,6 +54,7 @@ data:
           data: {{ tpl (.Values.edc.controlplane.endpoint.data | default (printf "http://%s%s" .Release.Name "-edc-controlplane:8181/data")) . | quote }}
         provider-suffix: {{ tpl .Values.edc.controlplane.provider.suffix . | quote }}
         catalog-limit: {{ .Values.edc.controlplane.catalog.limit }}
+        catalog-page-size: {{ .Values.edc.controlplane.catalog.pagesize }}
         api-key:
           header: {{ tpl (.Values.edc.controlplane.apikey.header | default "") . | quote }}
           secret: ${EDC_API_KEY_SECRET:} # taken from secret ENV

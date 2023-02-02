@@ -136,6 +136,7 @@ edc:
       suffix: /api/v1/ids/data
     catalog:
       limit: 1000 # Max number of catalog items to retrieve from the controlplane
+      pagesize: 50 # Number of catalog items to retrieve on one page for pagination
     apikey:
       header: "X-Api-Key" # Name of the EDC api key header field
       secret: "" #<edc-api-key>
@@ -160,6 +161,8 @@ config:
 minio:
   enabled: true
   mode: standalone
+  persistence:
+    size: 1Gi
   resources:
     requests:
       memory: 4Gi
