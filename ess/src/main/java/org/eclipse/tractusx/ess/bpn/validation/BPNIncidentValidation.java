@@ -24,6 +24,8 @@ package org.eclipse.tractusx.ess.bpn.validation;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.eclipse.tractusx.ess.service.SupplyChainImpacted;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -31,9 +33,8 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdminist
 /**
  * Validation for BPNs.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BPNIncidentValidation {
-    private BPNIncidentValidation() {
-    }
 
     /**
      * Extract BPNs from {@link AssetAdministrationShellDescriptor} of {@link Jobs}
