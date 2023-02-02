@@ -23,6 +23,7 @@ package org.eclipse.tractusx.ess.discovery;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -61,10 +62,14 @@ class EdcDiscoveryClientLocalStub implements EdcDiscoveryClient {
 
     @Override
     public EdcAddressResponse getEdcBaseUrl(final String bpn) {
-        final String connectorEndpoint = this.edcDiscoveryMockConfig.getMockEdcAddress().get(bpn);
+        final Optional<String> connectorEndpoint = Optional.ofNullable(
+                this.edcDiscoveryMockConfig.getMockEdcAddress().get(bpn));
+
         return EdcAddressResponse.builder()
                                  .bpn(bpn)
-                                 .connectorEndpoint(Collections.singletonList(connectorEndpoint))
+                                 .connectorEndpoint(connectorEndpoint
+                                         .map(Collections::singletonList)
+                                         .orElseGet(Collections::emptyList))
                                  .build();
     }
 

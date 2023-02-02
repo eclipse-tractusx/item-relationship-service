@@ -48,4 +48,13 @@ class EdcDiscoveryFacadeTest {
         assertThat(edcBaseUrl).contains(url);
     }
 
+    @Test
+    void shouldReturnResponseWithEmptyConnectorEndpointList() {
+        when(edcDiscoveryMockConfig.getMockEdcAddress()).thenReturn(Map.of());
+
+        final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl("not_existing");
+
+        assertThat(edcBaseUrl).isEmpty();
+    }
+
 }
