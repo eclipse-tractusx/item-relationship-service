@@ -10,6 +10,126 @@ security:
   - oAuth2:
       - profile email
 paths:
+  /ess/bpn/investigations:
+    post:
+      description: Registers an IRS job to start an investigation if a given bpn is
+        contained in a part chain of a given globalAssetId.
+      operationId: registerBPNInvestigation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterBpnInvestigationJob'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/job-handle'
+              schema:
+                $ref: '#/components/schemas/JobHandle'
+          description: Returns id of registered job.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Job registration failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+      security:
+        - oAuth2:
+            - profile email
+      summary: Registers an IRS job to start an investigation if a given bpn is contained
+        in a part chain of a given globalAssetId.
+      tags:
+        - Environmental- and Social Standards
+  /ess/bpn/investigations/{id}:
+    get:
+      description: Return job with additional supplyChainImpacted informations.
+      operationId: getBPNInvestigation
+      parameters:
+        - description: Id of the job.
+          example: 6c311d29-5753-46d4-b32c-19b918ea93b0
+          in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/complete-job-result'
+              schema:
+                $ref: '#/components/schemas/Jobs'
+          description: Return job with item graph for the requested id.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Return job failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "404":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-404'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Job with the requested jobId not found.
+      security:
+        - oAuth2:
+            - profile email
+      summary: Return job with additional supplyChainImpacted informations.
+      tags:
+        - Environmental- and Social Standards
   /irs/jobs:
     get:
       description: Returns paginated jobs with state and execution times.
@@ -154,61 +274,6 @@ paths:
       summary: "Register an IRS job to retrieve an item graph for given {globalAssetId}."
       tags:
         - Item Relationship Service
-  /irs/jobs/bpnInvestigation:
-    post:
-      description: Registers an IRS job to start an investigation if a given bpn is
-        contained in a part chain of a given globalAssetId.
-      operationId: registerBPNInvestigation
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RegisterBpnInvestigationJob'
-        required: true
-      responses:
-        "201":
-          content:
-            application/json:
-              examples:
-                complete:
-                  $ref: '#/components/examples/job-handle'
-              schema:
-                $ref: '#/components/schemas/JobHandle'
-          description: Returns id of registered job.
-        "400":
-          content:
-            application/json:
-              examples:
-                error:
-                  $ref: '#/components/examples/error-response-400'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: Job registration failed.
-        "401":
-          content:
-            application/json:
-              examples:
-                error:
-                  $ref: '#/components/examples/error-response-401'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
-        "403":
-          content:
-            application/json:
-              examples:
-                error:
-                  $ref: '#/components/examples/error-response-403'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
-      security:
-        - oAuth2:
-            - profile email
-      summary: Registers an IRS job to start an investigation if a given bpn is contained
-        in a part chain of a given globalAssetId.
-      tags:
-        - Environmental- and Social Standards
   /irs/jobs/{id}:
     get:
       description: Return job with optional item graph result for requested id.
@@ -1237,10 +1302,10 @@ components:
           minLength: 45
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         incidentBpns:
-          type: string
-          description: Array of BPN numbers.
-          example: BPNS000000000DDD
-          pattern: "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}"
+          type: array
+          items:
+            type: string
+          maxItems: 2147483647
       required:
         - globalAssetId
         - incidentBpns

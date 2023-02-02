@@ -22,22 +22,39 @@
 package org.eclipse.tractusx.ess.discovery;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
 class EdcDiscoveryFacadeTest {
 
-    private final EdcDiscoveryFacade edcDiscoveryFacade = new EdcDiscoveryFacade(new EdcDiscoveryClientLocalStub());
+    private final EdcDiscoveryClientLocalStub.EdcDiscoveryMockConfig edcDiscoveryMockConfig = mock(
+            EdcDiscoveryClientLocalStub.EdcDiscoveryMockConfig.class);
+    private final EdcDiscoveryFacade edcDiscoveryFacade = new EdcDiscoveryFacade(new EdcDiscoveryClientLocalStub(edcDiscoveryMockConfig));
 
     @Test
     void shouldReturnEdcBaseUrl() {
         final String bpn = "BPNS000000000DDD";
+        final String url = "http://edc-url";
+        when(edcDiscoveryMockConfig.getMockEdcAddress()).thenReturn(Map.of(bpn, url));
 
         final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl(bpn);
 
         assertThat(edcBaseUrl).isNotEmpty();
+        assertThat(edcBaseUrl).contains(url);
+    }
+
+    @Test
+    void shouldReturnResponseWithEmptyConnectorEndpointList() {
+        when(edcDiscoveryMockConfig.getMockEdcAddress()).thenReturn(Map.of());
+
+        final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl("not_existing");
+
+        assertThat(edcBaseUrl).isEmpty();
     }
 
 }

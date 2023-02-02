@@ -58,7 +58,7 @@ public class EssService {
     public Jobs getIrsJob(final String jobId) {
         final Jobs irsJob = irsFacade.getIrsJob(jobId);
 
-        SupplyChainImpacted supplyChainImpacted = SupplyChainImpacted.UNKNOWN;
+        final SupplyChainImpacted supplyChainImpacted = SupplyChainImpacted.UNKNOWN;
 
 //        TODO:
 //        Implement business logic

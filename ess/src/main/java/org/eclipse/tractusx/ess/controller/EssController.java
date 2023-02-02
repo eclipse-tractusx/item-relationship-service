@@ -61,6 +61,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/ess")
 @RequiredArgsConstructor
 @Validated
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals",
+                    "PMD.ShortVariable"
+})
 class EssController {
 
     private final EssService essService;
