@@ -25,7 +25,6 @@ import java.util.List;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.ess.service.SupplyChainImpacted;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -33,7 +32,6 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdminist
 /**
  * Validation for BPNs.
  */
-@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BPNIncidentValidation {
 
@@ -43,9 +41,9 @@ public final class BPNIncidentValidation {
      *
      * @param job          the Job to investigate
      * @param incidentBPNs the incident BPNs
-     * @return {@link SupplyChainImpacted}. Yes, if one or more of the BPNs of the job matches the incident BPNs.
+     * @return Yes, if one or more of the BPNs of the job matches the incident BPNs.
      * No, if none of the job BPNs matches the incident BPNs.
-     * Unknown if an exception occurs while extracting the BPNs from the job.
+     * Unknown if job contains no AssetAdministrationShellDescriptors.
      */
     public static SupplyChainImpacted jobContainsIncidentBPNs(final Jobs job, final List<String> incidentBPNs) {
         final List<String> bpnsFromShells = getBPNsFromShells(job.getShells());
