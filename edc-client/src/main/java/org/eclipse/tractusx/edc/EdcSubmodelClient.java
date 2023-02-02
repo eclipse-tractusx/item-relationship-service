@@ -35,6 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.edc.model.NegotiationResponse;
+import org.eclipse.tractusx.edc.model.notification.EdcNotification;
+import org.eclipse.tractusx.edc.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.common.CxTestDataContainer;
@@ -52,6 +54,9 @@ public interface EdcSubmodelClient {
             RelationshipAspect traversalAspectType) throws EdcClientException;
 
     CompletableFuture<String> getSubmodelRawPayload(String submodelEndpointAddress) throws EdcClientException;
+
+    CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress,
+            EdcNotification notification) throws EdcClientException;
 }
 
 /**
@@ -85,6 +90,13 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
     public CompletableFuture<String> getSubmodelRawPayload(final String submodelEndpointAddress) {
         final Map<String, Object> submodel = testdataCreator.createSubmodelForId(submodelEndpointAddress);
         return CompletableFuture.completedFuture(StringMapper.mapToString(submodel));
+    }
+
+    @Override
+    public CompletableFuture<EdcNotificationResponse> sendNotification(final String submodelEndpointAddress,
+            final EdcNotification notification) {
+        // not actually sending anything, just return success response
+        return CompletableFuture.completedFuture(() -> true);
     }
 }
 
@@ -145,8 +157,8 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
                                  final Optional<String> data = retrieveSubmodelData(config.getSubmodel().getPath(),
                                          contractAgreementId, stopWatch);
                                  if (data.isPresent()) {
-                                     final RelationshipSubmodel relationshipSubmodel = StringMapper.mapFromString(data.get(),
-                                             traversalAspectType.getSubmodelClazz());
+                                     final RelationshipSubmodel relationshipSubmodel = StringMapper.mapFromString(
+                                             data.get(), traversalAspectType.getSubmodelClazz());
 
                                      return Optional.of(relationshipSubmodel.asRelationships());
                                  }
@@ -154,6 +166,19 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
                              })
                              .timeToLive(config.getSubmodel().getRequestTtl())
                              .description("waiting for submodel retrieval")
+                             .build()
+                             .schedule();
+
+    }
+
+    private CompletableFuture<EdcNotificationResponse> sendNotificationAsync(final String contractAgreementId,
+            final EdcNotification notification, final StopWatch stopWatch) {
+
+        return pollingService.<EdcNotificationResponse>createJob()
+                             .action(() -> sendSubmodelNotification(config.getSubmodel().getPath(), contractAgreementId,
+                                     notification, stopWatch))
+                             .timeToLive(config.getSubmodel().getRequestTtl())
+                             .description("waiting for submodel notification to be sent")
                              .build()
                              .schedule();
 
@@ -177,6 +202,22 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         return Optional.empty();
     }
 
+    private Optional<EdcNotificationResponse> sendSubmodelNotification(final String submodel,
+            final String contractAgreementId, final EdcNotification notification, final StopWatch stopWatch) {
+        log.info("Retrieving dataReference from storage for contractAgreementId {}", contractAgreementId);
+        final Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.remove(contractAgreementId);
+
+        if (dataReference.isPresent()) {
+            final EndpointDataReference ref = dataReference.get();
+            log.info("Sending data to EDC data plane with dataReference {}:{}", ref.getAuthKey(), ref.getAuthCode());
+            final EdcNotificationResponse response = edcDataPlaneClient.sendData(ref, submodel, notification);
+            stopWatch.stop();
+            log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
+            return Optional.of(response);
+        }
+        return Optional.empty();
+    }
+
     private int findIndexOf(final String endpointAddress, final String str) {
         return endpointAddress.indexOf(str);
     }
@@ -196,6 +237,19 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
                                  .description("waiting for submodel retrieval")
                                  .build()
                                  .schedule();
+        });
+    }
+
+    @Override
+    public CompletableFuture<EdcNotificationResponse> sendNotification(final String submodelEndpointAddress,
+            final EdcNotification notification) throws EdcClientException {
+        return execute(submodelEndpointAddress, () -> {
+            final StopWatch stopWatch = new StopWatch();
+            stopWatch.start("Send EDC notification task, endpoint " + submodelEndpointAddress);
+
+            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
+
+            return sendNotificationAsync(negotiationResponse.getContractAgreementId(), notification, stopWatch);
         });
     }
 

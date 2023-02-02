@@ -48,6 +48,8 @@ import java.util.stream.Collectors;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.edc.model.notification.EdcNotification;
+import org.eclipse.tractusx.edc.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
@@ -129,6 +131,24 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final List<Relationship> expectedRelationships = StringMapper.mapFromString(assemblyPartRelationshipJson,
                 RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP.getSubmodelClazz()).asRelationships();
         assertThat(resultingRelationships).isNotNull().containsAll(expectedRelationships);
+    }
+
+    @Test
+    void shouldSendNotificationSuccessfully() throws Exception {
+        // arrange
+        final EdcNotification notification = EdcNotification.builder().build();
+        when(contractNegotiationService.negotiate(any(), any())).thenReturn(
+                NegotiationResponse.builder().contractAgreementId("agreementId").build());
+        final EndpointDataReference ref = mock(EndpointDataReference.class);
+        endpointDataReferenceStorage.put("agreementId", ref);
+        when(edcDataPlaneClient.sendData(eq(ref), any(), eq(notification))).thenReturn(() -> true);
+
+        // act
+        final var result = testee.sendNotification(ENDPOINT_ADDRESS, notification);
+        final EdcNotificationResponse response = result.get(5, TimeUnit.SECONDS);
+
+        // assert
+        assertThat(response.deliveredSuccessfully()).isTrue();
     }
 
     @Test

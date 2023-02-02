@@ -26,6 +26,7 @@ import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.edc.model.notification.EdcNotification;
 import org.eclipse.tractusx.ess.discovery.EdcDiscoveryFacade;
 import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.component.JobHandle;
@@ -82,5 +83,9 @@ public class EssService {
                                                              .build();
 
         return completedIrsJob.toBuilder().submodels(Collections.singletonList(supplyChainImpactedSubmodel)).build();
+    }
+
+    public void handleNotificationCallback(final EdcNotification notification) {
+        // TODO: do something with it
     }
 }

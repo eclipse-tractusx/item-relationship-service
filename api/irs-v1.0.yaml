@@ -130,6 +130,32 @@ paths:
       summary: Return job with additional supplyChainImpacted informations.
       tags:
         - Environmental- and Social Standards
+  /ess/notification/receive:
+    post:
+      description: Accepts notifications via EDC. Notifications are filtered by their
+        type and processed accordingly.
+      operationId: receiveEdcNotification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EdcNotification'
+        required: true
+      responses:
+        "200":
+          description: Notification received successfully.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Notification malformed.
+      summary: Accepts notifications sent via EDC.
+      tags:
+        - Environmental- and Social Standards
   /irs/jobs:
     get:
       description: Returns paginated jobs with state and execution times.
@@ -843,6 +869,44 @@ components:
           type: string
         manufacturerName:
           type: string
+    EdcNotification:
+      type: object
+      additionalProperties: false
+      properties:
+        content:
+          type: object
+          additionalProperties:
+            type: object
+        header:
+          $ref: '#/components/schemas/EdcNotificationHeader'
+      required:
+        - content
+        - header
+    EdcNotificationHeader:
+      type: object
+      additionalProperties: false
+      description: EDC notification header information
+      properties:
+        notificationId:
+          type: string
+        notificationType:
+          type: string
+        recipientBpn:
+          type: string
+        replyAssetId:
+          type: string
+        replyAssetSubPath:
+          type: string
+        senderBpn:
+          type: string
+        senderEdc:
+          type: string
+      required:
+        - notificationId
+        - notificationType
+        - recipientBpn
+        - senderBpn
+        - senderEdc
     Endpoint:
       type: object
       additionalProperties: false

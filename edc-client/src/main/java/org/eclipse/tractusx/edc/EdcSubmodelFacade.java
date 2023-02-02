@@ -27,6 +27,8 @@ import java.util.concurrent.ExecutionException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.edc.model.notification.EdcNotification;
+import org.eclipse.tractusx.edc.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.edc.exceptions.EdcClientException;
 import org.springframework.stereotype.Service;
@@ -64,6 +66,23 @@ public class EdcSubmodelFacade {
     public String getSubmodelRawPayload(final String submodelEndpointAddress) throws EdcClientException {
         try {
             return client.getSubmodelRawPayload(submodelEndpointAddress).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return null;
+        } catch (ExecutionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof EdcClientException exceptionCause) {
+                throw exceptionCause;
+            }
+            throw new EdcClientException(cause);
+        }
+    }
+
+    @SuppressWarnings("PMD.PreserveStackTrace")
+    public EdcNotificationResponse sendNotification(final String submodelEndpointAddress,
+            final EdcNotification notification) throws EdcClientException {
+        try {
+            return client.sendNotification(submodelEndpointAddress, notification).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return null;
