@@ -2,6 +2,11 @@ name: Analyze API with Spectral
 
 on:
   push:
+    branches:
+      - main
+    paths:
+      - 'api/**'
+      - 'ci/spectral/**'
 
 
 jobs:
