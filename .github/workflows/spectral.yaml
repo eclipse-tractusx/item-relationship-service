@@ -16,4 +16,4 @@ jobs:
       - uses: stoplightio/spectral-action@latest
         with:
           file_glob: 'api/*.yaml'
-          spectral_ruleset: 'ci/spectral/restCompleteSet.yaml'
+          spectral_ruleset: 'ci/spectral/restCompleteSet.yml'
