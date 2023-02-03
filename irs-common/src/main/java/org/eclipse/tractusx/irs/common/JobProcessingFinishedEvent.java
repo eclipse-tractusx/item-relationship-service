@@ -19,10 +19,9 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.aaswrapper.job;
+package org.eclipse.tractusx.irs.common;
 
 import lombok.Value;
-import org.eclipse.tractusx.irs.component.enums.JobState;
 
 /**
  * Contains detailed information about finished job
@@ -31,6 +30,6 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 public class JobProcessingFinishedEvent {
 
     private final String jobId;
-    private final JobState jobState;
+    private final String jobState;
     private final String callbackUrl;
 }

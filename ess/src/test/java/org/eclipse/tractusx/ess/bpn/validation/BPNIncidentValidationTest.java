@@ -71,7 +71,7 @@ class BPNIncidentValidationTest {
         final Jobs jobs = jobResult(parentId, cxIdBPNMap);
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs, bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.NO);
@@ -92,7 +92,7 @@ class BPNIncidentValidationTest {
         final Jobs jobs = jobResult(parentId, cxIdBPNMap);
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs, bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.YES);
@@ -108,7 +108,7 @@ class BPNIncidentValidationTest {
         final Jobs jobs = jobResult(parentId, cxIdBPNMap);
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs, bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.YES);
@@ -124,7 +124,7 @@ class BPNIncidentValidationTest {
         final Jobs jobs = jobResult(parentId, cxIdBPNMap);
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs, bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.NO);
@@ -139,7 +139,7 @@ class BPNIncidentValidationTest {
         final Jobs jobs = jobResult(parentId, cxIdBPNMap);
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs, bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.UNKNOWN);
@@ -163,7 +163,7 @@ class BPNIncidentValidationTest {
                               .build();
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs, bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.UNKNOWN);

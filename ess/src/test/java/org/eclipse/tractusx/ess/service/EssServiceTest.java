@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.eclipse.tractusx.ess.discovery.EdcDiscoveryFacade;
 import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
@@ -45,9 +44,8 @@ import org.junit.jupiter.api.Test;
 public class EssServiceTest {
 
     private final IrsFacade irsFacade = mock(IrsFacade.class);
-    private final EdcDiscoveryFacade edcDiscoveryFacade = mock(EdcDiscoveryFacade.class);
 
-    private final EssService essService = new EssService(irsFacade, edcDiscoveryFacade);
+    private final EssService essService = new EssService(irsFacade);
 
     @Test
     void shouldReturnJobWithSubmodelsContainingOnlySupplyChainSubmodel() {

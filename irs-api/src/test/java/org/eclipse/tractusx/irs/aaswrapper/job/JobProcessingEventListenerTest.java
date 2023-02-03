@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
+import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
