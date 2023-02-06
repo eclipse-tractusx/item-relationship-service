@@ -44,7 +44,7 @@ public enum SupplyChainImpacted {
         return SupplyChainImpacted.valueOf(name.toUpperCase(Locale.ROOT));
     }
 
-    public SupplyChainImpacted merge(final SupplyChainImpacted newSupplyChainImpacted) {
+    public SupplyChainImpacted or(final SupplyChainImpacted newSupplyChainImpacted) {
         if (this.equals(YES)) {
             return this;
         } else if (this.equals(UNKNOWN)) {

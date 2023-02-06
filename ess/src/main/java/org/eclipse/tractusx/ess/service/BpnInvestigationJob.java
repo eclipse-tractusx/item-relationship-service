@@ -65,7 +65,7 @@ public class BpnInvestigationJob {
                                            .findFirst();
 
         final SupplyChainImpacted supplyChainImpacted = previousSupplyChain
-                .map(prevChainImpacted -> prevChainImpacted.merge(newSupplyChain))
+                .map(prevSupplyChain -> prevSupplyChain.or(newSupplyChain))
                 .orElse(newSupplyChain);
 
         this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted);
