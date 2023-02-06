@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.ess.service;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -29,10 +30,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-import org.assertj.core.api.AssertionsForClassTypes;
+import org.eclipse.tractusx.edc.model.notification.EdcNotification;
+import org.eclipse.tractusx.edc.model.notification.EdcNotificationHeader;
 import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
@@ -45,8 +49,9 @@ import org.junit.jupiter.api.Test;
 public class EssServiceTest {
 
     private final IrsFacade irsFacade = mock(IrsFacade.class);
+    private final BpnInvestigationJobCache bpnInvestigationJobCache = new InMemoryBpnInvestigationJobCache();
 
-    private final EssService essService = new EssService(irsFacade, new InMemoryBpnInvestigationJobCache());
+    private final EssService essService = new EssService(irsFacade, bpnInvestigationJobCache);
 
     @Test
     void shouldSuccessfullyStartJobAndReturnWithExtendedSubmodelList() {
@@ -77,9 +82,24 @@ public class EssServiceTest {
 
         assertThat(jobHandle).isNotNull();
         assertThat(jobHandle.getId()).isNotNull();
-        AssertionsForClassTypes.assertThat(jobs).isNotNull();
-        assertThat(jobs.getSubmodels()).hasSize(1);
-        assertThat(jobs.getSubmodels().get(0).getPayload()).containsKey("supplyChainImpacted");
+        assertThat(jobs).isNotNull();
+        assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
+    }
+
+    @Test
+    void shouldUpdateJobSnapshotIfNotificationFound() {
+        final String notificationId = UUID.randomUUID().toString();
+        final UUID jobId = UUID.randomUUID();
+        final EdcNotification edcNotification = EdcNotification.builder()
+                .header(EdcNotificationHeader.builder().notificationId(notificationId).build())
+                .content(Map.of("result", "Yes")).build();
+
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(Jobs.builder().job(Job.builder().id(jobId).build()).build(), new ArrayList<>())
+                                                                           .withNotifications(Collections.singletonList(notificationId));
+        bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
+
+        assertDoesNotThrow(() -> essService.handleNotificationCallback(edcNotification));
+        assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
     }
 
     @Test

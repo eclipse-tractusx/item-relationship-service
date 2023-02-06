@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -39,29 +40,35 @@ import org.eclipse.tractusx.irs.component.Submodel;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BpnInvestigationJob {
 
+    private static final String SUPPLY_CHAIN_ASPECT_TYPE = "supply_chain_impacted";
+
     private Jobs jobSnapshot;
     private List<String> incidentBpns;
     private List<String> notifications;
 
     public static BpnInvestigationJob create(final Jobs jobSnapshot, final List<String> incidentBpns) {
         return new BpnInvestigationJob(
-                extendJobWithSupplyChainSubmodel(jobSnapshot, SupplyChainImpacted.UNKNOWN),
+                jobSnapshot,
                 incidentBpns,
                 new ArrayList<>()
         );
     }
 
-    public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChainImpacted) {
-//        TODO
-//       Get state of jobSnapshot before update
-//      Validate if SupplyChainImpacted should be changed - abandon update if not
-//      YES  NO     UNKOWN = YES If any part is impacted then whole Supply is impactes
-//      YES  NO     NO     = YES Yes If any BPN is impacted even if all are not impacted.
-//      NO   UNKNOW NO     = UNKNOW Unknown if no Yes and at leat one bpn is unknown state.
-//      NO   NO     NO     = NO No if complete SupplyChain is not impacted
-//      this.getJobSnapshot().getSubmodels().get()
+    public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain) {
+        final Optional<SupplyChainImpacted> previousSupplyChain = this.getJobSnapshot()
+                                           .getSubmodels()
+                                           .stream()
+                                           .filter(sub -> SUPPLY_CHAIN_ASPECT_TYPE.equals(sub.getAspectType()))
+                                           .map(sub -> sub.getPayload().get("supplyChainImpacted"))
+                                           .map(Object::toString)
+                                           .map(SupplyChainImpacted::fromString)
+                                           .findFirst();
 
-        this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, newSupplyChainImpacted);
+        final SupplyChainImpacted supplyChainImpacted = previousSupplyChain
+                .map(prevChainImpacted -> prevChainImpacted.merge(newSupplyChain))
+                .orElse(newSupplyChain);
+
+        this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted);
         return this;
     }
 
@@ -72,7 +79,7 @@ public class BpnInvestigationJob {
 
     private static Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob, final SupplyChainImpacted supplyChainImpacted) {
         final Submodel supplyChainImpactedSubmodel = Submodel.builder()
-                                                             .aspectType("supply_chain_impacted")
+                                                             .aspectType(SUPPLY_CHAIN_ASPECT_TYPE)
                                                              .payload(Map.of("supplyChainImpacted", supplyChainImpacted.getDescription()))
                                                              .build();
 

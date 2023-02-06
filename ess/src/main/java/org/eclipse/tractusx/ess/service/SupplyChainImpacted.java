@@ -43,4 +43,18 @@ public enum SupplyChainImpacted {
     static SupplyChainImpacted fromString(final String name) {
         return SupplyChainImpacted.valueOf(name.toUpperCase(Locale.ROOT));
     }
+
+    public SupplyChainImpacted merge(final SupplyChainImpacted newSupplyChainImpacted) {
+        if (this.equals(YES)) {
+            return this;
+        } else if (this.equals(UNKNOWN)) {
+            if (newSupplyChainImpacted.equals(NO)) {
+                return this;
+            } else {
+                return newSupplyChainImpacted;
+            }
+        }
+
+        return newSupplyChainImpacted;
+    }
 }

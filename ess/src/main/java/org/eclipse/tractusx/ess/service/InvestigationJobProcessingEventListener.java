@@ -70,17 +70,18 @@ class InvestigationJobProcessingEventListener {
 
             final Jobs completedJob = irsFacade.getIrsJob(completedJobId.toString());
 
-            final SupplyChainImpacted supplyChain = BPNIncidentValidation.jobContainsIncidentBPNs(
+            final SupplyChainImpacted localSupplyChain = BPNIncidentValidation.jobContainsIncidentBPNs(
                     completedJob.getShells(), investigationJob.getIncidentBpns());
-            log.info("Local validation of BPN was done for job {}. with result {}.", completedJobId, supplyChain);
-            final BpnInvestigationJob investigationJobUpdate = investigationJob.update(completedJob, supplyChain);
+            log.info("Local validation of BPN was done for job {}. with result {}.", completedJobId, localSupplyChain);
+            final BpnInvestigationJob investigationJobUpdate = investigationJob.update(completedJob, localSupplyChain);
 
-            if (supplyChainIsNotImpacted(supplyChain)) {
+            if (supplyChainIsNotImpacted(localSupplyChain)) {
                 // Map<BPN, List<GlobalAssetID>>
                 final Map<String, List<String>> bpns = getBPNsFromShells(completedJob.getShells());
                 final Stream<Optional<String>> edcAddresses = bpns.keySet().stream().map(edcDiscoveryFacade::getEdcBaseUrl);
 
                 if (thereIsUnresolvableEdcAddress(edcAddresses)) {
+                    log.info("One of EDC address cant be resolved with DiscoveryService, updating SupplyChainImpacted to {}", SupplyChainImpacted.UNKNOWN);
                     investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
                 } else {
                     bpns.forEach((bpn, globalAssetIds) -> {
@@ -90,7 +91,7 @@ class InvestigationJobProcessingEventListener {
                                 final String notificationId = sendEdcNotification(bpn, url,
                                         investigationJobUpdate.getIncidentBpns(), globalAssetIds);
                                 investigationJobUpdate.withNotifications(Collections.singletonList(notificationId));
-                            } catch (EdcClientException e) {
+                            } catch (final EdcClientException e) {
                                 log.error("Exception during sending EDC notification.");
                                 investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
                             }

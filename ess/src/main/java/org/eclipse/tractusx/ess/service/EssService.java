@@ -70,8 +70,7 @@ public class EssService {
                                                                 .map(Object::toString);
 
             final SupplyChainImpacted supplyChainImpacted = notificationResult.map(SupplyChainImpacted::fromString).orElse(SupplyChainImpacted.UNKNOWN);
-
-            job.update(job.getJobSnapshot(), supplyChainImpacted);
+            bpnInvestigationJobCache.store(job.getJobSnapshot().getJob().getId(), job.update(job.getJobSnapshot(), supplyChainImpacted));
         });
     }
 
