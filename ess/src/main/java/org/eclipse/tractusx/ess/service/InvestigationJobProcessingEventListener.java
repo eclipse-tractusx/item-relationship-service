@@ -83,17 +83,21 @@ class InvestigationJobProcessingEventListener {
                 } else {
                     bpns.forEach(bpn -> {
                         final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl(bpn);
-                        edcBaseUrl.ifPresentOrElse(url -> {
-                            try {
-                                final String notificationId = sendEdcNotification(bpn, url,
-                                        investigationJobUpdate.getIncidentBpns());
-                                investigationJobUpdate.withNotifications(Collections.singletonList(notificationId));
-                            } catch (EdcClientException e) {
-                                log.error("Exception during sending EDC notification.");
+                        edcBaseUrl.ifPresentOrElse(
+                            url -> {
+                                try {
+                                    final String notificationId = sendEdcNotification(bpn, url,
+                                            investigationJobUpdate.getIncidentBpns());
+                                    investigationJobUpdate.withNotifications(Collections.singletonList(notificationId));
+                                } catch (EdcClientException e) {
+                                    log.error("Exception during sending EDC notification.");
+                                    investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
+                                }
+                            },
+                            () -> {
                                 investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
                             }
-                        },
-                        () -> {investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);});
+                        );
                     });
                 }
             }
