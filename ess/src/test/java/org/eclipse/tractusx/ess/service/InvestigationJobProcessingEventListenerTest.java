@@ -58,7 +58,6 @@ class InvestigationJobProcessingEventListenerTest {
     private final InvestigationJobProcessingEventListener jobProcessingEventListener = new InvestigationJobProcessingEventListener(irsFacade, edcDiscoveryFacade, edcSubmodelFacade, bpnInvestigationJobCache);
 
     private final UUID jobId = UUID.randomUUID();
-    private final String edcBaseUrl = "http://edc-server-url.com";
 
     @BeforeEach
     void mockInit() {
@@ -72,6 +71,7 @@ class InvestigationJobProcessingEventListenerTest {
     @Test
     void shouldSendEdcNotificationWhenJobCompleted() throws EdcClientException {
         // given
+        final String edcBaseUrl = "http://edc-server-url.com";
         when(edcDiscoveryFacade.getEdcBaseUrl(anyString())).thenReturn(Optional.of(edcBaseUrl));
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(), JobState.COMPLETED.name(), "");
 

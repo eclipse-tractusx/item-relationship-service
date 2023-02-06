@@ -74,7 +74,7 @@ public class EssServiceTest {
 
         when(irsFacade.startIrsJob(eq(globalAssetId), any())).thenReturn(
                 JobHandle.builder().id(createdJobId).build());
-        when(irsFacade.getIrsJob(eq(createdJobId.toString()))).thenReturn(
+        when(irsFacade.getIrsJob(createdJobId.toString())).thenReturn(
                 expectedResponse);
 
         final JobHandle jobHandle = essService.startIrsJob(request);
