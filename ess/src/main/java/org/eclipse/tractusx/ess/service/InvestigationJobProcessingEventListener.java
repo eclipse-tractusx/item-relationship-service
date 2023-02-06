@@ -83,7 +83,7 @@ class InvestigationJobProcessingEventListener {
                 if (thereIsUnresolvableEdcAddress(edcAddresses)) {
                     investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
                 } else {
-                    bpns.forEach((bpn,globalAssetIds) -> {
+                    bpns.forEach((bpn, globalAssetIds) -> {
                         final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl(bpn);
                         edcBaseUrl.ifPresentOrElse(url -> {
                             try {
