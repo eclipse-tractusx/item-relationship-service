@@ -28,7 +28,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
 
 /**
  * Incident Bpn Job Cache
@@ -44,6 +45,7 @@ interface BpnInvestigationJobCache {
 /**
  * Temporary in memory implementation
  */
+@Service
 class InMemoryBpnInvestigationJobCache implements BpnInvestigationJobCache {
 
     private final ConcurrentHashMap<UUID, BpnInvestigationJob> inMemory = new ConcurrentHashMap<>();

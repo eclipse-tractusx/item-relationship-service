@@ -21,7 +21,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.service;
 
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +43,7 @@ import org.springframework.stereotype.Service;
 public class EssService {
 
     private final IrsFacade irsFacade;
-    private final BpnInvestigationJobCache bpnInvestigationJobCache = new InMemoryBpnInvestigationJobCache();
+    private final BpnInvestigationJobCache bpnInvestigationJobCache;
 
     public JobHandle startIrsJob(final RegisterBpnInvestigationJob request) {
         final JobHandle jobHandle = irsFacade.startIrsJob(request.getGlobalAssetId(), request.getBomLifecycle());
@@ -58,12 +60,22 @@ public class EssService {
     }
 
     public void handleNotificationCallback(final EdcNotification notification) {
-        // TODO: find correct investigation job
-        final BpnInvestigationJob investigationJob = bpnInvestigationJobCache.findAll().stream().findAny().get();
-        // TODO check parsing :)
-        final String notificationResult = (String) notification.getContent().get("result");
-        final SupplyChainImpacted supplyChainImpacted = SupplyChainImpacted.valueOf(notificationResult);
+        final Optional<BpnInvestigationJob> investigationJob = bpnInvestigationJobCache.findAll()
+                                                                                       .stream()
+                                                                                       .filter(investigationJobNotificationPredicate(notification))
+                                                                                       .findFirst();
 
-        investigationJob.update(investigationJob.getJobSnapshot(), supplyChainImpacted);
+        investigationJob.ifPresent(job -> {
+            final Optional<String> notificationResult = Optional.ofNullable(notification.getContent().get("result"))
+                                                                .map(Object::toString);
+
+            final SupplyChainImpacted supplyChainImpacted = notificationResult.map(SupplyChainImpacted::fromString).orElse(SupplyChainImpacted.UNKNOWN);
+
+            job.update(job.getJobSnapshot(), supplyChainImpacted);
+        });
+    }
+
+    private Predicate<BpnInvestigationJob> investigationJobNotificationPredicate(final EdcNotification notification) {
+        return investigationJob -> investigationJob.getNotifications().contains(notification.getHeader().getNotificationId());
     }
 }

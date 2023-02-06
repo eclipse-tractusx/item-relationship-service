@@ -5,18 +5,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Value;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.Submodel;
 
-@RequiredArgsConstructor
-@Value
+@Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BpnInvestigationJob {
 
-    private final Jobs jobSnapshot;
-    private final List<String> incidentBpns;
-    private final List<String> notifications;
+    private Jobs jobSnapshot;
+    private List<String> incidentBpns;
+    private List<String> notifications;
 
     static BpnInvestigationJob create(final Jobs jobSnapshot, final List<String> incidentBpns) {
         return new BpnInvestigationJob(
@@ -26,12 +28,18 @@ public class BpnInvestigationJob {
         );
     }
 
-    BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted supplyChainImpacted) {
-        return new BpnInvestigationJob(
-                extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted),
-                this.incidentBpns,
-                this.notifications
-        );
+    BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChainImpacted) {
+//        TODO
+//        Get state of jobSnapshot before update
+//        Validate if SupplyChainImpacted should be changed - abandon update if not
+//        YES	NO	UNKOWN	= YES	If any part is impacted then whole Supply is impactes
+//        YES	NO	NO	YES	= Yes if any BPN is impacted even if all are not impacted.
+//        NO	UNKNOW	NO	= UNKNOW	Unknown if no Yes and at leat one bpn is unknown state.
+//        NO	NO	NO	NO	= No if complete SupplyChain is not impacted
+//        this.getJobSnapshot().getSubmodels().get()
+
+        this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, newSupplyChainImpacted);
+        return this;
     }
 
     BpnInvestigationJob withNotifications(final List<String> notifications) {
@@ -41,7 +49,8 @@ public class BpnInvestigationJob {
 
     private static Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob, final SupplyChainImpacted supplyChainImpacted) {
         final Submodel supplyChainImpactedSubmodel = Submodel.builder()
-                                                             .payload(Map.of("supplyChainImpacted", supplyChainImpacted))
+                                                             .aspectType("supply_chain_impacted")
+                                                             .payload(Map.of("supplyChainImpacted", supplyChainImpacted.getDescription()))
                                                              .build();
 
         return irsJob.toBuilder().submodels(Collections.singletonList(supplyChainImpactedSubmodel)).build();

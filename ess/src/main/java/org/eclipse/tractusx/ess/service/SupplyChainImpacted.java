@@ -21,11 +21,26 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.service;
 
+import java.util.Locale;
+
+import lombok.Getter;
+
 /**
  * Return value indicates if supply chain is impacted. The supply chain contains the passed BPN.
  */
 public enum SupplyChainImpacted {
-    YES,
-    NO,
-    UNKNOWN;
+    YES("Yes"),
+    NO("No"),
+    UNKNOWN("Unknown");
+
+    @Getter
+    private final String description;
+
+    SupplyChainImpacted(final String description) {
+        this.description = description;
+    }
+
+    static SupplyChainImpacted fromString(final String name) {
+        return SupplyChainImpacted.valueOf(name.toUpperCase(Locale.ROOT));
+    }
 }
