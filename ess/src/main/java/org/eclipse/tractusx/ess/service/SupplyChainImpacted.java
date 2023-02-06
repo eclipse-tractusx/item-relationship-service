@@ -44,6 +44,7 @@ public enum SupplyChainImpacted {
         return SupplyChainImpacted.valueOf(name.toUpperCase(Locale.ROOT));
     }
 
+    @SuppressWarnings("PMD.ShortMethodName")
     public SupplyChainImpacted or(final SupplyChainImpacted newSupplyChainImpacted) {
         if (this.equals(YES)) {
             return this;
