@@ -61,18 +61,18 @@ class InvestigationJobProcessingEventListenerTest {
     private final String edcBaseUrl = "http://edc-server-url.com";
 
     @BeforeEach
-    void mockRestTemplate() {
+    void mockInit() {
         final Jobs jobs = Jobs.builder().job(Job.builder().id(jobId).build()).shells(List.of(createShell(UUID.randomUUID().toString(), "bpn"))).build();
         final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, List.of("BPNS000000000DDD"));
 
         when(bpnInvestigationJobCache.findByJobId(jobId)).thenReturn(Optional.of(bpnInvestigationJob));
         when(irsFacade.getIrsJob(jobId.toString())).thenReturn(jobs);
-        when(edcDiscoveryFacade.getEdcBaseUrl(anyString())).thenReturn(Optional.of(edcBaseUrl));
     }
 
     @Test
     void shouldSendEdcNotificationWhenJobCompleted() throws EdcClientException {
         // given
+        when(edcDiscoveryFacade.getEdcBaseUrl(anyString())).thenReturn(Optional.of(edcBaseUrl));
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(), JobState.COMPLETED.name(), "");
 
         // when
@@ -80,6 +80,21 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), any(EdcNotification.class));
+        verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
+    }
+
+    @Test
+    void shouldStopProcessingIfOneOfEdcAddressIsNotDiscovered() throws EdcClientException {
+        // given
+        when(edcDiscoveryFacade.getEdcBaseUrl(anyString())).thenReturn(Optional.empty());
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(), JobState.COMPLETED.name(), "");
+
+        // when
+        jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
+
+        // then
+        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), any(EdcNotification.class));
+        verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
     }
 
     private static AssetAdministrationShellDescriptor createShell(final String catenaXId, final String bpn) {
