@@ -1,0 +1,11 @@
+extends: 
+    - spectral:oas
+    - restBasicsDataFormat.yml
+    - restBasicMetaInformation.yml
+    - restBasicsDesign.yml
+    - restBasicSecurity.yml
+    - restBasicsHttpHeaders.yml
+    - restBasicsHttpRequest.yml
+    - restBasicsHttpStatusCodes.yml
+    - restBasicsJsonPayload.yml
+    - restBasicUrls.yml
