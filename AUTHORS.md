@@ -9,7 +9,7 @@ The following people have contributed to this repository:
 - Oladapo Oyeneye,doubleSlash Net-Business GmbH,https://github.com/ds-ext-ooyeneye
 - Krzysztof Massalski,doubleSlash Net-Business GmbH,https://github.com/ds-ext-kmassalski
 - Sebastian Scherer,Mercedes Benz AG,https://github.com/the-tatanka
-- Dridi Saber,ISTOS GmbH,https://github.com/SaberIstos
+- Saber Dridi,ISTOS GmbH,https://github.com/SaberIstos
 - Andreas Genz,doubleSlash Net-Business GmbH,https://github.com/ds-agenz
 - Alexander Bulgakov,doubleSlash Net-Business GmbH,https://github.com/ds-alexander-bulgakov
 - Michael Schlacher,doubleSlash Net-Business GmbH,https://github.com/michaelschlacher2
