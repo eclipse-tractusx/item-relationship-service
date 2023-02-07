@@ -94,7 +94,7 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 
     @Override
     public CompletableFuture<EdcNotificationResponse> sendNotification(final String submodelEndpointAddress,
-            String assetId, final EdcNotification notification) {
+            final String assetId, final EdcNotification notification) {
         // not actually sending anything, just return success response
         return CompletableFuture.completedFuture(() -> true);
     }
@@ -252,7 +252,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     @Override
     public CompletableFuture<EdcNotificationResponse> sendNotification(final String submodelEndpointAddress,
-            String assetId, final EdcNotification notification) throws EdcClientException {
+            final String assetId, final EdcNotification notification) throws EdcClientException {
         return execute(submodelEndpointAddress, () -> {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Send EDC notification task, endpoint " + submodelEndpointAddress);
