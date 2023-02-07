@@ -55,7 +55,7 @@ public interface EdcSubmodelClient {
 
     CompletableFuture<String> getSubmodelRawPayload(String submodelEndpointAddress) throws EdcClientException;
 
-    CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress,
+    CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress, String assetId,
             EdcNotification notification) throws EdcClientException;
 }
 
@@ -94,7 +94,7 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 
     @Override
     public CompletableFuture<EdcNotificationResponse> sendNotification(final String submodelEndpointAddress,
-            final EdcNotification notification) {
+            String assetId, final EdcNotification notification) {
         // not actually sending anything, just return success response
         return CompletableFuture.completedFuture(() -> true);
     }
@@ -125,14 +125,14 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Get EDC Submodel task for relationships, endpoint " + submodelEndpointAddress);
 
-            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
+            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress, null);
 
             return startSubmodelDataRetrieval(traversalAspectType, negotiationResponse.getContractAgreementId(),
                     stopWatch);
         });
     }
 
-    private NegotiationResponse fetchNegotiationResponse(final String submodelEndpointAddress)
+    private NegotiationResponse fetchNegotiationResponse(final String submodelEndpointAddress, final String assetId)
             throws EdcClientException {
         final int indexOfUrn = findIndexOf(submodelEndpointAddress, config.getSubmodel().getUrnPrefix());
         final int indexOfSubModel = findIndexOf(submodelEndpointAddress, config.getSubmodel().getPath());
@@ -143,10 +143,20 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         }
 
         final String providerConnectorUrl = submodelEndpointAddress.substring(0, indexOfUrn);
-        final String target = submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
+
+        final String targetAssetId = getAssetId(assetId, submodelEndpointAddress, indexOfUrn, indexOfSubModel);
         log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerConnectorUrl,
-                target);
-        return contractNegotiationService.negotiate(providerConnectorUrl, target);
+                targetAssetId);
+        return contractNegotiationService.negotiate(providerConnectorUrl, targetAssetId);
+    }
+
+    private String getAssetId(final String assetId, final String submodelEndpointAddress, final int indexOfUrn,
+            final int indexOfSubModel) {
+        if (assetId == null) {
+            return submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
+
+        }
+        return assetId;
     }
 
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(
@@ -229,7 +239,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + submodelEndpointAddress);
 
-            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
+            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress, null);
             return pollingService.<String>createJob()
                                  .action(() -> retrieveSubmodelData(config.getSubmodel().getPath(),
                                          negotiationResponse.getContractAgreementId(), stopWatch))
@@ -242,12 +252,12 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     @Override
     public CompletableFuture<EdcNotificationResponse> sendNotification(final String submodelEndpointAddress,
-            final EdcNotification notification) throws EdcClientException {
+            String assetId, final EdcNotification notification) throws EdcClientException {
         return execute(submodelEndpointAddress, () -> {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Send EDC notification task, endpoint " + submodelEndpointAddress);
 
-            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
+            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress, assetId);
 
             return sendNotificationAsync(negotiationResponse.getContractAgreementId(), notification, stopWatch);
         });

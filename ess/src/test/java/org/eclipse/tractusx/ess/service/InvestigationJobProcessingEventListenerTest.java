@@ -55,13 +55,17 @@ class InvestigationJobProcessingEventListenerTest {
     private final EdcSubmodelFacade edcSubmodelFacade = mock(EdcSubmodelFacade.class);
     private final BpnInvestigationJobCache bpnInvestigationJobCache = mock(BpnInvestigationJobCache.class);
 
-    private final InvestigationJobProcessingEventListener jobProcessingEventListener = new InvestigationJobProcessingEventListener(irsFacade, edcDiscoveryFacade, edcSubmodelFacade, bpnInvestigationJobCache);
+    private final InvestigationJobProcessingEventListener jobProcessingEventListener = new InvestigationJobProcessingEventListener(
+            irsFacade, edcDiscoveryFacade, edcSubmodelFacade, bpnInvestigationJobCache);
 
     private final UUID jobId = UUID.randomUUID();
 
     @BeforeEach
     void mockInit() {
-        final Jobs jobs = Jobs.builder().job(Job.builder().id(jobId).build()).shells(List.of(createShell(UUID.randomUUID().toString(), "bpn"))).build();
+        final Jobs jobs = Jobs.builder()
+                              .job(Job.builder().id(jobId).build())
+                              .shells(List.of(createShell(UUID.randomUUID().toString(), "bpn")))
+                              .build();
         final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, List.of("BPNS000000000DDD"));
 
         when(bpnInvestigationJobCache.findByJobId(jobId)).thenReturn(Optional.of(bpnInvestigationJob));
@@ -73,13 +77,15 @@ class InvestigationJobProcessingEventListenerTest {
         // given
         final String edcBaseUrl = "http://edc-server-url.com";
         when(edcDiscoveryFacade.getEdcBaseUrl(anyString())).thenReturn(Optional.of(edcBaseUrl));
-        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(), JobState.COMPLETED.name(), "");
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
+                JobState.COMPLETED.name(), "");
 
         // when
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
 
         // then
-        verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), any(EdcNotification.class));
+        verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), anyString(),
+                any(EdcNotification.class));
         verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
     }
 
@@ -87,13 +93,14 @@ class InvestigationJobProcessingEventListenerTest {
     void shouldStopProcessingIfOneOfEdcAddressIsNotDiscovered() throws EdcClientException {
         // given
         when(edcDiscoveryFacade.getEdcBaseUrl(anyString())).thenReturn(Optional.empty());
-        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(), JobState.COMPLETED.name(), "");
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
+                JobState.COMPLETED.name(), "");
 
         // when
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
 
         // then
-        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), any(EdcNotification.class));
+        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
         verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
     }
 

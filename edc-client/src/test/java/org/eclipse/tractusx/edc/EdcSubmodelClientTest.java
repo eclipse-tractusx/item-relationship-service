@@ -144,7 +144,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(edcDataPlaneClient.sendData(eq(ref), any(), eq(notification))).thenReturn(() -> true);
 
         // act
-        final var result = testee.sendNotification(ENDPOINT_ADDRESS, notification);
+        final var result = testee.sendNotification(ENDPOINT_ADDRESS, "notify-request-asset", notification);
         final EdcNotificationResponse response = result.get(5, TimeUnit.SECONDS);
 
         // assert

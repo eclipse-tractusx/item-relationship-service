@@ -35,6 +35,7 @@ import org.eclipse.tractusx.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.edc.exceptions.EdcClientException;
 import org.eclipse.tractusx.edc.model.notification.EdcNotification;
 import org.eclipse.tractusx.edc.model.notification.EdcNotificationHeader;
+import org.eclipse.tractusx.edc.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.ess.bpn.validation.BPNIncidentValidation;
 import org.eclipse.tractusx.ess.discovery.EdcDiscoveryFacade;
 import org.eclipse.tractusx.ess.irs.IrsFacade;
@@ -78,10 +79,14 @@ class InvestigationJobProcessingEventListener {
             if (supplyChainIsNotImpacted(localSupplyChain)) {
                 // Map<BPN, List<GlobalAssetID>>
                 final Map<String, List<String>> bpns = getBPNsFromShells(completedJob.getShells());
-                final Stream<Optional<String>> edcAddresses = bpns.keySet().stream().map(edcDiscoveryFacade::getEdcBaseUrl);
+                final Stream<Optional<String>> edcAddresses = bpns.keySet()
+                                                                  .stream()
+                                                                  .map(edcDiscoveryFacade::getEdcBaseUrl);
 
                 if (thereIsUnresolvableEdcAddress(edcAddresses)) {
-                    log.info("One of EDC address cant be resolved with DiscoveryService, updating SupplyChainImpacted to {}", SupplyChainImpacted.UNKNOWN);
+                    log.info(
+                            "One of EDC address cant be resolved with DiscoveryService, updating SupplyChainImpacted to {}",
+                            SupplyChainImpacted.UNKNOWN);
                     investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
                 } else {
                     bpns.forEach((bpn, globalAssetIds) -> {
@@ -92,7 +97,7 @@ class InvestigationJobProcessingEventListener {
                                         investigationJobUpdate.getIncidentBpns(), globalAssetIds);
                                 investigationJobUpdate.withNotifications(Collections.singletonList(notificationId));
                             } catch (final EdcClientException e) {
-                                log.error("Exception during sending EDC notification.");
+                                log.error("Exception during sending EDC notification.", e);
                                 investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
                             }
                         }, () -> investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN));
@@ -105,10 +110,15 @@ class InvestigationJobProcessingEventListener {
     }
 
     private String sendEdcNotification(final String bpn, final String url, final List<String> incidentBpns,
-            final List<String> globalAssetIds)
-            throws EdcClientException {
+            final List<String> globalAssetIds) throws EdcClientException {
         final String notificationId = UUID.randomUUID().toString();
-        edcSubmodelFacade.sendNotification(url, edcRequest(notificationId, url, bpn, incidentBpns, globalAssetIds));
+
+        final var response = edcSubmodelFacade.sendNotification(url, "notify-request-asset",
+                edcRequest(notificationId, url, bpn, incidentBpns, globalAssetIds));
+        if (response.deliveredSuccessfully()) {
+            throw new EdcClientException("EDC Provider did not accept message with notificationId " + notificationId);
+        }
+
         return notificationId;
 
     }
@@ -121,7 +131,8 @@ class InvestigationJobProcessingEventListener {
             final List<String> incidentBpns, final List<String> globalAssetIds) {
         final EdcNotificationHeader edcNotificationHeader = EdcNotificationHeader.builder()
                                                                                  .notificationId(notificationId)
-                                                                                 .senderBpn("SystemBPNFromConfig") // TODO
+                                                                                 .senderBpn(
+                                                                                         "SystemBPNFromConfig") // TODO
                                                                                  .recipientBpn(recipientBpn)
                                                                                  .senderEdc(edcAddress)
                                                                                  .replyAssetId("ess-response-asset")
