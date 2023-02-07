@@ -1,0 +1,76 @@
+extends: [[spectral:oas, all]]
+
+documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#
+
+rules:
+
+  # SHOULD use kebab-case with uppercase separate words for HTTP headers [132]
+  # => https://opensource.zalando.com/restful-api-guidelines/#132
+  response-headers-kebab-case-and-uppercase:
+    description: "SHOULD use kebab-case with uppercase separate words for HTTP headers [132]"
+    message: "Header {{error}}: {{path}}"
+    severity: error
+    recommended: true
+    given: $.[responses][*].headers.*~
+    then:
+      function: casing
+      functionOptions:
+        type: kebab
+        separator:
+          char: "-"
+
+  request-headers-kebab-case-and-uppercase:
+    description: "SHOULD use kebab-case with uppercase separate words for HTTP headers [132]"
+    message: "{{value}} {{error}} in {{path}}"
+    severity: error
+    recommended: true
+    given: $.[parameters][?(@.in=="header")].name
+    then:
+      function: casing
+      functionOptions:
+        type: kebab
+        separator:
+          char: "-"
+
+  # SHOULD prefer hyphenated-kebab-case for HTTP header fields [132]
+  # => https://opensource.zalando.com/restful-api-guidelines/#132
+  should-use-uppercase-kebab-case-for-header-parameters:
+    message: "Header parameters should be Hyphenated-Kebab-Case"
+    description: "SHOULD prefer hyphenated-kebab-case for HTTP header fields [132]"
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#132
+    severity: warn
+    given: $.paths.*.*.parameters[?(@.in=='header')].name
+    then:
+      function: pattern
+      functionOptions:
+        match: ^([A-Z][A-Za-z0-9]*)(-[A-Z][A-Za-z0-9]+)*$
+
+  # MUST use Content-* headers correctly [178]
+  # => https://opensource.zalando.com/restful-api-guidelines/#178
+
+  # MAY use standard headers [133]
+  # => https://opensource.zalando.com/restful-api-guidelines/#133
+
+  # SHOULD use Location header instead of Content-Location header [180]
+  # => https://opensource.zalando.com/restful-api-guidelines/#180
+
+  # MAY use Content-Location header [179]
+  # => https://opensource.zalando.com/restful-api-guidelines/#179
+
+  # MAY consider to support Prefer header to handle processing preferences [181]
+  # => https://opensource.zalando.com/restful-api-guidelines/#181
+
+  # MAY consider to support ETag together with If-Match/If-None-Match header [182]
+  # => https://opensource.zalando.com/restful-api-guidelines/#182
+
+  # MAY consider to support Idempotency-Key header [230]
+  # => https://opensource.zalando.com/restful-api-guidelines/#230
+
+  # SHOULD use only the specified proprietary Zalando headers [183]
+  # => https://opensource.zalando.com/restful-api-guidelines/#183
+
+  # MUST propagate proprietary headers [184]
+  # => https://opensource.zalando.com/restful-api-guidelines/#184
+
+  # MUST support [233]X-Flow-ID
+  # => https://opensource.zalando.com/restful-api-guidelines/#233
