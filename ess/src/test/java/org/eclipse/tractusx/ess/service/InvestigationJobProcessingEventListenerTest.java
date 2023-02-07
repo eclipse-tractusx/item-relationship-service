@@ -36,6 +36,7 @@ import java.util.UUID;
 import org.eclipse.tractusx.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.edc.exceptions.EdcClientException;
 import org.eclipse.tractusx.edc.model.notification.EdcNotification;
+import org.eclipse.tractusx.edc.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.ess.discovery.EdcDiscoveryFacade;
 import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
@@ -77,6 +78,8 @@ class InvestigationJobProcessingEventListenerTest {
         // given
         final String edcBaseUrl = "http://edc-server-url.com";
         when(edcDiscoveryFacade.getEdcBaseUrl(anyString())).thenReturn(Optional.of(edcBaseUrl));
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+                () -> true);
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
                 JobState.COMPLETED.name(), "");
 

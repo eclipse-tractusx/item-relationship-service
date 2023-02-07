@@ -114,7 +114,7 @@ class InvestigationJobProcessingEventListener {
 
         final var response = edcSubmodelFacade.sendNotification(url, "notify-request-asset",
                 edcRequest(notificationId, url, bpn, incidentBpns, globalAssetIds));
-        if (response.deliveredSuccessfully()) {
+        if (!response.deliveredSuccessfully()) {
             throw new EdcClientException("EDC Provider did not accept message with notificationId " + notificationId);
         }
 
