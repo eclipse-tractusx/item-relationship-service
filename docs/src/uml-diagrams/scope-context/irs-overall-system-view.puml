@@ -6,7 +6,7 @@ skinparam ranksep 20
 
 [**IRS**] <<System>> as IRS
 
-[**AAS Wrapper**] <<Component>> as AASW
+[**EDC**] <<Component>> as EDC
 
 
 
@@ -22,17 +22,17 @@ node "IAM" {
 actor Consumer
 
 interface "IRS API" as IAPI
-interface "AASWrapper API" as IAASW
+interface "EDC API" as IEDC
 interface "Registry API" as IRAPI
 interface "Submodel API" as ISubModelAPI
 interface "OIDC" as IAMAPI
 
 Consumer -( IAPI
 IAPI - IRS
-IAASW - AASW
-IRS -( IAASW
+IEDC - EDC
+IRS -( IEDC
 ISubModelAPI - SN
-AASW -( ISubModelAPI
+EDC -( ISubModelAPI
 IRS --( IRAPI
 IRAPI -- AASR
 IRS --down( IAMAPI

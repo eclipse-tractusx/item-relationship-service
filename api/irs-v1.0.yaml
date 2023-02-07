@@ -736,15 +736,15 @@ components:
       additionalProperties: false
       description: Error response.
       properties:
-        error:
-          type: string
-          description: Error.
         messages:
           type: array
           description: List of error messages.
           items:
             type: string
           maxItems: 2147483647
+        error:
+          type: string
+          description: Error.
         statusCode:
           type: string
           description: Error code.
@@ -890,6 +890,17 @@ components:
         - globalAssetId
         - id
         - state
+    JobHandle:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Id of the job.
+          maxLength: 36
+          minLength: 36
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
     JobErrorDetails:
       type: object
       additionalProperties: false
@@ -907,17 +918,6 @@ components:
           type: string
           format: date-time
           description: Datetime error occurs.
-    JobHandle:
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Id of the job.
-          maxLength: 36
-          minLength: 36
-          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
     JobParameter:
       type: object
       additionalProperties: false

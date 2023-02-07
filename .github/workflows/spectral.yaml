@@ -1,0 +1,24 @@
+name: Analyze API with Spectral
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'api/**'
+      - 'ci/spectral/**'
+
+
+jobs:
+  build:
+    name: Run Spectral
+    runs-on: ubuntu-latest
+    steps:
+      # Check out the repository
+      - uses: actions/checkout@v2
+
+      # Run Spectral
+      - uses: stoplightio/spectral-action@latest
+        with:
+          file_glob: 'api/*.yaml'
+          spectral_ruleset: 'ci/spectral/restCompleteSet.yml'

@@ -1,0 +1,105 @@
+extends: [[spectral:oas, all]]
+
+documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#
+
+functions:
+  - ./empty-object
+
+rules:
+
+  # MUST secure endpoints [104]
+  # MUST define and assign permissions (scopes) [105]
+  # => https://opensource.zalando.com/restful-api-guidelines/#104
+  # => https://opensource.zalando.com/restful-api-guidelines/#105
+  must-have-secure-schemes-types:
+    description: Must have secure schemes types
+    given: $.components.securitySchemes
+    severity: error
+    then:
+      field: type
+      function: enumeration
+      functionOptions:
+        values:
+          - http
+          - apiKey
+          - openIdConnect
+          - oauth2
+
+  must-have-secure-scheme:
+    description: Must have secure schemes types
+    given: $.components.securitySchemes.[?(@.type == 'http')]
+    severity: error
+    then:
+      field: scheme
+      function: enumeration
+      functionOptions:
+        values:
+          - basic
+          - bearer
+
+  must-have-secure-endpoints:
+    message: Missing 'security.BearerAuth'.
+    description: MUST secure endpoints [104] & MUST define and assign permissions (scopes) [105]
+    severity: error
+    given: $.paths.*.*
+    then:
+      field: security
+      function: truthy
+
+  must-have-securityschemes-for-endpoints:
+    message: Missing 'securitySchemes'.
+    description: MUST secure endpoints [104] & MUST define and assign permissions (scopes) [105]
+    severity: error
+    given: $.components
+    then:
+      field: securitySchemes
+      function: truthy
+
+  oas2-operation-security-defined: true
+  oas3-operation-security-defined: true
+
+  sec-securitySchemes-oauth-http:
+    description: "OAuth2 endpoints must use `https://`"
+    message: "OAuth endpoints must use https://"
+    formats:
+      - oas3
+    severity: error
+    recommended: true
+    given:
+      - >-
+        $..[securitySchemes][?(@ && @.type=="oauth2")][*].[?(@property && @property.match(/Url$/i))]
+    then:
+      - field: value
+        function: pattern
+        functionOptions:
+          match: >-
+            ^https://
+
+  must-use-forced-security-for-unsafe-endpoints:
+    message: Security mus be applied to "write" endpoints
+    severity: error
+    given: $.paths.*[?(@.property == 'post' || @property == 'put' || @property == 'patch' || @property == 'delete')]
+    then:
+      - field: security
+        function: truthy
+
+  must-use-security-objects-for-hackeable-empty-objects:
+    message: "{{error}}"
+    severity: error
+    given: $.paths.*[?(@.property == 'post' || @.property == 'put' || @.property == 'patch' || @.property == 'delete')].security.*
+    then:
+      function: empty-object
+
+  # MUST follow naming convention for permissions (scopes) [225]
+  # => https://opensource.zalando.com/restful-api-guidelines/#225
+  must-have-naming-convention-for-permissions:
+    message: Missing 'security.BearerAuth'.
+    description: MUST secure endpoints [104] & MUST define and assign permissions (scopes) [105]
+    severity: error
+    given: $.paths.*.*.security[*].BearerAuth[*]
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: string
+          pattern: "^((((([a-z][a-z0-9]*)(-[a-z][a-z0-9]*))+[.])*(read|write?))?|uid)$"

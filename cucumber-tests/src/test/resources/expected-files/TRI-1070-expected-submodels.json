@@ -1,0 +1,132 @@
+    {
+    "submodels": [
+        {
+            "identification": "urn:uuid:34171569-9c93-406c-b512-a99d2ad3829e",
+            "aspectType": "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship",
+            "payload": {
+                "catenaXId": "urn:uuid:59bb51f9-638e-4ac1-95f8-96c99faad146",
+                "childParts": [
+                    {
+                        "quantity": {
+                            "quantityNumber": "0.1908",
+                            "measurementUnit": {
+                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                                "lexicalValue": "unit:kilogram"
+                            }
+                        },
+                        "lifecycleContext": "AsBuilt",
+                        "createdOn": "2022-02-03T14:48:54.709Z",
+                        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                        "childCatenaXId": "urn:uuid:131298d6-9e00-48cc-b0dd-6e59f90959b3"
+                    }
+                ]
+            }
+        },
+        {
+            "identification": "urn:uuid:15fc4b5f-bff7-4907-af81-0620df799f4f",
+            "aspectType": "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization",
+            "payload": {
+                "localIdentifiers": [
+                    {
+                        "value": "BPNL00000003B3NX",
+                        "key": "manufacturerId"
+                    },
+                    {
+                        "value": "84893J1-84",
+                        "key": "manufacturerPartId"
+                    },
+                    {
+                        "value": "NO-953457435698581712503116",
+                        "key": "partInstanceId"
+                    }
+                ],
+                "manufacturingInformation": {
+                    "date": "2022-02-04T14:48:54",
+                    "country": "DEU"
+                },
+                "catenaXId": "urn:uuid:59bb51f9-638e-4ac1-95f8-96c99faad146",
+                "partTypeInformation": {
+                    "manufacturerPartId": "84893J1-84",
+                    "customerPartId": "84893J1-84",
+                    "classification": "component",
+                    "nameAtManufacturer": "Sensor",
+                    "nameAtCustomer": "Sensor"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:d22a0f1c-8708-4126-bcf2-c31bc17e89a0",
+            "aspectType": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+            "payload": {
+                "materialName": "NTIER Product",
+                "materialClass": "5.5",
+                "recycledContent": 0.0,
+                "aggregateState": "",
+                "component": [
+                    {
+                        "materialName": "Aluminium oxide",
+                        "materialClass": "5.5.1",
+                        "quantity": {
+                            "value": 60.0,
+                            "unit": {
+                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#percent",
+                                "lexicalValue": "percent"
+                            }
+                        }
+                    },
+                    {
+                        "materialName": "Other",
+                        "materialClass": "5.5.2",
+                        "quantity": {
+                            "value": 40.0,
+                            "unit": {
+                                "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#percent",
+                                "lexicalValue": "percent"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "identification": "urn:uuid:0013446d-bb7b-486b-91ce-4004c699aa22",
+            "aspectType": "urn:bamm:io.catenax.batch:1.0.0#Batch",
+            "payload": {
+                "catenaXId": "urn:uuid:131298d6-9e00-48cc-b0dd-6e59f90959b3",
+                "localIdentifiers": [
+                    {
+                        "key": "manufacturerId",
+                        "value": "BPNL00000003B0Q0"
+                    },
+                    {
+                        "key": "manufacturerPartId",
+                        "value": "51722L1-89"
+                    },
+                    {
+                        "key": "customerPartId",
+                        "value": "51722L1-89"
+                    },
+                    {
+                        "key": "batchId",
+                        "value": "NO-424953433585729852682533"
+                    },
+                    {
+                        "key": "partInstanceId",
+                        "value": "NO-424953433585729852682533"
+                    }
+                ],
+                "manufacturingInformation": {
+                    "date": "2022-02-04T14:48:54",
+                    "country": "DEU"
+                },
+                "partTypeInformation": {
+                    "manufacturerPartId": "51722L1-89",
+                    "customerPartId": "51722L1-89",
+                    "classification": "component",
+                    "nameAtManufacturer": "NTIER Product",
+                    "nameAtCustomer": "NTIER Product"
+                }
+            }
+        }
+    ]
+}
