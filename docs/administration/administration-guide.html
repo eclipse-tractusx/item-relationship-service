@@ -673,7 +673,11 @@ pre.rouge {
 <li><a href="#_secrets">Secrets</a></li>
 </ul>
 </li>
-<li><a href="#_troubleshooting">Troubleshooting</a></li>
+<li><a href="#_troubleshooting">Troubleshooting</a>
+<ul class="sectlevel2">
+<li><a href="#_proxy_support">Proxy support</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -1016,6 +1020,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">suffix</span><span class="pi">:</span> <span class="s">/api/v1/ids/data</span>
     <span class="na">catalog</span><span class="pi">:</span>
       <span class="na">limit</span><span class="pi">:</span> <span class="m">1000</span> <span class="c1"># Max number of catalog items to retrieve from the controlplane</span>
+      <span class="na">pagesize</span><span class="pi">:</span> <span class="m">50</span> <span class="c1"># Number of catalog items to retrieve on one page for pagination</span>
     <span class="na">apikey</span><span class="pi">:</span>
       <span class="na">header</span><span class="pi">:</span> <span class="s2">"</span><span class="s">X-Api-Key"</span> <span class="c1"># Name of the EDC api key header field</span>
       <span class="na">secret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span> <span class="c1">#&lt;edc-api-key&gt;</span>
@@ -1034,12 +1039,20 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">content</span><span class="pi">:</span>
 
 
+
+<span class="na">env</span><span class="pi">:</span> <span class="pi">[]</span> <span class="c1"># You can provide your own environment variables for the IRS here.</span>
+<span class="c1">#  - name: JAVA_TOOL_OPTIONS</span>
+<span class="c1">#  - value: -Dhttps.proxyHost=1.2.3.4</span>
+
+
 <span class="c1">#######################</span>
 <span class="c1"># Minio Configuration #</span>
 <span class="c1">#######################</span>
 <span class="na">minio</span><span class="pi">:</span>
   <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
   <span class="na">mode</span><span class="pi">:</span> <span class="s">standalone</span>
+  <span class="na">persistence</span><span class="pi">:</span>
+    <span class="na">size</span><span class="pi">:</span> <span class="s">1Gi</span>
   <span class="na">resources</span><span class="pi">:</span>
     <span class="na">requests</span><span class="pi">:</span>
       <span class="na">memory</span><span class="pi">:</span> <span class="s">4Gi</span>
@@ -1480,15 +1493,29 @@ Keep the values for these settings safe and do not publish them!
 <div class="sect1">
 <h2 id="_troubleshooting">Troubleshooting</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_proxy_support">Proxy support</h3>
 <div class="paragraph">
-<p>Coming soon&#8230;&#8203;</p>
+<p>If you are using an HTTP(S) proxy for outgoing connections, you need to configure the IRS to use it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>JAVA_TOOL_OPTIONS=-Dhttps.proxyHost=X.X.X.X -Dhttps.proxyPort=XXXX</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You might need to specify both <code>http</code> and <code>https</code> options, dependending on your configuration.</p>
+</div>
+<div class="paragraph">
+<p>If your proxy is requiring authentication, you can use the <code>.proxyUser</code> and <code>.proxyPassword</code> properties in addition.</p>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-01-26 09:46:07 UTC
+Last updated 2023-02-07 14:03:43 UTC
 </div>
 </div>
 </body>

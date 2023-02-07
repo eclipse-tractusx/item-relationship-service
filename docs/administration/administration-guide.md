@@ -13,6 +13,7 @@ Table of Contents
     -   [EDC consumer configuration](#edc-consumer-configuration)
     -   [Secrets](#secrets)
 -   [Troubleshooting](#troubleshooting)
+    -   [Proxy support](#proxy-support)
 
 System Overview
 ---------------
@@ -308,6 +309,7 @@ The IRS application is configured using the Spring configuration mechanism. The 
           suffix: /api/v1/ids/data
         catalog:
           limit: 1000 # Max number of catalog items to retrieve from the controlplane
+          pagesize: 50 # Number of catalog items to retrieve on one page for pagination
         apikey:
           header: "X-Api-Key" # Name of the EDC api key header field
           secret: "" #<edc-api-key>
@@ -326,12 +328,20 @@ The IRS application is configured using the Spring configuration mechanism. The 
       content:
 
 
+
+    env: [] # You can provide your own environment variables for the IRS here.
+    #  - name: JAVA_TOOL_OPTIONS
+    #  - value: -Dhttps.proxyHost=1.2.3.4
+
+
     #######################
     # Minio Configuration #
     #######################
     minio:
       enabled: true
       mode: standalone
+      persistence:
+        size: 1Gi
       resources:
         requests:
           memory: 4Gi
@@ -687,6 +697,14 @@ Login password for Grafana. To be defined by you.
 Troubleshooting
 ---------------
 
-Coming soon…​
+### Proxy support
 
-Last updated 2023-01-26 09:46:07 UTC
+If you are using an HTTP(S) proxy for outgoing connections, you need to configure the IRS to use it.
+
+    JAVA_TOOL_OPTIONS=-Dhttps.proxyHost=X.X.X.X -Dhttps.proxyPort=XXXX
+
+You might need to specify both `http` and `https` options, dependending on your configuration.
+
+If your proxy is requiring authentication, you can use the `.proxyUser` and `.proxyPassword` properties in addition.
+
+Last updated 2023-02-07 14:03:43 UTC

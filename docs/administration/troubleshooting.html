@@ -437,18 +437,40 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
 <h1>Troubleshooting</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_proxy_support">Proxy support</a></li>
+</ul>
+</div>
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="_proxy_support">Proxy support</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Coming soon&#8230;&#8203;</p>
+<p>If you are using an HTTP(S) proxy for outgoing connections, you need to configure the IRS to use it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>JAVA_TOOL_OPTIONS=-Dhttps.proxyHost=X.X.X.X -Dhttps.proxyPort=XXXX</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You might need to specify both <code>http</code> and <code>https</code> options, dependending on your configuration.</p>
+</div>
+<div class="paragraph">
+<p>If your proxy is requiring authentication, you can use the <code>.proxyUser</code> and <code>.proxyPassword</code> properties in addition.</p>
+</div>
+</div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-01-26 09:46:07 UTC
+Last updated 2023-02-07 14:03:43 UTC
 </div>
 </div>
 </body>

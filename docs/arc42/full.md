@@ -395,7 +395,7 @@ As of now, the IRS uses its own IAM credentials to gather the required data. Thi
 
 ### Technical context
 
-<img src="architecture-constraints/integrated-overview.svg" width="1268" height="417" alt="integrated overview" />
+<img src="architecture-constraints/integrated-overview.svg" width="1262" height="417" alt="integrated overview" />
 
 #### Component overview
 
@@ -409,9 +409,9 @@ In order to consume the Restful application IRS, the security aspect should be t
 
 The IRS acts as a consumer of the component Asset Administration Shell Registry. The IRS contains a Restful client (REST template) that build a REST call to the mentioned Digital Twin Registry API based on its known URL (the AAS registry URL is configured in the IRS Restful API). The request contains the given "globalAssetId" by the consumer. Like described in the above section, the security aspect is required in order to achieve a REST call against the AAS Registry. As a response, the IRS gets the corresponding asset administration shell descriptor. The last one contains a list of submodel descriptors which can be filtered by the aspect type entered by the consumer. An aspect type like AssemblyPartRelationship, SerialPartTypization etc. And as mentioned above, the transport protocol HTTP(S) is used for the REST call communication.
 
-##### AAS Wrapper API
+##### EDC API
 
-The integrated Restful client named Submodel Client in the IRS is responsible for creating Restful requests to the component AAS Wrapper. The IRS application builds from the retrieved AAS Descriptor (see previous section) the corresponding Submodel endpoint URLs and sends via the submodel REST client requests to the AAS Wrapper API. The last one responds with the corresponding Submodel data.
+The integrated EDC client in the IRS is responsible for creating restful requests to the component EDC. The IRS application builds from the retrieved AAS Descriptor (see previous section) the corresponding submodel endpoint URLs, negotiates an EDC contract and sends via the submodel REST client requests to the EDC. The EDC responds with the corresponding submodel data.
 
 Solution strategy
 -----------------
@@ -547,26 +547,22 @@ The interfaces show how the components interact with each other and which interf
 <td><p>The IRS consumes relationship information across the CX-Network and builds the graph view. Within this Documentation, the focus lies on the IRS</p></td>
 </tr>
 <tr class="odd">
-<td><p>AAS Wrapper</p></td>
-<td><p>The AAS Wrapper is a System, which simplifies the communication with the EDC and wraps the communication.</p></td>
-</tr>
-<tr class="even">
 <td><p>AAS Proxy</p></td>
 <td><p>The AAS Proxy is a System, which enables the consumer to simplify the communication with other CX Partners.</p></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><p>EDC Consumer</p></td>
 <td><p>The EDC Consumer Component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists out of a control plane and a data plane.</p></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><p>EDC Provider</p></td>
 <td><p>The EDC Provider Component connects with EDC Consumer component and  forms the end point for the actual exchange of data. It handles automatic contract negotiation and the subsequent exchange of data assets for connected applications.</p></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><p>Submodel Server</p></td>
 <td><p>The Submodel Server offers endpoints for requesting the Submodel aspects.</p></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><p>IAM/DAPS</p></td>
 <td><p>DAPS as central Identity Provider</p></td>
 </tr>
@@ -763,7 +759,7 @@ The TransferProcessManager creates executions and provides them to the executor 
 <tbody>
 <tr class="odd">
 <td><p>TransferProcessManager</p></td>
-<td><p>The TransferProcessManager manages the requests to the AASWrapper and DigitalTwinRegistry.</p></td>
+<td><p>The TransferProcessManager manages the requests to the EDC and DigitalTwinRegistry.</p></td>
 </tr>
 <tr class="even">
 <td><p>DigitalTwinRegistryFacade</p></td>
@@ -771,21 +767,17 @@ The TransferProcessManager creates executions and provides them to the executor 
 </tr>
 <tr class="odd">
 <td><p>SubmodelFacade</p></td>
-<td><p>The SubmodelFacade calls the AASWrapper to retrieve data from the submodel server and transforms the response to internal data models.</p></td>
+<td><p>The SubmodelFacade calls the EDC to retrieve data from the submodel server and transforms the response to internal data models.</p></td>
 </tr>
 <tr class="even">
 <td><p>BlobStore</p></td>
 <td><p>The BlobStore is the database where the relationships and tombstones are stored for a requested item.</p></td>
 </tr>
 <tr class="odd">
-<td><p>AASWrapper</p></td>
-<td><p>The AASWrapper is the interface to the EDC Network. It manages negotiation of contracts and transfer of data.</p></td>
-</tr>
-<tr class="even">
 <td><p>DigitalTwinRegistry</p></td>
 <td><p>The DigitalTwinRegistry is the central database of registered assets.</p></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><p>ExecutorService</p></td>
 <td><p>The ExecutorService enables the simultaneous execution of requests of transfer processes.</p></td>
 </tr>
@@ -1335,4 +1327,4 @@ Glossary
 </tbody>
 </table>
 
-Last updated 2023-01-26 09:46:07 UTC
+Last updated 2023-02-07 14:03:43 UTC
