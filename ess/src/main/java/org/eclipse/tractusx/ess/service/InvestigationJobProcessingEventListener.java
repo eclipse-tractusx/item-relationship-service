@@ -35,7 +35,6 @@ import org.eclipse.tractusx.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.edc.exceptions.EdcClientException;
 import org.eclipse.tractusx.edc.model.notification.EdcNotification;
 import org.eclipse.tractusx.edc.model.notification.EdcNotificationHeader;
-import org.eclipse.tractusx.edc.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.ess.bpn.validation.BPNIncidentValidation;
 import org.eclipse.tractusx.ess.discovery.EdcDiscoveryFacade;
 import org.eclipse.tractusx.ess.irs.IrsFacade;
