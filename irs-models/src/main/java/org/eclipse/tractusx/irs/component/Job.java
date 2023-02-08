@@ -49,12 +49,12 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 @SuppressWarnings({"PMD.ShortClassName", "PMD.ShortVariable"})
 public class Job {
 
-    private static final int INPUT_FIELD_MIN_LENGTH = 36;
     private static final int JOB_ID_FIELD_MAX_LENGTH = 36;
+    private static final int GLOBAL_ASSET_ID_LENGTH = 45;
 
     @NotNull
-    @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
-    @Schema(description = "Id of the job.", minLength = INPUT_FIELD_MIN_LENGTH,
+    @Size(min = JOB_ID_FIELD_MAX_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
+    @Schema(description = "Id of the job.", minLength = JOB_ID_FIELD_MAX_LENGTH,
             maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class,
             pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i")
     @JsonAlias("jobId")
@@ -62,7 +62,7 @@ public class Job {
 
     @NotNull
     @Schema(implementation = String.class, description = "Part global unique id in the format urn:uuid:uuid4.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-            minLength = 45, maxLength = 45, pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+            minLength = GLOBAL_ASSET_ID_LENGTH, maxLength = GLOBAL_ASSET_ID_LENGTH, pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     @JsonUnwrapped
     private GlobalAssetIdentification globalAssetId;
 

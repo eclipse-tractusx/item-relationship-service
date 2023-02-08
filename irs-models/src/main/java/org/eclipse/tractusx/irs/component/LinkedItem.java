@@ -39,6 +39,8 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 @Jacksonized
 public class LinkedItem {
 
+    private static final int GLOBAL_ASSET_ID_LENGTH = 45;
+
     @Schema(description = "Quantity component.", implementation = Quantity.class)
     private Quantity quantity;
 
@@ -53,7 +55,7 @@ public class LinkedItem {
     private ZonedDateTime lastModifiedOn;
 
     @Schema(implementation = String.class, description = "CatenaX child global asset id in the format urn:uuid:uuid4.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-            minLength = 45, maxLength = 45, pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+            minLength = GLOBAL_ASSET_ID_LENGTH, maxLength = GLOBAL_ASSET_ID_LENGTH, pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     @JsonUnwrapped
     private GlobalAssetIdentification childCatenaXId;
 
