@@ -171,6 +171,8 @@ bpdm:
 
 # ESS Module specific properties
 ess:
+  localBpn: ${ESS_LOCAL_BPN:BPNL00000003AWSS}
+  localEdcEndpoint: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
   irs:
     url: "${IRS_URL:https://irs-ess.dev.demo.catena-x.net/}"
   discovery:

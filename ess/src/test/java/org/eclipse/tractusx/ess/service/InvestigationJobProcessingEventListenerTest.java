@@ -56,7 +56,7 @@ class InvestigationJobProcessingEventListenerTest {
     private final BpnInvestigationJobCache bpnInvestigationJobCache = mock(BpnInvestigationJobCache.class);
 
     private final InvestigationJobProcessingEventListener jobProcessingEventListener = new InvestigationJobProcessingEventListener(
-            irsFacade, edcDiscoveryFacade, edcSubmodelFacade, bpnInvestigationJobCache);
+            irsFacade, edcDiscoveryFacade, edcSubmodelFacade, bpnInvestigationJobCache, "", "");
 
     private final UUID jobId = UUID.randomUUID();
 
