@@ -30,8 +30,10 @@ import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.Submodel;
+import org.eclipse.tractusx.irs.component.Summary;
 
 /**
  * Object to store in cache
@@ -44,10 +46,11 @@ public class BpnInvestigationJob {
 
     private Jobs jobSnapshot;
     private List<String> incidentBpns;
-    private List<String> notifications;
+    private List<String> unansweredNotifications;
+    private List<String> answeredNotifications;
 
     public static BpnInvestigationJob create(final Jobs jobSnapshot, final List<String> incidentBpns) {
-        return new BpnInvestigationJob(jobSnapshot, incidentBpns, new ArrayList<>());
+        return new BpnInvestigationJob(jobSnapshot, incidentBpns, new ArrayList<>(), new ArrayList<>());
     }
 
     public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain) {
@@ -66,16 +69,29 @@ public class BpnInvestigationJob {
                 prevSupplyChain -> prevSupplyChain.or(newSupplyChain)).orElse(newSupplyChain);
 
         this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted);
+        this.jobSnapshot = extendSummary(jobSnapshot);
         return this;
+    }
+
+    private Jobs extendSummary(final Jobs irsJob) {
+        final Summary oldSummary = Optional.ofNullable(irsJob.getJob().getSummary()).orElse(Summary.builder().build());
+        final NotificationSummary newSummary = new NotificationSummary(oldSummary.getAsyncFetchedItems(),
+                oldSummary.getBpnLookups(),
+                new NotificationItems(unansweredNotifications.size() + answeredNotifications.size(),
+                        answeredNotifications.size()));
+        final Job job = irsJob.getJob().toBuilder().summary(newSummary).build();
+        return irsJob.toBuilder().job(job).build();
+
     }
 
     public BpnInvestigationJob withNotifications(final List<String> notifications) {
-        this.notifications.addAll(notifications);
+        this.unansweredNotifications.addAll(notifications);
         return this;
     }
 
-    public BpnInvestigationJob withoutNotification(final String notificationId) {
-        this.notifications.remove(notificationId);
+    public BpnInvestigationJob withAnsweredNotification(final String notificationId) {
+        this.unansweredNotifications.remove(notificationId);
+        this.answeredNotifications.add(notificationId);
         return this;
     }
 

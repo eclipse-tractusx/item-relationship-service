@@ -62,14 +62,14 @@ public class EssService {
     }
 
     public void handleNotificationCallback(final EdcNotification notification) {
-        final Optional<BpnInvestigationJob> investigationJob = bpnInvestigationJobCache.findAll()
-                                                                                       .stream()
-                                                                                       .filter(investigationJobNotificationPredicate(
-                                                                                               notification))
-                                                                                       .findFirst();
+        final var investigationJob = bpnInvestigationJobCache.findAll()
+                                                             .stream()
+                                                             .filter(investigationJobNotificationPredicate(
+                                                                     notification))
+                                                             .findFirst();
 
         investigationJob.ifPresent(job -> {
-            job.withoutNotification(notification.getHeader().getOriginalNotificationId());
+            job.withAnsweredNotification(notification.getHeader().getOriginalNotificationId());
             final Optional<String> notificationResult = Optional.ofNullable(notification.getContent().get("result"))
                                                                 .map(Object::toString);
 
@@ -81,7 +81,7 @@ public class EssService {
     }
 
     private Predicate<BpnInvestigationJob> investigationJobNotificationPredicate(final EdcNotification notification) {
-        return investigationJob -> investigationJob.getNotifications()
+        return investigationJob -> investigationJob.getUnansweredNotifications()
                                                    .contains(notification.getHeader().getOriginalNotificationId());
     }
 }

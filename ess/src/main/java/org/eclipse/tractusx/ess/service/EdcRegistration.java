@@ -90,11 +90,11 @@ public class EdcRegistration {
                 """.formatted(essBaseUrl);
         final var entity = restTemplate.postForEntity(edcProviderUrl + "/data/assets", body, String.class);
 
-        if (!entity.getStatusCode().is2xxSuccessful()) {
+        if (entity.getStatusCode().is2xxSuccessful()) {
+            log.info("Notification asset registered successfully.");
+        } else {
             log.error("Could not create notification asset, provider returned status code {}",
                     entity.getStatusCodeValue());
-        } else {
-            log.info("Notification asset registered successfully.");
         }
 
     }
@@ -120,11 +120,11 @@ public class EdcRegistration {
                 """;
         final var entity = restTemplate.postForEntity(edcProviderUrl + "/data/policydefinitions", body, String.class);
 
-        if (!entity.getStatusCode().is2xxSuccessful()) {
+        if (entity.getStatusCode().is2xxSuccessful()) {
+            log.info("Notification policy registered successfully.");
+        } else {
             log.error("Could not create notification policy, provider returned status code {}",
                     entity.getStatusCodeValue());
-        } else {
-            log.info("Notification policy registered successfully.");
         }
     }
 
@@ -145,11 +145,11 @@ public class EdcRegistration {
                 """;
         final var entity = restTemplate.postForEntity(edcProviderUrl + "/data/contractdefinitions", body, String.class);
 
-        if (!entity.getStatusCode().is2xxSuccessful()) {
+        if (entity.getStatusCode().is2xxSuccessful()) {
+            log.info("Notification contract definition registered successfully.");
+        } else {
             log.error("Could not create notification contract definition, provider returned status code {}",
                     entity.getStatusCodeValue());
-        } else {
-            log.info("Notification contract definition registered successfully.");
         }
     }
 
