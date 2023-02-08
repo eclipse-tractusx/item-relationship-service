@@ -12,6 +12,17 @@ on:
     paths-ignore:
       - '**/*.md'
       - '**/*.txt'
+      - 'api/**'
+      - 'api-tests/**'
+      - 'charts/**'
+      - 'ci/**'
+      - 'docs/**'
+      - 'dev/**'
+      - 'testdata-transform/**'
+      - 'testing/**'
+      - 'uml-diagrams/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
 
 jobs:
   build:
