@@ -38,7 +38,8 @@ import lombok.extern.jackson.Jacksonized;
 @Schema(description = "Relationships between parent and child items.")
 public class Relationship {
 
-    @Schema(implementation = GlobalAssetIdentification.class)
+    @Schema(implementation = String.class, description = "CATENA-X global asset id in the format urn:uuid:uuid4.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+            minLength = 45, maxLength = 45, pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     @JsonUnwrapped
     private GlobalAssetIdentification catenaXId;
 
