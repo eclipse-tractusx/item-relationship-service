@@ -60,7 +60,7 @@ class InvestigationJobProcessingEventListener {
     private final String localBpn;
     private final String localEdcEndpoint;
 
-    public InvestigationJobProcessingEventListener(final IrsFacade irsFacade,
+    /* package */ InvestigationJobProcessingEventListener(final IrsFacade irsFacade,
             final EdcDiscoveryFacade edcDiscoveryFacade, final EdcSubmodelFacade edcSubmodelFacade,
             final BpnInvestigationJobCache bpnInvestigationJobCache, @Value("${ess.localBpn}") final String localBpn,
             @Value("${ess.localEdcEndpoint}") final String localEdcEndpoint) {
