@@ -23,35 +23,47 @@ package org.eclipse.tractusx.ess.service;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Incident Bpn Cache
- */
-interface IncidentBpnCache {
+import org.springframework.stereotype.Service;
 
-    List<String> findByJobId(UUID jobId);
-    List<String> store(UUID jobId, List<String> bpns);
+/**
+ * Incident Bpn Job Cache
+ */
+interface BpnInvestigationJobCache {
+
+    List<BpnInvestigationJob> findAll();
+    Optional<BpnInvestigationJob> findByJobId(UUID jobId);
+    BpnInvestigationJob store(UUID jobId, BpnInvestigationJob bpnInvestigationJob);
 
 }
 
 /**
  * Temporary in memory implementation
  */
-class InMemoryIncidentBpnCache implements IncidentBpnCache {
+@Service
+class InMemoryBpnInvestigationJobCache implements BpnInvestigationJobCache {
 
-    private final ConcurrentHashMap<UUID, List<String>> inMemory = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, BpnInvestigationJob> inMemory = new ConcurrentHashMap<>();
 
     @Override
-    public List<String> findByJobId(final UUID jobId) {
-        return inMemory.get(jobId);
+    public List<BpnInvestigationJob> findAll() {
+        return new ArrayList<>(inMemory.values());
     }
 
     @Override
-    public List<String> store(final UUID jobId, final List<String> bpns) {
-        requireNonNull(bpns);
-        return inMemory.put(jobId, bpns);
+    public Optional<BpnInvestigationJob> findByJobId(final UUID jobId) {
+        return Optional.ofNullable(inMemory.get(jobId));
     }
+
+    @Override
+    public BpnInvestigationJob store(final UUID jobId, final BpnInvestigationJob bpnInvestigationJob) {
+        requireNonNull(bpnInvestigationJob);
+        return inMemory.put(jobId, bpnInvestigationJob);
+    }
+
 }

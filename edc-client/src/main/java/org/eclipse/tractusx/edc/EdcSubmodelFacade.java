@@ -79,10 +79,10 @@ public class EdcSubmodelFacade {
     }
 
     @SuppressWarnings("PMD.PreserveStackTrace")
-    public EdcNotificationResponse sendNotification(final String submodelEndpointAddress,
+    public EdcNotificationResponse sendNotification(final String submodelEndpointAddress, final String assetId,
             final EdcNotification notification) throws EdcClientException {
         try {
-            return client.sendNotification(submodelEndpointAddress, notification).get();
+            return client.sendNotification(submodelEndpointAddress, assetId, notification).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return null;

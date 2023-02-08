@@ -21,21 +21,17 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.service;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.ess.bpn.validation.BPNIncidentValidation;
 import org.eclipse.tractusx.edc.model.notification.EdcNotification;
-import org.eclipse.tractusx.ess.discovery.EdcDiscoveryFacade;
 import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
-import org.eclipse.tractusx.irs.component.Submodel;
-import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.springframework.stereotype.Service;
 
 /**
@@ -47,48 +43,38 @@ import org.springframework.stereotype.Service;
 public class EssService {
 
     private final IrsFacade irsFacade;
-    private final EdcDiscoveryFacade edcDiscoveryFacade;
-    private final IncidentBpnCache incidentBpnCache = new InMemoryIncidentBpnCache();
+    private final BpnInvestigationJobCache bpnInvestigationJobCache;
 
     public JobHandle startIrsJob(final RegisterBpnInvestigationJob request) {
         final JobHandle jobHandle = irsFacade.startIrsJob(request.getGlobalAssetId(), request.getBomLifecycle());
 
-        incidentBpnCache.store(jobHandle.getId(), request.getIncidentBpns());
+        final UUID createdJobId = jobHandle.getId();
+        final Jobs createdJob = irsFacade.getIrsJob(createdJobId.toString());
+        bpnInvestigationJobCache.store(createdJobId, BpnInvestigationJob.create(createdJob, request.getIncidentBpns()));
 
         return jobHandle;
     }
 
     public Jobs getIrsJob(final String jobId) {
-        final Jobs irsJob = irsFacade.getIrsJob(jobId);
-
-        SupplyChainImpacted supplyChainImpacted = SupplyChainImpacted.UNKNOWN;
-
-//        TODO:
-//        Implement business logic
-//        1. Discover EDC Address
-//        2. ESSIncidentRequest supplier-request stuff
-        if (isJobProcessingFinished(irsJob)) {
-            log.info("Job is completed. Starting SupplyChainImpacted processing for job {}.", irsJob.getJob().getId());
-            supplyChainImpacted = BPNIncidentValidation.jobContainsIncidentBPNs(irsJob,
-                    incidentBpnCache.findByJobId(UUID.fromString(jobId)));
-        }
-
-        return extendJobWithSupplyChainSubmodel(irsJob, supplyChainImpacted);
-    }
-
-    private boolean isJobProcessingFinished(final Jobs irsJob) {
-        return irsJob.getJob().getState().equals(JobState.COMPLETED);
-    }
-
-    private Jobs extendJobWithSupplyChainSubmodel(final Jobs completedIrsJob, final SupplyChainImpacted supplyChainImpacted) {
-        final Submodel supplyChainImpactedSubmodel = Submodel.builder()
-                                                             .payload(Map.of("supplyChainImpacted", supplyChainImpacted))
-                                                             .build();
-
-        return completedIrsJob.toBuilder().submodels(Collections.singletonList(supplyChainImpactedSubmodel)).build();
+        return bpnInvestigationJobCache.findByJobId(UUID.fromString(jobId)).map(BpnInvestigationJob::getJobSnapshot).orElseThrow(/* should result with 404 not found */);
     }
 
     public void handleNotificationCallback(final EdcNotification notification) {
-        // TODO: do something with it
+        final Optional<BpnInvestigationJob> investigationJob = bpnInvestigationJobCache.findAll()
+                                                                                       .stream()
+                                                                                       .filter(investigationJobNotificationPredicate(notification))
+                                                                                       .findFirst();
+
+        investigationJob.ifPresent(job -> {
+            final Optional<String> notificationResult = Optional.ofNullable(notification.getContent().get("result"))
+                                                                .map(Object::toString);
+
+            final SupplyChainImpacted supplyChainImpacted = notificationResult.map(SupplyChainImpacted::fromString).orElse(SupplyChainImpacted.UNKNOWN);
+            bpnInvestigationJobCache.store(job.getJobSnapshot().getJob().getId(), job.update(job.getJobSnapshot(), supplyChainImpacted));
+        });
+    }
+
+    private Predicate<BpnInvestigationJob> investigationJobNotificationPredicate(final EdcNotification notification) {
+        return investigationJob -> investigationJob.getNotifications().contains(notification.getHeader().getNotificationId());
     }
 }

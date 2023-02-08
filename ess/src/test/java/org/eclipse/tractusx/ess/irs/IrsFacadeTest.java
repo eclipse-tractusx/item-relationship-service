@@ -53,7 +53,7 @@ class IrsFacadeTest {
         // given
         final UUID jobId = UUID.randomUUID();
         final Jobs expectedResponse = Jobs.builder()
-                                      .job(Job.builder().state(JobState.COMPLETED).build())
+                                      .job(Job.builder().state(JobState.COMPLETED).id(jobId).build())
                                       .relationships(new ArrayList<>())
                                       .shells(new ArrayList<>())
                                       .build();

@@ -180,5 +180,6 @@ ess:
       read: PT90S # HTTP read timeout for the bpdm client
       connect: PT90S # HTTP connect timeout for the bpdm client
     mockEdcAddress:
-      BPN0000000: http://endpoint1
-      BPN0000001: http://endpoint2
+      BPNL00000003B6LU: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
+      BPNL00ARBITRARY1: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
+      BPNL00ARBITRARY2: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU

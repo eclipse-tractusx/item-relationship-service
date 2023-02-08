@@ -34,13 +34,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.edc.exceptions.EdcClientException;
 import org.eclipse.tractusx.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.edc.model.notification.EdcNotification;
 import org.eclipse.tractusx.edc.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.common.CxTestDataContainer;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.component.Relationship;
-import org.eclipse.tractusx.irs.common.CxTestDataContainer;
-import org.eclipse.tractusx.edc.exceptions.EdcClientException;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -55,7 +55,7 @@ public interface EdcSubmodelClient {
 
     CompletableFuture<String> getSubmodelRawPayload(String submodelEndpointAddress) throws EdcClientException;
 
-    CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress,
+    CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress, String assetId,
             EdcNotification notification) throws EdcClientException;
 }
 
@@ -94,7 +94,7 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 
     @Override
     public CompletableFuture<EdcNotificationResponse> sendNotification(final String submodelEndpointAddress,
-            final EdcNotification notification) {
+            final String assetId, final EdcNotification notification) {
         // not actually sending anything, just return success response
         return CompletableFuture.completedFuture(() -> true);
     }
@@ -141,12 +141,18 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             throw new EdcClientException(
                     "Cannot rewrite endpoint address, malformed format: " + submodelEndpointAddress);
         }
-
         final String providerConnectorUrl = submodelEndpointAddress.substring(0, indexOfUrn);
-        final String target = submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
-        log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerConnectorUrl,
-                target);
-        return contractNegotiationService.negotiate(providerConnectorUrl, target);
+        final String targetAssetId = submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
+
+        return fetchNegotiationResponse(providerConnectorUrl, targetAssetId);
+    }
+
+    private NegotiationResponse fetchNegotiationResponse(final String submodelEndpointAddress, final String assetId)
+            throws EdcClientException {
+
+        log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", submodelEndpointAddress,
+                assetId);
+        return contractNegotiationService.negotiate(submodelEndpointAddress, assetId);
     }
 
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(
@@ -242,12 +248,12 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     @Override
     public CompletableFuture<EdcNotificationResponse> sendNotification(final String submodelEndpointAddress,
-            final EdcNotification notification) throws EdcClientException {
+            final String assetId, final EdcNotification notification) throws EdcClientException {
         return execute(submodelEndpointAddress, () -> {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Send EDC notification task, endpoint " + submodelEndpointAddress);
 
-            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
+            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress, assetId);
 
             return sendNotificationAsync(negotiationResponse.getContractAgreementId(), notification, stopWatch);
         });

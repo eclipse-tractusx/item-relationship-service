@@ -40,16 +40,17 @@ public final class BPNIncidentValidation {
      * Extract BPNs from {@link AssetAdministrationShellDescriptor} of {@link Jobs}
      * and check if they are part of the incident BPNs.
      *
-     * @param job          the Job to investigate
      * @param incidentBPNs the incident BPNs
+     * @param shells
      * @return Yes, if one or more of the BPNs of the job matches the incident BPNs.
      * No, if none of the job BPNs matches the incident BPNs.
      * Unknown if job contains no AssetAdministrationShellDescriptors
      * or there was an error extracting the BPN.
      */
-    public static SupplyChainImpacted jobContainsIncidentBPNs(final Jobs job, final List<String> incidentBPNs) {
+    public static SupplyChainImpacted jobContainsIncidentBPNs(final List<AssetAdministrationShellDescriptor> shells,
+            final List<String> incidentBPNs) {
         try {
-            final List<String> bpnsFromShells = getBPNsFromShells(job.getShells());
+            final List<String> bpnsFromShells = getBPNsFromShells(shells);
             if (bpnsFromShells.isEmpty()) {
                 return SupplyChainImpacted.UNKNOWN;
             }
@@ -62,17 +63,7 @@ public final class BPNIncidentValidation {
         return SupplyChainImpacted.NO;
     }
 
-    private static String getManufacturerIdFromShell(final AssetAdministrationShellDescriptor shellDescriptor) {
-
-        return shellDescriptor.getSpecificAssetIds()
-                              .stream()
-                              .filter(specificAssetId -> "manufacturerId".equals(specificAssetId.getKey()))
-                              .findFirst()
-                              .orElseThrow()
-                              .getValue();
-    }
-
     private static List<String> getBPNsFromShells(final List<AssetAdministrationShellDescriptor> shellDescriptors) {
-        return shellDescriptors.stream().map(BPNIncidentValidation::getManufacturerIdFromShell).toList();
+        return shellDescriptors.stream().flatMap(shell -> shell.findManufacturerId().stream()).toList();
     }
 }
