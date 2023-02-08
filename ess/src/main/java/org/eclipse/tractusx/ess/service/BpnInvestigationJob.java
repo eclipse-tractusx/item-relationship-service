@@ -47,26 +47,23 @@ public class BpnInvestigationJob {
     private List<String> notifications;
 
     public static BpnInvestigationJob create(final Jobs jobSnapshot, final List<String> incidentBpns) {
-        return new BpnInvestigationJob(
-                jobSnapshot,
-                incidentBpns,
-                new ArrayList<>()
-        );
+        return new BpnInvestigationJob(jobSnapshot, incidentBpns, new ArrayList<>());
     }
 
     public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain) {
         final Optional<SupplyChainImpacted> previousSupplyChain = this.getJobSnapshot()
-                                           .getSubmodels()
-                                           .stream()
-                                           .filter(sub -> SUPPLY_CHAIN_ASPECT_TYPE.equals(sub.getAspectType()))
-                                           .map(sub -> sub.getPayload().get("supplyChainImpacted"))
-                                           .map(Object::toString)
-                                           .map(SupplyChainImpacted::fromString)
-                                           .findFirst();
+                                                                      .getSubmodels()
+                                                                      .stream()
+                                                                      .filter(sub -> SUPPLY_CHAIN_ASPECT_TYPE.equals(
+                                                                              sub.getAspectType()))
+                                                                      .map(sub -> sub.getPayload()
+                                                                                     .get("supplyChainImpacted"))
+                                                                      .map(Object::toString)
+                                                                      .map(SupplyChainImpacted::fromString)
+                                                                      .findFirst();
 
-        final SupplyChainImpacted supplyChainImpacted = previousSupplyChain
-                .map(prevSupplyChain -> prevSupplyChain.or(newSupplyChain))
-                .orElse(newSupplyChain);
+        final SupplyChainImpacted supplyChainImpacted = previousSupplyChain.map(
+                prevSupplyChain -> prevSupplyChain.or(newSupplyChain)).orElse(newSupplyChain);
 
         this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted);
         return this;
@@ -77,12 +74,20 @@ public class BpnInvestigationJob {
         return this;
     }
 
-    private static Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob, final SupplyChainImpacted supplyChainImpacted) {
+    public BpnInvestigationJob withoutNotification(final String notificationId) {
+        this.notifications.remove(notificationId);
+        return this;
+    }
+
+    private static Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob,
+            final SupplyChainImpacted supplyChainImpacted) {
         final Submodel supplyChainImpactedSubmodel = Submodel.builder()
                                                              .aspectType(SUPPLY_CHAIN_ASPECT_TYPE)
-                                                             .payload(Map.of("supplyChainImpacted", supplyChainImpacted.getDescription()))
+                                                             .payload(Map.of("supplyChainImpacted",
+                                                                     supplyChainImpacted.getDescription()))
                                                              .build();
 
         return irsJob.toBuilder().submodels(Collections.singletonList(supplyChainImpactedSubmodel)).build();
     }
+
 }

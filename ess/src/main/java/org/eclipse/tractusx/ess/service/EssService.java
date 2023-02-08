@@ -56,25 +56,32 @@ public class EssService {
     }
 
     public Jobs getIrsJob(final String jobId) {
-        return bpnInvestigationJobCache.findByJobId(UUID.fromString(jobId)).map(BpnInvestigationJob::getJobSnapshot).orElseThrow(/* should result with 404 not found */);
+        return bpnInvestigationJobCache.findByJobId(UUID.fromString(jobId))
+                                       .map(BpnInvestigationJob::getJobSnapshot)
+                                       .orElseThrow(/* should result with 404 not found */);
     }
 
     public void handleNotificationCallback(final EdcNotification notification) {
         final Optional<BpnInvestigationJob> investigationJob = bpnInvestigationJobCache.findAll()
                                                                                        .stream()
-                                                                                       .filter(investigationJobNotificationPredicate(notification))
+                                                                                       .filter(investigationJobNotificationPredicate(
+                                                                                               notification))
                                                                                        .findFirst();
 
         investigationJob.ifPresent(job -> {
+            job.withoutNotification(notification.getHeader().getOriginalNotificationId());
             final Optional<String> notificationResult = Optional.ofNullable(notification.getContent().get("result"))
                                                                 .map(Object::toString);
 
-            final SupplyChainImpacted supplyChainImpacted = notificationResult.map(SupplyChainImpacted::fromString).orElse(SupplyChainImpacted.UNKNOWN);
-            bpnInvestigationJobCache.store(job.getJobSnapshot().getJob().getId(), job.update(job.getJobSnapshot(), supplyChainImpacted));
+            final SupplyChainImpacted supplyChainImpacted = notificationResult.map(SupplyChainImpacted::fromString)
+                                                                              .orElse(SupplyChainImpacted.UNKNOWN);
+            bpnInvestigationJobCache.store(job.getJobSnapshot().getJob().getId(),
+                    job.update(job.getJobSnapshot(), supplyChainImpacted));
         });
     }
 
     private Predicate<BpnInvestigationJob> investigationJobNotificationPredicate(final EdcNotification notification) {
-        return investigationJob -> investigationJob.getNotifications().contains(notification.getHeader().getNotificationId());
+        return investigationJob -> investigationJob.getNotifications()
+                                                   .contains(notification.getHeader().getOriginalNotificationId());
     }
 }

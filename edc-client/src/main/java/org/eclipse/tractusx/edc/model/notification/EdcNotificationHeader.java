@@ -50,6 +50,8 @@ public class EdcNotificationHeader {
 
     private String replyAssetId;
     private String replyAssetSubPath;
+
+    private String originalNotificationId;
     @NotBlank
     private String notificationType;
 
