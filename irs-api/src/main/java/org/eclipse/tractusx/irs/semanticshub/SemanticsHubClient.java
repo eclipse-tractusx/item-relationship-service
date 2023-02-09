@@ -26,9 +26,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -38,6 +43,9 @@ import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -56,6 +64,7 @@ interface SemanticsHubClient {
      */
     String getModelJsonSchema(String urn) throws SchemaNotFoundException;
 
+    List<AspectModel> getAllAspectModels() throws SchemaNotFoundException;
 }
 
 /**
@@ -71,6 +80,15 @@ class SemanticsHubClientLocalStub implements SemanticsHubClient {
     public String getModelJsonSchema(final String urn) {
         return "{" + "  \"$schema\": \"http://json-schema.org/draft-07/schema#\"," + "  \"type\": \"integer\"" + "}";
     }
+
+    @Override
+    public List<AspectModel> getAllAspectModels() {
+        return List.of(
+                new AspectModel("urn:bamm:com.catenax.esr_certificates.esr_certificate:1.0.0#EsrCertificate", "1.0.0",
+                        "EsrCertificate", "BAMM", "RELEASED"),
+                new AspectModel("urn:bamm:io.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship",
+                        "1.0.0", "AssemblyPartRelationship", "BAMM", "RELEASED"));
+    }
 }
 
 /**
@@ -81,8 +99,11 @@ class SemanticsHubClientLocalStub implements SemanticsHubClient {
 @Profile({ "!local && !test" })
 class SemanticsHubClientImpl implements SemanticsHubClient {
 
+    public static final String LOCAL_MODEL_TYPE = "BAMM";
+    public static final String LOCAL_MODEL_STATUS = "PROVIDED";
     private static final String PLACEHOLDER_URN = "urn";
-
+    @Value("${semanticsHub.pageSize:}")
+    private final int semanticHubPageSize = 100;
     private final RestTemplate restTemplate;
     private final String semanticsHubUrl;
     private final String localModelDirectory;
@@ -121,6 +142,73 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
                                                "Could not load model with URN " + urn));
     }
 
+    @Override
+    public List<AspectModel> getAllAspectModels() throws SchemaNotFoundException {
+        return readAllFromSemanticHub().or(this::readAllFromFilesystem)
+                                       .orElseThrow(
+                                               () -> new SchemaNotFoundException("Could not find any aspect models"));
+    }
+
+    private Optional<List<AspectModel>> readAllFromFilesystem() {
+        if (StringUtils.isNotBlank(localModelDirectory)) {
+            final Path path = Paths.get(localModelDirectory);
+            try (Stream<Path> stream = Files.list(path)) {
+                return Optional.of(stream.filter(file -> !Files.isDirectory(file))
+                                         .map(Path::getFileName)
+                                         .map(Path::toString)
+                                         .map(this::decode)
+                                         .map(this::createAspectModel)
+                                         .toList());
+            } catch (IOException e) {
+                log.error("Could not read schema Files.", e);
+            }
+        }
+        return Optional.empty();
+    }
+
+    private AspectModel createAspectModel(final String urn) {
+        final Matcher matcher = Pattern.compile("(.*\\d\\.\\d\\.\\d)#(\\w+$)").matcher(urn);
+        final String version = matcher.group(0);
+        final String name = matcher.group(1);
+        return new AspectModel(urn, version, name, LOCAL_MODEL_TYPE, LOCAL_MODEL_STATUS);
+    }
+
+    private Optional<List<AspectModel>> readAllFromSemanticHub() {
+        if (StringUtils.isNotBlank(semanticsHubUrl)) {
+            int currentPage = 0;
+            final List<AspectModel> aspectModelsCollection = new ArrayList<>();
+            try {
+                Optional<PaginatedResponse<AspectModel>> semanticHubPage;
+                do {
+                    semanticHubPage = getSemanticHubPage(currentPage, semanticHubPageSize);
+                    aspectModelsCollection.addAll(semanticHubPage.orElseThrow().getContent());
+                    currentPage++;
+                } while (semanticHubPage.get().hasNext());
+
+            } catch (final RestClientException e) {
+                log.error("Unable to retrieve models from semantic hub", e);
+            }
+            return Optional.of(aspectModelsCollection);
+        }
+        return Optional.empty();
+    }
+
+    private Optional<PaginatedResponse<AspectModel>> getSemanticHubPage(final int page, final int pageSize) {
+        try {
+            final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(semanticsHubUrl)
+                                                                        .queryParam("page", page)
+                                                                        .queryParam("pageSize", pageSize);
+            final var responseType = new ParameterizedTypeReference<PaginatedResponse<AspectModel>>() {
+            };
+            final ResponseEntity<PaginatedResponse<AspectModel>> result = restTemplate.exchange(
+                    RequestEntity.get(uriBuilder.toUriString()).build(), responseType);
+            return Optional.ofNullable(result.getBody());
+        } catch (RestClientException e) {
+            log.error("Unable to retrieve models from semantic hub.", e);
+        }
+        return Optional.empty();
+    }
+
     private Optional<String> readFromFilesystem(final String urn) {
         if (StringUtils.isNotBlank(localModelDirectory)) {
             final Path path = Paths.get(localModelDirectory, normalize(urn));
@@ -150,5 +238,9 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
 
     private String normalize(final String urn) {
         return Base64.getEncoder().encodeToString(FilenameUtils.getName(urn).getBytes(StandardCharsets.UTF_8));
+    }
+
+    private String decode(final String urnBase64) {
+        return new String(Base64.getDecoder().decode(urnBase64));
     }
 }

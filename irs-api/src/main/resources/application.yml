@@ -162,6 +162,7 @@ semanticsHub:
   timeout:
     read: PT90S # HTTP read timeout for the semantic hub client
     connect: PT90S # HTTP connect timeout for the semantic hub client
+  pageSize: "${SEMANTICSHUB_PAGE_SIZE:100}"
 
 bpdm:
   bpnEndpoint: "${BPDM_URL:}" # Endpoint to resolve BPNs, must contain the placeholders {partnerId} and {idType}

@@ -62,6 +62,11 @@ class SemanticsHubCacheInitializer {
                 log.error("Initialization of semantic hub cache failed for URN '{}'", urn, ex);
             }
         });
+        try {
+            semanticsHubFacade.getAllAspectModels();
+        } catch (SchemaNotFoundException e) {
+            log.error("Initialization of semantic model cache failed.", e);
+        }
     }
 
     /**
@@ -70,7 +75,7 @@ class SemanticsHubCacheInitializer {
     @Scheduled(cron = "${semanticsHub.cleanup.scheduler}")
     /* package */ void reinitializeAllCacheInterval() {
         log.debug("Reinitializing Semantics Hub Cache with new values.");
-
+        // TODO only drop cache, if new data is available
         semanticsHubFacade.evictAllCacheValues();
         initializeCacheValues();
     }
