@@ -163,11 +163,13 @@ class ContractNegotiationServiceTest {
         final var asset = mock(Asset.class);
         final var policy = mock(Policy.class);
         when(asset.getId()).thenReturn(assetId);
-        when(catalog.getContractOffers()).thenReturn(offerIdList.stream().map(id -> ContractOffer.Builder.newInstance()
-                                                                                                         .id(id)
-                                                                                                         .asset(asset)
-                .policy(policy).build()).collect(
-                Collectors.toList()));
+        when(catalog.getContractOffers()).thenReturn(offerIdList.stream()
+                                                                .map(id -> ContractOffer.Builder.newInstance()
+                                                                                                .id(id)
+                                                                                                .asset(asset)
+                                                                                                .policy(policy)
+                                                                                                .build())
+                                                                .collect(Collectors.toList()));
         return catalog;
     }
 
