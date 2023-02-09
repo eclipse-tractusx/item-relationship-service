@@ -21,9 +21,12 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -135,16 +138,18 @@ public class ContractNegotiationService {
         final int pageSize = config.getControlplane().getCatalogPageSize();
 
         log.info("Get catalog from EDC provider.");
-        Catalog pageableCatalog = edcControlPlaneClient.getCatalog(providerConnectorUrl, offset);
+        final Catalog pageableCatalog = edcControlPlaneClient.getCatalog(providerConnectorUrl, offset);
 
         boolean isLastPage = pageableCatalog.getContractOffers().size() < pageSize;
+        boolean isTheSamePage = false;
         Optional<ContractOffer> optionalContractOffer = findOfferIfExist(target, pageableCatalog);
 
-        while (!isLastPage && optionalContractOffer.isEmpty()) {
+        while (!isLastPage && !isTheSamePage && optionalContractOffer.isEmpty()) {
             offset += pageSize;
-            pageableCatalog = edcControlPlaneClient.getCatalog(providerConnectorUrl, offset);
-            isLastPage = pageableCatalog.getContractOffers().size() < pageSize;
-            optionalContractOffer = findOfferIfExist(target, pageableCatalog);
+            final Catalog newPageableCatalog = edcControlPlaneClient.getCatalog(providerConnectorUrl, offset);
+            isTheSamePage = theSameCatalog(pageableCatalog, newPageableCatalog);
+            isLastPage = newPageableCatalog.getContractOffers().size() < pageSize;
+            optionalContractOffer = findOfferIfExist(target, newPageableCatalog);
         }
 
         final String connectorId = pageableCatalog.getId();
@@ -158,6 +163,11 @@ public class ContractNegotiationService {
                                     .orElseThrow(NoSuchElementException::new);
     }
 
+    private boolean theSameCatalog(final Catalog pageableCatalog, final Catalog newPageableCatalog) {
+        final Set<String> previousOffers = pageableCatalog.getContractOffers().stream().map(ContractOffer::getId).collect(toSet());
+        final Set<String> nextOffers = newPageableCatalog.getContractOffers().stream().map(ContractOffer::getId).collect(toSet());
+        return previousOffers.equals(nextOffers);
+    }
 
     private NegotiationResponse getNegotiationResponse(final CompletableFuture<NegotiationResponse> negotiationResponse)
             throws ContractNegotiationException {
