@@ -138,7 +138,7 @@ public class ContractNegotiationService {
         final int pageSize = config.getControlplane().getCatalogPageSize();
 
         log.info("Get catalog from EDC provider.");
-        Catalog pageableCatalog = edcControlPlaneClient.getCatalog(providerConnectorUrl, offset);
+        final Catalog pageableCatalog = edcControlPlaneClient.getCatalog(providerConnectorUrl, offset);
 
         boolean isLastPage = pageableCatalog.getContractOffers().size() < pageSize;
         boolean isTheSamePage = false;
@@ -146,7 +146,7 @@ public class ContractNegotiationService {
 
         while (!isLastPage && !isTheSamePage && optionalContractOffer.isEmpty()) {
             offset += pageSize;
-            Catalog newPageableCatalog = edcControlPlaneClient.getCatalog(providerConnectorUrl, offset);
+            final Catalog newPageableCatalog = edcControlPlaneClient.getCatalog(providerConnectorUrl, offset);
             isTheSamePage = theSameCatalog(pageableCatalog, newPageableCatalog);
             isLastPage = newPageableCatalog.getContractOffers().size() < pageSize;
             optionalContractOffer = findOfferIfExist(target, newPageableCatalog);
@@ -180,8 +180,6 @@ public class ContractNegotiationService {
         }
         return null;
     }
-
-
 
 }
 
