@@ -32,7 +32,9 @@ import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Business logic for investigation if part is in supply chain/part chain
@@ -56,7 +58,8 @@ public class EssService {
     }
 
     public Jobs getIrsJob(final String jobId) {
-        return bpnInvestigationJobCache.findByJobId(UUID.fromString(jobId)).map(BpnInvestigationJob::getJobSnapshot).orElseThrow(/* should result with 404 not found */);
+        return bpnInvestigationJobCache.findByJobId(UUID.fromString(jobId)).map(BpnInvestigationJob::getJobSnapshot)
+                                       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No investigation job exists with id " + jobId));
     }
 
     public void handleNotificationCallback(final EdcNotification notification) {

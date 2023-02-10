@@ -26,21 +26,25 @@ import java.util.Map;
 import javax.validation.constraints.NotNull;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * A notification to send over EDC.
  */
 @Builder
-@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class EdcNotification {
 
     @NotNull
     @Schema(description = "Header of the EDC notification", implementation = EdcNotificationHeader.class)
-    private final EdcNotificationHeader header;
+    private EdcNotificationHeader header;
 
     @NotNull
-    private final Map<String, Object> content;
+    private Map<String, Object> content;
 
 }
