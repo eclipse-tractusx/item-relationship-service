@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Minio now uses 1Gi of storage by default.
+  > When upgrading from a previous version make sure that the minio PVC and pod is created and accessible by the IRS pod. The previous storage default was 500Gi and Kubernetes can not reduce the PVC size automatically.
 
 ## [4.2.0] - 2023-01-20
 ### Added
