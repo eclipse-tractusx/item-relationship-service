@@ -1,6 +1,7 @@
 name: Reduce docs
 on:
   push:
+  pull-request:
 
 
 jobs:
