@@ -1,0 +1,24 @@
+---
+{{ if .Values.install.irs.digitalTwin }}
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: irs-digital-twin-registry-database-pv
+  namespace: {{ .Release.Namespace | default "default" | quote }}
+  labels:
+    type: local
+    app: postgres
+    db: irs-digital-twin-registry
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data/irsDigitalTwin"
+
+{{ end }}

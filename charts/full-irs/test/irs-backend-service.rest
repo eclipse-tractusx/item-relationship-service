@@ -1,0 +1,41 @@
+@hostname = localhost
+@port = 8080
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+@jobsEndpoint = /irs/jobs
+@headerName = X-Api-Key
+@headerValue = password
+@token = eyJhbGciOiJSUzI1NiIsImtpZCI6IkJBMUM3RjQ4QUMxREZCNjgxRUVEQTk1QThGREU3ODEzIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjQwMTEiLCJuYmYiOjE2NzYyMzA5NTksImlhdCI6MTY3NjIzMDk1OSwiZXhwIjoxNjc2MjM0NTU5LCJzY29wZSI6WyJjYXRlbmEtc2NvcGUiXSwiY2xpZW50X2lkIjoiY2F0ZW5hLWNsaWVudC1pZCIsInJlc291cmNlX2FjY2VzcyI6eyJDbDIwLUNYLUlSUyI6eyJyb2xlcyI6WyJ2aWV3X2lycyJdfX0sImp0aSI6Ijg4RDZFMDdEOThBMjhBNTM2OEQ4NTk4OEQ1MDlCQzNFIn0.S0Q46Jcnkx-ZDi8ovRjkos8kXSpDTRRU-bKrj5w3z-upxpf0QTeFX-H2IYabeHpDbs5lIhtYX9LJkCS7SNqZs-AcBL_vgFvNEHEdyYkFeaMGV8TeGAOznoVRgKjN03NqRdrq5t3vriXRAHUu0nkrsrFPakRs6jrSUnLYbx4E2cPQOCgdE4XBm5-qzQrH9ultbYI1LQcML0g3SEQsqPwJDAKsDJdGepASs2pNYk8DjBCDKA79XaHwHBenge0tJvbLPIwE09Ph9G_9stH76jk2sXo4EwIdO-Pwc4nHwWexKk0KakNaSBm1vH6RL3eQlyUuqRT981sBAme-DoO3VqqH-A
+
+
+### Get jobs
+
+GET http://{{host}}{{jobsEndpoint}}?page=0&size=20 HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+
+### Get jobs
+
+GET http://{{host}}{{jobsEndpoint}}/4edcf6b2-1686-4892-b877-76118c303e26
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+
+### Create job
+
+POST http://{{host}}{{jobsEndpoint}} HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "aspects": [
+    "AssemblyPartRelationship",
+    "SerialPartTypization"
+  ],
+  "bomLifecycle": "asBuilt",
+  "collectAspects": true,
+  "direction": "downward",
+  "depth": 10,
+  "globalAssetId": "urn:uuid:475e3dd4-7481-483f-83f6-f5b1a06363bd"
+}

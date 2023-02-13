@@ -1,0 +1,23 @@
+---
+{{ if .Values.install.irs.digitalTwin }}
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: irs-digital-twin-registry-database-pv-claim
+  namespace: {{ .Release.Namespace | default "default" | quote }}
+  labels:
+    app: postgres
+    db: irs-digital-twin-registry
+  annotations:
+    "helm.sh/resource-policy": keep    
+spec:
+  volumeName: irs-digital-twin-registry-database-pv
+  storageClassName: standard
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+
+{{ end }}

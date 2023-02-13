@@ -1,0 +1,115 @@
+---
+# Default values for edc-data-plane.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# -- Specifies how many replicas of a deployed pod shall be created during the deployment
+# Note: If horizontal pod autoscaling is enabled this setting has no effect
+replicaCount: 1
+
+image:
+  # -- Which derivate of the edc data-plane to use.
+  # One of: [ghcr.io/catenax-ng/product-edc/edc-dataplane-hashicorp-vault, ghcr.io/catenax-ng/product-edc/edc-dataplane-azure-vault]
+  repository: ghcr.io/catenax-ng/product-edc/edc-dataplane-hashicorp-vault
+  # -- [Kubernetes image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) to use
+  pullPolicy: IfNotPresent
+  # -- Overrides the image tag whose default is the chart appVersion
+  tag: "0.2.0"
+
+serviceAccount:
+  # -- Specifies whether a [service account](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/) should be created per release
+  create: true
+  # -- [Annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) to add to the service account
+  annotations: {}
+  # -- The name of the service account to use. If not set and create is true, a name is generated using the release's fullname template
+  name: ""
+
+livenessProbe:
+  # -- Whether to enable kubernetes [liveness-probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
+  enabled: true
+
+readinessProbe:
+  # -- Whether to enable kubernetes readiness-probes
+  enabled: true
+
+startupProbe:
+  # -- Whether to enable kubernetes startup-probes
+  enabled: true
+  # -- Minimum consecutive failures for the probe to be considered failed after having succeeded
+  failureThreshold: 12
+  # -- Number of seconds after the container has started before liveness probes are initiated.
+  initialDelaySeconds: 10
+
+service:
+  # -- [Service type](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types) to expose the running application on a set of Pods as a network service.
+  type: ClusterIP
+
+# -- [Resource management](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) applied to the deployed pod
+resources:
+  #  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 600m
+    memory: 1Gi
+  requests:
+    cpu: 200m
+    memory: 0.25Gi
+
+autoscaling:
+  # -- Enables [horizontal pod autoscaling](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+  enabled: false
+  # -- Minimal replicas if resource consumption falls below resource thresholds
+  minReplicas: 1
+  # -- Maximum replicas if resource consumption exceeds resource thresholds
+  maxReplicas: 2
+  # -- targetAverageUtilization of cpu provided to a pod
+  targetCPUUtilizationPercentage: 80
+  # -- targetAverageUtilization of memory provided to a pod
+  targetMemoryUtilizationPercentage: 80
+
+logging:
+  # -- EDC logging.properties configuring the [java.util.logging subsystem](https://docs.oracle.com/javase/7/docs/technotes/guides/logging/overview.html#a1.8)
+  properties: |-
+    .level=DEBUG
+    org.eclipse.dataspaceconnector.level=ALL
+    handlers=java.util.logging.ConsoleHandler
+    java.util.logging.ConsoleHandler.formatter=java.util.logging.SimpleFormatter
+    java.util.logging.ConsoleHandler.level=ALL
+    java.util.logging.SimpleFormatter.format=[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$-7s] %5$s%6$s%n
+
+opentelemetry:
+  # -- opentelemetry.properties configuring the [opentelemetry agent](https://opentelemetry.io/docs/instrumentation/java/automatic/agent-config/)
+  properties: |-
+    otel.javaagent.enabled=false
+    otel.javaagent.debug=false
+
+## EDC endpoints exposed by the data-plane
+edc:
+  endpoints:
+    ## Default api exposing health checks etc
+    default:
+      # -- The network port, which the "default" api is going to be exposed by the container, pod and service
+      port: "8080"
+      # -- The path mapping the "default" api is going to be exposed by
+      path: /api
+    ## Public endpoint for data transfer
+    public:
+      # -- The network port, which the "public" api is going to be exposed by the container, pod and service
+      port: "8185"
+      # -- The path mapping the "public" api is going to be exposed by
+      path: /api/public
+    ## Control API
+    control:
+      # -- The network port, which the "control" api is going to be exposed by the container, pod and service
+      port: "9999"
+      # -- The path mapping the "control" api is going to be exposed by
+      path: /api/dataplane/control
+    ## Prometheus endpoint
+    metrics:
+      # -- The network port, which the prometheus metrics are going to be exposed by the container, pod and service
+      port: "9090"
+      # -- The path mapping the prometheus metrics are going to be exposed at
+      path: /metrics

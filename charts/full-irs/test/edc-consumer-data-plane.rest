@@ -1,0 +1,45 @@
+@hostname = localhost
+@port = 7181
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+@assetsEndpoint = /data/assets
+@headerName = X-Api-Key
+@headerValue = password
+
+
+
+### Get assets
+
+GET http://{{host}}{{assetsEndpoint}} HTTP/1.1
+{{headerName}}: {{headerValue}}
+Content-Type: {{contentType}}
+
+### Post asset
+
+POST http://{{host}}{{assetsEndpoint}} HTTP/1.1
+{{headerName}}: {{headerValue}}
+Content-Type: {{contentType}}
+
+{
+  "asset": {
+    "properties": {
+      "asset:prop:id": "urn:drx:TestAsset1",
+      "asset:prop:name": "A test asset fpr Dräxlmaier",
+      "asset:prop:description": "This asset is backed by a public http-served json resource.",
+      "asset:prop:contenttype": "application/json",
+      "asset:prop:version": "0.6.1-SNAPSHOT"
+    }
+  },
+  "dataAddress": {
+    "properties": {
+      "baseUrl": "https://raw.githubusercontent.com/catenax-ng/product-knowledge/feature/KA-125-ontology-hub/ontology/cx.json",
+      "type": "HttpData"
+    }
+  }
+}
+
+### Get Catalog
+
+GET http://{{host}}/catalog?providerUrl=http://localhost:8181/api/v1/ids/data&limit=50&offset=0 HTTP/1.1
+{{headerName}}: {{headerValue}}
+Content-Type: {{contentType}}

@@ -1,0 +1,52 @@
+# Default values for irs-provider-backend-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# -- Specifies how many replicas of a deployed pod shall be created during the deployment
+# Note: If horizontal pod autoscaling is enabled this setting has no effect
+replicaCount: 1
+
+image:
+  repository: ghcr.io/catenax-ng/catenax-at-home/provider-backend-service
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "0.0.1"
+
+serviceAccount:
+  # -- Specifies whether a [service account](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/) should be created per release
+  create: true
+  # -- [Annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) to add to the service account
+  annotations: {}
+  # -- The name of the service account to use. If not set and create is true, a name is generated using the release's fullname template
+  name: ""
+
+service:
+  type: ClusterIP
+  port: 8080
+
+# Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
+# @url: https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-resource-requests-and-limits
+resources:
+  #  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 250m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 512Mi
+
+autoscaling:
+  # -- Enables [horizontal pod autoscaling](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+  enabled: true
+  # -- Minimal replicas if resource consumption falls below resource thresholds
+  minReplicas: 1
+  # -- Maximum replicas if resource consumption exceeds resource thresholds
+  maxReplicas: 2
+  # -- targetAverageUtilization of cpu provided to a pod
+  targetCPUUtilizationPercentage: 80
+  # -- targetAverageUtilization of memory provided to a pod
+  targetMemoryUtilizationPercentage: 80

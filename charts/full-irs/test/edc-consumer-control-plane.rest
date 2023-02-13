@@ -1,0 +1,15 @@
+@hostname = localhost
+@port = 7181
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+@catalogEndpoint = /data/catalog
+@headerName = X-Api-Key
+@headerValue = password
+
+@providerUrl = http://edc-provider-control-plane:8181/api/v1/ids/data
+
+### Get Catalog
+
+GET http://{{host}}{{catalogEndpoint}}?providerUrl={{providerUrl}}&limit=5 HTTP/1.1
+{{headerName}}: {{headerValue}}
+Content-Type: {{contentType}}

@@ -1,0 +1,792 @@
+---
+
+###########
+# Install #
+###########
+install:
+
+  grafana: false
+  prometheus: false
+  minio: false
+
+  edc:
+    vault: false
+    consumer: false
+    provider: false
+
+  irs: 
+    backend: false
+    providerBackend: false
+    digitalTwin: false
+    frontend: false
+    keycloak: false
+    semanticHub: false
+  omejdn: false
+
+##########
+# COMMON #
+##########
+config:
+  grafana: 
+    username: &config-grafana-username "admin"
+    password: &config-grafana-password "password"
+    secret:
+      name: &config-grafana-secret-name irs-grafana
+    configMap:
+      name: &config-grafana-config-map-name irs-grafana-dashboards
+  minio: 
+    username: &config-minio-username "admin"
+    password: &config-minio-password "password"
+    secret:
+      name: &config-minio-secret-name "irs-minio"
+  vault:
+    url: &config-vault-url http://edc-vault:8200
+    token: &config-vault-token "root"
+    secret:
+      name: &config-vault-secret-name edc-vault
+      dataEncryptionName: &config-vault-secret-data-encryption-name "data-encryption"
+      dataEncryptionValue: &config-vault-secret-data-encryption-value "H7j47H6vVQQOv/hbdAYz+w=="
+      dapsCertName: &config-vault-secret-daps-cert-name "daps-cert"
+      dapsCertValue: &config-vault-secret-daps-cert-value "FILL ME UP"
+      dapsKeyName: &config-vault-secret-daps-key-name "daps-key"
+      dapsKeyValue: &config-vault-secret-daps-key-value "FILL ME UP"
+  edc:
+    consumer:  
+      database:
+        host: &config-edc-consumer-database-host "edc-consumer-database"
+        name: &config-edc-consumer-database-name "edc-consumer"
+        username: &config-edc-consumer-database-username "edc-consumer-user"
+        password: &config-edc-consumer-database-password "edc-consumer-pass"
+        postgres:
+          password: &config-edc-consumer-database-postgres-password "admin"
+        secret:
+          name: &config-edc-consumer-database-secret-name edc-consumer-database
+    provider:  
+      database:
+        host: &config-edc-provider-database-host "edc-provider-database"
+        name: &config-edc-provider-database-name "edc-provider"
+        username: &config-edc-provider-database-username "edc-provider-user"
+        password: &config-edc-provider-database-password "edc-provider-pass"
+        postgres:
+          password: &config-edc-provider-database-postgres-password "admin"
+        secret:
+          name: &config-edc-provider-database-secret-name edc-provider-database
+    api: 
+      auth:
+        key: &config-edc-auth-api-key "password"
+  oauth:
+    client:
+      id: &config-oauth-client-id "BB:B2:72:74:53:2A:1C:06:4C:F2:7D:82:19:E1:5E:F8:53:E7:14:94:keyid:BB:B2:72:74:53:2A:1C:06:4C:F2:7D:82:19:E1:5E:F8:53:E7:14:94"
+    provider:
+      jwks:
+        url: &config-oauth-provider-jwts-url "https://daps1.int.demo.catena-x.net/.well-known/jwks.json"
+    token:
+      url: &config-oauth-token-url "https://daps1.int.demo.catena-x.net/token"
+  keycloak:
+    grand:
+      type: &config-keycloak-grand-type client_credentials
+    scope: &config-keycloak-scope catena-scope
+
+    client:
+      id: &config-keycloak-client-id "catena-client-id"
+      secret: &config-keycloak-client-secret "catena-client-secret"
+    
+    token:
+      url: &config-keycloak-token-url "http://irs-keycloak-service:8080/connect/token"
+    cert: 
+      url: &config-keycloak-certs-url "http://irs-keycloak-service:8080/.well-known/openid-configuration/jwks"
+
+    # realm: &config-keycloak-realm CX-Central    
+    # url: 
+    #   base: &config-keycloak-url-base https://centralidp.int.demo.catena-x.net
+    #   auth: &config-keycloak-url-auth https://centralidp.int.demo.catena-x.net/auth
+    #   realm: &config-keycloak-url-realm https://centralidp.int.demo.catena-x.net/auth/realms/CX-Central
+    #   token: &config-keycloak-url-realm-token https://centralidp.int.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token
+    #   certs: &config-keycloak-url-realm-certs https://centralidp.int.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/certs
+    # client:
+    #   id: &config-irs-secret-keycloak-client-id "sa-cl6-cx-9"
+    #   secret: &config-irs-secret-keycloak-client-secret "naVVmfv8qi1rgtOwdyO2G8waXEmhAYjb"
+      # id: &config-irs-secret-keycloak-client-id "Cl2-CX-Portal"
+      # secret: &config-irs-secret-keycloak-client-secret "WDyBJMxYUV3XSipgT9MkZssKmxnqyLa7"
+    user: &config-keycloak-user "admin"    
+    password: &config-keycloak-password "admin"
+    secret:
+      name: &config-keycloak-secret-name keycloak
+    database:
+      host: &config-keycloak-database-host "irs-keycloak-database"
+      name: &config-keycloak-database-name "irs-keycloak"
+      user: &config-keycloak-database-username "irs-keycloak-user"
+      password: &config-keycloak-database-password "irs-keycloak-pass"
+      postgres:
+        password: &config-keycloak-database-postgres-password "admin"
+      secret:
+        name: &config-keycloak-database-secret-name irs-keycloak-database
+  irs: 
+    existingSecret: &config-irs-existingSecret false
+    secret:
+      name: &config-irs-secret-name "irs-backend-service"
+      minio:
+        user: *config-minio-username
+        password:  *config-minio-password
+      edc:
+        api:
+          secret: *config-edc-auth-api-key
+      grafana:
+        user: *config-grafana-username
+        password: *config-grafana-password
+    digitalTwin:
+      secret:
+        name: &config-irs-digitalTwin-secret-name "irs-digital-twin-registry"
+      docker:
+        secret:
+          name: &config-irs-digitalTwin-docker-secret-name "irs-digital-twin-registry-docker"
+      database:
+        host: &config-irs-digitalTwin-database-host "irs-digital-twin-registry-database"
+        name: &config-irs-digitalTwin-database-name "irs-digital-twin-registry"
+        username: &config-irs-digitalTwin-database-username "irs-digital-twin-registry-user"
+        password: &config-irs-digitalTwin-database-password "irs-digital-twin-registry-pass"
+        postgres:
+          password: &config-irs-digitalTwin-database-postgres-password "admin"
+        secret:
+          name: &config-irs-digitalTwin-database-secret-name irs-digital-twin-registry-database
+    
+
+#########################
+# Grafana Configuration #
+#########################
+grafana:
+  fullnameOverride: "irs-grafana"
+  rbac:
+    create: false
+  persistence:
+    enabled: false
+
+  username: *config-grafana-username
+  password: *config-grafana-password
+
+  admin:
+    existingSecret: *config-grafana-secret-name
+
+  configMap:
+    name: *config-grafana-config-map-name
+
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: http://irs-prometheus-server
+          access: proxy
+          isDefault: true
+
+  dashboardProviders:
+   dashboardproviders.yaml:
+     apiVersion: 1
+     providers:
+     - name: 'default'
+       orgId: 1
+       folder: ''
+       type: file
+       disableDeletion: false
+       editable: true
+       options:
+         path: /var/lib/grafana/dashboards/default
+
+  # dashboards:
+  #  default: 
+  #    vault: 
+  #      gnetId: 7700
+  #      revision: 3
+  #      datasource: Prometheus
+
+  dashboardsConfigMaps:
+    default: *config-grafana-config-map-name
+
+
+############################
+# Prometheus Configuration #
+############################
+prometheus:
+  
+  fullnameOverride: "irs-prometheus"
+  rbac:
+    create: false
+  alertmanager:
+    enabled: false
+  prometheus-node-exporter:
+    enabled: false
+  kubeStateMetrics:
+    enabled: false
+  prometheus-pushgateway:
+    enabled: false
+  configmapReload:
+    prometheus:
+      enabled: false
+  server:
+    persistentVolume:
+      size: 1Gi
+  #     existingClaim: irs-prometheus-pv-claim
+  extraScrapeConfigs: |
+    - job_name: 'spring-actuator'
+      metrics_path: '/actuator/prometheus'
+      scrape_interval: 5s
+      static_configs:
+        - targets: [ 'irs-backend-service:4004' ]
+
+    - job_name: 'minio-actuator'
+      metrics_path: /minio/v2/metrics/cluster
+      static_configs:
+        - targets: [ 'irs-minio:9000' ]
+
+    - job_name: 'vault'
+      metrics_path: /v1/sys/metrics
+      params:
+        format: ['prometheus']
+      scheme: http
+      authorization:
+        type: Bearer
+        credentials: root
+      static_configs:
+        - targets: [ 'edc-vault:8200' ]
+
+
+#######################
+# Minio Configuration #
+#######################
+minio:
+  fullnameOverride: "irs-minio"
+  username: *config-minio-username
+  password: *config-minio-password
+  existingSecret: *config-minio-secret-name
+  resources:
+    requests:
+      memory: 512Mi 
+  replicas: 1
+  persistence:
+    enabled: false
+  mode: standalone
+
+  environment:
+    MINIO_PROMETHEUS_JOB_ID: minio-actuator
+    MINIO_PROMETHEUS_URL: http://prometheus:9090
+
+
+# ###########
+# EDC VAULT #
+# ###########
+edc-vault:
+  fullnameOverride: "edc-vault"
+  injector:
+      # enabled: false
+    enabled: true
+    metrics:
+      enabled: true
+  server:
+    logLevel: "trace"
+    logFormat: "standard"
+    dev:
+      enabled: true
+      devRootToken: *config-vault-token
+
+    # Must be the same certificate that is configured in section 'ids-daps'
+    extraEnvironmentVars:
+      SECRET_DATA_ENCRYPTION_NAME: *config-vault-secret-data-encryption-name
+      SECRET_DATA_ENCRYPTION_VALUE: *config-vault-secret-data-encryption-value
+      SECRET_DAPS_CERT_NAME: *config-vault-secret-daps-cert-name
+      SECRET_DAPS_CERT_VALUE: *config-vault-secret-daps-cert-value
+      SECRET_DAPS_KEY_NAME: *config-vault-secret-daps-key-name
+      SECRET_DAPS_KEY_VALUE: *config-vault-secret-daps-key-value
+    postStart:
+      - "sh"
+      - "-c"
+      - |
+        { 
+        
+        sleep 5
+
+        /bin/vault audit enable file file_path=/tmp/vault_log.txt
+
+        /bin/vault kv put secret/${SECRET_DATA_ENCRYPTION_NAME} content=${SECRET_DATA_ENCRYPTION_VALUE}
+       
+        cat << EOF | /bin/vault kv put secret/${SECRET_DAPS_KEY_NAME} content=-
+        -----BEGIN PRIVATE KEY-----
+        MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDcdBEHKQ6fEJ6C
+        dQJmgBzFL84v6VObFwpulGADaBs1owd+l8/mnHKG5+VD/ricqNGoKezcQNFkGcJr
+        FxWkk2g0vEfVkcvNPi6koO95C5GZbzxPRIPN990gcNDPMbGZFjzAFzM9fSHcE++f
+        nbSA83B2PpJaJFAXn2mPLbuR3Pf+kqGiVqsefb9rYy5x5ng33BkA7OZej3ZPMRvK
+        N8KK0XGhGyS32iwu4KI6Rv8Z3xS6uvQWKqYABvf7KYm5WGBL67qiGecqVW64AR1b
+        Mvw6kJ/yGbzGrqkfBymDZAt0drUcNZrSVDB072G62sSFWCRG61SRQ82PO7XYvP13
+        Ya/CISqxAgMBAAECggEAWDqnmfsHnAe1uLaFuGormYuRdMFoMZjeFvWRG6vtv+C4
+        niS6Eyyn9XAX5MesMR6rkib9YgUbCHn6wothoRVRzlFQWpxYOZNabY7vaL2Fjyfi
+        tkLQkX1S5anhGBtmXcN1mtduLXzIMWFVNMeUN0u2xcwzHJqN53Zoc+I0wKL0KdDd
+        OZtIZJDqcepjSQBwmq7VByx4BU8eoD0bz/lczo1coPY1Au5ZJfejP8THiubQacAR
+        uDAbgcNtCKTQyWX648ydn3LQyB0L/llvIIt1CpuZWiwE584s1Uo8jU74bLrYC1QR
+        W/7k/m0J5fVof7YOfy6uEvp7SWTgx7XvUWx/bqdetQKBgQD5P5OHxIDwuTQcrZrm
+        120KUBnLLttgBf+dHAp8e1SUABN5jABPTkg/DAdXsbcN7y4Yl4B0aOFq2DWO54ep
+        9Kgt+6IwNojsmVf9MUz2Or0VYCyA3yVcPO8LOUkpuF4++VCrBUlTXgI5I1Ge+twA
+        d932zUpAAdyNblWqe1p7769tTwKBgQDibM9vmX57LgNVADw1jTgUwHIjBqQXOqm6
+        6OH3WGyLgO4n4Dm/AhCmfiKxQgyRbF+4wXmZyB081DqUrVf+1PrcdW2cUUYcA7pl
+        gpBrvShyEH5CiIelBd1YEIFJzQHg670FRdKCJpdYBEfgNBKSVzIDZjaIMfJIAO2T
+        RXcxNu/n/wKBgQCjMatI87Jw6vJh7JFFn7t3Syb4T/+3CXZpydhb1Ox10u7tYGs7
+        gcfv79JG6scuSnJmC5xBnAIr0NCQdqvu7Y/IO7/fzXUtZOGll8gKWD9BZaz93B08
+        HXFuad2rgVnD5b2ZnGZ8PUs7WhKxAxNVAybD13pMGmvr9lgEvatrBm5YJQKBgGDP
+        bz3jHh4ixU/xosyuzbypr+Nj8oLwFSQScJMmHnrjLHCmQWp2wpG9Oq4ZdHA1KxQ+
+        vPRQiJe6kjWBjC8r9vqNxsjgQx61RVwjoAZAwWtLvABMidq4EDSYEf9xBQ2bHZ2E
+        hgYZ4/nBEs481Xf2ii7D5CsFV/cLVojyWY0UVS0XAoGBAPMm3qG3mSKCq58MhcWK
+        S2QOkYXMQC1JhCDJiundU8HMbmfXYLRwvF7QNGpLc/vgLrlK8Fcbek31amuc43vI
+        D1dsw22W74khSEN0GclLm/NdUxxmpeD0CaBucHOOrfId46CZpX9GohiBoOCR/JsA
+        Juu4W/V9mV7S4k4HXp8vwuQ6
+        -----END PRIVATE KEY-----
+
+        EOF
+        
+        cat << EOF | /bin/vault kv put secret/${SECRET_DAPS_CERT_NAME} content=-
+        -----BEGIN CERTIFICATE-----
+        MIIDrTCCApWgAwIBAgIJAK9ZJqxZB2oEMA0GCSqGSIb3DQEBCwUAMFAxCzAJBgNV
+        BAYTAkRFMQ8wDQYDVQQHDAZCZXJsaW4xFTATBgNVBAoMDEV4YW1wbGUsIExMQzEZ
+        MBcGA1UEAwwQZWRjLnppZWxwdWxzLmNvbTAeFw0yMjEwMDUwNjQzMTlaFw0zMjEw
+        MDIwNjQzMTlaMFAxCzAJBgNVBAYTAkRFMQ8wDQYDVQQHDAZCZXJsaW4xFTATBgNV
+        BAoMDEV4YW1wbGUsIExMQzEZMBcGA1UEAwwQZWRjLnppZWxwdWxzLmNvbTCCASIw
+        DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANx0EQcpDp8QnoJ1AmaAHMUvzi/p
+        U5sXCm6UYANoGzWjB36Xz+accobn5UP+uJyo0agp7NxA0WQZwmsXFaSTaDS8R9WR
+        y80+LqSg73kLkZlvPE9Eg8333SBw0M8xsZkWPMAXMz19IdwT75+dtIDzcHY+klok
+        UBefaY8tu5Hc9/6SoaJWqx59v2tjLnHmeDfcGQDs5l6Pdk8xG8o3worRcaEbJLfa
+        LC7gojpG/xnfFLq69BYqpgAG9/spiblYYEvruqIZ5ypVbrgBHVsy/DqQn/IZvMau
+        qR8HKYNkC3R2tRw1mtJUMHTvYbraxIVYJEbrVJFDzY87tdi8/Xdhr8IhKrECAwEA
+        AaOBiTCBhjAdBgNVHQ4EFgQUu7JydFMqHAZM8n2CGeFe+FPnFJQwHwYDVR0jBBgw
+        FoAUu7JydFMqHAZM8n2CGeFe+FPnFJQwCQYDVR0TBAIwADALBgNVHQ8EBAMCBaAw
+        LAYJYIZIAYb4QgENBB8WHU9wZW5TU0wgR2VuZXJhdGVkIENlcnRpZmljYXRlMA0G
+        CSqGSIb3DQEBCwUAA4IBAQDLqhBEn397W5sZNV7ksFhuKDm32gv0tkdXOp12S+JG
+        Ydb+HV6S36QmQxNWPJN0ek0Zle2eJgGawSKnHYWv/zhaKRjwpegN9abrTSJNZXZw
+        GCSKsF+XhMlDot06xMFhNQxQDFNVKbpmIY1tV7yNCVBhFfchAkUSGAzSNY7TxjIB
+        F+ZQV0Xfyns2EIqUOWH5WnF70t5ogIVJg1d8ipNj9oyKedQKMTvn2G4lUatmstKz
+        5bbPvNv7BWX/Gx1eknnZ2DGg8LhWQ1HIcBqGmSCwsmBoEvjVCGNT9zUJgqVBDvi1
+        Chl35Gy99Tgfj+8rOkQ5yNbkp8e7FCVTM/jX9i4pzozo
+        -----END CERTIFICATE-----
+
+        EOF
+
+        }
+  ui:
+    enabled: true
+    externalPort: 8200
+    targetPort: 8200
+
+
+#########################
+# EDC CONSUMER Database #
+#########################
+edc-consumer-database:
+  fullnameOverride: "edc-consumer-database"
+  primary:
+    persistence:
+      enabled: true
+      existingClaim: edc-consumer-database-pv-claim 
+  volumePermissions:
+    enabled: true
+  readReplicas:
+    persistence:
+      enabled: false
+  auth:
+    database: *config-edc-consumer-database-name
+    username: *config-edc-consumer-database-username
+    existingSecret: *config-edc-consumer-database-secret-name
+
+  service:
+    type: NodePort
+    control:
+      port: 5432
+
+
+##############################
+# EDC Consumer Control Plane #
+##############################
+edc-consumer-control-plane:
+  edc:
+    hostname: edc-consumer-data-plane
+    receiver:
+      http:
+        endpoint:  http://edc-consumer-backend-service:8080
+      callback:
+        url:
+    postgresql:
+      host: *config-edc-consumer-database-host
+      database: *config-edc-consumer-database-name
+      user: *config-edc-consumer-database-username
+      password: *config-edc-consumer-database-password
+    transfer:
+      proxy:
+        token:
+          verifier:
+            publickey:
+              alias: *config-vault-secret-daps-cert-name
+          signer:
+            privatekey:
+              alias: *config-vault-secret-daps-key-name
+    api:
+      auth:
+        key: *config-edc-auth-api-key
+    oauth:
+      client:
+        id: *config-oauth-client-id
+      private:
+        key:
+          alias: *config-vault-secret-daps-key-name
+      public:
+        key:
+          alias: *config-vault-secret-daps-cert-name
+      provider:
+        jwks:
+          url: *config-oauth-provider-jwts-url
+      token:
+        url: *config-oauth-token-url
+    vault:
+      hashicorp:
+        url: *config-vault-url
+        token: *config-vault-token
+        api:
+          secret:
+            path: "content"
+    data:
+      encryption:
+        keys: 
+          alias: "data-encryption"
+        algorithm: "AES"
+    negotiation:
+      consumer:
+        stateMachine:
+          batchSize: 50
+
+
+###########################
+# EDC Consumer DATA Plane #
+###########################
+edc-consumer-data-plane:
+  edc:
+    dataplane:
+      token:
+        validation:
+          endpoint: http://edc-consumer-data-plane:8182/validation/token
+    api:
+      auth:
+        key: *config-edc-auth-api-key
+    oauth:
+      client:
+        id: *config-oauth-client-id 
+      private:
+        key:
+          alias: *config-vault-secret-daps-key-name
+      public:
+        key:
+          alias: *config-vault-secret-daps-cert-name
+      provider:
+        jwks:
+          url: *config-oauth-provider-jwts-url
+      token:
+        url: *config-oauth-token-url
+    vault:
+      hashicorp:
+        url: *config-vault-url
+        token: *config-vault-token
+        api:
+          secret:
+            path: "content"
+
+
+################################
+# EDC Consumer Backend Service #
+################################
+edc-consumer-backend-service:
+  fullnameOverride: "edc-consumer-backend-service"
+  service:
+    type: NodePort
+    frontend:
+      port: 8080
+    backend:
+      port: 8081
+
+
+#########################
+# EDC PROVIDER Database #
+#########################
+edc-provider-database:
+  fullnameOverride: "edc-provider-database"
+  primary:
+    persistence:
+      enabled: true
+      existingClaim: edc-provider-database-pv-claim 
+  volumePermissions:
+    enabled: true
+  readReplicas:
+    persistence:
+      enabled: false
+  auth:
+    database: *config-edc-provider-database-name
+    username: *config-edc-provider-database-username
+    existingSecret: *config-edc-provider-database-secret-name
+  service:
+    type: NodePort
+    control:
+      port: 5432
+
+
+##############################
+# EDC Provider Control Plane #
+##############################
+edc-provider-control-plane:
+  edc:
+    hostname: edc-provider-data-plane
+    receiver:
+      http:
+        endpoint:  http://edc-provider-backend-service:8080
+      callback:
+        url:
+    postgresql:
+      host: *config-edc-provider-database-host
+      database: *config-edc-provider-database-name
+      user: *config-edc-provider-database-username
+      password: *config-edc-provider-database-password
+    transfer:
+      proxy:
+        token:
+          verifier:
+            publickey:
+              alias: *config-vault-secret-daps-cert-name
+          signer:
+            privatekey:
+              alias: *config-vault-secret-daps-key-name
+    api:
+      auth:
+        key: *config-edc-auth-api-key
+    oauth:
+      client:
+        id: *config-oauth-client-id
+      private:
+        key:
+          alias: *config-vault-secret-daps-key-name
+      public:
+        key:
+          alias: *config-vault-secret-daps-cert-name
+      provider:
+        jwks:
+          url: *config-oauth-provider-jwts-url
+      token:
+        url: *config-oauth-token-url
+    vault:
+      hashicorp:
+        url: *config-vault-url
+        token: *config-vault-token
+        api:
+          secret:
+            path: "content"
+    data:
+      encryption:
+        keys: 
+          alias: "data-encryption"
+        algorithm: "AES"
+    negotiation:
+      consumer:
+        stateMachine:
+          batchSize: 50
+
+
+###########################
+# EDC Provider DATA Plane #
+###########################
+edc-provider-data-plane:
+  edc:
+    dataplane:
+      token:
+        validation:
+          endpoint: http://edc-provider-data-plane:8182/validation/token
+    api:
+      auth:
+        key: *config-edc-auth-api-key
+    oauth:
+      client:
+        id: *config-oauth-client-id 
+      private:
+        key:
+          alias: *config-vault-secret-daps-key-name
+      public:
+        key:
+          alias: *config-vault-secret-daps-cert-name
+      provider:
+        jwks:
+          url: *config-oauth-provider-jwts-url
+      token:
+        url: *config-oauth-token-url
+    vault:
+      hashicorp:
+        url: *config-vault-url
+        token: *config-vault-token
+        api:
+          secret:
+            path: "content"
+
+
+################################
+# EDC Provider Backend Service #
+################################
+edc-provider-backend-service:
+  fullnameOverride: "edc-provider-backend-service"
+  service:
+    type: NodePort
+    frontend:
+      port: 8080
+    backend:
+      port: 8081
+
+
+#####################
+# IRS Configuration #
+#####################
+irs-backend-service:
+  config:
+    override: false
+  existingSecret: *config-irs-existingSecret
+  secret:
+    name: *config-irs-secret-name
+    minio:
+      user: *config-minio-username
+      passsword: *config-minio-password
+    keycloak:
+      client:
+        id: *config-keycloak-client-id
+        secret: *config-keycloak-client-secret
+    edc:
+      apiSecret: *config-edc-auth-api-key
+    grafana:
+      user: *config-grafana-username
+      password: *config-grafana-password
+  irsUrl: http://{{ .Chart.Name }}:{{ .Values.service.port }}
+  blobstore:
+    endpoint: "http://irs-minio:9000"
+    accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
+    secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
+  keycloak:
+    # url: *config-keycloak-url-base
+    # realm: *config-keycloak-realm
+    oauth2:
+      # clientId: "${KEYCLOAK_OAUTH2_CLIENT_ID}"
+      # clientSecret: "{KEYCLOAK_OAUTH2_CLIENT_SECRET}"
+      clientTokenUri: *config-keycloak-token-url
+      jwkSetUri: *config-keycloak-certs-url
+      # clientTokenUri: http://irs-keycloak-headless:8080/realms/CX-Central/protocol/openid-connect/token
+      # jwkSetUri: http://irs-keycloak-headless:8080/realms/CX-Central/protocol/openid-connect/certs
+
+  digitalTwinRegistry:
+    url: "http://irs-digital-twin-registry:8080"
+    descriptorEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/registry/shell-descriptors/{aasIdentifier}"
+    shellLookupEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/lookup/shells?assetIds={assetIds}"
+  semanticsHub:
+    url: http://irs-semantic-hub-service:8080/hub/api/v1
+    modelJsonSchemaEndpoint: "{{ tpl .Values.semanticsHub.url . }}/models/{urn}/json-schema"
+    defaultUrns: urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
+
+  bpdm:
+    url: ""
+    bpnEndpoint: "{{ tpl .Values.bpdm.url . }}/api/catena/legal-entities/{partnerId}?idType={idType}"
+  
+  edc:
+    controlplane:
+      endpoint:
+        data: "http://edc-consumer-control-plane:8181/data" #<edc-controlplane-endpoint-data>
+      request:
+        ttl: PT10M # Requests to controlplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
+      provider:
+        suffix: /api/v1/ids/data
+      catalog:
+        limit: 1000 # Max number of catalog items to retrieve from the controlplane
+      apikey:
+        header: "X-Api-Key" # Name of the EDC api key header field
+        secret: config-vault-token
+    submodel:
+      request:
+        ttl: PT10M # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
+      path: /submodel
+      urnprefix: /urn
+
+
+######################################
+# IRS Digital Twin Registry Database #
+######################################
+irs-digital-twin-registry-database:
+  fullnameOverride: "irs-digital-twin-registry-database"
+  primary:
+    persistence:
+      enabled: true
+      existingClaim: irs-digital-twin-registry-database-pv-claim 
+  volumePermissions:
+    enabled: true
+  readReplicas:
+    persistence:
+      enabled: false
+  auth:
+    database: *config-irs-digitalTwin-database-name
+    username: *config-irs-digitalTwin-database-username
+    existingSecret: *config-irs-digitalTwin-database-secret-name
+  service:
+    type: NodePort
+    control:
+      port: 5432
+
+
+#############################
+# IRS Digital Twin Registry #
+#############################
+irs-digital-twin-registry:
+  registry: 
+    secret:
+      name: *config-irs-digitalTwin-secret-name
+    idpIssuerUri: *config-keycloak-token-url
+    imagePullSecrets:
+      - name: *config-irs-digitalTwin-docker-secret-name
+
+
+########################
+# IRS Frontend Service #
+########################
+irs-frontend-service:
+  registry:
+    vite:
+      manual: 
+        url: https://github.com/catenax-ng/product-item-relationship-service-frontend/blob/main/docs/userManual.md
+    url:
+      local: http://localhost:8080
+  keycloak:
+    url: http://localhost:4011/connect/token
+    grand:
+      type: *config-keycloak-grand-type
+    scope: *config-keycloak-scope
+    client:
+      id: *config-keycloak-client-id
+      secret: *config-keycloak-client-secret
+
+
+##########
+# OMEJDN #
+##########
+omejdn:
+  fullnameOverride: "ids-daps"
+
+
+####################
+# KeyCloak Service #
+####################
+irs-keycloak-service:
+  fullnameOverride: "irs-keycloak-service"
+  client:
+    id: *config-keycloak-client-id
+    secret: *config-keycloak-client-secret
+  grand:
+    type: *config-keycloak-grand-type
+  scope: *config-keycloak-scope
+
+########################
+# Semantic Hub Service #
+########################
+irs-semantic-hub-service:
+  fullnameOverride: "irs-semantic-hub-service"
+  

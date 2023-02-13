@@ -1,0 +1,86 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Release.Namespace | default "default" | quote }}
+  labels:
+    {{- include "edc-control-plane.labels" . | nindent 4 }}
+data:
+  configuration.properties: |-
+    web.http.default.port={{ .Values.edc.endpoints.default.port }}
+    web.http.default.path={{ .Values.edc.endpoints.default.path }}
+    web.http.data.port={{ .Values.edc.endpoints.management.port }}
+    web.http.data.path={{ .Values.edc.endpoints.management.path }}
+    web.http.validation.port={{ .Values.edc.endpoints.validation.port }}
+    web.http.validation.path={{ .Values.edc.endpoints.validation.path }}
+    web.http.control.port={{ .Values.edc.endpoints.control.port }}
+    web.http.control.path={{ .Values.edc.endpoints.control.path }}
+    web.http.ids.port={{ .Values.edc.endpoints.ids.port }}
+    web.http.ids.path={{ .Values.edc.endpoints.ids.path }}
+    edc.hostname={{ .Values.edc.hostname }}
+    
+    edc.vault.hashicorp.url={{ .Values.edc.vault.hashicorp.url }}
+    edc.vault.hashicorp.token={{ .Values.edc.vault.hashicorp.token }}
+    edc.vault.hashicorp.timeout.seconds=30
+
+    # Postgresql related configuration
+    edc.datasource.asset.name=asset
+    edc.datasource.asset.url=jdbc:postgresql://{{ .Values.edc.postgresql.host }}:5432/{{ .Values.edc.postgresql.database }}
+    edc.datasource.asset.user={{ .Values.edc.postgresql.user }}
+    edc.datasource.asset.password={{ .Values.edc.postgresql.password }}
+    edc.datasource.contractdefinition.name=contractdefinition
+    edc.datasource.contractdefinition.url=jdbc:postgresql://{{ .Values.edc.postgresql.host }}:5432/{{ .Values.edc.postgresql.database }}
+    edc.datasource.contractdefinition.user={{ .Values.edc.postgresql.user }}
+    edc.datasource.contractdefinition.password={{ .Values.edc.postgresql.password }}
+    edc.datasource.contractnegotiation.name=contractnegotiation
+    edc.datasource.contractnegotiation.url=jdbc:postgresql://{{ .Values.edc.postgresql.host }}:5432/{{ .Values.edc.postgresql.database }}
+    edc.datasource.contractnegotiation.user={{ .Values.edc.postgresql.user }}
+    edc.datasource.contractnegotiation.password={{ .Values.edc.postgresql.password }}
+    edc.datasource.policy.name=policy
+    edc.datasource.policy.url=jdbc:postgresql://{{ .Values.edc.postgresql.host }}:5432/{{ .Values.edc.postgresql.database }}
+    edc.datasource.policy.user={{ .Values.edc.postgresql.user }}
+    edc.datasource.policy.password={{ .Values.edc.postgresql.password }}
+    edc.datasource.transferprocess.name=transferprocess
+    edc.datasource.transferprocess.url=jdbc:postgresql://{{ .Values.edc.postgresql.host }}:5432/{{ .Values.edc.postgresql.database }}
+    edc.datasource.transferprocess.user={{ .Values.edc.postgresql.user }}
+    edc.datasource.transferprocess.password={{ .Values.edc.postgresql.password }}
+
+    edc.data.encryption.keys.alias={{ .Values.edc.data.encryption.keys.alias }}
+    edc.data.encryption.algorithm={{ .Values.edc.data.encryption.algorithm }}
+
+    edc.oauth.token.url={{ .Values.edc.oauth.token.url }}
+    edc.oauth.public.key.alias={{ .Values.edc.oauth.public.key.alias }}
+    edc.oauth.private.key.alias={{ .Values.edc.oauth.private.key.alias }}
+
+    edc.oauth.client.id={{ .Values.edc.oauth.client.id }}
+    edc.oauth.provider.jwks.url={{ .Values.edc.oauth.provider.jwks.url}}
+    edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
+
+    edc.transfer.proxy.token.signer.privatekey.alias={{ .Values.edc.transfer.proxy.token.signer.privatekey.alias }}
+    edc.transfer.proxy.token.verifier.publickey.alias={{ .Values.edc.transfer.proxy.token.verifier.publickey.alias }}
+
+    edc.api.auth.key={{ .Values.edc.api.auth.key }}
+    edc.api.control.auth.apikey.key=X-Api-Key
+    edc.api.control.auth.apikey.value=password
+
+    edc.receiver.http.endpoint={{ .Values.edc.receiver.http.endpoint }}
+
+    
+    edc.ids.title=Eclipse Dataspace Connector
+    edc.ids.description=Eclipse Dataspace Connector
+    edc.ids.id=urn:connector:edc
+    edc.ids.security.profile=base
+    edc.ids.endpoint=http://{{ .Values.edc.hostname }}:8282/api/v1/ids
+    edc.ids.maintainer=http://{{ .Values.edc.hostname }}
+    edc.ids.curator=http://{{ .Values.edc.hostname }}
+    edc.ids.catalog.id=urn:catalog:default
+    # This is checked as the audience for incoming ids messages/tokens => TBD Check again
+    edc.ids.endpoint.audience=http://{{ .Values.edc.hostname }}:8282/api/v1/ids/data
+    ids.webhook.address=http://{{ .Values.edc.hostname }}:8282/api/v1/ids
+
+  opentelemetry.properties: |-
+    {{- .Values.opentelemetry.properties | nindent 4 }}
+
+  logging.properties: |-
+    {{- .Values.logging.properties | nindent 4 }}

@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Release.Namespace | default "default" | quote }}
+  labels:
+    {{- include "irs.labels" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: {{ .Values.service.trustedPort }}
+      targetPort: httptrusted
+      protocol: TCP
+      name: httptrusted
+    - port: {{ .Values.service.actuatorPort }}
+      targetPort: actuator
+      protocol: TCP
+      name: actuator
+  selector:
+    {{- include "irs.selectorLabels" . | nindent 4 }}

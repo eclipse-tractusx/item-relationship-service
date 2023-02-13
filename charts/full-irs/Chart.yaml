@@ -1,0 +1,152 @@
+---
+apiVersion: v2
+name: irs
+description: A Helm chart for Kubernetes
+
+type: application
+version: 0.0.1
+appVersion: "1.0.0"
+
+dependencies:
+
+  # Grafana
+  - name: grafana
+    alias: grafana
+    repository: https://grafana.github.io/helm-charts
+    version: 6.44.8
+    condition: install.grafana
+
+  # Prometheus
+  - name: prometheus
+    alias: prometheus
+    repository: https://prometheus-community.github.io/helm-charts
+    version: 17.0.1
+    condition: install.prometheus
+
+  # Minio
+  - name: minio
+    alias: minio
+    repository: https://charts.min.io/
+    version: 5.0.1
+    condition: install.minio
+
+  # HashiCorp Vault
+  - name: vault
+    alias: edc-vault
+    version: 0.20.0
+    repository: https://helm.releases.hashicorp.com
+    condition: install.edc.vault
+
+  # EDC Consumer 
+  # PostgreSQL
+  - name: postgresql
+    alias: edc-consumer-database
+    version: 12.0.0
+    repository: https://charts.bitnami.com/bitnami
+    condition: install.edc.consumer
+
+  # Control plane
+  - name: edc-control-plane
+    alias: edc-consumer-control-plane
+    version: 0.0.1
+    repository: "file://subcharts/edc-control-plane"
+    condition: install.edc.consumer
+
+  # Data plane
+  - name: edc-data-plane
+    alias: edc-consumer-data-plane
+    version: 0.0.1
+    repository: "file://subcharts/edc-data-plane"
+    condition: install.edc.consumer
+
+  # Backend service
+  - name: backend-service
+    alias: edc-consumer-backend-service
+    version: 0.0.6
+    repository: https://denisneuling.github.io/cx-backend-service
+    condition: install.edc.consumer
+
+  # EDC Provider
+  # PostgreSQL
+  - name: postgresql
+    alias: edc-provider-database
+    version: 12.0.0
+    repository: https://charts.bitnami.com/bitnami
+    condition: install.edc.provider
+
+  # Control plane
+  - name: edc-control-plane
+    alias: edc-provider-control-plane
+    version: 0.0.1
+    repository: "file://subcharts/edc-control-plane"
+    condition: install.edc.provider
+
+  # Data plane
+  - name: edc-data-plane
+    alias: edc-provider-data-plane
+    version: 0.0.1
+    repository: "file://subcharts/edc-data-plane"
+    condition: install.edc.provider
+
+  # Backend service
+  - name: backend-service
+    alias: edc-provider-backend-service
+    version: 0.0.6
+    repository: https://denisneuling.github.io/cx-backend-service
+    condition: install.edc.provider
+
+  # IRS Backend Serviec
+  - name: irs
+    alias: irs-backend-service
+    version: 0.0.1
+    repository: "file://subcharts/irs"
+    condition: install.irs.backend
+
+  # IRS Provider Backend Service
+  - name: irs-provider-backend-service
+    alias: irs-provider-backend-service
+    version: 0.0.1
+    repository: "file://subcharts/irs-provider-backend-service"
+    condition: install.irs.providerBackend
+
+  # IRS Digital Twin Registry
+  - name: irs-digital-twin-registry
+    alias: irs-digital-twin-registry
+    version: 0.0.1
+    repository: "file://subcharts/irs-digital-twin-registry"
+    condition: install.irs.digitalTwin
+
+  # IRS Digital Twin Registry Database
+  - name: postgresql
+    alias: irs-digital-twin-registry-database
+    version: 12.0.0
+    repository: https://charts.bitnami.com/bitnami
+    condition: install.irs.digitalTwin
+
+  # IRS Frontend Service
+  - name: irs-frontend-service
+    alias: irs-frontend-service
+    version: 0.0.1
+    repository: "file://subcharts/irs-frontend-service"
+    condition: install.irs.frontend
+
+  # # Omejdn
+  # - name: omejdn
+  #   alias: omejdn
+  #   version: 0.0.1
+  #   repository: "file://subcharts/omejdn"
+  #   condition: install.omejdn
+
+  # KeyCloak Service
+  - name: keycloak-mock-service
+    alias: irs-keycloak-service
+    version: 0.0.1
+    repository: "file://subcharts/keycloak-mock-service"
+    condition: install.irs.keycloak
+
+  # Semantic Hub Service
+  - name: semantic-hub-service
+    alias: irs-semantic-hub-service
+    version: 0.0.1
+    repository: "file://subcharts/semantic-hub-service"
+    condition: install.irs.semanticHub
