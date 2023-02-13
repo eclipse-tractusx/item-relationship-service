@@ -68,7 +68,7 @@ public class SemanticsHubFacade {
      * Search in Semantic hub or local models for all available aspect models.
      * @return All available aspect models.
      */
-    @Cacheable(value = SEMANTICS_HUB_MODEL_CACHE_NAME)
+    @Cacheable(SEMANTICS_HUB_MODEL_CACHE_NAME)
     public AspectModels getAllAspectModels() throws SchemaNotFoundException {
         final List<AspectModel> aspectModels = this.semanticsHubClient.getAllAspectModels();
 
