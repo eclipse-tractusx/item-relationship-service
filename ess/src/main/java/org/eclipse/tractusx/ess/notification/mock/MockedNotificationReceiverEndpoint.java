@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  * Endpoint for receiving EDC notifications and responding with Mocked BPN results.
@@ -86,9 +87,16 @@ public class MockedNotificationReceiverEndpoint {
 
             if (edcDiscoveryMockConfig.getMockEdcResult().containsKey(bpn)) {
                 final SupplyChainImpacted supplyChainImpacted = edcDiscoveryMockConfig.getMockEdcResult().get(bpn);
+
                 final String notificationId = UUID.randomUUID().toString();
-                final var response = edcSubmodelFacade.sendNotification("TODO", "notify-request-asset",
-                        edcRequest(notificationId, notification.getHeader().getSenderBpn(), Map.of("result", supplyChainImpacted.getDescription())));
+                final String senderEdc = ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString();
+                final String senderBpn = notification.getHeader().getRecipientBpn();
+                final String recipientBpn = notification.getHeader().getSenderBpn();
+                final Map<String, Object> notificationContent = Map.of("result", supplyChainImpacted.getDescription());
+                
+                final EdcNotification edcRequest = edcRequest(notificationId, senderEdc, senderBpn, recipientBpn, notificationContent);
+
+                final var response = edcSubmodelFacade.sendNotification("TODO", "notify-request-asset", edcRequest);
                 if (!response.deliveredSuccessfully()) {
                     throw new EdcClientException("EDC Provider did not accept message with notificationId " + notificationId);
                 }
@@ -101,11 +109,12 @@ public class MockedNotificationReceiverEndpoint {
         }
     }
 
-    private EdcNotification edcRequest(final String notificationId, final String recipientBpn, final Map<String, Object> content) {
+    private EdcNotification edcRequest(final String notificationId, final String senderEdc, final String senderBpn, final String recipientBpn,
+            final Map<String, Object> content) {
         final EdcNotificationHeader header = EdcNotificationHeader.builder()
                                                                  .notificationId(notificationId)
-                                                                 .senderBpn("SystemBPNFromConfig") // TODO
-                                                                 .senderEdc("SystemEdcConfig") // TODO
+                                                                 .senderEdc(senderEdc)
+                                                                 .senderBpn(senderBpn)
                                                                  .recipientBpn(recipientBpn)
                                                                  .replyAssetId("ess-response-asset")
                                                                  .replyAssetSubPath("")
