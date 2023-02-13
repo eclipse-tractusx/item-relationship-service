@@ -21,8 +21,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.notification.mock;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,12 +28,6 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.tractusx.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.edc.exceptions.EdcClientException;
@@ -43,7 +35,6 @@ import org.eclipse.tractusx.edc.model.notification.EdcNotification;
 import org.eclipse.tractusx.edc.model.notification.EdcNotificationHeader;
 import org.eclipse.tractusx.ess.discovery.EdcDiscoveryMockConfig;
 import org.eclipse.tractusx.ess.service.SupplyChainImpacted;
-import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,17 +57,6 @@ public class MockedNotificationReceiverEndpoint {
     private final EdcDiscoveryMockConfig edcDiscoveryMockConfig;
     private final EdcSubmodelFacade edcSubmodelFacade;
 
-    @Operation(operationId = "receiveEdcMockNotification", summary = "Accepts notifications sent via EDC.",
-               tags = { "Environmental- and Social Standards" },
-               description = "Accepts notifications via EDC. Notifications are filtered by their type and processed accordingly.")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Notification received successfully."),
-                            @ApiResponse(responseCode = "400", description = "Notification malformed.",
-                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                                              schema = @Schema(implementation = ErrorResponse.class),
-                                                              examples = @ExampleObject(name = "error",
-                                                                                        ref = "#/components/examples/error-response-400"))
-                                         }),
-    })
     @PostMapping("/receive")
     public void receiveNotification(final @Valid @RequestBody EdcNotification notification) throws EdcClientException {
         final Optional<String> incidentBpn = Optional.ofNullable(notification.getContent().get("incidentBpn"))
@@ -92,11 +72,12 @@ public class MockedNotificationReceiverEndpoint {
                 final String senderEdc = ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString();
                 final String senderBpn = notification.getHeader().getRecipientBpn();
                 final String recipientBpn = notification.getHeader().getSenderBpn();
+                final String recipientUrl = notification.getHeader().getSenderEdc();
                 final Map<String, Object> notificationContent = Map.of("result", supplyChainImpacted.getDescription());
 
                 final EdcNotification edcRequest = edcRequest(notificationId, senderEdc, senderBpn, recipientBpn, notificationContent);
 
-                final var response = edcSubmodelFacade.sendNotification("TODO", "notify-request-asset", edcRequest);
+                final var response = edcSubmodelFacade.sendNotification(recipientUrl, "notify-request-asset", edcRequest);
                 if (!response.deliveredSuccessfully()) {
                     throw new EdcClientException("EDC Provider did not accept message with notificationId " + notificationId);
                 }
