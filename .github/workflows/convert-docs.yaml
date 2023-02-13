@@ -49,5 +49,5 @@ jobs:
           
       - name: Convert to Markdown
         run: |
-          npx downdoc docs/src/diagram-replacer/adminguide.adoc
-          npx downdoc docs/src/diagram-replacer/arc42.adoc
+          npx downdoc docs/src/diagram-replacer/adocs-with-pngs/adminguide.adoc
+          npx downdoc docs/src/diagram-replacer/adocs-with-pngs/arc42.adoc
