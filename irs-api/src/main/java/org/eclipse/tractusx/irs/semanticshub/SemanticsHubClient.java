@@ -39,9 +39,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.configuration.RestTemplateConfig;
+import org.eclipse.tractusx.irs.configuration.SemanticsHubConfiguration;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
@@ -102,23 +102,18 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
     public static final String LOCAL_MODEL_TYPE = "BAMM";
     public static final String LOCAL_MODEL_STATUS = "PROVIDED";
     private static final String PLACEHOLDER_URN = "urn";
-    @Value("${semanticsHub.pageSize:}")
-    private final int semanticHubPageSize = 100;
+    private final SemanticsHubConfiguration config;
     private final RestTemplate restTemplate;
-    private final String semanticsHubUrl;
-    private final String localModelDirectory;
 
     /* package */ SemanticsHubClientImpl(
             @Qualifier(RestTemplateConfig.SEMHUB_REST_TEMPLATE) final RestTemplate restTemplate,
-            @Value("${semanticsHub.modelJsonSchemaEndpoint:}") final String semanticsHubUrl,
-            @Value("${semanticsHub.localModelDirectory:}") final String localModelDirectory) {
+            final SemanticsHubConfiguration config) {
+        this.config = config;
         this.restTemplate = restTemplate;
-        this.semanticsHubUrl = semanticsHubUrl;
-        this.localModelDirectory = localModelDirectory;
 
-        if (StringUtils.isNotBlank(semanticsHubUrl)) {
-            requirePlaceholder(semanticsHubUrl);
-        } else if (StringUtils.isBlank(localModelDirectory)) {
+        if (StringUtils.isNotBlank(config.getModelJsonSchemaEndpoint())) {
+            requirePlaceholder(config.getModelJsonSchemaEndpoint());
+        } else if (StringUtils.isBlank(config.getLocalModelDirectory())) {
             log.warn("No Semantic Hub URL or local model directory was provided. Cannot validate submodel payloads!");
         }
     }
@@ -150,8 +145,8 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
     }
 
     private Optional<List<AspectModel>> readAllFromFilesystem() {
-        if (StringUtils.isNotBlank(localModelDirectory)) {
-            final Path path = Paths.get(localModelDirectory);
+        if (StringUtils.isNotBlank(config.getLocalModelDirectory())) {
+            final Path path = Paths.get(config.getLocalModelDirectory());
             try (Stream<Path> stream = Files.list(path)) {
                 return Optional.of(stream.filter(file -> !Files.isDirectory(file))
                                          .map(Path::getFileName)
@@ -174,15 +169,16 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
     }
 
     private Optional<List<AspectModel>> readAllFromSemanticHub() {
-        if (StringUtils.isNotBlank(semanticsHubUrl)) {
+        log.info("Reading models from semantic hub.");
+        if (StringUtils.isNotBlank(config.getUrl())) {
             int currentPage = 0;
             final List<AspectModel> aspectModelsCollection = new ArrayList<>();
             try {
                 Optional<PaginatedResponse<AspectModel>> semanticHubPage;
                 do {
-                    semanticHubPage = getSemanticHubPage(currentPage, semanticHubPageSize);
+                    semanticHubPage = getSemanticHubPage(currentPage++, config.getPageSize());
+                    log.info("Got response from semantic hub '{}'", semanticHubPage.toString());
                     aspectModelsCollection.addAll(semanticHubPage.orElseThrow().getContent());
-                    currentPage++;
                 } while (semanticHubPage.get().hasNext());
 
             } catch (final RestClientException e) {
@@ -195,9 +191,11 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
 
     private Optional<PaginatedResponse<AspectModel>> getSemanticHubPage(final int page, final int pageSize) {
         try {
-            final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(semanticsHubUrl)
+            log.info("Request semantic hub page '{}'  with size '{}' for url '{}'", page, pageSize, config.getUrl());
+            final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(config.getUrl())
                                                                         .queryParam("page", page)
                                                                         .queryParam("pageSize", pageSize);
+            log.info("Semantic Hub URL '{}'", uriBuilder.toUriString());
             final var responseType = new ParameterizedTypeReference<PaginatedResponse<AspectModel>>() {
             };
             final ResponseEntity<PaginatedResponse<AspectModel>> result = restTemplate.exchange(
@@ -210,8 +208,8 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
     }
 
     private Optional<String> readFromFilesystem(final String urn) {
-        if (StringUtils.isNotBlank(localModelDirectory)) {
-            final Path path = Paths.get(localModelDirectory, normalize(urn));
+        if (StringUtils.isNotBlank(config.getLocalModelDirectory())) {
+            final Path path = Paths.get(config.getLocalModelDirectory(), normalize(urn));
             if (path.toFile().exists()) {
                 try {
                     return Optional.of(Files.readString(path));
@@ -224,9 +222,10 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
     }
 
     private Optional<String> readFromSemanticHub(final String urn) {
-        if (StringUtils.isNotBlank(semanticsHubUrl)) {
+        if (StringUtils.isNotBlank(config.getModelJsonSchemaEndpoint())) {
             try {
-                final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(semanticsHubUrl);
+                final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(
+                        config.getModelJsonSchemaEndpoint());
                 final Map<String, String> values = Map.of(PLACEHOLDER_URN, urn);
                 return Optional.ofNullable(restTemplate.getForObject(uriBuilder.build(values), String.class));
             } catch (final RestClientException e) {

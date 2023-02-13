@@ -43,7 +43,7 @@ class SemanticsHubCacheInitializer {
     private final List<String> defaultUrns;
 
     /* package */ SemanticsHubCacheInitializer(final SemanticsHubFacade semanticsHubFacade,
-            @Value("${semanticsHub.defaultUrns:}") final List<String> defaultUrns) {
+            @Value("${semantics.hub.defaultUrns:}") final List<String> defaultUrns) {
         this.semanticsHubFacade = semanticsHubFacade;
         this.defaultUrns = defaultUrns;
     }
@@ -72,10 +72,10 @@ class SemanticsHubCacheInitializer {
     /**
      * Cleaning up Semantics Hub cache after scheduled time, and reinitializing it once again.
      */
-    @Scheduled(cron = "${semanticsHub.cleanup.scheduler}")
+    @Scheduled(cron = "${semantics.hub.cleanup.scheduler}")
     /* package */ void reinitializeAllCacheInterval() {
         log.debug("Reinitializing Semantics Hub Cache with new values.");
-        // TODO only drop cache, if new data is available
+        // TODO (ds-jhartmann) only drop cache, if new data is available
         semanticsHubFacade.evictAllCacheValues();
         initializeCacheValues();
     }
