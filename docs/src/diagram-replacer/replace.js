@@ -5,7 +5,7 @@ const TARGET_PATH = "./generated-adocs/";
 const IMAGES_PATH = "./assets/";
 
 /**
- * CAUTION: Images get not replaced if you specified an imagedir variable in the .adoc
+ * CAUTION: :imagedir: variables in .adoc get deleted, so that asset references can be properly set
  */
 
 fs.readdirSync(SOURCE_PATH).forEach((file) => {
@@ -46,7 +46,7 @@ fs.readdirSync(SOURCE_PATH).forEach((file) => {
         if (lines[i].startsWith("[plantuml, target=")) {
           const filename = lines[i].match(/target=(.*), format=svg/)[1];
           output.push(
-            `image::${"." + ImageDirectoryPathForAdoc + imageList.shift()}[]`
+            `image::${ImageDirectoryPathForAdoc + imageList.shift()}[]`
           );
         } else if (lines[i].startsWith("@startuml")) {
           insidePlantUmlBlock = true;
@@ -54,6 +54,8 @@ fs.readdirSync(SOURCE_PATH).forEach((file) => {
           insidePlantUmlBlock = false;
           continue;
         } else if (insidePlantUmlBlock) {
+          continue;
+        } else if (lines[i].startsWith(":imagesdir:")) {
           continue;
         } else {
           output.push(lines[i]);
