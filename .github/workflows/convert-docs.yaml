@@ -38,12 +38,14 @@ jobs:
           asciidoctor-reducer -o docs/target/arc42.adoc docs/src/docs/arc42/full.adoc
 
       - name: Extract PNG-Images with PlantUML
+        working-directory: docs/src/diagram-replacer/
         run: |
-          node docs/src/diagram-replacer/extract.js 
+          node extract.js
 
       - name: Replace PlantUML Code inside docs with PNG-Images
+        working-directory: docs/src/diagram-replacer/
         run: |
-          node docs/src/diagram-replacer/replace.js
+          node replace.js
           
       - name: Convert to Markdown
         run: |
