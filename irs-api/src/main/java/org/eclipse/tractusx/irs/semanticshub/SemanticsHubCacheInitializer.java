@@ -75,9 +75,17 @@ class SemanticsHubCacheInitializer {
     @Scheduled(cron = "${semantics.hub.cleanup.scheduler}")
     /* package */ void reinitializeAllCacheInterval() {
         log.debug("Reinitializing Semantics Hub Cache with new values.");
-        // TODO (ds-jhartmann) only drop cache, if new data is available
-        semanticsHubFacade.evictAllCacheValues();
-        initializeCacheValues();
+
+        defaultUrns.stream().findFirst().ifPresentOrElse(urn -> {
+            try {
+                semanticsHubFacade.getModelJsonSchema(urn);
+                log.info("Could retrieve schema. Reinitializing cache values");
+                semanticsHubFacade.evictAllCacheValues();
+                initializeCacheValues();
+            } catch (SchemaNotFoundException e) {
+                log.error("Error while retrieving semantic models for cache. Reusing existing cached values", e);
+            }
+        }, () -> log.warn("Semantic models could not be retrieved for cache. Reusing existing cached value"));
     }
 
 }
