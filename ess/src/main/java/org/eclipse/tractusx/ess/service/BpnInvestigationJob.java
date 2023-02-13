@@ -69,7 +69,7 @@ public class BpnInvestigationJob {
                 prevSupplyChain -> prevSupplyChain.or(newSupplyChain)).orElse(newSupplyChain);
 
         this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted);
-        this.jobSnapshot = extendSummary(jobSnapshot);
+        this.jobSnapshot = extendSummary(this.jobSnapshot);
         return this;
     }
 
