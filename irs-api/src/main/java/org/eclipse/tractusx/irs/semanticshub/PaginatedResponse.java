@@ -26,7 +26,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 /**
  * Pagination wrapper Object.
@@ -40,13 +39,5 @@ public class PaginatedResponse<T> extends PageImpl<T> {
             final @JsonProperty("totalPages") int totalPages,
             final @JsonProperty("itemCount") int itemCount) {
         super(items, PageRequest.of(currentPage, itemCount), totalItems);
-    }
-
-    public PaginatedResponse(final List<T> content, final Pageable pageable, final long total) {
-        super(content, pageable, total);
-    }
-
-    public PaginatedResponse(final List<T> content) {
-        super(content);
     }
 }
