@@ -153,4 +153,33 @@ class SemanticsHubClientImplTest {
         assertThat(allAspectModels.get(1).name()).isEqualTo("name2");
         verify(this.restTemplate, times(2)).exchange(any(), (ParameterizedTypeReference<Object>) any());
     }
+
+    @Test
+    void shouldGetAllModelsFromFilesystemOnly() throws SchemaNotFoundException {
+        // Arrange
+        final String path = Objects.requireNonNull(getClass().getResource(
+                                           "/aspect-models/"))
+                                   .getPath();
+        final var testee = new SemanticsHubClientImpl(restTemplate, config("", new File(path).getPath()));
+        final AspectModel serialPartTypization = new AspectModel(
+                "urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization", "1.0.0",
+                "SerialPartTypization", SemanticsHubClientImpl.LOCAL_MODEL_TYPE,
+                SemanticsHubClientImpl.LOCAL_MODEL_STATUS);
+
+        // Act
+        final List<AspectModel> allAspectModels = testee.getAllAspectModels();
+
+        // Assert
+        assertThat(allAspectModels).hasSize(1).contains(serialPartTypization);
+    }
+
+    @Test
+    void shouldReturnEmptyIfLocalModelFilesNotAccessible() throws SchemaNotFoundException {
+
+        final var testee = new SemanticsHubClientImpl(restTemplate, config("", ""));
+
+        final List<AspectModel> allAspectModels = testee.getAllAspectModels();
+
+        assertThat(allAspectModels).isEmpty();
+    }
 }

@@ -139,9 +139,7 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
 
     @Override
     public List<AspectModel> getAllAspectModels() throws SchemaNotFoundException {
-        return readAllFromSemanticHub().or(this::readAllFromFilesystem)
-                                       .orElseThrow(
-                                               () -> new SchemaNotFoundException("Could not find any aspect models"));
+        return readAllFromSemanticHub().or(this::readAllFromFilesystem).orElse(List.of());
     }
 
     private Optional<List<AspectModel>> readAllFromFilesystem() {
@@ -151,8 +149,12 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
                 return Optional.of(stream.filter(file -> !Files.isDirectory(file))
                                          .map(Path::getFileName)
                                          .map(Path::toString)
-                                         .map(this::decode)
+                                         .peek(log::info)
+                                         .map(this::getDecodedString)
+                                         .peek(log::info)
                                          .map(this::createAspectModel)
+                                         .filter(Optional::isPresent)
+                                         .map(Optional::get)
                                          .toList());
             } catch (IOException e) {
                 log.error("Could not read schema Files.", e);
@@ -161,11 +163,25 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
         return Optional.empty();
     }
 
-    private AspectModel createAspectModel(final String urn) {
-        final Matcher matcher = Pattern.compile("(.*\\d\\.\\d\\.\\d)#(\\w+$)").matcher(urn);
-        final String version = matcher.group(0);
-        final String name = matcher.group(1);
-        return new AspectModel(urn, version, name, LOCAL_MODEL_TYPE, LOCAL_MODEL_STATUS);
+    private String getDecodedString(final String urnBase64) {
+        try {
+            return decode(urnBase64);
+        } catch (IllegalArgumentException e) {
+            log.error("Could not Base64 decode urn.", e);
+            return urnBase64;
+        }
+    }
+
+    private Optional<AspectModel> createAspectModel(final String urn) {
+        log.debug("Extracting aspect information for urn: '{}'", urn);
+        final Matcher matcher = Pattern.compile(".*:(\\d\\.\\d\\.\\d)#(\\w+)").matcher(urn);
+        if (matcher.find()) {
+            final String version = matcher.group(1);
+            final String name = matcher.group(2);
+            return Optional.of(new AspectModel(urn, version, name, LOCAL_MODEL_TYPE, LOCAL_MODEL_STATUS));
+        }
+        log.warn("Could not extract aspect information from urn: '{}'", urn);
+        return Optional.empty();
     }
 
     private Optional<List<AspectModel>> readAllFromSemanticHub() {
@@ -173,17 +189,13 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
         if (StringUtils.isNotBlank(config.getUrl())) {
             int currentPage = 0;
             final List<AspectModel> aspectModelsCollection = new ArrayList<>();
-            try {
-                Optional<PaginatedResponse<AspectModel>> semanticHubPage;
-                do {
-                    semanticHubPage = getSemanticHubPage(currentPage++, config.getPageSize());
-                    log.info("Got response from semantic hub '{}'", semanticHubPage.toString());
-                    aspectModelsCollection.addAll(semanticHubPage.orElseThrow().getContent());
-                } while (semanticHubPage.get().hasNext());
+            Optional<PaginatedResponse<AspectModel>> semanticHubPage;
+            do {
+                semanticHubPage = getSemanticHubPage(currentPage++, config.getPageSize());
+                log.info("Got response from semantic hub '{}'", semanticHubPage.toString());
+                aspectModelsCollection.addAll(semanticHubPage.orElseThrow().getContent());
+            } while (semanticHubPage.get().hasNext());
 
-            } catch (final RestClientException e) {
-                log.error("Unable to retrieve models from semantic hub", e);
-            }
             return Optional.of(aspectModelsCollection);
         }
         return Optional.empty();
