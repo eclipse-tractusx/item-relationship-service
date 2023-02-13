@@ -78,8 +78,8 @@ jobs:
       - name: Convert to Markdown
         # currently only specified for adminguide + arc42
         run: |
-          npx downdoc -o docs/target/generated-docs docs/src/diagram-replacer/adocs-with-pngs/adminguide.adoc
-          npx downdoc -o docs/target/generated-docs docs/src/diagram-replacer/adocs-with-pngs/arc42.adoc
+          npx downdoc -o docs/target/generated-docs docs/src/diagram-replacer/generated-adocs/adminguide.adoc
+          npx downdoc -o docs/target/generated-docs docs/src/diagram-replacer/generated-adocs/arc42.adoc
 
       - name: GitHub Pages action
         uses: peaceiris/actions-gh-pages@v3.9.0
