@@ -77,7 +77,7 @@ public class MockedNotificationReceiverEndpoint {
 
                 final EdcNotification edcRequest = edcRequest(notificationId, senderEdc, senderBpn, recipientBpn, notificationContent);
 
-                final var response = edcSubmodelFacade.sendNotification(recipientUrl, "notify-request-asset", edcRequest);
+                final var response = edcSubmodelFacade.sendNotification(recipientUrl, "ess-response-asset", edcRequest);
                 if (!response.deliveredSuccessfully()) {
                     throw new EdcClientException("EDC Provider did not accept message with notificationId " + notificationId);
                 }
@@ -97,9 +97,9 @@ public class MockedNotificationReceiverEndpoint {
                                                                  .senderEdc(senderEdc)
                                                                  .senderBpn(senderBpn)
                                                                  .recipientBpn(recipientBpn)
-                                                                 .replyAssetId("ess-response-asset")
+                                                                 .replyAssetId("")
                                                                  .replyAssetSubPath("")
-                                                                 .notificationType("ess-supplier-request")
+                                                                 .notificationType("ess-supplier-response")
                                                                  .build();
 
         return EdcNotification.builder().header(header).content(content).build();
