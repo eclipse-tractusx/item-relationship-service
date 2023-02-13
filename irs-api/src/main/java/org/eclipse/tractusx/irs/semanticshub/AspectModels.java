@@ -25,6 +25,10 @@ import java.util.List;
 
 import lombok.Builder;
 
+/**
+ * @param models list of semantic models
+ * @param lastUpdated timestamp of latest update
+ */
 @Builder
 public record AspectModels(List<AspectModel> models, String lastUpdated) {
 

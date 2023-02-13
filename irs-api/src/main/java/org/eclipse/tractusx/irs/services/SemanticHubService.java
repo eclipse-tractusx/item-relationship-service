@@ -28,6 +28,9 @@ import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service to obtain semantic models.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor

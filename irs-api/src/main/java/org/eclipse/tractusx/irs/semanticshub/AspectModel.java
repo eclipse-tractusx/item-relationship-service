@@ -23,6 +23,13 @@ package org.eclipse.tractusx.irs.semanticshub;
 
 import lombok.Builder;
 
+/**
+ * @param urn semantic model urn
+ * @param version semantic model version
+ * @param name semantic model clear name
+ * @param type type of model
+ * @param status status of model
+ */
 @Builder
 public record AspectModel(String urn, String version, String name, String type, String status) {
 }

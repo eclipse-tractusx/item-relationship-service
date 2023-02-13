@@ -28,12 +28,17 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+/**
+ * Pagination wrapper Object.
+ * @param <T> Type of paginated item
+ */
+@SuppressWarnings({ "PMD.UnusedFormalParameter" })
 public class PaginatedResponse<T> extends PageImpl<T> {
-    public PaginatedResponse(@JsonProperty("items") List<T> items,
-            @JsonProperty("totalItems") int totalItems,
-            @JsonProperty("currentPage") int currentPage,
-            @JsonProperty("totalPages") int totalPages,
-            @JsonProperty("itemCount") int itemCount) {
+    public PaginatedResponse(final @JsonProperty("items") List<T> items,
+            final @JsonProperty("totalItems") int totalItems,
+            final @JsonProperty("currentPage") int currentPage,
+            final @JsonProperty("totalPages") int totalPages,
+            final @JsonProperty("itemCount") int itemCount) {
         super(items, PageRequest.of(currentPage, itemCount), totalItems);
     }
 
