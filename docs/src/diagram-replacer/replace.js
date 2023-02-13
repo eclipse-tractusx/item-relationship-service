@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const SOURCE_PATH = "../../target/";
 const TARGET_PATH = "./generated-adocs/";
-const IMAGES_PATH = "./extracted-images/";
+const IMAGES_PATH = "./assets/";
 
 /**
  * CAUTION: Images get not replaced if you specified an imagedir variable in the .adoc
