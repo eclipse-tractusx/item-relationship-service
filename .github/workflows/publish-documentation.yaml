@@ -75,6 +75,12 @@ jobs:
         run: |
           node replace.js
 
+      - name: Remove directory if exists
+        run: |
+          if [ -d "docs/target/generated-docs" ]; then
+            rm -rf "docs/target/generated-docs"
+          fi
+
       - name: Convert to Markdown
         # currently only specified for adminguide + arc42
         run: |
