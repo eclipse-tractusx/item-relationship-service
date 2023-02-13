@@ -48,20 +48,38 @@ jobs:
         run: |
           mvn -f docs/pom.xml --batch-mode generate-resources
 
-      - name: Install pandoc
+      - name: Install Asciidoctor Reducer
         run: |
-          sudo apt-get install pandoc 
-          which pandoc
+          sudo gem install asciidoctor-reducer
 
-      - name: Convert HTML to markdown
-        env:
-          FILES: "administration/administration-guide arc42/full api-specification/api-specification"
+      - name: Reduce docs
         run: |
-          cd docs/target/generated-docs
-          for file in ${FILES}; do \
-            pandoc -f html -t markdown_strict --wrap=preserve "${file}.html" -o "${file}.md"; \
-            sed -i 's/](#_/](#/' "${file}.md"; \
-            sed -i -E '/\[.*\]\(#.*\)/ s/_/-/g' "${file}.md"; done
+            asciidoctor-reducer -o docs/target/adminguide.adoc docs/src/docs/administration/administration-guide.adoc
+            asciidoctor-reducer -o docs/target/arc42.adoc docs/src/docs/arc42/full.adoc
+
+      - name: Download PlantUML jar
+        run: |
+          wget -O plantuml.jar https://sourceforge.net/projects/plantuml/files/plantuml.jar/download
+
+      - name: Place PlantUML jar in specific path
+        run: |
+          mv plantuml.jar docs/src/diagram-replacer/
+
+      - name: Extract PNG-Images with PlantUML
+        working-directory: docs/src/diagram-replacer/
+        run: |
+          node extract.js
+
+      - name: Replace PlantUML Code inside docs with PNG-Images
+        working-directory: docs/src/diagram-replacer/
+        run: |
+          node replace.js
+
+      - name: Convert to Markdown
+        # currently only specified for adminguide + arc42
+        run: |
+          npx downdoc -o docs/target/generated-docs docs/src/diagram-replacer/adocs-with-pngs/adminguide.adoc
+          npx downdoc -o docs/target/generated-docs docs/src/diagram-replacer/adocs-with-pngs/arc42.adoc
 
       - name: GitHub Pages action
         uses: peaceiris/actions-gh-pages@v3.9.0
