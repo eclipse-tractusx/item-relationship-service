@@ -53,7 +53,10 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
 import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
+import org.eclipse.tractusx.irs.semanticshub.AspectModel;
+import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
+import org.eclipse.tractusx.irs.services.SemanticHubService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -80,6 +83,8 @@ class IrsControllerTest {
 
     @MockBean
     private IrsItemGraphQueryService service;
+    @MockBean
+    private SemanticHubService semanticHubService;
 
     private static Stream<RegisterJob> corruptedJobs() {
         return Stream.of(registerJobWithDepthAndAspect(110, null),
@@ -197,6 +202,39 @@ class IrsControllerTest {
         this.mockMvc.perform(put("/irs/jobs/" + jobId))
                     .andExpect(status().isBadRequest())
                     .andExpect(result -> assertTrue(result.getResolvedException() instanceof IllegalStateException));
+    }
+
+    @Test
+    @WithMockUser(authorities = "view_irs")
+    void shouldReturnAspectModels() throws Exception {
+        final AspectModel assemblyPartRelationship = AspectModel.builder()
+                                                                .name("AssemblyPartRelationship")
+                                                                .urn("urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship")
+                                                                .version("1.1.1")
+                                                                .status("RELEASED")
+                                                                .type("BAMM")
+                                                                .build();
+
+        final AspectModels aspectModels = AspectModels.builder()
+                                     .lastUpdated("2023-02-13T08:18:11.990659500Z")
+                                     .models(List.of(assemblyPartRelationship))
+                                     .build();
+
+        given(this.semanticHubService.getAllAspectModels()).willReturn(aspectModels);
+        final String aspectModelResponseAsString = objectMapper.writeValueAsString(aspectModels);
+
+        this.mockMvc.perform(get("/irs/aspectmodels"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(containsString(aspectModelResponseAsString)));
+    }
+
+    @Test
+    @WithMockUser(authorities = "view_irs_wrong_authority")
+    void shouldReturnForbiddenStatusForAspectModelsWhenRequiredAuthorityIsMissing() throws Exception {
+        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
+                                              .content(new ObjectMapper().writeValueAsString(
+                                                      registerJobWithoutDepthAndAspect())))
+                    .andExpect(status().isForbidden());
     }
 
 }

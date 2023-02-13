@@ -39,4 +39,9 @@ class SemanticsHubFacadeTest {
         assertThat(modelJsonSchema).isNotBlank();
     }
 
+    @Test
+    void shouldReturnAllAspectModels() throws SchemaNotFoundException {
+        final AspectModels allAspectModels = semanticsHubFacade.getAllAspectModels();
+        assertThat(allAspectModels.models()).isNotEmpty();
+    }
 }
