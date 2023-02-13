@@ -93,7 +93,7 @@ public class MockedNotificationReceiverEndpoint {
                 final String senderBpn = notification.getHeader().getRecipientBpn();
                 final String recipientBpn = notification.getHeader().getSenderBpn();
                 final Map<String, Object> notificationContent = Map.of("result", supplyChainImpacted.getDescription());
-                
+
                 final EdcNotification edcRequest = edcRequest(notificationId, senderEdc, senderBpn, recipientBpn, notificationContent);
 
                 final var response = edcSubmodelFacade.sendNotification("TODO", "notify-request-asset", edcRequest);

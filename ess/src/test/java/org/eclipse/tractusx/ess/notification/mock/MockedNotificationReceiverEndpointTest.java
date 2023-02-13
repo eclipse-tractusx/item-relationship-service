@@ -28,6 +28,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.tractusx.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.edc.model.notification.EdcNotification;
@@ -39,7 +40,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,6 +64,7 @@ class MockedNotificationReceiverEndpointTest {
         final String bpn = "BPN1";
         when(edcDiscoveryMockConfig.getMockEdcResult()).thenReturn(Map.of(bpn, SupplyChainImpacted.YES));
         when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(() -> true);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
 
         testee.receiveNotification(EdcNotification.builder().header(EdcNotificationHeader.builder().senderBpn("BPN2").build()).content(Map.of("incidentBpn", bpn)).build());
 
@@ -67,14 +72,38 @@ class MockedNotificationReceiverEndpointTest {
     }
 
     @Test
-    void shouldReturnBadRequestIfIncidentBpnNotInRequestBody() {
+    void shouldReturnBadRequestIfNotificationHeaderBodyNotValid() {
+        final EdcNotification request = EdcNotification.builder().header(EdcNotificationHeader.builder().build()).content(Map.of()).build();
+
         assertThrows(ResponseStatusException.class,
-                () -> testee.receiveNotification(EdcNotification.builder().content(Map.of()).build()));
+                () -> testee.receiveNotification(request));
+    }
+
+    @Test
+    void shouldReturnBadRequestIfIncidentBpnNotInRequestBody() {
+        final EdcNotification request = EdcNotification.builder().header(validHeader()).content(Map.of()).build();
+
+        assertThrows(ResponseStatusException.class,
+                () -> testee.receiveNotification(request));
     }
 
     @Test
     void shouldReturnBadRequestIfIncidentBpnNotInMockedMapResult() {
+        final EdcNotification request = EdcNotification.builder().header(validHeader()).content(Map.of("incidentBpn", "BPN")).build();
+
         assertThrows(ResponseStatusException.class,
-                () -> testee.receiveNotification(EdcNotification.builder().content(Map.of("incidentBpn", "BPN")).build()));
+                () -> testee.receiveNotification(request));
+    }
+
+    EdcNotificationHeader validHeader() {
+        return EdcNotificationHeader.builder()
+                                      .notificationId(UUID.randomUUID().toString())
+                                      .senderEdc("senderEdc")
+                                      .senderBpn("senderBpn")
+                                      .recipientBpn("recipientBpn")
+                                      .replyAssetId("ess-response-asset")
+                                      .replyAssetSubPath("")
+                                      .notificationType("ess-supplier-request")
+                                      .build();
     }
 }
