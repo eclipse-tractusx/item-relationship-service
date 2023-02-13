@@ -19,31 +19,21 @@ fs.readdirSync(SOURCE_PATH).forEach((file) => {
         (image) => {
           // add suffix _000 to the first png that is exported to  by plantuml.jar
           if (path.parse(image).name === path.parse(file).name) {
-            fs.rename(
+            let renamedImage = path.parse(image).name + "_000.png";
+            fs.renameSync(
               IMAGES_PATH + path.parse(file).name + "/" + image,
               IMAGES_PATH +
                 path.parse(file).name +
                 "/" +
-                path.parse(image).name +
-                "_000.png",
-              function (err) {
-                if (err) {
-                  console.log(
-                    "Error trying to read images: Access failed or no Images found. Error:"
-                  );
-                  console.log(err);
-                }
-              }
+                renamedImage
             );
+            imageList.push(renamedImage);
+          } else {
+            imageList.push(image);
           }
-          imageList.push(image);
+          
         }
       );
-
-      if (!imageList.length) {
-        console.log("No Images to replace.");
-        return;
-      }
 
       let ImageDirectoryPathForAdoc = IMAGES_PATH + path.parse(file).name + "/";
 
