@@ -66,7 +66,7 @@ class MockedNotificationReceiverEndpointTest {
         when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(() -> true);
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
 
-        testee.receiveNotification(EdcNotification.builder().header(EdcNotificationHeader.builder().senderBpn("BPN2").build()).content(Map.of("incidentBpn", bpn)).build());
+        testee.receiveNotification(EdcNotification.builder().header(validHeader()).content(Map.of("incidentBpn", bpn)).build());
 
         verify(edcSubmodelFacade).sendNotification(anyString(), anyString(), any(EdcNotification.class));
     }
