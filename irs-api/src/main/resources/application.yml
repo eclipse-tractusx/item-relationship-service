@@ -183,3 +183,7 @@ ess:
       BPNL00000003B6LU: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
       BPNL00ARBITRARY1: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
       BPNL00ARBITRARY2: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
+    mockEdcResult:
+      BPNL00000003B6LU: "YES"
+      BPNL00ARBITRARY1: "NO"
+      BPNL00ARBITRARY2: "UNKNOWN"

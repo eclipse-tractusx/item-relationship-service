@@ -32,8 +32,8 @@ import org.junit.jupiter.api.Test;
 
 class EdcDiscoveryFacadeTest {
 
-    private final EdcDiscoveryClientLocalStub.EdcDiscoveryMockConfig edcDiscoveryMockConfig = mock(
-            EdcDiscoveryClientLocalStub.EdcDiscoveryMockConfig.class);
+    private final EdcDiscoveryMockConfig edcDiscoveryMockConfig = mock(
+            EdcDiscoveryMockConfig.class);
     private final EdcDiscoveryFacade edcDiscoveryFacade = new EdcDiscoveryFacade(new EdcDiscoveryClientLocalStub(edcDiscoveryMockConfig));
 
     @Test

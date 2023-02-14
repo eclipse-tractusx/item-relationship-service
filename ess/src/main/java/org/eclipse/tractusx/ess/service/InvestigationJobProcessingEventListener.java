@@ -119,7 +119,6 @@ class InvestigationJobProcessingEventListener {
         }
 
         return notificationId;
-
     }
 
     private boolean thereIsUnresolvableEdcAddress(final Stream<Optional<String>> edcAddresses) {
