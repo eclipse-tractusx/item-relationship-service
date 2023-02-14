@@ -21,6 +21,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.service;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import com.nimbusds.jose.shaded.json.JSONArray;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -182,6 +184,7 @@ public class EdcRegistration {
 
     private HttpHeaders headers() {
         final HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE);
         if (StringUtils.isNotBlank(apiKeyHeader)) {
             headers.add(apiKeyHeader, apiKeySecret);
         }
