@@ -32,7 +32,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -46,27 +48,35 @@ class EdcRegistrationTest {
 
     @BeforeEach
     void setUp() {
-        testee = new EdcRegistration(restTemplate, "", "");
+        testee = new EdcRegistration(restTemplate, "", "", "", "");
     }
 
     @Test
     void shouldRegisterAssets_whenGetRequestReturnsNoResults() {
-        when(restTemplate.getForEntity(anyString(), any())).thenReturn(ResponseEntity.ok().body("[]"));
-        when(restTemplate.postForEntity(anyString(), anyString(), any())).thenReturn(ResponseEntity.ok().build());
+        when(restTemplate.exchange(anyString(), Mockito.eq(HttpMethod.GET), any(),
+                Mockito.eq(String.class))).thenReturn(ResponseEntity.ok().body("[]"));
+        when(restTemplate.exchange(anyString(), Mockito.eq(HttpMethod.POST), any(),
+                Mockito.eq(String.class))).thenReturn(ResponseEntity.ok().build());
 
         testee.registerEdcAsset();
 
-        verify(restTemplate, times(1)).getForEntity(anyString(), any());
-        verify(restTemplate, times(3)).postForEntity(anyString(), anyString(), any());
+        verify(restTemplate, times(2)).exchange(anyString(), Mockito.eq(HttpMethod.GET), any(),
+                Mockito.eq(String.class));
+        verify(restTemplate, times(6)).exchange(anyString(), Mockito.eq(HttpMethod.POST), any(),
+                Mockito.eq(String.class));
     }
 
     @Test
     void shouldNotRegisterAssets_whenGetRequestReturnsResults() {
-        when(restTemplate.getForEntity(anyString(), any())).thenReturn(ResponseEntity.ok().body("[{}]"));
+        when(restTemplate.exchange(anyString(), Mockito.eq(HttpMethod.GET), any(),
+                Mockito.eq(String.class))).thenReturn(ResponseEntity.ok().body("[{}]"));
 
         testee.registerEdcAsset();
 
-        verify(restTemplate, times(1)).getForEntity(anyString(), any());
-        verify(restTemplate, never()).postForEntity(anyString(), anyString(), any());
+        verify(restTemplate, times(2)).exchange(anyString(), Mockito.eq(HttpMethod.GET), any(),
+                Mockito.eq(String.class));
+        verify(restTemplate, never()).exchange(anyString(), Mockito.eq(HttpMethod.POST), any(),
+                Mockito.eq(String.class));
     }
+
 }
