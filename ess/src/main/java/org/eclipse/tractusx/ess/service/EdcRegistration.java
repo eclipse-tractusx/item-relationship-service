@@ -41,6 +41,8 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class EdcRegistration {
 
+    public static final String ASSET_ID_RESPONSE = "ess-response-asset";
+    public static final String ASSET_ID_REQUEST = "notify-request-asset";
     private final RestTemplate restTemplate;
     private final String edcProviderUrl;
     private final String essBaseUrl;
@@ -63,19 +65,19 @@ public class EdcRegistration {
     public void registerEdcAsset() {
         log.info("Starting EDC registration event listener.");
 
-        if (assetIsNotRegisteredYet("ess-response-asset")) {
+        if (assetIsNotRegisteredYet(ASSET_ID_RESPONSE)) {
             log.info("Notification response receiver asset is not registered yet, starting registration.");
-            registerAsset("ess-response-asset", "ess-supplier-response", "/ess/notifications/receive");
-            registerPolicy("1000", "ess-response-asset");
-            registerContractDefinition("1000", "ess-response-asset");
+            registerAsset(ASSET_ID_RESPONSE, "ess-supplier-response", "/ess/notifications/receive");
+            registerPolicy("1000", ASSET_ID_RESPONSE);
+            registerContractDefinition("1000", ASSET_ID_RESPONSE);
             log.info("Registration finished.");
         }
 
-        if (assetIsNotRegisteredYet("notify-request-asset")) {
+        if (assetIsNotRegisteredYet(ASSET_ID_REQUEST)) {
             log.info("Mock notification request receiver asset is not registered yet, starting registration.");
-            registerAsset("notify-request-asset", "ess-supplier-request", "/ess/mock/notification");
-            registerPolicy("1001", "notify-request-asset");
-            registerContractDefinition("1001", "notify-request-asset");
+            registerAsset(ASSET_ID_REQUEST, "ess-supplier-request", "/ess/mock/notification");
+            registerPolicy("1001", ASSET_ID_REQUEST);
+            registerContractDefinition("1001", ASSET_ID_REQUEST);
             log.info("Registration finished.");
         }
 
@@ -117,7 +119,7 @@ public class EdcRegistration {
 
     }
 
-    private void registerPolicy(final String id, final String assetId) {
+    private void registerPolicy(final String policyId, final String assetId) {
         final var body = """
                 {
                    "id": %s,
@@ -135,7 +137,7 @@ public class EdcRegistration {
                      ]
                    }
                  }
-                """.formatted(id, assetId);
+                """.formatted(policyId, assetId);
         final var entity = restTemplate.exchange(edcProviderUrl + "/data/policydefinitions", HttpMethod.POST,
                 toEntity(body), String.class);
 
@@ -147,7 +149,7 @@ public class EdcRegistration {
         }
     }
 
-    private void registerContractDefinition(final String id, final String assetId) {
+    private void registerContractDefinition(final String contractId, final String assetId) {
         final var body = """
                 {
                     "id": %s,
@@ -161,7 +163,7 @@ public class EdcRegistration {
                     "accessPolicyId": %s,
                     "contractPolicyId": %s
                   }
-                """.formatted(id, assetId, id, id);
+                """.formatted(contractId, assetId, contractId, contractId);
 
         final var entity = restTemplate.exchange(edcProviderUrl + "/data/contractdefinitions", HttpMethod.POST,
                 toEntity(body), String.class);
