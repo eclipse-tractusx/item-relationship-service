@@ -174,7 +174,7 @@ ess:
   localBpn: ${ESS_LOCAL_BPN:BPNL00000003AWSS}
   localEdcEndpoint: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
   irs:
-    url: "${IRS_URL:https://irs-ess.dev.demo.catena-x.net/}"
+    url: "${IRS_URL:https://irs-ess.dev.demo.catena-x.net}"
   discovery:
     endpoint: "${DISCOVERY_URL:}" # Endpoint to retrieve EDC base url address for BPN
     oAuthClientId: keycloak # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
