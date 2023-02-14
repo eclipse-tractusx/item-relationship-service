@@ -1,7 +1,6 @@
 name: Reduce docs
 on:
   push:
-  pull_request:
 
 
 jobs:
@@ -14,12 +13,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
 
       - name: Install Asciidoctor Reducer
         run: sudo gem install asciidoctor-reducer
