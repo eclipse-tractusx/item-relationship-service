@@ -52,7 +52,6 @@ import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
-import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -62,9 +61,11 @@ import org.springframework.beans.support.PagedListHolder;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.server.ResponseStatusException;
 
 @WebMvcTest(IrsController.class)
 @Import(SecurityConfiguration.class)
@@ -164,11 +165,11 @@ class IrsControllerTest {
     @WithMockUser(authorities = "view_irs")
     void cancelJobById_throwEntityNotFoundException() throws Exception {
         given(this.service.cancelJobById(jobId)).willThrow(
-                new EntityNotFoundException("No job exists with id " + jobId));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId));
 
         this.mockMvc.perform(put("/irs/jobs/" + jobId))
                     .andExpect(status().isNotFound())
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof EntityNotFoundException));
+                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException));
     }
 
     @Test

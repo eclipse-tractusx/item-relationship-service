@@ -1,0 +1,134 @@
+extends: [[spectral:oas, all]]
+
+documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#
+
+rules:
+
+  # MUST define a format for number and integer types [171]
+  # => https://opensource.zalando.com/restful-api-guidelines/#169
+  must-use-integer-format:
+    description: Must use an official integer format
+    documentationUrl: https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#data-types
+    given: $..[?(@.type == 'integer')]
+    severity: error
+    then:
+      field: format
+      function: enumeration
+      functionOptions:
+        values:
+          - int32
+          - int64
+          - bigint
+
+  must-use-number-format:
+    description: Must use an official number format
+    documentationUrl: https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#data-types
+    given: $..[?(@.type == 'number')]
+    severity: error
+    then:
+      field: format
+      function: enumeration
+      functionOptions:
+        values:
+          - float
+          - double
+          - decimal
+
+  number-format: &number-format
+    description: "Schema of type number or integer must specify a format"
+    message: "Schema of type number or integer must specify a format. {{path}}"
+    formats:
+      - oas3
+    severity: error
+    recommended: true
+    given: >-
+      $..[?(@ && @.type=="number")]
+    then:
+      field: format
+      function: truthy
+
+  integer-format:
+    <<: *number-format
+    given: >-
+      $..[?(@ && @.type=="integer")]
+
+  # MUST use standard data formats [238]
+  # => https://opensource.zalando.com/restful-api-guidelines/#238
+  # MUST use standard formats for country, language and currency properties [170]
+  # => https://opensource.zalando.com/restful-api-guidelines/#170
+  must-use-string-format:
+    description: Must use an official string format
+    given: $..[?(@.type == 'string')]
+    severity: error
+    then:
+      field: format
+      function: enumeration
+      functionOptions:
+        values:
+          - byte
+          - password
+          - email
+          - idn-email
+          - hostname
+          - idn-hostname
+          - ipv4
+          - ipv6
+          - uri
+          - uri-reference
+          - uri-template
+          - iri
+          - iri-reference
+          - uuid
+          - json-pointer
+          - relative-json-pointer
+          - iso-639
+          - bcp47
+          - iso-3166
+          - iso-4217
+          - date
+          - date-time
+          - time
+          - duration
+          - period
+
+  # MUST use standard formats for date and time properties [169]
+  # => https://opensource.zalando.com/restful-api-guidelines/#169
+  must-use-date-format:
+    description: Must use an official date-time format
+    given:  $..[?(@.type == 'string' && @.format == 'date-time')].example
+    severity: error
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(19|20)[0-9][0-9][-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$"
+
+  must-use-date-time-format:
+    description: Must use an official date-time format
+    given: $..[?(@.type == 'string' && @.format == 'date-time')].example
+    severity: error
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(19|20)[0-9][0-9][-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$"
+
+  must-defined-format:
+    description: Must defined official format for type string
+    given: $..[?(@.type == 'string' && @.format == 'date-time')].example
+    severity: error
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(19|20)[0-9][0-9][-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$"
+
+  # MUST not use URI versioning [115]
+  # => https://opensource.zalando.com/restful-api-guidelines/#115
+  must-not-use-uri-versioning:
+    message: Path must not contain versioning
+    description: MUST not use URI versioning [115]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#115
+    severity: error
+    given: $.paths.*~
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: /v[0-9]+/

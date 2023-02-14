@@ -1,0 +1,21 @@
+{
+    "relationships": [
+        {
+            "catenaXId": "urn:uuid:59bb51f9-638e-4ac1-95f8-96c99faad146",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 0.1908,
+                    "measurementUnit": {
+                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                        "lexicalValue": "unit:kilogram"
+                    }
+                },
+                "lifecycleContext": "asBuilt",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:131298d6-9e00-48cc-b0dd-6e59f90959b3"
+            },
+            "aspectType": "AssemblyPartRelationship"
+        }
+    ]
+}

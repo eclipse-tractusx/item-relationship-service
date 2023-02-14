@@ -45,6 +45,7 @@ import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.server.ResponseStatusException;
 
 public class EssServiceTest {
 
@@ -103,10 +104,10 @@ public class EssServiceTest {
     }
 
     @Test
-    void shouldThrowNotFoundExceptionWhenIdDoesntExists() {
-        final String jobIdNotExisting = "not_existing";
+    void shouldThrowResponseStatusExceptionWhenIdDoesntExists() {
+        final String jobIdNotExisting = UUID.randomUUID().toString();
 
-        assertThrows(RuntimeException.class, () -> essService.getIrsJob(jobIdNotExisting));
+        assertThrows(ResponseStatusException.class, () -> essService.getIrsJob(jobIdNotExisting));
     }
 
 }

@@ -27,7 +27,6 @@ import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
-import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -36,6 +35,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * API Exception Handler.
@@ -45,20 +45,20 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 public class IrsExceptionHandler {
 
     /**
-     * Handler for entity not found exception
+     * Handler for response status exception
      *
-     * @param exception see {@link EntityNotFoundException}
+     * @param exception see {@link ResponseStatusException}
      * @return see {@link ErrorResponse}
      */
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleEntityNotFound(final EntityNotFoundException exception) {
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ErrorResponse> handleResponseStatusException(final ResponseStatusException exception) {
         log.info(exception.getClass().getName(), exception);
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        return ResponseEntity.status(exception.getStatus())
                              .body(ErrorResponse.builder()
-                                                .withStatusCode(HttpStatus.NOT_FOUND)
-                                                .withError(HttpStatus.NOT_FOUND.getReasonPhrase())
-                                                .withMessages(List.of(exception.getMessage()))
+                                                .withStatusCode(exception.getStatus())
+                                                .withError(exception.getStatus().getReasonPhrase())
+                                                .withMessages(List.of(exception.getReason()))
                                                 .build());
     }
 

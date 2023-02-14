@@ -19,22 +19,22 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.exceptions;
+package org.eclipse.tractusx.ess.discovery;
+
+import java.util.Map;
+
+import lombok.Data;
+import org.eclipse.tractusx.ess.service.SupplyChainImpacted;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * General entity not found exception.
+ * Mock config for BPN - EDC mapping
  */
-public class EntityNotFoundException extends RuntimeException {
-    /**
-     * Generate a new instance of a {@link EntityNotFoundException}
-     *
-     * @param message Exception message.
-     */
-    public EntityNotFoundException(final String message) {
-        super(message);
-    }
-
-    public EntityNotFoundException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
+@Configuration
+@ConfigurationProperties("ess.discovery")
+@Data
+public class EdcDiscoveryMockConfig {
+    private Map<String, String> mockEdcAddress;
+    private Map<String, SupplyChainImpacted> mockEdcResult;
 }

@@ -1,12 +1,12 @@
 {
     "submodels": [
         {
-            "identification": "urn:uuid:aa111e0c-b67e-4c45-9d74-29071ad8da10",
+            "identification": "urn:uuid:89696bae-6b72-40ce-8e9a-d3a84814edeb",
             "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
-                    "validFrom": "2020-12-22T15:11:13.000Z",
-                    "validTo": "2030-06-26T23:48:23.000Z"
+                    "validFrom": "2016-03-31T00:20:37.000Z",
+                    "validTo": "2027-01-17T01:39:30.000Z"
                 },
                 "catenaXId": "urn:uuid:65e1554e-e5cd-4560-bac1-1352582122fb",
                 "partTypeInformation": {
@@ -17,12 +17,12 @@
             }
         },
         {
-            "identification": "urn:uuid:967a42d4-8f57-403f-a848-d8f5488674ee",
+            "identification": "urn:uuid:fe947c10-9659-46d8-87c9-2632ec105e04",
             "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
-                    "validFrom": "2014-11-21T22:22:39.000Z",
-                    "validTo": "2032-11-26T03:32:08.000Z"
+                    "validFrom": "2015-01-16T14:23:33.000Z",
+                    "validTo": "2032-05-18T15:14:36.000Z"
                 },
                 "catenaXId": "urn:uuid:e3e2a4d8-58bc-4ae9-afa2-e8946fda1f77",
                 "partTypeInformation": {
@@ -33,12 +33,12 @@
             }
         },
         {
-            "identification": "urn:uuid:5fcbe839-cfac-4404-869a-e5ea95e700da",
+            "identification": "urn:uuid:c241cc8c-ccd4-4d38-beb6-27f4336a3e01",
             "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
-                    "validFrom": "2019-06-13T18:04:13.000Z",
-                    "validTo": "2030-10-16T20:56:51.000Z"
+                    "validFrom": "2014-07-30T07:17:16.000Z",
+                    "validTo": "2028-03-27T22:34:57.000Z"
                 },
                 "catenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
                 "partTypeInformation": {

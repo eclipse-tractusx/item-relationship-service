@@ -155,6 +155,12 @@ config:
   content:
 
 
+
+env: [] # You can provide your own environment variables for the IRS here.
+#  - name: JAVA_TOOL_OPTIONS
+#  - value: -Dhttps.proxyHost=1.2.3.4
+
+
 #######################
 # Minio Configuration #
 #######################

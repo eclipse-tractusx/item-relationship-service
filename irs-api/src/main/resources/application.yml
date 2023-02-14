@@ -183,3 +183,7 @@ ess:
       connect: PT90S # HTTP connect timeout for the bpdm client
     mockEdcAddress:
       BPNL00000003B6LU: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
+    mockEdcResult:
+      BPNL00000003B6LU: "YES"
+      BPNL00ARBITRARY1: "NO"
+      BPNL00ARBITRARY2: "UNKNOWN"
