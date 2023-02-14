@@ -95,7 +95,7 @@ public class EdcRegistration {
                       "asset:prop:id": "%s",
                       "asset:prop:description": "ESS notification endpoint",
                       "asset:prop:contenttype": "application/json",
-                      "asset:prop:policy-id": "use-eu"
+                      "asset:prop:policy-id": "use-eu",
                       "asset:prop:notificationtype":"%s",
                       "asset:prop:notificationmethod": "receive"
                     }
