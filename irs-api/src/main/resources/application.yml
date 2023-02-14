@@ -183,7 +183,14 @@ ess:
       connect: PT90S # HTTP connect timeout for the bpdm client
     mockEdcAddress:
       BPNL00000003B6LU: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
+      BPNL00000003B3NX: "${IRS_URL:https://irs-ess.dev.demo.catena-x.net}/ess/mock/notification"
+      BPNL00000003B0Q0: "${IRS_URL:https://irs-ess.dev.demo.catena-x.net}/ess/mock/notification"
+      BPNL00ARBITRARY1: "${IRS_URL:https://irs-ess.dev.demo.catena-x.net}/ess/mock/notification"
+      BPNL00ARBITRARY2: "${IRS_URL:https://irs-ess.dev.demo.catena-x.net}/ess/mock/notification"
+      BPNL00ARBITRARY3: "${IRS_URL:https://irs-ess.dev.demo.catena-x.net}/ess/mock/notification"
     mockEdcResult:
-      BPNL00000003B6LU: "YES"
+      BPNL00000003B3NX: "YES"
+      BPNL00000003B0Q0: "YES"
       BPNL00ARBITRARY1: "NO"
       BPNL00ARBITRARY2: "UNKNOWN"
+      BPNL00ARBITRARY3: "NO"
