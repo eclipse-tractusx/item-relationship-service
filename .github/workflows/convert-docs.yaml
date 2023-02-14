@@ -21,14 +21,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Download PlantUML jar
-        run: |
-          wget -O plantuml.jar https://sourceforge.net/projects/plantuml/files/plantuml.jar/download
-
-      - name: Place PlantUML jar in specific path
-        run: |
-          mv plantuml.jar docs/src/diagram-replacer/
-
       - name: Install Asciidoctor Reducer
         run: sudo gem install asciidoctor-reducer
 
@@ -36,18 +28,3 @@ jobs:
         run: |
           asciidoctor-reducer -o docs/target/adminguide.adoc docs/src/docs/administration/administration-guide.adoc
           asciidoctor-reducer -o docs/target/arc42.adoc docs/src/docs/arc42/full.adoc
-
-      - name: Extract PNG-Images with PlantUML
-        working-directory: docs/src/diagram-replacer/
-        run: |
-          node extract.js
-
-      - name: Replace PlantUML Code inside docs with PNG-Images
-        working-directory: docs/src/diagram-replacer/
-        run: |
-          node replace.js
-          
-      - name: Convert to Markdown
-        run: |
-          npx downdoc docs/src/diagram-replacer/adocs-with-pngs/adminguide.adoc
-          npx downdoc docs/src/diagram-replacer/adocs-with-pngs/arc42.adoc
