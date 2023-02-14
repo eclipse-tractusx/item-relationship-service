@@ -977,30 +977,6 @@ components:
       properties:
         aspects:
           type: string
-          enum:
-            - AddressAspect
-            - AssemblyPartRelationship
-            - Batch
-            - BatteryPass
-            - CertificateOfDestruction
-            - CertificateOfDismantler
-            - ChargingProcess
-            - ClaimData
-            - DiagnosticData
-            - EndOfLife
-            - EsrCertificate
-            - EsrCertificateStateStatistic
-            - IdConversion
-            - MarketplaceOffer
-            - MaterialForHomologation
-            - MaterialForRecycling
-            - PartAsPlanned
-            - PhysicalDimension
-            - ProductDescription
-            - ReturnRequest
-            - SerialPartTypization
-            - SingleLevelBomAsPlanned
-            - SingleLevelUsageAsBuilt
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
@@ -1217,30 +1193,6 @@ components:
           type: array
           items:
             type: string
-            enum:
-              - AddressAspect
-              - AssemblyPartRelationship
-              - Batch
-              - BatteryPass
-              - CertificateOfDestruction
-              - CertificateOfDismantler
-              - ChargingProcess
-              - ClaimData
-              - DiagnosticData
-              - EndOfLife
-              - EsrCertificate
-              - EsrCertificateStateStatistic
-              - IdConversion
-              - MarketplaceOffer
-              - MaterialForHomologation
-              - MaterialForRecycling
-              - PartAsPlanned
-              - PhysicalDimension
-              - ProductDescription
-              - ReturnRequest
-              - SerialPartTypization
-              - SingleLevelBomAsPlanned
-              - SingleLevelUsageAsBuilt
           maxItems: 2147483647
         bomLifecycle:
           type: string

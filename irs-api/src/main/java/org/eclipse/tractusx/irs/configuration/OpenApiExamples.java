@@ -187,7 +187,7 @@ public class OpenApiExamples {
         return JobParameter.builder()
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .depth(DEFAULT_DEPTH)
-                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION, AspectType.ADDRESS_ASPECT))
+                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(), AspectType.ADDRESS_ASPECT.toString()))
                            .direction(Direction.DOWNWARD)
                            .collectAspects(false)
                            .build();

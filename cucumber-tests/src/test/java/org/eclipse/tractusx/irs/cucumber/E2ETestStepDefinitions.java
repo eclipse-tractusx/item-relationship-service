@@ -28,7 +28,6 @@ import static org.awaitility.Awaitility.await;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -50,7 +49,6 @@ import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Submodel;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -131,9 +129,7 @@ public class E2ETestStepDefinitions {
 
     @And("aspects :")
     public void aspects(List<String> aspects) {
-        final ArrayList<AspectType> parsedAspects = new ArrayList<>();
-        aspects.forEach(s -> parsedAspects.add(AspectType.fromValue(s)));
-        registerJobBuilder.aspects(parsedAspects);
+        registerJobBuilder.aspects(aspects);
     }
 
     @When("I get the job-id")

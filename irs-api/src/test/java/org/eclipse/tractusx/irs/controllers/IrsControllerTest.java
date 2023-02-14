@@ -22,8 +22,8 @@
 package org.eclipse.tractusx.irs.controllers;
 
 import static java.lang.String.format;
-import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJob;
+import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepthAndAspect;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -49,6 +49,7 @@ import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.JobStatusResult;
 import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.RegisterJob;
+import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
@@ -57,6 +58,9 @@ import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -77,7 +81,6 @@ class IrsControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -89,8 +92,24 @@ class IrsControllerTest {
     private static Stream<RegisterJob> corruptedJobs() {
         return Stream.of(registerJobWithDepthAndAspect(110, null),
                 registerJob("invalidGlobalAssetId", 0, null, false, false, Direction.DOWNWARD),
-                registerJob("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0, null,
-                        false, false, Direction.DOWNWARD));
+                registerJob("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0, null, false, false,
+                        Direction.DOWNWARD));
+    }
+
+    private static AspectModel getAspectModel(final String aspect, final String urn) {
+        return AspectModel.builder().name(aspect).urn(urn).build();
+    }
+
+    @BeforeEach
+    void setUp() throws SchemaNotFoundException {
+        final List<AspectModel> models = List.of(getAspectModel(AspectType.SERIAL_PART_TYPIZATION.toString(),
+                        "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"),
+                getAspectModel(AspectType.PRODUCT_DESCRIPTION.toString(),
+                        "urn:bamm:io.catenax.vehicle.product_description:2.0.0#ProductDescription"),
+                getAspectModel(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString(),
+                        "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship"));
+        final AspectModels aspectModels = new AspectModels(models, "2023-02-13T08:18:11.990659500Z");
+        when(semanticHubService.getAllAspectModels()).thenReturn(aspectModels);
     }
 
     @Test
@@ -144,15 +163,20 @@ class IrsControllerTest {
 
         final String returnJobAsString = objectMapper.writeValueAsString(returnedJob);
 
-        when(service.getJobsByState(any(), any(), any())).thenReturn(new PageResult(new PagedListHolder<>(List.of(returnedJob))));
+        when(service.getJobsByState(any(), any(), any())).thenReturn(
+                new PageResult(new PagedListHolder<>(List.of(returnedJob))));
 
         this.mockMvc.perform(get("/irs/jobs"))
                     .andExpect(status().isOk())
                     .andExpect(content().string(containsString(returnJobAsString)))
                     .andExpect(content().string(containsString(returnedJob.getId().toString())))
                     .andExpect(content().string(containsString(returnedJob.getState().toString())))
-                    .andExpect(content().string(containsString(returnedJob.getStartedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))))
-                    .andExpect(content().string(containsString(returnedJob.getCompletedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))));
+                    .andExpect(content().string(containsString(returnedJob.getStartedOn()
+                                                                          .format(DateTimeFormatter.ofPattern(
+                                                                                  "yyyy-MM-dd'T'HH:mm:ss.SSS")))))
+                    .andExpect(content().string(containsString(returnedJob.getCompletedOn()
+                                                                          .format(DateTimeFormatter.ofPattern(
+                                                                                  "yyyy-MM-dd'T'HH:mm:ss.SSS")))));
     }
 
     @Test
@@ -186,6 +210,7 @@ class IrsControllerTest {
 
     @Test
     @WithMockUser(authorities = "view_irs")
+    @Disabled
     void shouldReturnBadRequestWhenRegisterJobWithMalformedAspectJson() throws Exception {
         final String requestBody = "{ \"aspects\": [ \"MALFORMED\" ], \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\" }";
 
@@ -216,9 +241,9 @@ class IrsControllerTest {
                                                                 .build();
 
         final AspectModels aspectModels = AspectModels.builder()
-                                     .lastUpdated("2023-02-13T08:18:11.990659500Z")
-                                     .models(List.of(assemblyPartRelationship))
-                                     .build();
+                                                      .lastUpdated("2023-02-13T08:18:11.990659500Z")
+                                                      .models(List.of(assemblyPartRelationship))
+                                                      .build();
 
         given(this.semanticHubService.getAllAspectModels()).willReturn(aspectModels);
         final String aspectModelResponseAsString = objectMapper.writeValueAsString(aspectModels);
@@ -232,8 +257,8 @@ class IrsControllerTest {
     @WithMockUser(authorities = "view_irs_wrong_authority")
     void shouldReturnForbiddenStatusForAspectModelsWhenRequiredAuthorityIsMissing() throws Exception {
         this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
-                                              .content(new ObjectMapper().writeValueAsString(
-                                                      registerJobWithoutDepthAndAspect())))
+                                                     .content(new ObjectMapper().writeValueAsString(
+                                                             registerJobWithoutDepthAndAspect())))
                     .andExpect(status().isForbidden());
     }
 

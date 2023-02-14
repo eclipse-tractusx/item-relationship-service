@@ -51,9 +51,9 @@ class MultiTransferJobTest {
 
     @Test
     void getJobData_Immutable() {
-        final List<AspectType> aspectTypes = jobParameter().getAspects();
+        final List<String> aspectTypes = jobParameter().getAspects();
 
-        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> aspectTypes.add(AspectType.ID_CONVERSION));
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> aspectTypes.add(AspectType.ID_CONVERSION.toString()));
     }
 
     @Test
