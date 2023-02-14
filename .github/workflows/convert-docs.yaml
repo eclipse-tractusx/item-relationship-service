@@ -21,3 +21,8 @@ jobs:
         run: |
           asciidoctor-reducer -o docs/target/adminguide.adoc docs/src/docs/administration/administration-guide.adoc
           asciidoctor-reducer -o docs/target/arc42.adoc docs/src/docs/arc42/full.adoc
+
+      - name: Convert to Markdown
+        run: |
+          npx downdoc docs/target/adminguide.adoc
+          npx downdoc docs/target/arc42.adoc
