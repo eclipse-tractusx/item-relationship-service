@@ -34,7 +34,6 @@ import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Summary;
-import org.eclipse.tractusx.irs.component.enums.JobState;
 
 /**
  * Object to store in cache
@@ -71,19 +70,7 @@ public class BpnInvestigationJob {
 
         this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted);
         this.jobSnapshot = extendSummary(this.jobSnapshot);
-        this.jobSnapshot = updateState(this.jobSnapshot);
         return this;
-    }
-
-    private Jobs updateState(final Jobs jobSnapshot) {
-        var newState = jobSnapshot.getJob().getState();
-        if (this.unansweredNotifications.size() > this.answeredNotifications.size()) {
-            newState = JobState.RUNNING;
-        } else if (!this.answeredNotifications.isEmpty()) {
-            newState = JobState.COMPLETED;
-        }
-        return jobSnapshot.toBuilder().job(jobSnapshot.getJob().toBuilder().state(newState).build()).build();
-
     }
 
     private Jobs extendSummary(final Jobs irsJob) {
@@ -99,14 +86,12 @@ public class BpnInvestigationJob {
 
     public BpnInvestigationJob withNotifications(final List<String> notifications) {
         this.unansweredNotifications.addAll(notifications);
-        this.updateState(this.jobSnapshot);
         return this;
     }
 
     public BpnInvestigationJob withAnsweredNotification(final String notificationId) {
         this.unansweredNotifications.remove(notificationId);
         this.answeredNotifications.add(notificationId);
-        this.updateState(this.jobSnapshot);
         return this;
     }
 

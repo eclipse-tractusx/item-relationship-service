@@ -32,6 +32,7 @@ import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
+import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -58,8 +59,22 @@ public class EssService {
     }
 
     public Jobs getIrsJob(final String jobId) {
-        return bpnInvestigationJobCache.findByJobId(UUID.fromString(jobId)).map(BpnInvestigationJob::getJobSnapshot)
-                                       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No investigation job exists with id " + jobId));
+        return bpnInvestigationJobCache.findByJobId(UUID.fromString(jobId))
+                                       .map(EssService::updateState)
+                                       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                               "No investigation job exists with id " + jobId));
+    }
+
+    private static Jobs updateState(final BpnInvestigationJob investigationJob) {
+        final Jobs jobSnapshot = investigationJob.getJobSnapshot();
+        var newState = jobSnapshot.getJob().getState();
+        if (investigationJob.getUnansweredNotifications().size() > investigationJob.getAnsweredNotifications().size()) {
+            newState = JobState.RUNNING;
+        } else if (!investigationJob.getAnsweredNotifications().isEmpty()) {
+            newState = JobState.COMPLETED;
+        }
+        return jobSnapshot.toBuilder().job(jobSnapshot.getJob().toBuilder().state(newState).build()).build();
+
     }
 
     public void handleNotificationCallback(final EdcNotification notification) {
