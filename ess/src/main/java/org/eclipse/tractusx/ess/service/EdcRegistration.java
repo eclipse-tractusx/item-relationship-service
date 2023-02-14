@@ -23,6 +23,7 @@ package org.eclipse.tractusx.ess.service;
 
 import com.nimbusds.jose.shaded.json.JSONArray;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.edc.StringMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -181,7 +182,7 @@ public class EdcRegistration {
 
     private HttpHeaders headers() {
         final HttpHeaders headers = new HttpHeaders();
-        if (apiKeyHeader != null) {
+        if (StringUtils.isNotBlank(apiKeyHeader)) {
             headers.add(apiKeyHeader, apiKeySecret);
         }
         return headers;
