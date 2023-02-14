@@ -28,6 +28,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,54 +44,69 @@ public class EdcRegistration {
     private final RestTemplate restTemplate;
     private final String edcProviderUrl;
     private final String essBaseUrl;
+    private final String apiKeyHeader;
+    private final String apiKeySecret;
 
     public EdcRegistration(@Qualifier("noErrorRestTemplate") final RestTemplate restTemplate,
             @Value("${ess.localEdcEndpoint}") final String edcProviderUrl,
-            @Value("${ess.irs.url}") final String essBaseUrl) {
+            @Value("${ess.irs.url}") final String essBaseUrl,
+            @Value("${edc.controlplane.api-key.header}") final String apiKeyHeader,
+            @Value("${edc.controlplane.api-key.secret}") final String apiKeySecret) {
         this.restTemplate = restTemplate;
         this.edcProviderUrl = edcProviderUrl;
         this.essBaseUrl = essBaseUrl;
+        this.apiKeyHeader = apiKeyHeader;
+        this.apiKeySecret = apiKeySecret;
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void registerEdcAsset() {
         log.info("Starting EDC registration event listener.");
 
-        if (assetIsNotRegisteredYet()) {
-            log.info("Notification asset is not registered yet, starting registration.");
-            registerAsset();
-            registerPolicy();
-            registerContractDefinition();
+        if (assetIsNotRegisteredYet("ess-response-asset")) {
+            log.info("Notification response receiver asset is not registered yet, starting registration.");
+            registerAsset("ess-response-asset", "ess-supplier-response", "/ess/notifications/receive");
+            registerPolicy("1000", "ess-response-asset");
+            registerContractDefinition("1000", "ess-response-asset");
+            log.info("Registration finished.");
+        }
+
+        if (assetIsNotRegisteredYet("notify-request-asset")) {
+            log.info("Mock notification request receiver asset is not registered yet, starting registration.");
+            registerAsset("notify-request-asset", "ess-supplier-request", "/ess/mock/notification");
+            registerPolicy("1001", "notify-request-asset");
+            registerContractDefinition("1001", "notify-request-asset");
             log.info("Registration finished.");
         }
 
         log.info("Finishing EDC registration event listener.");
     }
 
-    private void registerAsset() {
+    private void registerAsset(final String assetId, final String notificationType, final String path) {
         final var body = """
                 {
                   "asset": {
                     "properties": {
-                      "asset:prop:id": "ess-response-asset",
+                      "asset:prop:id": "%s",
                       "asset:prop:description": "ESS notification endpoint",
                       "asset:prop:contenttype": "application/json",
                       "asset:prop:policy-id": "use-eu"
-                      "asset:prop:notificationtype":"ess-supplier-response",
+                      "asset:prop:notificationtype":"%s",
                       "asset:prop:notificationmethod": "receive"
                     }
                   },
                   "dataAddress": {
                     "properties": {
-                      "baseUrl": "%s/ess/notifications/receive",
+                      "baseUrl": "%s",
                       "type": "HttpData",
                       "proxyBody": true,
                       "proxyMethod": true
                     }
                   }
                 }
-                """.formatted(essBaseUrl);
-        final var entity = restTemplate.postForEntity(edcProviderUrl + "/data/assets", body, String.class);
+                """.formatted(assetId, notificationType, essBaseUrl + path);
+        final var entity = restTemplate.exchange(edcProviderUrl + "/data/assets", HttpMethod.POST, toEntity(body),
+                String.class);
 
         if (entity.getStatusCode().is2xxSuccessful()) {
             log.info("Notification asset registered successfully.");
@@ -99,10 +117,10 @@ public class EdcRegistration {
 
     }
 
-    private void registerPolicy() {
+    private void registerPolicy(final String id, final String assetId) {
         final var body = """
                 {
-                   "id": 1000,
+                   "id": %s,
                    "policy": {
                      "prohibitions": [],
                      "obligations": [],
@@ -112,13 +130,14 @@ public class EdcRegistration {
                          "action": {
                            "type": "USE"
                          },
-                         "target": "ess-response-asset"
+                         "target": "%s"
                        }
                      ]
                    }
                  }
-                """;
-        final var entity = restTemplate.postForEntity(edcProviderUrl + "/data/policydefinitions", body, String.class);
+                """.formatted(id, assetId);
+        final var entity = restTemplate.exchange(edcProviderUrl + "/data/policydefinitions", HttpMethod.POST,
+                toEntity(body), String.class);
 
         if (entity.getStatusCode().is2xxSuccessful()) {
             log.info("Notification policy registered successfully.");
@@ -128,23 +147,24 @@ public class EdcRegistration {
         }
     }
 
-    private void registerContractDefinition() {
+    private void registerContractDefinition(final String id, final String assetId) {
         final var body = """
                 {
-                    "id": 1000,
+                    "id": %s,
                     "criteria": [
                       {
                         "operandLeft": "asset:prop:id",
                         "operator": "=",
-                        "operandRight": "ess-response-asset"
+                        "operandRight": "%s"
                       }
                     ],
-                    "accessPolicyId": 1000,
-                    "contractPolicyId": 1000
+                    "accessPolicyId": %s,
+                    "contractPolicyId": %s
                   }
-                """;
-        final var entity = restTemplate.postForEntity(edcProviderUrl + "/data/contractdefinitions", body, String.class);
+                """.formatted(id, assetId, id, id);
 
+        final var entity = restTemplate.exchange(edcProviderUrl + "/data/contractdefinitions", HttpMethod.POST,
+                toEntity(body), String.class);
         if (entity.getStatusCode().is2xxSuccessful()) {
             log.info("Notification contract definition registered successfully.");
         } else {
@@ -153,16 +173,30 @@ public class EdcRegistration {
         }
     }
 
-    private boolean assetIsNotRegisteredYet() {
+    private HttpEntity<String> toEntity(final String body) {
+        return new HttpEntity<>(body, headers());
+    }
+
+    private HttpHeaders headers() {
+        final HttpHeaders headers = new HttpHeaders();
+        if (apiKeyHeader != null) {
+            headers.add(apiKeyHeader, apiKeySecret);
+        }
+        return headers;
+    }
+
+    private boolean assetIsNotRegisteredYet(final String assetId) {
         if (restTemplate != null && edcProviderUrl != null) {
-            final var entity = restTemplate.getForEntity(
-                    edcProviderUrl + "/data/assets?filter=asset:prop:id=ess-response-asset", String.class);
+            final var url = edcProviderUrl + "/data/assets?filter=asset:prop:id=" + assetId;
+            log.info("Requesting asset from EDC provider with url {}", url);
+            final var entity = restTemplate.exchange(url, HttpMethod.GET, toEntity(null), String.class);
             if (entity.getStatusCode().is2xxSuccessful()) {
                 final JSONArray array = StringMapper.mapFromString(entity.getBody(), JSONArray.class);
                 return array.isEmpty();
             }
+            log.error("Cannot ask EDC provider for asset registration, please check it! Status code was {}",
+                    entity.getStatusCodeValue());
         }
-        log.error("Cannot ask EDC provider for asset registration, please check it!");
         return false;
     }
 
