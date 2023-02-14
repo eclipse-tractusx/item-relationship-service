@@ -69,38 +69,43 @@ public class MockedNotificationReceiverEndpoint {
                 final SupplyChainImpacted supplyChainImpacted = edcDiscoveryMockConfig.getMockEdcResult().get(bpn);
 
                 final String notificationId = UUID.randomUUID().toString();
+                final String originalNotificationId = notification.getHeader().getNotificationId();
                 final String senderEdc = ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString();
                 final String senderBpn = notification.getHeader().getRecipientBpn();
                 final String recipientBpn = notification.getHeader().getSenderBpn();
                 final String recipientUrl = notification.getHeader().getSenderEdc();
                 final Map<String, Object> notificationContent = Map.of("result", supplyChainImpacted.getDescription());
 
-                final EdcNotification edcRequest = edcRequest(notificationId, senderEdc, senderBpn, recipientBpn, notificationContent);
+                final EdcNotification edcRequest = edcRequest(notificationId, originalNotificationId, senderEdc,
+                        senderBpn, recipientBpn, notificationContent);
 
                 final var response = edcSubmodelFacade.sendNotification(recipientUrl, "ess-response-asset", edcRequest);
                 if (!response.deliveredSuccessfully()) {
-                    throw new EdcClientException("EDC Provider did not accept message with notificationId " + notificationId);
+                    throw new EdcClientException(
+                            "EDC Provider did not accept message with notificationId " + notificationId);
                 }
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "BPN " + bpn + " not handled.");
             }
 
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Malformed EDC Notification - content without incidentBPN key.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Malformed EDC Notification - content without incidentBPN key.");
         }
     }
 
-    private EdcNotification edcRequest(final String notificationId, final String senderEdc, final String senderBpn, final String recipientBpn,
-            final Map<String, Object> content) {
+    private EdcNotification edcRequest(final String notificationId, final String originalId, final String senderEdc,
+            final String senderBpn, final String recipientBpn, final Map<String, Object> content) {
         final EdcNotificationHeader header = EdcNotificationHeader.builder()
-                                                                 .notificationId(notificationId)
-                                                                 .senderEdc(senderEdc)
-                                                                 .senderBpn(senderBpn)
-                                                                 .recipientBpn(recipientBpn)
-                                                                 .replyAssetId("")
-                                                                 .replyAssetSubPath("")
-                                                                 .notificationType("ess-supplier-response")
-                                                                 .build();
+                                                                  .notificationId(notificationId)
+                                                                  .senderEdc(senderEdc)
+                                                                  .senderBpn(senderBpn)
+                                                                  .recipientBpn(recipientBpn)
+                                                                  .originalNotificationId(originalId)
+                                                                  .replyAssetId("")
+                                                                  .replyAssetSubPath("")
+                                                                  .notificationType("ess-supplier-response")
+                                                                  .build();
 
         return EdcNotification.builder().header(header).content(content).build();
     }

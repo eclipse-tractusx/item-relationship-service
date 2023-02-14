@@ -70,7 +70,7 @@ public class EdcRegistration {
 
         if (assetIsNotRegisteredYet(ASSET_ID_RESPONSE)) {
             log.info("Notification response receiver asset is not registered yet, starting registration.");
-            registerAsset(ASSET_ID_RESPONSE, "ess-supplier-response", "/ess/notifications/receive");
+            registerAsset(ASSET_ID_RESPONSE, "ess-supplier-response", "/ess/notification/receive");
             registerPolicy("1000", ASSET_ID_RESPONSE);
             registerContractDefinition("1000", ASSET_ID_RESPONSE);
             log.info("Registration finished.");
