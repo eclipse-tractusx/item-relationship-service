@@ -29,7 +29,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.edc.exceptions.EdcClientException;
@@ -41,6 +40,7 @@ import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -51,13 +51,26 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 class InvestigationJobProcessingEventListener {
 
     private final IrsFacade irsFacade;
     private final EdcDiscoveryFacade edcDiscoveryFacade;
     private final EdcSubmodelFacade edcSubmodelFacade;
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
+    private final String localBpn;
+    private final String localEdcEndpoint;
+
+    /* package */ InvestigationJobProcessingEventListener(final IrsFacade irsFacade,
+            final EdcDiscoveryFacade edcDiscoveryFacade, final EdcSubmodelFacade edcSubmodelFacade,
+            final BpnInvestigationJobCache bpnInvestigationJobCache, @Value("${ess.localBpn}") final String localBpn,
+            @Value("${ess.localEdcEndpoint}") final String localEdcEndpoint) {
+        this.irsFacade = irsFacade;
+        this.edcDiscoveryFacade = edcDiscoveryFacade;
+        this.edcSubmodelFacade = edcSubmodelFacade;
+        this.bpnInvestigationJobCache = bpnInvestigationJobCache;
+        this.localBpn = localBpn;
+        this.localEdcEndpoint = localEdcEndpoint;
+    }
 
     @Async
     @EventListener
@@ -76,35 +89,42 @@ class InvestigationJobProcessingEventListener {
             final BpnInvestigationJob investigationJobUpdate = investigationJob.update(completedJob, localSupplyChain);
 
             if (supplyChainIsNotImpacted(localSupplyChain)) {
-                // Map<BPN, List<GlobalAssetID>>
-                final Map<String, List<String>> bpns = getBPNsFromShells(completedJob.getShells());
-                final Stream<Optional<String>> edcAddresses = bpns.keySet()
-                                                                  .stream()
-                                                                  .map(edcDiscoveryFacade::getEdcBaseUrl);
-
-                if (thereIsUnresolvableEdcAddress(edcAddresses)) {
-                    log.info(
-                            "One of EDC address cant be resolved with DiscoveryService, updating SupplyChainImpacted to {}",
-                            SupplyChainImpacted.UNKNOWN);
-                    investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
-                } else {
-                    bpns.forEach((bpn, globalAssetIds) -> {
-                        final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl(bpn);
-                        edcBaseUrl.ifPresentOrElse(url -> {
-                            try {
-                                final String notificationId = sendEdcNotification(bpn, url,
-                                        investigationJobUpdate.getIncidentBpns(), globalAssetIds);
-                                investigationJobUpdate.withNotifications(Collections.singletonList(notificationId));
-                            } catch (final EdcClientException e) {
-                                log.error("Exception during sending EDC notification.", e);
-                                investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
-                            }
-                        }, () -> investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN));
-                    });
-                }
+                triggerInvestigationOnNextLevel(completedJob, investigationJobUpdate);
             }
 
             bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
+        });
+    }
+
+    private void triggerInvestigationOnNextLevel(final Jobs completedJob,
+            final BpnInvestigationJob investigationJobUpdate) {
+        // Map<BPN, List<GlobalAssetID>>
+        final Map<String, List<String>> bpns = getBPNsFromShells(completedJob.getShells());
+        final Stream<Optional<String>> edcAddresses = bpns.keySet().stream().map(edcDiscoveryFacade::getEdcBaseUrl);
+
+        if (thereIsUnresolvableEdcAddress(edcAddresses)) {
+            log.info("One of EDC address cant be resolved with DiscoveryService, updating SupplyChainImpacted to {}",
+                    SupplyChainImpacted.UNKNOWN);
+            investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
+        } else {
+            sendNotifications(completedJob, investigationJobUpdate, bpns);
+        }
+    }
+
+    private void sendNotifications(final Jobs completedJob, final BpnInvestigationJob investigationJobUpdate,
+            final Map<String, List<String>> bpns) {
+        bpns.forEach((bpn, globalAssetIds) -> {
+            final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl(bpn);
+            edcBaseUrl.ifPresentOrElse(url -> {
+                try {
+                    final String notificationId = sendEdcNotification(bpn, url,
+                            investigationJobUpdate.getIncidentBpns(), globalAssetIds);
+                    investigationJobUpdate.withNotifications(Collections.singletonList(notificationId));
+                } catch (final EdcClientException e) {
+                    log.error("Exception during sending EDC notification.", e);
+                    investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
+                }
+            }, () -> investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN));
         });
     }
 
@@ -113,7 +133,7 @@ class InvestigationJobProcessingEventListener {
         final String notificationId = UUID.randomUUID().toString();
 
         final var response = edcSubmodelFacade.sendNotification(url, "notify-request-asset",
-                edcRequest(notificationId, url, bpn, incidentBpns, globalAssetIds));
+                edcRequest(notificationId, bpn, incidentBpns, globalAssetIds));
         if (!response.deliveredSuccessfully()) {
             throw new EdcClientException("EDC Provider did not accept message with notificationId " + notificationId);
         }
@@ -125,23 +145,20 @@ class InvestigationJobProcessingEventListener {
         return !edcAddresses.filter(Optional::isEmpty).toList().isEmpty();
     }
 
-    private EdcNotification edcRequest(final String notificationId, final String edcAddress, final String recipientBpn,
+    private EdcNotification edcRequest(final String notificationId, final String recipientBpn,
             final List<String> incidentBpns, final List<String> globalAssetIds) {
-        final EdcNotificationHeader edcNotificationHeader = EdcNotificationHeader.builder()
-                                                                                 .notificationId(notificationId)
-                                                                                 .senderBpn(
-                                                                                         "SystemBPNFromConfig") // TODO
-                                                                                 .recipientBpn(recipientBpn)
-                                                                                 .senderEdc(edcAddress)
-                                                                                 .replyAssetId("ess-response-asset")
-                                                                                 .replyAssetSubPath("")
-                                                                                 .notificationType(
-                                                                                         "ess-supplier-request")
-                                                                                 .build();
-        final Map<String, Object> edcNotificationContent = Map.of("incidentBpn", incidentBpns.get(0),
-                "concernedCatenaXIds", globalAssetIds);
+        final var header = EdcNotificationHeader.builder()
+                                                .notificationId(notificationId)
+                                                .recipientBpn(recipientBpn)
+                                                .senderBpn(localBpn)
+                                                .senderEdc(localEdcEndpoint)
+                                                .replyAssetId("ess-response-asset")
+                                                .replyAssetSubPath("")
+                                                .notificationType("ess-supplier-request")
+                                                .build();
+        final var content = Map.of("incidentBpn", incidentBpns.get(0), "concernedCatenaXIds", globalAssetIds);
 
-        return EdcNotification.builder().header(edcNotificationHeader).content(edcNotificationContent).build();
+        return EdcNotification.builder().header(header).content(content).build();
     }
 
     private static Map<String, List<String>> getBPNsFromShells(

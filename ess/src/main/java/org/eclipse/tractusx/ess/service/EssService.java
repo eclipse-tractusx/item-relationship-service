@@ -63,21 +63,26 @@ public class EssService {
     }
 
     public void handleNotificationCallback(final EdcNotification notification) {
-        final Optional<BpnInvestigationJob> investigationJob = bpnInvestigationJobCache.findAll()
-                                                                                       .stream()
-                                                                                       .filter(investigationJobNotificationPredicate(notification))
-                                                                                       .findFirst();
+        final var investigationJob = bpnInvestigationJobCache.findAll()
+                                                             .stream()
+                                                             .filter(investigationJobNotificationPredicate(
+                                                                     notification))
+                                                             .findFirst();
 
         investigationJob.ifPresent(job -> {
+            job.withAnsweredNotification(notification.getHeader().getOriginalNotificationId());
             final Optional<String> notificationResult = Optional.ofNullable(notification.getContent().get("result"))
                                                                 .map(Object::toString);
 
-            final SupplyChainImpacted supplyChainImpacted = notificationResult.map(SupplyChainImpacted::fromString).orElse(SupplyChainImpacted.UNKNOWN);
-            bpnInvestigationJobCache.store(job.getJobSnapshot().getJob().getId(), job.update(job.getJobSnapshot(), supplyChainImpacted));
+            final SupplyChainImpacted supplyChainImpacted = notificationResult.map(SupplyChainImpacted::fromString)
+                                                                              .orElse(SupplyChainImpacted.UNKNOWN);
+            bpnInvestigationJobCache.store(job.getJobSnapshot().getJob().getId(),
+                    job.update(job.getJobSnapshot(), supplyChainImpacted));
         });
     }
 
     private Predicate<BpnInvestigationJob> investigationJobNotificationPredicate(final EdcNotification notification) {
-        return investigationJob -> investigationJob.getNotifications().contains(notification.getHeader().getNotificationId());
+        return investigationJob -> investigationJob.getUnansweredNotifications()
+                                                   .contains(notification.getHeader().getOriginalNotificationId());
     }
 }

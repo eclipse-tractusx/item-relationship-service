@@ -19,41 +19,47 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component;
+package org.eclipse.tractusx.ess.service;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
-import lombok.experimental.FieldDefaults;
+import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
+import org.eclipse.tractusx.irs.component.FetchedItems;
+import org.eclipse.tractusx.irs.component.Summary;
 
 /**
- * Summary
+ * Extension of the Summary class to also contain notification metrics.
  */
-@Getter
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-@AllArgsConstructor
-@ToString
-@EqualsAndHashCode
-@Builder(toBuilder = true)
-@Schema(description = "Summary of the job with statistics of the job processing.")
 @Jacksonized
-public class Summary {
+@EqualsAndHashCode(callSuper = true)
+public class NotificationSummary extends Summary {
 
-    /**
-     * asyncFetchedItems
-     */
-    @Schema(description = "Summary of the fetched jobs", implementation = AsyncFetchedItems.class)
-    private AsyncFetchedItems asyncFetchedItems;
+    private final NotificationItems notifications;
 
-    /**
-     * BPN lookup summary
-     */
-    @Schema(description = "Summary of the BPN lookups", implementation = AsyncFetchedItems.class)
-    private FetchedItems bpnLookups;
+    public NotificationSummary(final AsyncFetchedItems asyncFetchedItems, final FetchedItems bpnLookups,
+            final NotificationItems notificationItems) {
+        super(asyncFetchedItems, bpnLookups);
+        this.notifications = notificationItems;
+    }
+}
+
+/**
+ * Describes metrics for notifications.
+ */
+@Value
+class NotificationItems {
+
+    @Schema(description = "Number of sent notifications.", implementation = Integer.class)
+    @Min(0) @Max(Integer.MAX_VALUE)
+    private Integer sent;
+
+    @Schema(description = "Number of received notification answers.", implementation = Integer.class)
+    @Min(0) @Max(Integer.MAX_VALUE)
+    private Integer received;
 
 }

@@ -891,6 +891,8 @@ components:
           type: string
         notificationType:
           type: string
+        originalNotificationId:
+          type: string
         recipientBpn:
           type: string
         replyAssetId:
