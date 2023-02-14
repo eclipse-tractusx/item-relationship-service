@@ -175,11 +175,13 @@ class SemanticsHubClientImplTest {
 
     @Test
     void shouldReturnEmptyIfLocalModelFilesNotAccessible() throws SchemaNotFoundException {
-
+        // Arrange
         final var testee = new SemanticsHubClientImpl(restTemplate, config("", ""));
 
+        // Act
         final List<AspectModel> allAspectModels = testee.getAllAspectModels();
 
+        // Assert
         assertThat(allAspectModels).isEmpty();
     }
 }

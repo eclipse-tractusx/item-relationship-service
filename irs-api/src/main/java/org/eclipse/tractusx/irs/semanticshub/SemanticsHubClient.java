@@ -149,9 +149,7 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
                 return Optional.of(stream.filter(file -> !Files.isDirectory(file))
                                          .map(Path::getFileName)
                                          .map(Path::toString)
-                                         .peek(log::info)
                                          .map(this::getDecodedString)
-                                         .peek(log::info)
                                          .map(this::createAspectModel)
                                          .filter(Optional::isPresent)
                                          .map(Optional::get)
@@ -174,7 +172,7 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
 
     private Optional<AspectModel> createAspectModel(final String urn) {
         log.debug("Extracting aspect information for urn: '{}'", urn);
-        final Matcher matcher = Pattern.compile(".*:(\\d\\.\\d\\.\\d)#(\\w+)").matcher(urn);
+        final Matcher matcher = Pattern.compile("^urn:bamm:.*:(\\d\\.\\d\\.\\d)#(\\w+)$").matcher(urn);
         if (matcher.find()) {
             final String version = matcher.group(1);
             final String name = matcher.group(2);
@@ -194,7 +192,7 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
                 semanticHubPage = getSemanticHubPage(currentPage++, config.getPageSize());
                 log.info("Got response from semantic hub '{}'", semanticHubPage.toString());
                 aspectModelsCollection.addAll(semanticHubPage.orElseThrow().getContent());
-            } while (semanticHubPage.get().hasNext());
+            } while (semanticHubPage.isPresent() && semanticHubPage.get().hasNext());
 
             return Optional.of(aspectModelsCollection);
         }
@@ -252,6 +250,6 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
     }
 
     private String decode(final String urnBase64) {
-        return new String(Base64.getDecoder().decode(urnBase64));
+        return new String(Base64.getDecoder().decode(urnBase64), StandardCharsets.UTF_8);
     }
 }

@@ -38,7 +38,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestTemplate;
 
-public class SemanticHubWiremockTest {
+class SemanticHubWiremockTest {
     private WireMockServer wireMockServer;
 
     private SemanticsHubFacade semanticsHubFacade;
