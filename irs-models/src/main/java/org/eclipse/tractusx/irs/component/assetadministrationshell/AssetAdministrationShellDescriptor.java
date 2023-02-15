@@ -85,11 +85,14 @@ public class AssetAdministrationShellDescriptor {
      * @return ManufacturerId value from Specific Asset Ids
      */
     public Optional<String> findManufacturerId() {
-        return this.specificAssetIds.stream().filter(assetId -> "ManufacturerId".equalsIgnoreCase(assetId.getKey())).map(IdentifierKeyValuePair::getValue).findFirst();
+        return this.specificAssetIds.stream()
+                                    .filter(assetId -> "ManufacturerId".equalsIgnoreCase(assetId.getKey()))
+                                    .map(IdentifierKeyValuePair::getValue)
+                                    .findFirst();
     }
 
     /**
-     * @param aspectTypes        the aspect types which should be filtered by
+     * @param aspectTypes the aspect types which should be filtered by
      * @return AssetAdministrationShellDescriptor with filtered submodel descriptors
      */
     public AssetAdministrationShellDescriptor withFilteredSubmodelDescriptors(final List<String> aspectTypes) {
@@ -105,12 +108,12 @@ public class AssetAdministrationShellDescriptor {
     }
 
     /**
-     *
      * @param relationshipAspect filter for aspect type
      * @return The filtered list of submodel addresses
      */
     public List<String> findRelationshipEndpointAddresses(final AspectType relationshipAspect) {
-        final List<SubmodelDescriptor> filteredSubmodelDescriptors = filterDescriptorsByAspectTypes(List.of(relationshipAspect.toString()));
+        final List<SubmodelDescriptor> filteredSubmodelDescriptors = filterDescriptorsByAspectTypes(
+                List.of(relationshipAspect.toString()));
         return filteredSubmodelDescriptors.stream()
                                           .map(SubmodelDescriptor::getEndpoints)
                                           .flatMap(endpoints -> endpoints.stream()
@@ -135,8 +138,9 @@ public class AssetAdministrationShellDescriptor {
 
     private boolean isMatching(final SubmodelDescriptor submodelDescriptor, final String aspectTypeFilter) {
         final Optional<String> submodelAspectType = submodelDescriptor.getSemanticId().getValue().stream().findFirst();
-        return submodelAspectType.map(semanticId -> semanticId.endsWith("#" + aspectTypeFilter) || contains(semanticId, aspectTypeFilter))
-                                 .orElse(false);
+        return submodelAspectType.map(
+                semanticId -> semanticId.endsWith("#" + aspectTypeFilter) || contains(semanticId, aspectTypeFilter)
+                        || semanticId.equals(aspectTypeFilter)).orElse(false);
     }
 
     private boolean contains(final String semanticId, final String aspectTypeFilter) {

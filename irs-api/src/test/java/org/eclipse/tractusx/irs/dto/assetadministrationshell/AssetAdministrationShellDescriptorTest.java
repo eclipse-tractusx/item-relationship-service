@@ -23,14 +23,12 @@ package org.eclipse.tractusx.irs.dto.assetadministrationshell;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
-import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutEndpoint;
 
 import java.util.List;
 
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.junit.jupiter.api.Test;
 
 class AssetAdministrationShellDescriptorTest {
@@ -46,7 +44,8 @@ class AssetAdministrationShellDescriptorTest {
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
                 List.of(submodelDescriptorWithoutEndpoint(assemblyPartRelationshipIdWithAspectName)));
         // Act
-        final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of()).getSubmodelDescriptors();
+        final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of())
+                                                               .getSubmodelDescriptors();
 
         // Assert
         assertThat(result).hasSize(1);
@@ -59,7 +58,8 @@ class AssetAdministrationShellDescriptorTest {
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
                 List.of(submodelDescriptorWithoutEndpoint(assemblyPartRelationshipId)));
         // Act
-        final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of()).getSubmodelDescriptors();
+        final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of())
+                                                               .getSubmodelDescriptors();
 
         // Assert
         assertThat(result).hasSize(1);
@@ -114,21 +114,22 @@ class AssetAdministrationShellDescriptorTest {
     }
 
     @Test
-    void shouldReturnEndpointAddressesForSubmodelDescriptors() {
+    void shouldFilterByAspectTypeForUrnFormat() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptor(serialPartTypizationIdWithAspectName,
-                                "testSerialPartTypizationEndpoint"),
-                        submodelDescriptor(assemblyPartRelationshipIdWithAspectName,
-                                "testAssemblyPartRelationshipEndpoint")));
+                List.of(submodelDescriptorWithoutEndpoint(serialPartTypizationIdWithAspectName),
+                        submodelDescriptorWithoutEndpoint(assemblyPartRelationshipIdWithAspectName)));
+
+        final List<String> aspectTypeFilter = List.of(serialPartTypizationIdWithAspectName,
+                assemblyPartRelationshipIdWithAspectName);
 
         // Act
-        final List<String> result = shellDescriptor.findRelationshipEndpointAddresses(AspectType.ASSEMBLY_PART_RELATIONSHIP);
+        final List<SubmodelDescriptor> result = shellDescriptor.filterDescriptorsByAspectTypes(aspectTypeFilter);
 
         // Assert
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0)).isEqualTo("testAssemblyPartRelationshipEndpoint");
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(serialPartTypizationIdWithAspectName);
+        assertThat(result.get(1).getSemanticId().getValue().get(0)).isEqualTo(assemblyPartRelationshipIdWithAspectName);
     }
-
 
 }
