@@ -78,7 +78,7 @@ public class EdcRegistration {
 
         if (assetIsNotRegisteredYet(ASSET_ID_REQUEST)) {
             log.info("Mock notification request receiver asset is not registered yet, starting registration.");
-            registerAsset(ASSET_ID_REQUEST, "ess-supplier-request", "/ess/mock/notification");
+            registerAsset(ASSET_ID_REQUEST, "ess-supplier-request", "/ess/mock/notification/receive");
             registerPolicy("1001", ASSET_ID_REQUEST);
             registerContractDefinition("1001", ASSET_ID_REQUEST);
             log.info("Registration finished.");
