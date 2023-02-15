@@ -187,14 +187,15 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             final Set<String> availableNames = new HashSet<>(availableModels.stream().map(AspectModel::name).toList());
             final Set<String> availableUrns = new HashSet<>(availableModels.stream().map(AspectModel::urn).toList());
 
-            final List<String> strings = aspectTypeValues.stream()
-                                                         .filter(s -> !availableUrns.contains(s)
-                                                                 && !availableNames.contains(s) && !s.matches(
-                                                                 "^(urn:bamm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$"))
+            final List<String> invalidAspectTypes = aspectTypeValues.stream()
+                                                         .filter(s ->
+                                                                 !availableUrns.contains(s)
+                                                                 && !availableNames.contains(s)
+                                                                 || !s.matches("^(urn:bamm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$"))
                                                          .toList();
-            if (!strings.isEmpty()) {
+            if (!invalidAspectTypes.isEmpty()) {
                 throw new IllegalArgumentException(
-                        String.format("Aspects did not match the available aspects: '%s'", strings));
+                        String.format("Aspects did not match the available aspects: '%s'", invalidAspectTypes));
             }
         } catch (SchemaNotFoundException e) {
             log.error("Error retrieving all available aspect models.", e);
