@@ -44,7 +44,7 @@ spec:
               mountPath: /tmp
             - name: application-config
               mountPath: /app/config
-            {{- if .Values.semanticsHub.localModels }}
+            {{- if .Values.semanticshub.localModels }}
             - name: semantic-models
               mountPath: /app/semantic-models
             {{- end }}
@@ -120,7 +120,7 @@ spec:
             items:
               - key: application.yaml
                 path: application.yaml
-        {{- if .Values.semanticsHub.localModels }}
+        {{- if .Values.semanticshub.localModels }}
         - name: semantic-models
           configMap:
             name: {{ include "irs.fullname" . }}-configmap-semantic-models
