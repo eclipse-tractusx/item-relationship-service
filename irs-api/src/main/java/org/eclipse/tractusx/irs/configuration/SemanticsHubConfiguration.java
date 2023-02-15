@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
  * and other configuration sources.
  */
 @Component
-@ConfigurationProperties(prefix = "semantics.hub")
+@ConfigurationProperties(prefix = "semanticshub")
 @Data
 public class SemanticsHubConfiguration {
 

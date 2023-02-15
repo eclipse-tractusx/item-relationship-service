@@ -140,7 +140,7 @@ digitalTwinRegistry:
     read: PT90S # HTTP read timeout for the digital twin registry client
     connect: PT90S # HTTP connect timeout for the digital twin registry client
 
-semantics.hub:
+semanticshub:
   # The endpoint to retrieve the json schema of a model from the semantic hub. If specified, must contain the placeholder {urn}.
   modelJsonSchemaEndpoint: "${SEMANTICSHUB_URL:}"
   url: ""
