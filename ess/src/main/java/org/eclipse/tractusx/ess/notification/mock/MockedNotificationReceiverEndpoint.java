@@ -29,6 +29,7 @@ import javax.validation.Valid;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.edc.exceptions.EdcClientException;
 import org.eclipse.tractusx.edc.model.notification.EdcNotification;
@@ -52,6 +53,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequiredArgsConstructor
 @Validated
 @Hidden
+@Slf4j
 public class MockedNotificationReceiverEndpoint {
 
     private final EdcDiscoveryMockConfig edcDiscoveryMockConfig;
@@ -59,11 +61,14 @@ public class MockedNotificationReceiverEndpoint {
 
     @PostMapping("/receive")
     public void receiveNotification(final @Valid @RequestBody EdcNotification notification) throws EdcClientException {
+        log.info("receiveNotification mock called");
         final Optional<String> incidentBpn = Optional.ofNullable(notification.getContent().get("incidentBpn"))
                                                      .map(Object::toString);
 
         if (incidentBpn.isPresent()) {
             final String bpn = incidentBpn.get();
+            log.info("Received notification request on mock with id {} and incidentBpn {}",
+                    notification.getHeader().getNotificationId(), bpn);
 
             if (edcDiscoveryMockConfig.getMockEdcResult().containsKey(bpn)) {
                 final SupplyChainImpacted supplyChainImpacted = edcDiscoveryMockConfig.getMockEdcResult().get(bpn);
@@ -84,6 +89,7 @@ public class MockedNotificationReceiverEndpoint {
                     throw new EdcClientException(
                             "EDC Provider did not accept message with notificationId " + notificationId);
                 }
+                log.info("Successfully sent response notification.");
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "BPN " + bpn + " not handled.");
             }
