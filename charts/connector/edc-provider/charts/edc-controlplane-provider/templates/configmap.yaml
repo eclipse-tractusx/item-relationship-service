@@ -25,14 +25,14 @@ data:
     edc.ids.endpoint={{ .Values.edc.controlplane.url }}/api/v1/ids
     edc.oauth.endpoint.audience={{ .Values.edc.controlplane.url }}/api/v1/ids/data
     edc.receiver.http.endpoint=http://{{ include "edc-controlplane.fullname" . }}:8080/api/service/pull
-    edc.transfer.dataplane.sync.endpoint=http://{{ .Release.Name }}-edc-dataplane:8185/api/public
+    edc.transfer.dataplane.sync.endpoint={{ .Values.edc.dataplane.url }}/api/public
     edc.transfer.proxy.endpoint={{ .Values.edc.dataplane.url }}/api/public
     edc.transfer.proxy.token.signer.privatekey.alias={{ .Values.edc.transfer.proxy.token.signer.privatekey.alias }}
     edc.transfer.proxy.token.verifier.publickey.alias={{ .Values.edc.transfer.proxy.token.verifier.publickey.alias }}
     edc.dataplane.selector.consumer.url=http://{{ .Release.Name }}-edc-dataplane:9999/api/dataplane/control
     edc.dataplane.selector.consumer.sourcetypes=HttpData
     edc.dataplane.selector.consumer.destinationtypes=HttpProxy
-    edc.dataplane.selector.consumer.properties={ "publicApiUrl": "http://{{ .Release.Name }}-edc-dataplane:8185/api/public" }
+    edc.dataplane.selector.consumer.properties={ "publicApiUrl": "{{ .Values.edc.dataplane.url }}/api/public" }
     # Postgresql related configuration
     edc.datasource.asset.name=asset
     edc.datasource.asset.url=jdbc:postgresql://{{ .Release.Name }}-postgresql-hl:5432/edc
