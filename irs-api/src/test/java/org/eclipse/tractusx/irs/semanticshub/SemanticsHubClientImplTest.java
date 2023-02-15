@@ -137,8 +137,8 @@ class SemanticsHubClientImplTest {
                 new AspectModel("urn1", "version1", "name1", "type1", "status1"));
         final List<AspectModel> aspectModels2 = List.of(
                 new AspectModel("urn2", "version2", "name2", "type2", "status2"));
-        final PaginatedResponse<AspectModel> aspectModelResponse1 = new PaginatedResponse<>(aspectModels1, 2, 0, 2, 1);
-        final PaginatedResponse<AspectModel> aspectModelResponse2 = new PaginatedResponse<>(aspectModels2, 2, 1, 2, 1);
+        final PaginatedResponse<AspectModel> aspectModelResponse1 = new PaginatedResponse<>(aspectModels1, 2, 0, 1);
+        final PaginatedResponse<AspectModel> aspectModelResponse2 = new PaginatedResponse<>(aspectModels2, 2, 1, 1);
 
         doReturn(getResponseEntity(aspectModelResponse1), getResponseEntity(aspectModelResponse2)).when(restTemplate)
                                                                                                   .exchange(any(),

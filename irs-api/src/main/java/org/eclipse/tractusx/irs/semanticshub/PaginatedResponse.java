@@ -36,7 +36,6 @@ public class PaginatedResponse<T> extends PageImpl<T> {
     public PaginatedResponse(final @JsonProperty("items") List<T> items,
             final @JsonProperty("totalItems") int totalItems,
             final @JsonProperty("currentPage") int currentPage,
-            final @JsonProperty("totalPages") int totalPages,
             final @JsonProperty("itemCount") int itemCount) {
         super(items, PageRequest.of(currentPage, itemCount), totalItems);
     }
