@@ -49,7 +49,6 @@ import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.JobStatusResult;
 import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.RegisterJob;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
@@ -58,9 +57,6 @@ import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
-import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -94,22 +90,6 @@ class IrsControllerTest {
                 registerJob("invalidGlobalAssetId", 0, null, false, false, Direction.DOWNWARD),
                 registerJob("urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5\n\rdf6", 0, null, false, false,
                         Direction.DOWNWARD));
-    }
-
-    private static AspectModel getAspectModel(final String aspect, final String urn) {
-        return AspectModel.builder().name(aspect).urn(urn).build();
-    }
-
-    @BeforeEach
-    void setUp() throws SchemaNotFoundException {
-        final List<AspectModel> models = List.of(getAspectModel(AspectType.SERIAL_PART_TYPIZATION.toString(),
-                        "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"),
-                getAspectModel(AspectType.PRODUCT_DESCRIPTION.toString(),
-                        "urn:bamm:io.catenax.vehicle.product_description:2.0.0#ProductDescription"),
-                getAspectModel(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString(),
-                        "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship"));
-        final AspectModels aspectModels = new AspectModels(models, "2023-02-13T08:18:11.990659500Z");
-        when(semanticHubService.getAllAspectModels()).thenReturn(aspectModels);
     }
 
     @Test
@@ -210,8 +190,8 @@ class IrsControllerTest {
 
     @Test
     @WithMockUser(authorities = "view_irs")
-    @Disabled
     void shouldReturnBadRequestWhenRegisterJobWithMalformedAspectJson() throws Exception {
+        when(service.registerItemJob(any())).thenThrow(IllegalArgumentException.class);
         final String requestBody = "{ \"aspects\": [ \"MALFORMED\" ], \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\" }";
 
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON).content(requestBody))
