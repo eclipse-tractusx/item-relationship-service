@@ -69,7 +69,7 @@ def errors_for_unknown_globalAssetId_are_correct(response):
         print("RetryCounter: ", processingErrorRetryCounter)
         assert 'urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa' in catenaXId
         assert 'DigitalTwinRequest' in processingErrorStep
-        assert '404 : \"{\"error\":{\"message\":\"Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found\",\"path\":\"/registry/shell-descriptors/urn%3Auuid%3Acce14502-958a-42e1-8bb7-f4f41aaaaaaa\",\"details\":{}}}\"' in processingErrorDetail
+        assert 'S404 : \"{\"error\":{\"message\":\"Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found\",\"path\":\"/registry/shell-descriptors/urn%3Auuid%3Acce14502-958a-42e1-8bb7-f4f41aaaaaaa\",\"details\":{}}}\"' in processingErrorDetail
         assert processingErrorLastAttempt is not None
         assert 3 is processingErrorRetryCounter
 
@@ -175,15 +175,18 @@ def check_pagination_is_requested_correctly(response):
     assert response_list.get("totalElements") > 0
     assert len(response.json().get("content")) == 3
 
+
 def bpns_are_empty(response):
     print(response.json().get("bpns"))
     print("Check if bpns are empty", len(response.json().get("bpns")))
     assert len(response.json().get("bpns")) == 0
 
+
 def bpns_are_not_empty(response):
     print(response.json().get("bpns"))
     print("Check if bpns are not empty number:", len(response.json().get("bpns")))
     assert len(response.json().get("bpns")) != 0
+
 
 def summary_for_bpns_is_given(response):
     print("Check if summary for bpns is given:")
@@ -192,3 +195,35 @@ def summary_for_bpns_is_given(response):
     print("completed:  ", bpnLookups.get('completed'))
     assert bpnLookups.get('completed') != 0
     assert bpnLookups.get('failed') == 0
+
+
+def supplyChainImpacted_is_correct_in_submodels_for_valid_ID(response):
+    submodels = response.json().get("submodels")
+    print("submodels ", submodels)
+    assert len(submodels) <= 1
+    for i in submodels:
+        assert 'supply_chain_impacted' in i.get('aspectType')
+        assert 'Yes' in i.get("payload").get('supplyChainImpacted')
+
+
+def supplyChainImpacted_is_correct_in_submodels_for_unknown_ID(response):
+    submodels = response.json().get("submodels")
+    print("submodels ", submodels)
+    assert len(submodels) <= 1
+    for i in submodels:
+        assert 'supply_chain_impacted' in i.get('aspectType')
+        assert 'Unknown' in i.get("payload").get('supplyChainImpacted')
+
+
+def errors_for_invalid_investigation_request_are_correct(response):
+    print(response.json().get("messages"))
+    error_list = response.json().get("messages")
+    assert 'incidentBpns:must not be empty' in error_list
+    assert 'globalAssetId:must not be blank' in error_list
+
+
+def relationships_for_BPN_investigations_contains_several_childs(response):
+    relationships = response.json().get("relationships")
+    print("relationships: ", relationships)
+    print("Länge: ", len(relationships))
+    assert len(relationships) > 1
