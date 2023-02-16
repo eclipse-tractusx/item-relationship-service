@@ -184,13 +184,12 @@ ess:
     mockEdcAddress:
       BPNL00000003B6LU: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
       BPNL00000003B3NX: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
-      BPNL00000003B0Q0: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
+      BPNL00000003B0Q0: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
       BPNL00ARBITRARY1: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
       BPNL00ARBITRARY2: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
       BPNL00ARBITRARY3: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
     mockEdcResult:
       BPNL00000003B3NX: "YES"
-      BPNL00000003B0Q0: "YES"
       BPNL00ARBITRARY1: "NO"
       BPNL00ARBITRARY2: "UNKNOWN"
       BPNL00ARBITRARY3: "NO"

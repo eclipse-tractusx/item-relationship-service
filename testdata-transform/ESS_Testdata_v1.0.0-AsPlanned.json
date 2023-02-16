@@ -293,14 +293,14 @@
               },
               "createdOn": "2022-02-03T14:48:54.709Z",
               "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "childCatenaXId": "urn:uuid:4f7b1cf2-a598-4027-bc78-63f6d8e55699"
+              "childCatenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e"
             }
           ]
         }
       ]
     },
     {
-      "catenaXId": "urn:uuid:4f7b1cf2-a598-4027-bc78-63f6d8e55699",
+      "catenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
         {
@@ -308,7 +308,7 @@
             "validFrom": "2013-04-11T05:30:04.000Z",
             "validTo": "2025-04-23T19:59:03.000Z"
           },
-          "catenaXId": "urn:uuid:4f7b1cf2-a598-4027-bc78-63f6d8e55699",
+          "catenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e",
           "partTypeInformation": {
             "manufacturerPartId": "7A047C7-01",
             "classification": "product",
@@ -318,7 +318,7 @@
       ],
       "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
-          "catenaXId": "urn:uuid:4f7b1cf2-a598-4027-bc78-63f6d8e55699",
+          "catenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e",
           "sites": [
             {
               "functionValidUntil": "2026-11-05T11:21:29.000Z",
@@ -331,7 +331,7 @@
       ],
       "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
         {
-          "catenaXId": "urn:uuid:4f7b1cf2-a598-4027-bc78-63f6d8e55699",
+          "catenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e",
           "childParts": []
         }
       ]

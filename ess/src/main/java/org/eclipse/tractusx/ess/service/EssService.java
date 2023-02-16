@@ -78,6 +78,7 @@ public class EssService {
     }
 
     public void handleNotificationCallback(final EdcNotification notification) {
+        log.info("Received notification response with id {}", notification.getHeader().getNotificationId());
         final var investigationJob = bpnInvestigationJobCache.findAll()
                                                              .stream()
                                                              .filter(investigationJobNotificationPredicate(
