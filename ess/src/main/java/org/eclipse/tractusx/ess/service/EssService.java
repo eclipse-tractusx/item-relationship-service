@@ -68,7 +68,7 @@ public class EssService {
     private static Jobs updateState(final BpnInvestigationJob investigationJob) {
         final Jobs jobSnapshot = investigationJob.getJobSnapshot();
         var newState = jobSnapshot.getJob().getState();
-        if (investigationJob.getUnansweredNotifications().size() > investigationJob.getAnsweredNotifications().size()) {
+        if (!investigationJob.getUnansweredNotifications().isEmpty()) {
             newState = JobState.RUNNING;
         } else if (!investigationJob.getAnsweredNotifications().isEmpty()) {
             newState = JobState.COMPLETED;
