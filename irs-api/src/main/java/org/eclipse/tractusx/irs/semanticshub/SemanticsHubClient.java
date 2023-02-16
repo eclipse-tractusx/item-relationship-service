@@ -38,6 +38,7 @@ import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.TypeUtils;
 import org.eclipse.tractusx.irs.configuration.RestTemplateConfig;
 import org.eclipse.tractusx.irs.configuration.SemanticsHubConfiguration;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
@@ -206,8 +207,8 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
                                                                         .queryParam("page", page)
                                                                         .queryParam("pageSize", pageSize);
             log.info("Semantic Hub URL '{}'", uriBuilder.toUriString());
-            final var responseType = new ParameterizedTypeReference<PaginatedResponse<AspectModel>>() {
-            };
+            final ParameterizedTypeReference<PaginatedResponse<AspectModel>> responseType = ParameterizedTypeReference.forType(
+                    TypeUtils.parameterize(PaginatedResponse.class, AspectModel.class));
             final ResponseEntity<PaginatedResponse<AspectModel>> result = restTemplate.exchange(
                     RequestEntity.get(uriBuilder.toUriString()).build(), responseType);
             return Optional.ofNullable(result.getBody());

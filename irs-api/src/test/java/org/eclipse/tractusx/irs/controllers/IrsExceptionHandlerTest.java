@@ -39,8 +39,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @WebMvcTest(IrsController.class)
 @Import(SecurityConfiguration.class)
@@ -74,5 +76,51 @@ class IrsExceptionHandlerTest {
                                                      .content(new ObjectMapper().writeValueAsString(
                                                              registerJobWithoutDepthAndAspect())))
                     .andExpect(status().is5xxServerError());
+    }
+
+    @Test
+    @WithMockUser(authorities = "view_irs")
+    void shouldReturn400WhenProvidingBadInput() throws Exception {
+        when(semanticHubService.getAllAspectModels()).thenThrow(IllegalArgumentException.class);
+
+        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
+                                                     .content(new ObjectMapper().writeValueAsString(
+                                                             registerJobWithoutDepthAndAspect())))
+                    .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(authorities = "view_irs")
+    void shouldReturn400WhenCatchingIllegalStateException() throws Exception {
+        when(semanticHubService.getAllAspectModels()).thenThrow(IllegalStateException.class);
+
+        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
+                                                     .content(new ObjectMapper().writeValueAsString(
+                                                             registerJobWithoutDepthAndAspect())))
+                    .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    @WithMockUser(authorities = "view_irs")
+    void shouldReturn400WhenCatchingMethodArgumentTypeMismatchException() throws Exception {
+        when(semanticHubService.getAllAspectModels()).thenThrow(MethodArgumentTypeMismatchException.class);
+
+        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
+                                                     .content(new ObjectMapper().writeValueAsString(
+                                                             registerJobWithoutDepthAndAspect())))
+                    .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    @WithMockUser(authorities = "view_irs")
+    void shouldReturn403WhenRightsAreMissing() throws Exception {
+        when(semanticHubService.getAllAspectModels()).thenThrow(AccessDeniedException.class);
+
+        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
+                                                     .content(new ObjectMapper().writeValueAsString(
+                                                             registerJobWithoutDepthAndAspect())))
+                    .andExpect(status().isForbidden());
     }
 }
