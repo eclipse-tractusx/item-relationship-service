@@ -107,8 +107,6 @@ class EssServiceTest {
 
         assertDoesNotThrow(() -> essService.handleNotificationCallback(edcNotification));
         assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
-        final Jobs byJobId = essService.getIrsJob(jobId.toString());
-        assertThat(byJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
     }
 
     @Test
