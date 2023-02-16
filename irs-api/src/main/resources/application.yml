@@ -189,7 +189,7 @@ ess:
       BPNL00ARBITRARY2: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
       BPNL00ARBITRARY3: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
     mockEdcResult:
-      BPNL00000003B3NX: "YES"
+      BPNL00000003B3NX: "NO"
       BPNL00ARBITRARY1: "NO"
-      BPNL00ARBITRARY2: "UNKNOWN"
+      BPNL00ARBITRARY2: "YES"
       BPNL00ARBITRARY3: "NO"
