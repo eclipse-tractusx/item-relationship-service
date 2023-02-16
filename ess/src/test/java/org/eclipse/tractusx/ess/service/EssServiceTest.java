@@ -47,7 +47,7 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
 
-public class EssServiceTest {
+class EssServiceTest {
 
     private final IrsFacade irsFacade = mock(IrsFacade.class);
     private final BpnInvestigationJobCache bpnInvestigationJobCache = new InMemoryBpnInvestigationJobCache();
@@ -60,9 +60,9 @@ public class EssServiceTest {
         final List<String> bpns = List.of("BPNS000000000DDD");
         final UUID createdJobId = UUID.randomUUID();
         final RegisterBpnInvestigationJob request = RegisterBpnInvestigationJob.builder()
-                                                                         .globalAssetId(globalAssetId)
-                                                                         .incidentBpns(bpns)
-                                                                         .build();
+                                                                               .globalAssetId(globalAssetId)
+                                                                               .incidentBpns(bpns)
+                                                                               .build();
         final Jobs expectedResponse = Jobs.builder()
                                           .job(Job.builder()
                                                   .state(JobState.COMPLETED)
@@ -73,10 +73,8 @@ public class EssServiceTest {
                                           .shells(new ArrayList<>())
                                           .build();
 
-        when(irsFacade.startIrsJob(eq(globalAssetId), any())).thenReturn(
-                JobHandle.builder().id(createdJobId).build());
-        when(irsFacade.getIrsJob(createdJobId.toString())).thenReturn(
-                expectedResponse);
+        when(irsFacade.startIrsJob(eq(globalAssetId), any())).thenReturn(JobHandle.builder().id(createdJobId).build());
+        when(irsFacade.getIrsJob(createdJobId.toString())).thenReturn(expectedResponse);
 
         final JobHandle jobHandle = essService.startIrsJob(request);
         final Jobs jobs = essService.getIrsJob(jobHandle.getId().toString());
@@ -92,15 +90,41 @@ public class EssServiceTest {
         final String notificationId = UUID.randomUUID().toString();
         final UUID jobId = UUID.randomUUID();
         final EdcNotification edcNotification = EdcNotification.builder()
-                .header(EdcNotificationHeader.builder().notificationId(notificationId).build())
-                .content(Map.of("result", "Yes")).build();
+                                                               .header(EdcNotificationHeader.builder()
+                                                                                            .notificationId(
+                                                                                                    notificationId)
+                                                                                            .originalNotificationId(
+                                                                                                    notificationId)
+                                                                                            .build())
+                                                               .content(Map.of("result", "Yes"))
+                                                               .build();
 
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(Jobs.builder().job(Job.builder().id(jobId).build()).build(), new ArrayList<>())
-                                                                           .withNotifications(Collections.singletonList(notificationId));
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(
+                                                                                   Jobs.builder().job(Job.builder().id(jobId).build()).build(), new ArrayList<>())
+                                                                           .withNotifications(Collections.singletonList(
+                                                                                   notificationId));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         assertDoesNotThrow(() -> essService.handleNotificationCallback(edcNotification));
         assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
+        final Jobs byJobId = essService.getIrsJob(jobId.toString());
+        assertThat(byJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+    }
+
+    @Test
+    void shouldKeepJobInRunningIfNotificationIsOpen() {
+        final String notificationId = UUID.randomUUID().toString();
+        final UUID jobId = UUID.randomUUID();
+
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(
+                                                                                   Jobs.builder().job(Job.builder().id(jobId).build()).build(), new ArrayList<>())
+                                                                           .withNotifications(Collections.singletonList(
+                                                                                   notificationId));
+        bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
+
+        assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
+        final Jobs byJobId = essService.getIrsJob(jobId.toString());
+        assertThat(byJobId.getJob().getState()).isEqualTo(JobState.RUNNING);
     }
 
     @Test

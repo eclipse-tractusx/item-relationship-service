@@ -67,14 +67,17 @@ public class EssService {
 
     private static Jobs updateState(final BpnInvestigationJob investigationJob) {
         final Jobs jobSnapshot = investigationJob.getJobSnapshot();
-        var newState = jobSnapshot.getJob().getState();
-        if (!investigationJob.getUnansweredNotifications().isEmpty()) {
-            newState = JobState.RUNNING;
-        } else if (!investigationJob.getAnsweredNotifications().isEmpty()) {
-            newState = JobState.COMPLETED;
+        if (hasUnansweredNotifications(investigationJob)) {
+            return jobSnapshot.toBuilder()
+                              .job(jobSnapshot.getJob().toBuilder().state(JobState.RUNNING).build())
+                              .build();
         }
-        return jobSnapshot.toBuilder().job(jobSnapshot.getJob().toBuilder().state(newState).build()).build();
+        return jobSnapshot;
 
+    }
+
+    private static boolean hasUnansweredNotifications(final BpnInvestigationJob job) {
+        return !job.getUnansweredNotifications().isEmpty();
     }
 
     public void handleNotificationCallback(final EdcNotification notification) {
