@@ -1,5 +1,22 @@
 # IRS
 
+## Prerequisites
+
+Secret should be created:
+
+``` yaml
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "irs-digital-twin-registry-docker"
+  namespace: {{ .Release.Namespace | default "default" | quote }}
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: <Secret>
+
+```
+
 ## HELM
 
 Initiate the helm repositories

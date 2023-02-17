@@ -124,6 +124,7 @@ config:
           password: &config-irs-digitalTwin-database-postgres-password "admin"
         secret:
           name: &config-irs-digitalTwin-database-secret-name irs-digital-twin-registry-database
+      idpIssuerUri: "http://edc-daps-service:4567"
     
 
 #########################
