@@ -33,9 +33,13 @@ The following subsection provides instructions for running the infrastructure on
 
 #### Docker-compose + IDE
 
-* Start the necessary infrastructure by running `docker-compose up`
+- Start the necessary infrastructure by running `docker-compose up`
 
-* Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
+- Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
+
+- **Hint**
+  Docker Image and Docker Compose that exist in root directory of application is only for local deployment.
+  It is not and should be not use in any test or production deployment.
 
 #### Local IRS API
 
