@@ -228,14 +228,13 @@ kubectl port-forward svc/irs-semantic-hub-service 8080:8080
 
 ### Next steps
 
-1. Vault: store certificates in secrets
-2. Helm Security issues
-3. Deploy on a cloud provider
-4. Add liveness and readiness probe for irs provider backend service
-5. Move irs frontend helm chart to frontend github url
-6. Use the existing irs helm chart from the repo
-7. Use the existing test data scripts
-8. Fix security scans
+1. Use the existing test data scripts
+2. Use the existing irs helm chart from the repo
+3. Helm Security issues
+4. Move irs frontend helm chart to frontend github url
+5. Deploy on a cloud provider
+6. Vault: store certificates in secrets
+7. Add liveness and readiness probe for irs provider backend service
 
 ### Additional
 
