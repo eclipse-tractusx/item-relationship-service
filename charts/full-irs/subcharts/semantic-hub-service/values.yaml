@@ -30,18 +30,19 @@ resources:
     memory: 512Mi
 
 autoscaling:
-  enabled: true
+  enabled: false
   minReplicas: 1
   maxReplicas: 2
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 
 securityContext:
+  allowPrivilegeEscalation: false
   readOnlyRootFilesystem: true
   runAsUser: 10001
   runAsGroup: 10001
+  runAsNonRoot: true
   seccompProfile:
     type: RuntimeDefault      
   capabilities:
-    drop:
-      - all
+    drop: ["ALL"]

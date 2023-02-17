@@ -34,4 +34,6 @@ spec:
               protocol: TCP
             - name: metrics
               containerPort: 8090
-              protocol: TCP                
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
