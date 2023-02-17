@@ -134,7 +134,8 @@ grafana:
   rbac:
     create: false
   persistence:
-    enabled: false
+    enabled: true
+    existingClaim: "grafana-pv-claim"
 
   username: *config-grafana-username
   password: *config-grafana-password

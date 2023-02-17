@@ -1,0 +1,23 @@
+---
+{{ if .Values.install.grafana }}
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: grafana-pv
+  namespace: {{ .Release.Namespace | default "default" | quote }}
+  labels:
+    type: local
+    app: grafana
+  annotations:
+    "helm.sh/resource-policy": keep    
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data/grafana"
+
+{{ end }}
