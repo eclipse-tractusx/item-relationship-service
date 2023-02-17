@@ -3,10 +3,10 @@
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-START_EDC_VAULT=false
+START_EDC_VAULT=true
 START_EDC_DAPS=true
-START_EDC_CONSUMER=false
-START_EDC_PROVIDER=false
+START_EDC_CONSUMER=true
+START_EDC_PROVIDER=true
 
 ######### EDC Vault #########
 if $START_EDC_VAULT
