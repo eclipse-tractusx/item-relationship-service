@@ -1,7 +1,7 @@
 ---
 apiVersion: v2
-name: irs
-description: IRS Backend Service
+name: omejdn-service
+description: Omejdn Service
 type: application
 appVersion: "1.0.0"
 version: 0.0.1

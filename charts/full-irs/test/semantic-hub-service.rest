@@ -6,6 +6,10 @@
 @adminMappingEndpoint = /__admin/mappings
 @adminFilesEndpoint = /__admin/files
 
+### Get Admin
+
+GET http://{{host}}/__admin
+Content-Type: {{contentType}}
 
 ### Get Admin mappings
 

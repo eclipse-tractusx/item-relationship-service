@@ -32,6 +32,24 @@ spec:
             - name: default
               containerPort: 3000
               protocol: TCP
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: default
+            initialDelaySeconds: 100
+            periodSeconds: 3
+            failureThreshold: 3
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: default
+            initialDelaySeconds: 60
+            periodSeconds: 3
+            failureThreshold: 3
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ .Chart.Name }}

@@ -3,10 +3,10 @@
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-START_IRS_INFRA=true
+START_IRS_INFRA=false
 START_IRS_BACKEND_DEPENDENCIES=true
-START_IRS_BACKEND=true
-START_IRS_FRONTEND=true
+START_IRS_BACKEND=false
+START_IRS_FRONTEND=false
 
 if $START_IRS_INFRA
 then
@@ -98,13 +98,3 @@ then
     kubectl wait deployment -n irs --for condition=Available --timeout=90s irs-frontend-service
     
 fi
-
-echo -e "${BLUE}Port forwarding${NC}"
-kubectl port-forward svc/edc-vault 8200:8200 -n irs &
-kubectl port-forward svc/edc-provider-control-plane 6080:8080 6181:8181 -n irs &
-kubectl port-forward svc/edc-consumer-control-plane 7080:8080 7181:8181 -n irs &
-kubectl port-forward svc/irs-provider-backend-service 10199:8080 -n irs &
-kubectl port-forward svc/irs-digital-twin-registry 10200:8080 -n irs &
-kubectl port-forward svc/irs-backend-service 8080:8080 -n irs &
-kubectl port-forward svc/irs-frontend-service 3000:8080 -n irs &
-kubectl port-forward svc/irs-keycloak-service 4011:8080 -n irs

@@ -5,7 +5,7 @@
 @jobsEndpoint = /irs/jobs
 @headerName = X-Api-Key
 @headerValue = password
-@token = eyJhbGciOiJSUzI1NiIsImtpZCI6IkJBMUM3RjQ4QUMxREZCNjgxRUVEQTk1QThGREU3ODEzIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjQwMTEiLCJuYmYiOjE2NzYyMzA5NTksImlhdCI6MTY3NjIzMDk1OSwiZXhwIjoxNjc2MjM0NTU5LCJzY29wZSI6WyJjYXRlbmEtc2NvcGUiXSwiY2xpZW50X2lkIjoiY2F0ZW5hLWNsaWVudC1pZCIsInJlc291cmNlX2FjY2VzcyI6eyJDbDIwLUNYLUlSUyI6eyJyb2xlcyI6WyJ2aWV3X2lycyJdfX0sImp0aSI6Ijg4RDZFMDdEOThBMjhBNTM2OEQ4NTk4OEQ1MDlCQzNFIn0.S0Q46Jcnkx-ZDi8ovRjkos8kXSpDTRRU-bKrj5w3z-upxpf0QTeFX-H2IYabeHpDbs5lIhtYX9LJkCS7SNqZs-AcBL_vgFvNEHEdyYkFeaMGV8TeGAOznoVRgKjN03NqRdrq5t3vriXRAHUu0nkrsrFPakRs6jrSUnLYbx4E2cPQOCgdE4XBm5-qzQrH9ultbYI1LQcML0g3SEQsqPwJDAKsDJdGepASs2pNYk8DjBCDKA79XaHwHBenge0tJvbLPIwE09Ph9G_9stH76jk2sXo4EwIdO-Pwc4nHwWexKk0KakNaSBm1vH6RL3eQlyUuqRT981sBAme-DoO3VqqH-A
+@token = eyJhbGciOiJSUzI1NiIsImtpZCI6IjBDQ0Y5MTkxRkE3ODdFRjU5RkQ3NDI3Q0IzMzIwNUM2IiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjQwMTEiLCJuYmYiOjE2NzY1ODE2NzUsImlhdCI6MTY3NjU4MTY3NSwiZXhwIjoxNjc2NjY4MDc1LCJzY29wZSI6WyJjYXRlbmEtc2NvcGUiXSwiY2xpZW50X2lkIjoiY2F0ZW5hLWNsaWVudC1pZCIsInJlc291cmNlX2FjY2VzcyI6eyJDbDIwLUNYLUlSUyI6eyJyb2xlcyI6WyJ2aWV3X2lycyJdfX0sImp0aSI6IjY2OUFFOUZGMUIyNzUwMEVBRDE3MUY5NDU2QzEwNjQ0In0.n_LM01Q3Rpz0Yn-268vyWNbNxuEMBk_eY1_nUqXfvPwUutPXt_v6em0I6C6zaGjeuPsReF796Q8BIsOSn3tiapaFmoE-mQR6zdwP1SOxWx9FrIcumRDeimS4xyQa9shjSYKFaXTh4BBQi_QcjasTWHVZtsWzB02F2lkFb-1Z2qLAd_ea2WF2h3_WCmGDaJ5zkTLWB49aUbNHhnH_ypoBwZ533wbrXg8IMAyiikHBZGfKVmbhDm7kjvBtrvmwjYgOn9kH22GgHwJ-kFLeraETYC-qvt6mYeI1FrGFAho5n51wYv3zgX9uCouN05uanahR4kGKw7j9zUVm4M_FBnFfOw
 
 
 ### Get jobs
@@ -17,7 +17,7 @@ Authorization: Bearer {{token}}
 
 ### Get jobs
 
-GET http://{{host}}{{jobsEndpoint}}/4edcf6b2-1686-4892-b877-76118c303e26
+GET http://{{host}}{{jobsEndpoint}}/9446a0f8-f274-4baa-9687-7d924c54d403
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -37,5 +37,5 @@ Authorization: Bearer {{token}}
   "collectAspects": true,
   "direction": "downward",
   "depth": 10,
-  "globalAssetId": "urn:uuid:475e3dd4-7481-483f-83f6-f5b1a06363bd"
+  "globalAssetId": "urn:uuid:2e7521a5-262a-462c-9179-0275714df1b5"
 }

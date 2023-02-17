@@ -2,7 +2,6 @@
 .git/
 .gitignore
 certs/
-test/
 testData/
 .gitignore
 start.sh

@@ -37,6 +37,13 @@ dependencies:
     repository: https://helm.releases.hashicorp.com
     condition: install.edc.vault
 
+  # Omejdn Service
+  - name: omejdn-service
+    alias: edc-daps-service
+    version: 0.0.1
+    repository: "file://subcharts/omejdn-service"
+    condition: install.edc.daps
+
   # EDC Consumer 
   # PostgreSQL
   - name: postgresql
@@ -95,7 +102,7 @@ dependencies:
     repository: https://denisneuling.github.io/cx-backend-service
     condition: install.edc.provider
 
-  # IRS Backend Serviec
+  # IRS Backend Service
   - name: irs
     alias: irs-backend-service
     version: 0.0.1
@@ -129,13 +136,6 @@ dependencies:
     version: 0.0.1
     repository: "file://subcharts/irs-frontend-service"
     condition: install.irs.frontend
-
-  # # Omejdn
-  # - name: omejdn
-  #   alias: omejdn
-  #   version: 0.0.1
-  #   repository: "file://subcharts/omejdn"
-  #   condition: install.omejdn
 
   # KeyCloak Service
   - name: keycloak-mock-service

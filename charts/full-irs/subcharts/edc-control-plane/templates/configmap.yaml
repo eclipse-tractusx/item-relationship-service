@@ -20,6 +20,7 @@ data:
     web.http.ids.path={{ .Values.edc.endpoints.ids.path }}
     edc.hostname={{ .Values.edc.hostname }}
     
+    edc.vault.hashicorp.health.check.enabled=false
     edc.vault.hashicorp.url={{ .Values.edc.vault.hashicorp.url }}
     edc.vault.hashicorp.token={{ .Values.edc.vault.hashicorp.token }}
     edc.vault.hashicorp.timeout.seconds=30
@@ -47,7 +48,7 @@ data:
     edc.datasource.transferprocess.password={{ .Values.edc.postgresql.password }}
 
     edc.data.encryption.keys.alias={{ .Values.edc.data.encryption.keys.alias }}
-    edc.data.encryption.algorithm={{ .Values.edc.data.encryption.algorithm }}
+    edc.data.encryption.algorithm=NONE
 
     edc.oauth.token.url={{ .Values.edc.oauth.token.url }}
     edc.oauth.public.key.alias={{ .Values.edc.oauth.public.key.alias }}
@@ -57,6 +58,8 @@ data:
     edc.oauth.provider.jwks.url={{ .Values.edc.oauth.provider.jwks.url}}
     edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
 
+    edc.oauth.endpoint.audience=http://{{ .Values.edc.hostname }}:8282/api/v1/ids/data
+
     edc.transfer.proxy.token.signer.privatekey.alias={{ .Values.edc.transfer.proxy.token.signer.privatekey.alias }}
     edc.transfer.proxy.token.verifier.publickey.alias={{ .Values.edc.transfer.proxy.token.verifier.publickey.alias }}
 
@@ -65,7 +68,6 @@ data:
     edc.api.control.auth.apikey.value=password
 
     edc.receiver.http.endpoint={{ .Values.edc.receiver.http.endpoint }}
-
     
     edc.ids.title=Eclipse Dataspace Connector
     edc.ids.description=Eclipse Dataspace Connector
@@ -76,8 +78,8 @@ data:
     edc.ids.curator=http://{{ .Values.edc.hostname }}
     edc.ids.catalog.id=urn:catalog:default
     # This is checked as the audience for incoming ids messages/tokens => TBD Check again
-    edc.ids.endpoint.audience=http://{{ .Values.edc.hostname }}:8282/api/v1/ids/data
-    ids.webhook.address=http://{{ .Values.edc.hostname }}:8282/api/v1/ids
+    edc.ids.endpoint.audience=http://{{ .Values.edc.hostname }}:8282
+    ids.webhook.address=http://{{ .Values.edc.hostname }}:8282
 
   opentelemetry.properties: |-
     {{- .Values.opentelemetry.properties | nindent 4 }}

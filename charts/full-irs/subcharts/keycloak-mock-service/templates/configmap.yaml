@@ -49,6 +49,8 @@ data:
         "AllowedGrantTypes": ["{{ .Values.grand.type }}"],
         "AllowedScopes": ["{{ .Values.scope }}"],
         "ClientClaimsPrefix": "",
+        "IdentityTokenLifetime": 86400,
+        "AccessTokenLifetime": 86400,
         "Claims": [
           {
             "Type": "resource_access",

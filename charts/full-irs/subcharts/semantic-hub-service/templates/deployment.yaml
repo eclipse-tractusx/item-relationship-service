@@ -32,6 +32,24 @@ spec:
             - name: default
               containerPort: 8080
               protocol: TCP
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /__admin
+              port: default
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            failureThreshold: 3
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /__admin
+              port: default
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            failureThreshold: 3
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ .Chart.Name }}

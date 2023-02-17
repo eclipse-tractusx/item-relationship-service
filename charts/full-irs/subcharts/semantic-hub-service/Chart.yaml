@@ -1,7 +1,7 @@
 ---
 apiVersion: v2
 name: semantic-hub-service
-description: A Helm chart for Kubernetes
+description: Semantic Hub Service
 type: application
 version: 0.0.1
 appVersion: "1.0.0"

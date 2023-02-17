@@ -7,7 +7,6 @@
 @headerValue = password
 
 
-
 ### Get assets
 
 GET http://{{host}}{{assetsEndpoint}} HTTP/1.1

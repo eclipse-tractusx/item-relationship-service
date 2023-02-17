@@ -6,7 +6,7 @@
 @headerName = X-Api-Key
 @headerValue = password
 
-@providerUrl = http://edc-provider-control-plane:8181/api/v1/ids/data
+@providerUrl = http://edc-provider-control-plane:8282/api/v1/ids/data
 
 ### Get Catalog
 
