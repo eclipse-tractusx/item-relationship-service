@@ -58,6 +58,8 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
+import org.eclipse.tractusx.irs.semanticshub.AspectModel;
+import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.http.HttpStatus;
@@ -79,44 +81,67 @@ public class OpenApiExamples {
     public void createExamples(final Components components) {
         components.addExamples("job-handle", toExample(createJobHandle(JOB_HANDLE_ID_1)));
         components.addExamples("error-response-400", toExample(ErrorResponse.builder()
-                                                                        .withMessages(List.of("BadRequestException"))
-                                                                        .withError("Bad request")
-                                                                        .withStatusCode(
-                                                                                HttpStatus.BAD_REQUEST)
-                                                                        .build()));
+                                                                            .withMessages(
+                                                                                    List.of("BadRequestException"))
+                                                                            .withError("Bad request")
+                                                                            .withStatusCode(HttpStatus.BAD_REQUEST)
+                                                                            .build()));
         components.addExamples("error-response-401", toExample(ErrorResponse.builder()
-                                                                            .withMessages(List.of("UnauthorizedException"))
+                                                                            .withMessages(
+                                                                                    List.of("UnauthorizedException"))
                                                                             .withError("Unauthorized")
-                                                                            .withStatusCode(
-                                                                                    HttpStatus.UNAUTHORIZED)
+                                                                            .withStatusCode(HttpStatus.UNAUTHORIZED)
                                                                             .build()));
         components.addExamples("error-response-403", toExample(ErrorResponse.builder()
                                                                             .withMessages(List.of("ForbiddenException"))
                                                                             .withError("Forbidden")
-                                                                            .withStatusCode(
-                                                                                    HttpStatus.FORBIDDEN)
+                                                                            .withStatusCode(HttpStatus.FORBIDDEN)
                                                                             .build()));
         components.addExamples("error-response-404", toExample(ErrorResponse.builder()
-                                                                        .withMessages(List.of("NotFoundException"))
-                                                                        .withError("Not found")
-                                                                        .withStatusCode(
-                                                                                HttpStatus.NOT_FOUND)
-                                                                        .build()));
+                                                                            .withMessages(List.of("NotFoundException"))
+                                                                            .withError("Not found")
+                                                                            .withStatusCode(HttpStatus.NOT_FOUND)
+                                                                            .build()));
         components.addExamples("complete-job-result", createCompleteJobResult());
         components.addExamples("job-result-without-uncompleted-result-tree", createJobResultWithoutTree());
         components.addExamples("partial-job-result", createPartialJobResult());
         components.addExamples("canceled-job-result", createCanceledJobResult());
         components.addExamples("failed-job-result", createFailedJobResult());
         components.addExamples("complete-job-list-processing-state", createJobListProcessingState());
+        components.addExamples("aspect-models-list", createAspectModelsResult());
+    }
+
+    private Example createAspectModelsResult() {
+        final AspectModel assemblyPartRelationship = AspectModel.builder()
+                                                                .name("AssemblyPartRelationship")
+                                                                .urn("urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship")
+                                                                .version("1.1.1")
+                                                                .status("RELEASED")
+                                                                .type("BAMM")
+                                                                .build();
+        final AspectModel serialPartTypization = AspectModel.builder()
+                                                            .name("SerialPartTypization")
+                                                            .urn("urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization")
+                                                            .version("1.1.0")
+                                                            .status("RELEASED")
+                                                            .type("BAMM")
+                                                            .build();
+
+        return toExample(AspectModels.builder()
+                                     .lastUpdated("2023-02-13T08:18:11.990659500Z")
+                                     .models(List.of(assemblyPartRelationship, serialPartTypization))
+                                     .build());
     }
 
     private Example createJobListProcessingState() {
         return toExample(new PageResult(new PagedListHolder<>(List.of(JobStatusResult.builder()
-                               .id(UUID.fromString(JOB_HANDLE_ID_1))
-                               .state(JobState.COMPLETED)
-                               .startedOn(EXAMPLE_ZONED_DATETIME)
-                               .completedOn(EXAMPLE_ZONED_DATETIME)
-                               .build()))));
+                                                                                     .id(UUID.fromString(
+                                                                                             JOB_HANDLE_ID_1))
+                                                                                     .state(JobState.COMPLETED)
+                                                                                     .startedOn(EXAMPLE_ZONED_DATETIME)
+                                                                                     .completedOn(
+                                                                                             EXAMPLE_ZONED_DATETIME)
+                                                                                     .build()))));
     }
 
     private JobHandle createJobHandle(final String name) {
@@ -162,7 +187,7 @@ public class OpenApiExamples {
         return JobParameter.builder()
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .depth(DEFAULT_DEPTH)
-                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION, AspectType.ADDRESS_ASPECT))
+                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(), AspectType.ADDRESS_ASPECT.toString()))
                            .direction(Direction.DOWNWARD)
                            .collectAspects(false)
                            .build();
@@ -216,10 +241,11 @@ public class OpenApiExamples {
     }
 
     private Map<String, Object> createAssemblyPartRelationshipPayloadMap() {
-        final String assemblyPartRelationshipPayload = "{\"catenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
-                + "\"childParts\": [ { \"assembledOn\": \"2022-02-03T14:48:54.709Z\", \"childCatenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
-                + "\"lastModifiedOn\": \"2022-02-03T14:48:54.709Z\", \"lifecycleContext\": \"AsBuilt\", \"quantity\": "
-                + "{\"measurementUnit\": {\"datatypeURI\": \"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\",\"lexicalValue\": \"piece\"},\"quantityNumber\": 1}}]}";
+        final String assemblyPartRelationshipPayload =
+                "{\"catenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
+                        + "\"childParts\": [ { \"assembledOn\": \"2022-02-03T14:48:54.709Z\", \"childCatenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
+                        + "\"lastModifiedOn\": \"2022-02-03T14:48:54.709Z\", \"lifecycleContext\": \"AsBuilt\", \"quantity\": "
+                        + "{\"measurementUnit\": {\"datatypeURI\": \"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\",\"lexicalValue\": \"piece\"},\"quantityNumber\": 1}}]}";
 
         return new JsonUtil().fromString(assemblyPartRelationshipPayload, Map.class);
     }

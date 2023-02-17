@@ -21,27 +21,22 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.semanticshub;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.List;
 
-import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
-class SemanticsHubFacadeTest {
-
-    private final SemanticsHubFacade semanticsHubFacade = new SemanticsHubFacade(new SemanticsHubClientLocalStub());
-
-    @Test
-    void shouldReturnModelJsonSchema() throws SchemaNotFoundException {
-        final String defaultUrn = "urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization";
-
-        final String modelJsonSchema = semanticsHubFacade.getModelJsonSchema(defaultUrn);
-
-        assertThat(modelJsonSchema).isNotBlank();
-    }
-
-    @Test
-    void shouldReturnAllAspectModels() throws SchemaNotFoundException {
-        final AspectModels allAspectModels = semanticsHubFacade.getAllAspectModels();
-        assertThat(allAspectModels.models()).isNotEmpty();
+/**
+ * Pagination wrapper Object.
+ * @param <T> Type of paginated item
+ */
+@SuppressWarnings({ "PMD.UnusedFormalParameter" })
+public class PaginatedResponse<T> extends PageImpl<T> {
+    public PaginatedResponse(final @JsonProperty("items") List<T> items,
+            final @JsonProperty("totalItems") int totalItems,
+            final @JsonProperty("currentPage") int currentPage,
+            final @JsonProperty("itemCount") int itemCount) {
+        super(items, PageRequest.of(currentPage, itemCount), totalItems);
     }
 }

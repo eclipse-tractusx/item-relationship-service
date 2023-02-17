@@ -34,7 +34,6 @@ import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.exceptions.EdcClientException;
@@ -60,9 +59,8 @@ public class SubmodelDelegate extends AbstractDelegate {
     private final JsonValidatorService jsonValidatorService;
     private final JsonUtil jsonUtil;
 
-    public SubmodelDelegate(final EdcSubmodelFacade submodelFacade,
-            final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService,
-            final JsonUtil jsonUtil) {
+    public SubmodelDelegate(final EdcSubmodelFacade submodelFacade, final SemanticsHubFacade semanticsHubFacade,
+            final JsonValidatorService jsonValidatorService, final JsonUtil jsonUtil) {
         super(null); // no next step
         this.submodelFacade = submodelFacade;
         this.semanticsHubFacade = semanticsHubFacade;
@@ -79,7 +77,7 @@ public class SubmodelDelegate extends AbstractDelegate {
             log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
 
             final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.filterDescriptorsByAspectTypes(
-                    jobData.getAspects().stream().map(AspectType::toString).toList());
+                    jobData.getAspects());
 
             if (jobData.isCollectAspects()) {
                 log.info("Collecting Submodels.");
