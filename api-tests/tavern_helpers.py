@@ -53,10 +53,9 @@ def errors_for_invalid_globalAssetId_are_correct(response):
 
 def errors_for_unknown_globalAssetId_are_correct(response):
     error_list = response.json().get("tombstones")
-    print(error_list)
 
     for i in error_list:
-        print("Given tombstone: -- ", i, " --")
+        print("Given tombstone: ", i)
         catenaXId = i.get("catenaXId")
         print("Given catenaXID: ", catenaXId)
         processingErrorStep = i.get("processingError").get("processStep")
@@ -69,7 +68,7 @@ def errors_for_unknown_globalAssetId_are_correct(response):
         print("RetryCounter: ", processingErrorRetryCounter)
         assert 'urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa' in catenaXId
         assert 'DigitalTwinRequest' in processingErrorStep
-        assert 'S404 : \"{\"error\":{\"message\":\"Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found\",\"path\":\"/registry/shell-descriptors/urn%3Auuid%3Acce14502-958a-42e1-8bb7-f4f41aaaaaaa\",\"details\":{}}}\"' in processingErrorDetail
+        assert '404 : \"{\"error\":{\"message\":\"Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found\",\"path\":\"/registry/shell-descriptors/urn%3Auuid%3Acce14502-958a-42e1-8bb7-f4f41aaaaaaa\",\"details\":{}}}\"' in processingErrorDetail
         assert processingErrorLastAttempt is not None
         assert 3 is processingErrorRetryCounter
 
