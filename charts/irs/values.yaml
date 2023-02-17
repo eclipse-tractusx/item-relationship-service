@@ -42,11 +42,11 @@ autoscaling:
 # @url: https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-resource-requests-and-limits
 resources:
   limits:
-    cpu: 0.75
-    memory: 1.5Gi
+    cpu: 1.5
+    memory: 2Gi
   requests:
-    cpu: 250m
-    memory: 512Mi
+    cpu: 0.5
+    memory: 2Gi
 
 nodeSelector: { }
 
