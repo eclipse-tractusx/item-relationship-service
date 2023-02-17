@@ -817,7 +817,7 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 450
+    delay_after: 500
 
   - name: authenticate and fetch access token
     request:
