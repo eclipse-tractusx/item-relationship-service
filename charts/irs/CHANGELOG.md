@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed config parameter ``semanticsHub`` to ``semanticshub``
 - Moved path ``/models/`` from ``semanticshub.modelJsonSchemaEndpoint`` to ``semanticshub.url``
 
+### Migration note
+Please make sure that you update your URL config for the semantics hub (see "Changed" section). Otherwise, IRS can not pick up the config correctly. Your new URL needs to contain the /model path.
+
 ## [4.3.0] - 2023-02-07
 ### Added
 - Add support for custom environment variables in Helm chart.
