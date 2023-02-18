@@ -202,7 +202,7 @@ prometheus:
       enabled: false
   server:
     persistentVolume:
-      size: 1Gi
+      size: 10Mi
   extraScrapeConfigs: |
     - job_name: 'spring-actuator'
       metrics_path: '/actuator/prometheus'
@@ -240,8 +240,8 @@ minio:
       memory: 512Mi 
   replicas: 1
   persistence:
-    enabled: true
-    size: 1Gi
+    enabled: false
+    size: 10Mi
   mode: standalone
 
   environment:
