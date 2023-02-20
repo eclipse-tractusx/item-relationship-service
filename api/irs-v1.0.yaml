@@ -302,6 +302,44 @@ paths:
       summary: Cancel job for requested jobId.
       tags:
         - Item Relationship Service
+  /irs/aspectmodels:
+    get:
+      description: Get all available aspect models from semantic hub or local models.
+      operationId: getAllAspectModels
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: "#/components/examples/aspect-models-list"
+              schema:
+                $ref: "#/components/schemas/AspectModels"
+          description: Returns all available aspect models.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: "#/components/examples/error-response-401"
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: "#/components/examples/error-response-403"
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          description: Authorized failed.
+      security:
+        - oAuth2:
+            - profile email
+      summary: Get all available aspect models from semantic hub or local models.
+      tags:
+        - Aspect Models
 components:
   examples:
     canceled-job-result:
@@ -654,6 +692,20 @@ components:
         relationships: [ ]
         submodels: [ ]
         tombstones: [ ]
+    aspect-models-list:
+      value:
+        lastUpdated: 2023-02-13T08:18:11.990659500Z
+        models:
+          - urn: urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship
+            name: AssemblyPartRelationship
+            status: RELEASED
+            type: BAMM
+            version: 1.1.1
+          - urn: urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization
+            name: SerialPartTypization
+            status: RELEASED
+            type: BAMM
+            version: 1.1.0
   schemas:
     AdministrativeInformation:
       type: object
@@ -918,30 +970,6 @@ components:
       properties:
         aspects:
           type: string
-          enum:
-            - AddressAspect
-            - AssemblyPartRelationship
-            - Batch
-            - BatteryPass
-            - CertificateOfDestruction
-            - CertificateOfDismantler
-            - ChargingProcess
-            - ClaimData
-            - DiagnosticData
-            - EndOfLife
-            - EsrCertificate
-            - EsrCertificateStateStatistic
-            - IdConversion
-            - MarketplaceOffer
-            - MaterialForHomologation
-            - MaterialForRecycling
-            - PartAsPlanned
-            - PhysicalDimension
-            - ProductDescription
-            - ReturnRequest
-            - SerialPartTypization
-            - SingleLevelBomAsPlanned
-            - SingleLevelUsageAsBuilt
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
@@ -1163,30 +1191,6 @@ components:
           type: array
           items:
             type: string
-            enum:
-              - AddressAspect
-              - AssemblyPartRelationship
-              - Batch
-              - BatteryPass
-              - CertificateOfDestruction
-              - CertificateOfDismantler
-              - ChargingProcess
-              - ClaimData
-              - DiagnosticData
-              - EndOfLife
-              - EsrCertificate
-              - EsrCertificateStateStatistic
-              - IdConversion
-              - MarketplaceOffer
-              - MaterialForHomologation
-              - MaterialForRecycling
-              - PartAsPlanned
-              - PhysicalDimension
-              - ProductDescription
-              - ReturnRequest
-              - SerialPartTypization
-              - SingleLevelBomAsPlanned
-              - SingleLevelUsageAsBuilt
           maxItems: 2147483647
         bomLifecycle:
           type: string
@@ -1309,6 +1313,30 @@ components:
           type: string
         processingError:
           $ref: '#/components/schemas/ProcessingError'
+    AspectModel:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+        type:
+          type: string
+        urn:
+          type: string
+        version:
+          type: string
+    AspectModels:
+      type: object
+      additionalProperties: false
+      properties:
+        lastUpdated:
+          type: string
+        models:
+          type: array
+          items:
+            $ref: '#/components/schemas/AspectModel'
   securitySchemes:
     oAuth2:
       flows:

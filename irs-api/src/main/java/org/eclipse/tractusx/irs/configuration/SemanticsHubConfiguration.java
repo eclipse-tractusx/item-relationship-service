@@ -19,29 +19,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.semanticshub;
+package org.eclipse.tractusx.irs.configuration;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
-import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
-import org.junit.jupiter.api.Test;
+/**
+ * SemanticHub configuration settings. Automatically populated by Spring from application.yml
+ * and other configuration sources.
+ */
+@Component
+@ConfigurationProperties(prefix = "semanticshub")
+@Data
+public class SemanticsHubConfiguration {
 
-class SemanticsHubFacadeTest {
+    private String url;
+    private String modelJsonSchemaEndpoint;
+    private String localModelDirectory;
+    private int pageSize;
 
-    private final SemanticsHubFacade semanticsHubFacade = new SemanticsHubFacade(new SemanticsHubClientLocalStub());
-
-    @Test
-    void shouldReturnModelJsonSchema() throws SchemaNotFoundException {
-        final String defaultUrn = "urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization";
-
-        final String modelJsonSchema = semanticsHubFacade.getModelJsonSchema(defaultUrn);
-
-        assertThat(modelJsonSchema).isNotBlank();
-    }
-
-    @Test
-    void shouldReturnAllAspectModels() throws SchemaNotFoundException {
-        final AspectModels allAspectModels = semanticsHubFacade.getAllAspectModels();
-        assertThat(allAspectModels.models()).isNotEmpty();
-    }
 }
