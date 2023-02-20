@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Introduced new endpoint ``/irs/aspectmodels`` which will list all available aspect models (from semantic hub or locally provided files if present)
 
+### Fixed
+- If Grafana is enabled - dashboards will be automatically imported on startup
+
 ### Changed
 - Job creation validates ``aspects`` by using models available in semantic hub or locally provided.
 
