@@ -1897,7 +1897,7 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 25
+    delay_after: 60
 
   - name: get response for created investigation
     request:
@@ -2083,7 +2083,7 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 25
+    delay_after: 60
 
   - name: get response for created investigation
     request:
