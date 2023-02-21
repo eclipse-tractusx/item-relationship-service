@@ -106,7 +106,7 @@ digitalTwinRegistry:
   shellLookupEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/lookup/shells?assetIds={assetIds}"
 semanticshub:
   url: https://<semantics-hub-url>
-  modelJsonSchemaEndpoint: "{{ tpl .Values.semanticsHub.url . }}/{urn}/json-schema"
+  modelJsonSchemaEndpoint: "{{ tpl .Values.semanticshub.url . }}/{urn}/json-schema"
   defaultUrns: >-
     urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
 #    ,urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship
