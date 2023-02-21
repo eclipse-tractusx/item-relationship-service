@@ -19,34 +19,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component;
+package org.eclipse.tractusx.irs.semanticshub;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 /**
- * Relationship
+ * Pagination wrapper Object.
+ * @param <T> Type of paginated item
  */
-@Value
-@Jacksonized
-@Builder(toBuilder = true)
-@AllArgsConstructor
-@Schema(description = "Relationships between parent and child items.")
-public class Relationship {
-
-    private static final int GLOBAL_ASSET_ID_LENGTH = 45;
-
-    @Schema(implementation = String.class, description = "CATENA-X global asset id in the format urn:uuid:uuid4.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-            minLength = GLOBAL_ASSET_ID_LENGTH, maxLength = GLOBAL_ASSET_ID_LENGTH, pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
-    @JsonUnwrapped
-    private GlobalAssetIdentification catenaXId;
-
-    private LinkedItem linkedItem;
-
-    private String  aspectType;
-
+@SuppressWarnings({ "PMD.UnusedFormalParameter" })
+public class PaginatedResponse<T> extends PageImpl<T> {
+    public PaginatedResponse(final @JsonProperty("items") List<T> items,
+            final @JsonProperty("totalItems") int totalItems,
+            final @JsonProperty("currentPage") int currentPage,
+            final @JsonProperty("itemCount") int itemCount) {
+        super(items, PageRequest.of(currentPage, itemCount), totalItems);
+    }
 }

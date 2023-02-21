@@ -19,34 +19,17 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component;
+package org.eclipse.tractusx.irs.semanticshub;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
 
 /**
- * Relationship
+ * @param urn semantic model urn
+ * @param version semantic model version
+ * @param name semantic model clear name
+ * @param type type of model
+ * @param status status of model
  */
-@Value
-@Jacksonized
-@Builder(toBuilder = true)
-@AllArgsConstructor
-@Schema(description = "Relationships between parent and child items.")
-public class Relationship {
-
-    private static final int GLOBAL_ASSET_ID_LENGTH = 45;
-
-    @Schema(implementation = String.class, description = "CATENA-X global asset id in the format urn:uuid:uuid4.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-            minLength = GLOBAL_ASSET_ID_LENGTH, maxLength = GLOBAL_ASSET_ID_LENGTH, pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
-    @JsonUnwrapped
-    private GlobalAssetIdentification catenaXId;
-
-    private LinkedItem linkedItem;
-
-    private String  aspectType;
-
+@Builder
+public record AspectModel(String urn, String version, String name, String type, String status) {
 }

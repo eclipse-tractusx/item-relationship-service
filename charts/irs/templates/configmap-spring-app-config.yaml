@@ -37,10 +37,11 @@ data:
       descriptorEndpoint: {{ tpl .Values.digitalTwinRegistry.descriptorEndpoint . | quote }}
       shellLookupEndpoint: {{ tpl .Values.digitalTwinRegistry.shellLookupEndpoint . | quote }}
 
-    semanticsHub:
-      modelJsonSchemaEndpoint: {{ tpl .Values.semanticsHub.modelJsonSchemaEndpoint . | quote }}
-      defaultUrns: {{ tpl (.Values.semanticsHub.defaultUrns | default "") . | quote }}
-      {{- if .Values.semanticsHub.localModels }}
+    semanticshub:
+      url: {{ tpl .Values.semanticshub.url . | quote }}
+      modelJsonSchemaEndpoint: {{ tpl .Values.semanticshub.modelJsonSchemaEndpoint . | quote }}
+      defaultUrns: {{ tpl (.Values.semanticshub.defaultUrns | default "") . | quote }}
+      {{- if .Values.semanticshub.localModels }}
       localModelDirectory: /app/semantic-models
       {{- end }}
 

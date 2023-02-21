@@ -19,34 +19,26 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component;
+package org.eclipse.tractusx.irs.services;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.semanticshub.AspectModels;
+import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
+import org.springframework.stereotype.Service;
 
 /**
- * Relationship
+ * Service to obtain semantic models.
  */
-@Value
-@Jacksonized
-@Builder(toBuilder = true)
-@AllArgsConstructor
-@Schema(description = "Relationships between parent and child items.")
-public class Relationship {
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class SemanticHubService {
+    private final SemanticsHubFacade semanticsHubFacade;
 
-    private static final int GLOBAL_ASSET_ID_LENGTH = 45;
-
-    @Schema(implementation = String.class, description = "CATENA-X global asset id in the format urn:uuid:uuid4.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-            minLength = GLOBAL_ASSET_ID_LENGTH, maxLength = GLOBAL_ASSET_ID_LENGTH, pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
-    @JsonUnwrapped
-    private GlobalAssetIdentification catenaXId;
-
-    private LinkedItem linkedItem;
-
-    private String  aspectType;
-
+    public AspectModels getAllAspectModels() throws SchemaNotFoundException {
+        log.info("Returning all available aspect models");
+        return semanticsHubFacade.getAllAspectModels();
+    }
 }

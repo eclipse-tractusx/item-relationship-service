@@ -19,34 +19,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component;
+package org.eclipse.tractusx.irs.configuration;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
- * Relationship
+ * SemanticHub configuration settings. Automatically populated by Spring from application.yml
+ * and other configuration sources.
  */
-@Value
-@Jacksonized
-@Builder(toBuilder = true)
-@AllArgsConstructor
-@Schema(description = "Relationships between parent and child items.")
-public class Relationship {
+@Component
+@ConfigurationProperties(prefix = "semanticshub")
+@Data
+public class SemanticsHubConfiguration {
 
-    private static final int GLOBAL_ASSET_ID_LENGTH = 45;
-
-    @Schema(implementation = String.class, description = "CATENA-X global asset id in the format urn:uuid:uuid4.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-            minLength = GLOBAL_ASSET_ID_LENGTH, maxLength = GLOBAL_ASSET_ID_LENGTH, pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
-    @JsonUnwrapped
-    private GlobalAssetIdentification catenaXId;
-
-    private LinkedItem linkedItem;
-
-    private String  aspectType;
+    private String url;
+    private String modelJsonSchemaEndpoint;
+    private String localModelDirectory;
+    private int pageSize;
 
 }
