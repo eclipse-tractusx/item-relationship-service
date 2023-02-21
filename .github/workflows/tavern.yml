@@ -11,6 +11,11 @@ on:
         options:
           - 'https://irs.int.demo.catena-x.net'
           - 'https://irs.dev.demo.catena-x.net'
+      irs-ess-host:
+        type: string
+        description: IRS-ESS environment to test
+        default: 'https://irs-ess.dev.demo.catena-x.net'
+        required: true
       global-asset-id:
         type: string
         description: Global Asset ID to use for the tests
