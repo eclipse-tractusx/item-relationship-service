@@ -7,8 +7,8 @@ irs-helm:
     enabled: false
   digitalTwinRegistry:
     url: http://cx-irs-local-registry-svc:8080
-  semanticsHub:
-    url: https://semantics.int.demo.catena-x.net/hub/api/v1
+  semanticshub:
+    url: https://semantics.int.demo.catena-x.net/hub/api/v1/models
   bpdm:
     url: https://partners-pool.int.demo.catena-x.net
   minioUser: testtest
