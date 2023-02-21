@@ -12,10 +12,10 @@ serviceAccount:
   name: ""
 
 livenessProbe:
-  enabled: true
+  enabled: false
 
 readinessProbe:
-  enabled: true
+  enabled: false
 
 containerPort: 4243
 service:
