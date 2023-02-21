@@ -21,27 +21,15 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.semanticshub;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.List;
 
-import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
-import org.junit.jupiter.api.Test;
+import lombok.Builder;
 
-class SemanticsHubFacadeTest {
+/**
+ * @param models list of semantic models
+ * @param lastUpdated timestamp of latest update
+ */
+@Builder
+public record AspectModels(List<AspectModel> models, String lastUpdated) {
 
-    private final SemanticsHubFacade semanticsHubFacade = new SemanticsHubFacade(new SemanticsHubClientLocalStub());
-
-    @Test
-    void shouldReturnModelJsonSchema() throws SchemaNotFoundException {
-        final String defaultUrn = "urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization";
-
-        final String modelJsonSchema = semanticsHubFacade.getModelJsonSchema(defaultUrn);
-
-        assertThat(modelJsonSchema).isNotBlank();
-    }
-
-    @Test
-    void shouldReturnAllAspectModels() throws SchemaNotFoundException {
-        final AspectModels allAspectModels = semanticsHubFacade.getAllAspectModels();
-        assertThat(allAspectModels.models()).isNotEmpty();
-    }
 }

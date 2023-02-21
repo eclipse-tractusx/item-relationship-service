@@ -51,7 +51,10 @@ import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.IrsTimer;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
+import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
+import org.eclipse.tractusx.irs.services.SemanticHubService;
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -80,6 +83,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class IrsController {
 
     private final IrsItemGraphQueryService itemJobService;
+    private final SemanticHubService semanticHubService;
 
     @Operation(operationId = "registerJobForGlobalAssetId",
                summary = "Register an IRS job to retrieve an item graph for given {globalAssetId}.",
@@ -262,4 +266,33 @@ public class IrsController {
         return itemJobService.getJobsByState(states, jobStates, pageable);
     }
 
+    @Operation(operationId = "getAllAspectModels",
+               summary = "Get all available aspect models from semantic hub or local models.",
+               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"), tags = { "Aspect Models" },
+               description = "Get all available aspect models from semantic hub or local models.")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Returns all available aspect models.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = AspectModels.class),
+                                                              examples = { @ExampleObject(name = "complete", ref = "#/components/examples/aspect-models-list")
+                                                              })
+                                         }),
+                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-401"))
+                                         }),
+                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-403"))
+                                         }),
+    })
+    @GetMapping("/aspectmodels")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('view_irs')")
+    public AspectModels getAllAvailableAspectModels() throws SchemaNotFoundException {
+        return semanticHubService.getAllAspectModels();
+    }
 }

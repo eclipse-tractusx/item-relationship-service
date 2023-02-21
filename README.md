@@ -10,7 +10,7 @@
 [![OWASP Dependency Check](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml)
 [![Spotbugs](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml)
 [![Eclipse-dash](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml)
-[![Tavern IRS API test](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml)   
+[![Tavern IRS API test](https://github.com/catenax-ng/tx-item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/catenax-ng/tx-item-relationship-service/actions/workflows/tavern.yml)   
 
 ## What is the IRS?
 
@@ -33,9 +33,13 @@ The following subsection provides instructions for running the infrastructure on
 
 #### Docker-compose + IDE
 
-* Start the necessary infrastructure by running `docker-compose up`
+- Start the necessary infrastructure by running `docker-compose up`
 
-* Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
+- Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
+
+- **Hint**
+  Docker Image and Docker Compose that exist in root directory of application is only for local deployment.
+  It is not and should be not use in any test or production deployment.
 
 #### Local IRS API
 

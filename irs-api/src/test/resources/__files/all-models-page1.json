@@ -1,0 +1,78 @@
+{
+  "items": [
+    {
+      "urn": "urn:bamm:com.catenax.serial_part_typization:0.1.0#SerialPartTypization",
+      "version": "0.1.0",
+      "name": "SerialPartTypization",
+      "type": "BAMM",
+      "status": "DEPRECATED"
+    },
+    {
+      "urn": "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization",
+      "version": "1.0.0",
+      "name": "SerialPartTypization",
+      "type": "BAMM",
+      "status": "DEPRECATED"
+    },
+    {
+      "urn": "urn:bamm:com.catenax.vehicle.product_description:1.0.0#ProductDescription",
+      "version": "1.0.0",
+      "name": "ProductDescription",
+      "type": "BAMM",
+      "status": "DEPRECATED"
+    },
+    {
+      "urn": "urn:bamm:com.catenax:0.0.1#EoLStory",
+      "version": "0.0.1",
+      "name": "EoLStory",
+      "type": "BAMM",
+      "status": "DEPRECATED"
+    },
+    {
+      "urn": "urn:bamm:com.catenaX:0.0.1#Material",
+      "version": "0.0.1",
+      "name": "Material",
+      "type": "BAMM",
+      "status": "DEPRECATED"
+    },
+    {
+      "urn": "urn:bamm:com.catenaX:0.1.0#ReturnRequest",
+      "version": "0.1.0",
+      "name": "ReturnRequest",
+      "type": "BAMM",
+      "status": "DEPRECATED"
+    },
+    {
+      "urn": "urn:bamm:com.catenax:0.1.1#EndOfLife",
+      "version": "0.1.1",
+      "name": "EndOfLife",
+      "type": "BAMM",
+      "status": "DEPRECATED"
+    },
+    {
+      "urn": "urn:bamm:com.catenaX:0.1.1#Material",
+      "version": "0.1.1",
+      "name": "Material",
+      "type": "BAMM",
+      "status": "DEPRECATED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship",
+      "version": "1.0.0",
+      "name": "AssemblyPartRelationship",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship",
+      "version": "1.1.0",
+      "name": "AssemblyPartRelationship",
+      "type": "BAMM",
+      "status": "RELEASED"
+    }
+  ],
+  "totalItems": 20,
+  "currentPage": 0,
+  "totalPages": 2,
+  "itemCount": 10
+}

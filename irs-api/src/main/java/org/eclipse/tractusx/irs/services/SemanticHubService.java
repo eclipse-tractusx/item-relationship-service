@@ -19,29 +19,26 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.semanticshub;
+package org.eclipse.tractusx.irs.services;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.semanticshub.AspectModels;
+import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
-import org.junit.jupiter.api.Test;
+import org.springframework.stereotype.Service;
 
-class SemanticsHubFacadeTest {
+/**
+ * Service to obtain semantic models.
+ */
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class SemanticHubService {
+    private final SemanticsHubFacade semanticsHubFacade;
 
-    private final SemanticsHubFacade semanticsHubFacade = new SemanticsHubFacade(new SemanticsHubClientLocalStub());
-
-    @Test
-    void shouldReturnModelJsonSchema() throws SchemaNotFoundException {
-        final String defaultUrn = "urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization";
-
-        final String modelJsonSchema = semanticsHubFacade.getModelJsonSchema(defaultUrn);
-
-        assertThat(modelJsonSchema).isNotBlank();
-    }
-
-    @Test
-    void shouldReturnAllAspectModels() throws SchemaNotFoundException {
-        final AspectModels allAspectModels = semanticsHubFacade.getAllAspectModels();
-        assertThat(allAspectModels.models()).isNotEmpty();
+    public AspectModels getAllAspectModels() throws SchemaNotFoundException {
+        log.info("Returning all available aspect models");
+        return semanticsHubFacade.getAllAspectModels();
     }
 }

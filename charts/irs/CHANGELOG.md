@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Changed config parameter ``semanticsHub`` to ``semanticshub``
+- Moved path ``/models/`` from ``semanticshub.modelJsonSchemaEndpoint`` to ``semanticshub.url``
+
+### Migration note
+Please make sure that you update your URL config for the semantics hub (see "Changed" section). Otherwise, IRS can not pick up the config correctly. Your new URL needs to contain the /model path.
 
 ## [4.3.0] - 2023-02-07
 ### Added
