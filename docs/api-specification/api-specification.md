@@ -37,12 +37,80 @@ Access
 
 ### Table of Contents
 
+#### [AspectModels](#AspectModels)
+
+-   [`get /irs/aspectmodels`](#getAllAspectModels)
+
 #### [ItemRelationshipService](#ItemRelationshipService)
 
 -   [`put /irs/jobs/{id}`](#cancelJobByJobId)
 -   [`get /irs/jobs/{id}`](#getJobForJobId)
 -   [`get /irs/jobs`](#getJobsByJobStates)
 -   [`post /irs/jobs`](#registerJobForGlobalAssetId)
+
+<span id="AspectModels">AspectModels</span>
+===========================================
+
+<span id="getAllAspectModels"></span>
+
+<a href="#__Methods" class="up">Up</a>
+
+    get /irs/aspectmodels
+
+Get all available aspect models from semantic hub or local models. (<span class="nickname">getAllAspectModels</span>)
+
+Get all available aspect models from semantic hub or local models.
+
+### Return type
+
+[AspectModels](#AspectModels)
+
+### Example data
+
+Content-Type: application/json
+
+    {
+      "lastUpdated" : "lastUpdated",
+      "models" : [ {
+        "urn" : "urn",
+        "name" : "name",
+        "type" : "type",
+        "version" : "version",
+        "status" : "status"
+      }, {
+        "urn" : "urn",
+        "name" : "name",
+        "type" : "type",
+        "version" : "version",
+        "status" : "status"
+      } ]
+    }
+
+### Produces
+
+This API call produces the following media types according to the <span class="header">Accept</span> request header;
+the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+
+-   `application/json`
+
+### Responses
+
+#### 200
+
+Returns all available aspect models.
+[AspectModels](#AspectModels)
+
+#### 401
+
+Authorized failed.
+[ErrorResponse](#ErrorResponse)
+
+#### 403
+
+Authorized failed.
+[ErrorResponse](#ErrorResponse)
+
+------------------------------------------------------------------------
 
 <span id="ItemRelationshipService">ItemRelationshipService</span>
 =================================================================
@@ -95,14 +163,12 @@ Content-Type: \*/\*
         "depth" : 171976544,
         "bomLifecycle" : "asBuilt",
         "collectAspects" : true,
-        "aspects" : "AddressAspect",
+        "aspects" : "aspects",
         "lookupBPNs" : true,
         "callbackUrl" : "callbackUrl",
         "direction" : "upward"
       },
-      "globalAssetId" : {
-        "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-      },
+      "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
       "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
       "state" : "UNSAVED",
       "createdOn" : "2000-01-23T04:56:07.000+00:00",
@@ -138,14 +204,12 @@ Content-Type: application/json
         "depth" : 171976544,
         "bomLifecycle" : "asBuilt",
         "collectAspects" : true,
-        "aspects" : "AddressAspect",
+        "aspects" : "aspects",
         "lookupBPNs" : true,
         "callbackUrl" : "callbackUrl",
         "direction" : "upward"
       },
-      "globalAssetId" : {
-        "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-      },
+      "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
       "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
       "state" : "UNSAVED",
       "createdOn" : "2000-01-23T04:56:07.000+00:00",
@@ -222,9 +286,7 @@ Content-Type: application/json
 
     {
       "relationships" : [ {
-        "catenaXId" : {
-          "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-        },
+        "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
         "aspectType" : "aspectType",
         "linkedItem" : {
           "quantity" : {
@@ -236,15 +298,11 @@ Content-Type: application/json
           },
           "lifecycleContext" : "asBuilt",
           "assembledOn" : "2000-01-23T04:56:07.000+00:00",
-          "childCatenaXId" : {
-            "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-          },
+          "childCatenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
           "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
         }
       }, {
-        "catenaXId" : {
-          "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-        },
+        "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
         "aspectType" : "aspectType",
         "linkedItem" : {
           "quantity" : {
@@ -256,15 +314,11 @@ Content-Type: application/json
           },
           "lifecycleContext" : "asBuilt",
           "assembledOn" : "2000-01-23T04:56:07.000+00:00",
-          "childCatenaXId" : {
-            "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-          },
+          "childCatenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
           "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
         }
       }, {
-        "catenaXId" : {
-          "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-        },
+        "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
         "aspectType" : "aspectType",
         "linkedItem" : {
           "quantity" : {
@@ -276,15 +330,11 @@ Content-Type: application/json
           },
           "lifecycleContext" : "asBuilt",
           "assembledOn" : "2000-01-23T04:56:07.000+00:00",
-          "childCatenaXId" : {
-            "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-          },
+          "childCatenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
           "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
         }
       }, {
-        "catenaXId" : {
-          "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-        },
+        "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
         "aspectType" : "aspectType",
         "linkedItem" : {
           "quantity" : {
@@ -296,15 +346,11 @@ Content-Type: application/json
           },
           "lifecycleContext" : "asBuilt",
           "assembledOn" : "2000-01-23T04:56:07.000+00:00",
-          "childCatenaXId" : {
-            "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-          },
+          "childCatenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
           "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
         }
       }, {
-        "catenaXId" : {
-          "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-        },
+        "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
         "aspectType" : "aspectType",
         "linkedItem" : {
           "quantity" : {
@@ -316,9 +362,7 @@ Content-Type: application/json
           },
           "lifecycleContext" : "asBuilt",
           "assembledOn" : "2000-01-23T04:56:07.000+00:00",
-          "childCatenaXId" : {
-            "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-          },
+          "childCatenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
           "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
         }
       } ],
@@ -2683,14 +2727,12 @@ Content-Type: application/json
           "depth" : 171976544,
           "bomLifecycle" : "asBuilt",
           "collectAspects" : true,
-          "aspects" : "AddressAspect",
+          "aspects" : "aspects",
           "lookupBPNs" : true,
           "callbackUrl" : "callbackUrl",
           "direction" : "upward"
         },
-        "globalAssetId" : {
-          "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-        },
+        "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
         "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
         "state" : "UNSAVED",
         "createdOn" : "2000-01-23T04:56:07.000+00:00",
@@ -2945,33 +2987,34 @@ Authorized failed.
 ### Table of Contents
 
 1.  [`AdministrativeInformation` -](#AdministrativeInformation)
-2.  [`AssetAdministrationShellDescriptor` -](#AssetAdministrationShellDescriptor)
-3.  [`AsyncFetchedItems` -](#AsyncFetchedItems)
-4.  [`Bpn` -](#Bpn)
-5.  [`Endpoint` -](#Endpoint)
-6.  [`ErrorResponse` -](#ErrorResponse)
-7.  [`GlobalAssetIdentification` -](#GlobalAssetIdentification)
-8.  [`IdentifierKeyValuePair` -](#IdentifierKeyValuePair)
-9.  [`Job` -](#Job)
-10. [`JobErrorDetails` -](#JobErrorDetails)
-11. [`JobHandle` -](#JobHandle)
-12. [`JobParameter` -](#JobParameter)
-13. [`JobStatusResult` -](#JobStatusResult)
-14. [`Jobs` -](#Jobs)
-15. [`LangString` -](#LangString)
-16. [`LinkedItem` -](#LinkedItem)
-17. [`MeasurementUnit` -](#MeasurementUnit)
-18. [`PageResult` -](#PageResult)
-19. [`ProcessingError` -](#ProcessingError)
-20. [`ProtocolInformation` -](#ProtocolInformation)
-21. [`Quantity` -](#Quantity)
-22. [`Reference` -](#Reference)
-23. [`RegisterJob` -](#RegisterJob)
-24. [`Relationship` -](#Relationship)
-25. [`Submodel` -](#Submodel)
-26. [`SubmodelDescriptor` -](#SubmodelDescriptor)
-27. [`Summary` -](#Summary)
-28. [`Tombstone` -](#Tombstone)
+2.  [`AspectModel` -](#AspectModel)
+3.  [`AspectModels` -](#AspectModels)
+4.  [`AssetAdministrationShellDescriptor` -](#AssetAdministrationShellDescriptor)
+5.  [`AsyncFetchedItems` -](#AsyncFetchedItems)
+6.  [`Bpn` -](#Bpn)
+7.  [`Endpoint` -](#Endpoint)
+8.  [`ErrorResponse` -](#ErrorResponse)
+9.  [`IdentifierKeyValuePair` -](#IdentifierKeyValuePair)
+10. [`Job` -](#Job)
+11. [`JobErrorDetails` -](#JobErrorDetails)
+12. [`JobHandle` -](#JobHandle)
+13. [`JobParameter` -](#JobParameter)
+14. [`JobStatusResult` -](#JobStatusResult)
+15. [`Jobs` -](#Jobs)
+16. [`LangString` -](#LangString)
+17. [`LinkedItem` -](#LinkedItem)
+18. [`MeasurementUnit` -](#MeasurementUnit)
+19. [`PageResult` -](#PageResult)
+20. [`ProcessingError` -](#ProcessingError)
+21. [`ProtocolInformation` -](#ProtocolInformation)
+22. [`Quantity` -](#Quantity)
+23. [`Reference` -](#Reference)
+24. [`RegisterJob` -](#RegisterJob)
+25. [`Relationship` -](#Relationship)
+26. [`Submodel` -](#Submodel)
+27. [`SubmodelDescriptor` -](#SubmodelDescriptor)
+28. [`Summary` -](#Summary)
+29. [`Tombstone` -](#Tombstone)
 
 ### <span id="AdministrativeInformation">`AdministrativeInformation` -</span> <a href="#__Models" class="up">Up</a>
 
@@ -2982,6 +3025,38 @@ revision (optional)
 version (optional)
 
 <span class="param-type">[String](#string)</span>
+
+### <span id="AspectModel">`AspectModel` -</span> <a href="#__Models" class="up">Up</a>
+
+name (optional)
+
+<span class="param-type">[String](#string)</span>
+
+status (optional)
+
+<span class="param-type">[String](#string)</span>
+
+type (optional)
+
+<span class="param-type">[String](#string)</span>
+
+urn (optional)
+
+<span class="param-type">[String](#string)</span>
+
+version (optional)
+
+<span class="param-type">[String](#string)</span>
+
+### <span id="AspectModels">`AspectModels` -</span> <a href="#__Models" class="up">Up</a>
+
+lastUpdated (optional)
+
+<span class="param-type">[String](#string)</span>
+
+models (optional)
+
+<span class="param-type">[array\[AspectModel\]](#AspectModel)</span>
 
 ### <span id="AssetAdministrationShellDescriptor">`AssetAdministrationShellDescriptor` -</span> <a href="#__Models" class="up">Up</a>
 
@@ -3207,14 +3282,6 @@ Enum:
 
 511 NETWORK\_AUTHENTICATION\_REQUIRED
 
-### <span id="GlobalAssetIdentification">`GlobalAssetIdentification` -</span> <a href="#__Models" class="up">Up</a>
-
-CATENA-X global asset id in the format urn:uuid:uuid4.
-
-globalAssetId (optional)
-
-<span class="param-type">[String](#string)</span> CATENA-X global asset id in the format urn:uuid:uuid4.
-
 ### <span id="IdentifierKeyValuePair">`IdentifierKeyValuePair` -</span> <a href="#__Models" class="up">Up</a>
 
 key (optional)
@@ -3251,7 +3318,7 @@ exception (optional)
 
 globalAssetId
 
-<span class="param-type">[GlobalAssetIdentification](#GlobalAssetIdentification)</span>
+<span class="param-type">[String](#string)</span> Part global unique id in the format urn:uuid:uuid4.
 
 id
 
@@ -3326,54 +3393,6 @@ Job parameter of job processing.
 aspects (optional)
 
 <span class="param-type">[String](#string)</span>
-
-Enum:
-
-AddressAspect
-
-AssemblyPartRelationship
-
-Batch
-
-BatteryPass
-
-CertificateOfDestruction
-
-CertificateOfDismantler
-
-ChargingProcess
-
-ClaimData
-
-DiagnosticData
-
-EndOfLife
-
-EsrCertificate
-
-EsrCertificateStateStatistic
-
-IdConversion
-
-MarketplaceOffer
-
-MaterialForHomologation
-
-MaterialForRecycling
-
-PartAsPlanned
-
-PhysicalDimension
-
-ProductDescription
-
-ReturnRequest
-
-SerialPartTypization
-
-SingleLevelBomAsPlanned
-
-SingleLevelUsageAsBuilt
 
 bomLifecycle (optional)
 
@@ -3493,7 +3512,7 @@ assembledOn (optional)
 
 childCatenaXId (optional)
 
-<span class="param-type">[GlobalAssetIdentification](#GlobalAssetIdentification)</span>
+<span class="param-type">[String](#string)</span> CatenaX child global asset id in the format urn:uuid:uuid4.
 
 lastModifiedOn (optional)
 
@@ -3629,8 +3648,6 @@ aspects (optional)
 
 <span class="param-type">[array\[String\]](#string)</span>
 
-Enum:
-
 bomLifecycle (optional)
 
 <span class="param-type">[String](#string)</span> The lifecycle context in which the child part was assembled into the parent part.
@@ -3681,7 +3698,7 @@ aspectType (optional)
 
 catenaXId (optional)
 
-<span class="param-type">[GlobalAssetIdentification](#GlobalAssetIdentification)</span>
+<span class="param-type">[String](#string)</span> CATENA-X global asset id in the format urn:uuid:uuid4.
 
 linkedItem (optional)
 
@@ -3757,4 +3774,4 @@ processingError (optional)
 
 <span class="param-type">[ProcessingError](#ProcessingError)</span>
 
-Last updated 2023-02-07 14:03:43 UTC
+Last updated 2023-02-21 15:46:11 UTC

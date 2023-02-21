@@ -641,6 +641,10 @@ font-style: italic;
 
   <h3>Table of Contents </h3>
   <div class="method-summary"></div>
+  <h4><a href="#AspectModels">AspectModels</a></h4>
+  <ul>
+  <li><a href="#getAllAspectModels"><code><span class="http-method">get</span> /irs/aspectmodels</code></a></li>
+  </ul>
   <h4><a href="#ItemRelationshipService">ItemRelationshipService</a></h4>
   <ul>
   <li><a href="#cancelJobByJobId"><code><span class="http-method">put</span> /irs/jobs/{id}</code></a></li>
@@ -649,6 +653,66 @@ font-style: italic;
   <li><a href="#registerJobForGlobalAssetId"><code><span class="http-method">post</span> /irs/jobs</code></a></li>
   </ul>
 
+  <h1><a name="AspectModels">AspectModels</a></h1>
+  <div class="method"><a name="getAllAspectModels"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /irs/aspectmodels</code></pre></div>
+    <div class="method-summary">Get all available aspect models from semantic hub or local models. (<span class="nickname">getAllAspectModels</span>)</div>
+    <div class="method-notes">Get all available aspect models from semantic hub or local models.</div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#AspectModels">AspectModels</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "lastUpdated" : "lastUpdated",
+  "models" : [ {
+    "urn" : "urn",
+    "name" : "name",
+    "type" : "type",
+    "version" : "version",
+    "status" : "status"
+  }, {
+    "urn" : "urn",
+    "name" : "name",
+    "type" : "type",
+    "version" : "version",
+    "status" : "status"
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns all available aspect models.
+        <a href="#AspectModels">AspectModels</a>
+    <h4 class="field-label">401</h4>
+    Authorized failed.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">403</h4>
+    Authorized failed.
+        <a href="#ErrorResponse">ErrorResponse</a>
+  </div> <!-- method -->
+  <hr/>
   <h1><a name="ItemRelationshipService">ItemRelationshipService</a></h1>
   <div class="method"><a name="cancelJobByJobId"/>
     <div class="method-path">
@@ -703,14 +767,12 @@ font-style: italic;
     "depth" : 171976544,
     "bomLifecycle" : "asBuilt",
     "collectAspects" : true,
-    "aspects" : "AddressAspect",
+    "aspects" : "aspects",
     "lookupBPNs" : true,
     "callbackUrl" : "callbackUrl",
     "direction" : "upward"
   },
-  "globalAssetId" : {
-    "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-  },
+  "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
   "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
   "state" : "UNSAVED",
   "createdOn" : "2000-01-23T04:56:07.000+00:00",
@@ -743,14 +805,12 @@ font-style: italic;
     "depth" : 171976544,
     "bomLifecycle" : "asBuilt",
     "collectAspects" : true,
-    "aspects" : "AddressAspect",
+    "aspects" : "aspects",
     "lookupBPNs" : true,
     "callbackUrl" : "callbackUrl",
     "direction" : "upward"
   },
-  "globalAssetId" : {
-    "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-  },
+  "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
   "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
   "state" : "UNSAVED",
   "createdOn" : "2000-01-23T04:56:07.000+00:00",
@@ -821,9 +881,7 @@ font-style: italic;
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
   "relationships" : [ {
-    "catenaXId" : {
-      "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-    },
+    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "aspectType" : "aspectType",
     "linkedItem" : {
       "quantity" : {
@@ -835,15 +893,11 @@ font-style: italic;
       },
       "lifecycleContext" : "asBuilt",
       "assembledOn" : "2000-01-23T04:56:07.000+00:00",
-      "childCatenaXId" : {
-        "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-      },
+      "childCatenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
       "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
     }
   }, {
-    "catenaXId" : {
-      "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-    },
+    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "aspectType" : "aspectType",
     "linkedItem" : {
       "quantity" : {
@@ -855,15 +909,11 @@ font-style: italic;
       },
       "lifecycleContext" : "asBuilt",
       "assembledOn" : "2000-01-23T04:56:07.000+00:00",
-      "childCatenaXId" : {
-        "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-      },
+      "childCatenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
       "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
     }
   }, {
-    "catenaXId" : {
-      "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-    },
+    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "aspectType" : "aspectType",
     "linkedItem" : {
       "quantity" : {
@@ -875,15 +925,11 @@ font-style: italic;
       },
       "lifecycleContext" : "asBuilt",
       "assembledOn" : "2000-01-23T04:56:07.000+00:00",
-      "childCatenaXId" : {
-        "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-      },
+      "childCatenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
       "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
     }
   }, {
-    "catenaXId" : {
-      "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-    },
+    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "aspectType" : "aspectType",
     "linkedItem" : {
       "quantity" : {
@@ -895,15 +941,11 @@ font-style: italic;
       },
       "lifecycleContext" : "asBuilt",
       "assembledOn" : "2000-01-23T04:56:07.000+00:00",
-      "childCatenaXId" : {
-        "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-      },
+      "childCatenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
       "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
     }
   }, {
-    "catenaXId" : {
-      "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-    },
+    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "aspectType" : "aspectType",
     "linkedItem" : {
       "quantity" : {
@@ -915,9 +957,7 @@ font-style: italic;
       },
       "lifecycleContext" : "asBuilt",
       "assembledOn" : "2000-01-23T04:56:07.000+00:00",
-      "childCatenaXId" : {
-        "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-      },
+      "childCatenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
       "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
     }
   } ],
@@ -3282,14 +3322,12 @@ font-style: italic;
       "depth" : 171976544,
       "bomLifecycle" : "asBuilt",
       "collectAspects" : true,
-      "aspects" : "AddressAspect",
+      "aspects" : "aspects",
       "lookupBPNs" : true,
       "callbackUrl" : "callbackUrl",
       "direction" : "upward"
     },
-    "globalAssetId" : {
-      "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-    },
+    "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
     "state" : "UNSAVED",
     "createdOn" : "2000-01-23T04:56:07.000+00:00",
@@ -3516,12 +3554,13 @@ font-style: italic;
   <h3>Table of Contents</h3>
   <ol>
     <li><a href="#AdministrativeInformation"><code>AdministrativeInformation</code> - </a></li>
+    <li><a href="#AspectModel"><code>AspectModel</code> - </a></li>
+    <li><a href="#AspectModels"><code>AspectModels</code> - </a></li>
     <li><a href="#AssetAdministrationShellDescriptor"><code>AssetAdministrationShellDescriptor</code> - </a></li>
     <li><a href="#AsyncFetchedItems"><code>AsyncFetchedItems</code> - </a></li>
     <li><a href="#Bpn"><code>Bpn</code> - </a></li>
     <li><a href="#Endpoint"><code>Endpoint</code> - </a></li>
     <li><a href="#ErrorResponse"><code>ErrorResponse</code> - </a></li>
-    <li><a href="#GlobalAssetIdentification"><code>GlobalAssetIdentification</code> - </a></li>
     <li><a href="#IdentifierKeyValuePair"><code>IdentifierKeyValuePair</code> - </a></li>
     <li><a href="#Job"><code>Job</code> - </a></li>
     <li><a href="#JobErrorDetails"><code>JobErrorDetails</code> - </a></li>
@@ -3551,6 +3590,25 @@ font-style: italic;
     <div class="field-items">
       <div class="param">revision (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">version (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="AspectModel"><code>AspectModel</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">urn (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">version (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="AspectModels"><code>AspectModels</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">lastUpdated (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">models (optional)</div><div class="param-desc"><span class="param-type"><a href="#AspectModel">array[AspectModel]</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3603,13 +3661,6 @@ font-style: italic;
     </div>  <!-- field-items -->
   </div>
   <div class="model">
-    <h3><a name="GlobalAssetIdentification"><code>GlobalAssetIdentification</code> - </a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'>CATENA-X global asset id in the format urn:uuid:uuid4.</div>
-    <div class="field-items">
-      <div class="param">globalAssetId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> CATENA-X global asset id in the format urn:uuid:uuid4. </div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
     <h3><a name="IdentifierKeyValuePair"><code>IdentifierKeyValuePair</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
@@ -3626,7 +3677,7 @@ font-style: italic;
       <div class="param">completedOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
 <div class="param">createdOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
 <div class="param">exception (optional)</div><div class="param-desc"><span class="param-type"><a href="#JobErrorDetails">JobErrorDetails</a></span>  </div>
-<div class="param">globalAssetId </div><div class="param-desc"><span class="param-type"><a href="#GlobalAssetIdentification">GlobalAssetIdentification</a></span>  </div>
+<div class="param">globalAssetId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Part global unique id in the format urn:uuid:uuid4. </div>
 <div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span> Id of the job. format: uuid</div>
 <div class="param">lastModifiedOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
 <div class="param">owner (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The IRS api consumer. </div>
@@ -3659,8 +3710,6 @@ font-style: italic;
     <div class='model-description'>Job parameter of job processing.</div>
     <div class="field-items">
       <div class="param">aspects (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-        <div class="param-enum-header">Enum:</div>
-        <div class="param-enum">AddressAspect</div><div class="param-enum">AssemblyPartRelationship</div><div class="param-enum">Batch</div><div class="param-enum">BatteryPass</div><div class="param-enum">CertificateOfDestruction</div><div class="param-enum">CertificateOfDismantler</div><div class="param-enum">ChargingProcess</div><div class="param-enum">ClaimData</div><div class="param-enum">DiagnosticData</div><div class="param-enum">EndOfLife</div><div class="param-enum">EsrCertificate</div><div class="param-enum">EsrCertificateStateStatistic</div><div class="param-enum">IdConversion</div><div class="param-enum">MarketplaceOffer</div><div class="param-enum">MaterialForHomologation</div><div class="param-enum">MaterialForRecycling</div><div class="param-enum">PartAsPlanned</div><div class="param-enum">PhysicalDimension</div><div class="param-enum">ProductDescription</div><div class="param-enum">ReturnRequest</div><div class="param-enum">SerialPartTypization</div><div class="param-enum">SingleLevelBomAsPlanned</div><div class="param-enum">SingleLevelUsageAsBuilt</div>
 <div class="param">bomLifecycle (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The lifecycle context in which the child part was assembled into the parent part. </div>
         <div class="param-enum-header">Enum:</div>
         <div class="param-enum">asBuilt</div><div class="param-enum">asPlanned</div>
@@ -3710,7 +3759,7 @@ font-style: italic;
     <div class='model-description'>Set of child parts the parent object is assembled by (one structural level down).</div>
     <div class="field-items">
       <div class="param">assembledOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Datetime of assembly. format: date-time</div>
-<div class="param">childCatenaXId (optional)</div><div class="param-desc"><span class="param-type"><a href="#GlobalAssetIdentification">GlobalAssetIdentification</a></span>  </div>
+<div class="param">childCatenaXId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> CatenaX child global asset id in the format urn:uuid:uuid4. </div>
 <div class="param">lastModifiedOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Last datetime item was modified. format: date-time</div>
 <div class="param">lifecycleContext (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The lifecycle context in which the child part was assembled into the parent part. </div>
         <div class="param-enum-header">Enum:</div>
@@ -3781,8 +3830,6 @@ font-style: italic;
     <div class='model-description'>The requested job definition.</div>
     <div class="field-items">
       <div class="param">aspects (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
-        <div class="param-enum-header">Enum:</div>
-        
 <div class="param">bomLifecycle (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The lifecycle context in which the child part was assembled into the parent part. </div>
         <div class="param-enum-header">Enum:</div>
         <div class="param-enum">asBuilt</div><div class="param-enum">asPlanned</div>
@@ -3801,7 +3848,7 @@ font-style: italic;
     <div class='model-description'>Relationships between parent and child items.</div>
     <div class="field-items">
       <div class="param">aspectType (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">catenaXId (optional)</div><div class="param-desc"><span class="param-type"><a href="#GlobalAssetIdentification">GlobalAssetIdentification</a></span>  </div>
+<div class="param">catenaXId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> CATENA-X global asset id in the format urn:uuid:uuid4. </div>
 <div class="param">linkedItem (optional)</div><div class="param-desc"><span class="param-type"><a href="#LinkedItem">LinkedItem</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
@@ -3848,7 +3895,7 @@ font-style: italic;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-07 14:03:43 UTC
+Last updated 2023-02-21 15:46:11 UTC
 </div>
 </div>
 </body>

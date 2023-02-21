@@ -474,6 +474,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_exception_and_error_handling">Exception and error handling</a></li>
 <li><a href="#_parallelization_and_threading">Parallelization and threading</a></li>
 <li><a href="#_plausibility_checks_and_validation">Plausibility checks and validation</a></li>
+<li><a href="#_caching">Caching</a></li>
 </ul>
 </li>
 <li><a href="#_development_concepts">Development concepts</a>
@@ -792,6 +793,30 @@ In the future, another approach or an additional way to to index the data might 
 </ul>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_caching">Caching</h3>
+<div class="paragraph">
+<p>The IRS caches data provided externally to avoid unnecessary requests and reduce execution time.</p>
+</div>
+<div class="paragraph">
+<p>Caching is implemented for the following services:</p>
+</div>
+<div class="sect3">
+<h4 id="_bpdm">BPDM</h4>
+<div class="paragraph">
+<p>Whenever a BPN is resolved via BPDM, the partner name is cached on IRS side, as this data does not change.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_semantics_hub">Semantics Hub</h4>
+<div class="paragraph">
+<p>Whenever a semantic model schema is requested from the Semantic Hub, it is stored locally until the cache is evicted (configurable). The IRS can preload configured schema models on startup to reduce on demand call times.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, models can be deployed with the system as a backup to the real Semantic Hub service.</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -954,7 +979,7 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-07 14:03:43 UTC
+Last updated 2023-02-21 15:46:11 UTC
 </div>
 </div>
 </body>

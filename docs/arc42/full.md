@@ -1152,6 +1152,22 @@ Data validation happens at two points:
 
 -   Submodel payload: each time a submodel payload is requested from via EDC, the data is validated against the model defined in the SemanticHub for the matching aspect type.
 
+#### Caching
+
+The IRS caches data provided externally to avoid unnecessary requests and reduce execution time.
+
+Caching is implemented for the following services:
+
+##### BPDM
+
+Whenever a BPN is resolved via BPDM, the partner name is cached on IRS side, as this data does not change.
+
+##### Semantics Hub
+
+Whenever a semantic model schema is requested from the Semantic Hub, it is stored locally until the cache is evicted (configurable). The IRS can preload configured schema models on startup to reduce on demand call times.
+
+Additionally, models can be deployed with the system as a backup to the real Semantic Hub service.
+
 ### Development concepts
 
 #### Build, test, deploy
@@ -1327,4 +1343,4 @@ Glossary
 </tbody>
 </table>
 
-Last updated 2023-02-07 14:03:43 UTC
+Last updated 2023-02-21 15:46:11 UTC

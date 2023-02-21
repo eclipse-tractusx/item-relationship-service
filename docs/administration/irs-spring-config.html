@@ -804,9 +804,10 @@ pre.rouge {
     <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the digital twin registry client</span>
     <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the digital twin registry client</span>
 
-<span class="na">semanticsHub</span><span class="pi">:</span>
+<span class="na">semanticshub</span><span class="pi">:</span>
   <span class="c1"># The endpoint to retrieve the json schema of a model from the semantic hub. If specified, must contain the placeholder {urn}.</span>
   <span class="na">modelJsonSchemaEndpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${SEMANTICSHUB_URL:}"</span>
+  <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
 
   <span class="c1"># Path to directory on filesystem where semantic models can be loaded from.</span>
   <span class="c1"># The filenames inside the directory must match the Base64 encoded URNs of the models.</span>
@@ -826,6 +827,7 @@ pre.rouge {
   <span class="na">timeout</span><span class="pi">:</span>
     <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the semantic hub client</span>
     <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the semantic hub client</span>
+  <span class="na">pageSize</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${SEMANTICSHUB_PAGE_SIZE:100}"</span>
 
 <span class="na">bpdm</span><span class="pi">:</span>
   <span class="na">bpnEndpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${BPDM_URL:}"</span> <span class="c1"># Endpoint to resolve BPNs, must contain the placeholders {partnerId} and {idType}</span>
@@ -838,7 +840,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-07 14:03:43 UTC
+Last updated 2023-02-21 15:46:11 UTC
 </div>
 </div>
 </body>

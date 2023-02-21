@@ -444,6 +444,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_proxy_support">Proxy support</a></li>
+<li><a href="#_troubleshooting_faq">Troubleshooting FAQ</a>
+<ul class="sectlevel2">
+<li><a href="#_minio">Minio</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -467,10 +472,38 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_troubleshooting_faq">Troubleshooting FAQ</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_minio">Minio</h3>
+<div class="sect3">
+<h4 id="_error_the_specified_bucket_does_not_exist">Error: "The specified bucket does not exist"</h4>
+<div class="paragraph">
+<p>IRS tries to read data from or write to the Minio storage, but no bucket exists. This can happen if Minio is running without a persistent volume and restarts, thus losing all data.
+It can also happen if the persistent volume claim is deleted / recreated.</p>
+</div>
+<div class="paragraph">
+<p><strong>Proposed solution steps:</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Make sure Minio is configured and running correctly.</p>
+</li>
+<li>
+<p>Restart the IRS - this will recreate the missing bucket automatically.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-07 14:03:43 UTC
+Last updated 2023-02-21 15:46:11 UTC
 </div>
 </div>
 </body>
