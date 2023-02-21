@@ -205,6 +205,15 @@ def supplyChainImpacted_is_correct_in_submodels_for_valid_ID(response):
         assert 'Yes' in i.get("payload").get('supplyChainImpacted')
 
 
+def supplyChainImpacted_is_correct_in_submodels_for_valid_ID_in_unknown_BPN(response):
+    submodels = response.json().get("submodels")
+    print("submodels ", submodels)
+    assert len(submodels) <= 1
+    for i in submodels:
+        assert 'supply_chain_impacted' in i.get('aspectType')
+        assert 'No' in i.get("payload").get('supplyChainImpacted')
+
+
 def supplyChainImpacted_is_correct_in_submodels_for_unknown_ID(response):
     submodels = response.json().get("submodels")
     print("submodels ", submodels)
