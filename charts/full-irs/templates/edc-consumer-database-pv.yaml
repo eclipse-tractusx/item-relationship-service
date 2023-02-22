@@ -15,7 +15,7 @@ metadata:
 spec:
   storageClassName: standard
   capacity:
-    storage: 10Mi
+    storage: 100Mi
   accessModes:
     - ReadWriteMany
   hostPath:
