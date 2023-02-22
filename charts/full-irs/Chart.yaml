@@ -9,27 +9,6 @@ appVersion: "1.0.0"
 
 dependencies:
 
-  # Grafana
-  - name: grafana
-    alias: grafana
-    repository: https://grafana.github.io/helm-charts
-    version: 6.44.8
-    condition: install.grafana
-
-  # Prometheus
-  - name: prometheus
-    alias: prometheus
-    repository: https://prometheus-community.github.io/helm-charts
-    version: 17.0.1
-    condition: install.prometheus
-
-  # Minio
-  - name: minio
-    alias: minio
-    repository: https://charts.min.io/
-    version: 5.0.1
-    condition: install.minio
-
   # HashiCorp Vault
   - name: vault
     alias: edc-vault
@@ -101,13 +80,12 @@ dependencies:
     version: 0.0.6
     repository: https://denisneuling.github.io/cx-backend-service
     condition: install.edc.provider
-
-  # IRS Backend Service
-  - name: irs
-    alias: irs-backend-service
-    version: 0.0.1
-    repository: "file://subcharts/irs"
-    condition: install.irs.backend
+  
+  - name: irs-helm    
+    alias: irs
+    repository: https://catenax-ng.github.io/tx-item-relationship-service    
+    version: 4.2.1
+    condition: irs.enabled
 
   # IRS Provider Backend Service
   - name: irs-provider-backend-service

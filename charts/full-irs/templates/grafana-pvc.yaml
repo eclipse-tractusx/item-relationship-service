@@ -1,5 +1,5 @@
 ---
-{{ if .Values.install.grafana }}
+{{- if .Values.irs.grafana.enabled -}}
 
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -19,4 +19,4 @@ spec:
     requests:
       storage: 10Mi
 
-{{ end }}
+{{- end }}

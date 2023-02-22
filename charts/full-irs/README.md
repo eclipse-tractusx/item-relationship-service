@@ -10,7 +10,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: "irs-digital-twin-registry-docker"
-  namespace: {{ .Release.Namespace | default "default" | quote }}
+  namespace: irs
 type: kubernetes.io/dockerconfigjson
 data:
   .dockerconfigjson: <Secret>
@@ -156,7 +156,7 @@ kubectl port-forward svc/irs-grafana 4000:80
 ## Prometheus
 
 ``` bash
-kubectl port-forward svc/irs-infra-prometheus-server 9090:80
+kubectl port-forward svc/irs-prometheus-server 9090:80
 ```
 
 ## Minio

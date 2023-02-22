@@ -5,10 +5,6 @@
 ###########
 install:
 
-  grafana: false
-  prometheus: false
-  minio: false
-
   edc:
     vault: false
     daps: false
@@ -16,13 +12,12 @@ install:
     provider: false
 
   irs: 
-    backend: false
     providerBackend: false
     digitalTwin: false
-    frontend: false
     keycloak: false
     semanticHub: false
-  omejdn: false
+    backend: false
+    frontend: false
 
 ##########
 # COMMON #
@@ -33,8 +28,6 @@ config:
     password: &config-grafana-password "password"
     secret:
       name: &config-grafana-secret-name irs-grafana
-    configMap:
-      name: &config-grafana-config-map-name irs-grafana-dashboards
   minio: 
     username: &config-minio-username "admin"
     password: &config-minio-password "password"
@@ -125,129 +118,7 @@ config:
         secret:
           name: &config-irs-digitalTwin-database-secret-name irs-digital-twin-registry-database
       idpIssuerUri: "http://edc-daps-service:4567"
-    
-
-#########################
-# Grafana Configuration #
-#########################
-grafana:
-  fullnameOverride: "irs-grafana"
-  rbac:
-    create: false
-  persistence:
-    enabled: true
-    existingClaim: "grafana-pv-claim"
-
-  username: *config-grafana-username
-  password: *config-grafana-password
-
-  admin:
-    existingSecret: *config-grafana-secret-name
-
-  configMap:
-    name: *config-grafana-config-map-name
-
-  datasources:
-    datasources.yaml:
-      apiVersion: 1
-      datasources:
-        - name: Prometheus
-          type: prometheus
-          url: http://irs-infra-prometheus-server
-          access: proxy
-          isDefault: true
-
-  dashboardProviders:
-   dashboardproviders.yaml:
-     apiVersion: 1
-     providers:
-     - name: 'default'
-       orgId: 1
-       folder: ''
-       type: file
-       disableDeletion: false
-       editable: true
-       options:
-         path: /var/lib/grafana/dashboards/default
-
-  # dashboards:
-  #  default: 
-  #    vault: 
-  #      gnetId: 7700
-  #      revision: 3
-  #      datasource: Prometheus
-
-  dashboardsConfigMaps:
-    default: *config-grafana-config-map-name
-
-
-############################
-# Prometheus Configuration #
-############################
-prometheus:
-  
-  fullnameOverride: "irs-prometheus"
-  rbac:
-    create: false
-  alertmanager:
-    enabled: false
-  prometheus-node-exporter:
-    enabled: false
-  kubeStateMetrics:
-    enabled: false
-  prometheus-pushgateway:
-    enabled: false
-  configmapReload:
-    prometheus:
-      enabled: false
-  server:
-    persistentVolume:
-      size: 10Mi
-  extraScrapeConfigs: |
-    - job_name: 'spring-actuator'
-      metrics_path: '/actuator/prometheus'
-      scrape_interval: 5s
-      static_configs:
-        - targets: [ 'irs-backend-service:4004' ]
-
-    - job_name: 'minio-actuator'
-      metrics_path: /minio/v2/metrics/cluster
-      static_configs:
-        - targets: [ 'irs-minio:9000' ]
-
-    - job_name: 'vault'
-      metrics_path: /v1/sys/metrics
-      params:
-        format: ['prometheus']
-      scheme: http
-      authorization:
-        type: Bearer
-        credentials: root
-      static_configs:
-        - targets: [ 'edc-vault:8200' ]
-
-
-#######################
-# Minio Configuration #
-#######################
-minio:
-  fullnameOverride: "irs-minio"
-  username: *config-minio-username
-  password: *config-minio-password
-  existingSecret: *config-minio-secret-name
-  resources:
-    requests:
-      memory: 512Mi 
-  replicas: 1
-  persistence:
-    enabled: false
-    size: 10Mi
-  mode: standalone
-
-  environment:
-    MINIO_PROMETHEUS_JOB_ID: minio-actuator
-    MINIO_PROMETHEUS_URL: http://irs-infra-prometheus-server:9090
-
+ 
 
 # ###########
 # EDC VAULT #
@@ -623,31 +494,41 @@ edc-provider-backend-service:
 #####################
 # IRS Configuration #
 #####################
-irs-backend-service:
+irs:
+  enabled: false
+
+  minioUser: *config-minio-username
+  minioPassword: *config-minio-password
+  minioUrl: "http://{{ .Release.Name }}-minio:9000"
+
   config:
     override: false
-  existingSecret: *config-irs-existingSecret
-  secret:
-    name: *config-irs-secret-name
-    minio:
-      user: *config-minio-username
-      passsword: *config-minio-password
-    keycloak:
-      client:
-        id: *config-keycloak-client-id
-        secret: *config-keycloak-client-secret
-    edc:
-      apiSecret: *config-edc-auth-api-key
-    grafana:
-      user: *config-grafana-username
-      password: *config-grafana-password
+
   irsUrl: http://{{ .Chart.Name }}:{{ .Values.service.port }}
+
+  # existingSecret: *config-irs-existingSecret
+  # secret:
+  #   name: *config-irs-secret-name
+  #   minio:
+  #     user: *config-minio-username
+  #     passsword: *config-minio-password
+  #   keycloak:
+  #     client:
+  #       id: *config-keycloak-client-id
+  #       secret: *config-keycloak-client-secret
+  #   edc:
+  #     apiSecret: *config-edc-auth-api-key
+  #   grafana:
+  #     user: *config-grafana-username
+  #     password: *config-grafana-password
   blobstore:
     endpoint: "http://irs-minio:9000"
     accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
     secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
   keycloak:
     oauth2:
+      clientId: *config-keycloak-client-id
+      clientSecret: *config-keycloak-client-secret
       clientTokenUri: *config-keycloak-token-url
       jwkSetUri: *config-keycloak-certs-url
 
@@ -658,7 +539,9 @@ irs-backend-service:
   semanticsHub:
     url: http://irs-semantic-hub-service:8080/hub/api/v1
     modelJsonSchemaEndpoint: "{{ tpl .Values.semanticsHub.url . }}/models/{urn}/json-schema"
-    defaultUrns: urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
+    defaultUrns: >-
+      urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
+    localModels: 
 
   bpdm:
     url: ""
@@ -676,13 +559,90 @@ irs-backend-service:
         limit: 1000 # Max number of catalog items to retrieve from the controlplane
       apikey:
         header: "X-Api-Key" # Name of the EDC api key header field
-        secret: config-vault-token
+        secret: *config-edc-auth-api-key
     submodel:
       request:
         ttl: PT10M # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
       path: /submodel
       urnprefix: /urn
 
+  minio:
+    enabled: false
+    mode: standalone
+    persistence:
+      enabled: true
+      size: 10Mi
+    resources:
+      requests:
+        memory: 4Gi
+    
+    rootUser: *config-minio-username
+    rootPassword: *config-minio-password
+
+    environment:
+      MINIO_PROMETHEUS_JOB_ID: minio-actuator
+      MINIO_PROMETHEUS_URL: http://{{ .Release.Name }}-prometheus-server:9090
+
+  prometheus:
+    enabled: false #<1>
+    rbac:
+      create: false
+    alertmanager:
+      enabled: false
+    prometheus-node-exporter:
+      enabled: false
+    kubeStateMetrics:
+      enabled: false
+    prometheus-pushgateway:
+      enabled: false
+    configmapReload:
+      prometheus:
+        enabled: false
+
+    extraScrapeConfigs: |
+      - job_name: 'spring-actuator'
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 5s
+        static_configs:
+          - targets: [ '{{ .Release.Name }}-irs-helm:4004' ]
+
+      - job_name: 'minio-actuator'
+        metrics_path: /minio/v2/metrics/cluster
+        static_configs:
+          - targets: [ '{{ .Release.Name }}-minio:9000' ]
+
+  grafana:
+    enabled: false #<1>
+    rbac:
+      create: false
+    persistence:
+      enabled: true
+      existingClaim: "grafana-pv-claim"
+
+    user: *config-grafana-username
+    password: *config-grafana-password
+
+    admin:
+      existingSecret: *config-grafana-secret-name
+
+    datasources:
+      datasources.yaml:
+        apiVersion: 1
+        datasources:
+          - name: Prometheus
+            type: prometheus
+            url: "http://{{ .Release.Name }}-prometheus-server"
+            isDefault: true
+    sidecar:
+      dashboards:
+        enabled: true
+
+    importDashboards:
+      minio: dashboards/minio-dashboard.json
+      outbound: dashboards/irs-outbound-requests.json
+      irsmonitoring: dashboards/resource-monitoring-dashboard.json
+      irsjobs: dashboards/irs-jobs-dashboard.json
+      irsapi: dashboards/irs-api-dashboard.json
 
 ######################################
 # IRS Digital Twin Registry Database #

@@ -1,5 +1,5 @@
 ---
-{{ if .Values.install.grafana }}
+{{- if .Values.irs.grafana.enabled -}}
 
 kind: PersistentVolume
 apiVersion: v1
@@ -20,4 +20,4 @@ spec:
   hostPath:
     path: "/mnt/data/grafana"
 
-{{ end }}
+{{- end }}
