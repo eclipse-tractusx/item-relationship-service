@@ -102,7 +102,7 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-client</artifactId>
             <!-- version override due to CVE-2022-31690, can be removed once Spring Boot BOM contains new version -->
-            <version>5.7.5</version>
+            <version>6.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
