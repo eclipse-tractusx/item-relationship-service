@@ -51,6 +51,12 @@ def errors_for_invalid_globalAssetId_are_correct(response):
     assert 'globalAssetId:must match \"^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\"' in error_list
 
 
+def errors_for_invalid_depth_are_correct(response):
+    print(response.json().get("messages"))
+    error_list = response.json().get("messages")
+    assert 'depth:must be greater than or equal to 1' in error_list
+
+
 def errors_for_unknown_globalAssetId_are_correct(response):
     error_list = response.json().get("tombstones")
 
