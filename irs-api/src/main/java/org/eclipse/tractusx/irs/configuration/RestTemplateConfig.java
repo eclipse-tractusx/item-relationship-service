@@ -87,9 +87,9 @@ public class RestTemplateConfig {
 
     @Bean(SEMHUB_REST_TEMPLATE)
         /* package */ RestTemplate semanticHubRestTemplate(final RestTemplateBuilder restTemplateBuilder,
-            @Value("${semanticsHub.timeout.read}") final Duration readTimeout,
-            @Value("${semanticsHub.timeout.connect}") final Duration connectTimeout,
-            @Value("${semanticsHub.oAuthClientId}") final String clientRegistrationId) {
+            @Value("${semanticshub.timeout.read}") final Duration readTimeout,
+            @Value("${semanticshub.timeout.connect}") final Duration connectTimeout,
+            @Value("${semanticshub.oAuthClientId}") final String clientRegistrationId) {
         return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId);
     }
 

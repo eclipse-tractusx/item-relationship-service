@@ -18,6 +18,7 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap-spring-app-config.yaml") . | sha256sum }}
+        checksum/semanticmodels: {{ include (print $.Template.BasePath "/configmap-semantic-models.yaml") . | sha256sum }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -43,6 +44,10 @@ spec:
               mountPath: /tmp
             - name: application-config
               mountPath: /app/config
+            {{- if .Values.semanticshub.localModels }}
+            - name: semantic-models
+              mountPath: /app/semantic-models
+            {{- end }}
           env:
             - name: MINIO_ACCESS_KEY
               valueFrom:
@@ -69,6 +74,9 @@ spec:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
                   key: edcApiSecret
+            {{- if .Values.env }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.primary.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
           ports:
             - name: http
               containerPort: 8080
@@ -112,6 +120,11 @@ spec:
             items:
               - key: application.yaml
                 path: application.yaml
+        {{- if .Values.semanticshub.localModels }}
+        - name: semantic-models
+          configMap:
+            name: {{ include "irs.fullname" . }}-configmap-semantic-models
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

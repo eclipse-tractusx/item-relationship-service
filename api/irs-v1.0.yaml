@@ -8,7 +8,7 @@ servers:
   - url: http://localhost:8080
 security:
   - oAuth2:
-    - profile email
+      - profile email
 paths:
   /irs/jobs:
     get:
@@ -50,7 +50,7 @@ paths:
             default: 20
             minimum: 1
         - description: "Sorting criteria in the format: property,(asc|desc). Default\
-            \ sort order is ascending. Multiple sort criteria are supported."
+          \ sort order is ascending. Multiple sort criteria are supported."
           in: query
           name: sort
           required: false
@@ -97,8 +97,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorized failed.
       security:
-      - oAuth2:
-        - profile email
+        - oAuth2:
+            - profile email
       summary: Returns paginated jobs with state and execution times.
       tags:
         - Item Relationship Service
@@ -149,8 +149,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorized failed.
       security:
-      - oAuth2:
-        - profile email
+        - oAuth2:
+            - profile email
       summary: "Register an IRS job to retrieve an item graph for given {globalAssetId}."
       tags:
         - Item Relationship Service
@@ -234,8 +234,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job with the requested jobId not found.
       security:
-      - oAuth2:
-        - profile email
+        - oAuth2:
+            - profile email
       summary: Return job with optional item graph result for requested id.
       tags:
         - Item Relationship Service
@@ -297,16 +297,54 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job for requested jobId not found.
       security:
-      - oAuth2:
-        - profile email
+        - oAuth2:
+            - profile email
       summary: Cancel job for requested jobId.
       tags:
         - Item Relationship Service
+  /irs/aspectmodels:
+    get:
+      description: Get all available aspect models from semantic hub or local models.
+      operationId: getAllAspectModels
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: "#/components/examples/aspect-models-list"
+              schema:
+                $ref: "#/components/schemas/AspectModels"
+          description: Returns all available aspect models.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: "#/components/examples/error-response-401"
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: "#/components/examples/error-response-403"
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          description: Authorized failed.
+      security:
+        - oAuth2:
+            - profile email
+      summary: Get all available aspect models from semantic hub or local models.
+      tags:
+        - Aspect Models
 components:
   examples:
     canceled-job-result:
       value:
-        bpns: []
+        bpns: [ ]
         job:
           completedOn: 2022-02-03T14:48:54.709Z
           createdOn: 2022-02-03T14:48:54.709Z
@@ -326,6 +364,7 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
+            lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: CANCELED
           summary:
@@ -334,7 +373,7 @@ components:
               failed: 0
               running: 0
         relationships: [ ]
-        submodels: []
+        submodels: [ ]
         tombstones: [ ]
     complete-job-list-processing-state:
       value:
@@ -350,8 +389,8 @@ components:
     complete-job-result:
       value:
         bpns:
-        - manufacturerId: BPNL00000003AYRE
-          manufacturerName: OEM A
+          - manufacturerId: BPNL00000003AYRE
+            manufacturerName: OEM A
         job:
           completedOn: 2022-02-03T14:48:54.709Z
           createdOn: 2022-02-03T14:48:54.709Z
@@ -371,6 +410,7 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
+            lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: COMPLETED
           summary:
@@ -437,15 +477,15 @@ components:
             payload:
               catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
               childParts:
-              - assembledOn: 2022-02-03T14:48:54.709Z
-                childCatenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
-                lastModifiedOn: 2022-02-03T14:48:54.709Z
-                lifecycleContext: AsBuilt
-                quantity:
-                  measurementUnit:
-                    datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
-                    lexicalValue: piece
-                  quantityNumber: 1
+                - assembledOn: 2022-02-03T14:48:54.709Z
+                  childCatenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+                  lastModifiedOn: 2022-02-03T14:48:54.709Z
+                  lifecycleContext: AsBuilt
+                  quantity:
+                    measurementUnit:
+                      datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
+                      lexicalValue: piece
+                    quantityNumber: 1
         tombstones:
           - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
             endpointURL: https://catena-x.net/vehicle/partdetails/
@@ -455,31 +495,31 @@ components:
               retryCounter: 0
     error-response-400:
       value:
-        errors:
+        error: Bad request
+        messages:
           - BadRequestException
-        message: Bad request
         statusCode: 400 BAD_REQUEST
     error-response-401:
       value:
-        errors:
+        error: Unauthorized
+        messages:
           - UnauthorizedException
-        message: Unauthorized
         statusCode: 401 UNAUTHORIZED
     error-response-403:
       value:
-        errors:
+        error: Forbidden
+        messages:
           - ForbiddenException
-        message: Forbidden
         statusCode: 403 FORBIDDEN
     error-response-404:
       value:
-        errors:
+        error: Not found
+        messages:
           - NotFoundException
-        message: Not found
         statusCode: 404 NOT_FOUND
     failed-job-result:
       value:
-        bpns: []
+        bpns: [ ]
         job:
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
@@ -498,6 +538,7 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
+            lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: ERROR
           summary:
@@ -506,7 +547,7 @@ components:
               failed: 0
               running: 0
         relationships: [ ]
-        submodels: []
+        submodels: [ ]
         tombstones: [ ]
     job-handle:
       value:
@@ -514,8 +555,8 @@ components:
     job-result-without-uncompleted-result-tree:
       value:
         bpns:
-        - manufacturerId: BPNL00000003AYRE
-          manufacturerName: OEM A
+          - manufacturerId: BPNL00000003AYRE
+            manufacturerName: OEM A
         job:
           completedOn: 2022-02-03T14:48:54.709Z
           createdOn: 2022-02-03T14:48:54.709Z
@@ -535,6 +576,7 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
+            lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: COMPLETED
           summary:
@@ -601,15 +643,15 @@ components:
             payload:
               catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
               childParts:
-              - assembledOn: 2022-02-03T14:48:54.709Z
-                childCatenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
-                lastModifiedOn: 2022-02-03T14:48:54.709Z
-                lifecycleContext: AsBuilt
-                quantity:
-                  measurementUnit:
-                    datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
-                    lexicalValue: piece
-                  quantityNumber: 1
+                - assembledOn: 2022-02-03T14:48:54.709Z
+                  childCatenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+                  lastModifiedOn: 2022-02-03T14:48:54.709Z
+                  lifecycleContext: AsBuilt
+                  quantity:
+                    measurementUnit:
+                      datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
+                      lexicalValue: piece
+                    quantityNumber: 1
         tombstones:
           - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
             endpointURL: https://catena-x.net/vehicle/partdetails/
@@ -619,7 +661,7 @@ components:
               retryCounter: 0
     partial-job-result:
       value:
-        bpns: []
+        bpns: [ ]
         job:
           completedOn: 2022-02-03T14:48:54.709Z
           createdOn: 2022-02-03T14:48:54.709Z
@@ -639,6 +681,7 @@ components:
             collectAspects: false
             depth: 4
             direction: downward
+            lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: RUNNING
           summary:
@@ -647,8 +690,22 @@ components:
               failed: 0
               running: 0
         relationships: [ ]
-        submodels: []
+        submodels: [ ]
         tombstones: [ ]
+    aspect-models-list:
+      value:
+        lastUpdated: 2023-02-13T08:18:11.990659500Z
+        models:
+          - urn: urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship
+            name: AssemblyPartRelationship
+            status: RELEASED
+            type: BAMM
+            version: 1.1.1
+          - urn: urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization
+            name: SerialPartTypization
+            status: RELEASED
+            type: BAMM
+            version: 1.1.0
   schemas:
     AdministrativeInformation:
       type: object
@@ -731,15 +788,15 @@ components:
       additionalProperties: false
       description: Error response.
       properties:
-        errors:
+        messages:
           type: array
-          description: List of errors.
+          description: List of error messages.
           items:
             type: string
           maxItems: 2147483647
-        message:
+        error:
           type: string
-          description: Error message.
+          description: Error.
         statusCode:
           type: string
           description: Error code.
@@ -812,18 +869,6 @@ components:
             - 509 BANDWIDTH_LIMIT_EXCEEDED
             - 510 NOT_EXTENDED
             - 511 NETWORK_AUTHENTICATION_REQUIRED
-    GlobalAssetIdentification:
-      type: object
-      additionalProperties: false
-      description: CATENA-X global asset id in the format urn:uuid:uuid4.
-      properties:
-        globalAssetId:
-          type: string
-          description: CATENA-X global asset id in the format urn:uuid:uuid4.
-          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-          maxLength: 45
-          minLength: 45
-          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
     IdentifierKeyValuePair:
       type: object
       additionalProperties: false
@@ -850,7 +895,12 @@ components:
         exception:
           $ref: '#/components/schemas/JobErrorDetails'
         globalAssetId:
-          $ref: '#/components/schemas/GlobalAssetIdentification'
+          type: string
+          description: Part global unique id in the format urn:uuid:uuid4.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          maxLength: 45
+          minLength: 45
+          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         id:
           type: string
           format: uuid
@@ -885,6 +935,17 @@ components:
         - globalAssetId
         - id
         - state
+    JobHandle:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Id of the job.
+          maxLength: 36
+          minLength: 36
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
     JobErrorDetails:
       type: object
       additionalProperties: false
@@ -902,17 +963,6 @@ components:
           type: string
           format: date-time
           description: Datetime error occurs.
-    JobHandle:
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Id of the job.
-          maxLength: 36
-          minLength: 36
-          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
     JobParameter:
       type: object
       additionalProperties: false
@@ -920,30 +970,6 @@ components:
       properties:
         aspects:
           type: string
-          enum:
-            - AddressAspect
-            - AssemblyPartRelationship
-            - Batch
-            - BatteryPass
-            - CertificateOfDestruction
-            - CertificateOfDismantler
-            - ChargingProcess
-            - ClaimData
-            - DiagnosticData
-            - EndOfLife
-            - EsrCertificate
-            - EsrCertificateStateStatistic
-            - IdConversion
-            - MarketplaceOffer
-            - MaterialForHomologation
-            - MaterialForRecycling
-            - PartAsPlanned
-            - PhysicalDimension
-            - ProductDescription
-            - ReturnRequest
-            - SerialPartTypization
-            - SingleLevelBomAsPlanned
-            - SingleLevelUsageAsBuilt
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
@@ -966,6 +992,8 @@ components:
           enum:
             - upward
             - downward
+        lookupBPNs:
+          type: boolean
     JobStatusResult:
       type: object
       additionalProperties: false
@@ -1047,7 +1075,12 @@ components:
           format: date-time
           description: Datetime of assembly.
         childCatenaXId:
-          $ref: '#/components/schemas/GlobalAssetIdentification'
+          type: string
+          description: CatenaX child global asset id in the format urn:uuid:uuid4.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          maxLength: 45
+          minLength: 45
+          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         lastModifiedOn:
           type: string
           format: date-time
@@ -1158,30 +1191,6 @@ components:
           type: array
           items:
             type: string
-            enum:
-              - AddressAspect
-              - AssemblyPartRelationship
-              - Batch
-              - BatteryPass
-              - CertificateOfDestruction
-              - CertificateOfDismantler
-              - ChargingProcess
-              - ClaimData
-              - DiagnosticData
-              - EndOfLife
-              - EsrCertificate
-              - EsrCertificateStateStatistic
-              - IdConversion
-              - MarketplaceOffer
-              - MaterialForHomologation
-              - MaterialForRecycling
-              - PartAsPlanned
-              - PhysicalDimension
-              - ProductDescription
-              - ReturnRequest
-              - SerialPartTypization
-              - SingleLevelBomAsPlanned
-              - SingleLevelUsageAsBuilt
           maxItems: 2147483647
         bomLifecycle:
           type: string
@@ -1193,8 +1202,8 @@ components:
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
-                      \ There are two uri variable placeholders that can be used: jobId and\
-                      \ jobState."
+            \ There are two uri variable placeholders that can be used: jobId and\
+            \ jobState."
           example: "https://hostname.com/callback?jobId={jobId}&jobState={jobState}"
         collectAspects:
           type: boolean
@@ -1221,6 +1230,10 @@ components:
           maxLength: 45
           minLength: 45
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        lookupBPNs:
+          type: boolean
+          description: Flag to specify whether BPNs should be collected and resolved
+            via the configured BPDM URL. Default is false.
       required:
         - globalAssetId
     Relationship:
@@ -1231,7 +1244,12 @@ components:
         aspectType:
           type: string
         catenaXId:
-          $ref: '#/components/schemas/GlobalAssetIdentification'
+          type: string
+          description: CATENA-X global asset id in the format urn:uuid:uuid4.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          maxLength: 45
+          minLength: 45
+          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         linkedItem:
           $ref: '#/components/schemas/LinkedItem'
     Submodel:
@@ -1277,6 +1295,8 @@ components:
       properties:
         asyncFetchedItems:
           $ref: '#/components/schemas/AsyncFetchedItems'
+        bpnLookups:
+          $ref: '#/components/schemas/AsyncFetchedItems'
     Tombstone:
       type: object
       additionalProperties: false
@@ -1293,6 +1313,30 @@ components:
           type: string
         processingError:
           $ref: '#/components/schemas/ProcessingError'
+    AspectModel:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+        type:
+          type: string
+        urn:
+          type: string
+        version:
+          type: string
+    AspectModels:
+      type: object
+      additionalProperties: false
+      properties:
+        lastUpdated:
+          type: string
+        models:
+          type: array
+          items:
+            $ref: '#/components/schemas/AspectModel'
   securitySchemes:
     oAuth2:
       flows:

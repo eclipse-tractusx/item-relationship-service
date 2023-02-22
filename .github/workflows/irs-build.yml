@@ -6,6 +6,17 @@ on:
     paths-ignore:
       - '**/*.md'
       - '**/*.txt'
+      - 'api/**'
+      - 'api-tests/**'
+      - 'charts/**'
+      - 'ci/**'
+      - 'docs/**'
+      - 'dev/**'
+      - 'testdata-transform/**'
+      - 'testing/**'
+      - 'uml-diagrams/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
   push:
     branches:
       - main
@@ -15,6 +26,29 @@ on:
 
 jobs:
   build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with Maven
+        run: |
+          mvn clean verify --batch-mode
+
+  analyze_with_Sonar:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -41,13 +75,13 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Build with Maven and analyze with Sonar
+      - name: Analyze with Sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn --batch-mode --update-snapshots \
-          verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          mvn --batch-mode --update-snapshots verify \
+          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
 
   build_images:
@@ -56,6 +90,8 @@ jobs:
         image:
           - irs-api
     runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{ steps.version.outputs.image_tag }}
     steps:
       - uses: actions/checkout@v3
 
@@ -64,6 +100,20 @@ jobs:
           # RUN --mount=type=cache is used in the IRS Dockerfile to cache directories for maven.
           # And the --mount option requires BuildKit.
           DOCKER_BUILDKIT=1 docker build --build-arg BUILD_TARGET=${{ matrix.image }} --target ${{ matrix.image }} -t ${{ matrix.image }}:latest .
+
+      - name: Set image version
+        id: version
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Support PR ref versions
+          [[ "${{ github.ref }}" == "refs/pull/"* ]] && VERSION=PR-$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\)/merge,\1,')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo VERSION=$VERSION
+          echo "::set-output name=image_tag::$VERSION"
 
       - name: Log in to registry
         env:
@@ -80,18 +130,10 @@ jobs:
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          # Support PR ref versions
-          [[ "${{ github.ref }}" == "refs/pull/"* ]] && VERSION=PR-$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\)/merge,\1,')
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "main" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag ${{ matrix.image }} $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+
+          docker tag ${{ matrix.image }} $IMAGE_ID:${{ steps.version.outputs.image_tag }}
+          docker push $IMAGE_ID:${{ steps.version.outputs.image_tag }}
           
           docker tag ${{ matrix.image }} $IMAGE_ID:$GITHUB_SHA
           docker push $IMAGE_ID:$GITHUB_SHA
@@ -113,15 +155,17 @@ jobs:
           IMAGE_ID=tractusx/${{ matrix.image }}
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          # Support PR ref versions
-          [[ "${{ github.ref }}" == "refs/pull/"* ]] && VERSION=PR-$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\)/merge,\1,')
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "main" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag ${{ matrix.image }} $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+          
+          docker tag ${{ matrix.image }} $IMAGE_ID:${{ steps.version.outputs.image_tag }}
+          docker push $IMAGE_ID:${{ steps.version.outputs.image_tag }}
+
+  trigger-trivy-image-scan:
+    needs:
+      - build_images
+    uses: ./.github/workflows/trivy-image-scan.yml
+    with:
+      image-tag: ${{ needs.build_images.outputs.image_tag }}
+      ref: ${{ github.ref }}
+      sha: ${{ github.sha }}
+

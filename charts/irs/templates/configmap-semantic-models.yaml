@@ -1,0 +1,9 @@
+{{- if .Values.semanticshub.localModels }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "irs.fullname" . }}-configmap-semantic-models
+  namespace: {{ .Values.namespace }}
+binaryData:
+  {{- tpl (toYaml .Values.semanticshub.localModels) . | nindent 2 }}
+{{- end }}

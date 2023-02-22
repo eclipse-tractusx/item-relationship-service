@@ -2,7 +2,7 @@
 
 [![Apache 2 License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/LICENSE)  
 [![Build](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/irs-build.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/irs-build.yml)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=eclipse-tractusx_item-relationship-service&metric=coverage)](https://sonarcloud.io/summary/new_code?id=catenax-ng_product-item-relationship-service)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=eclipse-tractusx_item-relationship-service&metric=coverage)](https://sonarcloud.io/summary/new_code?id=eclipse-tractusx_item-relationship-service)
 [![CodeQL](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/codeql.yml)  
 [![Kics](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/kics.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/kics.yml)
 [![Trivy](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/trivy.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/trivy.yml)
@@ -10,7 +10,7 @@
 [![OWASP Dependency Check](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml)
 [![Spotbugs](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml)
 [![Eclipse-dash](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml)
-[![Tavern IRS API test](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml)   
+[![Tavern IRS API test](https://github.com/catenax-ng/tx-item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/catenax-ng/tx-item-relationship-service/actions/workflows/tavern.yml)   
 
 ## What is the IRS?
 
@@ -33,9 +33,13 @@ The following subsection provides instructions for running the infrastructure on
 
 #### Docker-compose + IDE
 
-* Start the necessary infrastructure by running `docker-compose up`
+- Start the necessary infrastructure by running `docker-compose up`
 
-* Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
+- Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
+
+- **Hint**
+  Docker Image and Docker Compose that exist in root directory of application is only for local deployment.
+  It is not and should be not use in any test or production deployment.
 
 #### Local IRS API
 
@@ -116,7 +120,7 @@ curl -X 'GET' 'http://localhost:8080/irs/jobs/<jobID>' -H 'accept: application/j
 
 ## Documentation
 
-- [Item Relationship Service Documentation (catena-ng)](https://eclipse-tractusx.github.io/item-relationship-service/docs/)
+- [Item Relationship Service Documentation](https://eclipse-tractusx.github.io/item-relationship-service/docs/)
 
 ## Licenses
 

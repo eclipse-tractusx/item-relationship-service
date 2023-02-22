@@ -116,6 +116,7 @@ edc:
       data: ${EDC_CONTROLPLANE_ENDPOINT_DATA:} # URL of the EDC consumer controlplane data endpoint
     provider-suffix: ${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/ids/data} # Suffix to add to data requests to the EDC provider controlplane
     catalog-limit: ${EDC_CONTROLPLANE_CATALOG_LIMIT:1000} # Max number of items to fetch from the EDC provider catalog
+    catalog-page-size: ${EDC_CONTROLPLANE_CATALOG_PAGE_SIZE:50} # Number of items to fetch at one page from the EDC provider catalog when using pagination
     api-key:
       header: ${EDC_API_KEY_HEADER:} # API header key to use in communication with the EDC consumer controlplane
       secret: ${EDC_API_KEY_SECRET:} # API header secret to use in communication with the EDC consumer controlplane
@@ -139,8 +140,14 @@ digitalTwinRegistry:
     read: PT90S # HTTP read timeout for the digital twin registry client
     connect: PT90S # HTTP connect timeout for the digital twin registry client
 
-semanticsHub:
-  modelJsonSchemaEndpoint: "${SEMANTICSHUB_URL:}" # The endpoint to retrieve the json schema of a model, must contain the placeholder {urn}
+semanticshub:
+  # The endpoint to retrieve the json schema of a model from the semantic hub. If specified, must contain the placeholder {urn}.
+  modelJsonSchemaEndpoint: "${SEMANTICSHUB_URL:}"
+  url: ""
+
+  # Path to directory on filesystem where semantic models can be loaded from.
+  # The filenames inside the directory must match the Base64 encoded URNs of the models.
+  localModelDirectory: ""
   cleanup:
     #          ┌───────────── second (0-59)
     #          │ ┌───────────── minute (0 - 59)
@@ -156,6 +163,7 @@ semanticsHub:
   timeout:
     read: PT90S # HTTP read timeout for the semantic hub client
     connect: PT90S # HTTP connect timeout for the semantic hub client
+  pageSize: "${SEMANTICSHUB_PAGE_SIZE:100}"
 
 bpdm:
   bpnEndpoint: "${BPDM_URL:}" # Endpoint to resolve BPNs, must contain the placeholders {partnerId} and {idType}

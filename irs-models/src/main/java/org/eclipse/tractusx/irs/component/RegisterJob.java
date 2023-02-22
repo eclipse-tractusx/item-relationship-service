@@ -34,7 +34,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.hibernate.validator.constraints.URL;
@@ -54,6 +53,7 @@ public class RegisterJob {
     private static final int MIN_TREE_DEPTH = 1;
     private static final int MAX_TREE_DEPTH = 100;
     private static final String GLOBAL_ASSET_ID_REGEX = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
+    private static final String ASPECT_MODEL_REGEX = "^(urn:bamm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$";
     private static final int UUID_SIZE = 36;
     private static final int URN_PREFIX_SIZE = 9;
     private static final int GLOBAL_ASSET_ID_SIZE = URN_PREFIX_SIZE + UUID_SIZE;
@@ -68,8 +68,8 @@ public class RegisterJob {
     @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)
     private BomLifecycle bomLifecycle;
 
-    @ArraySchema(schema = @Schema(implementation = AspectType.class), maxItems = Integer.MAX_VALUE)
-    private List<AspectType> aspects;
+    @ArraySchema(schema = @Schema(implementation = String.class), maxItems = Integer.MAX_VALUE)
+    private List<String> aspects;
 
     @Schema(implementation = Integer.class, minimum = MIN_TREE_DEPTH_DESC, maximum = MAX_TREE_DEPTH_DESC,
             description = "Max depth of the item graph returned. If no depth is set item graph with max depth is returned.")
@@ -82,6 +82,9 @@ public class RegisterJob {
 
     @Schema(description = "Flag to specify whether aspects should be requested and collected. Default is false.")
     private boolean collectAspects;
+
+    @Schema(description = "Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false.")
+    private boolean lookupBPNs;
 
     @URL
     @Schema(description = "Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: jobId and jobState.",

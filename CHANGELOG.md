@@ -5,14 +5,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Known knowns
+- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
+
+## [2.3.0] - 2023-02-21
+### Added
+- Introduced new endpoint ``/irs/aspectmodels`` which will list all available aspect models (from semantic hub or locally provided files if present)
+
+### Fixed
+- If Grafana is enabled - dashboards will be automatically imported on startup
+
+### Changed
+- Job creation validates ``aspects`` by using models available in semantic hub or locally provided.
+
+### Known knowns
+- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
+
+## [2.2.0] - 2023-01-20
+### Added
+- Added new job parameter flag "lookupBPNs" which toggles lookup of BPN numbers using the configured BPN URL
+- Added new summary item "bpnLookups" which tracks completed and failed BPN requests. Excluded these metrics from "asyncFetchedItems"
+- Model schema JSON files can now be provided locally as a backup to the Semantic Hub.
+  Use the new ``semanticsHub.localModelDirectory`` config entry to provide a folder with the models.
+- Added pagination to EDC catalog retrieval.
+
+### Fixed
+- BPNs array is now filled correctly when requesting a running job with parameter "returnUncompletedJob=true"
+
+## [2.1.0] - 2023-01-11
 ### Changed
 - Change 'jobParameter' to 'parameter' in GET calls in IRS API
 - Change 'jobStates' to 'states' request parameter in GET call for jobs by states, 'jobStates' is now deprecated
 - REST clients for DTR, SemHub and BPDM now use their own RestTemplates and configuration
 - application.yaml received some documentation
-
-### Known knowns
-- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
 ## [2.0.0] - 2022-12-09
 ### Added
@@ -132,7 +158,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.0.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.3.0...HEAD
+[2.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.2.0...2.3.0
+[2.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.1.0...2.2.0
+[2.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.6.0...2.0.0
 [1.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.5.0...1.6.0
 [1.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.4.0...1.5.0

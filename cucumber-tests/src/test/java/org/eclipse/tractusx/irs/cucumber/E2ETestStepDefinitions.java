@@ -28,7 +28,6 @@ import static org.awaitility.Awaitility.await;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -50,7 +49,6 @@ import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Submodel;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -109,6 +107,11 @@ public class E2ETestStepDefinitions {
         registerJobBuilder.collectAspects(Boolean.parseBoolean(collectAspects));
     }
 
+    @And("lookupBPNs {string}")
+    public void lookupBPNs(String lookupBPNs) {
+        registerJobBuilder.lookupBPNs(Boolean.parseBoolean(lookupBPNs));
+    }
+
     @And("depth {int}")
     public void depth(int depth) {
         registerJobBuilder.depth(depth);
@@ -126,9 +129,7 @@ public class E2ETestStepDefinitions {
 
     @And("aspects :")
     public void aspects(List<String> aspects) {
-        final ArrayList<AspectType> parsedAspects = new ArrayList<>();
-        aspects.forEach(s -> parsedAspects.add(AspectType.fromValue(s)));
-        registerJobBuilder.aspects(parsedAspects);
+        registerJobBuilder.aspects(aspects);
     }
 
     @When("I get the job-id")
@@ -193,10 +194,15 @@ public class E2ETestStepDefinitions {
         assertThat(nrOfValueType).isEqualTo(nrOfItemsInSummary);
     }
 
-    @And("I check, if summary contains {int} completed and {int} failed items")
-    public void iCheckIfSummaryContainsCompletedAndFailedItems(int completed, int failed) {
-        assertThat(completedJob.getJob().getSummary().getAsyncFetchedItems().getCompleted()).isEqualTo(completed);
-        assertThat(completedJob.getJob().getSummary().getAsyncFetchedItems().getFailed()).isEqualTo(failed);
+    @And("I check, if {string} contains {int} completed and {int} failed items")
+    public void iCheckIfSummaryContainsCompletedAndFailedItems(String summary, int completed, int failed) {
+        if ("summary".equals(summary)) {
+            assertThat(completedJob.getJob().getSummary().getAsyncFetchedItems().getCompleted()).isEqualTo(completed);
+            assertThat(completedJob.getJob().getSummary().getAsyncFetchedItems().getFailed()).isEqualTo(failed);
+        } else if ("bpn summary".equals(summary)) {
+            assertThat(completedJob.getJob().getSummary().getBpnLookups().getCompleted()).isEqualTo(completed);
+            assertThat(completedJob.getJob().getSummary().getBpnLookups().getFailed()).isEqualTo(failed);
+        }
     }
 
     @And("I check, if {string} are equal to {string}")

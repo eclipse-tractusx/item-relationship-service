@@ -237,7 +237,7 @@ stages:
         function: api-tests.tavern_helpers:errors_for_invalid_globalAssetId_are_correct
       json:
         statusCode: BAD_REQUEST
-        message: Invalid Arguments.
+        error: Invalid Arguments.
       headers:
         content-type: application/json
 
@@ -726,8 +726,8 @@ stages:
       status_code: 400
       json:
         statusCode: BAD_REQUEST
-        message: "NoSuchElementException: Unsupported AspectType: UnknownAspect. Must be one of: AddressAspect, AssemblyPartRelationship, Batch, BatteryPass, CertificateOfDestruction, CertificateOfDismantler, ChargingProcess, ClaimData, DiagnosticData, EndOfLife, EsrCertificate, EsrCertificateStateStatistic, IdConversion, MarketplaceOffer, MaterialForHomologation, MaterialForRecycling, PartAsPlanned, PhysicalDimension, ProductDescription, ReturnRequest, SerialPartTypization, SingleLevelBomAsPlanned, SingleLevelUsageAsBuilt"
-        errors: null
+        error: "NoSuchElementException: Unsupported AspectType: UnknownAspect. Must be one of: AddressAspect, AssemblyPartRelationship, Batch, BatteryPass, CertificateOfDestruction, CertificateOfDismantler, ChargingProcess, ClaimData, DiagnosticData, EndOfLife, EsrCertificate, EsrCertificateStateStatistic, IdConversion, MarketplaceOffer, MaterialForHomologation, MaterialForRecycling, PartAsPlanned, PhysicalDimension, ProductDescription, ReturnRequest, SerialPartTypization, SingleLevelBomAsPlanned, SingleLevelUsageAsBuilt"
+        messages: null
       headers:
         content-type: application/json
 
@@ -799,7 +799,7 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 400
+    delay_after: 340
 
   - name: fetch response for created job and check details
     request:
@@ -878,8 +878,8 @@ stages:
       status_code: 400
       json:
         statusCode: BAD_REQUEST
-        message: "NoSuchElementException: Unsupported AspectType: {deprecated_aspect}. Must be one of: AddressAspect, AssemblyPartRelationship, Batch, BatteryPass, CertificateOfDestruction, CertificateOfDismantler, ChargingProcess, ClaimData, DiagnosticData, EndOfLife, EsrCertificate, EsrCertificateStateStatistic, IdConversion, MarketplaceOffer, MaterialForHomologation, MaterialForRecycling, PartAsPlanned, PhysicalDimension, ProductDescription, ReturnRequest, SerialPartTypization, SingleLevelBomAsPlanned, SingleLevelUsageAsBuilt"
-        errors: null
+        error: "NoSuchElementException: Unsupported AspectType: {deprecated_aspect}. Must be one of: AddressAspect, AssemblyPartRelationship, Batch, BatteryPass, CertificateOfDestruction, CertificateOfDismantler, ChargingProcess, ClaimData, DiagnosticData, EndOfLife, EsrCertificate, EsrCertificateStateStatistic, IdConversion, MarketplaceOffer, MaterialForHomologation, MaterialForRecycling, PartAsPlanned, PhysicalDimension, ProductDescription, ReturnRequest, SerialPartTypization, SingleLevelBomAsPlanned, SingleLevelUsageAsBuilt"
+        messages: null
       headers:
         content-type: application/json
 
@@ -1168,7 +1168,7 @@ stages:
       status_code: 400
       json:
         statusCode: BAD_REQUEST
-        message: UUID string too large
+        error: UUID string too large
       headers:
         content-type: application/json
 
@@ -1212,7 +1212,7 @@ stages:
       status_code: 404
       json:
         statusCode: NOT_FOUND
-        message: Not Found
+        error: Not Found
       verify_response_with:
         function: api-tests.tavern_helpers:errors_for_unknown_requested_globalAssetId_are_correct
       headers:
@@ -1335,7 +1335,7 @@ stages:
 
   - name: get all jobs with status COMPLETED and ERROR
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?jobState=COMPLETED, ERROR"
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=COMPLETED, ERROR"
       method: GET
       headers:
         content-type: application/json
@@ -1439,8 +1439,8 @@ stages:
       status_code: 400
       json:
         statusCode: BAD_REQUEST
-        message: "NoSuchElementException: Unsupported BomLifecycle: asPlanned, asBuilt. Must be one of: asBuilt, asPlanned"
-        errors: null
+        error: "NoSuchElementException: Unsupported BomLifecycle: asPlanned, asBuilt. Must be one of: asBuilt, asPlanned"
+        messages: null
       headers:
         content-type: application/json
 
@@ -1492,7 +1492,7 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 50
+    delay_after: 10
 
   - name: fetch response for created job
     request:
@@ -1599,5 +1599,215 @@ stages:
       status_code: 200
       verify_response_with:
         function: api-tests.tavern_helpers:check_pagination_is_requested_correctly
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure IRS-jobs are running without BPN-lookups by default
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a job and wait
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        collectAspects: false
+        depth: 10
+        direction: "downward"
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+    delay_after: 300
+
+  - name: fetch response for created job
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          state: COMPLETED
+      verify_response_with:
+        - function: api-tests.tavern_helpers:bpns_are_empty
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure IRS-jobs are running with BPN-lookups correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a job with lookupBPNs = true and wait
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        collectAspects: false
+        lookupBPNs: true
+        depth: 10
+        direction: "downward"
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+    delay_after: 300
+
+  - name: fetch response for created job
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          state: COMPLETED
+      verify_response_with:
+        - function: api-tests.tavern_helpers:bpns_are_not_empty
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure IRS-jobs with BPN-lookups content summary information
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a job with lookupBPNs = true and wait
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        collectAspects: false
+        lookupBPNs: true
+        depth: 10
+        direction: "downward"
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+    delay_after: 300
+
+  - name: fetch response for created job
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          state: COMPLETED
+      verify_response_with:
+        - function: api-tests.tavern_helpers:bpns_are_not_empty
+        - function: api-tests.tavern_helpers:summary_for_bpns_is_given
       headers:
         content-type: application/json

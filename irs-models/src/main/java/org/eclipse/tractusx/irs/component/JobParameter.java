@@ -32,7 +32,6 @@ import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 
@@ -49,9 +48,9 @@ public class JobParameter {
     @Schema(implementation = BomLifecycle.class)
     private BomLifecycle bomLifecycle;
 
-    @Schema(implementation = AspectType.class)
+    @Schema(implementation = String.class)
     @Singular
-    private List<AspectType> aspects;
+    private List<String> aspects;
 
     @Schema(implementation = Integer.class)
     @Min(0)
@@ -63,6 +62,9 @@ public class JobParameter {
 
     @Schema(implementation = Boolean.class)
     private boolean collectAspects;
+
+    @Schema(implementation = Boolean.class)
+    private boolean lookupBPNs;
 
     private String callbackUrl;
 

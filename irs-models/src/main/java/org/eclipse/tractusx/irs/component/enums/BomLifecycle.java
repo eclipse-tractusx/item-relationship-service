@@ -43,11 +43,11 @@ public enum BomLifecycle {
     AS_PLANNED("asPlanned", AspectType.PART_AS_PLANNED);
 
     private final String name;
-    private final AspectType defaultAspect;
+    private final String defaultAspect;
 
     BomLifecycle(final String name, final AspectType aspectType) {
         this.name = name;
-        this.defaultAspect = aspectType;
+        this.defaultAspect = aspectType.toString();
     }
 
     /**

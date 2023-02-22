@@ -66,7 +66,7 @@ class SubmodelExponentialRetryTest {
     @Test
     void shouldRetryExecutionOfGetSubmodelOnClientMaxAttemptTimes() {
         // Arrange
-        given(restTemplate.exchange(any(), any(), any(), eq(Catalog.class), any(), any())).willThrow(
+        given(restTemplate.exchange(any(), any(), any(), eq(Catalog.class), any(), any(), any())).willThrow(
                 new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception"));
 
         // Act
@@ -76,13 +76,13 @@ class SubmodelExponentialRetryTest {
 
         // Assert
         verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(), any(), any(),
-                eq(Catalog.class), any(), any());
+                eq(Catalog.class), any(), any(), any());
     }
 
     @Test
     void shouldRetryOnAnyRuntimeException() {
         // Arrange
-        given(restTemplate.exchange(any(), any(), any(), eq(Catalog.class), any(), any())).willThrow(
+        given(restTemplate.exchange(any(), any(), any(), eq(Catalog.class), any(), any(), any())).willThrow(
                 new RuntimeException("AASWrapper remote exception"));
 
         // Act
@@ -91,7 +91,7 @@ class SubmodelExponentialRetryTest {
 
         // Assert
         verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(), any(), any(),
-                eq(Catalog.class), any(), any());
+                eq(Catalog.class), any(), any(), any());
     }
 
 }

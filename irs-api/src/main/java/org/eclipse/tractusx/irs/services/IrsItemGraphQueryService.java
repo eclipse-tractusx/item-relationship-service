@@ -23,9 +23,11 @@ package org.eclipse.tractusx.irs.services;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -36,8 +38,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
+import org.eclipse.tractusx.irs.aaswrapper.job.RequestMetric;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.Bpn;
+import org.eclipse.tractusx.irs.component.FetchedItems;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.JobParameter;
@@ -50,7 +54,6 @@ import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Summary;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -63,6 +66,9 @@ import org.eclipse.tractusx.irs.connector.job.TransferProcess;
 import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
 import org.eclipse.tractusx.irs.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
+import org.eclipse.tractusx.irs.semanticshub.AspectModel;
+import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PagedListHolder;
@@ -90,6 +96,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final MeterRegistryService meterRegistryService;
 
+    private final SemanticsHubFacade semanticsHubFacade;
+
     @Override
     public PageResult getJobsByState(final @NonNull List<JobState> states, final Pageable pageable) {
         final List<MultiTransferJob> jobs = states.isEmpty() ? jobStore.findAll() : jobStore.findByStates(states);
@@ -97,8 +105,10 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                                                            .map(job -> JobStatusResult.builder()
                                                                                       .id(job.getJob().getId())
                                                                                       .state(job.getJob().getState())
-                                                                                      .startedOn(job.getJob().getStartedOn())
-                                                                                      .completedOn(job.getJob().getCompletedOn())
+                                                                                      .startedOn(job.getJob()
+                                                                                                    .getStartedOn())
+                                                                                      .completedOn(job.getJob()
+                                                                                                      .getCompletedOn())
                                                                                       .build())
                                                            .toList();
 
@@ -131,9 +141,9 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
         final var params = buildJobParameter(request);
-        if (params.getBomLifecycle().equals(BomLifecycle.AS_PLANNED)
-                && params.getDirection().equals(Direction.UPWARD)) {
-//            Currently not supported variant
+        if (params.getBomLifecycle().equals(BomLifecycle.AS_PLANNED) && params.getDirection()
+                                                                              .equals(Direction.UPWARD)) {
+            // Currently not supported variant
             throw new IllegalArgumentException("BomLifecycle asPlanned with direction upward is not supported yet!");
         }
 
@@ -150,17 +160,46 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private JobParameter buildJobParameter(final @NonNull RegisterJob request) {
         final BomLifecycle bomLifecycle = Optional.ofNullable(request.getBomLifecycle()).orElse(BomLifecycle.AS_BUILT);
-        final List<AspectType> aspectTypeValues = Optional.ofNullable(request.getAspects()).orElse(List.of(bomLifecycle.getDefaultAspect()));
+        final List<String> aspectTypeValues = Optional.ofNullable(request.getAspects())
+                                                      .orElse(List.of(bomLifecycle.getDefaultAspect()));
+        validateAspectTypeValues(aspectTypeValues);
         final Direction direction = Optional.ofNullable(request.getDirection()).orElse(Direction.DOWNWARD);
 
         return JobParameter.builder()
                            .depth(request.getDepth())
                            .bomLifecycle(bomLifecycle)
                            .direction(direction)
-                           .aspects(aspectTypeValues.isEmpty() ? List.of(bomLifecycle.getDefaultAspect()) : aspectTypeValues)
+                           .aspects(aspectTypeValues.isEmpty()
+                                   ? List.of(bomLifecycle.getDefaultAspect())
+                                   : aspectTypeValues)
                            .collectAspects(request.isCollectAspects())
+                           .lookupBPNs(request.isLookupBPNs())
                            .callbackUrl(request.getCallbackUrl())
                            .build();
+    }
+
+    private void validateAspectTypeValues(final List<String> aspectTypeValues) {
+        try {
+            final HashSet<AspectModel> availableModels = new HashSet<>(
+                    semanticsHubFacade.getAllAspectModels().models());
+            log.info("Available AspectModels: '{}'", availableModels);
+            log.info("Provided AspectModels: '{}'", aspectTypeValues);
+            final Set<String> availableNames = new HashSet<>(availableModels.stream().map(AspectModel::name).toList());
+            final Set<String> availableUrns = new HashSet<>(availableModels.stream().map(AspectModel::urn).toList());
+
+            final List<String> invalidAspectTypes = aspectTypeValues.stream()
+                                                         .filter(s ->
+                                                                 !availableUrns.contains(s)
+                                                                 && !availableNames.contains(s)
+                                                                 || !s.matches("^(urn:bamm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$"))
+                                                         .toList();
+            if (!invalidAspectTypes.isEmpty()) {
+                throw new IllegalArgumentException(
+                        String.format("Aspects did not match the available aspects: '%s'", invalidAspectTypes));
+            }
+        } catch (SchemaNotFoundException e) {
+            log.error("Error retrieving all available aspect models.", e);
+        }
     }
 
     @Override
@@ -193,15 +232,13 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 shells.addAll(container.getShells());
                 submodels.addAll(container.getSubmodels());
                 bpns.addAll(container.getBpns());
-            } else {
-                if (includePartialResults) {
-                    final var container = retrievePartialResults(multiJob);
-                    relationships.addAll(container.getRelationships());
-                    tombstones.addAll(container.getTombstones());
-                    shells.addAll(container.getShells());
-                    submodels.addAll(container.getSubmodels());
-                    bpns.addAll(container.getBpns());
-                }
+            } else if (includePartialResults) {
+                final var container = retrievePartialResults(multiJob);
+                relationships.addAll(container.getRelationships());
+                tombstones.addAll(container.getTombstones());
+                shells.addAll(container.getShells());
+                submodels.addAll(container.getSubmodels());
+                bpns.addAll(container.getBpns());
             }
 
             log.info("Found job with id {} in status {} with {} relationships, {} tombstones and {} submodels", jobId,
@@ -211,7 +248,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                        .job(multiJob.getJob()
                                     .toBuilder()
                                     .summary(buildSummary(multiJob.getCompletedTransfers().size(),
-                                            multiJob.getTransferProcessIds().size(), tombstones.size()))
+                                            multiJob.getTransferProcessIds().size(), tombstones.size(),
+                                            retrievePartialResults(multiJob)))
                                     .build())
                        .relationships(relationships)
                        .tombstones(tombstones)
@@ -243,14 +281,28 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     }
 
-    private Summary buildSummary(final int completedTransfersSize, final int runningSize, final int tombstonesSize) {
+    private Summary buildSummary(final int completedTransfersSize, final int runningSize, final int tombstonesSize,
+            final ItemContainer itemContainer) {
+        final Integer bpnLookupCompleted = getBpnLookupMetric(itemContainer, RequestMetric::getCompleted);
+        final Integer bpnLookupFailed = getBpnLookupMetric(itemContainer, RequestMetric::getFailed);
         return Summary.builder()
                       .asyncFetchedItems(AsyncFetchedItems.builder()
                                                           .completed(completedTransfersSize)
                                                           .running(runningSize)
-                                                          .failed(tombstonesSize)
+                                                          .failed(tombstonesSize - bpnLookupFailed)
                                                           .build())
+                      .bpnLookups(FetchedItems.builder().completed(bpnLookupCompleted).failed(bpnLookupFailed).build())
                       .build();
+    }
+
+    private Integer getBpnLookupMetric(final ItemContainer itemContainer,
+            final Function<RequestMetric, Integer> requestMetricIntegerFunction) {
+        return itemContainer.getMetrics()
+                            .stream()
+                            .filter(metric -> metric.getType().equals(RequestMetric.RequestType.BPDM))
+                            .map(requestMetricIntegerFunction)
+                            .reduce(Integer::sum)
+                            .orElse(0);
     }
 
     private ItemContainer retrievePartialResults(final MultiTransferJob multiJob) {
@@ -261,6 +313,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final var tombstones = new ArrayList<Tombstone>();
         final var shells = new ArrayList<AssetAdministrationShellDescriptor>();
         final var submodels = new ArrayList<Submodel>();
+        final var metrics = new ArrayList<RequestMetric>();
+        final var bpns = new ArrayList<Bpn>();
 
         for (final String id : transferIds) {
             try {
@@ -271,6 +325,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                     tombstones.addAll(itemContainer.getTombstones());
                     shells.addAll(itemContainer.getShells());
                     submodels.addAll(itemContainer.getSubmodels());
+                    metrics.addAll(itemContainer.getMetrics());
+                    bpns.addAll(itemContainer.getBpns());
                 });
 
             } catch (BlobPersistenceException e) {
@@ -283,6 +339,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                             .tombstones(tombstones)
                             .shells(shells)
                             .submodels(submodels)
+                            .metrics(metrics)
+                            .bpns(bpns)
                             .build();
     }
 

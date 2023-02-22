@@ -72,27 +72,38 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithoutDepth() {
-        return registerJobWithDepthAndAspect(null, List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP));
+        return registerJobWithDepthAndAspect(null, List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()));
     }
 
-    public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<AspectType> aspectTypes) {
-        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", depth, aspectTypes,
-                false);
+    public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<String> aspectTypes) {
+        return registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", depth, aspectTypes,
+                false, false, Direction.DOWNWARD);
+    }
+
+    public static RegisterJob registerJobWithDirection(final String globalAssetId, final Direction direction) {
+        return registerJob(globalAssetId, 100, List.of(), false, false, direction);
     }
 
     public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth,
-            final List<AspectType> aspectTypes) {
-        return registerJobWithGlobalAssetIdAndDepth("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", depth, aspectTypes,
-                true);
+            final List<String> aspectTypes) {
+        return registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", depth, aspectTypes,
+                true, false, Direction.DOWNWARD);
     }
 
-    public static RegisterJob registerJobWithGlobalAssetIdAndDepth(final String globalAssetId, final Integer depth,
-            final List<AspectType> aspectTypes, final boolean collectAspects) {
+    public static RegisterJob registerJobWithLookupBPNs() {
+        return registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", null,
+                List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()), false, true, Direction.DOWNWARD);
+    }
+
+    public static RegisterJob registerJob(final String globalAssetId, final Integer depth,
+            final List<String> aspectTypes, final boolean collectAspects, final boolean lookupBPNs, final Direction direction) {
         final RegisterJob registerJob = new RegisterJob();
         registerJob.setGlobalAssetId(globalAssetId);
         registerJob.setDepth(depth);
         registerJob.setAspects(aspectTypes);
         registerJob.setCollectAspects(collectAspects);
+        registerJob.setDirection(direction);
+        registerJob.setLookupBPNs(lookupBPNs);
 
         return registerJob;
     }
@@ -102,8 +113,8 @@ public class TestMother {
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.DOWNWARD)
-                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION,
-                                   AspectType.ASSEMBLY_PART_RELATIONSHIP))
+                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(),
+                                   AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()))
                            .build();
     }
 
@@ -111,8 +122,8 @@ public class TestMother {
         return JobParameter.builder()
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
-                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION,
-                                   AspectType.ASSEMBLY_PART_RELATIONSHIP))
+                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(),
+                                   AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()))
                            .collectAspects(true)
                            .build();
     }
@@ -121,7 +132,18 @@ public class TestMother {
         return JobParameter.builder()
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
-                           .aspects(List.of(AspectType.MATERIAL_FOR_RECYCLING))
+                           .aspects(List.of(AspectType.MATERIAL_FOR_RECYCLING.toString()))
+                           .build();
+    }
+
+    public static JobParameter jobParameterCollectBpns() {
+        return JobParameter.builder()
+                           .depth(0)
+                           .bomLifecycle(BomLifecycle.AS_BUILT)
+                           .direction(Direction.DOWNWARD)
+                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(),
+                                   AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()))
+                           .lookupBPNs(true)
                            .build();
     }
 

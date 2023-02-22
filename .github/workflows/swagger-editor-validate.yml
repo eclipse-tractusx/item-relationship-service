@@ -1,0 +1,22 @@
+name: "Validate OpenAPI definition"
+
+on:
+  workflow_dispatch: # Trigger manually
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - '**'
+
+jobs:
+  test_swagger_editor_validator_remote:
+    runs-on: ubuntu-latest
+    name: Swagger Editor Validator Remote
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Validate OpenAPI definition
+        uses: char0n/swagger-editor-validate@v1
+        with:
+          definition-file: api/irs-v1.0.yaml

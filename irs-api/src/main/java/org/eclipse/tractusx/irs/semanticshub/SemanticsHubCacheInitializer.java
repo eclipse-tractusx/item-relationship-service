@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.semanticshub;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -42,7 +43,7 @@ class SemanticsHubCacheInitializer {
     private final List<String> defaultUrns;
 
     /* package */ SemanticsHubCacheInitializer(final SemanticsHubFacade semanticsHubFacade,
-            @Value("${semanticsHub.defaultUrns:}") final List<String> defaultUrns) {
+            @Value("${semanticshub.defaultUrns:}") final List<String> defaultUrns) {
         this.semanticsHubFacade = semanticsHubFacade;
         this.defaultUrns = defaultUrns;
     }
@@ -54,22 +55,37 @@ class SemanticsHubCacheInitializer {
     public void initializeCacheValues() {
         log.debug("Initializing Semantics Hub Cache with values.");
 
+        defaultUrns.forEach(urn -> {
+            try {
+                semanticsHubFacade.getModelJsonSchema(urn);
+            } catch (final HttpServerErrorException | SchemaNotFoundException ex) {
+                log.error("Initialization of semantic hub cache failed for URN '{}'", urn, ex);
+            }
+        });
         try {
-            defaultUrns.forEach(semanticsHubFacade::getModelJsonSchema);
-        } catch (final HttpServerErrorException ex) {
-            log.error("Initialization of Semantics Hub Cache failed", ex);
+            semanticsHubFacade.getAllAspectModels();
+        } catch (SchemaNotFoundException e) {
+            log.error("Initialization of semantic model cache failed.", e);
         }
     }
 
     /**
      * Cleaning up Semantics Hub cache after scheduled time, and reinitializing it once again.
      */
-    @Scheduled(cron = "${semanticsHub.cleanup.scheduler}")
+    @Scheduled(cron = "${semanticshub.cleanup.scheduler}")
     /* package */ void reinitializeAllCacheInterval() {
         log.debug("Reinitializing Semantics Hub Cache with new values.");
 
-        semanticsHubFacade.evictAllCacheValues();
-        initializeCacheValues();
+        defaultUrns.stream().findFirst().ifPresentOrElse(urn -> {
+            try {
+                semanticsHubFacade.getModelJsonSchema(urn);
+                log.info("Could retrieve schema. Reinitializing cache values");
+                semanticsHubFacade.evictAllCacheValues();
+                initializeCacheValues();
+            } catch (SchemaNotFoundException e) {
+                log.error("Error while retrieving semantic models for cache. Reusing existing cached values", e);
+            }
+        }, () -> log.warn("Semantic models could not be retrieved for cache. Reusing existing cached value"));
     }
 
 }

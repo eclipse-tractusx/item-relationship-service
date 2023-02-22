@@ -21,8 +21,12 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -36,6 +40,7 @@ import org.eclipse.dataspaceconnector.policy.model.PolicyType;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
 import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.model.ContractOfferInCatalogResponse;
 import org.eclipse.tractusx.irs.edc.model.ContractOfferRequest;
 import org.eclipse.tractusx.irs.edc.model.NegotiationId;
 import org.eclipse.tractusx.irs.edc.model.NegotiationRequest;
@@ -58,12 +63,11 @@ public class ContractNegotiationService {
 
     private final EdcConfiguration config;
 
-    private static ContractOffer findOffer(final String target, final Catalog catalog) {
+    private static Optional<ContractOffer> findOfferIfExist(final String target, final Catalog catalog) {
         return catalog.getContractOffers()
                       .stream()
                       .filter(contractOffer -> contractOffer.getAsset().getId().equals(target))
-                      .findFirst()
-                      .orElseThrow(NoSuchElementException::new);
+                      .findFirst();
     }
 
     private static Policy policyFor(final String target) {
@@ -78,21 +82,18 @@ public class ContractNegotiationService {
 
     public NegotiationResponse negotiate(final String providerConnectorUrl, final String target)
             throws ContractNegotiationException {
-        log.info("Get catalog from EDC provider.");
-        final Catalog catalog = edcControlPlaneClient.getCatalog(providerConnectorUrl);
 
-        log.info("Search for offer for asset id: {}", target);
-        final ContractOffer contractOfferForGivenAssetId = findOffer(target, catalog);
+        final ContractOfferInCatalogResponse contractResponse = findOfferInPageableCatalog(providerConnectorUrl, target);
 
         final ContractOfferRequest contractOfferRequest = ContractOfferRequest.builder()
                                                                               .offerId(
-                                                                                      contractOfferForGivenAssetId.getId())
+                                                                                      contractResponse.getContractOffer().getId())
                                                                               .assetId(target)
                                                                               .policy(policyFor(target))
                                                                               .build();
 
         final NegotiationRequest negotiationRequest = NegotiationRequest.builder()
-                                                                        .connectorId(catalog.getId())
+                                                                        .connectorId(contractResponse.getConnectorId())
                                                                         .connectorAddress(providerConnectorUrl
                                                                                 + config.getControlplane().getProviderSuffix())
                                                                         .offer(contractOfferRequest)
@@ -113,7 +114,7 @@ public class ContractNegotiationService {
                                                   .requestId(UUID.randomUUID().toString())
                                                   .protocol(TransferProcessRequest.DEFAULT_PROTOCOL)
                                                   .managedResources(TransferProcessRequest.DEFAULT_MANAGED_RESOURCES)
-                                                  .connectorId(catalog.getId())
+                                                  .connectorId(contractResponse.getConnectorId())
                                                   .connectorAddress(
                                                           providerConnectorUrl + config.getControlplane().getProviderSuffix())
                                                   .contractId(response.getContractAgreementId())
@@ -130,6 +131,42 @@ public class ContractNegotiationService {
         });
         log.info("Transfer process completed for transferProcessId: {}", transferProcessId.getValue());
         return response;
+    }
+
+    private ContractOfferInCatalogResponse findOfferInPageableCatalog(final String providerConnectorUrl, final String target) {
+        int offset = 0;
+        final int pageSize = config.getControlplane().getCatalogPageSize();
+
+        log.info("Get catalog from EDC provider.");
+        final Catalog pageableCatalog = edcControlPlaneClient.getCatalog(providerConnectorUrl, offset);
+
+        boolean isLastPage = pageableCatalog.getContractOffers().size() < pageSize;
+        boolean isTheSamePage = false;
+        Optional<ContractOffer> optionalContractOffer = findOfferIfExist(target, pageableCatalog);
+
+        while (!isLastPage && !isTheSamePage && optionalContractOffer.isEmpty()) {
+            offset += pageSize;
+            final Catalog newPageableCatalog = edcControlPlaneClient.getCatalog(providerConnectorUrl, offset);
+            isTheSamePage = theSameCatalog(pageableCatalog, newPageableCatalog);
+            isLastPage = newPageableCatalog.getContractOffers().size() < pageSize;
+            optionalContractOffer = findOfferIfExist(target, newPageableCatalog);
+        }
+
+        final String connectorId = pageableCatalog.getId();
+
+        log.info("Search for offer for asset id: {}", target);
+
+        return optionalContractOffer.map(contractOffer -> ContractOfferInCatalogResponse
+                .builder()
+                .contractOffer(contractOffer)
+                .connectorId(connectorId).build())
+                                    .orElseThrow(NoSuchElementException::new);
+    }
+
+    private boolean theSameCatalog(final Catalog pageableCatalog, final Catalog newPageableCatalog) {
+        final Set<String> previousOffers = pageableCatalog.getContractOffers().stream().map(ContractOffer::getId).collect(toSet());
+        final Set<String> nextOffers = newPageableCatalog.getContractOffers().stream().map(ContractOffer::getId).collect(toSet());
+        return previousOffers.equals(nextOffers);
     }
 
     private NegotiationResponse getNegotiationResponse(final CompletableFuture<NegotiationResponse> negotiationResponse)

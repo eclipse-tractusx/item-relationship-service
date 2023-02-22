@@ -41,5 +41,11 @@ public class Summary {
     @Schema(description = "Summary of the fetched jobs", implementation = AsyncFetchedItems.class)
     private AsyncFetchedItems asyncFetchedItems;
 
+    /**
+     * BPN lookup summary
+     */
+    @Schema(description = "Summary of the BPN lookups", implementation = AsyncFetchedItems.class)
+    private FetchedItems bpnLookups;
+
 
 }

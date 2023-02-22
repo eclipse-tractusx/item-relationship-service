@@ -34,7 +34,6 @@ import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.exceptions.EdcClientException;
@@ -42,6 +41,7 @@ import org.eclipse.tractusx.irs.exceptions.JsonParseException;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.InvalidSchemaException;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.eclipse.tractusx.irs.services.validation.ValidationResult;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.web.client.RestClientException;
@@ -59,9 +59,8 @@ public class SubmodelDelegate extends AbstractDelegate {
     private final JsonValidatorService jsonValidatorService;
     private final JsonUtil jsonUtil;
 
-    public SubmodelDelegate(final EdcSubmodelFacade submodelFacade,
-            final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService,
-            final JsonUtil jsonUtil) {
+    public SubmodelDelegate(final EdcSubmodelFacade submodelFacade, final SemanticsHubFacade semanticsHubFacade,
+            final JsonValidatorService jsonValidatorService, final JsonUtil jsonUtil) {
         super(null); // no next step
         this.submodelFacade = submodelFacade;
         this.semanticsHubFacade = semanticsHubFacade;
@@ -78,7 +77,7 @@ public class SubmodelDelegate extends AbstractDelegate {
             log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
 
             final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.filterDescriptorsByAspectTypes(
-                    jobData.getAspects().stream().map(AspectType::toString).toList());
+                    jobData.getAspects());
 
             if (jobData.isCollectAspects()) {
                 log.info("Collecting Submodels.");
@@ -122,7 +121,7 @@ public class SubmodelDelegate extends AbstractDelegate {
                                 RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts(),
                                 ProcessStep.SCHEMA_VALIDATION));
                 log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
-            } catch (final InvalidSchemaException | RestClientException e) {
+            } catch (final SchemaNotFoundException | InvalidSchemaException | RestClientException e) {
                 itemContainerBuilder.tombstone(
                         Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e, 0,
                                 ProcessStep.SCHEMA_REQUEST));
