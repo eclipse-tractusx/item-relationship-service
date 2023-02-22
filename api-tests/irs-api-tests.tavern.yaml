@@ -436,7 +436,25 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 240
+    delay_after: 400
+
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
 
   - name: fetch response for created job and check details
     request:
@@ -799,7 +817,25 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 340
+    delay_after: 500
+
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
 
   - name: fetch response for created job and check details
     request:
@@ -1809,5 +1845,332 @@ stages:
       verify_response_with:
         - function: api-tests.tavern_helpers:bpns_are_not_empty
         - function: api-tests.tavern_helpers:summary_for_bpns_is_given
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure investigation job with valid globalAssetId and BPN is processed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: register a BPN investigation with valid globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
+        bomLifecycle: asPlanned
+        callbackUrl: http://testikus.com
+        incidentBpns:
+          - BPNL00000003B6LU
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+    delay_after: 60
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          state: COMPLETED
+      verify_response_with:
+        - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure investigation job with valid globalAssetId for unknown BPN is processed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: register a BPN investigation with valid globalAssetId for unknown BPN
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
+        bomLifecycle: asPlanned
+        callbackUrl: http://testikus.com
+        incidentBpns:
+          - BPNL00ARBITRARY1
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+    delay_after: 30
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          state: COMPLETED
+      verify_response_with:
+        - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID_in_unknown_BPN
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure investigation job with invalid request is handled correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: register a BPN investigation with invalid request
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        globalAssetId111: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
+        incidentBpns11:
+          - BPNL00000003B6LU
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+      verify_response_with:
+        function: api-tests.tavern_helpers:errors_for_invalid_investigation_request_are_correct
+      json:
+        statusCode: BAD_REQUEST
+        error: "Invalid Arguments."
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure investigation job with unknown globalAssetId and BPN is processed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: register a BPN investigation with unknown globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e955555
+        incidentBpns:
+          - BPNL00000003B6LU
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+    delay_after: 5
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          state: COMPLETED
+      verify_response_with:
+        - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_unknown_ID
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure investigation job with several relationships for valid globalAssetId and BPN is processed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: register a BPN investigation with valid globalAssetId with several relationships
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        globalAssetId: urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c
+        incidentBpns:
+          - BPNL00ARBITRARY1
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+    delay_after: 60
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          state: COMPLETED
+      verify_response_with:
+        - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
+        - function: api-tests.tavern_helpers:relationships_for_BPN_investigations_contains_several_childs
       headers:
         content-type: application/json
