@@ -13,3 +13,9 @@
 GET http://{{host}}{{catalogEndpoint}}?providerUrl={{providerUrl}}&limit=5 HTTP/1.1
 {{headerName}}: {{headerValue}}
 Content-Type: {{contentType}}
+
+### Get Assets
+
+GET http://{{host}}/data/assets HTTP/1.1
+{{headerName}}: {{headerValue}}
+Content-Type: {{contentType}}

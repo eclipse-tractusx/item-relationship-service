@@ -111,8 +111,8 @@ dependencies:
   # IRS Frontend Service
   - name: irs-frontend-service
     alias: irs-frontend-service
-    version: 0.0.1
-    repository: "file://subcharts/irs-frontend-service"
+    version: 0.0.3
+    repository: https://catenax-ng.github.io/product-item-relationship-service-frontend
     condition: install.irs.frontend
 
   # KeyCloak Service
