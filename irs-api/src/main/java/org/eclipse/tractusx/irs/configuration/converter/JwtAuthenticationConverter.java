@@ -23,15 +23,13 @@ package org.eclipse.tractusx.irs.configuration.converter;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
-import com.nimbusds.jose.shaded.gson.JsonArray;
-import com.nimbusds.jose.shaded.gson.JsonObject;
-import com.nimbusds.jose.shaded.gson.JsonPrimitive;
+import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.convert.converter.Converter;
@@ -79,16 +77,13 @@ public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthen
          */
         public Set<SimpleGrantedAuthority> extractIrsRolesFromToken(final Jwt jwt) {
             return Optional.ofNullable(jwt.getClaim(RESOURCE_ACCESS_CLAIM))
-                           .map(JsonObject.class::cast)
+                           .map(LinkedTreeMap.class::cast)
                            .map(accesses -> accesses.get(IRS_RESOURCE_ACCESS))
-                           .map(JsonObject.class::cast)
+                           .map(LinkedTreeMap.class::cast)
                            .map(irsAccesses -> irsAccesses.get(ROLES))
-                           .map(JsonArray.class::cast)
-                           .map(roles -> StreamSupport.stream(roles.spliterator(), false)
-                                                      .map(JsonPrimitive.class::cast)
-                                                      .map(JsonPrimitive::getAsString)
-                                                      .map(SimpleGrantedAuthority::new)
-                                                      .collect(Collectors.toSet()))
+                           .map(roles -> ((List<String>) roles).stream()
+                                                               .map(SimpleGrantedAuthority::new)
+                                                               .collect(Collectors.toSet()))
                            .orElse(Collections.emptySet());
         }
     }

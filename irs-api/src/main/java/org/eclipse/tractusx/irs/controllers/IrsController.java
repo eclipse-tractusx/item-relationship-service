@@ -56,6 +56,7 @@ import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.springdoc.api.annotations.ParameterObject;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -255,6 +256,7 @@ public class IrsController {
     })
     @IrsTimer("getjobbystate")
     @GetMapping("/jobs")
+    @PageableAsQueryParam
     @PreAuthorize("hasAuthority('view_irs')")
     public PageResult getJobsByState(
             @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
@@ -262,6 +264,7 @@ public class IrsController {
             @RequestParam(value = "states", required = false, defaultValue = "") final List<JobState> states,
             @Parameter(hidden = true)
             @RequestParam(value = "jobStates", required = false, defaultValue = "") final List<JobState> jobStates,
+            @Parameter(hidden = true)
             @ParameterObject final Pageable pageable) {
         return itemJobService.getJobsByState(states, jobStates, pageable);
     }
@@ -290,7 +293,6 @@ public class IrsController {
                                          }),
     })
     @GetMapping("/aspectmodels")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('view_irs')")
     public AspectModels getAllAvailableAspectModels() throws SchemaNotFoundException {
         return semanticHubService.getAllAspectModels();

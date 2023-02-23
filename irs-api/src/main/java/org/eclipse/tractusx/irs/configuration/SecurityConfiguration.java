@@ -62,7 +62,7 @@ public class SecurityConfiguration {
 
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     @Bean
-        /* package */ SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
+    /* package */ SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
         httpSecurity.httpBasic().disable();
         httpSecurity.formLogin().disable();
         httpSecurity.csrf().disable();
@@ -98,7 +98,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-        /* package */ CorsConfigurationSource corsConfigurationSource() {
+    /* package */ CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowCredentials(true);
