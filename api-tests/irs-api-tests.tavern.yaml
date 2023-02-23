@@ -744,7 +744,7 @@ stages:
       status_code: 400
       json:
         statusCode: BAD_REQUEST
-        error: "NoSuchElementException: Unsupported AspectType: UnknownAspect. Must be one of: AddressAspect, AssemblyPartRelationship, Batch, BatteryPass, CertificateOfDestruction, CertificateOfDismantler, ChargingProcess, ClaimData, DiagnosticData, EndOfLife, EsrCertificate, EsrCertificateStateStatistic, IdConversion, MarketplaceOffer, MaterialForHomologation, MaterialForRecycling, PartAsPlanned, PhysicalDimension, ProductDescription, ReturnRequest, SerialPartTypization, SingleLevelBomAsPlanned, SingleLevelUsageAsBuilt"
+        error: "Aspects did not match the available aspects: '[UnknownAspect]'"
         messages: null
       headers:
         content-type: application/json
@@ -966,7 +966,7 @@ stages:
       status_code: 400
       json:
         statusCode: BAD_REQUEST
-        error: "NoSuchElementException: Unsupported AspectType: {deprecated_aspect}. Must be one of: AddressAspect, AssemblyPartRelationship, Batch, BatteryPass, CertificateOfDestruction, CertificateOfDismantler, ChargingProcess, ClaimData, DiagnosticData, EndOfLife, EsrCertificate, EsrCertificateStateStatistic, IdConversion, MarketplaceOffer, MaterialForHomologation, MaterialForRecycling, PartAsPlanned, PhysicalDimension, ProductDescription, ReturnRequest, SerialPartTypization, SingleLevelBomAsPlanned, SingleLevelUsageAsBuilt"
+        error: "Aspects did not match the available aspects: '[{deprecated_aspect}]'"
         messages: null
       headers:
         content-type: application/json
