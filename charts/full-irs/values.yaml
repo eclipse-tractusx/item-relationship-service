@@ -11,11 +11,12 @@ install:
     consumer: false
     provider: false
 
+  digitalTwin: false
+  semanticHub: false
+  keycloak: false
+
   irs: 
     providerBackend: false
-    digitalTwin: false
-    keycloak: false
-    semanticHub: false
     backend: false
     frontend: false
 
@@ -73,9 +74,9 @@ config:
       id: &config-oauth-client-id "edc"
     provider:
       jwks:
-        url: &config-oauth-provider-jwts-url "http://edc-daps-service:4567/jwks.json"
+        url: &config-oauth-provider-jwts-url "http://edc-daps:4567/jwks.json"
     token:
-      url: &config-oauth-token-url "http://edc-daps-service:4567/token"
+      url: &config-oauth-token-url "http://edc-daps:4567/token"
   keycloak:
     grand:
       type: &config-keycloak-grand-type client_credentials
@@ -86,9 +87,9 @@ config:
       secret: &config-keycloak-client-secret "catena-client-secret"
     
     token:
-      url: &config-keycloak-token-url "http://irs-keycloak-service:8080/connect/token"
+      url: &config-keycloak-token-url "http://keycloak:8080/connect/token"
     cert: 
-      url: &config-keycloak-certs-url "http://irs-keycloak-service:8080/.well-known/openid-configuration/jwks"
+      url: &config-keycloak-certs-url "http://keycloak:8080/.well-known/openid-configuration/jwks"
   irs: 
     existingSecret: &config-irs-existingSecret false
     secret:
@@ -102,22 +103,22 @@ config:
       grafana:
         user: *config-grafana-username
         password: *config-grafana-password
-    digitalTwin:
+  digitalTwin:
+    secret:
+      name: &config-digitalTwin-secret-name "digital-twin-registry"
+    docker:
       secret:
-        name: &config-irs-digitalTwin-secret-name "irs-digital-twin-registry"
-      docker:
-        secret:
-          name: &config-irs-digitalTwin-docker-secret-name "irs-digital-twin-registry-docker"
-      database:
-        host: &config-irs-digitalTwin-database-host "irs-digital-twin-registry-database"
-        name: &config-irs-digitalTwin-database-name "irs-digital-twin-registry"
-        username: &config-irs-digitalTwin-database-username "irs-digital-twin-registry-user"
-        password: &config-irs-digitalTwin-database-password "irs-digital-twin-registry-pass"
-        postgres:
-          password: &config-irs-digitalTwin-database-postgres-password "admin"
-        secret:
-          name: &config-irs-digitalTwin-database-secret-name irs-digital-twin-registry-database
-      idpIssuerUri: "http://edc-daps-service:4567"
+        name: &config-digitalTwin-docker-secret-name "digital-twin-registry-docker"
+    database:
+      host: &config-digitalTwin-database-host "digital-twin-registry-database"
+      name: &config-digitalTwin-database-name "digital-twin-registry"
+      username: &config-digitalTwin-database-username "digital-twin-registry-user"
+      password: &config-digitalTwin-database-password "digital-twin-registry-pass"
+      postgres:
+        password: &config-irs-digitalTwin-database-postgres-password "admin"
+      secret:
+        name: &config-digitalTwin-database-secret-name digital-twin-registry-database
+    idpIssuerUri: "http://edc-daps:4567"
  
 
 # ###########
@@ -125,6 +126,7 @@ config:
 # ###########
 edc-vault:
   fullnameOverride: "edc-vault"
+  enabled: false
   injector:
       # enabled: false
     enabled: true
@@ -224,15 +226,15 @@ edc-vault:
 ######################
 # DAPS Configuration #
 ######################
-edc-daps-service:
+edc-daps:
   client:
     id: edc
     name: edc
   scope: idsc:IDS_CONNECTOR_ATTRIBUTES_ALL
-  issuer: http://edc-daps-service:4567
+  issuer: http://edc-daps:4567
   audience:
     default: idsc:IDS_CONNECTORS_ALL
-    accept: http://edc-daps-service:4567
+    accept: http://edc-daps:4567
 
 
 #########################
@@ -299,7 +301,7 @@ edc-consumer-control-plane:
         algorithm: "NONE"
     receiver:
       http:
-        endpoint:  http://edc-consumer-backend-service:8080
+        endpoint:  http://irs:8080 # TOChekc 
     postgresql:
       host: *config-edc-consumer-database-host
       database: *config-edc-consumer-database-name
@@ -349,19 +351,6 @@ edc-consumer-data-plane:
         api:
           secret:
             path: "content"
-
-
-################################
-# EDC Consumer Backend Service #
-################################
-edc-consumer-backend-service:
-  fullnameOverride: "edc-consumer-backend-service"
-  service:
-    type: NodePort
-    frontend:
-      port: 8080
-    backend:
-      port: 8081
 
 
 #########################
@@ -426,7 +415,7 @@ edc-provider-control-plane:
           alias: "data-encryption"
     receiver:
       http:
-        endpoint: http://edc-provider-backend-service:8080
+        endpoint: http://edc-provider-backend:8080
     postgresql:
       host: *config-edc-provider-database-host
       database: *config-edc-provider-database-name
@@ -478,11 +467,11 @@ edc-provider-data-plane:
             path: "content"
 
 
-################################
-# EDC Provider Backend Service #
-################################
-edc-provider-backend-service:
-  fullnameOverride: "edc-provider-backend-service"
+########################
+# EDC Provider Backend #
+########################
+edc-provider-backend:
+  fullnameOverride: "edc-provider-backend"
   service:
     type: NodePort
     frontend:
@@ -491,12 +480,67 @@ edc-provider-backend-service:
       port: 8081
 
 
+################
+# Semantic Hub #
+################
+semantic-hub:
+  fullnameOverride: "semantic-hub"
+
+
+##################################
+# Digital Twin Registry Database #
+###################################
+digital-twin-registry-database:
+  fullnameOverride: "digital-twin-registry-database"
+  primary:
+    persistence:
+      enabled: true
+      existingClaim: digital-twin-registry-database-pv-claim 
+  volumePermissions:
+    enabled: true
+  readReplicas:
+    persistence:
+      enabled: false
+  auth:
+    database: *config-digitalTwin-database-name
+    username: *config-digitalTwin-database-username
+    existingSecret: *config-digitalTwin-database-secret-name
+  service:
+    type: NodePort
+    control:
+      port: 5432
+
+
+#########################
+# Digital Twin Registry #
+#########################
+digital-twin-registry:
+  registry: 
+    secret:
+      name: *config-digitalTwin-secret-name
+    idpIssuerUri: *config-keycloak-token-url
+    imagePullSecrets:
+      - name: *config-digitalTwin-docker-secret-name
+
+
+############
+# KeyCloak #
+############
+keycloak:
+  fullnameOverride: "keycloak"
+  client:
+    id: *config-keycloak-client-id
+    secret: *config-keycloak-client-secret
+  grand:
+    type: *config-keycloak-grand-type
+  scope: *config-keycloak-scope
+
+
 #####################
 # IRS Configuration #
 #####################
 irs:
   enabled: false
-
   minioUser: *config-minio-username
   minioPassword: *config-minio-password
   minioUrl: "http://{{ .Release.Name }}-minio:9000"
@@ -506,21 +550,6 @@ irs:
 
   irsUrl: http://{{ .Chart.Name }}:{{ .Values.service.port }}
 
-  # existingSecret: *config-irs-existingSecret
-  # secret:
-  #   name: *config-irs-secret-name
-  #   minio:
-  #     user: *config-minio-username
-  #     passsword: *config-minio-password
-  #   keycloak:
-  #     client:
-  #       id: *config-keycloak-client-id
-  #       secret: *config-keycloak-client-secret
-  #   edc:
-  #     apiSecret: *config-edc-auth-api-key
-  #   grafana:
-  #     user: *config-grafana-username
-  #     password: *config-grafana-password
   blobstore:
     endpoint: "http://irs-minio:9000"
     accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
@@ -533,11 +562,11 @@ irs:
       jwkSetUri: *config-keycloak-certs-url
 
   digitalTwinRegistry:
-    url: "http://irs-digital-twin-registry:8080"
+    url: "http://digital-twin-registry:8080"
     descriptorEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/registry/shell-descriptors/{aasIdentifier}"
     shellLookupEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/lookup/shells?assetIds={assetIds}"
   semanticsHub:
-    url: http://irs-semantic-hub-service:8080/hub/api/v1
+    url: http://semantic-hub:8080/hub/api/v1
     modelJsonSchemaEndpoint: "{{ tpl .Values.semanticsHub.url . }}/models/{urn}/json-schema"
     defaultUrns: >-
       urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
@@ -584,7 +613,7 @@ irs:
       MINIO_PROMETHEUS_URL: http://{{ .Release.Name }}-prometheus-server:9090
 
   prometheus:
-    enabled: false #<1>
+    enabled: false
     rbac:
       create: false
     alertmanager:
@@ -612,7 +641,7 @@ irs:
           - targets: [ '{{ .Release.Name }}-minio:9000' ]
 
   grafana:
-    enabled: false #<1>
+    enabled: false
     rbac:
       create: false
     persistence:
@@ -644,46 +673,11 @@ irs:
       irsjobs: dashboards/irs-jobs-dashboard.json
       irsapi: dashboards/irs-api-dashboard.json
 
-######################################
-# IRS Digital Twin Registry Database #
-######################################
-irs-digital-twin-registry-database:
-  fullnameOverride: "irs-digital-twin-registry-database"
-  primary:
-    persistence:
-      enabled: true
-      existingClaim: irs-digital-twin-registry-database-pv-claim 
-  volumePermissions:
-    enabled: true
-  readReplicas:
-    persistence:
-      enabled: false
-  auth:
-    database: *config-irs-digitalTwin-database-name
-    username: *config-irs-digitalTwin-database-username
-    existingSecret: *config-irs-digitalTwin-database-secret-name
-  service:
-    type: NodePort
-    control:
-      port: 5432
 
-
-#############################
-# IRS Digital Twin Registry #
-#############################
-irs-digital-twin-registry:
-  registry: 
-    secret:
-      name: *config-irs-digitalTwin-secret-name
-    idpIssuerUri: *config-keycloak-token-url
-    imagePullSecrets:
-      - name: *config-irs-digitalTwin-docker-secret-name
-
-
-########################
-# IRS Frontend Service #
-########################
-irs-frontend-service:
+################
+# IRS Frontend #
+################
+irs-frontend:
   registry:
     vite:
       manual: 
@@ -699,21 +693,3 @@ irs-frontend-service:
       id: *config-keycloak-client-id
       secret: *config-keycloak-client-secret
 
-
-####################
-# KeyCloak Service #
-####################
-irs-keycloak-service:
-  fullnameOverride: "irs-keycloak-service"
-  client:
-    id: *config-keycloak-client-id
-    secret: *config-keycloak-client-secret
-  grand:
-    type: *config-keycloak-grand-type
-  scope: *config-keycloak-scope
-
-########################
-# Semantic Hub Service #
-########################
-irs-semantic-hub-service:
-  fullnameOverride: "irs-semantic-hub-service"

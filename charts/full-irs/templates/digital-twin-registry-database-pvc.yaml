@@ -1,0 +1,23 @@
+---
+{{ if .Values.install.digitalTwin }}
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: digital-twin-registry-database-pv-claim
+  namespace: {{ .Release.Namespace | default "default" | quote }}
+  labels:
+    app: postgres
+    db: digital-twin-registry
+  annotations:
+    "helm.sh/resource-policy": keep    
+spec:
+  volumeName: digital-twin-registry-database-pv
+  storageClassName: standard
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 200Mi
+
+{{ end }}

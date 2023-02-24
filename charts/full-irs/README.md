@@ -1,4 +1,4 @@
-# IRS
+# Item Relationship Service
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@ Secret should be created:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: "irs-digital-twin-registry-docker"
+  name: "digital-twin-registry-docker"
   namespace: irs
 type: kubernetes.io/dockerconfigjson
 data:
@@ -53,15 +53,7 @@ Uninstall the helm chart
 helm uninstall irs --namespace irs
 ```
 
-Package a helm chart
-
-``` bash
-helm package ./subcharts/edc-control-plane -d ./charts
-helm package ./subcharts/edc-data-plane -d ./charts
-
-```
-
-## kubernetes
+## Kubernetes
 
 Change default namespace
 
@@ -69,16 +61,18 @@ Change default namespace
 kubectl config set-context minikube --namespace=irs
 ```
 
-## VAULT
+## EDC
+
+### VAULT
 
 ``` bash
 kubectl port-forward svc/edc-vault 8200:8200
 ```
 
-## Daps
+### Daps
 
 ``` bash
-kubectl port-forward svc/edc-daps-service 4567:4567
+kubectl port-forward svc/edc-daps 4567:4567
 ```
 
 Register new client
@@ -93,165 +87,177 @@ Get client token
 ruby create_test_token.rb edc ./keys/edc.key
 ```
 
-## EDC Consumer
+### EDC Consumer
 
-### EDC Consumer Database
+#### EDC Consumer Database
 
 ``` bash
 kubectl port-forward svc/edc-consumer-database 5432:5432
 
-kubectl get secret edc-consumer-database -n irs -o jsonpath="{.data.postgres-password}" | base64 -d
-
-kubectl get secret edc-consumer-database -n irs -o jsonpath="{.data.password}" | base64 -d
-
 export PGPASSWORD=edc-consumer-pass; psql -h localhost -p 5432 -d edc-consumer -U edc-consumer-user
 
 psql \l
-psql \c edc
-psql \d
 
 ```
 
-### EDC Consumer Control Plane
+#### EDC Consumer Control Plane
 
 ``` bash
-kubectl port-forward svc/edc-consumer-control-plane 8181:8181 8080:8080
+kubectl port-forward svc/edc-consumer-control-plane 7181:8181 7080:8080
 ```
 
-### EDC Consumer Data Plane
+#### EDC Consumer Data Plane
 
-## EDC Provider
+### EDC Provider
 
-### EDC Provider Database
+#### EDC Provider Database
 
 ``` bash
 kubectl port-forward svc/edc-provider-database 5432:5432
 
-kubectl get secret edc-provider-database -n irs -o jsonpath="{.data.postgres-password}" | base64 -d
-
-kubectl get secret edc-provider-database -n irs -o jsonpath="{.data.password}" | base64 -d
-
 export PGPASSWORD=edc-provider-pass; psql -h localhost -p 5432 -d edc-provider -U edc-provider-user
 
 psql \l
-psql \c edc
-psql \d
 
 ```
 
-### EDC Provider Control Plane
+#### EDC Provider Control Plane
 
 ``` bash
 kubectl port-forward svc/edc-provider-control-plane 8181:8181 8080:8080
 ```
 
-### EDC Provider Data Plane
+#### EDC Provider Data Plane
 
-## Grafana
+## IRS Dependencies
+
+### Semantic Hub
+
+``` bash
+kubectl port-forward svc/semantic-hub 8088:8080
+```
+
+### Digital Twins Registry Database
+
+``` bash
+
+kubectl port-forward svc/digital-twin-registry-database 5432:5432
+
+export PGPASSWORD=digital-twin-registry-pass; psql -h localhost -p 5432 -d digital-twin-registry -U digital-twin-registry-user
+
+select * from shell where id_short = 'VehicleCombustion';
+psql \l
+```
+
+### Digital Twins Registry
+
+``` bash
+
+kubectl port-forward svc/digital-twin-registry 8080:8080
+```
+
+### KeyCloak
+
+``` bash
+
+kubectl port-forward svc/keycloak 4011:8080
+```
+
+### IRS Provider Backend
+
+``` bash
+kubectl port-forward svc/irs-provider-backend 8080:8080
+```
+
+
+## IRS Service
+
+### Grafana
 
 ``` bash
 kubectl port-forward svc/irs-grafana 4000:80
 ```
 
-## Prometheus
+### Prometheus
 
 ``` bash
 kubectl port-forward svc/irs-prometheus-server 9090:80
 ```
 
-## Minio
+### Minio
 
 ``` bash
 kubectl port-forward svc/irs-minio 9000:9000
 kubectl port-forward svc/irs-minio-console 9001:9001
 ```
 
-## IRS Backend Service
+### IRS Backend Service
 
 ``` bash
-kubectl port-forward svc/irs-backend-service 8080:8080 8181:8181 4004:4004
+kubectl port-forward svc/irs 8080:8080 8181:8181 4004:4004
 ```
 
-## IRS Provider Backend Service
-
-``` bash
-kubectl port-forward svc/irs-provider-backend-service 8080:8080
-```
-
-## IRS Digital Twins Registry Database
+### IRS Frontend Service
 
 ``` bash
 
-kubectl port-forward svc/irs-digital-twin-registry-database 5432:5432
-
-kubectl get secret irs-digital-twin-registry-database -n irs -o jsonpath="{.data.postgres-password}" | base64 -d
-
-kubectl get secret irs-digital-twin-registry-database -n irs -o jsonpath="{.data.password}" | base64 -d
-
-export PGPASSWORD=irs-digital-twin-registry-pass; psql -h localhost -p 5432 -d irs-digital-twin-registry -U irs-digital-twin-registry-user
-
-select * from shell where id_short = 'VehicleCombustion';
-psql \l
-psql \c edc
-psql \d
+kubectl port-forward svc/irs-frontend 3000:8080
 ```
 
-## IRS Digital Twins Registry Service
+## Usage
+
+### Deploying the services
+
+To deploy the services on kubernetes, you should run the ``` ./start.sh ```.
+
+The script takes 3 parameters as input:
+
+* CLEAN_UP_ENVIRONMENT: default is set to false. If this is passed as true, will delete the minikube and recreate it with 2 CPU and 8GB or ram.
+* INSTALL_EDC: default is set to true. If this is passed as true, will delete all helm charts related to EDC (vault, DAPS, EDC consumer and EDC provider) and install them again.
+* INSTALL_IRS: default is set to true. If this is passed as true, will delete all helm charts related to IRS (dependencies, IRS backend and IRS frontend) and install them again.
+
+To forward the ports, the script: ```forwardingPorts.sh``` should be run.
+
+### Run test data
+
+To create test data, the script: ```upload-testdata.sh``` should be run only after the ports were forwarded.
+To clean-up test data, the script: ```deleteIRSTestData.sh``` should be run only after the ports were forwarded.
+
+#### Generate Key Cloak token
+
+Precondition:
+
+* Visual Studio extension: REST Client by Huachao Mao
+* Key Cloak service port should run at port 4011
+
+Using the ./test/keycloack-service.rest, you can execute the token request to get a new token.
+
+#### Generate DAPS token
+
+Precondition:
+
+* Visual studio extension: REST Client by Huachao Mao
+* Daps service port should run at port 4567
+* Token used as client assertion should be created with script: ./daps/create_test_token.rb
+  * example: 
 
 ``` bash
-
-kubectl port-forward svc/irs-digital-twin-registry 8080:8080
+  ruby create_test_token.rb edc ./keys/edc.key
 ```
 
-## IRS Frontend Service
+where edc is a client 
 
-``` bash
-
-kubectl port-forward svc/irs-frontend-service 3000:8080
-```
-
-## IRS Key Cloak
-
-``` bash
-
-kubectl port-forward svc/irs-keycloak-service 4011:8080
-```
-
-## IRS Key Cloak Database
-
-``` bash
-
-kubectl port-forward svc/irs-keycloak-database 5432:5432
-
-
-export PGPASSWORD=irs-keycloak-pass; psql -h localhost -p 5432 -d irs-keycloak -U irs-keycloak-user
-
-psql \l
-psql \c edc
-psql \d
-```
-
-## IRS Key Cloak Service
-
-``` bash
-kubectl port-forward svc/irs-keycloak-service 4011:8080
-```
-
-## IRS Semantic Hub Service
-
-``` bash
-kubectl port-forward svc/irs-semantic-hub-service 8080:8080
-```
+Using the ./test/omejdn-service.rest.rest, you can execute the token request to get a new token.
 
 ### Next steps
 
-1. Use the existing test data scripts
-2. Use the existing irs helm chart from the repo
-3. Helm Security issues
-4. Move irs frontend helm chart to frontend github url
-5. Deploy on a cloud provider
-6. Vault: store certificates in secrets
-7. Add liveness and readiness probe for irs provider backend service
+1. Helm Security issues
+2. Use the official digital twin chart
+3. Deploy on a cloud provider
+4. Vault: store certificates in secrets
+5. Add liveness and readiness probe for irs provider backend service
+6. Use the DAPS chart form: https://catenax-ng.github.io/product-DAPS
+
 
 ### Additional
 
@@ -263,4 +269,15 @@ kubectl port-forward svc/irs-semantic-hub-service 8080:8080
 ### Decisions
 
 1. No BPN mockup
-2. 
+2. Use a custom helm chart for semantic hub.
+   1. Reason: test data provided
+   2. Next steps:  
+      1. Use the official helm chart from: https://eclipse-tractusx.github.io/sldt-semantic-hub
+      2. Include scripts to provide test data into the script ``` upload-testdata.sh ```
+3. Use a custom helm chart for daps.
+   1. Reason: already configured with a default client
+   2. Next steps:  
+      1. Use the official helm chart from: https://catenax-ng.github.io/product-DAPS
+      2. Provide configuration with default client from start.
+4. Use a custom helm chart for digital twin
+   1. Reason: A secret for pulling docker images is missing to use the default chart from: https://eclipse-tractusx.github.io/sldt-digital-twin-registry

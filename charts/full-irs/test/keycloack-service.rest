@@ -8,8 +8,6 @@
 @userEndpoint = /api/v1/user/
 @clientId = catena-client-id
 @clientSecret = catena-client-secret
-@username=User1
-@passsword=pwd
 @grantType = client_credentials
 @scope = catena-scope
 
@@ -33,7 +31,3 @@ grant_type={{grantType}}
 &client_id={{clientId}}
 &scope={{scope}}
 
-### Get user
-
-GET  http://{{host}}/api/v1/user/1
-Content-Type: application/x-www-form-urlencoded

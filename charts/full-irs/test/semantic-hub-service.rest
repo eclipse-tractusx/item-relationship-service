@@ -1,6 +1,6 @@
 # docker run   --rm   -d   -p 8080:8080 -p 8443:8443   --name wiremock-demo   rodolpheche/wiremock:2.25.1
 @hostname = localhost
-@port = 8080
+@port = 8088
 @host = {{hostname}}:{{port}}
 @contentType = application/json
 @adminMappingEndpoint = /__admin/mappings

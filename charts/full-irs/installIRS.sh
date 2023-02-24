@@ -3,11 +3,11 @@
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-START_IRS_BACKEND_DEPENDENCIES=true
-START_IRS_BACKEND=true
-START_IRS_FRONTEND=true
+INSTALL_IRS_BACKEND_DEPENDENCIES=true
+INSTALL_IRS_BACKEND=true
+INSTALL_IRS_FRONTEND=true
 
-if $START_IRS_BACKEND_DEPENDENCIES
+if $INSTALL_IRS_BACKEND_DEPENDENCIES
 then
     HELM_CHART_NAME=irs-dependencies
     HELM_CHART=$(helm list -q -f "$HELM_CHART_NAME")
@@ -20,20 +20,21 @@ then
 
     echo -e "${BLUE}Installing helm chart: $HELM_CHART_NAME ${NC}"
     helm install $HELM_CHART_NAME \
-        --set install.irs.digitalTwin=true \
+        --set install.semanticHub=true \
+        --set install.digitalTwin=true \
+        --set install.keycloak=true \
         --set install.irs.providerBackend=true \
-        --set install.irs.semanticHub=true \
-        --set install.irs.keycloak=true \
-        --set install.edc.daps=false \
         --namespace irs --create-namespace .
 
     echo -e "${BLUE}Waiting for the deployments to be available${NC}"
-    kubectl wait deployment -n irs --for condition=Available --timeout=90s irs-digital-twin-registry
-    kubectl wait deployment -n irs --for condition=Available --timeout=90s irs-provider-backend-service
+    kubectl wait deployment -n irs --for condition=Available --timeout=90s semantic-hub
+    kubectl wait deployment -n irs --for condition=Available --timeout=90s digital-twin-registry
+    kubectl wait deployment -n irs --for condition=Available --timeout=90s keycloak
+    kubectl wait deployment -n irs --for condition=Available --timeout=90s irs-provider-backend
 
 fi
 
-if $START_IRS_BACKEND
+if $INSTALL_IRS_BACKEND
 then
     HELM_CHART_NAME=irs
     HELM_CHART=$(helm list -q -f "$HELM_CHART_NAME")
@@ -49,8 +50,8 @@ then
     helm install $HELM_CHART_NAME \
         --set irs.enabled=true \
         --set irs.minio.enabled=true \
-        --set irs.prometheus.enabled=false \
         --set irs.grafana.enabled=false \
+        --set irs.prometheus.enabled=false \
         --namespace irs --create-namespace .
 
     echo -e "${BLUE}Waiting for the deployments to be available${NC}"
@@ -61,7 +62,7 @@ then
 
 fi
 
-if $START_IRS_FRONTEND
+if $INSTALL_IRS_FRONTEND
 then
     HELM_CHART_NAME=irs-frontend
     HELM_CHART=$(helm list -q -f "$HELM_CHART_NAME")
@@ -78,6 +79,6 @@ then
         --namespace irs --create-namespace .
 
     echo -e "${BLUE}Waiting for the deployments to be available${NC}"
-    kubectl wait deployment -n irs --for condition=Available --timeout=90s irs-frontend-service
+    kubectl wait deployment -n irs --for condition=Available --timeout=90s irs-frontend
     
 fi

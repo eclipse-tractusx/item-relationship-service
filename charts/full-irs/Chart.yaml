@@ -18,7 +18,7 @@ dependencies:
 
   # Omejdn Service
   - name: omejdn-service
-    alias: edc-daps-service
+    alias: edc-daps
     version: 0.0.1
     repository: "file://subcharts/omejdn-service"
     condition: install.edc.daps
@@ -45,13 +45,6 @@ dependencies:
     repository: "file://subcharts/edc-data-plane"
     condition: install.edc.consumer
 
-  # Backend service
-  - name: backend-service
-    alias: edc-consumer-backend-service
-    version: 0.0.6
-    repository: https://denisneuling.github.io/cx-backend-service
-    condition: install.edc.consumer
-
   # EDC Provider
   # PostgreSQL
   - name: postgresql
@@ -76,55 +69,58 @@ dependencies:
 
   # Backend service
   - name: backend-service
-    alias: edc-provider-backend-service
+    alias: edc-provider-backend
     version: 0.0.6
     repository: https://denisneuling.github.io/cx-backend-service
     condition: install.edc.provider
   
+  # IRS ############################
+  
+  # Semantic Hub Service
+  - name: semantic-hub
+    alias: semantic-hub
+    version: 0.0.1
+    repository: "file://subcharts/semantic-hub"
+    condition: install.semanticHub
+
+  # Digital Twin Registry Database
+  - name: postgresql
+    alias: digital-twin-registry-database
+    version: 12.0.0
+    repository: https://charts.bitnami.com/bitnami
+    condition: install.digitalTwin
+
+  # Digital Twin Registry
+  - name: digital-twin-registry
+    alias: digital-twin-registry
+    version: 0.0.1
+    repository: "file://subcharts/digital-twin-registry"
+    condition: install.digitalTwin
+
+  # KeyCloak Service
+  - name: keycloak
+    alias: keycloak
+    version: 0.0.1
+    repository: "file://subcharts/keycloak"
+    condition: install.keycloak
+
+  # IRS Provider Backend
+  - name: irs-provider-backend
+    alias: irs-provider-backend
+    version: 0.0.1
+    repository: "file://subcharts/irs-provider-backend"
+    condition: install.irs.providerBackend
+
+  # IRS
   - name: irs-helm    
     alias: irs
     repository: https://catenax-ng.github.io/tx-item-relationship-service    
     version: 4.2.1
     condition: irs.enabled
 
-  # IRS Provider Backend Service
-  - name: irs-provider-backend-service
-    alias: irs-provider-backend-service
-    version: 0.0.1
-    repository: "file://subcharts/irs-provider-backend-service"
-    condition: install.irs.providerBackend
-
-  # IRS Digital Twin Registry
-  - name: irs-digital-twin-registry
-    alias: irs-digital-twin-registry
-    version: 0.0.1
-    repository: "file://subcharts/irs-digital-twin-registry"
-    condition: install.irs.digitalTwin
-
-  # IRS Digital Twin Registry Database
-  - name: postgresql
-    alias: irs-digital-twin-registry-database
-    version: 12.0.0
-    repository: https://charts.bitnami.com/bitnami
-    condition: install.irs.digitalTwin
-
   # IRS Frontend Service
   - name: irs-frontend-service
-    alias: irs-frontend-service
+    alias: irs-frontend
     version: 0.0.3
     repository: https://catenax-ng.github.io/product-item-relationship-service-frontend
     condition: install.irs.frontend
-
-  # KeyCloak Service
-  - name: keycloak-mock-service
-    alias: irs-keycloak-service
-    version: 0.0.1
-    repository: "file://subcharts/keycloak-mock-service"
-    condition: install.irs.keycloak
-
-  # Semantic Hub Service
-  - name: semantic-hub-service
-    alias: irs-semantic-hub-service
-    version: 0.0.1
-    repository: "file://subcharts/semantic-hub-service"
-    condition: install.irs.semanticHub
