@@ -81,6 +81,12 @@ data:
     edc.ids.endpoint.audience=http://{{ .Values.edc.hostname }}:8282
     ids.webhook.address=http://{{ .Values.edc.hostname }}:8282
 
+    edc.dataplane.selector.consumer.url=http://{{ .Values.edc.dataPlane.hostname }}:9999/api/dataplane/control
+    edc.dataplane.selector.consumer.sourcetypes=HttpData
+    edc.dataplane.selector.consumer.destinationtypes=HttpProxy
+    edc.dataplane.selector.consumer.properties={ "publicApiUrl": "http://{{ .Values.edc.dataPlane.hostname }}:8185/api/public" }
+
+
   opentelemetry.properties: |-
     {{- .Values.opentelemetry.properties | nindent 4 }}
 

@@ -301,7 +301,7 @@ edc-consumer-control-plane:
         algorithm: "NONE"
     receiver:
       http:
-        endpoint:  http://irs:8080 # TOChekc 
+        endpoint:  http://irs:8181/internal/endpoint-data-reference
     postgresql:
       host: *config-edc-consumer-database-host
       database: *config-edc-consumer-database-name
@@ -326,7 +326,7 @@ edc-consumer-data-plane:
     dataplane:
       token:
         validation:
-          endpoint: http://edc-consumer-data-plane:8182/validation/token
+          endpoint: http://edc-consumer-control-plane:8182/validation/token
     api:
       auth:
         key: *config-edc-auth-api-key
@@ -440,7 +440,7 @@ edc-provider-data-plane:
     dataplane:
       token:
         validation:
-          endpoint: http://edc-provider-data-plane:8182/validation/token
+          endpoint: http://edc-provider-control-plane:8182/validation/token
     api:
       auth:
         key: *config-edc-auth-api-key

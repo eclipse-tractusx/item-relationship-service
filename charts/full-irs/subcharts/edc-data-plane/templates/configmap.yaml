@@ -22,8 +22,7 @@ data:
     edc.oauth.public.key.alias={{ .Values.edc.oauth.public.key.alias }}
     edc.oauth.token.url={{ .Values.edc.oauth.token.url }}
     edc.vault.hashicorp.timeout.seconds=30
-    edc.vault.hashicorp.health.check.enabled=true
-    edc.vault.hashicorp.health.check.standby.ok=true
+    edc.vault.hashicorp.health.check.enabled=false
     edc.vault.hashicorp.url={{ .Values.edc.vault.hashicorp.url }}
     edc.vault.hashicorp.token={{ .Values.edc.vault.hashicorp.token }}
     edc.vault.hashicorp.api.secret.path={{ .Values.edc.vault.hashicorp.api.secret.path }}
