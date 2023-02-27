@@ -245,7 +245,9 @@ edc-consumer-database:
   primary:
     persistence:
       enabled: true
-      existingClaim: edc-consumer-database-pv-claim 
+      mountPath: "/mnt/data/edc_consumer"
+      size: 100Mi
+      
   volumePermissions:
     enabled: true
   readReplicas:
@@ -361,7 +363,8 @@ edc-provider-database:
   primary:
     persistence:
       enabled: true
-      existingClaim: edc-provider-database-pv-claim 
+      mountPath: "/mnt/data/edc_provider"
+      size: 500Mi
   volumePermissions:
     enabled: true
   readReplicas:
@@ -495,7 +498,8 @@ digital-twin-registry-database:
   primary:
     persistence:
       enabled: true
-      existingClaim: digital-twin-registry-database-pv-claim 
+      mountPath: "/mnt/data/digital_twin"
+      size: 200Mi
   volumePermissions:
     enabled: true
   readReplicas:
