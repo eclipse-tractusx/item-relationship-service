@@ -5,6 +5,11 @@ irs-helm:
   irsUrl: "https://irs-pen.int.demo.catena-x.net"
   ingress:
     enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     hosts:
       - host: "irs-pen.int.demo.catena-x.net"
         paths:
