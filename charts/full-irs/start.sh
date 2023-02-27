@@ -39,4 +39,4 @@ then
     sh ./installIRS.sh
 fi
 
-# sh ./startForwardingPorts.sh
+# sh ./forwardingPorts.sh
