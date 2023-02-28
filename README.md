@@ -37,10 +37,6 @@ The following subsection provides instructions for running the infrastructure on
 
 - Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
 
-- **Hint**
-  Docker Image and Docker Compose that exist in root directory of application is only for local deployment.
-  It is not and should be not use in any test or production deployment.
-
 #### Local IRS API
 
 - Swagger UI: http://localhost:8080/api/swagger-ui
@@ -125,3 +121,19 @@ curl -X 'GET' 'http://localhost:8080/irs/jobs/<jobID>' -H 'accept: application/j
 ## Licenses
 
 Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0) - see [LICENSE](./LICENSE)
+
+## Notice for Docker image
+This application provides container images for demonstration purposes.
+
+DockerHub: https://hub.docker.com/r/tractusx/irs-api
+
+Eclipse Tractus-X product(s) installed within the image:
+
+GitHub: https://github.com/eclipse-tractusx/item-relationship-service
+Project home: https://projects.eclipse.org/projects/automotive.tractusx
+License: Apache License, Version 2.0
+Used base image: eclipse-temurin:19-jre-alpine
+
+As with all Docker images, these likely also contain other software which may be under other licenses (such as Bash, etc from the base distribution, along with any direct or indirect dependencies of the primary software being contained).
+
+As for any pre-built image usage, it is the image user's responsibility to ensure that any use of this image complies with any relevant licenses for all software contained within.
