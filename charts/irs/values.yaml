@@ -96,9 +96,9 @@ digitalTwinRegistry:
 semanticshub:
   url:  # https://<semantics-hub-url>
   modelJsonSchemaEndpoint: >-
-    {{ if .Values.semanticshub.url }}
-    {{ tpl (.Values.semanticshub.url | default "" ) . }}/{urn}/json-schema
-    {{ end }}
+    {{- if .Values.semanticshub.url }}
+    {{- tpl (.Values.semanticshub.url | default "" ) . }}/{urn}/json-schema
+    {{- end }}
   defaultUrns: >-
   #    urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
   #    ,urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship
@@ -122,7 +122,7 @@ keycloak:
 edc:
   controlplane:
     endpoint:
-      data: ""  #<edc-controlplane-endpoint-data>
+      data: ""  # <edc-controlplane-endpoint-data>
     request:
       ttl: PT10M  # Requests to controlplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
     provider:
@@ -176,7 +176,7 @@ minio:
 # Prometheus Configuration #
 ############################
 prometheus:
-  enabled: false  #<1>
+  enabled: false  # <1>
   rbac:
     create: false
   alertmanager:
@@ -208,7 +208,7 @@ prometheus:
 # Grafana Configuration #
 #########################
 grafana:
-  enabled: false  #<1>
+  enabled: false  # <1>
   rbac:
     create: false
   persistence:
