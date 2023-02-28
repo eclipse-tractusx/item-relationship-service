@@ -23,7 +23,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: kind-registry:5000/app-dashboard:testing
+          tags: kind-registry:5000/irs-api:testing
 
       - name: Set up Helm
         uses: azure/setup-helm@v3
