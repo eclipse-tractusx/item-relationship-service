@@ -35,18 +35,18 @@ data:
 
     digitalTwinRegistry:
       descriptorEndpoint: {{ tpl (.Values.digitalTwinRegistry.descriptorEndpoint | default "") . | quote }}
-      shellLookupEndpoint: {{ tpl (.Values.digitalTwinRegistry.shellLookupEndpoint | default "")  . | quote }}
+      shellLookupEndpoint: {{ tpl (.Values.digitalTwinRegistry.shellLookupEndpoint | default "") . | quote }}
 
     semanticshub:
-      url: {{ tpl (.Values.semanticshub.url | default "")  . | quote }}
-      modelJsonSchemaEndpoint: {{ tpl (.Values.semanticshub.modelJsonSchemaEndpoint | default "")  . | quote }}
+      url: {{ tpl (.Values.semanticshub.url | default "") . | quote }}
+      modelJsonSchemaEndpoint: {{ tpl (.Values.semanticshub.modelJsonSchemaEndpoint | default "") . | quote }}
       defaultUrns: {{ tpl (.Values.semanticshub.defaultUrns | default "") . | quote }}
       {{- if .Values.semanticshub.localModels }}
       localModelDirectory: /app/semantic-models
       {{- end }}
 
     bpdm:
-      bpnEndpoint: {{ tpl (.Values.bpdm.bpnEndpoint | default "")  . | quote }}
+      bpnEndpoint: {{ tpl (.Values.bpdm.bpnEndpoint | default "") . | quote }}
 
     edc:
       controlplane:
