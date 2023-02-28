@@ -37,8 +37,8 @@ spec:
             httpGet:
               path: /__admin
               port: default
-            initialDelaySeconds: 10
-            periodSeconds: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
             failureThreshold: 3
           {{- end }}
           {{- if .Values.readinessProbe.enabled }}
@@ -46,8 +46,8 @@ spec:
             httpGet:
               path: /__admin
               port: default
-            initialDelaySeconds: 10
-            periodSeconds: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
             failureThreshold: 3
           {{- end }}
           envFrom:
