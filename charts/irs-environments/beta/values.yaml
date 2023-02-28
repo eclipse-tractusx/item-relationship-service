@@ -24,7 +24,7 @@ irs-helm:
   semanticsHub:
     url: https://semantics.beta.demo.catena-x.net/hub/api/v1
   bpdm:
-    url:  https://partners-pool.beta.demo.catena-x.net
+    url: https://partners-pool.beta.demo.catena-x.net
   minioUser: <path:traceability-irs/data/beta/minio#minioUser>
   minioPassword: <path:traceability-irs/data/beta/minio#minioPassword>
   keycloak:
