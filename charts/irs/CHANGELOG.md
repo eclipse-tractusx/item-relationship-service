@@ -5,9 +5,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [5.0.2] - 2023-02-27
+### Changed
+- Updated default values so that IRS can start out of the box without technical errors. Please note that custom configuration is still necessary for IRS to work properly.
+
+
+## [5.0.1] - 2023-02-21
+### Changed
+- Fixed semantic hub placeholder in default values
+
+
+## [5.0.0] - 2023-02-21
 ### Changed
 - Changed config parameter ``semanticsHub`` to ``semanticshub``
 - Moved path ``/models/`` from ``semanticshub.modelJsonSchemaEndpoint`` to ``semanticshub.url``
+
 
 ### Migration note
 Please make sure that you update your URL config for the semantics hub (see "Changed" section). Otherwise, IRS can not pick up the config correctly. Your new URL needs to contain the /model path.
