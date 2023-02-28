@@ -34,7 +34,7 @@ edc-controlplane:
   edc:
     receiver:
       callback:
-        url: "http://{{ .Release.Name }}-irs-helm:8181/internal/endpoint-data-reference" # IRS EDC callback URL, e.g. http://app-irs-helm:8181/internal/endpoint-data-reference
+        url: "http://{{ .Release.Name }}-irs-helm:8181/internal/endpoint-data-reference"  # IRS EDC callback URL, e.g. http://app-irs-helm:8181/internal/endpoint-data-reference
     postgresql:
       user: edc
       password: <postgres-password>
