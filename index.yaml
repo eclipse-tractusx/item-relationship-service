@@ -41,6 +41,20 @@ entries:
     version: 0.1.0
   irs-edc-consumer:
   - apiVersion: v2
+    appVersion: 0.1.6
+    created: "2023-02-28T12:20:05.887297759Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 1.x.x
+    description: IRS Helm chart for the EDC consumer
+    digest: 41805fdf1e157079b7935bd050f7a87fdb2076d5bf4412f9e4977cc67411c19b
+    name: irs-edc-consumer
+    type: application
+    urls:
+    - https://github.com/eclipse-tractusx/item-relationship-service/releases/download/irs-edc-consumer-1.0.4/irs-edc-consumer-1.0.4.tgz
+    version: 1.0.4
+  - apiVersion: v2
     appVersion: 0.2.0
     created: "2023-02-21T15:46:48.063281474Z"
     dependencies:
@@ -69,6 +83,32 @@ entries:
     - https://github.com/eclipse-tractusx/item-relationship-service/releases/download/irs-edc-consumer-1.0.1/irs-edc-consumer-1.0.1.tgz
     version: 1.0.1
   irs-helm:
+  - apiVersion: v2
+    appVersion: 2.3.0
+    created: "2023-02-28T12:20:06.184240609Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 1.x.x
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.min.io/
+      version: 5.0.1
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 17.0.1
+    - condition: grafana.enabled
+      name: grafana
+      repository: https://grafana.github.io/helm-charts
+      version: 6.44.8
+    description: IRS Helm chart for Kubernetes
+    digest: 9cd8ce0dd820e77ed25aed3f482063bc46402beb1146fcc4f33e7f3d4a669753
+    name: irs-helm
+    type: application
+    urls:
+    - https://github.com/eclipse-tractusx/item-relationship-service/releases/download/irs-helm-5.0.2/irs-helm-5.0.2.tgz
+    version: 5.0.2
   - apiVersion: v2
     appVersion: 2.3.0
     created: "2023-02-21T15:46:48.494447538Z"
@@ -293,4 +333,4 @@ entries:
     urls:
     - https://github.com/catenax-ng/product-item-relationship-service/releases/download/irs-helm-2.0.0/irs-helm-2.0.0.tgz
     version: 2.0.0
-generated: "2023-02-21T15:46:48.494494538Z"
+generated: "2023-02-28T12:20:06.184294709Z"
