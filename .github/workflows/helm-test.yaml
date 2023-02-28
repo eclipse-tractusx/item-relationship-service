@@ -55,6 +55,5 @@ jobs:
           helm repo add minio https://charts.min.io/
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
           helm repo add grafana https://grafana.github.io/helm-charts
-          helm dependency update
-          ct install --charts charts/irs
+          ct install --charts charts/irs --config charts/chart-testing-config-helm-environments.yaml
         if: steps.list-changed.outputs.changed == 'true'
