@@ -2,20 +2,99 @@
 
 ## Prerequisites
 
-Secret should be created:
+1. Docker is installed and running
+2. Minikube is installed
+3. kubectl is installed
+4. Digital twin secret for pulling the image should be available on the kubernetes cluster
+   1. Create file: digital-twin-registry-docker-secret.yaml
+   
+      ``` yaml
 
-``` yaml
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "digital-twin-registry-docker"
+        namespace: irs
+      type: kubernetes.io/dockerconfigjson
+      data:
+        .dockerconfigjson: <Secret>
 
-apiVersion: v1
-kind: Secret
-metadata:
-  name: "digital-twin-registry-docker"
-  namespace: irs
-type: kubernetes.io/dockerconfigjson
-data:
-  .dockerconfigjson: <Secret>
+      ```
+   
+   2. Apply the secret:
 
+      ``` bash
+      kubectl apply -f digital-twin-registry-docker-secret.yaml -n irs
+
+      ```
+
+## Usage
+
+### Installing the services
+
+To deploy the services on kubernetes, you should run the ``` ./start.sh true true true ```.
+
+The script takes 3 parameters as input:
+
+* CLEAN_UP_ENVIRONMENT: default is set to false. If this is passed as true, will delete the minikube, recreate and start it with 2 CPU and 8GB or ram.
+* INSTALL_EDC: default is set to true. If this is passed as true, will delete all helm charts related to EDC (vault, DAPS, EDC consumer and EDC provider) and install them again.
+* INSTALL_IRS: default is set to true. If this is passed as true, will delete all helm charts related to IRS (dependencies, IRS backend and IRS frontend) and install them again.
+
+To forward the ports, the script: ```forwardingPorts.sh``` should be run.
+
+### Run test data
+
+To create test data, the script: ```upload-testdata.sh``` should be run only after the ports were forwarded.
+To clean-up test data, the script: ```deleteIRSTestData.sh``` should be run only after the ports were forwarded.
+
+#### Generate Key Cloak token
+
+Precondition:
+
+* Visual Studio extension: REST Client by Huachao Mao
+* Key Cloak service should run at port 4011
+
+Using the ```./test/keycloack-service.rest```, you can execute the token request to get a new token.
+
+#### Generate DAPS token
+
+Precondition:
+
+* Visual studio extension: REST Client by Huachao Mao
+* Daps service should run at port 4567
+* Token used as client assertion should be created with script: ``` ./daps/create_test_token.rb ```
+  * example:
+
+``` bash
+  ruby create_test_token.rb edc ./keys/edc.key
 ```
+
+where edc is a client
+
+Using the ``` ./test/omejdn-service.rest.rest ```, you can execute the token request to get a new token.
+
+### Start job on IRS
+
+#### From Api
+
+Precondition:
+
+* Visual Studio extension: REST Client by Huachao Mao
+* Key Cloak service should run at port 4011
+* IRS service should run at port 8080
+
+Using the ``` ./test/keycloack-service.rest ```, you can execute the token request to get a new token.
+Update the token on file ``` ./test/irs-backend-service.rest ``` at line 8 and then execute the request: 'Create job'
+
+#### From IRS frontend
+
+Precondition:
+
+* Key Cloak service should run at port 4011
+* IRS service should run at port 8080
+* IRS frontend service should run at port 3000
+* Open localhost:3000 and click 'Login'
+* Click 'Build Data Chain' to start a new IRS job
 
 ## HELM
 
@@ -96,7 +175,10 @@ kubectl port-forward svc/edc-consumer-database 5432:5432
 
 export PGPASSWORD=edc-consumer-pass; psql -h localhost -p 5432 -d edc-consumer -U edc-consumer-user
 
-psql \l
+psql \d
+
+SELECT * FROM edc_asset;
+SELECT * FROM edc_policydefinitions;
 
 ```
 
@@ -117,7 +199,10 @@ kubectl port-forward svc/edc-provider-database 5432:5432
 
 export PGPASSWORD=edc-provider-pass; psql -h localhost -p 5432 -d edc-provider -U edc-provider-user
 
-psql \l
+psql \d
+
+SELECT * FROM edc_asset;
+SELECT * FROM edc_policydefinitions;
 
 ```
 
@@ -204,51 +289,6 @@ kubectl port-forward svc/irs 8080:8080 8181:8181 4004:4004
 kubectl port-forward svc/irs-frontend 3000:8080
 ```
 
-## Usage
-
-### Deploying the services
-
-To deploy the services on kubernetes, you should run the ``` ./start.sh ```.
-
-The script takes 3 parameters as input:
-
-* CLEAN_UP_ENVIRONMENT: default is set to false. If this is passed as true, will delete the minikube and recreate it with 2 CPU and 8GB or ram.
-* INSTALL_EDC: default is set to true. If this is passed as true, will delete all helm charts related to EDC (vault, DAPS, EDC consumer and EDC provider) and install them again.
-* INSTALL_IRS: default is set to true. If this is passed as true, will delete all helm charts related to IRS (dependencies, IRS backend and IRS frontend) and install them again.
-
-To forward the ports, the script: ```forwardingPorts.sh``` should be run.
-
-### Run test data
-
-To create test data, the script: ```upload-testdata.sh``` should be run only after the ports were forwarded.
-To clean-up test data, the script: ```deleteIRSTestData.sh``` should be run only after the ports were forwarded.
-
-#### Generate Key Cloak token
-
-Precondition:
-
-* Visual Studio extension: REST Client by Huachao Mao
-* Key Cloak service port should run at port 4011
-
-Using the ./test/keycloack-service.rest, you can execute the token request to get a new token.
-
-#### Generate DAPS token
-
-Precondition:
-
-* Visual studio extension: REST Client by Huachao Mao
-* Daps service port should run at port 4567
-* Token used as client assertion should be created with script: ./daps/create_test_token.rb
-  * example: 
-
-``` bash
-  ruby create_test_token.rb edc ./keys/edc.key
-```
-
-where edc is a client 
-
-Using the ./test/omejdn-service.rest.rest, you can execute the token request to get a new token.
-
 ### Next steps
 
 1. Helm Security issues
@@ -281,3 +321,4 @@ Using the ./test/omejdn-service.rest.rest, you can execute the token request to 
       2. Provide configuration with default client from start.
 4. Use a custom helm chart for digital twin
    1. Reason: A secret for pulling docker images is missing to use the default chart from: https://eclipse-tractusx.github.io/sldt-digital-twin-registry
+
