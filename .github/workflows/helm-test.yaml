@@ -50,5 +50,11 @@ jobs:
         run: ct lint --validate-maintainers=false --target-branch ${{ github.event.repository.default_branch }}
 
       - name: Run chart-testing (install)
-        run: ct install --charts charts/irs
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add minio https://charts.min.io/
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm dependency update
+          ct install --charts charts/irs
         if: steps.list-changed.outputs.changed == 'true'
