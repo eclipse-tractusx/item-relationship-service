@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,8 +28,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import java.util.List;
 import java.util.UUID;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -51,8 +52,12 @@ import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.IrsTimer;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
+import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
+import org.eclipse.tractusx.irs.services.SemanticHubService;
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.springdoc.api.annotations.ParameterObject;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -80,6 +85,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class IrsController {
 
     private final IrsItemGraphQueryService itemJobService;
+    private final SemanticHubService semanticHubService;
 
     @Operation(operationId = "registerJobForGlobalAssetId",
                summary = "Register an IRS job to retrieve an item graph for given {globalAssetId}.",
@@ -251,6 +257,7 @@ public class IrsController {
     })
     @IrsTimer("getjobbystate")
     @GetMapping("/jobs")
+    @PageableAsQueryParam
     @PreAuthorize("hasAuthority('view_irs')")
     public PageResult getJobsByState(
             @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
@@ -258,8 +265,37 @@ public class IrsController {
             @RequestParam(value = "states", required = false, defaultValue = "") final List<JobState> states,
             @Parameter(hidden = true)
             @RequestParam(value = "jobStates", required = false, defaultValue = "") final List<JobState> jobStates,
+            @Parameter(hidden = true)
             @ParameterObject final Pageable pageable) {
         return itemJobService.getJobsByState(states, jobStates, pageable);
     }
 
+    @Operation(operationId = "getAllAspectModels",
+               summary = "Get all available aspect models from semantic hub or local models.",
+               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"), tags = { "Aspect Models" },
+               description = "Get all available aspect models from semantic hub or local models.")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Returns all available aspect models.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = AspectModels.class),
+                                                              examples = { @ExampleObject(name = "complete", ref = "#/components/examples/aspect-models-list")
+                                                              })
+                                         }),
+                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-401"))
+                                         }),
+                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-403"))
+                                         }),
+    })
+    @GetMapping("/aspectmodels")
+    @PreAuthorize("hasAuthority('view_irs')")
+    public AspectModels getAllAvailableAspectModels() throws SchemaNotFoundException {
+        return semanticHubService.getAllAspectModels();
+    }
 }

@@ -1,0 +1,269 @@
+extends: [[spectral:oas, all]]
+
+documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#
+
+functions:
+  - ./must-use-common-required-fields
+  - ./must-use-common-structure
+
+rules:
+
+  # SHOULD prefer standard media type name application/json [172]
+  # => https://opensource.zalando.com/restful-api-guidelines/#172
+  should-prefer-standard-media-type-names:
+    message: Custom media types should only be used for versioning
+    description: SHOULD prefer standard media type name application/json [172]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#172
+    severity: warn
+    given: $.paths.*.*.responses.*.content.*~
+    then:
+      function: pattern
+      functionOptions:
+        match: ^application\/(problem\+)?json$|^[a-zA-Z0-9_]+\/[-+.a-zA-Z0-9_]+;(v|version)=[0-9]+$
+
+  # MUST property names must be ASCII snake_case [118]
+  # => https://opensource.zalando.com/restful-api-guidelines/#118
+  must-use-snake-case-for-property-names:
+    message: Property name has to be ASCII snake_case
+    description: MUST property names must be ASCII snake_case [118]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#118
+    severity: error
+    given: $.paths.*.*[responses,requestBody]..content..schema..properties.*~
+    then:
+      function: pattern
+      functionOptions:
+        match: ^[a-z_][a-z_0-9]*$
+
+  # SHOULD declare enum values using UPPER_SNAKE_CASE string [240]
+  # => https://opensource.zalando.com/restful-api-guidelines/#240
+  should-use-upper-snake-case-string-for-enum-values:
+    message: 'SHOULD declare enum values using UPPER_SNAKE_CASE string'
+    description: SHOULD declare enum values using UPPER_SNAKE_CASE string [240]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#240
+    severity: error
+    recommended: true
+    given: $..[?(@.type == 'string')].[x-extensible-enum].*
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(([A-Z]+)(_[A-Z]+)*)$"
+
+  # SHOULD name date/time properties with _at suffix [235]
+  # => https://opensource.zalando.com/restful-api-guidelines/#235
+  should-use-name-date-and-time-properties-with-at-suffix:
+    message: 'SHOULD name date/time properties with _at suffix'
+    description: SHOULD name date/time properties with _at suffix [235]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#235
+    severity: error
+    recommended: true
+    given: $..properties[?((@.format == "date-time" || @.format == "date") && @.type == 'string')].~
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(.*[_]at$).*$"
+
+  # MUST not use null for boolean properties [122]
+  # => https://opensource.zalando.com/restful-api-guidelines/#122
+  must-not-use-null-for-boolean-properties:
+    message: '{{error}}'
+    description: MUST not use null for boolean properties [122]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#122
+    severity: error
+    given: $..properties[?(@.type == 'boolean' && (@.example != '' || @.nullable != '' || @.readOnly != '' || @.writeOnly != ''))]?@[nullable,example,readOnly,writeOnly]
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(true|false?)$"
+
+  # SHOULD not use null for empty arrays [124]
+  # => https://opensource.zalando.com/restful-api-guidelines/#124
+  should-not-use-null-for-empty-array-values:
+    message: '{{error}}'
+    description: SHOULD not use null for empty arrays [124]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#124
+    severity: error
+    given: $..properties[?(@.type == 'array')]
+    then:
+      field: default
+      function: truthy
+
+  # MUST use common field names and semantics [174]
+  # => https://opensource.zalando.com/restful-api-guidelines/#174
+  must-use-common-field-names-and-semantics-for-field-name-type:
+    message: '{{error}}'
+    description: MUST use common field names and semantics [174]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#174
+    severity: error
+    given: $..properties[type]
+    then:
+      field: type
+      function: truthy
+
+  must-use-common-field-names-and-semantics-for-custom-field-names:
+    message: '{{error}}'
+    description: MUST use common field names and semantics [174]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#174
+    severity: error
+    given: $..[properties].*~
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[a-z0-9]+(?:_[a-z0-9]+)*$"
+
+  must-use-common-field-names-and-semantics-for-id-field:
+    message: '{{error}}'
+    description: MUST use common field names and semantics [174]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#174
+    severity: error
+    given: $..*[properties][?(@property== 'id')]?@[example]
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[a-z0-9][a-z0-9-:.]{6,62}[a-z0-9]$"
+
+  must-use-common-field-names-and-semantics-for-type-filed-in-id-field:
+    message: '{{error}}'
+    description: MUST use common field names and semantics [174]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#174
+    severity: error
+    given: $..*[properties][?(@property == 'id')]?@[type]
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: string
+          pattern: "^string$"
+
+  # MUST use the common address fields [249]
+  # => https://opensource.zalando.com/restful-api-guidelines/#249
+  must-use-common-address-fields-for-addressee:
+    message: '{{error}}'
+    description: MUST use the common address fields [249]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#249
+    severity: error
+    given: $..*[?(@property == 'properties' && @parentProperty == 'addressee')][?(@property !== "")].~
+    then:
+      function: enumeration
+      functionOptions:
+        values:
+          - salutation
+          - first_name
+          - last_name
+          - business_name
+
+  must-use-common-address-field-type:
+    message: '{{error}}'
+    description: MUST use the common address fields [249]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#249
+    severity: error
+    given: $..*[?(@parentProperty == 'addressee')][?(@property == 'salutation' || @property == 'first_name' || @property == 'last_name' || @property == 'business_name')]
+    then:
+      field: type
+      function: truthy
+
+  must-use-common-address-field-example:
+    message: '{{error}}'
+    description: MUST use the common address fields [249]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#249
+    severity: error
+    given: $..*[?(@parentProperty == 'addressee')][?(@property == 'salutation' || @property == 'first_name' || @property == 'last_name' || @property == 'business_name')]
+    then:
+      field: example
+      function: truthy
+
+  must-use-common-address-field-description:
+    message: '{{error}}'
+    description: MUST use the common address fields [249]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#249
+    severity: error
+    given: $..*[?(@parentProperty == 'addressee')][?(@property == 'salutation' || @property == 'first_name' || @property == 'last_name' || @property == 'business_name')]
+    then:
+      field: description
+      function: truthy
+
+  must-use-address-required-field-names-for-addressee:
+    message: '{{error}}'
+    description: MUST use the common address fields [249]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#249
+    severity: error
+    given: $..[addressee].required.*
+    then:
+      function: enumeration
+      functionOptions:
+        values:
+          - last_name
+          - first_name
+
+  must-use-required-fields-for-addressee:
+    message: '{{error}}'
+    description: MUST use the common address fields [249]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#249
+    severity: error
+    given: $..[addressee]
+    then:
+      function: must-use-common-required-fields
+      functionOptions:
+        requiredFields:
+          - first_name
+          - last_name
+
+  must-use-required-field-names-for-address:
+    message: '{{error}}'
+    description: MUST use the common address fields [249]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#249
+    severity: error
+    given: $..[address].required[*]
+    then:
+      function: enumeration
+      functionOptions:
+        values:
+          - city
+          - street
+          - zip
+          - country_code
+
+  must-use-required-fields-for-address:
+    message: '{{error}}'
+    description: MUST use the common address fields [249]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#249
+    severity: error
+    given: $..[address]
+    then:
+      function: must-use-common-required-fields
+      functionOptions:
+        requiredFields:
+          - city
+          - street
+          - zip
+          - country_code
+
+  # MUST use the common money object [173]
+  # => https://opensource.zalando.com/restful-api-guidelines/#173
+  must-use-common-money-object:
+    message: '{{error}}'
+    description: MUST use the common money object [173]
+    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#173
+    severity: error
+    given: $.components.schemas.Money
+    then:
+      function: must-use-common-structure
+      functionOptions:
+        ruleValues:
+          type: object
+          properties:
+            amount:
+              type: number
+              description: d
+              format: decimal
+              example: 99.95
+            currency:
+              type: string
+              description: 3 letter currency code as defined by ISO-4217
+              format: iso-4217
+              example: EUR
+          required:
+            - amount
+            - currency
+
+  # MUST use same semantics for null and absent properties [123]
+  # => https://opensource.zalando.com/restful-api-guidelines/#123

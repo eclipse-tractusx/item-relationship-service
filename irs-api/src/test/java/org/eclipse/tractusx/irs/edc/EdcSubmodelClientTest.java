@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -29,8 +30,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -43,7 +47,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import com.github.jknack.handlebars.internal.Files;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
@@ -149,10 +152,11 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     @NotNull
-    private String readAssemblyPartRelationshipData() throws IOException {
-        final InputStream resourceAsStream = getClass().getResourceAsStream("/__files/assemblyPartRelationship.json");
-        Objects.requireNonNull(resourceAsStream);
-        return Files.read(resourceAsStream, StandardCharsets.UTF_8);
+    private String readAssemblyPartRelationshipData() throws IOException, URISyntaxException {
+        final URL resource = getClass().getResource("/__files/assemblyPartRelationship.json");
+        Objects.requireNonNull(resource);
+
+        return Files.readString(Path.of(resource.toURI()), StandardCharsets.UTF_8);
     }
 
     @Test
