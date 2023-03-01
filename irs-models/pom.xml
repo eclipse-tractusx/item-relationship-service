@@ -13,7 +13,7 @@
     <artifactId>irs-models</artifactId>
 
     <name>IRS Models</name>
-    <description>Check trigger Data Transfer Object definitions shared between controllers and clients. Part of OpenAPI definition.
+    <description>Data Transfer Object definitions shared between controllers and clients. Part of OpenAPI definition.
     </description>
 
     <dependencies>
