@@ -908,7 +908,6 @@ components:
         - notificationType
         - recipientBpn
         - senderBpn
-        - senderEdc
     Endpoint:
       type: object
       additionalProperties: false

@@ -103,7 +103,10 @@ public class BpnInvestigationJob {
                                                                      supplyChainImpacted.getDescription()))
                                                              .build();
 
-        return irsJob.toBuilder().submodels(Collections.singletonList(supplyChainImpactedSubmodel)).build();
+        return irsJob.toBuilder()
+                     .clearSubmodels()
+                     .submodels(Collections.singletonList(supplyChainImpactedSubmodel))
+                     .build();
     }
 
 }

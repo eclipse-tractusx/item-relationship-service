@@ -99,7 +99,8 @@ class InvestigationJobProcessingEventListener {
     private void triggerInvestigationOnNextLevel(final Jobs completedJob,
             final BpnInvestigationJob investigationJobUpdate) {
         // Map<BPN, List<GlobalAssetID>>
-        final Map<String, List<String>> bpns = getBPNsFromShells(completedJob.getShells());
+        final Map<String, List<String>> bpns = getBPNsFromShells(completedJob.getShells(),
+                completedJob.getJob().getGlobalAssetId().getGlobalAssetId());
         final Stream<Optional<String>> edcAddresses = bpns.keySet().stream().map(edcDiscoveryFacade::getEdcBaseUrl);
 
         if (thereIsUnresolvableEdcAddress(edcAddresses)) {
@@ -162,8 +163,12 @@ class InvestigationJobProcessingEventListener {
     }
 
     private static Map<String, List<String>> getBPNsFromShells(
-            final List<AssetAdministrationShellDescriptor> shellDescriptors) {
+            final List<AssetAdministrationShellDescriptor> shellDescriptors, final String startAssetId) {
         return shellDescriptors.stream()
+                               .filter(descriptor -> descriptor.getGlobalAssetId()
+                                                               .getValue()
+                                                               .stream()
+                                                               .noneMatch(startAssetId::equals))
                                .collect(Collectors.groupingBy(shell -> shell.findManufacturerId().orElseThrow(),
                                        Collectors.mapping(shell -> shell.getGlobalAssetId().getValue().get(0),
                                                Collectors.toList())));
