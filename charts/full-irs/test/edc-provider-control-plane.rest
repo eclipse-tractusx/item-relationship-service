@@ -14,3 +14,21 @@ GET http://{{host}}{{idsEndpoint}}
 {{headerName}}: {{headerValue}}
 Content-Type: {{contentType}}
 
+### Get Assets
+
+GET http://{{host}}/data/assets
+{{headerName}}: {{headerValue}}
+Content-Type: {{contentType}}
+
+### Get Policy Definitions
+
+GET http://{{host}}/data/policydefinitions
+{{headerName}}: {{headerValue}}
+Content-Type: {{contentType}}
+
+### Get Contract Definitions
+
+GET http://{{host}}/data/contractdefinitions
+{{headerName}}: {{headerValue}}
+Content-Type: {{contentType}}
+

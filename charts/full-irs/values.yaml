@@ -303,7 +303,7 @@ edc-consumer-control-plane:
         algorithm: "NONE"
     receiver:
       http:
-        endpoint:  http://irs:8181/internal/endpoint-data-reference
+        endpoint: http://irs:8181/internal/endpoint-data-reference
     postgresql:
       host: *config-edc-consumer-database-host
       database: *config-edc-consumer-database-name
@@ -418,7 +418,7 @@ edc-provider-control-plane:
           alias: "data-encryption"
     receiver:
       http:
-        endpoint: http://edc-provider-backend:8080
+        endpoint: http://irs:8181/internal/endpoint-data-reference
     postgresql:
       host: *config-edc-provider-database-host
       database: *config-edc-provider-database-name
@@ -468,19 +468,6 @@ edc-provider-data-plane:
         api:
           secret:
             path: "content"
-
-
-########################
-# EDC Provider Backend #
-########################
-edc-provider-backend:
-  fullnameOverride: "edc-provider-backend"
-  service:
-    type: NodePort
-    frontend:
-      port: 8080
-    backend:
-      port: 8081
 
 
 ################

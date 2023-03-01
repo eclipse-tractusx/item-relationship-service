@@ -66,13 +66,6 @@ dependencies:
     version: 0.0.1
     repository: "file://subcharts/edc-data-plane"
     condition: install.edc.provider
-
-  # Backend service
-  - name: backend-service
-    alias: edc-provider-backend
-    version: 0.0.6
-    repository: https://denisneuling.github.io/cx-backend-service
-    condition: install.edc.provider
   
   # IRS ############################
   

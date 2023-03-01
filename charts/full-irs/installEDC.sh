@@ -83,7 +83,6 @@ then
     helm install $HELM_CHART_NAME --set install.edc.provider=true --namespace irs --create-namespace .
 
     echo -e "${BLUE}Waiting for the deployments to be available${NC}"
-    kubectl wait deployment -n irs --for condition=Available --timeout=90s edc-provider-backend
     kubectl wait deployment -n irs --for condition=Available --timeout=90s edc-provider-control-plane
     kubectl wait deployment -n irs --for condition=Available --timeout=90s edc-provider-data-plane
 fi
