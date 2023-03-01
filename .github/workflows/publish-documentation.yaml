@@ -30,6 +30,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
       - name: Cache maven packages
         uses: actions/cache@v3
         with:
@@ -65,14 +70,10 @@ jobs:
         run: |
           mv plantuml.jar docs/src/diagram-replacer/
 
-      - name: Extract PNG-Images with PlantUML
+      - name: Extract PNG-Images with PlantUML and replace PlantUML Code inside docs with PNG-Images
         working-directory: docs/src/diagram-replacer/
         run: |
           node extract.js
-
-      - name: Replace PlantUML Code inside docs with PNG-Images
-        working-directory: docs/src/diagram-replacer/
-        run: |
           node replace.js
 
       - name: Convert to Markdown
