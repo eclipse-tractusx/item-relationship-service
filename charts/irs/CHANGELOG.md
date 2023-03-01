@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.3] - 2023-03-01
+### Fixed
+- Fixed helm template for bpnEndpoint
+
+
 ## [5.0.2] - 2023-02-27
 ### Changed
 - Updated default values so that IRS can start out of the box without technical errors. Please note that custom configuration is still necessary for IRS to work properly.
