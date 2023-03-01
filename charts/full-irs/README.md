@@ -3,40 +3,23 @@
 ## Prerequisites
 
 1. Docker is installed and running
-2. Minikube is installed
+2. Minikube is installed and running
+   Example:
+   ```  minikube start --memory 8192 --cpus 2; ```
 3. kubectl is installed
-4. Digital twin secret for pulling the image should be available on the kubernetes cluster
-   1. Create file: digital-twin-registry-docker-secret.yaml
-   
-      ``` yaml
-
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: "digital-twin-registry-docker"
-        namespace: irs
-      type: kubernetes.io/dockerconfigjson
-      data:
-        .dockerconfigjson: <Secret>
-
-      ```
-   
-   2. Apply the secret:
-
-      ``` bash
-      kubectl apply -f digital-twin-registry-docker-secret.yaml -n irs
-
-      ```
+4. Python is installed
+5. Ruby is installed
+6. psql client is installed
+7. Fill the digital twin secret in file: ```./template/digital-twin-registry-docker-secret.yaml ```
 
 ## Usage
 
 ### Installing the services
 
-To deploy the services on kubernetes, you should run the ``` ./start.sh true true true ```.
+To deploy the services on kubernetes, you should run the ``` ./start.sh true true ```.
 
-The script takes 3 parameters as input:
+The script takes 2 parameters as input:
 
-* CLEAN_UP_ENVIRONMENT: default is set to false. If this is passed as true, will delete the minikube, recreate and start it with 2 CPU and 8GB or ram.
 * INSTALL_EDC: default is set to true. If this is passed as true, will delete all helm charts related to EDC (vault, DAPS, EDC consumer and EDC provider) and install them again.
 * INSTALL_IRS: default is set to true. If this is passed as true, will delete all helm charts related to IRS (dependencies, IRS backend and IRS frontend) and install them again.
 
@@ -45,7 +28,7 @@ To forward the ports, the script: ```forwardingPorts.sh``` should be run.
 ### Run test data
 
 To create test data, the script: ```upload-testdata.sh``` should be run only after the ports were forwarded.
-To clean-up test data, the script: ```deleteIRSTestData.sh``` should be run only after the ports were forwarded.
+To clean up test data, the script: ```deleteIRSTestData.sh``` should be run only after the ports were forwarded.
 
 #### Generate Key Cloak token
 
@@ -62,7 +45,7 @@ Precondition:
 
 * Visual studio extension: REST Client by Huachao Mao
 * Daps service should run at port 4567
-* Token used as client assertion should be created with script: ``` ./daps/create_test_token.rb ```
+* Token used as client assertion should be created with the script: ` ./daps`/create_test_token.rb ```
   * example:
 
 ``` bash
@@ -75,6 +58,12 @@ Using the ``` ./test/omejdn-service.rest.rest ```, you can execute the token req
 
 ### Start job on IRS
 
+#### Get global asset id
+
+1. Forward ports of digital twin database: ``` kubectl port-forward svc/digital-twin-registry-database 5432:5432 ```
+2. Connect to the database: ``` export PGPASSWORD=digital-twin-registry-pass; psql -h localhost -p 5432 -d digital-twin-registry -U digital-twin-registry-user ```
+3. Execute query to get the global asset id: ``` select id_external from shell where id_short = 'VehicleCombustion' limit 1; ```
+
 #### From Api
 
 Precondition:
@@ -83,7 +72,8 @@ Precondition:
 * Key Cloak service should run at port 4011
 * IRS service should run at port 8080
 
-Using the ``` ./test/keycloack-service.rest ```, you can execute the token request to get a new token.
+Using the ``` ./test/keycloack-service.rest ```, you can execute the token request to get a new access token.
+Change the globalAssetId with a valid one.
 Update the token on file ``` ./test/irs-backend-service.rest ``` at line 8 and then execute the request: 'Create job'
 
 #### From IRS frontend
@@ -93,8 +83,10 @@ Precondition:
 * Key Cloak service should run at port 4011
 * IRS service should run at port 8080
 * IRS frontend service should run at port 3000
-* Open localhost:3000 and click 'Login'
-* Click 'Build Data Chain' to start a new IRS job
+
+Open localhost:3000 and click 'Login'
+Change the globalAssetId with a valid one
+Click 'Build Data Chain' to start a new IRS job
 
 ## HELM
 
