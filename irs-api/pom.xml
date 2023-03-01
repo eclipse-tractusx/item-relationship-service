@@ -13,7 +13,7 @@
     <artifactId>irs-api</artifactId>
 
     <name>IRS API</name>
-    <description>Item Relationship Service</description>
+    <description>Item Relationship Service Check Trigger</description>
 
     <repositories>
         <repository>
