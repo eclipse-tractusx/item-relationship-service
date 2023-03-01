@@ -58,6 +58,7 @@ import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
@@ -256,6 +257,7 @@ public class OpenApiExamples {
                         .catenaXId(createGAID(GLOBAL_ASSET_ID).getGlobalAssetId())
                         .endpointURL("https://catena-x.net/vehicle/partdetails/")
                         .processingError(ProcessingError.builder()
+                                                        .withProcessStep(ProcessStep.SCHEMA_VALIDATION)
                                                         .withErrorDetail("Details to reason of Failure")
                                                         .withLastAttempt(EXAMPLE_ZONED_DATETIME)
                                                         .withRetryCounter(0)

@@ -36,24 +36,19 @@ paths:
         - description: Zero-based page index (0..N)
           in: query
           name: page
-          required: false
           schema:
             type: integer
             default: 0
-            minimum: 0
         - description: The size of the page to be returned
           in: query
           name: size
-          required: false
           schema:
             type: integer
             default: 20
-            minimum: 1
         - description: "Sorting criteria in the format: property,(asc|desc). Default\
           \ sort order is ascending. Multiple sort criteria are supported."
           in: query
           name: sort
-          required: false
           schema:
             type: array
             items:
@@ -492,6 +487,7 @@ components:
             processingError:
               errorDetail: Details to reason of Failure
               lastAttempt: 2022-02-03T14:48:54.709Z
+              processStep: SchemaValidation
               retryCounter: 0
     error-response-400:
       value:
@@ -658,6 +654,7 @@ components:
             processingError:
               errorDetail: Details to reason of Failure
               lastAttempt: 2022-02-03T14:48:54.709Z
+              processStep: SchemaValidation
               retryCounter: 0
     partial-job-result:
       value:
@@ -1134,12 +1131,12 @@ components:
         processStep:
           type: string
           enum:
-            - SUBMODEL_REQUEST
-            - DIGITAL_TWIN_REQUEST
-            - SCHEMA_VALIDATION
-            - SCHEMA_REQUEST
-            - BPDM_REQUEST
-            - BPDM_VALIDATION
+            - SubmodelRequest
+            - DigitalTwinRequest
+            - SchemaValidation
+            - SchemaRequest
+            - BpdmRequest
+            - BpdmValidation
         retryCounter:
           type: integer
           format: int32

@@ -33,7 +33,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.tractusx.irs.IrsApplication;
-import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -72,7 +72,7 @@ public class OpenApiConfiguration {
      * @return the customizer
      */
     @Bean
-    public OpenApiCustomiser customizer(
+    public OpenApiCustomizer customizer(
             @Value("${spring.security.oauth2.client.provider.keycloak.token-uri}") final String tokenUri) {
         return openApi -> {
             final Components components = openApi.getComponents();
