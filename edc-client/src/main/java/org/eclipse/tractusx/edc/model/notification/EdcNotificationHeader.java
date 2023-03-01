@@ -45,7 +45,7 @@ public class EdcNotificationHeader {
     private String senderBpn;
     @NotBlank
     private String recipientBpn;
-    @NotBlank
+
     private String senderEdc;
 
     private String replyAssetId;
