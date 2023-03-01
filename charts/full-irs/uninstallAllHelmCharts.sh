@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/sh
 
 kubectl config set-context minikube --namespace=irs
 helm uninstall irs-frontend
