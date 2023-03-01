@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.3.1] - 2023-03-01
+### Changed
+- Updated default values so that IRS can start out of the box without technical errors. Please note that custom configuration is still necessary for IRS to work properly.
+- Fixed semantic hub placeholder in default values
+
 ## [4.3.0] - 2023-02-07
 ### Added
 - Add support for custom environment variables in Helm chart.
@@ -16,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Minio now uses 1Gi of storage by default.
+  > When upgrading from a previous version make sure that the minio PVC and pod is created and accessible by the IRS pod. The previous storage default was 500Gi and Kubernetes can not reduce the PVC size automatically.
 
 ## [4.2.0] - 2023-01-20
 ### Added
