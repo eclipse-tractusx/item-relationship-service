@@ -9,6 +9,9 @@ on:
       - '**/*.txt'
   pull_request:
     branches: main
+    paths:
+      - '**/pom.xml'
+      - 'pom.xml'
     paths-ignore:
       - '**/*.md'
       - '**/*.txt'
