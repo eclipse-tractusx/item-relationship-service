@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0088fe3a-c331-46e4-8a77-193a6033cd95",
+		"_postman_id": "8e3a3590-b11f-4b0d-834a-03ff91565ff0",
 		"name": "IRS DEMO Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1944,6 +1944,104 @@
 							""
 						]
 					}
+				}
+			]
+		},
+		{
+			"name": "ESS Spike",
+			"item": [
+				{
+					"name": "Register Job Investigation",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"globalAssetId\": \"urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7\",\r\n    \"incidentBpns\": [\"BPNL00000003B6LU\"],\r\n    \"bomLifecycle\": \"asPlanned\"\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/ess/bpn/investigations",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"ess",
+								"bpn",
+								"investigations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search for investigation by jobId",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/ess/bpn/investigations/:jobId",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"ess",
+								"bpn",
+								"investigations",
+								":jobId"
+							],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
