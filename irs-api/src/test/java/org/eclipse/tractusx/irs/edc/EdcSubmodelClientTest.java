@@ -30,8 +30,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -44,7 +47,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import com.github.jknack.handlebars.internal.Files;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
@@ -150,10 +152,11 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     @NotNull
-    private String readAssemblyPartRelationshipData() throws IOException {
-        final InputStream resourceAsStream = getClass().getResourceAsStream("/__files/assemblyPartRelationship.json");
-        Objects.requireNonNull(resourceAsStream);
-        return Files.read(resourceAsStream, StandardCharsets.UTF_8);
+    private String readAssemblyPartRelationshipData() throws IOException, URISyntaxException {
+        final URL resource = getClass().getResource("/__files/assemblyPartRelationship.json");
+        Objects.requireNonNull(resource);
+
+        return Files.readString(Path.of(resource.toURI()), StandardCharsets.UTF_8);
     }
 
     @Test

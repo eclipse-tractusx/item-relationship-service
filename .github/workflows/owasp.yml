@@ -8,20 +8,9 @@ on:
       - '**/*.txt'
   pull_request:
     branches: main
-    paths-ignore:
-      - '**/*.md'
-      - '**/*.txt'
-      - 'api/**'
-      - 'api-tests/**'
-      - 'charts/**'
-      - 'ci/**'
-      - 'docs/**'
-      - 'dev/**'
-      - 'testdata-transform/**'
-      - 'testing/**'
-      - 'uml-diagrams/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
+    paths:
+      - '**/pom.xml'
+      - 'pom.xml'
   schedule:
     - cron: '0 0 * * *' # Once a day
 
