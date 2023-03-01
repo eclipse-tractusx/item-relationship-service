@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
 
     <name>IRS Root</name>
-    <description>Root module containing other modules.</description>
+    <description>Root module containing other modules. Check trigger.</description>
 
     <modules>
         <module>irs-testing</module>
