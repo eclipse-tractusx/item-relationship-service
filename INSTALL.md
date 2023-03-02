@@ -3,15 +3,14 @@
 The deployment contains the components required to connect the IRS to an existing Catena-X network. This includes:
 
 - IRS with Minio - part of the "irs-helm" Helm chart
-
 - EDC Consumer (controlplane & dataplane) - part of the "irs-edc-consumer" Helm chart
 
 Everything else needs to be provided externally.
 
 ## Data Chain Kit
 
-You can use the Data Chain Kit to deploy the whole demo scenario with all participating components.
-Instructions can be found here [Data Chain Kit](https://eclipse-tractusx.github.io/docs/kits/Data%20Chain%20Kit/Operation%20View/).
+You can use the Data Chain Kit to deploy the whole demo scenario with all participating components.  
+Instructions can be found here: [Data Chain Kit](https://eclipse-tractusx.github.io/docs/kits/Data%20Chain%20Kit/Operation%20View/).
 
 ## Installation
 
@@ -24,6 +23,8 @@ If you also want to set up your own EDC consumer, use the "irs-edc-consumer" cha
 
 Supply the required configuration properties (see chapter [Configuration](#configuration)) in a values.yaml file or
 override the settings directly.
+
+More information: [Administration Guide](https://eclipse-tractusx.github.io/item-relationship-service/docs/administration/administration-guide.html)
 
 ### Deployment using Helm
 
@@ -493,32 +494,3 @@ Login username for Grafana. To be defined by you.
 
 Login password for Grafana. To be defined by you.
 
-## Troubleshooting
-
-### Proxy support
-
-If you are using an HTTP(S) proxy for outgoing connections, you need to configure the IRS to use it.
-
-```(yaml)
-JAVA_TOOL_OPTIONS=-Dhttps.proxyHost=X.X.X.X -Dhttps.proxyPort=XXXX
-```
-
-You might need to specify both `http` and `https` options, dependending on your configuration.
-
-If your proxy is requiring authentication, you can use the `.proxyUser` and `.proxyPassword` properties in addition.
-
-### Troubleshooting FAQ
-
-#### Minio
-
-##### Error: "The specified bucket does not exist"
-
-IRS tries to read data from or write to the Minio storage, but no bucket exists. This can happen if Minio is running
-without a persistent volume and restarts, thus losing all data.
-It can also happen if the persistent volume claim is deleted / recreated.
-
-**Proposed solution steps:**
-
-1. Make sure Minio is configured and running correctly.
-
-2. Restart the IRS - this will recreate the missing bucket automatically.
