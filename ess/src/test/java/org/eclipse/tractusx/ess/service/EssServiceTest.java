@@ -88,6 +88,7 @@ class EssServiceTest {
     @Test
     void shouldUpdateJobSnapshotIfNotificationFound() {
         final String notificationId = UUID.randomUUID().toString();
+        final String notificationId2 = UUID.randomUUID().toString();
         final UUID jobId = UUID.randomUUID();
         final EdcNotification edcNotification = EdcNotification.builder()
                                                                .header(EdcNotificationHeader.builder()
@@ -96,17 +97,45 @@ class EssServiceTest {
                                                                                             .originalNotificationId(
                                                                                                     notificationId)
                                                                                             .build())
-                                                               .content(Map.of("result", "Yes"))
+                                                               .content(Map.of("result", "No"))
                                                                .build();
-
+        final EdcNotification edcNotification2 = EdcNotification.builder()
+                                                                .header(EdcNotificationHeader.builder()
+                                                                                             .notificationId(
+                                                                                                     notificationId2)
+                                                                                             .originalNotificationId(
+                                                                                                     notificationId2)
+                                                                                             .build())
+                                                                .content(Map.of("result", "Yes"))
+                                                                .build();
         final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(
                                                                                    Jobs.builder().job(Job.builder().id(jobId).build()).build(), new ArrayList<>())
-                                                                           .withNotifications(Collections.singletonList(
-                                                                                   notificationId));
+                                                                           .withNotifications(List.of(notificationId,
+                                                                                   notificationId2));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         assertDoesNotThrow(() -> essService.handleNotificationCallback(edcNotification));
         assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
+
+        final BpnInvestigationJob job = bpnInvestigationJobCache.findAll().get(0);
+        final String supplyChainImpacted = (String) job.getJobSnapshot()
+                                                       .getSubmodels()
+                                                       .get(0)
+                                                       .getPayload()
+                                                       .get("supplyChainImpacted");
+        assertThat(supplyChainImpacted).isEqualTo("No");
+
+        assertDoesNotThrow(() -> essService.handleNotificationCallback(edcNotification2));
+        assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
+        final BpnInvestigationJob job2 = bpnInvestigationJobCache.findAll().get(0);
+        assertThat(job2.getJobSnapshot().getSubmodels()).hasSize(1);
+        final String supplyChainImpacted2 = (String) job.getJobSnapshot()
+                                                        .getSubmodels()
+                                                        .get(0)
+                                                        .getPayload()
+                                                        .get("supplyChainImpacted");
+        assertThat(supplyChainImpacted2).isEqualTo("Yes");
+
     }
 
     @Test

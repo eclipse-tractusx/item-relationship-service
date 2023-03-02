@@ -39,6 +39,7 @@ import org.eclipse.tractusx.edc.model.notification.EdcNotification;
 import org.eclipse.tractusx.ess.discovery.EdcDiscoveryFacade;
 import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
+import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -63,7 +64,10 @@ class InvestigationJobProcessingEventListenerTest {
     @BeforeEach
     void mockInit() {
         final Jobs jobs = Jobs.builder()
-                              .job(Job.builder().id(jobId).build())
+                              .job(Job.builder()
+                                      .id(jobId)
+                                      .globalAssetId(GlobalAssetIdentification.of("dummyGlobalAssetId"))
+                                      .build())
                               .shells(List.of(createShell(UUID.randomUUID().toString(), "bpn")))
                               .build();
         final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, List.of("BPNS000000000DDD"));
