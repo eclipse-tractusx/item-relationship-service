@@ -33,7 +33,7 @@
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- Dependencies -->
-        <springboot.version>2.7.7</springboot.version>
+        <springboot.version>3.0.2</springboot.version>
         <springcloud-feign.version>3.1.5</springcloud-feign.version>
         <springdoc.version>1.6.7</springdoc.version>
         <micrometer.version>1.10.0</micrometer.version>
@@ -43,7 +43,7 @@
         <mockito-junit-jupiter.version>4.6.0</mockito-junit-jupiter.version>
         <assertj-core.version>3.23.1</assertj-core.version>
         <gatling.version>3.7.6</gatling.version>
-        <resilience4j.version>1.7.1</resilience4j.version>
+        <resilience4j.version>2.0.2</resilience4j.version>
 
         <!-- Plugins -->
         <tidy.version>1.1.0</tidy.version>
