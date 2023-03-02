@@ -528,8 +528,8 @@ irs:
 
   blobstore:
     endpoint: "http://irs-minio:9000"
-    accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
-    secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
+    accessKey: "${MINIO_ACCESS_KEY}"
+    secretKey: "${MINIO_SECRET_KEY}"
   keycloak:
     oauth2:
       clientId: *config-keycloak-client-id
@@ -555,19 +555,19 @@ irs:
   edc:
     controlplane:
       endpoint:
-        data: "http://edc-consumer-control-plane:8181/data" #<edc-controlplane-endpoint-data>
+        data: "http://edc-consumer-control-plane:8181/data"
       request:
-        ttl: PT10M # Requests to controlplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
+        ttl: PT10M
       provider:
         suffix: /api/v1/ids/data
       catalog:
-        limit: 1000 # Max number of catalog items to retrieve from the controlplane
+        limit: 1000
       apikey:
-        header: "X-Api-Key" # Name of the EDC api key header field
+        header: "X-Api-Key"
         secret: *config-edc-auth-api-key
     submodel:
       request:
-        ttl: PT10M # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
+        ttl: PT10M
       path: /submodel
       urnprefix: /urn
 
