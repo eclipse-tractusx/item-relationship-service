@@ -114,6 +114,6 @@ dependencies:
   # IRS Frontend Service
   - name: irs-frontend-service
     alias: irs-frontend
-    version: 0.0.3
+    version: 0.0.5
     repository: https://catenax-ng.github.io/product-item-relationship-service-frontend
     condition: install.irs.frontend
