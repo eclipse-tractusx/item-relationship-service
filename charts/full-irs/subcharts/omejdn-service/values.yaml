@@ -1,0 +1,37 @@
+---
+replicaCount: 1
+
+image:
+  repository: ghcr.io/fraunhofer-aisec/omejdn-server
+  pullPolicy: IfNotPresent
+  tag: "1.7.1"
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+livenessProbe:
+  enabled: true
+
+readinessProbe:
+  enabled: true
+
+service:
+  type: ClusterIP
+  port: 4567
+
+resources:
+  limits:
+    cpu: 250m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 512Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80

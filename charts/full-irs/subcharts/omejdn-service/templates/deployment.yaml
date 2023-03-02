@@ -1,0 +1,177 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Release.Namespace | default "default" | quote }}
+  labels:
+    {{- include "irs-omejdn-service.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "irs-omejdn-service.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "irs-omejdn-service.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "irs-omejdn-service.serviceAccountName" . }}
+      initContainers:
+        - name: copy-omejdn-config
+          image: busybox
+          command:
+            - "sh"
+            - "-c"
+          args:
+            - |
+              cp /opt/config/scope_mapping.yml /etc/opt/config/scope_mapping.yml
+              cp /opt/config/clients.yml /etc/opt/config/clients.yml
+              cp /opt/config/omejdn.yml /etc/opt/config/omejdn.yml
+              cp /opt/config/plugins.yml /etc/opt/config/plugins.yml
+
+              cp /opt/keys/edc.cert /etc/opt/keys/edc.cert
+              cp /opt/keys/edc.key /etc/opt/keys/edc.key
+
+              cp /opt/keys/clients/edc.cert /etc/opt/keys/clients/edc.cert
+              
+              cp /opt/keys/omejdn/omejdn.key /etc/opt/keys/omejdn/omejdn.key
+          volumeMounts:
+            - name: config-dir
+              mountPath: /etc/opt/config
+            - name: config-scope-mapping
+              mountPath: /opt/config/scope_mapping.yml
+              subPath: scope_mapping.yml
+            - name: config-clients
+              mountPath: /opt/config/clients.yml
+              subPath: clients.yml
+            - name: config-omejdn
+              mountPath: /opt/config/omejdn.yml
+              subPath: omejdn.yml
+            - name: config-plugins
+              mountPath: /opt/config/plugins.yml
+              subPath: plugins.yml
+            
+            - name: keys-omejdn-dir
+              mountPath: /etc/opt/keys/omejdn
+            - name: keys-omejdn
+              mountPath: /opt/keys/omejdn/omejdn.key
+              subPath: omejdn.key
+            
+            - name: keys-dir
+              mountPath: /etc/opt/keys
+            - name: keys-edc-key
+              mountPath: /opt/keys/edc.key
+              subPath: edc.key
+            - name: keys-edc-cert
+              mountPath: /opt/keys/edc.cert
+              subPath: edc.cert
+
+            - name: keys-clients-dir
+              mountPath: /etc/opt/keys/clients
+            - name: keys-clients-edc-cert
+              mountPath: /opt/keys/clients/edc.cert
+              subPath: edc.cert
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 4567
+              protocol: TCP
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /.well-known/openid-configuration
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            failureThreshold: 3
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /.well-known/openid-configuration
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            failureThreshold: 3
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Chart.Name }}          
+          volumeMounts:
+            - name: config-dir
+              mountPath: /opt/config/              
+            - name: keys-dir
+              mountPath: /opt/keys/
+            - name: keys-clients-dir
+              mountPath: /opt/keys/clients/
+            - name: keys-omejdn-dir
+              mountPath: /opt/keys/omejdn/
+      volumes:
+        - name: config-dir
+          emptyDir: {}
+        - name: keys-dir
+          emptyDir: {}
+        - name: keys-clients-dir
+          emptyDir: {}
+        - name: keys-omejdn-dir
+          emptyDir: {}
+        - name: config-scope-mapping
+          configMap:
+            name: {{ .Chart.Name }}
+            items:
+              - key: scope_mapping.yml
+                path: scope_mapping.yml
+        - name: config-clients
+          configMap:
+            name: {{ .Chart.Name }}
+            items:
+              - key: clients.yml
+                path: clients.yml
+        - name: config-omejdn
+          configMap:
+            name: {{ .Chart.Name }}
+            items:
+              - key: omejdn.yml
+                path: omejdn.yml
+        - name: config-plugins
+          configMap:
+            name: {{ .Chart.Name }}
+            items:
+              - key: plugins.yml
+                path: plugins.yml
+        - name: keys-omejdn
+          configMap:
+            name: {{ .Chart.Name }}
+            items:
+              - key: omejdn.key
+                path: omejdn.key
+        - name: keys-edc-key
+          configMap:
+            name: {{ .Chart.Name }}
+            items:
+              - key: edc.key
+                path: edc.key
+        - name: keys-edc-cert
+          configMap:
+            name: {{ .Chart.Name }}
+            items:
+              - key: edc.cert
+                path: edc.cert
+        - name: keys-clients-edc-cert
+          configMap:
+            name: {{ .Chart.Name }}
+            items:
+              - key: edc.cert
+                path: edc.cert
