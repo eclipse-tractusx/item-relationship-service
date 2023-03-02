@@ -15,7 +15,7 @@ install:
   semanticHub: false
   keycloak: false
 
-  irs: 
+  irs:
     providerBackend: false
     backend: false
     frontend: false
@@ -24,12 +24,12 @@ install:
 # COMMON #
 ##########
 config:
-  grafana: 
+  grafana:
     username: &config-grafana-username "admin"
     password: &config-grafana-password "password"
     secret:
       name: &config-grafana-secret-name irs-grafana
-  minio: 
+  minio:
     username: &config-minio-username "admin"
     password: &config-minio-password "password"
     secret:
@@ -46,7 +46,7 @@ config:
       dapsKeyName: &config-vault-secret-daps-key-name "daps-key"
       dapsKeyValue: &config-vault-secret-daps-key-value "FILL ME UP"
   edc:
-    consumer:  
+    consumer:
       database:
         host: &config-edc-consumer-database-host "edc-consumer-database"
         name: &config-edc-consumer-database-name "edc-consumer"
@@ -56,7 +56,7 @@ config:
           password: &config-edc-consumer-database-postgres-password "admin"
         secret:
           name: &config-edc-consumer-database-secret-name edc-consumer-database
-    provider:  
+    provider:
       database:
         host: &config-edc-provider-database-host "edc-provider-database"
         name: &config-edc-provider-database-name "edc-provider"
@@ -66,7 +66,7 @@ config:
           password: &config-edc-provider-database-postgres-password "admin"
         secret:
           name: &config-edc-provider-database-secret-name edc-provider-database
-    api: 
+    api:
       auth:
         key: &config-edc-auth-api-key "password"
   oauth:
@@ -85,18 +85,18 @@ config:
     client:
       id: &config-keycloak-client-id "catena-client-id"
       secret: &config-keycloak-client-secret "catena-client-secret"
-    
+
     token:
       url: &config-keycloak-token-url "http://keycloak:8080/connect/token"
-    cert: 
+    cert:
       url: &config-keycloak-certs-url "http://keycloak:8080/.well-known/openid-configuration/jwks"
-  irs: 
+  irs:
     existingSecret: &config-irs-existingSecret false
     secret:
       name: &config-irs-secret-name "irs-backend-service"
       minio:
         user: *config-minio-username
-        password:  *config-minio-password
+        password: *config-minio-password
       edc:
         api:
           secret: *config-edc-auth-api-key
