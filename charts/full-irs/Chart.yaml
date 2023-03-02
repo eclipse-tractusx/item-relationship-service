@@ -4,7 +4,7 @@ name: irs
 description: A Helm chart for Kubernetes
 
 type: application
-version: 0.0.1
+version: 0.0.2
 appVersion: "1.0.0"
 
 dependencies:
@@ -23,7 +23,7 @@ dependencies:
     repository: "file://subcharts/omejdn-service"
     condition: install.edc.daps
 
-  # EDC Consumer 
+  # EDC Consumer
   # PostgreSQL
   - name: postgresql
     alias: edc-consumer-database
@@ -66,9 +66,9 @@ dependencies:
     version: 0.0.1
     repository: "file://subcharts/edc-data-plane"
     condition: install.edc.provider
-  
+
   # IRS ############################
-  
+
   # Semantic Hub Service
   - name: semantic-hub
     alias: semantic-hub
@@ -105,9 +105,9 @@ dependencies:
     condition: install.irs.providerBackend
 
   # IRS
-  - name: irs-helm    
+  - name: irs-helm
     alias: irs
-    repository: https://catenax-ng.github.io/tx-item-relationship-service    
+    repository: https://catenax-ng.github.io/tx-item-relationship-service
     version: 4.2.1
     condition: irs.enabled
 
