@@ -1,10 +1,8 @@
 ---
-
 ###########
 # Install #
 ###########
 install:
-
   edc:
     vault: false
     daps: false
@@ -119,7 +117,6 @@ config:
       secret:
         name: &config-digitalTwin-database-secret-name digital-twin-registry-database
     idpIssuerUri: "http://edc-daps:4567"
- 
 
 # ###########
 # EDC VAULT #
@@ -128,7 +125,7 @@ edc-vault:
   fullnameOverride: "edc-vault"
   enabled: false
   injector:
-      # enabled: false
+    # enabled: false
     enabled: true
     metrics:
       enabled: true
@@ -151,14 +148,14 @@ edc-vault:
       - "sh"
       - "-c"
       - |
-        { 
-        
+        {
+
         sleep 5
 
         /bin/vault audit enable file file_path=/tmp/vault_log.txt
 
         /bin/vault kv put secret/${SECRET_DATA_ENCRYPTION_NAME} content=${SECRET_DATA_ENCRYPTION_VALUE}
-       
+
         cat << EOF | /bin/vault kv put secret/${SECRET_DAPS_KEY_NAME} content=-
         -----BEGIN PRIVATE KEY-----
         MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDRl5vqQTWBNDFq
@@ -190,7 +187,7 @@ edc-vault:
         -----END PRIVATE KEY-----
 
         EOF
-        
+
         cat << EOF | /bin/vault kv put secret/${SECRET_DAPS_CERT_NAME} content=-
         -----BEGIN CERTIFICATE-----
         MIIDazCCAlOgAwIBAgIULRtsNKCEIXeJcpBg28vr6UgyfbIwDQYJKoZIhvcNAQEL
@@ -222,7 +219,6 @@ edc-vault:
     externalPort: 8200
     targetPort: 8200
 
-
 ######################
 # DAPS Configuration #
 ######################
@@ -236,7 +232,6 @@ edc-daps:
     default: idsc:IDS_CONNECTORS_ALL
     accept: http://edc-daps:4567
 
-
 #########################
 # EDC CONSUMER Database #
 #########################
@@ -247,7 +242,7 @@ edc-consumer-database:
       enabled: true
       mountPath: "/mnt/data/edc_consumer"
       size: 100Mi
-      
+
   volumePermissions:
     enabled: true
   readReplicas:
@@ -262,7 +257,6 @@ edc-consumer-database:
     type: NodePort
     control:
       port: 5432
-
 
 ##############################
 # EDC Consumer Control Plane #
@@ -298,7 +292,7 @@ edc-consumer-control-plane:
         url: *config-oauth-token-url
     data:
       encryption:
-        keys: 
+        keys:
           alias: "data-encryption"
         algorithm: "NONE"
     receiver:
@@ -319,7 +313,6 @@ edc-consumer-control-plane:
             privatekey:
               alias: *config-vault-secret-daps-key-name
 
-
 ###########################
 # EDC Consumer DATA Plane #
 ###########################
@@ -334,7 +327,7 @@ edc-consumer-data-plane:
         key: *config-edc-auth-api-key
     oauth:
       client:
-        id: *config-oauth-client-id 
+        id: *config-oauth-client-id
       private:
         key:
           alias: *config-vault-secret-daps-key-name
@@ -353,7 +346,6 @@ edc-consumer-data-plane:
         api:
           secret:
             path: "content"
-
 
 #########################
 # EDC PROVIDER Database #
@@ -379,7 +371,6 @@ edc-provider-database:
     control:
       port: 5432
 
-
 ##############################
 # EDC Provider Control Plane #
 ##############################
@@ -387,7 +378,7 @@ edc-provider-control-plane:
   edc:
     hostname: edc-provider-control-plane
     dataPlane:
-      hostname: edc-provider-data-plane    
+      hostname: edc-provider-data-plane
     api:
       auth:
         key: *config-edc-auth-api-key
@@ -414,7 +405,7 @@ edc-provider-control-plane:
         url: *config-oauth-token-url
     data:
       encryption:
-        keys: 
+        keys:
           alias: "data-encryption"
     receiver:
       http:
@@ -434,7 +425,6 @@ edc-provider-control-plane:
             privatekey:
               alias: *config-vault-secret-daps-key-name
 
-
 ###########################
 # EDC Provider DATA Plane #
 ###########################
@@ -449,7 +439,7 @@ edc-provider-data-plane:
         key: *config-edc-auth-api-key
     oauth:
       client:
-        id: *config-oauth-client-id 
+        id: *config-oauth-client-id
       private:
         key:
           alias: *config-vault-secret-daps-key-name
@@ -469,13 +459,11 @@ edc-provider-data-plane:
           secret:
             path: "content"
 
-
 ################
 # Semantic Hub #
 ################
 semantic-hub:
   fullnameOverride: "semantic-hub"
-
 
 ##################################
 # Digital Twin Registry Database #
@@ -501,18 +489,16 @@ digital-twin-registry-database:
     control:
       port: 5432
 
-
 #########################
 # Digital Twin Registry #
 #########################
 digital-twin-registry:
-  registry: 
+  registry:
     secret:
       name: *config-digitalTwin-secret-name
     idpIssuerUri: *config-keycloak-token-url
     imagePullSecrets:
       - name: *config-digitalTwin-docker-secret-name
-
 
 ############
 # KeyCloak #
@@ -525,7 +511,6 @@ keycloak:
   grand:
     type: *config-keycloak-grand-type
   scope: *config-keycloak-scope
-
 
 #####################
 # IRS Configuration #
@@ -561,12 +546,12 @@ irs:
     modelJsonSchemaEndpoint: "{{ tpl .Values.semanticsHub.url . }}/models/{urn}/json-schema"
     defaultUrns: >-
       urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
-    localModels: 
+    localModels:
 
   bpdm:
     url: ""
     bpnEndpoint: "{{ tpl .Values.bpdm.url . }}/api/catena/legal-entities/{partnerId}?idType={idType}"
-  
+
   edc:
     controlplane:
       endpoint:
@@ -595,7 +580,7 @@ irs:
     resources:
       requests:
         memory: 4Gi
-    
+
     rootUser: *config-minio-username
     rootPassword: *config-minio-password
 
@@ -664,7 +649,6 @@ irs:
       irsjobs: dashboards/irs-jobs-dashboard.json
       irsapi: dashboards/irs-api-dashboard.json
 
-
 ################
 # IRS Frontend #
 ################
@@ -675,7 +659,7 @@ irs-frontend:
         asset:
           id: urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6
     vite:
-      manual: 
+      manual:
         url: https://github.com/catenax-ng/product-item-relationship-service-frontend/blob/main/docs/userManual.md
     url:
       local: http://localhost:8080
@@ -687,4 +671,3 @@ irs-frontend:
     client:
       id: *config-keycloak-client-id
       secret: *config-keycloak-client-secret
-
