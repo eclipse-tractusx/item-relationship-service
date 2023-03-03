@@ -2,10 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const PATH_TO_MD_FILES = "../../target/generated-docs/";
 
-/**
- * CAUTION: :imagedir: variables in .adoc get deleted, so that asset references can be properly set
- */
-
 fs.readdirSync(PATH_TO_MD_FILES).forEach((file) => {
   if (path.extname(file) === ".md") {
     fs.readFile(PATH_TO_MD_FILES + file, "utf8", (err, data) => {
@@ -38,7 +34,7 @@ fs.readdirSync(PATH_TO_MD_FILES).forEach((file) => {
         (err) => {
           if (err) throw err;
           console.log(
-            `successfully add new line for headers in ${file}`
+            `successfully fix headers in ${file}`
           );
         }
       );
