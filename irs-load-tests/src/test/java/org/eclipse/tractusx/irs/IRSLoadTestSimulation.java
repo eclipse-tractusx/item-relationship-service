@@ -22,6 +22,7 @@ public class IRSLoadTestSimulation extends Simulation {
         final String clientId = System.getenv("KEYCLOAK_CLIENT_ID");
         String body = "grant_type=client_credentials&client_id=" + clientId + "&client_secret=" + clientSecret;
         final String irsUrl = System.getenv("IRS_HOST");
+        final int testCycles = Integer.parseInt(System.getenv("TEST_CYCLES"));
 
         Map<CharSequence, String> headers_0 = new HashMap<>();
         headers_0.put("Content-Type", "application/x-www-form-urlencoded");
@@ -54,6 +55,6 @@ public class IRSLoadTestSimulation extends Simulation {
                         .get("/irs/jobs/#{id}?returnUncompletedJob=true")
                         .headers(headers_1));
 
-        setUp(scn.injectOpen(atOnceUsers(10))).protocols(httpProtocol);
+        setUp(scn.injectOpen(atOnceUsers(testCycles))).protocols(httpProtocol);
     }
 }
