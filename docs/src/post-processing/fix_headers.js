@@ -11,8 +11,16 @@ fs.readdirSync(PATH_TO_MD_FILES).forEach((file) => {
       const output = [];
 
       for (let i = 0; i < lines.length; i++) {
-        if (lines[i].startsWith("# ")) {
-          // replace first level headings with second level (need to be for other levels too)
+        if (lines[i].startsWith("### ")) {
+          // replace first level headings with second level
+          lines[i] = lines[i].replace("### ", "#### ");
+        }
+        if (lines[i].startsWith("## ")) {
+          // replace first level headings with second level
+          lines[i] = lines[i].replace("## ", "### ");
+        }
+        if (lines[i].startsWith("# ") && i > 0) {
+          // replace first level headings with second level
           lines[i] = lines[i].replace("# ", "## ");
         }
         // when line starts with hashtag add new line after

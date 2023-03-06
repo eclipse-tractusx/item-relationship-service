@@ -82,6 +82,11 @@ jobs:
           npx downdoc -o docs/target/generated-docs/adminguide.md docs/src/diagram-replacer/generated-adocs/adminguide.adoc
           npx downdoc -o docs/target/generated-docs/arc42.md docs/src/diagram-replacer/generated-adocs/arc42.adoc
 
+      - name: MD files post-processing
+        working-directory: docs/src/post-processing/
+        run: |
+          node fix_headers.js
+
       - name: Move assets to target directory
         run: |
           mv docs/src/diagram-replacer/assets/ docs/target/generated-docs/assets/
