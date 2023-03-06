@@ -86,6 +86,7 @@ jobs:
         working-directory: docs/src/post-processing/
         run: |
           node fix_headers.js
+          node fix_https_links.js
 
       - name: Move assets to target directory
         run: |
