@@ -11,12 +11,20 @@ fs.readdirSync(PATH_TO_MD_FILES).forEach((file) => {
       const output = [];
 
       for (let i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith("##### ")) {
+          // replace 5th level to 6th
+          lines[i] = lines[i].replace("##### ", "###### ");
+        }
+        if (lines[i].startsWith("#### ")) {
+          // replace 4th level to 5th
+          lines[i] = lines[i].replace("#### ", "##### ");
+        }
         if (lines[i].startsWith("### ")) {
-          // replace first level headings with second level
+          // replace 3rd level to 4th
           lines[i] = lines[i].replace("### ", "#### ");
         }
         if (lines[i].startsWith("## ")) {
-          // replace first level headings with second level
+          // replace 2nd level to 3rd
           lines[i] = lines[i].replace("## ", "### ");
         }
         if (lines[i].startsWith("# ") && i > 0) {
