@@ -9,20 +9,9 @@ on:
       - '**/*.txt'
   pull_request:
     branches: main
-    paths-ignore:
-      - '**/*.md'
-      - '**/*.txt'
-      - 'api/**'
-      - 'api-tests/**'
-      - 'charts/**'
-      - 'ci/**'
-      - 'docs/**'
-      - 'dev/**'
-      - 'testdata-transform/**'
-      - 'testing/**'
-      - 'uml-diagrams/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
+    paths:
+      - '**/pom.xml'
+      - 'pom.xml'
 
 jobs:
   build:
@@ -46,6 +35,12 @@ jobs:
       - name: Build with Maven and check dependencies with dash
         run: |
           mvn --batch-mode --update-snapshots verify -Ddash.fail=true -DskipTests
+
+      - name: Ensure DEPENDENCIES file is reflecting the current state
+        run: |
+          mvn org.eclipse.dash:license-tool-plugin:license-check -Ddash.summary=DEPENDENCIES-gen
+          diff DEPENDENCIES DEPENDENCIES-gen
+          
 
       - name: upload results
         if: always()
