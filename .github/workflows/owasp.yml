@@ -11,6 +11,7 @@ on:
     paths:
       - '**/pom.xml'
       - 'pom.xml'
+      - 'ci/owasp-suppressions.xml'
   schedule:
     - cron: '0 0 * * *' # Once a day
 

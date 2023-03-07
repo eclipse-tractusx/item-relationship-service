@@ -35,16 +35,11 @@ maven/mavencentral/com.vaadin.external.google/android-json/0.0.20131108.vaadin1,
 maven/mavencentral/commons-beanutils/commons-beanutils/1.9.4, Apache-2.0, approved, CQ12654
 maven/mavencentral/commons-collections/commons-collections/3.2.2, Apache-2.0, approved, CQ10385
 maven/mavencentral/commons-digester/commons-digester/2.1, Apache-2.0, approved, clearlydefined
-maven/mavencentral/commons-fileupload/commons-fileupload/1.4, Apache-2.0, approved, clearlydefined
 maven/mavencentral/commons-io/commons-io/2.11.0, Apache-2.0, approved, CQ23745
 maven/mavencentral/commons-logging/commons-logging/1.2, Apache-2.0, approved, CQ10162
 maven/mavencentral/commons-validator/commons-validator/1.7, Apache-2.0, approved, clearlydefined
 maven/mavencentral/dk.brics.automaton/automaton/1.11-8, BSD-2-Clause, approved, clearlydefined
 maven/mavencentral/io.github.classgraph/classgraph/4.8.149, MIT, approved, CQ22530
-maven/mavencentral/io.github.openfeign.form/feign-form-spring/3.8.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.github.openfeign.form/feign-form/3.8.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.github.openfeign/feign-core/11.10, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.github.openfeign/feign-slf4j/11.10, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.github.resilience4j/resilience4j-annotations/2.0.2, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.github.resilience4j/resilience4j-bulkhead/2.0.2, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.github.resilience4j/resilience4j-circuitbreaker/2.0.2, Apache-2.0, approved, clearlydefined
@@ -59,7 +54,7 @@ maven/mavencentral/io.github.resilience4j/resilience4j-timelimiter/2.0.2, Apache
 maven/mavencentral/io.micrometer/micrometer-commons/1.10.3, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.micrometer/micrometer-core/1.10.3, Apache-2.0 AND (Apache-2.0 AND MIT), approved, #6977
 maven/mavencentral/io.micrometer/micrometer-observation/1.10.3, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.micrometer/micrometer-registry-prometheus/1.10.0, Apache-2.0, approved, #4721
+maven/mavencentral/io.micrometer/micrometer-registry-prometheus/1.10.4, Apache-2.0, approved, #4721
 maven/mavencentral/io.minio/minio/8.4.5, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.prometheus/simpleclient/0.16.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.prometheus/simpleclient_common/0.16.0, Apache-2.0, approved, clearlydefined
@@ -103,9 +98,7 @@ maven/mavencentral/org.apache.tomcat.embed/tomcat-embed-websocket/10.1.5, Apache
 maven/mavencentral/org.apiguardian/apiguardian-api/1.1.2, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.aspectj/aspectjweaver/1.9.19, EPL-1.0, approved, tools.aspectj
 maven/mavencentral/org.assertj/assertj-core/3.23.1, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.bouncycastle/bcpkix-jdk15on/1.69, MIT, approved, clearlydefined
 maven/mavencentral/org.bouncycastle/bcprov-jdk15on/1.69, MIT, approved, clearlydefined
-maven/mavencentral/org.bouncycastle/bcutil-jdk15on/1.69, MIT, approved, clearlydefined
 maven/mavencentral/org.checkerframework/checker-qual/3.8.0, MIT, approved, clearlydefined
 maven/mavencentral/org.eclipse.dataspaceconnector/catalog-spi/0.0.1-milestone-6, Apache-2.0, approved, #5191
 maven/mavencentral/org.eclipse.dataspaceconnector/contract-spi/0.0.1-milestone-6, Apache-2.0, approved, #5190
@@ -167,11 +160,6 @@ maven/mavencentral/org.springframework.boot/spring-boot-starter/3.0.2, Apache-2.
 maven/mavencentral/org.springframework.boot/spring-boot-test-autoconfigure/3.0.2, Apache-2.0, approved, #6966
 maven/mavencentral/org.springframework.boot/spring-boot-test/3.0.2, Apache-2.0, approved, #6976
 maven/mavencentral/org.springframework.boot/spring-boot/3.0.2, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.springframework.cloud/spring-cloud-commons/3.1.5, Apache-2.0, approved, #4726
-maven/mavencentral/org.springframework.cloud/spring-cloud-context/3.1.5, Apache-2.0, approved, #4722
-maven/mavencentral/org.springframework.cloud/spring-cloud-openfeign-core/3.1.5, Apache-2.0, approved, #4724
-maven/mavencentral/org.springframework.cloud/spring-cloud-starter-openfeign/3.1.5, Apache-2.0, approved, #4725
-maven/mavencentral/org.springframework.cloud/spring-cloud-starter/3.1.5, Apache-2.0, approved, #4723
 maven/mavencentral/org.springframework.data/spring-data-commons/3.0.1, Apache-2.0, approved, #5943
 maven/mavencentral/org.springframework.security/spring-security-config/6.0.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.security/spring-security-core/6.0.1, Apache-2.0, approved, clearlydefined
@@ -180,7 +168,6 @@ maven/mavencentral/org.springframework.security/spring-security-oauth2-client/6.
 maven/mavencentral/org.springframework.security/spring-security-oauth2-core/6.0.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.security/spring-security-oauth2-jose/6.0.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.security/spring-security-oauth2-resource-server/6.0.1, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.springframework.security/spring-security-rsa/1.0.11.RELEASE, Apache-2.0, approved, CQ20647
 maven/mavencentral/org.springframework.security/spring-security-web/6.0.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework/spring-aop/6.0.4, Apache-2.0, approved, #5940
 maven/mavencentral/org.springframework/spring-beans/6.0.4, Apache-2.0, approved, #5937
