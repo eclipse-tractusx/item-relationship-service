@@ -36,6 +36,12 @@ jobs:
         run: |
           mvn --batch-mode --update-snapshots verify -Ddash.fail=true -DskipTests
 
+      - name: Ensure DEPENDENCIES file is reflecting the current state
+        run: |
+          mvn org.eclipse.dash:license-tool-plugin:license-check -Ddash.summary=DEPENDENCIES-gen
+          diff DEPENDENCIES DEPENDENCIES-gen
+          
+
       - name: upload results
         if: always()
         uses: actions/upload-artifact@v3

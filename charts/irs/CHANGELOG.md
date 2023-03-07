@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.4] - 2023-03-07
+### Changed
+- Update IRS to version 2.3.1
+
+
 ## [5.0.3] - 2023-03-01
 ### Fixed
 - Fixed helm template for bpnEndpoint
