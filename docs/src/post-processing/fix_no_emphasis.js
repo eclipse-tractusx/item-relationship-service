@@ -15,7 +15,7 @@ fs.readdirSync(PATH_TO_MD_FILES).forEach((file) => {
         if (lines[i].startsWith("_") || lines[i].endsWith("_")) {
           output.push(lines[i].replace("_", "").replace("_", ""));
         // fix for MD033 - Inline HTML
-        } else if (lines[i].startsWith("##### <")) {
+        } else if (lines[i].startsWith("#### <") || lines[i].startsWith("##### <")) {
           output.push(lines[i].replace(" <", " ").replace(">", ""));
         } else {
           output.push(lines[i]);

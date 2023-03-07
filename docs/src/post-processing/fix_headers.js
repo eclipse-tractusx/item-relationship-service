@@ -10,31 +10,39 @@ fs.readdirSync(PATH_TO_MD_FILES).forEach((file) => {
       const lines = data.split("\n");
       const output = [];
 
+      let isYaml = false;
+
       for (let i = 0; i < lines.length; i++) {
-        if (lines[i].startsWith("##### ")) {
+        if (lines[i].startsWith("```yaml")) {
+          isYaml = true;
+        } else if (lines[i].startsWith("```")) {
+          isYaml = false;
+        }
+
+        if (lines[i].startsWith("##### ") && !isYaml) {
           // replace 5th level to 6th
           lines[i] = lines[i].replace("##### ", "###### ");
         }
-        if (lines[i].startsWith("#### ")) {
+        if (lines[i].startsWith("#### ") && !isYaml) {
           // replace 4th level to 5th
           lines[i] = lines[i].replace("#### ", "##### ");
         }
-        if (lines[i].startsWith("### ")) {
+        if (lines[i].startsWith("### ") && !isYaml) {
           // replace 3rd level to 4th
           lines[i] = lines[i].replace("### ", "#### ");
         }
-        if (lines[i].startsWith("## ")) {
+        if (lines[i].startsWith("## ") && !isYaml) {
           // replace 2nd level to 3rd
           lines[i] = lines[i].replace("## ", "### ");
         }
-        if (lines[i].startsWith("# ") && i > 0) {
+        if (lines[i].startsWith("# ") && i > 0  && !isYaml) {
           // replace first level headings with second level
           lines[i] = lines[i].replace("# ", "## ");
         }
         // when line starts with hashtag add new line after
         if (lines[i].startsWith("#") && (typeof lines[i+1] !== 'undefined')) {
           output.push(lines[i]);
-          if (lines[i+1] !== "" && !lines[i+1].startsWith("#")) {
+          if (lines[i+1] !== "" && !isYaml) {
             output.push("");
           }
         } else {
