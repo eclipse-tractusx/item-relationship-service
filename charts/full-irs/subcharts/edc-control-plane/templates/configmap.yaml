@@ -22,6 +22,7 @@ data:
     
     edc.vault.hashicorp.health.check.enabled=false
     edc.vault.hashicorp.url={{ .Values.edc.vault.hashicorp.url }}
+    edc.vault.hashicorp.api.secret.path={{ .Values.edc.vault.hashicorp.api.secret.path }}
     edc.vault.hashicorp.token={{ .Values.edc.vault.hashicorp.token }}
     edc.vault.hashicorp.timeout.seconds=30
 
