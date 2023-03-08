@@ -63,17 +63,17 @@
           </elementProp>
           <elementProp name="keycloak_url" elementType="Argument">
             <stringProp name="Argument.name">keycloak_url</stringProp>
-            <stringProp name="Argument.value">${__BeanShell( System.getenv(&quot;KEYCLOAK_URL&quot;) )}</stringProp>
+            <stringProp name="Argument.value">${__BeanShell( System.getenv(&quot;KEYCLOAK_HOST&quot;) )}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="client_id" elementType="Argument">
             <stringProp name="Argument.name">client_id</stringProp>
-            <stringProp name="Argument.value">${__BeanShell( System.getenv(&quot;CLIENT_ID&quot;) )}</stringProp>
+            <stringProp name="Argument.value">${__BeanShell( System.getenv(&quot;KEYCLOAK_CLIENT_ID&quot;) )}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="client_secret" elementType="Argument">
             <stringProp name="Argument.name">client_secret</stringProp>
-            <stringProp name="Argument.value">${__BeanShell( System.getenv(&quot;CLIENT_SECRET&quot;) )}</stringProp>
+            <stringProp name="Argument.value">${__BeanShell( System.getenv(&quot;KEYCLOAK_CLIENT_SECRET&quot;) )}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="tests-run" elementType="Argument">
