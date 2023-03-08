@@ -169,7 +169,7 @@ edc-consumer-control-plane:
         token: *config-vault-token
         api:
           secret:
-            path:  /v1/traceability-irs
+            path: /v1/traceability-irs
     oauth:
       client:
         id: *config-oauth-client-id
@@ -239,7 +239,7 @@ edc-consumer-data-plane:
         token: *config-vault-token
         api:
           secret:
-            path:  /v1/traceability-irs
+            path: /v1/traceability-irs
 
 #########################
 # EDC PROVIDER Database #
@@ -282,7 +282,7 @@ edc-provider-control-plane:
         token: *config-vault-token
         api:
           secret:
-            path:  /v1/traceability-irs
+            path: /v1/traceability-irs
     oauth:
       client:
         id: *config-oauth-client-id
@@ -351,7 +351,7 @@ edc-provider-data-plane:
         token: *config-vault-token
         api:
           secret:
-            path:  /v1/traceability-irs
+            path: /v1/traceability-irs
 
 ################
 # Semantic Hub #
