@@ -35,11 +35,15 @@ config:
   vault:
     url: &config-vault-url https://vault.demo.catena-x.net
     token: &config-vault-token <path:traceability-irs/data/dev/controlplane#vaultToken>
+    secret.path: &config-vault-api-secret-path /v1/traceability-irs
     secret:
       dapsCertName: &config-vault-secret-daps-cert-name "irs-full-daps-cert"
       dapsKeyName: &config-vault-secret-daps-key-name "irs-full-daps-key"
   edc:
     consumer:
+      hostname:
+        controlplane: &config-edc-consumer-controlplane-hostname "irs-full-consumer-controlplane.dev.demo.catena-x.net"
+        dataplane: &config-edc-consumer-dataplane-hostname "irs-full-consumer-controlplane.dev.demo.catena-x.net"
       database:
         host: &config-edc-consumer-database-host "edc-consumer-database"
         name: &config-edc-consumer-database-name "edc-consumer"
@@ -50,6 +54,9 @@ config:
         secret:
           name: &config-edc-consumer-database-secret-name edc-consumer-database
     provider:
+      hostname:
+        controlplane: &config-edc-provider-controlplane-hostname "irs-full-provider-controlplane.dev.demo.catena-x.net"
+        dataplane: &config-edc-provider-dataplane-hostname "irs-full-provider-controlplane.dev.demo.catena-x.net"
       database:
         host: &config-edc-provider-database-host "edc-provider-database"
         name: &config-edc-provider-database-name "edc-provider"
@@ -84,6 +91,7 @@ config:
     cert:
       url: &config-keycloak-certs-url "http://keycloak:8080/.well-known/openid-configuration/jwks"
   irs:
+    hostname: &config-irs-hostname "https://irs-full.dev.demo.catena-x.net"
     existingSecret: &config-irs-existingSecret false
     secret:
       name: &config-irs-secret-name "irs-backend-service"
@@ -97,6 +105,7 @@ config:
         user: *config-grafana-username
         password: *config-grafana-password
   digitalTwin:
+    hostname: &config-digitalTwin-host-name "irs-full-registry.dev.demo.catena-x.net"
     secret:
       name: &config-digitalTwin-secret-name "digital-twin-registry"
     docker:
@@ -112,6 +121,8 @@ config:
       secret:
         name: &config-digitalTwin-database-secret-name digital-twin-registry-database
     idpIssuerUri: "http://edc-daps:4567"
+  provider-backend:
+    hostname: &config-provider-backend-hostname "irs-full-submodel-server.dev.demo.catena-x.net"
 
 ######################
 # DAPS Configuration #
@@ -156,6 +167,21 @@ edc-consumer-database:
 # EDC Consumer Control Plane #
 ##############################
 edc-consumer-control-plane:
+  ingresses:
+    - enabled: true
+      hostname: *config-edc-consumer-controlplane-hostname
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      endpoints:
+        - ids
+        - data
+      className: ""
+      tls:
+        - hosts:
+            - *config-edc-consumer-controlplane-hostname
+          secretName: tls-secret
   edc:
     hostname: edc-consumer-control-plane
     dataPlane:
@@ -169,7 +195,7 @@ edc-consumer-control-plane:
         token: *config-vault-token
         api:
           secret:
-            path: /v1/traceability-irs
+            path: *config-vault-api-secret-path
     oauth:
       client:
         id: *config-oauth-client-id
@@ -211,6 +237,20 @@ edc-consumer-control-plane:
 # EDC Consumer DATA Plane #
 ###########################
 edc-consumer-data-plane:
+  ingresses:
+    - enabled: true
+      hostname: *config-edc-consumer-dataplane-hostname
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      endpoints:
+        - public
+      className: "nginx"
+      tls:
+        - hosts:
+            - *config-edc-consumer-dataplane-hostname
+          secretName: tls-secret
   edc:
     dataplane:
       token:
@@ -239,7 +279,7 @@ edc-consumer-data-plane:
         token: *config-vault-token
         api:
           secret:
-            path: /v1/traceability-irs
+            path: *config-vault-api-secret-path
 
 #########################
 # EDC PROVIDER Database #
@@ -269,6 +309,21 @@ edc-provider-database:
 # EDC Provider Control Plane #
 ##############################
 edc-provider-control-plane:
+  ingresses:
+    - enabled: true
+      hostname: *config-edc-provider-controlplane-hostname
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      endpoints:
+        - ids
+        - data
+      className: ""
+      tls:
+        - hosts:
+            - *config-edc-provider-controlplane-hostname
+          secretName: tls-secret
   edc:
     hostname: edc-provider-control-plane
     dataPlane:
@@ -282,7 +337,7 @@ edc-provider-control-plane:
         token: *config-vault-token
         api:
           secret:
-            path: /v1/traceability-irs
+            path: *config-vault-api-secret-path
     oauth:
       client:
         id: *config-oauth-client-id
@@ -323,6 +378,20 @@ edc-provider-control-plane:
 # EDC Provider DATA Plane #
 ###########################
 edc-provider-data-plane:
+  ingresses:
+    - enabled: true
+      hostname: *config-edc-provider-dataplane-hostname
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      endpoints:
+        - public
+      className: "nginx"
+      tls:
+        - hosts:
+            - *config-edc-provider-dataplane-hostname
+          secretName: tls-secret
   edc:
     dataplane:
       token:
@@ -351,7 +420,7 @@ edc-provider-data-plane:
         token: *config-vault-token
         api:
           secret:
-            path: /v1/traceability-irs
+            path: *config-vault-api-secret-path
 
 ################
 # Semantic Hub #
@@ -393,6 +462,22 @@ digital-twin-registry:
     idpIssuerUri: *config-keycloak-token-url
     imagePullSecrets:
       - name: *config-digitalTwin-docker-secret-name
+  ingress:
+    hosts:
+      - host: *config-digitalTwin-host-name
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    enabled: true
+    tls:
+      - hosts:
+          - *config-digitalTwin-host-name
+        # Default secret for certificate creation already provided to your namespace
+        secretName: tls-secret
+    className: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/enable-cors: "true"
+      nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
 
 ############
 # KeyCloak #
@@ -410,15 +495,30 @@ keycloak:
 # IRS Configuration #
 #####################
 irs:
-  enabled: false
+  irsUrl: *config-irs-hostname
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    hosts:
+      - host: *config-irs-hostname
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - *config-irs-hostname
+        secretName: tls-secret
+
   minioUser: *config-minio-username
   minioPassword: *config-minio-password
   minioUrl: "http://{{ .Release.Name }}-minio:9000"
 
   config:
     override: false
-
-  irsUrl: http://{{ .Chart.Name }}:{{ .Values.service.port }}
 
   blobstore:
     endpoint: "http://irs-minio:9000"
@@ -565,3 +665,18 @@ irs-frontend:
     client:
       id: *config-keycloak-client-id
       secret: *config-keycloak-client-secret
+
+# Provider Backend Service
+irs-provider-backend:
+  ingress:
+    enabled: true
+    className: "nginx"
+    hosts:
+      - host: *config-provider-backend-hostname
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - *config-provider-backend-hostname
+        secretName: tls-secret

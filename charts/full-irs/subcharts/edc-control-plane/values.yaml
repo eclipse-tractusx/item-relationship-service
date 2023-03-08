@@ -74,3 +74,15 @@ edc:
     metrics:
       port: "9090"
       path: /metrics
+
+ingresses:
+  - enabled: false
+    hostname: ""
+    annotations: {}
+    endpoints:
+      - ids
+    className: ""
+    tls: false
+    certManager:
+      issuer: ""
+      clusterIssuer: ""

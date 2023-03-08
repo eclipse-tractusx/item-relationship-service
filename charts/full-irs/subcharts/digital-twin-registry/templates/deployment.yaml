@@ -27,7 +27,7 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.registry.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if not .Values.authentication }}
           args: ["--spring.profiles.active=local"]
           {{- end }}
@@ -59,6 +59,6 @@ spec:
             - secretRef:
                 name: {{ .Values.registry.secret.name }}
           resources:
-          {{ .Values.registry.resources | toYaml | indent 12 }}
+          {{ .Values.resources | toYaml | indent 12 }}
       imagePullSecrets:
       {{ .Values.registry.imagePullSecrets | toYaml | indent 8 }}

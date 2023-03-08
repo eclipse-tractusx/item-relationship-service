@@ -53,3 +53,12 @@ registry:
   imagePullSecrets:
     - name: dockerpullsecret
   ## If 'authentication' is set to false, no OAuth authentication is enforced
+
+  ingress:
+    enabled: false
+    hosts:
+      - host: ""
+        paths: {}
+    tls: false
+    className: ""
+    annotations: {}
