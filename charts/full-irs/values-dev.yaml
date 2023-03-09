@@ -76,10 +76,11 @@ config:
         consumer: &config-oauth-client-id-consumer "edc-consumer"
     provider:
       jwks:
-        url: &config-oauth-provider-jwts-url "http://edc-daps:4567/jwks.json"
+        url: &config-oauth-jwts-url "http://edc-daps:4567/jwks.json"
     token:
       url: &config-oauth-token-url "http://edc-daps:4567/token"
   keycloak:
+    hostname: &config-keycloak-hostname "irs-full-keycloak.dev.demo.catena-x.net"
     grand:
       type: &config-keycloak-grand-type client_credentials
     scope: &config-keycloak-scope catena-scope
@@ -207,7 +208,7 @@ edc-consumer-control-plane:
         id: *config-oauth-client-id-consumer
       provider:
         jwks:
-          url: *config-oauth-provider-jwts-url
+          url: *config-oauth-jwts-url
       private:
         key:
           alias: *config-vault-secret-daps-key-name
@@ -276,7 +277,7 @@ edc-consumer-data-plane:
           alias: *config-vault-secret-daps-cert-name
       provider:
         jwks:
-          url: *config-oauth-provider-jwts-url
+          url: *config-oauth-jwts-url
       token:
         url: *config-oauth-token-url
     vault:
@@ -349,7 +350,7 @@ edc-provider-control-plane:
         id: *config-oauth-client-id-provider
       provider:
         jwks:
-          url: *config-oauth-provider-jwts-url
+          url: *config-oauth-jwts-url
       private:
         key:
           alias: *config-vault-secret-daps-key-name
@@ -417,7 +418,7 @@ edc-provider-data-plane:
           alias: *config-vault-secret-daps-cert-name
       provider:
         jwks:
-          url: *config-oauth-provider-jwts-url
+          url: *config-oauth-jwts-url
       token:
         url: *config-oauth-token-url
     vault:
@@ -496,6 +497,22 @@ keycloak:
   grand:
     type: *config-keycloak-grand-type
   scope: *config-keycloak-scope
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    hosts:
+      - host: *config-keycloak-hostname
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - *config-keycloak-hostname
+        secretName: tls-secret
 
 #####################
 # IRS Configuration #
