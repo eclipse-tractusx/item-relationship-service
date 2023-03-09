@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const PATH_TO_MD_FILES = "../../target/generated-docs/";
+const args = process.argv.slice(2);
 
 fs.readdirSync(PATH_TO_MD_FILES).forEach((file) => {
   if (path.extname(file) === ".md") {
@@ -10,28 +11,12 @@ fs.readdirSync(PATH_TO_MD_FILES).forEach((file) => {
       const lines = data.split("\n");
       const output = [];
 
-      let isYaml = false;
-
       for (let i = 0; i < lines.length; i++) {
-        if (lines[i].startsWith("```yaml")) {
-          isYaml = true;
-        } else if (lines[i].startsWith("```")) {
-          isYaml = false;
-        }
-
         // when line contains https without marks around we need to add <> before and after (MD034 - Bare URL used)
-        if (!isYaml && lines[i].includes(" https://") || lines[i].startsWith("https://")) {
-          const firstIndex = lines[i].indexOf("https://");
-          const lastIndex = lines[i].indexOf(" ", firstIndex + 1);
-          const fixFirst = lines[i].replace("https://", "<https://");
-          let afterReplacement;
-          if (lastIndex === -1) {
-            afterReplacement = fixFirst + ">";
-          } else {
-            afterReplacement = fixFirst.slice(0, lastIndex + 1) + ">" + fixFirst.slice(lastIndex + 1);
-          }
+        if (lines[i].includes("](./")) {
+          const fixedLine = lines[i].replace("](./", "](" + args[0] + "/");
 
-          output.push(afterReplacement);
+          output.push(fixedLine);
         } else {
           output.push(lines[i]);
         }
@@ -45,7 +30,7 @@ fs.readdirSync(PATH_TO_MD_FILES).forEach((file) => {
         (err) => {
           if (err) throw err;
           console.log(
-            `successfully fix https links ${file}`
+            `successfully replaced relative links ${file}`
           );
         }
       );

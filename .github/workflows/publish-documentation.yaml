@@ -85,9 +85,11 @@ jobs:
       - name: MD files post-processing
         working-directory: docs/src/post-processing/
         run: |
+          export REPO=${GITHUB_REPOSITORY#*/}
           node fix_headers.js
           node fix_no_emphasis.js
           node fix_https_links.js
+          node fix_relative_links.js https://${{ vars.GITHUB_REPOSITORY_OWNER }}.github.io/$REPO/docs
 
       - name: MD linting
         run: |
