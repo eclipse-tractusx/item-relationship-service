@@ -123,4 +123,11 @@
         <gav regex="true">jakarta\.activation:jakarta.activation-api.*</gav>
         <vulnerabilityName>CVE-2008-7271</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        False positive - Jackson is not using java-json or hutools as dependencies which are affected.
+        ]]></notes>
+        <gav regex="true">com\.fasterxml\.jackson\.core:jackson-core.*</gav>
+        <vulnerabilityName>CVE-2022-45688</vulnerabilityName>
+    </suppress>
 </suppressions>
