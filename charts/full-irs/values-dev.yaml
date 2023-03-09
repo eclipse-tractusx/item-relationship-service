@@ -176,7 +176,7 @@ edc-consumer-control-plane:
         nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       endpoints:
         - ids
-        - data
+        - management
       className: ""
       tls:
         - hosts:
@@ -318,7 +318,7 @@ edc-provider-control-plane:
         nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       endpoints:
         - ids
-        - data
+        - management
       className: ""
       tls:
         - hosts:
