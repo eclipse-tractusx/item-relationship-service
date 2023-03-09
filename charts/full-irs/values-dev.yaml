@@ -91,8 +91,8 @@ config:
     cert:
       url: &config-keycloak-certs-url "http://keycloak:8080/.well-known/openid-configuration/jwks"
   irs:
-    hostname: &config-irs-hostname "https://irs-full.dev.demo.catena-x.net"
-    existingSecret: &config-irs-existingSecret false
+    hostname: &config-irs-hostname "irs-full.dev.demo.catena-x.net"
+    irsUrl: &config-irs-url "https://irs-full.dev.demo.catena-x.net"
     secret:
       name: &config-irs-secret-name "irs-backend-service"
       minio:
@@ -495,7 +495,7 @@ keycloak:
 # IRS Configuration #
 #####################
 irs:
-  irsUrl: *config-irs-hostname
+  irsUrl: *config-irs-url
   ingress:
     enabled: true
     className: "nginx"

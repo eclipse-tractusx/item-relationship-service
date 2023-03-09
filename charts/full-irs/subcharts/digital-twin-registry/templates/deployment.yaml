@@ -59,6 +59,6 @@ spec:
             - secretRef:
                 name: {{ .Values.registry.secret.name }}
           resources:
-          {{ .Values.resources | toYaml | indent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
       imagePullSecrets:
       {{ .Values.registry.imagePullSecrets | toYaml | indent 8 }}

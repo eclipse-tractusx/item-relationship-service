@@ -1,10 +1,12 @@
+{{- if .Values.ingresses }}
 {{- $fullName := default .Chart.Name .Values.nameOverride }}
+  {{- $labels := include "edc-dataplane.labels" . | nindent 4 }}
   {{- $gitVersion := .Capabilities.KubeVersion.GitVersion }}
   {{- $edcEndpoints := .Values.edc.endpoints }}
   {{- $namespace := .Release.Namespace }}
   {{- range .Values.ingresses }}
   {{- if and .enabled .endpoints }}
-  {{- $ingressName := printf "%s-%s" $fullName .hostname }}
+  {{- $ingressName := printf "%s-ingr" $fullName }}
 ---
   {{- if semverCompare ">=1.19-0" $gitVersion }}
 apiVersion: networking.k8s.io/v1
@@ -18,7 +20,7 @@ metadata:
   name: {{ $ingressName }}
   namespace: {{ $namespace | default "default" | quote }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- $labels | nindent 2 }}
   annotations:
     {{- if and .className (not (semverCompare ">=1.18-0" $gitVersion)) }}
       {{- if not (hasKey .annotations "kubernetes.io/ingress.class") }}
@@ -75,3 +77,4 @@ spec:
   {{- end }}
 {{- end }}{{- /* end: if .enabled */}}
 {{- end }}{{- /* end: range .Values.ingresses */}}
+{{- end }}
