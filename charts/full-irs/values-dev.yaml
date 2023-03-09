@@ -96,6 +96,7 @@ config:
   irs:
     hostname: &config-irs-hostname "irs-full.dev.demo.catena-x.net"
     irsUrl: &config-irs-url "https://irs-full.dev.demo.catena-x.net"
+    edcCallback: &config-irs-edc-callback http://full-irs:8181/internal/endpoint-data-reference
     secret:
       name: &config-irs-secret-name "irs-backend-service"
       minio:
@@ -224,7 +225,7 @@ edc-consumer-control-plane:
         algorithm: "NONE"
     receiver:
       http:
-        endpoint: http://irs:8181/internal/endpoint-data-reference
+        endpoint: *config-irs-edc-callback
     postgresql:
       host: *config-edc-consumer-database-host
       database: *config-edc-consumer-database-name
@@ -594,7 +595,7 @@ irs:
     mode: standalone
     persistence:
       enabled: true
-      size: 10Mi
+      size: 100Mi
     resources:
       requests:
         memory: 4Gi
