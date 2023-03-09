@@ -33,11 +33,6 @@ spec:
               cp /opt/config/clients.yml /etc/opt/config/clients.yml
               cp /opt/config/omejdn.yml /etc/opt/config/omejdn.yml
               cp /opt/config/plugins.yml /etc/opt/config/plugins.yml
-
-              cp /opt/keys/edc.cert /etc/opt/keys/edc.cert
-              cp /opt/keys/edc.key /etc/opt/keys/edc.key
-
-              cp /opt/keys/clients/edc.cert /etc/opt/keys/clients/edc.cert
               
               cp /opt/keys/omejdn/omejdn.key /etc/opt/keys/omejdn/omejdn.key
           volumeMounts:
@@ -64,18 +59,6 @@ spec:
             
             - name: keys-dir
               mountPath: /etc/opt/keys
-            - name: keys-edc-key
-              mountPath: /opt/keys/edc.key
-              subPath: edc.key
-            - name: keys-edc-cert
-              mountPath: /opt/keys/edc.cert
-              subPath: edc.cert
-
-            - name: keys-clients-dir
-              mountPath: /etc/opt/keys/clients
-            - name: keys-clients-edc-cert
-              mountPath: /opt/keys/clients/edc.cert
-              subPath: edc.cert
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -124,7 +107,13 @@ spec:
         - name: keys-dir
           emptyDir: {}
         - name: keys-clients-dir
-          emptyDir: {}
+          configMap:
+            name: {{ .Chart.Name }}
+            items:
+              - key: edc-provider.cert
+                path: edc-provider.cert
+              - key: edc-consumer.cert
+                path: edc-consumer.cert
         - name: keys-omejdn-dir
           emptyDir: {}
         - name: config-scope-mapping
@@ -157,21 +146,3 @@ spec:
             items:
               - key: omejdn.key
                 path: omejdn.key
-        - name: keys-edc-key
-          configMap:
-            name: {{ .Chart.Name }}
-            items:
-              - key: edc.key
-                path: edc.key
-        - name: keys-edc-cert
-          configMap:
-            name: {{ .Chart.Name }}
-            items:
-              - key: edc.cert
-                path: edc.cert
-        - name: keys-clients-edc-cert
-          configMap:
-            name: {{ .Chart.Name }}
-            items:
-              - key: edc.cert
-                path: edc.cert
