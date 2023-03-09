@@ -567,7 +567,7 @@ irs:
       urnprefix: /urn
 
   minio:
-    enabled: false
+    enabled: true
     mode: standalone
     persistence:
       enabled: true
