@@ -43,7 +43,7 @@ config:
     consumer:
       hostname:
         controlplane: &config-edc-consumer-controlplane-hostname "irs-full-consumer-controlplane.dev.demo.catena-x.net"
-        dataplane: &config-edc-consumer-dataplane-hostname "irs-full-consumer-controlplane.dev.demo.catena-x.net"
+        dataplane: &config-edc-consumer-dataplane-hostname "irs-full-consumer-dataplane.dev.demo.catena-x.net"
       database:
         host: &config-edc-consumer-database-host "edc-consumer-database"
         name: &config-edc-consumer-database-name "edc-consumer"
@@ -56,7 +56,7 @@ config:
     provider:
       hostname:
         controlplane: &config-edc-provider-controlplane-hostname "irs-full-provider-controlplane.dev.demo.catena-x.net"
-        dataplane: &config-edc-provider-dataplane-hostname "irs-full-provider-controlplane.dev.demo.catena-x.net"
+        dataplane: &config-edc-provider-dataplane-hostname "irs-full-provider-dataplane.dev.demo.catena-x.net"
       database:
         host: &config-edc-provider-database-host "edc-provider-database"
         name: &config-edc-provider-database-name "edc-provider"
@@ -462,22 +462,22 @@ digital-twin-registry:
     idpIssuerUri: *config-keycloak-token-url
     imagePullSecrets:
       - name: *config-digitalTwin-docker-secret-name
-  ingress:
-    hosts:
-      - host: *config-digitalTwin-host-name
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    enabled: true
-    tls:
-      - hosts:
-          - *config-digitalTwin-host-name
-        # Default secret for certificate creation already provided to your namespace
-        secretName: tls-secret
-    className: nginx
-    annotations:
-      nginx.ingress.kubernetes.io/enable-cors: "true"
-      nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    ingress:
+      enabled: true
+      hosts:
+        - host: *config-digitalTwin-host-name
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - hosts:
+            - *config-digitalTwin-host-name
+          # Default secret for certificate creation already provided to your namespace
+          secretName: tls-secret
+      className: nginx
+      annotations:
+        nginx.ingress.kubernetes.io/enable-cors: "true"
+        nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
 
 ############
 # KeyCloak #
