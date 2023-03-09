@@ -37,10 +37,16 @@ public final class SecurityHelperService {
     private static final String UNKNOWN = "Unknown";
 
     public String getClientIdClaim() {
-        return getClaimOrUnknown("clientId", getAuthenticationFromSecurityContext());
+        return getClaimOrUnknown("clientId");
     }
 
-    private String getClaimOrUnknown(final String claimName, final Authentication authentication) {
+    public String getBpnClaim() {
+        return getClaimOrUnknown("bpn");
+    }
+
+    private String getClaimOrUnknown(final String claimName) {
+        final Authentication authentication = getAuthenticationFromSecurityContext();
+
         if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
             final Jwt token = jwtAuthenticationToken.getToken();
 

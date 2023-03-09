@@ -23,6 +23,7 @@
 package org.eclipse.tractusx.irs.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.springframework.security.oauth2.jwt.JwtClaimNames.SUB;
 
 import java.time.Instant;
@@ -35,59 +36,61 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
-class SecurityHelperServiceTest {
-
-    private final String CLIENT_ID = "sa-cl6-cx-2";
-    private final String BPN = "BPNL00000003CRHK";
-
-    final SecurityHelperService securityHelperService = new SecurityHelperService();
+class AuthorizationServiceTest {
 
     @Test
-    void shouldReturnUnknownWhenNoAuthentication() {
+    void shouldReturnTrueWhenTokenBpnIsEqualToAllowedBpn() {
         // given
-        SecurityContextHolder.setContext(Mockito.mock(SecurityContext.class));
+        final String BPN = "BPNL00000003CRHK";
+        final Map<String, Object> claims = Map.of(SUB, "sub", "clientId", "clientId", "bpn", BPN);
+        thereIsJwtAuthenticationWithBpn(claims);
+        final AuthorizationService authorizationService = new AuthorizationService(BPN);
 
         // when
-        final String clientIdClaim = securityHelperService.getClientIdClaim();
+        final Boolean isBpnAllowed = authorizationService.verifyBpn();
 
         // then
-        assertThat(clientIdClaim).isEqualTo("Unknown");
+        assertThat(isBpnAllowed).isEqualTo(Boolean.TRUE);
     }
 
     @Test
-    void shouldReturnClientIdClaimWhenJwtAuthentication() {
+    void shouldReturnFalseWhenTokenBpnIsDifferentThanAllowedBpn() {
         // given
-        thereIsJwtAuthentication();
+        final String claimBPN = "BPNL00000003CRHK";
+        final String configurationBPN = "BPNL00000003CML1";
+        final Map<String, Object> claims = Map.of(SUB, "sub", "clientId", "clientId", "bpn", claimBPN);
+        thereIsJwtAuthenticationWithBpn(claims);
+        final AuthorizationService authorizationService = new AuthorizationService(configurationBPN);
 
         // when
-        final String clientIdClaim = securityHelperService.getClientIdClaim();
+        final Boolean isBpnAllowed = authorizationService.verifyBpn();
 
         // then
-        assertThat(clientIdClaim).isEqualTo(CLIENT_ID);
+        assertThat(isBpnAllowed).isEqualTo(Boolean.FALSE);
     }
 
     @Test
-    void shouldReturnBpnClaimWhenJwtAuthentication() {
+    void shouldReturnFalseWhenNotAllowedBpnConfigured() {
         // given
-        thereIsJwtAuthentication();
+        final String emptyConfigurationBPN = "";
+        final AuthorizationService authorizationService = new AuthorizationService(emptyConfigurationBPN);
 
         // when
-        final String bpnClaim = securityHelperService.getBpnClaim();
+        final Boolean isBpnAllowed = authorizationService.verifyBpn();
 
         // then
-        assertThat(bpnClaim).isEqualTo(BPN);
+        assertThat(isBpnAllowed).isEqualTo(Boolean.FALSE);
     }
 
-    private void thereIsJwtAuthentication() {
-        final JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwt());
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+    private void thereIsJwtAuthenticationWithBpn(final Map<String, Object> claims) {
+        final JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwt(claims));
+        SecurityContext securityContext = mock(SecurityContext.class);
         Mockito.when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
         SecurityContextHolder.setContext(securityContext);
     }
 
-    Jwt jwt() {
-        return new Jwt("token", Instant.now(), Instant.now().plusSeconds(30), Map.of("alg", "none"),
-                Map.of(SUB, CLIENT_ID, "clientId", CLIENT_ID, "bpn", BPN));
+    Jwt jwt(final Map<String, Object> claims) {
+        return new Jwt("token", Instant.now(), Instant.now().plusSeconds(30), Map.of("alg", "none"), claims);
     }
 
 }
