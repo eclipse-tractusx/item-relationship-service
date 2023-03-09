@@ -1,3 +1,4 @@
+{{- $scope := default "" .Values.scope }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -18,13 +19,14 @@ data:
   
   clients.yml: |-
     ---
-    - client_id: {{ .Values.client.id }}
-      client_name: {{ .Values.client.name }}
-      grant_types: 
+    {{- range  $.Values.clients }}
+    - client_id: {{ .id }}
+      client_name: {{ .name }}
+      grant_types:
       - client_credentials
       token_endpoint_auth_method: private_key_jwt
-      scope: 
-      - {{ .Values.scope }}
+      scope:
+      - {{ $scope }}
       attributes:
       - key: idsc
         value: IDS_CONNECTOR_ATTRIBUTES_ALL
@@ -35,7 +37,8 @@ data:
       - key: securityProfile
         value: idsc:BASE_SECURITY_PROFILE
       - key: referringConnector
-        value: http://edc-provider-control-plane:8080/BPNL00000003AWSS/
+        value: {{ .url }}
+    {{- end }}
 
   omejdn.yml:  |-
     ---

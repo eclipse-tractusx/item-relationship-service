@@ -35,3 +35,14 @@ autoscaling:
   maxReplicas: 2
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
+
+clients:
+  - id: ""
+    name: ""
+    url: ""
+
+scope: ""
+issuer: ""
+audience:
+  default: ""
+  accept: ""
