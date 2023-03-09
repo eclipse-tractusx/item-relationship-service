@@ -33,20 +33,20 @@ import org.springframework.stereotype.Component;
 public class AuthorizationService {
 
     private final SecurityHelperService securityHelperService;
-    private final String configurationAllowedBpn;
+    private final String apiAllowedBpn;
 
-    public AuthorizationService(@Value("${apiAllowedBpn:}") final String configurationAllowedBpn) {
+    public AuthorizationService(@Value("${apiAllowedBpn:}") final String apiAllowedBpn) {
         this.securityHelperService = new SecurityHelperService();
-        this.configurationAllowedBpn = configurationAllowedBpn;
+        this.apiAllowedBpn = apiAllowedBpn;
     }
 
     public boolean verifyBpn() {
-        if (StringUtils.isBlank(configurationAllowedBpn)) {
+        if (StringUtils.isBlank(apiAllowedBpn)) {
             return false;
         }
 
         final String bpnFromToken = securityHelperService.getBpnClaim();
-        return configurationAllowedBpn.equals(bpnFromToken);
+        return apiAllowedBpn.equals(bpnFromToken);
     }
 
 }

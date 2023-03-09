@@ -43,7 +43,7 @@ class AuthorizationServiceTest {
         // given
         final String BPN = "BPNL00000003CRHK";
         final Map<String, Object> claims = Map.of(SUB, "sub", "clientId", "clientId", "bpn", BPN);
-        thereIsJwtAuthenticationWithBpn(claims);
+        thereIsJwtAuthenticationWithClaims(claims);
         final AuthorizationService authorizationService = new AuthorizationService(BPN);
 
         // when
@@ -59,7 +59,7 @@ class AuthorizationServiceTest {
         final String claimBPN = "BPNL00000003CRHK";
         final String configurationBPN = "BPNL00000003CML1";
         final Map<String, Object> claims = Map.of(SUB, "sub", "clientId", "clientId", "bpn", claimBPN);
-        thereIsJwtAuthenticationWithBpn(claims);
+        thereIsJwtAuthenticationWithClaims(claims);
         final AuthorizationService authorizationService = new AuthorizationService(configurationBPN);
 
         // when
@@ -82,7 +82,7 @@ class AuthorizationServiceTest {
         assertThat(isBpnAllowed).isEqualTo(Boolean.FALSE);
     }
 
-    private void thereIsJwtAuthenticationWithBpn(final Map<String, Object> claims) {
+    private void thereIsJwtAuthenticationWithClaims(final Map<String, Object> claims) {
         final JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwt(claims));
         SecurityContext securityContext = mock(SecurityContext.class);
         Mockito.when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
