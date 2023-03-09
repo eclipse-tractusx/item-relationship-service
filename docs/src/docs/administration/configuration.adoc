@@ -16,7 +16,9 @@ include::irs-spring-config.adoc[leveloffset=+1]
 ----
 include::../../../../charts/irs/values.yaml[lines=83..248]
 ----
+
 <1> Use this to enable or disable the monitoring components
+
 
 === Values explained
 ==== <irs-url>
