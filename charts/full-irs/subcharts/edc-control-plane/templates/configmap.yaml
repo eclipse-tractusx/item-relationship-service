@@ -65,8 +65,6 @@ data:
     edc.transfer.proxy.token.verifier.publickey.alias={{ .Values.edc.transfer.proxy.token.verifier.publickey.alias }}
 
     edc.api.auth.key={{ .Values.edc.api.auth.key }}
-    edc.api.control.auth.apikey.key=X-Api-Key
-    edc.api.control.auth.apikey.value=password
 
     edc.receiver.http.endpoint={{ .Values.edc.receiver.http.endpoint }}
     
