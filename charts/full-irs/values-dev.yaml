@@ -681,9 +681,9 @@ irs-frontend:
       manual:
         url: https://github.com/catenax-ng/product-item-relationship-service-frontend/blob/main/docs/userManual.md
     url:
-      local: http://localhost:8080
+      local: *config-irs-url
   keycloak:
-    url: http://localhost:4011/connect/token
+    url: *config-keycloak-token-url
     grand:
       type: *config-keycloak-grand-type
     scope: *config-keycloak-scope
