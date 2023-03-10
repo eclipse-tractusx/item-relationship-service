@@ -70,9 +70,7 @@ error: timed out waiting for the condition on deployments/irs-frontend
 
 You can see the status of the deployment in Rancher Desktop Dashboard
 
-make sure you select the namespace irs
-
-![expected status](./../irs/minikube-dashboard-overview.png)
+![expected status](minikube-dashboard-overview.png)
 
 #### 2. Forwarding Ports
 
@@ -107,20 +105,21 @@ If you like, you can remove the test data with:
 
 open [http://localhost:3000/](http://localhost:3000/) and you should see the Item Relationship Service login screen:
 
-![irs-login](./../irs/irs-login.png)
+![irs-login](irs-login.png)
 
 ## Testing the Item Relationship Service
 
-You can use several different approaches to interact with the IRS. One is through the **IRS API** and another way is through the **IRS API Frontend**.
+You can use several approaches to interact with the IRS. One is through the **IRS API** and another way is through the **IRS API Frontend**.
 
 ### Valid Global Asset Ids for Testing
 
 use these globalAssetId's for testing
-|globalAssetId|type|
-|---|---|
-|urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6|vehicle combustion engine|
-|urn:uuid:61a22b1c-5725-41fb-8e1e-dccaaba83838|vehicle combustion engine|
-|urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454|vehicle combustion engine|
+
+| globalAssetId                                 | type                      |
+|-----------------------------------------------|---------------------------|
+| urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6 | vehicle combustion engine |
+| urn:uuid:61a22b1c-5725-41fb-8e1e-dccaaba83838 | vehicle combustion engine |
+| urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454 | vehicle combustion engine |
 
 ### Valid test requests for testing
 
