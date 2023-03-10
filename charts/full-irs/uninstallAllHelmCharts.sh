@@ -1,6 +1,6 @@
 #!/bin/bash
 
-kubectl config set-context minikube --namespace=irs
+kubectl config set-context rancher-desktop --namespace=irs
 helm uninstall irs-frontend
 helm uninstall irs-dependencies
 helm uninstall irs

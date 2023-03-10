@@ -6,20 +6,7 @@
 
 1. [Docker](https://docs.docker.com/get-docker/) is installed and docker deamon is running with minimum 8GB ram storage
 2. [helm](https://helm.sh/docs/intro/install/) is installed
-
-3. [Minikube](https://kubernetes.io/de/docs/tasks/tools/install-minikube/#minikube-installieren) is installed and running
-   Example:
-
-   ```bash
-   minikube start --memory 8192 --cpus 2 
-   ```
-
-   _Optional_: enable minikube metrics
-
-   ```bash
-   minikube addons enable metrics-server
-   ```
-
+3. [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/) is installed and running
 4. [kubectl](https://kubernetes.io/docs/tasks/tools/) is installed
 5. [Python3](https://www.python.org/downloads/) is installed
 6. [Ruby](https://www.ruby-lang.org/de/documentation/installation/) is installed
@@ -81,11 +68,7 @@ error: timed out waiting for the condition on deployments/irs-frontend
 
 ##### 1.1 Get the Status of the deployment
 
-The minikube dashboard will give you feedback on how the status of the deployment currently is:
-
-```bash
-  minikube dashboard 
-```
+You can see the status of the deployment in Rancher Desktop Dashboard
 
 make sure you select the namespace irs
 
@@ -273,7 +256,7 @@ helm uninstall irs --namespace irs
 Change default namespace
 
 ``` bash
-kubectl config set-context minikube --namespace=irs
+kubectl config set-context rancher-desktop --namespace=irs
 ```
 
 ### VAULT

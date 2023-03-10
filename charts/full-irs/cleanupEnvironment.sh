@@ -39,7 +39,7 @@ then
         minikube addons enable metrics-server
 
         echo -e "${BLUE}Change kubernetes namespace to irs ${NC}"
-        kubectl config set-context minikube --namespace=irs
+        kubectl config set-context rancher-desktop --namespace=irs
 
     fi
 
@@ -50,5 +50,5 @@ else
     minikube addons enable metrics-server
 
     echo -e "${BLUE}Change kubernetes namespace to irs ${NC}"
-    kubectl config set-context minikube --namespace=irs
+    kubectl config set-context rancher-desktop --namespace=irs
 fi
