@@ -77,12 +77,3 @@ edc:
 
 ingresses:
   - enabled: false
-    hostname: ""
-    annotations: {}
-    endpoints:
-      - ids
-    className: ""
-    tls: false
-    certManager:
-      issuer: ""
-      clusterIssuer: ""

@@ -70,13 +70,4 @@ edc:
       path: /metrics
 
 ingresses:
-  - enabled: true
-    hostname:
-    annotations: {}
-    endpoints:
-      - ids
-    className: ""
-    tls: false
-    certManager:
-      issuer: ""
-      clusterIssuer: ""
+  - enabled: false

@@ -56,9 +56,3 @@ registry:
 
   ingress:
     enabled: false
-    hosts:
-      - host: ""
-        paths: {}
-    tls: false
-    className: ""
-    annotations: {}
