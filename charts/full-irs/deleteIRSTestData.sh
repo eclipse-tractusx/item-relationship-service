@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/bash
 ##################################################################################
 echo "Deleting testdata"
 python ../../testdata-transform/reset-env.py \
