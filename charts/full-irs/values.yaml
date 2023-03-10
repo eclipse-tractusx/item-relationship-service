@@ -35,6 +35,7 @@ config:
   vault:
     url: &config-vault-url http://edc-vault:8200
     token: &config-vault-token "root"
+    secret.path: &config-vault-api-secret-path "/v1/secret"
     secret:
       name: &config-vault-secret-name edc-vault
       dataEncryptionName: &config-vault-secret-data-encryption-name "data-encryption"
@@ -45,6 +46,8 @@ config:
       dapsKeyValue: &config-vault-secret-daps-key-value "FILL ME UP"
   edc:
     consumer:
+      hostname:
+        controlplane: &config-edc-consumer-controlplane-hostname "http://edc-consumer-control-plane:8080/BPNL00000003AWSS/"
       database:
         host: &config-edc-consumer-database-host "edc-consumer-database"
         name: &config-edc-consumer-database-name "edc-consumer"
@@ -55,6 +58,8 @@ config:
         secret:
           name: &config-edc-consumer-database-secret-name edc-consumer-database
     provider:
+      hostname:
+        controlplane: &config-edc-provider-controlplane-hostname "http://edc-provider-control-plane:8080/BPNL00000003AWSS/"
       database:
         host: &config-edc-provider-database-host "edc-provider-database"
         name: &config-edc-provider-database-name "edc-provider"
@@ -69,10 +74,12 @@ config:
         key: &config-edc-auth-api-key "password"
   oauth:
     client:
-      id: &config-oauth-client-id "edc"
+      id:
+        provider: &config-oauth-client-id-provider "edc-provider"
+        consumer: &config-oauth-client-id-consumer "edc-consumer"
     provider:
       jwks:
-        url: &config-oauth-provider-jwts-url "http://edc-daps:4567/jwks.json"
+        url: &config-oauth-jwts-url "http://edc-daps:4567/jwks.json"
     token:
       url: &config-oauth-token-url "http://edc-daps:4567/token"
   keycloak:
@@ -223,9 +230,13 @@ edc-vault:
 # DAPS Configuration #
 ######################
 edc-daps:
-  client:
-    id: edc
-    name: edc
+  clients:
+    - id: *config-oauth-client-id-provider
+      name: *config-oauth-client-id-provider
+      url: *config-edc-provider-controlplane-hostname
+    - id: *config-oauth-client-id-consumer
+      name: *config-oauth-client-id-consumer
+      url: *config-edc-consumer-controlplane-hostname
   scope: idsc:IDS_CONNECTOR_ATTRIBUTES_ALL
   issuer: http://edc-daps:4567
   audience:
@@ -275,13 +286,13 @@ edc-consumer-control-plane:
         token: *config-vault-token
         api:
           secret:
-            path: "content"
+            path: *config-vault-api-secret-path
     oauth:
       client:
-        id: *config-oauth-client-id
+        id: *config-oauth-client-id-consumer
       provider:
         jwks:
-          url: *config-oauth-provider-jwts-url
+          url: *config-oauth-jwts-url
       private:
         key:
           alias: *config-vault-secret-daps-key-name
@@ -327,7 +338,7 @@ edc-consumer-data-plane:
         key: *config-edc-auth-api-key
     oauth:
       client:
-        id: *config-oauth-client-id
+        id: *config-oauth-client-id-consumer
       private:
         key:
           alias: *config-vault-secret-daps-key-name
@@ -336,7 +347,7 @@ edc-consumer-data-plane:
           alias: *config-vault-secret-daps-cert-name
       provider:
         jwks:
-          url: *config-oauth-provider-jwts-url
+          url: *config-oauth-jwts-url
       token:
         url: *config-oauth-token-url
     vault:
@@ -345,7 +356,7 @@ edc-consumer-data-plane:
         token: *config-vault-token
         api:
           secret:
-            path: "content"
+            path: *config-vault-api-secret-path
 
 #########################
 # EDC PROVIDER Database #
@@ -388,13 +399,13 @@ edc-provider-control-plane:
         token: *config-vault-token
         api:
           secret:
-            path: "content"
+            path: *config-vault-api-secret-path
     oauth:
       client:
-        id: *config-oauth-client-id
+        id: *config-oauth-client-id-provider
       provider:
         jwks:
-          url: *config-oauth-provider-jwts-url
+          url: *config-oauth-jwts-url
       private:
         key:
           alias: *config-vault-secret-daps-key-name
@@ -439,7 +450,7 @@ edc-provider-data-plane:
         key: *config-edc-auth-api-key
     oauth:
       client:
-        id: *config-oauth-client-id
+        id: *config-oauth-client-id-provider
       private:
         key:
           alias: *config-vault-secret-daps-key-name
@@ -448,7 +459,7 @@ edc-provider-data-plane:
           alias: *config-vault-secret-daps-cert-name
       provider:
         jwks:
-          url: *config-oauth-provider-jwts-url
+          url: *config-oauth-jwts-url
       token:
         url: *config-oauth-token-url
     vault:
@@ -457,7 +468,7 @@ edc-provider-data-plane:
         token: *config-vault-token
         api:
           secret:
-            path: "content"
+            path: *config-vault-api-secret-path
 
 ################
 # Semantic Hub #
@@ -576,7 +587,7 @@ irs:
     mode: standalone
     persistence:
       enabled: true
-      size: 10Mi
+      size: 100Mi
     resources:
       requests:
         memory: 4Gi
