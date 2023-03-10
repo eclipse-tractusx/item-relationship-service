@@ -5,7 +5,7 @@ metadata:
   name: {{ .Chart.Name }}
   namespace: {{ .Release.Namespace | default "default" | quote }}
   labels:
-    {{- include "irs-digital-twin-registry.labels" . | nindent 4 }}
+    {{- include "irs-frontend-service.labels" . | nindent 4 }}
   {{- with .Values.service.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -13,9 +13,9 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.registry.service.port }}
-      targetPort: {{ .Values.registry.containerPort }}
+    - port: {{ .Values.service.port }}
+      targetPort: default
       protocol: TCP
       name: http
   selector:
-    {{- include "irs-digital-twin-registry.selectorLabels" . | nindent 4 }}
+    {{- include "irs-frontend-service.selectorLabels" . | nindent 4 }}

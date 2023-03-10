@@ -127,6 +127,8 @@ config:
     idpIssuerUri: "http://edc-daps:4567"
   provider-backend:
     hostname: &config-provider-backend-hostname "irs-full-submodel-server.dev.demo.catena-x.net"
+  irs-frontend:
+    hostname: &config-irs-frontend-hostname "irs-full-frontend.dev.demo.catena-x.net"
 
 ######################
 # DAPS Configuration #
@@ -690,6 +692,23 @@ irs-frontend:
     client:
       id: *config-keycloak-client-id
       secret: *config-keycloak-client-secret
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    hosts:
+      - host: *config-irs-frontend-hostname
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - *config-irs-frontend-hostname
+        secretName: tls-secret
+
 
 # Provider Backend Service
 irs-provider-backend:
