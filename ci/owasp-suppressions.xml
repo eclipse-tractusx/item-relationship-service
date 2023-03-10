@@ -125,9 +125,10 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
-        False positive - Jackson is not using java-json or hutools as dependencies which are affected.
+        False positive - suppress various improper matches to the CPE that belongs only to pkg:maven/org.json/json
         ]]></notes>
-        <gav regex="true">com\.fasterxml\.jackson\.core:jackson-core.*</gav>
+        <packageUrl regex="true">^(?!pkg:maven/org\.json/json@).+$</packageUrl>
+        <cpe>cpe:/a:json-java_project:json-java</cpe>
         <vulnerabilityName>CVE-2022-45688</vulnerabilityName>
     </suppress>
 </suppressions>
