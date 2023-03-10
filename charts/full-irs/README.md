@@ -70,7 +70,7 @@ error: timed out waiting for the condition on deployments/irs-frontend
 
 You can see the status of the deployment in Rancher Desktop Dashboard
 
-![expected status](minikube-dashboard-overview.png)
+![expected status](img/rancher-desktop-dashboard.png)
 
 #### 2. Forwarding Ports
 
@@ -105,7 +105,7 @@ If you like, you can remove the test data with:
 
 open [http://localhost:3000/](http://localhost:3000/) and you should see the Item Relationship Service login screen:
 
-![irs-login](irs-login.png)
+![irs-login](img/irs-login.png)
 
 ## Testing the Item Relationship Service
 
