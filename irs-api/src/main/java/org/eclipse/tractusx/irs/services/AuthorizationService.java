@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * Verifies if token from JWT claim is equal to configured BPN
+ * BPN contains in JWT Token matches BPN under which IRS product is registered.
  */
 @Component
 public class AuthorizationService {

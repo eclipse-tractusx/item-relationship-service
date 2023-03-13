@@ -82,6 +82,21 @@ class AuthorizationServiceTest {
         assertThat(isBpnAllowed).isEqualTo(Boolean.FALSE);
     }
 
+    @Test
+    void shouldReturnFalseTokenBpnIsMissing() {
+        // given
+        final String configurationBPN = "BPNL00000003CML1";
+        final Map<String, Object> claims = Map.of(SUB, "sub", "clientId", "clientId");
+        thereIsJwtAuthenticationWithClaims(claims);
+        final AuthorizationService authorizationService = new AuthorizationService(configurationBPN);
+
+        // when
+        final Boolean isBpnAllowed = authorizationService.verifyBpn();
+
+        // then
+        assertThat(isBpnAllowed).isEqualTo(Boolean.FALSE);
+    }
+
     private void thereIsJwtAuthenticationWithClaims(final Map<String, Object> claims) {
         final JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwt(claims));
         SecurityContext securityContext = mock(SecurityContext.class);
