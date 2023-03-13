@@ -109,4 +109,18 @@
         <gav regex="true">org\.latencyutils.*</gav>
         <vulnerabilityName>CVE-2021-4277</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Accepted - potentially vulnerable library is not in irs code.
+        ]]></notes>
+        <gav regex="true">jakarta\.activation:jakarta.activation-api.*</gav>
+        <vulnerabilityName>CVE-2010-4647</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Accepted - potentially vulnerable library is not in irs code.
+        ]]></notes>
+        <gav regex="true">jakarta\.activation:jakarta.activation-api.*</gav>
+        <vulnerabilityName>CVE-2008-7271</vulnerabilityName>
+    </suppress>
 </suppressions>

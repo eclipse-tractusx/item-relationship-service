@@ -7,18 +7,18 @@ This section focuses only on the IRS itself, detached from its neighbors. It sho
 include::../../../uml-diagrams/deployment-view/level-1.puml[]
 ....
 
-*Pod*
+== Pod
 
 This is the actual IRS Docker image which runs as a container. The ports are only available internally and can be opened up with the Service.
 
-*Secrets*
+== Secrets
 
 The secret information (e.g. connection credentials) is stored here and provided to the Pod at runtime.
 
-*Service*
+== Service
 
 The service resource opens up selected ports of the Pod so that other applications in the same cluster can access it or to be used by the Ingress.
 
-*Ingress*
+== Ingress
 
 The ingress uses a reverse proxy to provide specified Service ports to the internet under a specified URL. This make the IRS API publicly available.
