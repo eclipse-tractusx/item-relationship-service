@@ -4,14 +4,13 @@
 
 ### Step 1: Prerequisites
 
-1. [Docker](https://docs.docker.com/get-docker/) is installed and docker deamon is running with minimum 8GB ram storage
+1. [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/) is installed and running
 2. [helm](https://helm.sh/docs/intro/install/) is installed
-3. [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/) is installed and running
-4. [kubectl](https://kubernetes.io/docs/tasks/tools/) is installed
-5. [Python3](https://www.python.org/downloads/) is installed
-6. [Ruby](https://www.ruby-lang.org/de/documentation/installation/) is installed
-7. [psql](https://www.compose.com/articles/postgresql-tips-installing-the-postgresql-client/) client is installed
-8. **CURRENTLY STILL NECESSARY:** Add the digital twin secret in the file:
+3. [kubectl](https://kubernetes.io/docs/tasks/tools/) is installed
+4. [Python3](https://www.python.org/downloads/) is installed
+5. [Ruby](https://www.ruby-lang.org/de/documentation/installation/) is installed (optional)
+6. [psql](https://www.compose.com/articles/postgresql-tips-installing-the-postgresql-client/) client is installed (optional)
+7. **CURRENTLY STILL NECESSARY:** Add the digital twin secret in the file:
 
    ```bash
    ./template/digital-twin-registry-docker-secret.yaml
@@ -22,8 +21,6 @@
 ### Step 2: Check out the code
 
 Check out the project [Item Relationship Service](https://github.com/eclipse-tractusx/item-relationship-service) or download a [released version](https://github.com/eclipse-tractusx/item-relationship-service/releases) of the Item Relationship Service
-
-> currently in the [Pull Request](https://github.com/catenax-ng/tx-item-relationship-service/pull/143)
 
 ### Step 3: Installing the services
 
@@ -185,7 +182,26 @@ Test-steps:
 4. **open** visualization to see result of the job
 
 ----
-----
+
+## Deployment to ArgoCD
+**IMPORTANT: This is only for demonstration purposes and must not be used in a production environment.**
+
+It is also possible to deploy the chart to ArgoCD. 
+Take [values-dev.yaml](values-dev.yaml) as reference.  
+The following hostnames have to be changed. They will be used for the ingresses:
+
+- config-edc-consumer-controlplane-hostname
+- config-edc-consumer-dataplane-hostname
+- config-edc-provider-controlplane-hostname
+- config-edc-provider-dataplane-hostname
+- config-keycloak-hostname
+- config-irs-hostname
+- config-irs-url
+- config-digitalTwin-host-name
+- config-provider-backend-hostname
+- config-irs-frontend-hostname
+
+In case your ArgoCD instance already has a HashiCorp Vault, you don't need to deploy your own and can use the existing one instead.
 
 ## Additional Information
 
