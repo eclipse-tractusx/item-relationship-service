@@ -131,4 +131,11 @@
         <cpe>cpe:/a:json-java_project:json-java</cpe>
         <vulnerabilityName>CVE-2022-45688</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Vulnerability method not in IRS codebase (Files.createTempDir from guava).
+        ]]></notes>
+        <gav regex="true">com\.google\.guava:guava.*</gav>
+        <vulnerabilityName>CVE-2020-8908</vulnerabilityName>
+    </suppress>
 </suppressions>
