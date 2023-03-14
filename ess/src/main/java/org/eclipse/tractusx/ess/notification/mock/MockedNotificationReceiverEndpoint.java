@@ -21,9 +21,11 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.notification.mock;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -35,7 +37,11 @@ import org.eclipse.tractusx.edc.exceptions.EdcClientException;
 import org.eclipse.tractusx.edc.model.notification.EdcNotification;
 import org.eclipse.tractusx.edc.model.notification.EdcNotificationHeader;
 import org.eclipse.tractusx.ess.discovery.EdcDiscoveryMockConfig;
+import org.eclipse.tractusx.ess.service.EssService;
 import org.eclipse.tractusx.ess.service.SupplyChainImpacted;
+import org.eclipse.tractusx.irs.component.JobHandle;
+import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,6 +64,8 @@ public class MockedNotificationReceiverEndpoint {
 
     private final EdcDiscoveryMockConfig edcDiscoveryMockConfig;
     private final EdcSubmodelFacade edcSubmodelFacade;
+
+    private final EssService essService;
 
     @PostMapping("/receive")
     public void receiveNotification(final @Valid @RequestBody EdcNotification notification) throws EdcClientException {
@@ -98,6 +106,42 @@ public class MockedNotificationReceiverEndpoint {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Malformed EDC Notification - content without incidentBPN key.");
         }
+    }
+
+    @PostMapping("/receive-recursive")
+    public void receiveRecursiveNotification(final @Valid @RequestBody EdcNotification notification) throws EdcClientException {
+        log.info("receive recursive Notification mock called");
+        final Optional<String> incidentBpn = Optional.ofNullable(notification.getContent().get("incidentBpn"))
+                                                     .map(Object::toString);
+
+        Optional<Object> concernedCatenaXIdsNotification = Optional.ofNullable(notification.getContent().get("concernedCatenaXIds"));
+
+        if (concernedCatenaXIdsNotification.isPresent() && concernedCatenaXIdsNotification.get() instanceof List && incidentBpn.isPresent()) {
+            final String bpn = incidentBpn.get();
+
+            if (edcDiscoveryMockConfig.getMockEdcResult().containsKey(bpn)) {
+                final SupplyChainImpacted supplyChainImpacted = edcDiscoveryMockConfig.getMockEdcResult().get(bpn);
+                if (SupplyChainImpacted.NO.equals(supplyChainImpacted)) {
+                    final List<String> concernedCatenaXIds = getConcernedCatenaXIds(concernedCatenaXIdsNotification);
+
+                    List<UUID> createdJobs = concernedCatenaXIds.stream()
+                                                                .map(catenaXId -> essService.startIrsJob(
+                                                                        RegisterBpnInvestigationJob.builder()
+                                                                                                   .incidentBpns(
+                                                                                                           List.of(bpn))
+                                                                                                   .globalAssetId(
+                                                                                                           catenaXId)
+                                                                                                   .build()))
+                                                                .map(JobHandle::getId)
+                                                                .toList();
+                }
+            }
+        }
+    }
+
+    @NotNull
+    private static List<String> getConcernedCatenaXIds(final Optional<Object> concernedCatenaXIdsNotification) {
+        return ((List<String>) concernedCatenaXIdsNotification.get()).stream().collect(Collectors.toList());
     }
 
     private EdcNotification edcRequest(final String notificationId, final String originalId, final String senderEdc,

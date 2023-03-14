@@ -21,12 +21,15 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.notification.mock;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -34,9 +37,14 @@ import org.eclipse.tractusx.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.edc.model.notification.EdcNotification;
 import org.eclipse.tractusx.edc.model.notification.EdcNotificationHeader;
 import org.eclipse.tractusx.ess.discovery.EdcDiscoveryMockConfig;
+import org.eclipse.tractusx.ess.service.EssService;
 import org.eclipse.tractusx.ess.service.SupplyChainImpacted;
+import org.eclipse.tractusx.irs.component.JobHandle;
+import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -57,6 +65,12 @@ class MockedNotificationReceiverEndpointTest {
 
     @Mock
     private EdcDiscoveryMockConfig edcDiscoveryMockConfig;
+
+    @Mock
+    private EssService essService;
+
+    @Captor
+    private ArgumentCaptor<RegisterBpnInvestigationJob> jobArgumentCaptor;
 
     @Test
     @WithMockUser(authorities = "view_irs")
@@ -93,6 +107,24 @@ class MockedNotificationReceiverEndpointTest {
 
         assertThrows(ResponseStatusException.class,
                 () -> testee.receiveNotification(request));
+    }
+
+    @Test
+    @WithMockUser(authorities = "view_irs")
+    void shouldReceiveNotificationAndCallRecursiveAndSendMockedNotificationResult() throws Exception {
+        final String bpn = "BPN1";
+        when(edcDiscoveryMockConfig.getMockEdcResult()).thenReturn(Map.of(bpn, SupplyChainImpacted.NO));
+        when(essService.startIrsJob(any())).thenReturn(JobHandle.builder().id(UUID.randomUUID()).build());
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
+
+        List<String> concernedCatenaXIds = List.of("cat1", "cat2");
+        testee.receiveRecursiveNotification(EdcNotification.builder().header(validHeader())
+                                                  .content(Map.of("incidentBpn", bpn, "concernedCatenaXIds", concernedCatenaXIds)).build());
+
+        verify(essService, times(2)).startIrsJob(jobArgumentCaptor.capture());
+
+        assertThat(jobArgumentCaptor.getAllValues().get(0).getGlobalAssetId()).isEqualTo("cat1");
+        assertThat(jobArgumentCaptor.getAllValues().get(1).getGlobalAssetId()).isEqualTo("cat2");
     }
 
     EdcNotificationHeader validHeader() {
