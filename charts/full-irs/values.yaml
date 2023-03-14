@@ -552,9 +552,8 @@ irs:
     url: "http://digital-twin-registry:8080"
     descriptorEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/registry/shell-descriptors/{aasIdentifier}"
     shellLookupEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/lookup/shells?assetIds={assetIds}"
-  semanticsHub:
-    url: http://semantic-hub:8080/hub/api/v1
-    modelJsonSchemaEndpoint: "{{ tpl .Values.semanticsHub.url . }}/models/{urn}/json-schema"
+  semanticshub:
+    url: http://semantic-hub:8080/hub/api/v1/models
     defaultUrns: >-
       urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
     localModels:

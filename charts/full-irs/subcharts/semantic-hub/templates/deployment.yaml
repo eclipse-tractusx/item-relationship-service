@@ -68,6 +68,12 @@ spec:
             - name: configuration
               mountPath: home/wiremock/__files/assembly_part_relationship_model_response.json
               subPath: assembly_part_relationship_model_response.json
+            - name: configuration
+              mountPath: /home/wiremock/mappings/all_models_request.json
+              subPath: all_models_request.json
+            - name: configuration
+              mountPath: home/wiremock/__files/all_models_response.json
+              subPath: all_models_response.json
             - name: tmp
               mountPath: /tmp
       volumes:
@@ -85,3 +91,7 @@ spec:
                 path: assembly_part_relationship_model_request.json
               - key: assembly_part_relationship_model_response.json
                 path: assembly_part_relationship_model_response.json
+              - key: all_models_request.json
+                path: all_models_request.json
+              - key: all_models_response.json
+                path: all_models_response.json

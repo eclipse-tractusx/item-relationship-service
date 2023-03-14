@@ -108,7 +108,7 @@ dependencies:
   - name: irs-helm
     alias: irs
     repository: https://catenax-ng.github.io/tx-item-relationship-service
-    version: 4.2.1
+    version: 5.0.4
     condition: irs.enabled
 
   # IRS Frontend Service

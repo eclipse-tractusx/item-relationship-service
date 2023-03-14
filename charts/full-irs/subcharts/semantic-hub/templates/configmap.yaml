@@ -10,15 +10,15 @@ data:
   serial_part_typization_model_request.json: |-
     {
       "request": {
-          "method": "GET",
-          "urlPathPattern": "/hub/api/v1/models/.*SerialPartTypization.*"
+        "method": "GET",
+        "urlPathPattern": "/hub/api/v1/models/.*SerialPartTypization.*"
       },
       "response": {
-          "status": 200,
-          "bodyFileName": "serial_part_typization_model_response.json",
-          "headers": {
-              "Content-Type": "application/json"
-          }
+        "status": 200,
+        "bodyFileName": "serial_part_typization_model_response.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
       }
     }
 
@@ -151,15 +151,15 @@ data:
   assembly_part_relationship_model_request.json: |-
     {
       "request": {
-          "method": "GET",
-          "urlPathPattern": "/hub/api/v1/models/.*AssemblyPartRelationship.*"
+        "method": "GET",
+        "urlPathPattern": "/hub/api/v1/models/.*AssemblyPartRelationship.*"
       },
       "response": {
-          "status": 200,
-          "bodyFileName": "assembly_part_relationship_model_response.json",
-          "headers": {
-              "Content-Type": "application/json"
-          }
+        "status": 200,
+        "bodyFileName": "assembly_part_relationship_model_response.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
       }
     }
 
@@ -257,4 +257,51 @@ data:
         "catenaXId",
         "childParts"
       ]
+    }
+
+  all_models_request.json: |-
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/hub/api/v1/models?.*",
+        "queryParameters": {
+          "page": {
+            "matches": ".*"
+          },
+          "pageSize": {
+            "matches": ".*"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "all_models_response.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+
+  all_models_response.json: |-
+    {
+      "items": [
+        {
+          "urn": "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship",
+          "version": "1.1.1",
+          "name": "AssemblyPartRelationship",
+          "type": "BAMM",
+          "status": "RELEASED"
+        },
+        {
+          "urn": "urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization",
+          "version": "1.0.0",
+          "name": "SerialPartTypization",
+          "type": "BAMM",
+          "status": "RELEASED"
+        }
+      ],
+      "totalItems": 2,
+      "currentPage": 0,
+      "totalPages": 1,
+      "itemCount": 2
     }
