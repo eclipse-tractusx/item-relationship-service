@@ -437,11 +437,22 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
 <h1>Level 1 - IRS application</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_pod">Pod</a></li>
+<li><a href="#_secrets">Secrets</a></li>
+<li><a href="#_service">Service</a></li>
+<li><a href="#_ingress">Ingress</a></li>
+</ul>
+</div>
 </div>
 <div id="content">
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
 <p>This section focuses only on the IRS itself, detached from its neighbors. It shows the resources deployed in Kubernetes for the IRS.</p>
 </div>
@@ -450,34 +461,44 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <img src="irs-resources.svg" alt="irs resources" width="557" height="537">
 </div>
 </div>
-<div class="paragraph">
-<p><strong>Pod</strong></p>
 </div>
+</div>
+<div class="sect1">
+<h2 id="_pod">Pod</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>This is the actual IRS Docker image which runs as a container. The ports are only available internally and can be opened up with the Service.</p>
 </div>
-<div class="paragraph">
-<p><strong>Secrets</strong></p>
 </div>
+</div>
+<div class="sect1">
+<h2 id="_secrets">Secrets</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The secret information (e.g. connection credentials) is stored here and provided to the Pod at runtime.</p>
 </div>
-<div class="paragraph">
-<p><strong>Service</strong></p>
 </div>
+</div>
+<div class="sect1">
+<h2 id="_service">Service</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The service resource opens up selected ports of the Pod so that other applications in the same cluster can access it or to be used by the Ingress.</p>
 </div>
-<div class="paragraph">
-<p><strong>Ingress</strong></p>
 </div>
+</div>
+<div class="sect1">
+<h2 id="_ingress">Ingress</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The ingress uses a reverse proxy to provide specified Service ports to the internet under a specified URL. This make the IRS API publicly available.</p>
 </div>
 </div>
+</div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-21 15:46:11 UTC
+Last updated 2023-03-15 09:02:04 UTC
 </div>
 </div>
 </body>

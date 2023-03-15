@@ -489,6 +489,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_deployment_view">Deployment view</a>
 <ul class="sectlevel2">
+<li><a href="#_operator">Operator</a></li>
+<li><a href="#_argocd">ArgoCD</a></li>
+<li><a href="#_vault">Vault</a></li>
+<li><a href="#_github">GitHub</a></li>
+<li><a href="#_github_container_registry_ghcr">GitHub Container Registry (GHCR)</a></li>
+<li><a href="#_kubernetes">Kubernetes</a></li>
 <li><a href="#_local_deployment">Local deployment</a></li>
 <li><a href="#_view_levels">View Levels</a></li>
 </ul>
@@ -698,16 +704,9 @@ The following table entries define overall IRS quality goals. The order of the t
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Technology Readiness Level (TRL) for Products developed within the CX Consortia</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Technology Readiness Level (TRL) for products developed within the CX Consortia</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">As IRS is a reference implementation, the Technology Readiness Level (TRL) must not be above TRL 8.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Technology Readiness Level - TRL</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="architecture-constraints/trl.png" alt="trl">
-</div>
-</div></div></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Operational Readiness for Release 1 has to be fulfilled</p></td>
@@ -1536,21 +1535,20 @@ Only if the job is in state "COMPLETED" or if the caller has set the parameter "
 <img src="architecture-constraints/deployment-view.svg" alt="deployment view" width="595" height="347">
 </div>
 </div>
-<div class="paragraph">
-<p><strong>Operator</strong></p>
-</div>
+<div class="sect2">
+<h3 id="_operator">Operator</h3>
 <div class="paragraph">
 <p>Manual preparation is required to initially set up the ArgoCD apps and the credentials in the HashiCorp Vault. This is done by the IRS system operator.</p>
 </div>
-<div class="paragraph">
-<p><strong>ArgoCD</strong></p>
 </div>
+<div class="sect2">
+<h3 id="_argocd">ArgoCD</h3>
 <div class="paragraph">
 <p>Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes. See <a href="https://argo-cd.readthedocs.io/" class="bare">https://argo-cd.readthedocs.io/</a>.</p>
 </div>
-<div class="paragraph">
-<p><strong>Vault</strong></p>
 </div>
+<div class="sect2">
+<h3 id="_vault">Vault</h3>
 <div class="paragraph">
 <p>HashiCorp Vault stores credentials, which are picked up by ArgoCD to deploy them to the application.</p>
 </div>
@@ -1566,24 +1564,25 @@ Every secret information needed at runtime must be stored here and must never be
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p><strong>GitHub</strong></p>
 </div>
+<div class="sect2">
+<h3 id="_github">GitHub</h3>
 <div class="paragraph">
 <p>GitHub contains the application source code as well as the Helm charts used for deployment.
 The IRS Helm charts can be found here: <a href="https://github.com/eclipse-tractusx/item-relationship-service/tree/main/charts" class="bare">https://github.com/eclipse-tractusx/item-relationship-service/tree/main/charts</a></p>
 </div>
-<div class="paragraph">
-<p><strong>GitHub Container Registry (GHCR)</strong></p>
 </div>
+<div class="sect2">
+<h3 id="_github_container_registry_ghcr">GitHub Container Registry (GHCR)</h3>
 <div class="paragraph">
 <p>When the IRS is built by GitHub Action workflows, the final image is pushed to the GHCR, where it can be picked up for deployment.</p>
 </div>
-<div class="paragraph">
-<p><strong>Kubernetes</strong></p>
 </div>
+<div class="sect2">
+<h3 id="_kubernetes">Kubernetes</h3>
 <div class="paragraph">
 <p>The kubernetes cluster manages the underlying hardware that is used to run the applications defined in the Helm charts.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_local_deployment">Local deployment</h3>
@@ -1628,29 +1627,29 @@ The IRS Helm charts can be found here: <a href="https://github.com/eclipse-tract
 <img src="architecture-constraints/irs-resources.svg" alt="irs resources" width="557" height="537">
 </div>
 </div>
-<div class="paragraph">
-<p><strong>Pod</strong></p>
-</div>
+<div class="sect4">
+<h5 id="_pod">Pod</h5>
 <div class="paragraph">
 <p>This is the actual IRS Docker image which runs as a container. The ports are only available internally and can be opened up with the Service.</p>
 </div>
-<div class="paragraph">
-<p><strong>Secrets</strong></p>
 </div>
+<div class="sect4">
+<h5 id="_secrets">Secrets</h5>
 <div class="paragraph">
 <p>The secret information (e.g. connection credentials) is stored here and provided to the Pod at runtime.</p>
 </div>
-<div class="paragraph">
-<p><strong>Service</strong></p>
 </div>
+<div class="sect4">
+<h5 id="_service">Service</h5>
 <div class="paragraph">
 <p>The service resource opens up selected ports of the Pod so that other applications in the same cluster can access it or to be used by the Ingress.</p>
 </div>
-<div class="paragraph">
-<p><strong>Ingress</strong></p>
 </div>
+<div class="sect4">
+<h5 id="_ingress">Ingress</h5>
 <div class="paragraph">
 <p>The ingress uses a reverse proxy to provide specified Service ports to the internet under a specified URL. This make the IRS API publicly available.</p>
+</div>
 </div>
 </div>
 </div>
@@ -2152,12 +2151,12 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </ul>
 </div>
 <div class="paragraph">
-<p><strong>Source</strong>: IEEE standard 1061 “Standard for a Software Quality Metrics Methodology”</p>
+<p><strong>Source</strong>: IEEE standard 1061 "Standard for a Software Quality Metrics Methodology"</p>
 </div>
 <div class="sect2">
 <h3 id="_list_of_requirements">List of requirements</h3>
 <div class="paragraph">
-<p>This section will be filled soon™.</p>
+<p>This section will be filled soon.</p>
 </div>
 </div>
 </div>
@@ -2221,7 +2220,7 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-21 15:46:11 UTC
+Last updated 2023-03-15 09:02:04 UTC
 </div>
 </div>
 </body>
