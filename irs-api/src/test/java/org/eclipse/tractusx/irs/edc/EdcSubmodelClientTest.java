@@ -32,7 +32,6 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
