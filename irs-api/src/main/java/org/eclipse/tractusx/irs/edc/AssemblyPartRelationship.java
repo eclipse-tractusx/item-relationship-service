@@ -107,10 +107,6 @@ class AssemblyPartRelationship extends RelationshipSubmodel {
                                .build();
         }
 
-        private boolean thereIsMeasurementUnit() {
-            return this.quantity != null && this.quantity.getMeasurementUnit() != null;
-        }
-
         private boolean thereIsQuantity() {
             return this.quantity != null;
         }
