@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,9 +24,9 @@ package org.eclipse.tractusx.irs.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.given;
+import static org.eclipse.tractusx.irs.util.TestMother.registerJob;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspectAndCollectAspects;
-import static org.eclipse.tractusx.irs.util.TestMother.registerJob;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDirection;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepth;
 import static org.hamcrest.Matchers.equalTo;
@@ -51,10 +52,15 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
+import org.eclipse.tractusx.irs.semanticshub.AspectModel;
+import org.eclipse.tractusx.irs.semanticshub.AspectModels;
+import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.InvalidSchemaException;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.eclipse.tractusx.irs.services.validation.ValidationResult;
 import org.eclipse.tractusx.irs.util.JobMetrics;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -63,7 +69,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = { "test", "stubtest" })
+@ActiveProfiles(profiles = { "test",
+                             "stubtest"
+})
 @Import(TestConfig.class)
 class IrsItemGraphQueryServiceSpringBootTest {
 
@@ -80,6 +88,25 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
     @MockBean
     private JsonValidatorService jsonValidatorService;
+
+    @MockBean
+    private SemanticsHubFacade semanticsHubFacade;
+
+    private static AspectModel getAspectModel(final String aspect, final String urn) {
+        return AspectModel.builder().name(aspect).urn(urn).build();
+    }
+
+    @BeforeEach
+    void setUp() throws SchemaNotFoundException {
+        final List<AspectModel> models = List.of(getAspectModel(AspectType.SERIAL_PART_TYPIZATION.toString(),
+                        "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"),
+                getAspectModel(AspectType.PRODUCT_DESCRIPTION.toString(),
+                        "urn:bamm:io.catenax.vehicle.product_description:2.0.0#ProductDescription"),
+                getAspectModel(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString(),
+                        "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship"));
+        final AspectModels aspectModels = new AspectModels(models, "2023-02-13T08:18:11.990659500Z");
+        when(semanticsHubFacade.getAllAspectModels()).thenReturn(aspectModels);
+    }
 
     @Test
     void registerJobWithoutDepthShouldBuildFullTree() {
@@ -102,7 +129,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
         final RegisterJob registerJob = registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", 100,
-                List.of(AspectType.SERIAL_PART_TYPIZATION, AspectType.PRODUCT_DESCRIPTION, AspectType.ASSEMBLY_PART_RELATIONSHIP), true, false, Direction.DOWNWARD);
+                List.of(AspectType.SERIAL_PART_TYPIZATION.toString(), AspectType.PRODUCT_DESCRIPTION.toString(),
+                        AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()), true, false, Direction.DOWNWARD);
         final int expectedSubmodelsSizeFullTree = 3; // stub
 
         // when
@@ -120,7 +148,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(false).build());
         final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
-                List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP));
+                List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()));
         final int expectedTombstonesSizeFullTree = 1; // stub
 
         // when
@@ -146,14 +174,14 @@ class IrsItemGraphQueryServiceSpringBootTest {
         given().ignoreException(EntityNotFoundException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
-               .until(() -> getRelationshipsSize(registeredJob.getId()),
-                       equalTo(expectedRelationshipsSizeFirstDepth));
+               .until(() -> getRelationshipsSize(registeredJob.getId()), equalTo(expectedRelationshipsSizeFirstDepth));
     }
 
     @Test
     void registerJobWithUpwardDirectionShouldBuildRelationships() {
         // given
-        final RegisterJob registerJob = registerJobWithDirection("urn:uuid:a4a26b9c-9460-4cc5-8645-85916b86adb0", Direction.UPWARD);
+        final RegisterJob registerJob = registerJobWithDirection("urn:uuid:a4a26b9c-9460-4cc5-8645-85916b86adb0",
+                Direction.UPWARD);
         final int expectedRelationshipsSizeFirstDepth = 2; // stub
 
         // when
@@ -163,8 +191,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         given().ignoreException(EntityNotFoundException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
-               .until(() -> getRelationshipsSize(registeredJob.getId()),
-                       equalTo(expectedRelationshipsSizeFirstDepth));
+               .until(() -> getRelationshipsSize(registeredJob.getId()), equalTo(expectedRelationshipsSizeFirstDepth));
     }
 
     @Test
@@ -200,8 +227,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @Test
     void registerJobWithoutAspectsShouldUseDefault() {
         // given
-        final AspectType defaultAspectType = AspectType.SERIAL_PART_TYPIZATION;
-        final List<AspectType> emptyAspectTypeFilterList = List.of();
+        final String defaultAspectType = AspectType.SERIAL_PART_TYPIZATION.toString();
+        final List<String> emptyAspectTypeFilterList = List.of();
         final RegisterJob registerJob = registerJobWithDepthAndAspect(null, emptyAspectTypeFilterList);
 
         // when

@@ -1,0 +1,47 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam nodesep 100
+skinparam ranksep 20
+
+
+node "Kubernetes Cluster" as k8s {
+
+    package "Consumer Side" {
+        component IRS
+        component Minio
+        component "EDC Consumer" as consumer
+    }
+
+    package "Provider Side" {
+        component "EDC Provider" as provider
+        collections "Provider Backend" as submodel
+    }
+
+    component Keycloak
+    component "DAPS" as daps
+
+    component "DT Registry" as dtr
+    component "Semantic Hub" as semHub
+    component "IRS Debugging Frontend" as frontend
+
+    IRS --> Minio
+    IRS --> consumer
+    IRS --> dtr
+
+    daps ---> provider
+    daps ---> consumer
+
+    provider <-> consumer
+
+    provider -- submodel
+
+    Keycloak ---> dtr
+    Keycloak ---> IRS
+    Keycloak ---> semHub
+
+    IRS -> semHub
+    IRS -> frontend
+}
+
+@enduml

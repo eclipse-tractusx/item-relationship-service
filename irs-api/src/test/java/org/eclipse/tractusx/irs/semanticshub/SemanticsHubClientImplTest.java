@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,10 +33,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
+import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.tractusx.irs.configuration.SemanticsHubConfiguration;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -43,9 +50,30 @@ class SemanticsHubClientImplTest {
 
     private final RestTemplate restTemplate = mock(RestTemplate.class);
 
+    @NotNull
+    private static ResponseEntity<PaginatedResponse<AspectModel>> getResponseEntity(
+            final PaginatedResponse<AspectModel> aspectModelResponse2) {
+        return new ResponseEntity<>(aspectModelResponse2, HttpStatus.OK);
+    }
+
+    private SemanticsHubConfiguration config(final String schemaEndpoint, final String path) {
+        final SemanticsHubConfiguration config = new SemanticsHubConfiguration();
+        config.setModelJsonSchemaEndpoint(schemaEndpoint);
+        config.setLocalModelDirectory(path);
+        return config;
+    }
+
+    private SemanticsHubConfiguration config(final String semHubURL, final int pageSize, final String schemaEndpoint,
+            final String path) {
+        final SemanticsHubConfiguration config = config(schemaEndpoint, path);
+        config.setUrl(semHubURL);
+        config.setPageSize(pageSize);
+        return config;
+    }
+
     @Test
     void shouldCallExternalServiceOnceAndGetJsonSchema() throws SchemaNotFoundException {
-        final var testee = new SemanticsHubClientImpl(restTemplate, "url/{urn}", "");
+        final var testee = new SemanticsHubClientImpl(restTemplate, config("url/{urn}", ""));
         final String jsonSchemaMock = "{\"$schema\": \"http://json-schema.org/draft-07/schema#\", \"type\": \"integer\"}";
         doReturn(jsonSchemaMock).when(restTemplate).getForObject(any(), eq(String.class));
 
@@ -60,7 +88,7 @@ class SemanticsHubClientImplTest {
         final String path = Objects.requireNonNull(
                 getClass().getResource("/json-schema/assemblyPartRelationship-v1.1.0.json")).getPath();
 
-        final var testee = new SemanticsHubClientImpl(restTemplate, "", new File(path).getParent());
+        final var testee = new SemanticsHubClientImpl(restTemplate, config("", new File(path).getParent()));
 
         final String resultJsonSchema = testee.getModelJsonSchema("assemblyPartRelationship-v1.1.0.json");
 
@@ -74,7 +102,7 @@ class SemanticsHubClientImplTest {
 
         doThrow(HttpClientErrorException.class).when(restTemplate).getForObject(any(), eq(String.class));
 
-        final var testee = new SemanticsHubClientImpl(restTemplate, "url/{urn}", new File(path).getParent());
+        final var testee = new SemanticsHubClientImpl(restTemplate, config("url/{urn}", new File(path).getParent()));
 
         final String resultJsonSchema = testee.getModelJsonSchema("assemblyPartRelationship-v1.1.0.json");
 
@@ -83,7 +111,7 @@ class SemanticsHubClientImplTest {
 
     @Test
     void shouldThrowExceptionIfNothingConfigured() {
-        final var testee = new SemanticsHubClientImpl(restTemplate, "", "");
+        final var testee = new SemanticsHubClientImpl(restTemplate, config("", ""));
 
         assertThatThrownBy(() -> testee.getModelJsonSchema("assemblyPartRelationship-v1.1.0.json")).isInstanceOf(
                 SchemaNotFoundException.class);
@@ -94,11 +122,67 @@ class SemanticsHubClientImplTest {
         final String path = Objects.requireNonNull(
                 getClass().getResource("/json-schema/assemblyPartRelationship-v1.1.0.json")).getPath();
 
-        final var testee = new SemanticsHubClientImpl(restTemplate, "url/{urn}", new File(path).getParent());
+        final var testee = new SemanticsHubClientImpl(restTemplate, config("url/{urn}", new File(path).getParent()));
 
         doThrow(HttpClientErrorException.class).when(restTemplate).getForObject(any(), eq(String.class));
 
         assertThatThrownBy(() -> testee.getModelJsonSchema("doesnotexist-v1.1.0.json")).isInstanceOf(
                 SchemaNotFoundException.class);
+    }
+
+    @Test
+    void shouldReturnAspectModels() throws SchemaNotFoundException {
+        // Arrange
+        final var testee = new SemanticsHubClientImpl(restTemplate, config("url", 2, "url/{urn}", ""));
+        final List<AspectModel> aspectModels1 = List.of(
+                new AspectModel("urn1", "version1", "name1", "type1", "status1"));
+        final List<AspectModel> aspectModels2 = List.of(
+                new AspectModel("urn2", "version2", "name2", "type2", "status2"));
+        final PaginatedResponse<AspectModel> aspectModelResponse1 = new PaginatedResponse<>(aspectModels1, 2, 0, 1);
+        final PaginatedResponse<AspectModel> aspectModelResponse2 = new PaginatedResponse<>(aspectModels2, 2, 1, 1);
+
+        doReturn(getResponseEntity(aspectModelResponse1), getResponseEntity(aspectModelResponse2)).when(restTemplate)
+                                                                                                  .exchange(any(),
+                                                                                                          (ParameterizedTypeReference<Object>) any());
+
+        // Act
+        final List<AspectModel> allAspectModels = testee.getAllAspectModels();
+
+        // Assert
+        assertThat(allAspectModels).isNotEmpty();
+        assertThat(allAspectModels.get(0).name()).isEqualTo("name1");
+        assertThat(allAspectModels.get(1).name()).isEqualTo("name2");
+        verify(this.restTemplate, times(2)).exchange(any(), (ParameterizedTypeReference<Object>) any());
+    }
+
+    @Test
+    void shouldGetAllModelsFromFilesystemOnly() throws SchemaNotFoundException {
+        // Arrange
+        final String path = Objects.requireNonNull(getClass().getResource(
+                                           "/aspect-models/"))
+                                   .getPath();
+        final var testee = new SemanticsHubClientImpl(restTemplate, config("", new File(path).getPath()));
+        final AspectModel serialPartTypization = new AspectModel(
+                "urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization", "1.0.0",
+                "SerialPartTypization", SemanticsHubClientImpl.LOCAL_MODEL_TYPE,
+                SemanticsHubClientImpl.LOCAL_MODEL_STATUS);
+
+        // Act
+        final List<AspectModel> allAspectModels = testee.getAllAspectModels();
+
+        // Assert
+        assertThat(allAspectModels).hasSize(1).contains(serialPartTypization);
+    }
+
+    @Test
+    void shouldReturnEmptyIfLocalModelFilesNotAccessible() throws SchemaNotFoundException {
+        // Arrange
+        final var testee = new SemanticsHubClientImpl(restTemplate, config("", ""));
+
+        // Act
+        final List<AspectModel> allAspectModels = testee.getAllAspectModels();
+
+        // Assert
+        assertThat(allAspectModels).isEmpty();
     }
 }

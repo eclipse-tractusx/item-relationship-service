@@ -93,11 +93,11 @@ digitalTwinRegistry:
     {{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/registry/shell-descriptors/{aasIdentifier}
   shellLookupEndpoint: >-
     {{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/lookup/shells?assetIds={assetIds}
-semanticsHub:
+semanticshub:
   url:  # https://<semantics-hub-url>
   modelJsonSchemaEndpoint: >-
-    {{- if .Values.semanticsHub.url }}
-    {{- tpl (.Values.semanticsHub.url | default "" ) . }}/{urn}/json-schema
+    {{- if .Values.semanticshub.url }}
+    {{- tpl (.Values.semanticshub.url | default "" ) . }}/{urn}/json-schema
     {{- end }}
   defaultUrns: >-
   #    urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization

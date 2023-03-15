@@ -109,4 +109,33 @@
         <gav regex="true">org\.latencyutils.*</gav>
         <vulnerabilityName>CVE-2021-4277</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Accepted - potentially vulnerable library is not in irs code.
+        ]]></notes>
+        <gav regex="true">jakarta\.activation:jakarta.activation-api.*</gav>
+        <vulnerabilityName>CVE-2010-4647</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Accepted - potentially vulnerable library is not in irs code.
+        ]]></notes>
+        <gav regex="true">jakarta\.activation:jakarta.activation-api.*</gav>
+        <vulnerabilityName>CVE-2008-7271</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        False positive - suppress various improper matches to the CPE that belongs only to pkg:maven/org.json/json
+        ]]></notes>
+        <packageUrl regex="true">^(?!pkg:maven/org\.json/json@).+$</packageUrl>
+        <cpe>cpe:/a:json-java_project:json-java</cpe>
+        <vulnerabilityName>CVE-2022-45688</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Vulnerability method not in IRS codebase (Files.createTempDir from guava).
+        ]]></notes>
+        <gav regex="true">com\.google\.guava:guava.*</gav>
+        <vulnerabilityName>CVE-2020-8908</vulnerabilityName>
+    </suppress>
 </suppressions>

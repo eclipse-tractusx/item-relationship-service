@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,13 +25,13 @@ package org.eclipse.tractusx.irs.component;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.ToString;
@@ -49,21 +50,20 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 @SuppressWarnings({"PMD.ShortClassName", "PMD.ShortVariable"})
 public class Job {
 
-    private static final int INPUT_FIELD_MIN_LENGTH = 36;
     private static final int JOB_ID_FIELD_MAX_LENGTH = 36;
+    private static final int GLOBAL_ASSET_ID_LENGTH = 45;
 
     @NotNull
-    @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
-    @Schema(description = "Id of the job.", minLength = INPUT_FIELD_MIN_LENGTH,
+    @Size(min = JOB_ID_FIELD_MAX_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
+    @Schema(description = "Id of the job.", minLength = JOB_ID_FIELD_MAX_LENGTH,
             maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class,
             pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i")
     @JsonAlias("jobId")
     private UUID id;
 
     @NotNull
-    @Size(min = INPUT_FIELD_MIN_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
-    @Schema(description = "Part global unique Id", minLength = INPUT_FIELD_MIN_LENGTH,
-            maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = GlobalAssetIdentification.class)
+    @Schema(implementation = String.class, description = "Part global unique id in the format urn:uuid:uuid4.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+            minLength = GLOBAL_ASSET_ID_LENGTH, maxLength = GLOBAL_ASSET_ID_LENGTH, pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     @JsonUnwrapped
     private GlobalAssetIdentification globalAssetId;
 

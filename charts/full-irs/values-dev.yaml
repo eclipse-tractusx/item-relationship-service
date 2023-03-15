@@ -1,0 +1,726 @@
+---
+###########
+# Install #
+###########
+install:
+  edc:
+    vault: false
+    daps: true
+    consumer: true
+    provider: true
+
+  digitalTwin: true
+  semanticHub: true
+  keycloak: true
+
+  irs:
+    providerBackend: true
+    backend: true
+    frontend: true
+
+##########
+# COMMON #
+##########
+config:
+  grafana:
+    username: &config-grafana-username "admin"
+    password: &config-grafana-password "password"
+    secret:
+      name: &config-grafana-secret-name irs-grafana
+  minio:
+    username: &config-minio-username "admin"
+    password: &config-minio-password "password"
+    secret:
+      name: &config-minio-secret-name "irs-minio"
+  vault:
+    url: &config-vault-url https://vault.demo.catena-x.net
+    token: &config-vault-token <path:traceability-irs/data/dev/controlplane#vaultToken>
+    secret.path: &config-vault-api-secret-path /v1/traceability-irs
+    secret:
+      dapsCertName: &config-vault-secret-daps-cert-name "irs-full-daps-cert"
+      dapsKeyName: &config-vault-secret-daps-key-name "irs-full-daps-key"
+  edc:
+    consumer:
+      hostname:
+        controlplane: &config-edc-consumer-controlplane-hostname "irs-full-consumer-controlplane.dev.demo.catena-x.net"
+        dataplane: &config-edc-consumer-dataplane-hostname "irs-full-consumer-dataplane.dev.demo.catena-x.net"
+      database:
+        host: &config-edc-consumer-database-host "edc-consumer-database"
+        name: &config-edc-consumer-database-name "edc-consumer"
+        username: &config-edc-consumer-database-username "edc-consumer-user"
+        password: &config-edc-consumer-database-password "edc-consumer-pass"
+        postgres:
+          password: &config-edc-consumer-database-postgres-password "admin"
+        secret:
+          name: &config-edc-consumer-database-secret-name edc-consumer-database
+    provider:
+      hostname:
+        controlplane: &config-edc-provider-controlplane-hostname "irs-full-provider-controlplane.dev.demo.catena-x.net"
+        dataplane: &config-edc-provider-dataplane-hostname "irs-full-provider-dataplane.dev.demo.catena-x.net"
+      database:
+        host: &config-edc-provider-database-host "edc-provider-database"
+        name: &config-edc-provider-database-name "edc-provider"
+        username: &config-edc-provider-database-username "edc-provider-user"
+        password: &config-edc-provider-database-password "edc-provider-pass"
+        postgres:
+          password: &config-edc-provider-database-postgres-password "admin"
+        secret:
+          name: &config-edc-provider-database-secret-name edc-provider-database
+    api:
+      auth:
+        key: &config-edc-auth-api-key "password"
+  oauth:
+    client:
+      id:
+        provider: &config-oauth-client-id-provider "edc-provider"
+        consumer: &config-oauth-client-id-consumer "edc-consumer"
+    provider:
+      jwks:
+        url: &config-oauth-jwts-url "http://edc-daps:4567/jwks.json"
+    token:
+      url: &config-oauth-token-url "http://edc-daps:4567/token"
+  keycloak:
+    hostname: &config-keycloak-hostname "irs-full-keycloak.dev.demo.catena-x.net"
+    grand:
+      type: &config-keycloak-grand-type client_credentials
+    scope: &config-keycloak-scope catena-scope
+
+    client:
+      id: &config-keycloak-client-id "catena-client-id"
+      secret: &config-keycloak-client-secret "catena-client-secret"
+
+    token:
+      url: &config-keycloak-token-url "http://keycloak:8080/connect/token"
+    cert:
+      url: &config-keycloak-certs-url "http://keycloak:8080/.well-known/openid-configuration/jwks"
+  irs:
+    hostname: &config-irs-hostname "irs-full.dev.demo.catena-x.net"
+    irsUrl: &config-irs-url "https://irs-full.dev.demo.catena-x.net"
+    edcCallback: &config-irs-edc-callback http://full-irs:8181/internal/endpoint-data-reference
+    secret:
+      name: &config-irs-secret-name "irs-backend-service"
+      minio:
+        user: *config-minio-username
+        password: *config-minio-password
+      edc:
+        api:
+          secret: *config-edc-auth-api-key
+      grafana:
+        user: *config-grafana-username
+        password: *config-grafana-password
+  digitalTwin:
+    hostname: &config-digitalTwin-host-name "irs-full-registry.dev.demo.catena-x.net"
+    secret:
+      name: &config-digitalTwin-secret-name "digital-twin-registry"
+    docker:
+      secret:
+        name: &config-digitalTwin-docker-secret-name "digital-twin-registry-docker"
+    database:
+      host: &config-digitalTwin-database-host "digital-twin-registry-database"
+      name: &config-digitalTwin-database-name "digital-twin-registry"
+      username: &config-digitalTwin-database-username "digital-twin-registry-user"
+      password: &config-digitalTwin-database-password "digital-twin-registry-pass"
+      postgres:
+        password: &config-irs-digitalTwin-database-postgres-password "admin"
+      secret:
+        name: &config-digitalTwin-database-secret-name digital-twin-registry-database
+    idpIssuerUri: "http://edc-daps:4567"
+  provider-backend:
+    hostname: &config-provider-backend-hostname "irs-full-submodel-server.dev.demo.catena-x.net"
+  irs-frontend:
+    hostname: &config-irs-frontend-hostname "irs-full-frontend.dev.demo.catena-x.net"
+
+######################
+# DAPS Configuration #
+######################
+edc-daps:
+  clients:
+    - id: *config-oauth-client-id-provider
+      name: *config-oauth-client-id-provider
+      url: *config-edc-provider-controlplane-hostname
+    - id: *config-oauth-client-id-consumer
+      name: *config-oauth-client-id-consumer
+      url: *config-edc-consumer-controlplane-hostname
+  scope: idsc:IDS_CONNECTOR_ATTRIBUTES_ALL
+  issuer: http://edc-daps:4567
+  audience:
+    default: idsc:IDS_CONNECTORS_ALL
+    accept: http://edc-daps:4567
+
+#########################
+# EDC CONSUMER Database #
+#########################
+edc-consumer-database:
+  fullnameOverride: "edc-consumer-database"
+  primary:
+    persistence:
+      enabled: true
+      mountPath: "/mnt/data/edc_consumer"
+      size: 100Mi
+
+  volumePermissions:
+    enabled: true
+  readReplicas:
+    persistence:
+      enabled: false
+  auth:
+    database: *config-edc-consumer-database-name
+    username: *config-edc-consumer-database-username
+    existingSecret: *config-edc-consumer-database-secret-name
+
+  service:
+    type: NodePort
+    control:
+      port: 5432
+
+##############################
+# EDC Consumer Control Plane #
+##############################
+edc-consumer-control-plane:
+  ingresses:
+    - enabled: true
+      hostname: *config-edc-consumer-controlplane-hostname
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      endpoints:
+        - ids
+        - management
+      className: ""
+      tls:
+        - hosts:
+            - *config-edc-consumer-controlplane-hostname
+          secretName: tls-secret
+  edc:
+    hostname: edc-consumer-control-plane
+    dataPlane:
+      hostname: edc-consumer-data-plane
+    api:
+      auth:
+        key: *config-edc-auth-api-key
+    vault:
+      hashicorp:
+        url: *config-vault-url
+        token: *config-vault-token
+        api:
+          secret:
+            path: *config-vault-api-secret-path
+    oauth:
+      client:
+        id: *config-oauth-client-id-consumer
+      provider:
+        jwks:
+          url: *config-oauth-jwts-url
+      private:
+        key:
+          alias: *config-vault-secret-daps-key-name
+      public:
+        key:
+          alias: *config-vault-secret-daps-cert-name
+      token:
+        url: *config-oauth-token-url
+    data:
+      encryption:
+        keys:
+          alias: "data-encryption"
+        algorithm: "NONE"
+    receiver:
+      http:
+        endpoint: *config-irs-edc-callback
+    postgresql:
+      host: *config-edc-consumer-database-host
+      database: *config-edc-consumer-database-name
+      user: *config-edc-consumer-database-username
+      password: *config-edc-consumer-database-password
+    transfer:
+      proxy:
+        token:
+          verifier:
+            publickey:
+              alias: *config-vault-secret-daps-cert-name
+          signer:
+            privatekey:
+              alias: *config-vault-secret-daps-key-name
+
+###########################
+# EDC Consumer DATA Plane #
+###########################
+edc-consumer-data-plane:
+  ingresses:
+    - enabled: true
+      hostname: *config-edc-consumer-dataplane-hostname
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      endpoints:
+        - public
+      className: "nginx"
+      tls:
+        - hosts:
+            - *config-edc-consumer-dataplane-hostname
+          secretName: tls-secret
+  edc:
+    dataplane:
+      token:
+        validation:
+          endpoint: http://edc-consumer-control-plane:8182/validation/token
+    api:
+      auth:
+        key: *config-edc-auth-api-key
+    oauth:
+      client:
+        id: *config-oauth-client-id-consumer
+      private:
+        key:
+          alias: *config-vault-secret-daps-key-name
+      public:
+        key:
+          alias: *config-vault-secret-daps-cert-name
+      provider:
+        jwks:
+          url: *config-oauth-jwts-url
+      token:
+        url: *config-oauth-token-url
+    vault:
+      hashicorp:
+        url: *config-vault-url
+        token: *config-vault-token
+        api:
+          secret:
+            path: *config-vault-api-secret-path
+
+#########################
+# EDC PROVIDER Database #
+#########################
+edc-provider-database:
+  fullnameOverride: "edc-provider-database"
+  primary:
+    persistence:
+      enabled: true
+      mountPath: "/mnt/data/edc_provider"
+      size: 500Mi
+  volumePermissions:
+    enabled: true
+  readReplicas:
+    persistence:
+      enabled: false
+  auth:
+    database: *config-edc-provider-database-name
+    username: *config-edc-provider-database-username
+    existingSecret: *config-edc-provider-database-secret-name
+  service:
+    type: NodePort
+    control:
+      port: 5432
+
+##############################
+# EDC Provider Control Plane #
+##############################
+edc-provider-control-plane:
+  ingresses:
+    - enabled: true
+      hostname: *config-edc-provider-controlplane-hostname
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      endpoints:
+        - ids
+        - management
+      className: ""
+      tls:
+        - hosts:
+            - *config-edc-provider-controlplane-hostname
+          secretName: tls-secret
+  edc:
+    hostname: edc-provider-control-plane
+    dataPlane:
+      hostname: edc-provider-data-plane
+    api:
+      auth:
+        key: *config-edc-auth-api-key
+    vault:
+      hashicorp:
+        url: *config-vault-url
+        token: *config-vault-token
+        api:
+          secret:
+            path: *config-vault-api-secret-path
+    oauth:
+      client:
+        id: *config-oauth-client-id-provider
+      provider:
+        jwks:
+          url: *config-oauth-jwts-url
+      private:
+        key:
+          alias: *config-vault-secret-daps-key-name
+      public:
+        key:
+          alias: *config-vault-secret-daps-cert-name
+      token:
+        url: *config-oauth-token-url
+    data:
+      encryption:
+        keys:
+          alias: "data-encryption"
+    receiver:
+      http:
+        endpoint: http://irs:8181/internal/endpoint-data-reference
+    postgresql:
+      host: *config-edc-provider-database-host
+      database: *config-edc-provider-database-name
+      user: *config-edc-provider-database-username
+      password: *config-edc-provider-database-password
+    transfer:
+      proxy:
+        token:
+          verifier:
+            publickey:
+              alias: *config-vault-secret-daps-cert-name
+          signer:
+            privatekey:
+              alias: *config-vault-secret-daps-key-name
+
+###########################
+# EDC Provider DATA Plane #
+###########################
+edc-provider-data-plane:
+  ingresses:
+    - enabled: true
+      hostname: *config-edc-provider-dataplane-hostname
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      endpoints:
+        - public
+      className: "nginx"
+      tls:
+        - hosts:
+            - *config-edc-provider-dataplane-hostname
+          secretName: tls-secret
+  edc:
+    dataplane:
+      token:
+        validation:
+          endpoint: http://edc-provider-control-plane:8182/validation/token
+    api:
+      auth:
+        key: *config-edc-auth-api-key
+    oauth:
+      client:
+        id: *config-oauth-client-id-provider
+      private:
+        key:
+          alias: *config-vault-secret-daps-key-name
+      public:
+        key:
+          alias: *config-vault-secret-daps-cert-name
+      provider:
+        jwks:
+          url: *config-oauth-jwts-url
+      token:
+        url: *config-oauth-token-url
+    vault:
+      hashicorp:
+        url: *config-vault-url
+        token: *config-vault-token
+        api:
+          secret:
+            path: *config-vault-api-secret-path
+
+################
+# Semantic Hub #
+################
+semantic-hub:
+  fullnameOverride: "semantic-hub"
+
+##################################
+# Digital Twin Registry Database #
+###################################
+digital-twin-registry-database:
+  fullnameOverride: "digital-twin-registry-database"
+  primary:
+    persistence:
+      enabled: true
+      mountPath: "/mnt/data/digital_twin"
+      size: 200Mi
+  volumePermissions:
+    enabled: true
+  readReplicas:
+    persistence:
+      enabled: false
+  auth:
+    database: *config-digitalTwin-database-name
+    username: *config-digitalTwin-database-username
+    existingSecret: *config-digitalTwin-database-secret-name
+  service:
+    type: NodePort
+    control:
+      port: 5432
+
+#########################
+# Digital Twin Registry #
+#########################
+digital-twin-registry:
+  registry:
+    secret:
+      name: *config-digitalTwin-secret-name
+    idpIssuerUri: *config-keycloak-token-url
+    imagePullSecrets:
+      - name: *config-digitalTwin-docker-secret-name
+    ingress:
+      enabled: true
+      hosts:
+        - host: *config-digitalTwin-host-name
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - hosts:
+            - *config-digitalTwin-host-name
+          # Default secret for certificate creation already provided to your namespace
+          secretName: tls-secret
+      className: nginx
+      annotations:
+        nginx.ingress.kubernetes.io/enable-cors: "true"
+        nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+
+############
+# KeyCloak #
+############
+keycloak:
+  fullnameOverride: "keycloak"
+  client:
+    id: *config-keycloak-client-id
+    secret: *config-keycloak-client-secret
+  grand:
+    type: *config-keycloak-grand-type
+  scope: *config-keycloak-scope
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    hosts:
+      - host: *config-keycloak-hostname
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - *config-keycloak-hostname
+        secretName: tls-secret
+
+#####################
+# IRS Configuration #
+#####################
+irs:
+  enabled: true
+  irsUrl: *config-irs-url
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    hosts:
+      - host: *config-irs-hostname
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - *config-irs-hostname
+        secretName: tls-secret
+
+  minioUser: *config-minio-username
+  minioPassword: *config-minio-password
+  minioUrl: "http://{{ .Release.Name }}-minio:9000"
+
+  config:
+    override: false
+
+  blobstore:
+    endpoint: "http://irs-minio:9000"
+    accessKey: "${MINIO_ACCESS_KEY}"
+    secretKey: "${MINIO_SECRET_KEY}"
+  keycloak:
+    oauth2:
+      clientId: *config-keycloak-client-id
+      clientSecret: *config-keycloak-client-secret
+      clientTokenUri: *config-keycloak-token-url
+      jwkSetUri: *config-keycloak-certs-url
+
+  digitalTwinRegistry:
+    url: "http://digital-twin-registry:8080"
+    descriptorEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/registry/shell-descriptors/{aasIdentifier}"
+    shellLookupEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/lookup/shells?assetIds={assetIds}"
+  semanticsHub:
+    url: http://semantic-hub:8080/hub/api/v1
+    modelJsonSchemaEndpoint: "{{ tpl .Values.semanticsHub.url . }}/models/{urn}/json-schema"
+    defaultUrns: >-
+      urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization
+    localModels:
+
+  bpdm:
+    url: ""
+    bpnEndpoint: "{{ tpl .Values.bpdm.url . }}/api/catena/legal-entities/{partnerId}?idType={idType}"
+
+  edc:
+    controlplane:
+      endpoint:
+        data: "http://edc-consumer-control-plane:8181/data"
+      request:
+        ttl: PT10M
+      provider:
+        suffix: /api/v1/ids/data
+      catalog:
+        limit: 1000
+      apikey:
+        header: "X-Api-Key"
+        secret: *config-edc-auth-api-key
+    submodel:
+      request:
+        ttl: PT10M
+      path: /submodel
+      urnprefix: /urn
+
+  minio:
+    enabled: true
+    mode: standalone
+    persistence:
+      enabled: true
+      size: 100Mi
+    resources:
+      requests:
+        memory: 4Gi
+
+    rootUser: *config-minio-username
+    rootPassword: *config-minio-password
+
+    environment:
+      MINIO_PROMETHEUS_JOB_ID: minio-actuator
+      MINIO_PROMETHEUS_URL: http://{{ .Release.Name }}-prometheus-server:9090
+
+  prometheus:
+    enabled: false
+    rbac:
+      create: false
+    alertmanager:
+      enabled: false
+    prometheus-node-exporter:
+      enabled: false
+    kubeStateMetrics:
+      enabled: false
+    prometheus-pushgateway:
+      enabled: false
+    configmapReload:
+      prometheus:
+        enabled: false
+
+    extraScrapeConfigs: |
+      - job_name: 'spring-actuator'
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 5s
+        static_configs:
+          - targets: [ '{{ .Release.Name }}-irs-helm:4004' ]
+
+      - job_name: 'minio-actuator'
+        metrics_path: /minio/v2/metrics/cluster
+        static_configs:
+          - targets: [ '{{ .Release.Name }}-minio:9000' ]
+
+  grafana:
+    enabled: false
+    rbac:
+      create: false
+    persistence:
+      enabled: true
+      existingClaim: "grafana-pv-claim"
+
+    user: *config-grafana-username
+    password: *config-grafana-password
+
+    admin:
+      existingSecret: *config-grafana-secret-name
+
+    datasources:
+      datasources.yaml:
+        apiVersion: 1
+        datasources:
+          - name: Prometheus
+            type: prometheus
+            url: "http://{{ .Release.Name }}-prometheus-server"
+            isDefault: true
+    sidecar:
+      dashboards:
+        enabled: true
+
+    importDashboards:
+      minio: dashboards/minio-dashboard.json
+      outbound: dashboards/irs-outbound-requests.json
+      irsmonitoring: dashboards/resource-monitoring-dashboard.json
+      irsjobs: dashboards/irs-jobs-dashboard.json
+      irsapi: dashboards/irs-api-dashboard.json
+
+################
+# IRS Frontend #
+################
+irs-frontend:
+  registry:
+    default:
+      global:
+        asset:
+          id: urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6
+    vite:
+      manual:
+        url: https://github.com/catenax-ng/product-item-relationship-service-frontend/blob/main/docs/userManual.md
+    url:
+      local: *config-irs-url
+  keycloak:
+    url: *config-keycloak-token-url
+    grand:
+      type: *config-keycloak-grand-type
+    scope: *config-keycloak-scope
+    client:
+      id: *config-keycloak-client-id
+      secret: *config-keycloak-client-secret
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    hosts:
+      - host: *config-irs-frontend-hostname
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - *config-irs-frontend-hostname
+        secretName: tls-secret
+
+
+# Provider Backend Service
+irs-provider-backend:
+  ingress:
+    enabled: true
+    className: "nginx"
+    hosts:
+      - host: *config-provider-backend-hostname
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - *config-provider-backend-hostname
+        secretName: tls-secret

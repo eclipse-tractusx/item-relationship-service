@@ -94,7 +94,16 @@ jobs:
           helm repo add grafana https://grafana.github.io/helm-charts
           helm dependency update
 
-      - name: Run chart-releaser
+      - name: Run chart-releaser for IRS
         uses: helm/chart-releaser-action@v1.5.0
+        with:
+          charts_dir: charts/irs
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Run chart-releaser for EDC
+        uses: helm/chart-releaser-action@v1.5.0
+        with:
+          charts_dir: charts/edc-consumer
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
