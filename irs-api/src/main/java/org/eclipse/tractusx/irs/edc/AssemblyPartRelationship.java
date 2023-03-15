@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.edc;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -79,15 +80,22 @@ class AssemblyPartRelationship extends RelationshipSubmodel {
                                                                       .lastModifiedOn(this.lastModifiedOn);
 
             if (thereIsQuantity()) {
-                final String datatypeURI = thereIsMeasurementUnit() ? this.quantity.getMeasurementUnit().getDatatypeURI() : null;
-                final String lexicalValue = thereIsMeasurementUnit() ? this.quantity.getMeasurementUnit().getLexicalValue() : null;
+                MeasurementUnit measurementUnit = MeasurementUnit.builder().build();
+                if (this.quantity.getMeasurementUnit() instanceof String str) {
+                    measurementUnit = MeasurementUnit.builder()
+                                   .lexicalValue(str)
+                                   .build();
+                } else if (this.quantity.getMeasurementUnit() instanceof Map map) {
+                    measurementUnit = MeasurementUnit.builder()
+                                   .lexicalValue(String.valueOf(map.get("lexicalValue")))
+                                   .datatypeURI(String.valueOf(map.get("datatypeURI")))
+                                   .build();
+                }
+
 
                 linkedItem.quantity(org.eclipse.tractusx.irs.component.Quantity.builder()
                                                                                .quantityNumber(this.quantity.getQuantityNumber())
-                                                                               .measurementUnit(MeasurementUnit.builder()
-                                                                                                               .datatypeURI(datatypeURI)
-                                                                                                               .lexicalValue(lexicalValue)
-                                                                                                               .build())
+                                                                               .measurementUnit(measurementUnit)
                                                                                .build());
             }
 
@@ -114,7 +122,7 @@ class AssemblyPartRelationship extends RelationshipSubmodel {
         /* package */ static class Quantity {
 
             private Double quantityNumber;
-            private MeasurementUnit measurementUnit;
+            private Object measurementUnit;
 
             /**
              * MeasurementUnit
