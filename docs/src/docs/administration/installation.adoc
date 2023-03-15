@@ -27,6 +27,7 @@ $ helm install -f your-values.yaml irs-app irs/irs-helm
 Create a new Helm chart and use the IRS as a dependency.
 
 [source,yaml]
+----
 dependencies:
   - name: irs-helm
     repository: https://eclipse-tractusx.github.io/item-relationship-service
@@ -34,6 +35,8 @@ dependencies:
   - name: irs-edc-consumer # optional
     repository: https://eclipse-tractusx.github.io/item-relationship-service
     version: 1.x.x
+
+----
 
 Then provide your configuration as the values.yaml of that chart.
 
