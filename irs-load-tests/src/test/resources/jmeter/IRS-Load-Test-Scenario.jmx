@@ -211,8 +211,7 @@
 	&quot;depth&quot;: 2,&#xd;
 	&quot;direction&quot;: &quot;downward&quot;,&#xd;
 	&quot;collectAspects&quot;: true,&#xd;
-	&quot;lookupBPNs&quot;: true,&#xd;
-	&quot;globalAssetId&quot;: &quot;urn:uuid:fa7ac602-cb4a-4944-ac87-91610bd55f13&quot;&#xd;
+	&quot;globalAssetId&quot;: &quot;urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6&quot;&#xd;
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
