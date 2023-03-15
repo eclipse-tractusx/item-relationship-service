@@ -23,6 +23,8 @@ package org.eclipse.tractusx.irs.edc;
 
 import java.net.SocketTimeoutException;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -138,9 +140,10 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
         final String providerConnectorUrl = submodelEndpointAddress.substring(0, indexOfUrn);
         final String target = submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
+        final String decodedTarget = URLDecoder.decode(target, StandardCharsets.UTF_8);
         log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerConnectorUrl,
-                target);
-        return contractNegotiationService.negotiate(providerConnectorUrl, target);
+                decodedTarget);
+        return contractNegotiationService.negotiate(providerConnectorUrl, decodedTarget);
     }
 
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(

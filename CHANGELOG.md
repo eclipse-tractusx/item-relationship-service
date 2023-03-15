@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
+
+## [2.2.1] - 2023-03-15
+### Fixed
+- Property "measurementUnit" of AssemblyPartRelationship can now be a String or a Map. According to the latest model, it is supposed to be a String, but due to varying test data, IRS supports both variants.
+- EDC Catalog IDs are now being URL decoded before usage
+
+
 ## [2.2.0] - 2023-01-20
 ### Added
 - Added new job parameter flag "lookupBPNs" which toggles lookup of BPN numbers using the configured BPN URL
