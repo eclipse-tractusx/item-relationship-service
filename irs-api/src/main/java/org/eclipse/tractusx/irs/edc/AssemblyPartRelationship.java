@@ -86,7 +86,7 @@ class AssemblyPartRelationship extends RelationshipSubmodel {
                     measurementUnit = MeasurementUnit.builder()
                                    .lexicalValue(str)
                                    .build();
-                } else if (this.quantity.getMeasurementUnit() instanceof Map map) {
+                } else if (this.quantity.getMeasurementUnit() instanceof Map<?, ?> map) {
                     measurementUnit = MeasurementUnit.builder()
                                    .lexicalValue(String.valueOf(map.get("lexicalValue")))
                                    .datatypeURI(String.valueOf(map.get("datatypeURI")))
