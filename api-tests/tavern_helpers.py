@@ -51,12 +51,17 @@ def errors_for_invalid_globalAssetId_are_correct(response):
     assert 'globalAssetId:must match \"^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\"' in error_list
 
 
+def errors_for_invalid_depth_are_correct(response):
+    print(response.json().get("messages"))
+    error_list = response.json().get("messages")
+    assert 'depth:must be greater than or equal to 1' in error_list
+
+
 def errors_for_unknown_globalAssetId_are_correct(response):
     error_list = response.json().get("tombstones")
-    print(error_list)
 
     for i in error_list:
-        print("Given tombstone: -- ", i, " --")
+        print("Given tombstone: ", i)
         catenaXId = i.get("catenaXId")
         print("Given catenaXID: ", catenaXId)
         processingErrorStep = i.get("processingError").get("processStep")
@@ -175,15 +180,18 @@ def check_pagination_is_requested_correctly(response):
     assert response_list.get("totalElements") > 0
     assert len(response.json().get("content")) == 3
 
+
 def bpns_are_empty(response):
     print(response.json().get("bpns"))
     print("Check if bpns are empty", len(response.json().get("bpns")))
     assert len(response.json().get("bpns")) == 0
 
+
 def bpns_are_not_empty(response):
     print(response.json().get("bpns"))
     print("Check if bpns are not empty number:", len(response.json().get("bpns")))
     assert len(response.json().get("bpns")) != 0
+
 
 def summary_for_bpns_is_given(response):
     print("Check if summary for bpns is given:")

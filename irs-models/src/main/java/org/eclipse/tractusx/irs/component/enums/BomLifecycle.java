@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -43,11 +44,11 @@ public enum BomLifecycle {
     AS_PLANNED("asPlanned", AspectType.PART_AS_PLANNED);
 
     private final String name;
-    private final AspectType defaultAspect;
+    private final String defaultAspect;
 
     BomLifecycle(final String name, final AspectType aspectType) {
         this.name = name;
-        this.defaultAspect = aspectType;
+        this.defaultAspect = aspectType.toString();
     }
 
     /**

@@ -7,31 +7,30 @@ The deployment view shows the IRS application on ArgoCD, which is a continuous d
 include::../../../uml-diagrams/deployment-view/deployment-chain.puml[]
 ....
 
-*Operator*
+== Operator
 
 Manual preparation is required to initially set up the ArgoCD apps and the credentials in the HashiCorp Vault. This is done by the IRS system operator.
 
-*ArgoCD*
+== ArgoCD
 
 Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes. See https://argo-cd.readthedocs.io/.
 
-*Vault*
+== Vault
 
 HashiCorp Vault stores credentials, which are picked up by ArgoCD to deploy them to the application.
 
 WARNING: Every secret information needed at runtime must be stored here and must never be part of the IRS Helm charts
 
-
-*GitHub*
+== GitHub
 
 GitHub contains the application source code as well as the Helm charts used for deployment.
 The IRS Helm charts can be found here: https://github.com/eclipse-tractusx/item-relationship-service/tree/main/charts
 
-*GitHub Container Registry (GHCR)*
+== GitHub Container Registry (GHCR)
 
 When the IRS is built by GitHub Action workflows, the final image is pushed to the GHCR, where it can be picked up for deployment.
 
-*Kubernetes*
+== Kubernetes
 
 The kubernetes cluster manages the underlying hardware that is used to run the applications defined in the Helm charts.
 

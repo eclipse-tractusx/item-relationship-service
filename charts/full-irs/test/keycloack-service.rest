@@ -1,0 +1,33 @@
+@hostname = localhost
+@port = 4011
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+@configurationEndpoint = /.well-known/openid-configuration
+@configurationJwksEndpoint = /.well-known/openid-configuration/jwks
+@tokenEndpoint = /connect/token
+@userEndpoint = /api/v1/user/
+@clientId = catena-client-id
+@clientSecret = catena-client-secret
+@grantType = client_credentials
+@scope = catena-scope
+
+### Get Configuration
+
+GET http://{{host}}{{configurationEndpoint}}
+Content-Type: {{contentType}}
+
+### Get Configuration Jwks
+
+GET http://{{host}}{{configurationJwksEndpoint}}
+Content-Type: {{contentType}}
+
+### Token
+
+POST http://{{host}}{{tokenEndpoint}}
+Content-Type: application/x-www-form-urlencoded
+
+grant_type={{grantType}}
+&client_secret={{clientSecret}}
+&client_id={{clientId}}
+&scope={{scope}}
+

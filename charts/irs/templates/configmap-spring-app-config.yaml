@@ -11,10 +11,10 @@ data:
       trustedPort: {{ .Values.service.trustedPort }}
 
     irs:
-      apiUrl: {{ tpl .Values.irsUrl . | quote }}
+      apiUrl: {{ tpl (.Values.irsUrl | default "http://localhost") . | quote }}
 
     blobstore:
-      endpoint: {{ tpl .Values.minioUrl . | quote }}
+      endpoint: {{ tpl (.Values.minioUrl | default "") . | quote }}
       accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
       secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
 
@@ -28,24 +28,25 @@ data:
                 client-secret: "${KEYCLOAK_OAUTH2_CLIENT_SECRET}" # taken from secret ENV
             provider:
               keycloak:
-                token-uri: {{ tpl .Values.keycloak.oauth2.clientTokenUri . | quote }}
+                token-uri: {{ tpl (.Values.keycloak.oauth2.clientTokenUri | default "http://localhost") . | quote }}
           resourceserver:
             jwt:
-              jwk-set-uri: {{ tpl .Values.keycloak.oauth2.jwkSetUri . | quote }}
+              jwk-set-uri: {{ tpl (.Values.keycloak.oauth2.jwkSetUri | default "http://localhost") . | quote }}
 
     digitalTwinRegistry:
-      descriptorEndpoint: {{ tpl .Values.digitalTwinRegistry.descriptorEndpoint . | quote }}
-      shellLookupEndpoint: {{ tpl .Values.digitalTwinRegistry.shellLookupEndpoint . | quote }}
+      descriptorEndpoint: {{ tpl (.Values.digitalTwinRegistry.descriptorEndpoint | default "") . | quote }}
+      shellLookupEndpoint: {{ tpl (.Values.digitalTwinRegistry.shellLookupEndpoint | default "") . | quote }}
 
-    semanticsHub:
-      modelJsonSchemaEndpoint: {{ tpl .Values.semanticsHub.modelJsonSchemaEndpoint . | quote }}
-      defaultUrns: {{ tpl (.Values.semanticsHub.defaultUrns | default "") . | quote }}
-      {{- if .Values.semanticsHub.localModels }}
+    semanticshub:
+      url: {{ tpl (.Values.semanticshub.url | default "") . | quote }}
+      modelJsonSchemaEndpoint: {{ tpl (.Values.semanticshub.modelJsonSchemaEndpoint | default "") . | quote }}
+      defaultUrns: {{ tpl (.Values.semanticshub.defaultUrns | default "") . | quote }}
+      {{- if .Values.semanticshub.localModels }}
       localModelDirectory: /app/semantic-models
       {{- end }}
 
     bpdm:
-      bpnEndpoint: {{ tpl .Values.bpdm.bpnEndpoint . | quote }}
+      bpnEndpoint: {{ tpl (.Values.bpdm.bpnEndpoint | default "") . | quote }}
 
     edc:
       controlplane:
@@ -54,6 +55,7 @@ data:
           data: {{ tpl (.Values.edc.controlplane.endpoint.data | default (printf "http://%s%s" .Release.Name "-edc-controlplane:8181/data")) . | quote }}
         provider-suffix: {{ tpl .Values.edc.controlplane.provider.suffix . | quote }}
         catalog-limit: {{ .Values.edc.controlplane.catalog.limit }}
+        catalog-page-size: {{ .Values.edc.controlplane.catalog.pagesize }}
         api-key:
           header: {{ tpl (.Values.edc.controlplane.apikey.header | default "") . | quote }}
           secret: ${EDC_API_KEY_SECRET:} # taken from secret ENV

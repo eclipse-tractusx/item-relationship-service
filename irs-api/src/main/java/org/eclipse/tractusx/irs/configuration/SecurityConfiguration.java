@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -30,10 +31,11 @@ import org.eclipse.tractusx.irs.IrsApplication;
 import org.eclipse.tractusx.irs.configuration.converter.JwtAuthenticationConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -44,19 +46,18 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
-    private static final String[] WHITELIST  = {
-        "/actuator/health",
-        "/actuator/health/readiness",
-        "/actuator/health/liveness",
-        "/actuator/prometheus",
-        "/api/swagger-ui/**",
-        "/api/api-docs",
-        "/api/api-docs.yaml",
-        "/api/api-docs/swagger-config",
-        "/" + IrsApplication.API_PREFIX_INTERNAL + "/endpoint-data-reference"
+    private static final String[] WHITELIST = { "/actuator/health",
+                                                "/actuator/health/readiness",
+                                                "/actuator/health/liveness",
+                                                "/actuator/prometheus",
+                                                "/api/swagger-ui/**",
+                                                "/api/api-docs",
+                                                "/api/api-docs.yaml",
+                                                "/api/api-docs/swagger-config",
+                                                "/" + IrsApplication.API_PREFIX_INTERNAL + "/endpoint-data-reference"
     };
     private static final long HSTS_MAX_AGE_DAYS = 365;
 
@@ -76,24 +77,23 @@ public class SecurityConfiguration {
                     .preload(true)
                     .requestMatcher(AnyRequestMatcher.INSTANCE);
 
-        httpSecurity.headers().xssProtection().xssProtectionEnabled(true).block(true);
+        httpSecurity.headers().xssProtection().headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK);
 
         httpSecurity.headers().frameOptions().sameOrigin();
 
-        httpSecurity
-            .sessionManagement()
-            .sessionCreationPolicy(STATELESS)
-            .and()
-            .authorizeRequests()
-            .antMatchers(WHITELIST)
-            .permitAll()
-            .antMatchers("/**")
-            .authenticated()
-            .and()
-            .oauth2ResourceServer(oauth2ResourceServer ->
-                oauth2ResourceServer.jwt().jwtAuthenticationConverter(new JwtAuthenticationConverter())
-            )
-            .oauth2Client();
+        httpSecurity.sessionManagement()
+                    .sessionCreationPolicy(STATELESS);
+
+        httpSecurity.authorizeHttpRequests(auth -> auth
+                    .requestMatchers(WHITELIST)
+                    .permitAll()
+                    .requestMatchers("/**")
+                    .authenticated());
+
+        httpSecurity.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt()
+                                                                                      .jwtAuthenticationConverter(
+                                                                                              new JwtAuthenticationConverter()))
+                    .oauth2Client();
 
         return httpSecurity.build();
     }
@@ -103,7 +103,9 @@ public class SecurityConfiguration {
         final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(List.of("Access-Control-Allow-Headers", "Access-Control-Allow-Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Origin", "Cache-Control", "Content-Type", "Authorization"));
+        configuration.setAllowedHeaders(
+                List.of("Access-Control-Allow-Headers", "Access-Control-Allow-Origin", "Access-Control-Request-Method",
+                        "Access-Control-Request-Headers", "Origin", "Cache-Control", "Content-Type", "Authorization"));
         configuration.setAllowedMethods(List.of("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS"));
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
+## [2.3.1] - 2023-03-07
+### Changed
+- Updated Spring Boot dependency to 3.0.3
+
+## [2.3.0] - 2023-02-21
+### Added
+- Introduced new endpoint ``/irs/aspectmodels`` which will list all available aspect models (from semantic hub or locally provided files if present)
+
+### Fixed
+- If Grafana is enabled - dashboards will be automatically imported on startup
+
+### Changed
+- Job creation validates ``aspects`` by using models available in semantic hub or locally provided.
+
 
 ## [2.2.1] - 2023-03-15
 ### Fixed
@@ -22,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added new summary item "bpnLookups" which tracks completed and failed BPN requests. Excluded these metrics from "asyncFetchedItems"
 - Model schema JSON files can now be provided locally as a backup to the Semantic Hub.
   Use the new ``semanticsHub.localModelDirectory`` config entry to provide a folder with the models.
+- Added pagination to EDC catalog retrieval.
 
 ### Fixed
 - BPNs array is now filled correctly when requesting a running job with parameter "returnUncompletedJob=true"
@@ -151,8 +166,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.2.0...HEAD
-[2.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.1.0...2.2.0
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.3.1...HEAD
+[2.3.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.3.0...2.3.1
+[2.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.2.0...2.3.0
+[2.2.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.2.0...2.2.1
+[2.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.1.0...2.2.0
 [2.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.6.0...2.0.0
 [1.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.5.0...1.6.0

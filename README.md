@@ -10,7 +10,7 @@
 [![OWASP Dependency Check](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml)
 [![Spotbugs](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml)
 [![Eclipse-dash](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml)
-[![Tavern IRS API test](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml)   
+[![Tavern IRS API test](https://github.com/catenax-ng/tx-item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/catenax-ng/tx-item-relationship-service/actions/workflows/tavern.yml)   
 
 ## What is the IRS?
 
@@ -33,9 +33,9 @@ The following subsection provides instructions for running the infrastructure on
 
 #### Docker-compose + IDE
 
-* Start the necessary infrastructure by running `docker-compose up`
+- Start the necessary infrastructure by running `docker-compose up`
 
-* Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
+- Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
 
 #### Local IRS API
 
@@ -121,3 +121,19 @@ curl -X 'GET' 'http://localhost:8080/irs/jobs/<jobID>' -H 'accept: application/j
 ## Licenses
 
 Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0) - see [LICENSE](./LICENSE)
+
+## Notice for Docker image
+This application provides container images for demonstration purposes.
+
+DockerHub: https://hub.docker.com/r/tractusx/irs-api
+
+Eclipse Tractus-X product(s) installed within the image:
+
+GitHub: https://github.com/eclipse-tractusx/item-relationship-service
+Project home: https://projects.eclipse.org/projects/automotive.tractusx
+License: Apache License, Version 2.0
+Used base image: eclipse-temurin:19-jre-alpine
+
+As with all Docker images, these likely also contain other software which may be under other licenses (such as Bash, etc from the base distribution, along with any direct or indirect dependencies of the primary software being contained).
+
+As for any pre-built image usage, it is the image user's responsibility to ensure that any use of this image complies with any relevant licenses for all software contained within.

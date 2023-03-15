@@ -8,8 +8,8 @@ The quality scenarios in this section depict the fundamental quality goals as we
 - *Metric value*: A metric output or an element that is from the range of a metric.
 - *Software quality metric*: A function whose inputs are software data and whose output is a single numerical value that can be interpreted as the degree to which software possesses a given attribute that affects its quality.
 
-*Source*: IEEE standard 1061 “Standard for a Software Quality Metrics Methodology”
+*Source*: IEEE standard 1061 "Standard for a Software Quality Metrics Methodology"
 
 == List of requirements
 
-This section will be filled soon™.
+This section will be filled soon.

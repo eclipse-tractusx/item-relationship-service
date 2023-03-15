@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,14 +25,18 @@ package org.eclipse.tractusx.irs.edc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
@@ -154,6 +159,21 @@ class ContractNegotiationServiceTest {
         return catalog;
     }
 
+    private static Catalog mockCatalog(final String assetId, List<String> offerIdList) {
+        final var catalog = mock(Catalog.class);
+        final var asset = mock(Asset.class);
+        final var policy = mock(Policy.class);
+        when(asset.getId()).thenReturn(assetId);
+        when(catalog.getContractOffers()).thenReturn(offerIdList.stream()
+                                                                .map(id -> ContractOffer.Builder.newInstance()
+                                                                                                .id(id)
+                                                                                                .asset(asset)
+                                                                                                .policy(policy)
+                                                                                                .build())
+                                                                .collect(Collectors.toList()));
+        return catalog;
+    }
+
     @Test
     void shouldThrowErrorWhenRetrievingNegotiationResult() {
         // arrange
@@ -168,5 +188,18 @@ class ContractNegotiationServiceTest {
 
         // act & assert
         assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, assetId)).isInstanceOf(EdcClientException.class);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAssetIdIsMissingAndPagesAreTheSame() {
+        // arrange
+        final var assetId = "testTarget";
+        final var firstPage = mockCatalog("other", List.of("offer1", "offer2", "offer3", "offer4"));
+        setPageSizeInCatalog();
+        when(edcControlPlaneClient.getCatalog(anyString(), anyInt())).thenReturn(firstPage);
+
+        // act + assert
+        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, assetId))
+                .isInstanceOf(NoSuchElementException.class);
     }
 }

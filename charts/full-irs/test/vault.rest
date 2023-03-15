@@ -1,0 +1,36 @@
+@hostname = localhost
+@port = 8200
+@host = {{hostname}}:{{port}}
+@token = root
+@contentType = application/json
+
+### Get Daps cert secret
+
+GET http://{{host}}/v1/secret/data/daps-cert HTTP/1.1
+X-Vault-Token: {{token}}
+
+### Get Daps key secret
+
+GET http://{{host}}/v1/secret/data/daps-key HTTP/1.1
+X-Vault-Token: {{token}}
+
+### Get Daps key secret
+
+@secretName = data-encryption
+GET http://{{host}}/v1/secret/data/{{secretName}} HTTP/1.1
+X-Vault-Token: {{token}}
+
+### Data encryption
+
+@secretName = data-encryption
+@secretKey = content
+@secretValue = H7j47H6vVQQOv/hbdAYz+w==
+
+POST http://{{host}}/v1/secret/data/{{secretName}} HTTP/1.1
+X-Vault-Token: {{token}}
+Content-Type: {{contentType}}
+
+{  "options": {    "cas": 0  },  "data": {    "{{secretKey}}": "{{secretValue}}"  }}
+
+
+###
