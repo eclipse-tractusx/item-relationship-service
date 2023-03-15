@@ -32,7 +32,8 @@ jobs:
           # Scanning directory .
           path: "."
           # Exclude paths or files from scan
-          exclude_paths: docker-compose.yml,api/irs-v1.0.yaml,api-tests/irs-api-tests.tavern.yaml,charts/irs-environments/local/*
+          # full-irs is a demonstration and not intended to run in a production environment, it can be excluded
+          exclude_paths: docker-compose.yml,api/irs-v1.0.yaml,api-tests/irs-api-tests.tavern.yaml,charts/irs-environments/local/*,charts/full-irs
           # Fail on HIGH severity results
           fail_on: high
           # when provided with a directory on output_path
