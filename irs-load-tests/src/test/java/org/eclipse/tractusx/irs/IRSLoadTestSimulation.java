@@ -44,7 +44,6 @@ public class IRSLoadTestSimulation extends Simulation {
                         .check(jsonPath(
                                 "$.access_token")
                                 .saveAs("access_token")))
-                .pause(10)
                 .exec(http("Start Job")
                         .post(irsUrl+"/irs/jobs")
                         .headers(headers_1)
