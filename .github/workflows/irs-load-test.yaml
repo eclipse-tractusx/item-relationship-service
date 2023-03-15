@@ -3,18 +3,10 @@ name: IRS Load Test
 on:
   workflow_dispatch: # Trigger manually
     inputs:
-      tool:
-        type: choice
-        description: The tool to perform the load test
-        default: 'JMeter'
-        required: true
-        options:
-          - 'JMeter'
-          - 'Gatling'
       irs-host:
         type: choice
         description: IRS environment to test
-        default: 'https://irs.dev.demo.catena-x.net'
+        default: 'https://irs-full.dev.demo.catena-x.net'
         required: true
         options:
           - 'https://irs-full.dev.demo.catena-x.net'
@@ -27,32 +19,7 @@ on:
         required: false
 
 jobs:
-  jmeter-test:
-    if: ${{ github.event.inputs.tool }} == 'JMeter'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Run JMeter tests
-        env:
-          IRS_HOST: ${{ github.event.inputs.irs-host || 'https://irs.dev.demo.catena-x.net' }}
-          KEYCLOAK_HOST: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI }}
-          KEYCLOAK_CLIENT_ID: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_ID }}
-          KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_SECRET }}
-          TEST_CYCLES: ${{ github.event.inputs.test-cycles || '20' }}
-        working-directory: irs-load-tests/src/test/resources/jmeter
-        run: |
-          mkdir logs
-          jmeter -n -t IRS-Load-Test-Scenario.jmx -l log.jtl -e -o logs\
-
-      - name: Archive Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: jmeter-report
-          path: irs-load-tests/src/test/resources/jmeter/logs/
-
   gatling-test:
-    if: ${{ github.event.inputs.tool }} == 'Gatling'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -62,7 +29,7 @@ jobs:
           KEYCLOAK_HOST: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI }}
           KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_ID }}
           KEYCLOAK_CLIENT_ID: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_ID }}
-          IRS_HOST: ${{ github.event.inputs.irs-host || 'https://irs.dev.demo.catena-x.net' }}
+          IRS_HOST: ${{ github.event.inputs.irs-host || 'https://irs-full.dev.demo.catena-x.net' }}
           TEST_CYCLES: ${{ github.event.inputs.test-cycles || '20' }}
         run: |
           mvn gatling:test -pl irs-load-tests
