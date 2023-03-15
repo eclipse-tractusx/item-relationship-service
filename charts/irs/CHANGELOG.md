@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.3.2] - 2023-03-15
+### Changed
+- Update IRS version to 2.2.1
+
 ## [4.3.1] - 2023-03-01
 ### Changed
 - Updated default values so that IRS can start out of the box without technical errors. Please note that custom configuration is still necessary for IRS to work properly.
