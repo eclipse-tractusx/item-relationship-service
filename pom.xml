@@ -19,6 +19,7 @@
         <module>irs-report-aggregate</module>
         <module>cucumber-tests</module>
         <module>docs</module>
+        <module>irs-load-tests</module>
     </modules>
 
     <properties>

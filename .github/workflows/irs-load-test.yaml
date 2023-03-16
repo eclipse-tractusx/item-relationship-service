@@ -1,0 +1,41 @@
+name: IRS Load Test
+
+on:
+  workflow_dispatch: # Trigger manually
+    inputs:
+      irs-host:
+        type: choice
+        description: IRS environment to test
+        default: 'https://irs-full.dev.demo.catena-x.net'
+        required: true
+        options:
+          - 'https://irs-full.dev.demo.catena-x.net'
+          - 'https://irs.dev.demo.catena-x.net'
+          - 'https://irs.int.demo.catena-x.net'
+      test-cycles:
+        type: string
+        description: Number of Test Cycles
+        default: '20'
+        required: false
+
+jobs:
+  gatling-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run Gatling tests
+        env:
+          KEYCLOAK_HOST: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI }}
+          KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_ID }}
+          KEYCLOAK_CLIENT_ID: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_ID }}
+          IRS_HOST: ${{ github.event.inputs.irs-host || 'https://irs-full.dev.demo.catena-x.net' }}
+          TEST_CYCLES: ${{ github.event.inputs.test-cycles || '20' }}
+        run: |
+          mvn gatling:test -pl irs-load-tests
+
+      - name: Archive Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: gatling-report
+          path: irs-load-tests/target/gatling/
