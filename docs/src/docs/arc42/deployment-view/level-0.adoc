@@ -2,9 +2,17 @@
 
 == Isolated environment
 
-The isolated environment contains the IRS as well as the surrounding services, excluding the external IAM.
+The isolated environment contains the IRS as well as all surrounding services.
 
 [plantuml, target=isolated, format=svg]
+....
+include::../../../uml-diagrams/deployment-view/level-0-isolated.puml[]
+....
+
+== Development environment
+The development environment contains the IRS as well as the essential surrounding services, excluding the external IAM.
+
+[plantuml, target=development, format=svg]
 ....
 include::../../../uml-diagrams/deployment-view/level-0-dev.puml[]
 ....

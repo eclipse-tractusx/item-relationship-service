@@ -1,0 +1,148 @@
+{{- $scope := default "" .Values.scope }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Release.Namespace | default "default" | quote }}
+  labels:
+    {{- include "irs-omejdn-service.labels" . | nindent 4 }}
+data:
+  OMEJDN_PLUGINS: /opt/config/plugins.yml
+  scope_mapping.yml: |-
+    ---
+    idsc:IDS_CONNECTOR_ATTRIBUTES_ALL:
+    - "@type"
+    - "@context"
+    - securityProfile
+    - referringConnector
+  
+  clients.yml: |-
+    ---
+    {{- range  $.Values.clients }}
+    - client_id: {{ .id }}
+      client_name: {{ .name }}
+      grant_types:
+      - client_credentials
+      token_endpoint_auth_method: private_key_jwt
+      scope:
+      - {{ $scope }}
+      attributes:
+      - key: idsc
+        value: IDS_CONNECTOR_ATTRIBUTES_ALL
+      - key: "@type"
+        value: ids:DatPayload
+      - key: "@context"
+        value: https://w3id.org/idsa/contexts/context.jsonld
+      - key: securityProfile
+        value: idsc:BASE_SECURITY_PROFILE
+      - key: referringConnector
+        value: {{ .url }}
+    {{- end }}
+
+  omejdn.yml:  |-
+    ---
+    host: {{ .Values.issuer }}
+    bind_to: 0.0.0.0
+    allow_origin: "*"
+    environment: development
+    accept_audience: {{ .Values.audience.default }}
+    access_token:
+      expiration: 86400
+      algorithm: RS256
+      audience: {{ .Values.audience.default }}
+      issuer: {{ .Values.issuer }}
+    id_token:
+      expiration: 86400
+      algorithm: RS256
+      issuer: {{ .Values.issuer }}
+    issuer: {{ .Values.issuer }}
+    front_url: {{ .Values.issuer }}
+    openid: false
+    default_audience: []
+
+  plugins.yml: |-
+    ---
+    plugins:
+      admin_api:
+      user_selfservice:
+        allow_deletion: false
+        allow_password_change: true
+        editable_attributes: []
+      token_user_attributes:
+        skip_id_token: true
+
+  omejdn.key: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEAmq+ENVdEfrDFj03gxEijQ5fsu1N9nSF7mXdGhoWbpFMLW6UO
+    zSwkezWu/Iwa+gZEqwbtop3HR+VcNKikFiya8LP+gQfDd0Wi04zXONel43IYmVbR
+    j/P9RQCNLy2sPKiRZTJRgWYEs04+d33NHfXhBhyUZ0LpLCdfR07rYPxf8SOcMYw0
+    wYQqIX38Hnd7llU2YFk+RX2pYTDBiH6y5Nvtzt0aQmPrDVrmikzFKuClI6YX/lcm
+    +DtNF+suWuQ3AW1YImrC73u1EidB2rI6TySP/ILQpulVTyYVxiF+P73ctSCa5av4
+    6TY6peNU0XA0i2vZuZAIYS+oD2CKL8g8w4EqgQIDAQABAoIBAGGAzRdKYNRy3LTN
+    5CYVm0PaGdCiegV3u48qzfuxcEAOUJR94GyXrI81cY2jSsXa+aHMhjIAvkKlYo+W
+    1YdcqnWbH4t5t04RSOeMWYVs+RX7L2JIhWP16el6xYO9iFnb73oYU6P7CG91nI55
+    b7e46xSNI0ZLuOqqDrbGGjxSGK/IRaDihrbCHqxASNIrs6uRl08rF3m2jv8BWI7B
+    SM9HRYLuudW0A/rkgR6rhl/Xj2mWXUmHbAe+1AU3xF3Z32UnVNpl59BOERWNZKJV
+    y1u+4lgVKHMgTusrJTUX3vbXFDPQwt46butJreTn53nRPqbf2yXx+vRZlW07HvhW
+    rk5MddkCgYEAydRlp4tZHPSAQPp/NNNX00JOQLXOqYmVxA7Cx981EE3zv1JtoUXa
+    uP925hYmPniXuD+oHaeP8X3AZ2uC2do9w26gFByMDDtSD1tybQdSSBB9OYtTPB0y
+    t4c2MctPet8Vi3A9xAesw2RElQI7OlYNL+/MMJXX9mY+4WoIPO+U8tsCgYEAxDPg
+    luVUJ1/jQ1LwsTToknIY4Vjp9CUXV8Djt9sT3cy8tPpP4xau/YU0W4WG9TFyWgtT
+    DNcXI2g4YECcF33teIHmmwEnjFwkBcS6VO/POBOJjAA6VQ/UTmRqvyuNu5atuoc7
+    lPyNaYhODIfTLDScT7Jbo+Xv249fh4KTgCNHANMCgYEAtrFfLxDxIkekDK1zFiM0
+    fZOod+TaZBaZjbX61KeUReT5/bYkbHZp7Um5m75y8duBIpPknqs9ndBBqJvl/0MQ
+    42Ww22OX1b6goiwZ4N1eusLKR5t5RZH8haqMAPjTQhrLSsPX9SkpVljdx7AUYtLf
+    7wN2ZohMy8pzouGzAU2xGz8CgYBQF6FJ1+nnfOQn+naY0DFUftEbRJGUgYOq5enP
+    htXwSACMnFX6LKtYgITkC3kRJJM6oL7RUgh3Ardoy1cs29IRzG1Xvzvmt0JZPHqX
+    66EakhcnGHy3dpPDQIi260+bUSIwL74pzoLnnqXFxbh1pjBc9EEmgdnNNhTYG3yc
+    5Um50wKBgQCapFXFxbvOUjH+CQD1hECS00FD3iSggEWu13SN0buqAOW8xOjUhmfC
+    99wEXB6tsAKRVeMMXufPK7wdMGHWcP5R1RTbzFZPi/s7Lq7/b3nm0GxFYJNl44eT
+    AbJ9PS7csqKEqdTRDC1iui9Sb7V4eGitWwNhprnw1xks5/+H92rjQw==
+    -----END RSA PRIVATE KEY-----
+
+  edc-provider.cert: |
+    -----BEGIN CERTIFICATE-----
+    MIIDazCCAlOgAwIBAgIULRtsNKCEIXeJcpBg28vr6UgyfbIwDQYJKoZIhvcNAQEL
+    BQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM
+    GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMzAyMTMyMTE0NDlaFw0zMzAy
+    MTAyMTE0NDlaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEw
+    HwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEB
+    AQUAA4IBDwAwggEKAoIBAQDRl5vqQTWBNDFqQonUKKC54cMB3CPat8Ec7yi4Rnhu
+    KdvmUX6yuDEsC4ia5wLaPQEsAiGWopjeXGDxNS7nxAauZC/t8R6iZ6g+APq1zS4T
+    /Kz48c609CZ8ryEKQtLgnKSNnJBYFf7wz7iVblcXl4idvL8kUbucw+giKiewTgGb
+    g8nCBn2PQ9JXWPr39LqaTt46qhaPRoZU1e9LWoR0EGAeuQrmwmT1m4LTQLUKlp4T
+    3iuSapgeOwfLULOkd5bCDuvQFclnebVuLVp77wEM3UsfxVaknnuKZNlig+arkhZp
+    YOpUYQYYS7GE+/tTxP8sxIH6pVha2G/Qe7vGs6HQG0hTAgMBAAGjUzBRMB0GA1Ud
+    DgQWBBRIDfz0SYxyVKHB5OqSag86ktrIODAfBgNVHSMEGDAWgBRIDfz0SYxyVKHB
+    5OqSag86ktrIODAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCX
+    +hCBvBud9ph3p8FAKn1IntcmnC4H9BMDAwGM/QifgVVNRFe9hJJes2tKdVemYDk1
+    kgqRoZEpTapqvLT8Iekd+h15uvP1e2BXzdwhcS67rActsbtksfL8h8q6NWXVWKQO
+    9qARpzaCapIQ4BJTQnxTXlT9sqPyqnrqGQqTFoN5j71WELn3ETLeiWKwWjECkWx/
+    bql3pyGKnPORP+7OF0gJDDkdS+Vwuh3S3E8g5K8osXTgqL71AIabfRvu0TDFpy0b
+    /qfdxJfe5tS6sh1W8FaEgKYEyZQOVRa6wXzm8AkgaxlUcl9vVzmaoernxhn6sWCN
+    95UUKv3iblFl7yB8vGmr
+    -----END CERTIFICATE-----
+
+  edc-consumer.cert: |
+    -----BEGIN CERTIFICATE-----
+    MIIDazCCAlOgAwIBAgIULRtsNKCEIXeJcpBg28vr6UgyfbIwDQYJKoZIhvcNAQEL
+    BQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM
+    GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMzAyMTMyMTE0NDlaFw0zMzAy
+    MTAyMTE0NDlaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEw
+    HwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEB
+    AQUAA4IBDwAwggEKAoIBAQDRl5vqQTWBNDFqQonUKKC54cMB3CPat8Ec7yi4Rnhu
+    KdvmUX6yuDEsC4ia5wLaPQEsAiGWopjeXGDxNS7nxAauZC/t8R6iZ6g+APq1zS4T
+    /Kz48c609CZ8ryEKQtLgnKSNnJBYFf7wz7iVblcXl4idvL8kUbucw+giKiewTgGb
+    g8nCBn2PQ9JXWPr39LqaTt46qhaPRoZU1e9LWoR0EGAeuQrmwmT1m4LTQLUKlp4T
+    3iuSapgeOwfLULOkd5bCDuvQFclnebVuLVp77wEM3UsfxVaknnuKZNlig+arkhZp
+    YOpUYQYYS7GE+/tTxP8sxIH6pVha2G/Qe7vGs6HQG0hTAgMBAAGjUzBRMB0GA1Ud
+    DgQWBBRIDfz0SYxyVKHB5OqSag86ktrIODAfBgNVHSMEGDAWgBRIDfz0SYxyVKHB
+    5OqSag86ktrIODAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCX
+    +hCBvBud9ph3p8FAKn1IntcmnC4H9BMDAwGM/QifgVVNRFe9hJJes2tKdVemYDk1
+    kgqRoZEpTapqvLT8Iekd+h15uvP1e2BXzdwhcS67rActsbtksfL8h8q6NWXVWKQO
+    9qARpzaCapIQ4BJTQnxTXlT9sqPyqnrqGQqTFoN5j71WELn3ETLeiWKwWjECkWx/
+    bql3pyGKnPORP+7OF0gJDDkdS+Vwuh3S3E8g5K8osXTgqL71AIabfRvu0TDFpy0b
+    /qfdxJfe5tS6sh1W8FaEgKYEyZQOVRa6wXzm8AkgaxlUcl9vVzmaoernxhn6sWCN
+    95UUKv3iblFl7yB8vGmr
+    -----END CERTIFICATE-----

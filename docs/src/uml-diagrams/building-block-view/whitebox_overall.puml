@@ -1,7 +1,3 @@
-The interfaces show how the components interact with each other and which interfaces the IRS is providing.
-
-Component Diagram
-
 @startuml
 skinparam monochrome true
 skinparam shadowing false

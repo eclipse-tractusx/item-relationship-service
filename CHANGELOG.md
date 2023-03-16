@@ -26,6 +26,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Job creation validates ``aspects`` by using models available in semantic hub or locally provided.
 
+## [2.2.1] - 2023-03-15
+### Fixed
+- Property "measurementUnit" of AssemblyPartRelationship can now be a String or a Map. According to the latest model, it is supposed to be a String, but due to varying test data, IRS supports both variants.
+- EDC Catalog IDs are now being URL decoded before usage
+
 ## [2.2.0] - 2023-01-20
 ### Added
 - Added new job parameter flag "lookupBPNs" which toggles lookup of BPN numbers using the configured BPN URL
@@ -51,10 +56,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - IRS API now requires 'view_irs' resource access inside Keycloak JWT token.
 - New 2.0.0 version of IRS API. Main goal was to remove 'job' prefix from attribute names
-    - change 'jobId' to 'id' in GET and POST calls
-    - change 'jobState' to 'state' in GET calls
-    - change 'jobCompleted' to 'completedOn' in GET calls
-    - change 'jobId' to 'id' and 'jobState' to 'state' in callback URI variables
+  - change 'jobId' to 'id' in GET and POST calls
+  - change 'jobState' to 'state' in GET calls
+  - change 'jobCompleted' to 'completedOn' in GET calls
+  - change 'jobId' to 'id' and 'jobState' to 'state' in callback URI variables
 
 ## [1.6.0] - 2022-11-25
 ### Added
@@ -67,7 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.5.0] - 2022-11-11
 ### Added
-- Added new parameters 'startedOn' and 'jobCompleted' to Job status response 
+- Added new parameters 'startedOn' and 'jobCompleted' to Job status response
 
 ### Changed
 - Updated Spring Boot to 2.7.5 and Spring Security (Web and OAuth2 Client) dependencies to 5.7.5 due to CVEs
@@ -82,7 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - BPDM URL (*env:BPDM_URL*) is now configurable
 - SemanticsHub URL (*env:SEMANTICSHUB_URL*) and default URNs (*env:SEMANTICSHUB_DEFAULT_URNS*) are now configurable
-- Added an administration guide covering installation and configuration topics (TRI-593) 
+- Added an administration guide covering installation and configuration topics (TRI-593)
 - **Tombstones** Tombstone contains ProcessStep in ProcessingError
 - Added new optional parameter 'callbackUrl' to Job registration request
 
@@ -165,6 +170,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.3.1...HEAD
 [2.3.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.3.0...2.3.1
 [2.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.2.0...2.3.0
+[2.2.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.1.0...2.2.0
 [2.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.6.0...2.0.0
