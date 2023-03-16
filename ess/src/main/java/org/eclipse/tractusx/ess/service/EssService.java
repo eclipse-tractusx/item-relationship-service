@@ -47,6 +47,7 @@ public class EssService {
 
     private final IrsFacade irsFacade;
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
+    private final EssRecursiveNotificationHandler recursiveNotificationHandler;
 
     public JobHandle startIrsJob(final RegisterBpnInvestigationJob request) {
         final JobHandle jobHandle = irsFacade.startIrsJob(request.getGlobalAssetId(), request.getBomLifecycle());
@@ -95,8 +96,11 @@ public class EssService {
 
             final SupplyChainImpacted supplyChainImpacted = notificationResult.map(SupplyChainImpacted::fromString)
                                                                               .orElse(SupplyChainImpacted.UNKNOWN);
-            bpnInvestigationJobCache.store(job.getJobSnapshot().getJob().getId(),
-                    job.update(job.getJobSnapshot(), supplyChainImpacted));
+            UUID jobId = job.getJobSnapshot().getJob().getId();
+
+            bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted));
+            recursiveNotificationHandler.handleNotification(jobId, supplyChainImpacted);
+
         });
     }
 

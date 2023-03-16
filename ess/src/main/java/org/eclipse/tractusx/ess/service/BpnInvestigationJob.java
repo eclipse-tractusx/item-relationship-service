@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,7 @@ import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Summary;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Object to store in cache
@@ -54,16 +56,7 @@ public class BpnInvestigationJob {
     }
 
     public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain) {
-        final Optional<SupplyChainImpacted> previousSupplyChain = this.getJobSnapshot()
-                                                                      .getSubmodels()
-                                                                      .stream()
-                                                                      .filter(sub -> SUPPLY_CHAIN_ASPECT_TYPE.equals(
-                                                                              sub.getAspectType()))
-                                                                      .map(sub -> sub.getPayload()
-                                                                                     .get("supplyChainImpacted"))
-                                                                      .map(Object::toString)
-                                                                      .map(SupplyChainImpacted::fromString)
-                                                                      .findFirst();
+        final Optional<SupplyChainImpacted> previousSupplyChain = getSupplyChainImpacted();
 
         final SupplyChainImpacted supplyChainImpacted = previousSupplyChain.map(
                 prevSupplyChain -> prevSupplyChain.or(newSupplyChain)).orElse(newSupplyChain);
@@ -71,6 +64,17 @@ public class BpnInvestigationJob {
         this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted);
         this.jobSnapshot = extendSummary(this.jobSnapshot);
         return this;
+    }
+
+    /* package */ Optional<SupplyChainImpacted> getSupplyChainImpacted() {
+        return this.getJobSnapshot()
+                   .getSubmodels()
+                   .stream()
+                   .filter(sub -> SUPPLY_CHAIN_ASPECT_TYPE.equals(sub.getAspectType()))
+                   .map(sub -> sub.getPayload().get("supplyChainImpacted"))
+                   .map(Object::toString)
+                   .map(SupplyChainImpacted::fromString)
+                   .findFirst();
     }
 
     private Jobs extendSummary(final Jobs irsJob) {
