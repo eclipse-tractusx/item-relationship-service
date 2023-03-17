@@ -396,21 +396,27 @@ For information on how to run the application locally, please check the README d
 
 ### Isolated environment
 
-The isolated environment contains the IRS as well as the surrounding services, excluding the external IAM.
+The isolated environment contains the IRS as well as all surrounding services.
 
 ![arc42_016](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_016.png)
+
+### Development environment
+
+The development environment contains the IRS as well as the essential surrounding services, excluding the external IAM.
+
+![arc42_017](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_017.png)
 
 ### Integrated environment
 
 The integrated environment contains the IRS and is integrated with the rest of the Catena-X network.
 
-![arc42_017](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_017.png)
+![arc42_018](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_018.png)
 
 ## Level 1 - IRS application
 
 This section focuses only on the IRS itself, detached from its neighbors. It shows the resources deployed in Kubernetes for the IRS.
 
-![arc42_018](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_018.png)
+![arc42_019](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_019.png)
 
 ### Pod
 
@@ -434,11 +440,11 @@ The ingress uses a reverse proxy to provide specified Service ports to the inter
 
 ### Domain entity model
 
-![arc42_019](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_019.png)
+![arc42_020](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_020.png)
 
 ### Domain model
 
-![arc42_020](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_020.png)
+![arc42_021](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_021.png)
 
 ### API Model
 
@@ -457,15 +463,15 @@ A job can be in one of the following states:
 | COMPLETED | The job has completed. See the job response for details on the data. |
 | ERROR | The job could not be processed correctly by the IRS due to a technical problem. |
 
-![arc42_021](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_021.png)
+![arc42_022](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_022.png)
 
 ### Job Store Datamodel
 
-![arc42_022](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_022.png)
+![arc42_023](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_023.png)
 
 ### Job Response  Datamodel
 
-![arc42_023](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_023.png)
+![arc42_024](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_024.png)
 
 ```json
 {
@@ -638,7 +644,7 @@ The hexagonal architecture divides a system into several loosely-coupled interch
 
 For the IRS, this means decoupling the application logic from components like the BLOB store, the REST API controllers or the AAS client connection. With an interface between the parts (so-called port), it is easy to switch to other implementations, e.g. if you want to change the persistence implementation. No changes to the application logic will be necessary.
 
-![arc42_024](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_024.png)
+![arc42_025](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_025.png)
 
 ## "Under-the-hood" concepts
 
