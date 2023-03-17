@@ -57,3 +57,9 @@ Create a new application in ArgoCD and point it to your repository / Helm chart 
 ## Configuration
 
 A detailed instruction on how to configure the IRS and EDC can be found here: [Administration Guide](https://eclipse-tractusx.github.io/item-relationship-service/docs/administration/administration-guide.html)
+
+## Local Installation
+IRS provides a local setup which can be deployed to kubernetes.
+This setup includes all third-party services which IRS uses and interacts with.
+
+Instructions can be found here [README.md](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/charts/full-irs/README.md).
