@@ -55,7 +55,6 @@ jobs:
           KEYCLOAK_CLIENT_ID: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_ID }}
           KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_SECRET }}
           GLOBAL_ASSET_ID: ${{ github.event.inputs.global-asset-id || 'urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454' }}
-          TEST_EXECUTION_TICKET: ${{ github.event.inputs.execution-ticket || 'TRI-1180' }}
         run: |
           python -m pytest api-tests/irs-api-tests.tavern.yaml --junitxml=tavern-results.xml
 
@@ -64,6 +63,7 @@ jobs:
         env:
           JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
           JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
+          TEST_EXECUTION_TICKET: ${{ github.event.inputs.execution-ticket || 'TRI-1180' }}
         # Remove tokens and upload the tavern results to JIRA Test execution TRI-1180
         run: |
           sed "s/access_tok.*:s = '.*'//g" tavern-results.xml | sed "s/Authorization: Bearer .*/Authorization:/g" | uniq > result.xml
