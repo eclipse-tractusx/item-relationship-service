@@ -27,6 +27,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 
+/**
+ * Related Investigation Jobs Cache
+ */
 interface RelatedInvestigationJobsCache {
 
     void store(String notificationId, RelatedInvestigationJobs relatedInvestigationJobs);
@@ -35,6 +38,9 @@ interface RelatedInvestigationJobsCache {
 
 }
 
+/**
+ * Temporary in memory implementation
+ */
 @Service
 class InMemoryRelatedInvestigationJobsCache implements RelatedInvestigationJobsCache {
 

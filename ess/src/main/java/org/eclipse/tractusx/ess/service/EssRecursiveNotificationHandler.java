@@ -42,7 +42,7 @@ public class EssRecursiveNotificationHandler {
 
     private final EdcNotificationSender edcNotificationSender;
 
-    /* package */ void handleNotification(UUID finishedJobId, SupplyChainImpacted supplyChainImpacted) {
+    /* package */ void handleNotification(final UUID finishedJobId, final SupplyChainImpacted supplyChainImpacted) {
         final Optional<RelatedInvestigationJobs> relatedJobsId = relatedInvestigationJobsCache.findByRecursiveRelatedJobId(
                 finishedJobId);
 
@@ -57,8 +57,8 @@ public class EssRecursiveNotificationHandler {
         });
     }
 
-    private void sendNotificationAfterAllCompleted(RelatedInvestigationJobs relatedInvestigationJobs) {
-        List<BpnInvestigationJob> allInvestigationJobs = relatedInvestigationJobs.recursiveRelatedJobIds()
+    private void sendNotificationAfterAllCompleted(final RelatedInvestigationJobs relatedInvestigationJobs) {
+        final List<BpnInvestigationJob> allInvestigationJobs = relatedInvestigationJobs.recursiveRelatedJobIds()
                                                                                  .stream()
                                                                                  .map(bpnInvestigationJobCache::findByJobId)
                                                                                  .flatMap(Optional::stream)

@@ -60,7 +60,7 @@ public class EssRecursiveService {
         final Optional<String> incidentBpn = Optional.ofNullable(notification.getContent().get("incidentBpn"))
                                                      .map(Object::toString);
 
-        Optional<Object> concernedCatenaXIdsNotification = Optional.ofNullable(
+        final Optional<Object> concernedCatenaXIdsNotification = Optional.ofNullable(
                 notification.getContent().get("concernedCatenaXIds"));
 
         if (incidentBpn.isPresent() && localBpn.equals(incidentBpn.get())) {
@@ -70,7 +70,7 @@ public class EssRecursiveService {
             final String bpn = incidentBpn.get();
             final List<String> concernedCatenaXIds = getConcernedCatenaXIds(concernedCatenaXIdsNotification);
 
-            List<UUID> createdJobs = concernedCatenaXIds.stream()
+            final List<UUID> createdJobs = concernedCatenaXIds.stream()
                                                         .map(catenaXId -> essService.startIrsJob(
                                                                 RegisterBpnInvestigationJob.builder()
                                                                                            .incidentBpns(List.of(bpn))

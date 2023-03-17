@@ -50,7 +50,7 @@ public class EdcNotificationSender {
         this.essUrl = essUrl;
     }
 
-    public void sendEdcNotification(EdcNotification originalEdcNotification, SupplyChainImpacted supplyChainImpacted) {
+    public void sendEdcNotification(final EdcNotification originalEdcNotification, final SupplyChainImpacted supplyChainImpacted) {
         try {
             final String notificationId = UUID.randomUUID().toString();
             final String originalNotificationId = originalEdcNotification.getHeader().getNotificationId();

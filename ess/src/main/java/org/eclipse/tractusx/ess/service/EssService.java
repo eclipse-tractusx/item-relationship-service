@@ -96,7 +96,7 @@ public class EssService {
 
             final SupplyChainImpacted supplyChainImpacted = notificationResult.map(SupplyChainImpacted::fromString)
                                                                               .orElse(SupplyChainImpacted.UNKNOWN);
-            UUID jobId = job.getJobSnapshot().getJob().getId();
+            final UUID jobId = job.getJobSnapshot().getJob().getId();
 
             bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted));
             recursiveNotificationHandler.handleNotification(jobId, supplyChainImpacted);
