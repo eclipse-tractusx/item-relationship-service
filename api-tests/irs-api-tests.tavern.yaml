@@ -390,3 +390,71 @@ stages:
         - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
       headers:
         content-type: application/json
+
+
+---
+
+
+test_name: Make sure investigation job with valid globalAssetId and BPN is processed in submodel servers correctly in MOCK
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: register a BPN investigation with valid globalAssetId for processing in submodel servers in MOCK
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        globalAssetId: urn:uuid:1c7a25ea-0490-4944-b9c9-d8c666d47958
+        incidentBpns:
+          - BPNL00ARBITRARY7
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+    delay_after: 200
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          state: COMPLETED
+      verify_response_with:
+        - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
+      headers:
+        content-type: application/json
