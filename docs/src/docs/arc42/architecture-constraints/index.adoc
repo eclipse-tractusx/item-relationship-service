@@ -45,11 +45,9 @@ Orchestrating application components and integrating with other libraries/framew
 |The Federal Ministry for Economic Affairs and Energy (BMWi) promotes the project and provides funds for the project.
 |
 
-|Technology Readiness Level (TRL) for Products developed within the CX Consortia
+|Technology Readiness Level (TRL) for products developed within the CX Consortia
 |As IRS is a reference implementation, the Technology Readiness Level (TRL) must not be above TRL 8.
-a|Technology Readiness Level - TRL
-
-image::trl.png[]
+|
 
 |Operational Readiness for Release 1 has to be fulfilled
 |Minimum requirements for release 1 has to be archived. Later on, the Operational Readiness for Release has to be fulfilled accordingly to the requirements of the C-X consortia.

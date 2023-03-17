@@ -1,0 +1,28 @@
+@hostname = localhost
+@port = 4567
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+@token = eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJlZGMiLCJzdWIiOiJlZGMiLCJleHAiOjE2NzY2NDQxMzAsIm5iZiI6MTY3NjU1NzczMCwiaWF0IjoxNjc2NTU3NzMwLCJhdWQiOiJpZHNjOklEU19DT05ORUNUT1JTX0FMTCJ9.G940nTjxdjG1saeteX7coRau2cXL7ADU6t1CQurKIA47W1Rve7EGGiN8S2rvVeIDJ-_1QBCIfxahMQWa8vIMFY2mBOnc6eqGKYnpQQYeFXsqV2d3YT72KrJ6_-NZswptytE5N-7uxIYG4rRj_Iu3X6xpuQr7rAAlrCFH_Du7SWVka_Nz04mDPjLedECz8DBgXlCfNd9qDYbknKwOPwauUQOzA7LUJx50Oj1ydSgHdi76a8u_hHhcf4Ie67EFboqr5d_uD1ozwEAXgb0FhcrWpqBAI-zckq83foWmjc8JS66aIWK59fFOwra1PSLpZEa6m5mGcGVJxZBrHWsmi-PwfQ
+@grantType = client_credentials
+@tokenEndpoint = /token
+@client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer
+@scope = idsc:IDS_CONNECTOR_ATTRIBUTES_ALL
+
+### Get JWKS
+
+GET http://{{host}}/jwks.json HTTP/1.1
+Content-Type: {{contentType}}
+
+### Get OpenId Configuration
+
+GET http://{{host}}/.well-known/openid-configuration HTTP/1.1
+Content-Type: {{contentType}}
+
+### Get Token
+POST http://{{host}}{{tokenEndpoint}} HTTP/1.0
+Content-Type: application/x-www-form-urlencoded
+
+grant_type={{grantType}}
+&client_assertion_type={{client_assertion_type}}
+&client_assertion={{token}}
+&scope={{scope}}
