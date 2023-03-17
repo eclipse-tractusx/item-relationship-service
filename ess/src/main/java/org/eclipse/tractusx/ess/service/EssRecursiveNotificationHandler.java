@@ -49,12 +49,12 @@ public class EssRecursiveNotificationHandler {
         relatedJobsId.ifPresent(relatedJobs -> {
             if (SupplyChainImpacted.YES.equals(supplyChainImpacted)) {
                 edcNotificationSender.sendEdcNotification(relatedJobs.originalNotification(), supplyChainImpacted);
-                relatedInvestigationJobsCache.remove(relatedJobs.originalNotification().getHeader().getNotificationId());
+                relatedInvestigationJobsCache.remove(
+                        relatedJobs.originalNotification().getHeader().getNotificationId());
             } else {
                 sendNotificationAfterAllCompleted(relatedJobs);
             }
-}
-        );
+        });
     }
 
     private void sendNotificationAfterAllCompleted(RelatedInvestigationJobs relatedInvestigationJobs) {
@@ -69,14 +69,14 @@ public class EssRecursiveNotificationHandler {
                                                                         .flatMap(Optional::stream)
                                                                         .reduce(SupplyChainImpacted.NO,
                                                                                 SupplyChainImpacted::or);
-            edcNotificationSender.sendEdcNotification(relatedInvestigationJobs.originalNotification(),
-                    finalResult);
+            edcNotificationSender.sendEdcNotification(relatedInvestigationJobs.originalNotification(), finalResult);
         }
 
     }
 
-
     private boolean checkAllFinished(final List<BpnInvestigationJob> allInvestigationJobs) {
-        return allInvestigationJobs.stream().allMatch(bpnInvestigationJob -> bpnInvestigationJob.getSupplyChainImpacted().isPresent());
+        return allInvestigationJobs.stream()
+                                   .allMatch(bpnInvestigationJob -> bpnInvestigationJob.getSupplyChainImpacted()
+                                                                                       .isPresent());
     }
 }

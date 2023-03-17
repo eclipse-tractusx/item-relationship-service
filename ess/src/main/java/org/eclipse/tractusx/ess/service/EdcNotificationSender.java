@@ -32,6 +32,9 @@ import org.eclipse.tractusx.edc.model.notification.EdcNotificationHeader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+/**
+ * Helper service to send EDC notification on recursive flow
+ */
 @Service
 @Slf4j
 public class EdcNotificationSender {
@@ -41,8 +44,7 @@ public class EdcNotificationSender {
     private final String essUrl;
 
     public EdcNotificationSender(final EdcSubmodelFacade edcSubmodelFacade,
-            @Value("${ess.localBpn}") final String localBpn,
-            @Value("${ess.irs.url}") final String essUrl) {
+            @Value("${ess.localBpn}") final String localBpn, @Value("${ess.irs.url}") final String essUrl) {
         this.edcSubmodelFacade = edcSubmodelFacade;
         this.localBpn = localBpn;
         this.essUrl = essUrl;
@@ -61,7 +63,8 @@ public class EdcNotificationSender {
 
             final var response = edcSubmodelFacade.sendNotification(recipientUrl, "ess-response-asset", edcRequest);
             if (!response.deliveredSuccessfully()) {
-                throw new EdcClientException("EDC Provider did not accept message with notificationId " + notificationId);
+                throw new EdcClientException(
+                        "EDC Provider did not accept message with notificationId " + notificationId);
             }
             log.info("Successfully sent response notification.");
         } catch (EdcClientException exception) {

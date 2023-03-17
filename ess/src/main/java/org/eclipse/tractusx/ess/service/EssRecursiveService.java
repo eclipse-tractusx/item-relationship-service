@@ -48,8 +48,7 @@ public class EssRecursiveService {
 
     /* package */ EssRecursiveService(final EssService essService,
             final RelatedInvestigationJobsCache relatedInvestigationJobsCache,
-            @Value("${ess.localBpn}") final String localBpn,
-            final EdcNotificationSender edcNotificationSender) {
+            @Value("${ess.localBpn}") final String localBpn, final EdcNotificationSender edcNotificationSender) {
         this.essService = essService;
         this.relatedInvestigationJobsCache = relatedInvestigationJobsCache;
         this.localBpn = localBpn;
@@ -61,31 +60,28 @@ public class EssRecursiveService {
         final Optional<String> incidentBpn = Optional.ofNullable(notification.getContent().get("incidentBpn"))
                                                      .map(Object::toString);
 
-        Optional<Object> concernedCatenaXIdsNotification = Optional.ofNullable(notification.getContent().get("concernedCatenaXIds"));
+        Optional<Object> concernedCatenaXIdsNotification = Optional.ofNullable(
+                notification.getContent().get("concernedCatenaXIds"));
 
         if (incidentBpn.isPresent() && localBpn.equals(incidentBpn.get())) {
             edcNotificationSender.sendEdcNotification(notification, SupplyChainImpacted.YES);
         } else if (concernedCatenaXIdsNotification.isPresent() && concernedCatenaXIdsNotification.get() instanceof List
                 && incidentBpn.isPresent()) {
             final String bpn = incidentBpn.get();
-                    final List<String> concernedCatenaXIds = getConcernedCatenaXIds(concernedCatenaXIdsNotification);
+            final List<String> concernedCatenaXIds = getConcernedCatenaXIds(concernedCatenaXIdsNotification);
 
-                    List<UUID> createdJobs = concernedCatenaXIds.stream()
-                                                                .map(catenaXId -> essService.startIrsJob(
-                                                                        RegisterBpnInvestigationJob.builder()
-                                                                                                   .incidentBpns(
-                                                                                                           List.of(bpn))
-                                                                                                   .globalAssetId(
-                                                                                                           catenaXId)
-                                                                                                   .build()))
-                                                                .map(JobHandle::getId)
-                                                                .toList();
-                    relatedInvestigationJobsCache.store(
-                            notification.getHeader().getNotificationId(),
-                            new RelatedInvestigationJobs(notification, createdJobs));
-            }
+            List<UUID> createdJobs = concernedCatenaXIds.stream()
+                                                        .map(catenaXId -> essService.startIrsJob(
+                                                                RegisterBpnInvestigationJob.builder()
+                                                                                           .incidentBpns(List.of(bpn))
+                                                                                           .globalAssetId(catenaXId)
+                                                                                           .build()))
+                                                        .map(JobHandle::getId)
+                                                        .toList();
+            relatedInvestigationJobsCache.store(notification.getHeader().getNotificationId(),
+                    new RelatedInvestigationJobs(notification, createdJobs));
         }
-
+    }
 
     @NotNull
     private static List<String> getConcernedCatenaXIds(final Optional<Object> concernedCatenaXIdsNotification) {
