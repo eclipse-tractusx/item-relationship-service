@@ -109,24 +109,6 @@ class MockedNotificationReceiverEndpointTest {
                 () -> testee.receiveNotification(request));
     }
 
-    @Test
-    @WithMockUser(authorities = "view_irs")
-    void shouldReceiveNotificationAndCallRecursiveAndSendMockedNotificationResult() throws Exception {
-        final String bpn = "BPN1";
-        when(edcDiscoveryMockConfig.getMockEdcResult()).thenReturn(Map.of(bpn, SupplyChainImpacted.NO));
-        when(essService.startIrsJob(any())).thenReturn(JobHandle.builder().id(UUID.randomUUID()).build());
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
-
-        List<String> concernedCatenaXIds = List.of("cat1", "cat2");
-        testee.receiveRecursiveNotification(EdcNotification.builder().header(validHeader())
-                                                  .content(Map.of("incidentBpn", bpn, "concernedCatenaXIds", concernedCatenaXIds)).build());
-
-        verify(essService, times(2)).startIrsJob(jobArgumentCaptor.capture());
-
-        assertThat(jobArgumentCaptor.getAllValues().get(0).getGlobalAssetId()).isEqualTo("cat1");
-        assertThat(jobArgumentCaptor.getAllValues().get(1).getGlobalAssetId()).isEqualTo("cat2");
-    }
-
     EdcNotificationHeader validHeader() {
         return EdcNotificationHeader.builder()
                                       .notificationId(UUID.randomUUID().toString())

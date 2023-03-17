@@ -51,8 +51,8 @@ class EssServiceTest {
 
     private final IrsFacade irsFacade = mock(IrsFacade.class);
     private final BpnInvestigationJobCache bpnInvestigationJobCache = new InMemoryBpnInvestigationJobCache();
-
-    private final EssService essService = new EssService(irsFacade, bpnInvestigationJobCache);
+    private final EssRecursiveNotificationHandler recursiveNotificationHandler = mock(EssRecursiveNotificationHandler.class);
+    private final EssService essService = new EssService(irsFacade, bpnInvestigationJobCache, recursiveNotificationHandler);
 
     @Test
     void shouldSuccessfullyStartJobAndReturnWithExtendedSubmodelList() {
