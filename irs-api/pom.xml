@@ -59,7 +59,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- Update snakeyaml manually to avoid vulnerability CVE-2020-13936; can be removed after Spring updates their dependency -->
+        <!-- Update snakeyaml manually to avoid vulnerability CVE-2022-1471; can be removed once spring updates their dependency -->
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
