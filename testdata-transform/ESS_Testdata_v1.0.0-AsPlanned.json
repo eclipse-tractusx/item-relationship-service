@@ -472,6 +472,206 @@
           "childParts": []
         }
       ]
+    },
+    {
+      "catenaXId": "urn:uuid:1c7a25ea-0490-4944-b9c9-d8c666d47958",
+      "bpnl": "BPNL00ARBITRARY4",
+      "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
+        {
+          "validityPeriod": {
+            "validFrom": "2019-04-04T03:19:03.000Z",
+            "validTo": "2024-12-29T10:25:12.000Z"
+          },
+          "catenaXId": "urn:uuid:1c7a25ea-0490-4944-b9c9-d8c666d47958",
+          "partTypeInformation": {
+            "manufacturerPartId": "ZX-55",
+            "classification": "product",
+            "nameAtManufacturer": "Vehicle Model A"
+          }
+        }
+      ],
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:1c7a25ea-0490-4944-b9c9-d8c666d47958",
+          "sites": [
+            {
+              "functionValidUntil": "2025-02-08T04:30:48.000Z",
+              "function": "production",
+              "functionValidFrom": "2019-08-21T02:10:36.000Z",
+              "catenaXSiteId": "BPNS000004711DMY"
+            }
+          ]
+        }
+      ],
+      "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:1c7a25ea-0490-4944-b9c9-d8c666d47958",
+          "childParts": [
+            {
+              "quantity": {
+                "quantityNumber": "1",
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:piece"
+                }
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:2190e4b8-63ee-411d-bf57-6cdc495bc1df"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:2190e4b8-63ee-411d-bf57-6cdc495bc1df",
+      "bpnl": "BPNL00ARBITRARY5",
+      "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
+        {
+          "validityPeriod": {
+            "validFrom": "2016-12-09T05:06:53.000Z",
+            "validTo": "2027-09-16T00:32:51.000Z"
+          },
+          "catenaXId": "urn:uuid:2190e4b8-63ee-411d-bf57-6cdc495bc1df",
+          "partTypeInformation": {
+            "manufacturerPartId": "38049661-08",
+            "classification": "product",
+            "nameAtManufacturer": "OEM A High Voltage Battery"
+          }
+        }
+      ],
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:2190e4b8-63ee-411d-bf57-6cdc495bc1df",
+          "sites": [
+            {
+              "functionValidUntil": "2029-03-01T06:04:34.000Z",
+              "function": "production",
+              "functionValidFrom": "2018-02-05T09:47:59.000Z",
+              "catenaXSiteId": "BPNS000004711DMY"
+            }
+          ]
+        }
+      ],
+      "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:2190e4b8-63ee-411d-bf57-6cdc495bc1df",
+          "childParts": [
+            {
+              "quantity": {
+                "quantityNumber": "6",
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:piece"
+                }
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:3d61ada2-1a50-42a0-b411-40a932dd56cc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:3d61ada2-1a50-42a0-b411-40a932dd56cc",
+      "bpnl": "BPNL00ARBITRARY6",
+      "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
+        {
+          "validityPeriod": {
+            "validFrom": "2014-03-22T06:27:39.000Z",
+            "validTo": "2027-02-12T02:27:05.000Z"
+          },
+          "catenaXId": "urn:uuid:3d61ada2-1a50-42a0-b411-40a932dd56cc",
+          "partTypeInformation": {
+            "manufacturerPartId": "8840838-04",
+            "classification": "product",
+            "nameAtManufacturer": "HV Modul"
+          }
+        }
+      ],
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:3d61ada2-1a50-42a0-b411-40a932dd56cc",
+          "sites": [
+            {
+              "functionValidUntil": "2025-10-14T02:16:37.000Z",
+              "function": "production",
+              "functionValidFrom": "2014-07-09T06:57:44.000Z",
+              "catenaXSiteId": "BPNS000004711DMY"
+            }
+          ]
+        }
+      ],
+      "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:3d61ada2-1a50-42a0-b411-40a932dd56cc",
+          "childParts": [
+            {
+              "quantity": {
+                "quantityNumber": "10",
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:piece"
+                }
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:52207a60-e541-4bea-8ec4-3172f09e6dbb"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:52207a60-e541-4bea-8ec4-3172f09e6dbb",
+      "bpnl": "BPNL00ARBITRARY7",
+      "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned": [
+        {
+          "validityPeriod": {
+            "validFrom": "2015-06-20T09:16:05.000Z",
+            "validTo": "2032-12-30T02:19:28.000Z"
+          },
+          "catenaXId": "urn:uuid:52207a60-e541-4bea-8ec4-3172f09e6dbb",
+          "partTypeInformation": {
+            "manufacturerPartId": "8840374-09",
+            "classification": "product",
+            "nameAtManufacturer": "ZB ZELLE"
+          }
+        }
+      ],
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:52207a60-e541-4bea-8ec4-3172f09e6dbb",
+          "sites": [
+            {
+              "functionValidUntil": "2032-06-15T14:18:34.000Z",
+              "function": "production",
+              "functionValidFrom": "2014-12-27T02:28:17.000Z",
+              "catenaXSiteId": "BPNS000004711DMY"
+            }
+          ]
+        }
+      ],
+      "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:52207a60-e541-4bea-8ec4-3172f09e6dbb",
+          "childParts": [
+            {
+              "quantity": {
+                "quantityNumber": "1",
+                "measurementUnit": {
+                  "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
+                  "lexicalValue": "unit:piece"
+                }
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "childCatenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
