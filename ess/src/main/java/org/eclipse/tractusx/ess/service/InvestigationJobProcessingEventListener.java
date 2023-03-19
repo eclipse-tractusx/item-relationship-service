@@ -59,17 +59,20 @@ class InvestigationJobProcessingEventListener {
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
     private final String localBpn;
     private final String localEdcEndpoint;
+    private final List<String> mockRecursiveEdcAssets;
 
     /* package */ InvestigationJobProcessingEventListener(final IrsFacade irsFacade,
             final EdcDiscoveryFacade edcDiscoveryFacade, final EdcSubmodelFacade edcSubmodelFacade,
             final BpnInvestigationJobCache bpnInvestigationJobCache, @Value("${ess.localBpn}") final String localBpn,
-            @Value("${ess.localEdcEndpoint}") final String localEdcEndpoint) {
+            @Value("${ess.localEdcEndpoint}") final String localEdcEndpoint,
+            @Value("${ess.discovery.mockRecursiveEdcAsset}") final List<String> mockRecursiveEdcAssets) {
         this.irsFacade = irsFacade;
         this.edcDiscoveryFacade = edcDiscoveryFacade;
         this.edcSubmodelFacade = edcSubmodelFacade;
         this.bpnInvestigationJobCache = bpnInvestigationJobCache;
         this.localBpn = localBpn;
         this.localEdcEndpoint = localEdcEndpoint;
+        this.mockRecursiveEdcAssets = mockRecursiveEdcAssets;
     }
 
     @Async
@@ -148,6 +151,7 @@ class InvestigationJobProcessingEventListener {
 
     private EdcNotification edcRequest(final String notificationId, final String recipientBpn,
             final List<String> incidentBpns, final List<String> globalAssetIds) {
+        final boolean isRecursiveAsset = mockRecursiveEdcAssets.contains(recipientBpn);
         final var header = EdcNotificationHeader.builder()
                                                 .notificationId(notificationId)
                                                 .recipientBpn(recipientBpn)
@@ -155,7 +159,7 @@ class InvestigationJobProcessingEventListener {
                                                 .senderEdc(localEdcEndpoint)
                                                 .replyAssetId("ess-response-asset")
                                                 .replyAssetSubPath("")
-                                                .notificationType("ess-supplier-request")
+                                                .notificationType(isRecursiveAsset ? "ess-supplier-recursive-request" : "ess-supplier-request")
                                                 .build();
         final var content = Map.of("incidentBpn", incidentBpns.get(0), "concernedCatenaXIds", globalAssetIds);
 

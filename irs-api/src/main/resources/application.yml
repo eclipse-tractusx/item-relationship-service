@@ -189,6 +189,10 @@ ess:
       BPNL00ARBITRARY2: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
       BPNL00ARBITRARY3: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
       BPNL00000003AYRE: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
+      BPNL00ARBITRARY4: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
+      BPNL00ARBITRARY5: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
+      BPNL00ARBITRARY6: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
+      BPNL00ARBITRARY7: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.dev.demo.catena-x.net}
     mockEdcResult:
       BPNL00000003B3NX: "NO"
       BPNL00ARBITRARY1: "NO"
@@ -196,3 +200,8 @@ ess:
       BPNL00ARBITRARY3: "NO"
       BPNL00000003AYRE: "NO"
       BPNL00000003B0Q0: "NO"
+      BPNL00ARBITRARY7: "YES"
+    mockRecursiveEdcAsset:
+      - BPNL00ARBITRARY4
+      - BPNL00ARBITRARY5
+      - BPNL00ARBITRARY6

@@ -21,6 +21,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -48,32 +49,31 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class InvestigationJobProcessingEventListenerTest {
 
     private final IrsFacade irsFacade = mock(IrsFacade.class);
     private final EdcDiscoveryFacade edcDiscoveryFacade = mock(EdcDiscoveryFacade.class);
     private final EdcSubmodelFacade edcSubmodelFacade = mock(EdcSubmodelFacade.class);
     private final BpnInvestigationJobCache bpnInvestigationJobCache = mock(BpnInvestigationJobCache.class);
+    private final UUID jobId = UUID.randomUUID();
+    private final UUID recursiveJobId = UUID.randomUUID();
+    private final String bpnRecursiveEdcNotification = "BPN000RECURSIVE";
 
     private final InvestigationJobProcessingEventListener jobProcessingEventListener = new InvestigationJobProcessingEventListener(
-            irsFacade, edcDiscoveryFacade, edcSubmodelFacade, bpnInvestigationJobCache, "", "");
+            irsFacade, edcDiscoveryFacade, edcSubmodelFacade, bpnInvestigationJobCache, "", "", List.of(bpnRecursiveEdcNotification));
 
-    private final UUID jobId = UUID.randomUUID();
+    @Captor
+    ArgumentCaptor<EdcNotification> edcNotificationCaptor;
 
     @BeforeEach
     void mockInit() {
-        final Jobs jobs = Jobs.builder()
-                              .job(Job.builder()
-                                      .id(jobId)
-                                      .globalAssetId(GlobalAssetIdentification.of("dummyGlobalAssetId"))
-                                      .build())
-                              .shells(List.of(createShell(UUID.randomUUID().toString(), "bpn")))
-                              .build();
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, List.of("BPNS000000000DDD"));
-
-        when(bpnInvestigationJobCache.findByJobId(jobId)).thenReturn(Optional.of(bpnInvestigationJob));
-        when(irsFacade.getIrsJob(jobId.toString())).thenReturn(jobs);
+        createMockForJobIdAndShell(jobId, "bpn");
     }
 
     @Test
@@ -110,6 +110,27 @@ class InvestigationJobProcessingEventListenerTest {
         verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
     }
 
+    @Test
+    void shouldSendEdcRecursiveNotificationWhenJobCompleted() throws EdcClientException {
+        // given
+        createMockForJobIdAndShell(recursiveJobId, bpnRecursiveEdcNotification);
+        final String edcBaseUrl = "http://edc-server-url.com";
+        when(edcDiscoveryFacade.getEdcBaseUrl(anyString())).thenReturn(Optional.of(edcBaseUrl));
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+                () -> true);
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(recursiveJobId.toString(),
+                JobState.COMPLETED.name(), "");
+
+        // when
+        jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
+
+        // then
+        verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), anyString(),
+                edcNotificationCaptor.capture());
+        assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo("ess-supplier-recursive-request");
+        verify(this.bpnInvestigationJobCache, times(1)).store(eq(recursiveJobId), any(BpnInvestigationJob.class));
+    }
+
     private static AssetAdministrationShellDescriptor createShell(final String catenaXId, final String bpn) {
         return AssetAdministrationShellDescriptor.builder()
                                                  .globalAssetId(Reference.builder().value(List.of(catenaXId)).build())
@@ -118,6 +139,20 @@ class InvestigationJobProcessingEventListenerTest {
                                                                                                  .value(bpn)
                                                                                                  .build()))
                                                  .build();
+    }
+
+    private void createMockForJobIdAndShell(final UUID mockedJobId, final String mockedShell) {
+        final Jobs jobs = Jobs.builder()
+                              .job(Job.builder()
+                                      .id(mockedJobId)
+                                      .globalAssetId(GlobalAssetIdentification.of("dummyGlobalAssetId"))
+                                      .build())
+                              .shells(List.of(createShell(UUID.randomUUID().toString(), mockedShell)))
+                              .build();
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, List.of("BPNS000000000DDD"));
+
+        when(bpnInvestigationJobCache.findByJobId(mockedJobId)).thenReturn(Optional.of(bpnInvestigationJob));
+        when(irsFacade.getIrsJob(mockedJobId.toString())).thenReturn(jobs);
     }
 
 }
