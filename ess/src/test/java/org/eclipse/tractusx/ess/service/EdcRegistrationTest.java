@@ -60,9 +60,9 @@ class EdcRegistrationTest {
 
         testee.registerEdcAsset();
 
-        verify(restTemplate, times(2)).exchange(anyString(), Mockito.eq(HttpMethod.GET), any(),
+        verify(restTemplate, times(3)).exchange(anyString(), Mockito.eq(HttpMethod.GET), any(),
                 Mockito.eq(String.class));
-        verify(restTemplate, times(6)).exchange(anyString(), Mockito.eq(HttpMethod.POST), any(),
+        verify(restTemplate, times(9)).exchange(anyString(), Mockito.eq(HttpMethod.POST), any(),
                 Mockito.eq(String.class));
     }
 
@@ -73,7 +73,7 @@ class EdcRegistrationTest {
 
         testee.registerEdcAsset();
 
-        verify(restTemplate, times(2)).exchange(anyString(), Mockito.eq(HttpMethod.GET), any(),
+        verify(restTemplate, times(3)).exchange(anyString(), Mockito.eq(HttpMethod.GET), any(),
                 Mockito.eq(String.class));
         verify(restTemplate, never()).exchange(anyString(), Mockito.eq(HttpMethod.POST), any(),
                 Mockito.eq(String.class));
