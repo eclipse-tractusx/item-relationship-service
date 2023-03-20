@@ -39,7 +39,6 @@ public class EssRecursiveNotificationHandler {
 
     private final RelatedInvestigationJobsCache relatedInvestigationJobsCache;
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
-
     private final EdcNotificationSender edcNotificationSender;
 
     /* package */ void handleNotification(final UUID finishedJobId, final SupplyChainImpacted supplyChainImpacted) {
