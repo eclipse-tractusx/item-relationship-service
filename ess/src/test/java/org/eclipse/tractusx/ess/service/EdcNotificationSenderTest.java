@@ -41,9 +41,9 @@ class EdcNotificationSenderTest {
 
     private final EdcSubmodelFacade edcSubmodelFacade = mock(EdcSubmodelFacade.class);
     private final String localBpn = "BPNS000000000AAA";
-    private final String essUrl = "example.com/url";
+    private final String essLocalEdcEndpoint = "example.com/url";
 
-    private final EdcNotificationSender sender = new EdcNotificationSender(edcSubmodelFacade, localBpn, essUrl);
+    private final EdcNotificationSender sender = new EdcNotificationSender(edcSubmodelFacade, localBpn, essLocalEdcEndpoint);
 
     @Captor
     ArgumentCaptor<EdcNotification> notificationCaptor;
@@ -76,7 +76,4 @@ class EdcNotificationSenderTest {
 
         return EdcNotification.builder().header(header).build();
     }
-
-
-
 }

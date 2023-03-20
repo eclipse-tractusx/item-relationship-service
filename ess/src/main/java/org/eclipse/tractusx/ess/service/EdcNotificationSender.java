@@ -41,13 +41,13 @@ public class EdcNotificationSender {
 
     private final EdcSubmodelFacade edcSubmodelFacade;
     private final String localBpn;
-    private final String essUrl;
+    private final String essLocalEdcEndpoint;
 
     public EdcNotificationSender(final EdcSubmodelFacade edcSubmodelFacade,
-            @Value("${ess.localBpn}") final String localBpn, @Value("${ess.irs.url}") final String essUrl) {
+            @Value("${ess.localBpn}") final String localBpn, @Value("${ess.localEdcEndpoint}") final String essLocalEdcEndpoint) {
         this.edcSubmodelFacade = edcSubmodelFacade;
         this.localBpn = localBpn;
-        this.essUrl = essUrl;
+        this.essLocalEdcEndpoint = essLocalEdcEndpoint;
     }
 
     public void sendEdcNotification(final EdcNotification originalEdcNotification, final SupplyChainImpacted supplyChainImpacted) {
@@ -58,7 +58,7 @@ public class EdcNotificationSender {
             final String recipientUrl = originalEdcNotification.getHeader().getSenderEdc();
             final Map<String, Object> notificationContent = Map.of("result", supplyChainImpacted.getDescription());
 
-            final EdcNotification edcRequest = edcRequest(notificationId, originalNotificationId, essUrl, localBpn,
+            final EdcNotification edcRequest = edcRequest(notificationId, originalNotificationId, essLocalEdcEndpoint, localBpn,
                     recipientBpn, notificationContent);
 
             final var response = edcSubmodelFacade.sendNotification(recipientUrl, "ess-response-asset", edcRequest);
