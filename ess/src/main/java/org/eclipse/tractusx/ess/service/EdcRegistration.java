@@ -46,6 +46,8 @@ public class EdcRegistration {
 
     public static final String ASSET_ID_RESPONSE = "ess-response-asset";
     public static final String ASSET_ID_REQUEST = "notify-request-asset";
+    public static final String ASSET_ID_REQUEST_RECURSIVE = "notify-request-asset-recursive";
+    public static final String REGISTRATION_FINISHED = "Registration finished.";
     private final RestTemplate restTemplate;
     private final String edcProviderUrl;
     private final String essBaseUrl;
@@ -73,7 +75,7 @@ public class EdcRegistration {
             registerAsset(ASSET_ID_RESPONSE, "ess-supplier-response", "/ess/notification/receive");
             registerPolicy("1000", ASSET_ID_RESPONSE);
             registerContractDefinition("1000", ASSET_ID_RESPONSE);
-            log.info("Registration finished.");
+            log.info(REGISTRATION_FINISHED);
         }
 
         if (assetIsNotRegisteredYet(ASSET_ID_REQUEST)) {
@@ -81,7 +83,15 @@ public class EdcRegistration {
             registerAsset(ASSET_ID_REQUEST, "ess-supplier-request", "/ess/mock/notification/receive");
             registerPolicy("1001", ASSET_ID_REQUEST);
             registerContractDefinition("1001", ASSET_ID_REQUEST);
-            log.info("Registration finished.");
+            log.info(REGISTRATION_FINISHED);
+        }
+
+        if (assetIsNotRegisteredYet(ASSET_ID_REQUEST_RECURSIVE)) {
+            log.info("Recursive notification request receiver asset is not registered yet, starting registration.");
+            registerAsset(ASSET_ID_REQUEST_RECURSIVE, "ess-supplier-recursive-request", "/ess/notification/receive-recursive");
+            registerPolicy("1002", ASSET_ID_REQUEST_RECURSIVE);
+            registerContractDefinition("1002", ASSET_ID_REQUEST_RECURSIVE);
+            log.info(REGISTRATION_FINISHED);
         }
 
         log.info("Finishing EDC registration event listener.");

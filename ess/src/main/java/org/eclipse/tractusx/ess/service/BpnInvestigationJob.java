@@ -54,16 +54,7 @@ public class BpnInvestigationJob {
     }
 
     public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain) {
-        final Optional<SupplyChainImpacted> previousSupplyChain = this.getJobSnapshot()
-                                                                      .getSubmodels()
-                                                                      .stream()
-                                                                      .filter(sub -> SUPPLY_CHAIN_ASPECT_TYPE.equals(
-                                                                              sub.getAspectType()))
-                                                                      .map(sub -> sub.getPayload()
-                                                                                     .get("supplyChainImpacted"))
-                                                                      .map(Object::toString)
-                                                                      .map(SupplyChainImpacted::fromString)
-                                                                      .findFirst();
+        final Optional<SupplyChainImpacted> previousSupplyChain = getSupplyChainImpacted();
 
         final SupplyChainImpacted supplyChainImpacted = previousSupplyChain.map(
                 prevSupplyChain -> prevSupplyChain.or(newSupplyChain)).orElse(newSupplyChain);
@@ -71,6 +62,17 @@ public class BpnInvestigationJob {
         this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted);
         this.jobSnapshot = extendSummary(this.jobSnapshot);
         return this;
+    }
+
+    /* package */ Optional<SupplyChainImpacted> getSupplyChainImpacted() {
+        return this.getJobSnapshot()
+                   .getSubmodels()
+                   .stream()
+                   .filter(sub -> SUPPLY_CHAIN_ASPECT_TYPE.equals(sub.getAspectType()))
+                   .map(sub -> sub.getPayload().get("supplyChainImpacted"))
+                   .map(Object::toString)
+                   .map(SupplyChainImpacted::fromString)
+                   .findFirst();
     }
 
     private Jobs extendSummary(final Jobs irsJob) {

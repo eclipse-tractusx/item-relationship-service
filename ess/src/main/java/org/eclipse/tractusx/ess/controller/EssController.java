@@ -106,9 +106,9 @@ class EssController {
         return essService.startIrsJob(request);
     }
 
-    @Operation(description = "Return job with additional supplyChainImpacted informations.",
+    @Operation(description = "Return job with additional supplyChainImpacted information.",
                operationId = "getBPNInvestigation",
-               summary = "Return job with additional supplyChainImpacted informations.",
+               summary = "Return job with additional supplyChainImpacted information.",
                security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Environmental- and Social Standards" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",

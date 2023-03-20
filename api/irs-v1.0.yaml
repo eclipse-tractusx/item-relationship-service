@@ -67,7 +67,7 @@ paths:
         - Environmental- and Social Standards
   /ess/bpn/investigations/{id}:
     get:
-      description: Return job with additional supplyChainImpacted informations.
+      description: Return job with additional supplyChainImpacted information.
       operationId: getBPNInvestigation
       parameters:
         - description: Id of the job.
@@ -127,7 +127,7 @@ paths:
       security:
         - oAuth2:
             - profile email
-      summary: Return job with additional supplyChainImpacted informations.
+      summary: Return job with additional supplyChainImpacted information.
       tags:
         - Environmental- and Social Standards
   /ess/notification/receive:
