@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.edc.model.notification.EdcNotification;
