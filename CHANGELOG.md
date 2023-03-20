@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
+## [2.3.2] - 2023-03-20
+### Changed
+- Replace pandoc with downdoc for conversion asciidoc to markdown
+
+### Fixed
+- In AssemblyPartRelationship the ``measurementUnit`` can be both parsed from both string and object versions
+- Decode URLs for ``assetId`` to prevent bug that encoded ``assetId`` cannot be found in the catalog
+
 ## [2.3.1] - 2023-03-07
 ### Changed
 - Updated Spring Boot dependency to 3.0.3
