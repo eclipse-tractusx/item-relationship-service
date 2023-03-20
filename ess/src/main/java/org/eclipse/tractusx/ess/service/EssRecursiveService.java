@@ -21,6 +21,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -85,7 +86,9 @@ public class EssRecursiveService {
 
     @NotNull
     private static List<String> getConcernedCatenaXIds(final Optional<Object> concernedCatenaXIdsNotification) {
-        return ((List<String>) concernedCatenaXIdsNotification.get()).stream().collect(Collectors.toList());
-
+        final List<String> concernedCatenaXIds = new ArrayList<>();
+        concernedCatenaXIdsNotification.ifPresent(list -> concernedCatenaXIds.addAll(
+                ((List<String>) list).stream().toList()));
+        return concernedCatenaXIds;
     }
 }

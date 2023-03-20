@@ -59,7 +59,7 @@ class EdcNotificationSenderTest {
         sender.sendEdcNotification(edcNotification, SupplyChainImpacted.NO);
 
         // then
-        assertThat(notificationCaptor.getValue().getContent().get("result")).isEqualTo(SupplyChainImpacted.NO.getDescription());
+        assertThat(notificationCaptor.getValue().getContent()).containsEntry("result", SupplyChainImpacted.NO.getDescription());
 
     }
 
