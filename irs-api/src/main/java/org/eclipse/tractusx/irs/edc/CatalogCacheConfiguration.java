@@ -21,19 +21,17 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
-import java.time.Instant;
+import java.time.Duration;
 
-import lombok.Builder;
 import lombok.Data;
-import org.eclipse.dataspaceconnector.policy.model.Policy;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
-@Builder
 @Data
-public class CatalogItem {
-    private String assetPropId;
-    private String itemId;
-    private Policy policy;
-    private String connectorId;
-    private Instant validUntil;
+@Component
+@ConfigurationProperties(prefix = "edc.catalog.cache")
+public class CatalogCacheConfiguration {
+    private final Duration ttl;
+    private final long maxCachedItems;
 
 }

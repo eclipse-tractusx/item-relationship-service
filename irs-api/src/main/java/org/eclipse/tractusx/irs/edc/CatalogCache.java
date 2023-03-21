@@ -22,6 +22,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
  * Cache Facade which returns a ContractOffer. Either from cache or directly from the EDC if not found in Cache.
@@ -46,26 +48,36 @@ public interface CatalogCache {
 }
 
 @Slf4j
+@Service
 @RequiredArgsConstructor
 class InMemoryCatalogCache implements CatalogCache {
 
     private final Map<String, List<CatalogItem>> catalogCache = new HashMap<>();
     private final EDCCatalogFetcher catalogFetcher;
+    private final CatalogCacheConfiguration cacheConfig;
 
     @Override
     public CatalogItem getCatalogItem(final String connectorUrl, final String target) {
-        final Optional<CatalogItem> catalogItems = getItemFromCache(connectorUrl, target);
-        if (catalogItems.isEmpty()) {
-            return getOfferFromCatalog(connectorUrl, target).orElseThrow();
+        cleanupExpiredCacheValues();
+        Optional<CatalogItem> catalogItem = getItemFromCache(connectorUrl, target);
+        if (catalogItem.isPresent()) {
+            final CatalogItem item = catalogItem.get();
+            log.info("Retrieved Item from cache: '{}'", item);
+            return item;
+        } else {
+            log.info("Retrieving Catalog from connector '{}'", connectorUrl);
+            catalogItem = getOfferFromCatalog(connectorUrl, target);
+            catalogItem.ifPresent(item -> log.info("Retrieved Item from connector: '{}'", item));
+            return catalogItem.orElseThrow();
         }
-        return catalogItems.get();
     }
 
     private Optional<CatalogItem> getItemFromCache(final String connectorUrl, final String target) {
         if (catalogCache.containsKey(connectorUrl)) {
             return catalogCache.get(connectorUrl)
                                .stream()
-                               .filter(catalogItem -> catalogItem.getAssetPropId().equals(target))
+                               .filter(catalogItem -> catalogItem.getAssetPropId().equals(target)
+                                       && catalogItem.getValidUntil().isAfter(Instant.now()))
                                .findFirst();
         } else {
             return Optional.empty();
@@ -79,11 +91,62 @@ class InMemoryCatalogCache implements CatalogCache {
         if (catalogCache.containsKey(connectorUrl)) {
             catalogItems = catalogCache.get(connectorUrl);
         }
-        catalogItems.addAll(catalog);
+        final int listSize = catalog.size();
+        if (!cacheHasSpaceLeft(listSize)) {
+            removeOldestCacheValues(listSize);
+        }
+        catalogItems.addAll(catalog.stream().map(this::setTTL).toList());
+
         // TODO add logic to manage the cache size, rotation and TTL behaviour
         catalogCache.put(connectorUrl, catalogItems);
 
         return catalog.stream().filter(catalogItem -> catalogItem.getAssetPropId().equals(target)).findFirst();
+    }
+
+    private void cleanupExpiredCacheValues() {
+        catalogCache.keySet().forEach(this::removeIfExpired);
+    }
+
+    private void removeIfExpired(final String s) {
+        final List<CatalogItem> expiredItems = catalogCache.get(s)
+                                                           .stream()
+                                                           .filter(catalogItem -> catalogItem.getValidUntil()
+                                                                                             .isBefore(Instant.now()))
+                                                           .toList();
+        final int size = expiredItems.size();
+        if (size > 0) {
+            log.info("Found '{}' expired items. Removing '{}'", size, expiredItems);
+            catalogCache.get(s).removeIf(catalogItem -> catalogItem.getValidUntil().isBefore(Instant.now()));
+        }
+    }
+
+    private void removeOldestCacheValues(final int listSize) {
+        final List<CatalogItem> oldestCatalogItems = catalogCache.values()
+                                                                 .stream()
+                                                                 .flatMap(List::stream)
+                                                                 .sorted((o1, o2) -> (int) (
+                                                                         o1.getValidUntil().toEpochMilli() - o2.getValidUntil().toEpochMilli()))
+                                                                 .limit(listSize).toList();
+
+        log.info("Removing '{}' oldest Items: '{}'", oldestCatalogItems.size(), oldestCatalogItems);
+        // TODO validate that this actually removes the oldest items
+        catalogCache.values().forEach(catalogItems -> catalogItems.removeAll(oldestCatalogItems));
+    }
+
+    private boolean cacheHasSpaceLeft(final int listSize) {
+        final int cacheSize = catalogCache.keySet()
+                                          .stream()
+                                          .map(s -> catalogCache.get(s).size())
+                                          .mapToInt(Integer::intValue)
+                                          .sum();
+
+        return (cacheSize + listSize) <= cacheConfig.getMaxCachedItems();
+    }
+
+    private CatalogItem setTTL(final CatalogItem catalogItem) {
+        final Instant nowPlusTTL = Instant.now().plus(cacheConfig.getTtl());
+        catalogItem.setValidUntil(nowPlusTTL);
+        return catalogItem;
     }
 
 }
