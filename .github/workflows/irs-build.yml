@@ -153,7 +153,7 @@ jobs:
           IMAGE_NAME: irs-api
         if: env.DOCKER_HUB_USER != ''
         run: |
-          docker tag ${{ matrix.image }} $IMAGE_ID:${{ steps.version.outputs.image_tag }}
+          docker tag ${{ matrix.image }} ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.image_tag }}
           docker push ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.image_tag }}
 
       # https://github.com/peter-evans/dockerhub-description
