@@ -15,7 +15,6 @@ on:
       - 'testdata-transform/**'
       - 'testing/**'
       - 'uml-diagrams/**'
-      - 'README.md'
       - 'CHANGELOG.md'
   push:
     branches:
@@ -150,15 +149,25 @@ jobs:
       - name: Push image (DockerHub)
         env:
           DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+          IMAGE_NAMESPACE: tractusx
+          IMAGE_NAME: irs-api
         if: env.DOCKER_HUB_USER != ''
         run: |
-          IMAGE_ID=tractusx/${{ matrix.image }}
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          echo IMAGE_ID=$IMAGE_ID
-          
           docker tag ${{ matrix.image }} $IMAGE_ID:${{ steps.version.outputs.image_tag }}
-          docker push $IMAGE_ID:${{ steps.version.outputs.image_tag }}
+          docker push ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.image_tag }}
+
+      # https://github.com/peter-evans/dockerhub-description
+      - name: Update Docker Hub description
+        env:
+          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+          IMAGE_NAMESPACE: tractusx
+          IMAGE_NAME: irs-api
+        if: env.DOCKER_HUB_USER != '' && github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          repository: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}
 
   trigger-trivy-image-scan:
     needs:
