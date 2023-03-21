@@ -1,4 +1,4 @@
-# ![Item Relationship Service (IRS)](logo.png)
+# ![Item Relationship Service (IRS)](https://raw.githubusercontent.com/eclipse-tractusx/item-relationship-service/main/logo.png)
 
 [![Apache 2 License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/LICENSE)  
 [![Build](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/irs-build.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/irs-build.yml)
@@ -10,7 +10,7 @@
 [![OWASP Dependency Check](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml)
 [![Spotbugs](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml)
 [![Eclipse-dash](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml)
-[![Tavern IRS API test](https://github.com/catenax-ng/tx-item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/catenax-ng/tx-item-relationship-service/actions/workflows/tavern.yml)   
+[![Tavern IRS API test](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml)   
 
 ## What is the IRS?
 
@@ -43,50 +43,9 @@ The following subsection provides instructions for running the infrastructure on
 - API docs: http://localhost:8080/api/api-docs
 - API docs in yaml:  http://localhost:8080/api/api-docs.yaml
 
-### Local Helm deployment
+### Helm deployment
 
-#### Prerequisites
-
-- install rancher desktop
-- install kubectl
-- Credentials for external environments in [helm charts](charts/irs-environments/local/values.yaml) can be found in
-  IRS-KeePass
-  - registry.registry.dockerSecret
-  - edc.vault.hashicorp.token _(for provider and consumer data- and control-plane)_
-  - irs-helm.keycloak.oauth2.clientId
-  - irs-helm.keycloak.oauth2.clientSecret
-  - irs-helm.keycloak.oauth2.clientTokenUri
-  - irs-helm.keycloak.oauth2.jwkSetUri
-
-#### How to run
-
-- **Windows**  
-  In CMD or PowerShell execute from project root: `.\charts\irs-environments\local\start.bat`  
-  A new window will open to forward the ports to your local machine.
-  Do not close this window until you want to stop the local deployment
-
-- **Linux**  
-  Run the following commands from project root  
-  `./charts/irs-environments/local/start.sh`  
-  `./charts/irs-environments/local/forward-ports.sh`(in a separate terminal tab or window, this needs to stay open)  
-  `./charts/irs-environments/local/upload-testdata.sh`
-
-IRS will be available at http://localhost:10165
-
-#### How to stop
-
-`helm uninstall irs-local -n product-traceability-irs`
-
-### Accessing the secured API
-
-A valid access token is required to access every IRS endpoint and must be included in the Authorization header -
-otherwise **HTTP 401 Unauthorized** status is returned to the client.
-
-The IRS uses the configured Keycloak server to validate access tokens. By default, this is the Catena-X INT Keycloak
-instance. Get in contact with them to receive your client credentials.
-
-To obtain an access token, you can use the
-prepared [Postman collection](./testing/IRS%20DEMO%20Collection.postman_collection.json).
+see [INSTALL.md](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/INSTALL.md)
 
 ### Sample calls
 
@@ -120,9 +79,10 @@ curl -X 'GET' 'http://localhost:8080/irs/jobs/<jobID>' -H 'accept: application/j
 
 ## Licenses
 
-Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0) - see [LICENSE](./LICENSE)
+For used licenses, please see the [NOTICE](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/NOTICE.md).
 
 ## Notice for Docker image
+
 This application provides container images for demonstration purposes.
 
 DockerHub: https://hub.docker.com/r/tractusx/irs-api
