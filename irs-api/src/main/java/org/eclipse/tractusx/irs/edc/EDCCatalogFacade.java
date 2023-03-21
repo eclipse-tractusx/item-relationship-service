@@ -43,7 +43,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class EDCCatalogFetcher {
+public class EDCCatalogFacade {
 
     private final EdcControlPlaneClient controlPlaneClient;
     private final EdcConfiguration config;

@@ -75,7 +75,7 @@ class ContractNegotiationServiceTest {
         final CatalogCacheConfiguration cacheConfig = new CatalogCacheConfiguration();
         cacheConfig.setTtl(Duration.ofMinutes(10));
         cacheConfig.setMaxCachedItems(1000L);
-        EDCCatalogFetcher catalogFetcher = new EDCCatalogFetcher(edcControlPlaneClient, config);
+        EDCCatalogFacade catalogFetcher = new EDCCatalogFacade(edcControlPlaneClient, config);
         final CatalogCache catalogCache = new InMemoryCatalogCache(catalogFetcher, cacheConfig);
         testee = new ContractNegotiationService(edcControlPlaneClient, config, catalogCache);
     }

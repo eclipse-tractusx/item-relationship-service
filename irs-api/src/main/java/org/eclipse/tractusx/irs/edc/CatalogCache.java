@@ -53,7 +53,7 @@ public interface CatalogCache {
 class InMemoryCatalogCache implements CatalogCache {
 
     private final Map<String, List<CatalogItem>> catalogCache = new HashMap<>();
-    private final EDCCatalogFetcher catalogFetcher;
+    private final EDCCatalogFacade catalogFetcher;
     private final CatalogCacheConfiguration cacheConfig;
 
     @Override

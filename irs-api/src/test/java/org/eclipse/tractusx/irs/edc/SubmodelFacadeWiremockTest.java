@@ -87,7 +87,7 @@ class SubmodelFacadeWiremockTest {
         cacheConfig.setMaxCachedItems(1000L);
 
         final InMemoryCatalogCache catalogCache = new InMemoryCatalogCache(
-                new EDCCatalogFetcher(controlPlaneClient, config), cacheConfig);
+                new EDCCatalogFacade(controlPlaneClient, config), cacheConfig);
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
                 config, catalogCache);
 

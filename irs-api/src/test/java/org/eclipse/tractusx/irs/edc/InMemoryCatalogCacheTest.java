@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
 class InMemoryCatalogCacheTest {
 
     private CatalogCacheConfiguration cacheConfig;
-    private EDCCatalogFetcher catalogFetcher;
+    private EDCCatalogFacade catalogFetcher;
 
     private InMemoryCatalogCache catalogCache;
 
@@ -54,7 +54,7 @@ class InMemoryCatalogCacheTest {
         cacheConfig.setTtl(Duration.parse("P1D"));
         cacheConfig.setEnabled(true);
 
-        catalogFetcher = mock(EDCCatalogFetcher.class);
+        catalogFetcher = mock(EDCCatalogFacade.class);
         catalogCache = new InMemoryCatalogCache(catalogFetcher, cacheConfig);
     }
 
