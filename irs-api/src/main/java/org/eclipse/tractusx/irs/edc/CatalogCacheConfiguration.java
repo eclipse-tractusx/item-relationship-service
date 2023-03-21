@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,11 +28,16 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@Data
+/**
+ * EDC catalog cache configuration. Automatically populated by Spring from application.yml
+ * and other configuration sources.
+ */
 @Component
 @ConfigurationProperties(prefix = "edc.catalog.cache")
+@Data
 public class CatalogCacheConfiguration {
-    private final Duration ttl;
-    private final long maxCachedItems;
+    private boolean enabled;
+    private Duration ttl;
+    private long maxCachedItems;
 
 }

@@ -134,6 +134,7 @@ edc:
 
   catalog:
     cache:
+      enabled: true
       ttl: P1D # Time after which a cached Item is no longer valid and the real catalog is called instead
       maxCachedItems: 64000 # Maximum amount of cached catalog items
 

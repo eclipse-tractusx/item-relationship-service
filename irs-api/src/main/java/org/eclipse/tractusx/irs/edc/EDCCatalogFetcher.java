@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -33,7 +34,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
 import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
+import org.springframework.stereotype.Component;
 
+/**
+ * EDC Catalog facade which handles pagination of the catalog, aggregation of contract offers
+ * and transformation into {@link CatalogItem}.
+ */
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class EDCCatalogFetcher {
@@ -42,8 +49,6 @@ public class EDCCatalogFetcher {
     private final EdcConfiguration config;
 
     public List<CatalogItem> getCatalog(final String connectorUrl, final String target) {
-        // TODO implement catalog fetching
-
         int offset = 0;
         final int pageSize = config.getControlplane().getCatalogPageSize();
 

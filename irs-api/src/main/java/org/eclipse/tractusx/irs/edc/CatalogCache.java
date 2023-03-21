@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -18,7 +19,6 @@
  * under the License.
  *
  * SPDX-License-Identifier: Apache-2.0
- return null;
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc;
 
@@ -87,18 +87,19 @@ class InMemoryCatalogCache implements CatalogCache {
     private Optional<CatalogItem> getOfferFromCatalog(final String connectorUrl, final String target) {
         final List<CatalogItem> catalog = catalogFetcher.getCatalog(connectorUrl, target);
 
-        List<CatalogItem> catalogItems = new ArrayList<>();
-        if (catalogCache.containsKey(connectorUrl)) {
-            catalogItems = catalogCache.get(connectorUrl);
-        }
-        final int listSize = catalog.size();
-        if (!cacheHasSpaceLeft(listSize)) {
-            removeOldestCacheValues(listSize);
-        }
-        catalogItems.addAll(catalog.stream().map(this::setTTL).toList());
+        if (cacheConfig.isEnabled()) {
+            List<CatalogItem> catalogItems = new ArrayList<>();
+            if (catalogCache.containsKey(connectorUrl)) {
+                catalogItems = catalogCache.get(connectorUrl);
+            }
+            final int listSize = catalog.size();
+            if (!cacheHasSpaceLeft(listSize)) {
+                removeOldestCacheValues(listSize);
+            }
+            catalogItems.addAll(catalog.stream().map(this::setTTL).toList());
 
-        // TODO add logic to manage the cache size, rotation and TTL behaviour
-        catalogCache.put(connectorUrl, catalogItems);
+            catalogCache.put(connectorUrl, catalogItems);
+        }
 
         return catalog.stream().filter(catalogItem -> catalogItem.getAssetPropId().equals(target)).findFirst();
     }
@@ -127,9 +128,8 @@ class InMemoryCatalogCache implements CatalogCache {
                                                                  .sorted((o1, o2) -> (int) (
                                                                          o1.getValidUntil().toEpochMilli() - o2.getValidUntil().toEpochMilli()))
                                                                  .limit(listSize).toList();
-
         log.info("Removing '{}' oldest Items: '{}'", oldestCatalogItems.size(), oldestCatalogItems);
-        // TODO validate that this actually removes the oldest items
+
         catalogCache.values().forEach(catalogItems -> catalogItems.removeAll(oldestCatalogItems));
     }
 
