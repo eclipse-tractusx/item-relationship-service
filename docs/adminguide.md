@@ -700,3 +700,7 @@ It can also happen if the persistent volume claim is deleted / recreated.
 
 1. Make sure Minio is configured and running correctly.
 2. Restart the IRS - this will recreate the missing bucket automatically.
+
+#### Different Job model versions maintenance
+
+Currently, the IRS only supports one version of the Job model at a time. This means that if Job model is changed, old models stored in minio will no longer be supported and returned from IRS endpoints. The IRS application will work as usual, old versions of Job can stay in the minio and don’t need to be removed - the IRS will simply ignore them. If you want to clear the minio from old models - the only way to achieve that is to delete them all and register a new Jobs.

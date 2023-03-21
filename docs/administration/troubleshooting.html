@@ -447,6 +447,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_troubleshooting_faq">Troubleshooting FAQ</a>
 <ul class="sectlevel2">
 <li><a href="#_minio">Minio</a></li>
+<li><a href="#_different_job_model_versions_maintenance">Different Job model versions maintenance</a></li>
 </ul>
 </li>
 </ul>
@@ -498,12 +499,18 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_different_job_model_versions_maintenance">Different Job model versions maintenance</h3>
+<div class="paragraph">
+<p>Currently, the IRS only supports one version of the Job model at a time. This means that if Job model is changed, old models stored in minio will no longer be supported and returned from IRS endpoints. The IRS application will work as usual, old versions of Job can stay in the minio and don&#8217;t need to be removed - the IRS will simply ignore them. If you want to clear the minio from old models - the only way to achieve that is to delete them all and register a new Jobs.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-03-17 09:07:47 UTC
+Last updated 2023-03-21 11:38:48 UTC
 </div>
 </div>
 </body>
