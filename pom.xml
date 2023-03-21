@@ -59,7 +59,6 @@
         <surefire-plugin.version>3.0.0-M8</surefire-plugin.version>
         <jar-plugin.version>3.3.0</jar-plugin.version>
         <compiler-plugin.version>3.11.0</compiler-plugin.version>
-        <flatten-plugin.version>1.3.0</flatten-plugin.version>
         <install-plugin.version>3.1.0</install-plugin.version>
     </properties>
 
@@ -155,30 +154,6 @@
         </pluginManagement>
 
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <version>${flatten-plugin.version}</version>
-                <configuration>
-                    <updatePomFile>true</updatePomFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
