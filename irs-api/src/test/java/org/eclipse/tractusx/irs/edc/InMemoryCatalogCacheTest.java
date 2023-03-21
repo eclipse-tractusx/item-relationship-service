@@ -190,4 +190,30 @@ class InMemoryCatalogCacheTest {
         verify(catalogFetcher, times(3)).getCatalog(any(), any());
     }
 
+    @Test
+    void shouldNotUseCacheWhenDisabled() {
+        // Arrange
+        final String connectorUrl = "test-url";
+        final CatalogItem catalogItem = CatalogItem.builder()
+                                                   .itemId("testId")
+                                                   .connectorId("testConnector")
+                                                   .assetPropId("test-asset-id")
+                                                   .build();
+        cacheConfig.setEnabled(false);
+        when(catalogFetcher.getCatalog(any(), any())).thenReturn(List.of(catalogItem))
+                                                     .thenReturn(List.of(catalogItem))
+                                                     .thenReturn(List.of());
+
+        // Act
+        final CatalogItem catalogItem1 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
+        final CatalogItem catalogItem2 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
+
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> catalogCache.getCatalogItem(connectorUrl,
+                "test-asset-id");
+
+        // Assert
+        assertThat(catalogItem1).isEqualTo(catalogItem2);
+        assertThatThrownBy(throwingCallable).isInstanceOf(NoSuchElementException.class);
+        verify(catalogFetcher, times(3)).getCatalog(any(), any());
+    }
 }
