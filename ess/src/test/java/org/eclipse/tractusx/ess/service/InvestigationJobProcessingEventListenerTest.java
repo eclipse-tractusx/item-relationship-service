@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.ess.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.ess.service.EdcRegistration.ASSET_ID_REQUEST_RECURSIVE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -125,9 +126,9 @@ class InvestigationJobProcessingEventListenerTest {
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
 
         // then
-        verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), anyString(),
+        verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), eq(ASSET_ID_REQUEST_RECURSIVE),
                 edcNotificationCaptor.capture());
-        assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo("ess-supplier-recursive-request");
+        assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo("ess-supplier-request");
         verify(this.bpnInvestigationJobCache, times(1)).store(eq(recursiveJobId), any(BpnInvestigationJob.class));
     }
 

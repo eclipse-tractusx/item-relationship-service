@@ -136,7 +136,8 @@ class InvestigationJobProcessingEventListener {
             final List<String> globalAssetIds) throws EdcClientException {
         final String notificationId = UUID.randomUUID().toString();
 
-        final var response = edcSubmodelFacade.sendNotification(url, "notify-request-asset",
+        final boolean isRecursiveAsset = mockRecursiveEdcAssets.contains(bpn);
+        final var response = edcSubmodelFacade.sendNotification(url, isRecursiveAsset ? "notify-request-asset-recursive" : "notify-request-asset",
                 edcRequest(notificationId, bpn, incidentBpns, globalAssetIds));
         if (!response.deliveredSuccessfully()) {
             throw new EdcClientException("EDC Provider did not accept message with notificationId " + notificationId);
@@ -151,7 +152,6 @@ class InvestigationJobProcessingEventListener {
 
     private EdcNotification edcRequest(final String notificationId, final String recipientBpn,
             final List<String> incidentBpns, final List<String> globalAssetIds) {
-        final boolean isRecursiveAsset = mockRecursiveEdcAssets.contains(recipientBpn);
         final var header = EdcNotificationHeader.builder()
                                                 .notificationId(notificationId)
                                                 .recipientBpn(recipientBpn)
@@ -159,7 +159,7 @@ class InvestigationJobProcessingEventListener {
                                                 .senderEdc(localEdcEndpoint)
                                                 .replyAssetId("ess-response-asset")
                                                 .replyAssetSubPath("")
-                                                .notificationType(isRecursiveAsset ? "ess-supplier-recursive-request" : "ess-supplier-request")
+                                                .notificationType("ess-supplier-request")
                                                 .build();
         final var content = Map.of("incidentBpn", incidentBpns.get(0), "concernedCatenaXIds", globalAssetIds);
 
