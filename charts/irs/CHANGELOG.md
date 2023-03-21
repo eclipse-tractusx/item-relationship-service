@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.5] - 2023-03-20
+### Changed
+- Update IRS to version 2.3.2
+
 ## [5.0.4] - 2023-03-07
 ### Changed
 - Update IRS to version 2.3.1
@@ -34,6 +38,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Migration note
 Please make sure that you update your URL config for the semantics hub (see "Changed" section). Otherwise, IRS can not pick up the config correctly. Your new URL needs to contain the /model path.
+
+
+## [4.3.2] - 2023-03-15
+### Changed
+- Update IRS version to 2.2.1
+
+## [4.3.1] - 2023-03-01
+### Changed
+- Updated default values so that IRS can start out of the box without technical errors. Please note that custom configuration is still necessary for IRS to work properly.
+- Fixed semantic hub placeholder in default values
 
 ## [4.3.0] - 2023-02-07
 ### Added

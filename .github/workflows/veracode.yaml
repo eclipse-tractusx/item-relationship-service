@@ -1,5 +1,6 @@
 name: Veracode SAST test
 on:
+  workflow_dispatch: # Trigger manually
   schedule:
     - cron: '0 0 * * *' # Once a day
 

@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
+## [2.3.2] - 2023-03-20
+### Changed
+- Replace pandoc with downdoc for conversion asciidoc to markdown
+
+### Fixed
+- In AssemblyPartRelationship the ``measurementUnit`` can be both parsed from both string and object versions
+- Decode URLs for ``assetId`` to prevent bug that encoded ``assetId`` cannot be found in the catalog
+
 ## [2.3.1] - 2023-03-07
 ### Changed
 - Updated Spring Boot dependency to 3.0.3
@@ -23,8 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Job creation validates ``aspects`` by using models available in semantic hub or locally provided.
 
-### Known knowns
-- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
+
+## [2.2.1] - 2023-03-15
+### Fixed
+- Property "measurementUnit" of AssemblyPartRelationship can now be a String or a Map. According to the latest model, it is supposed to be a String, but due to varying test data, IRS supports both variants.
+- EDC Catalog IDs are now being URL decoded before usage
+
 
 ## [2.2.0] - 2023-01-20
 ### Added
@@ -162,9 +174,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.3.1...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.3.2...HEAD
+[2.3.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.3.1...2.3.2
 [2.3.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.3.0...2.3.1
 [2.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.2.0...2.3.0
+[2.2.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.1.0...2.2.0
 [2.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/1.6.0...2.0.0

@@ -1,0 +1,10 @@
+{
+	"bomLifecycle": "asBuilt",
+	"aspects": [
+		"AssemblyPartRelationship"
+	],
+	"depth": 10,
+	"direction": "downward",
+	"collectAspects": true,
+	"globalAssetId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6"
+}
