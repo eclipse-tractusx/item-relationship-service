@@ -41,13 +41,6 @@ public class EDCCatalogFetcher {
     private final EdcControlPlaneClient controlPlaneClient;
     private final EdcConfiguration config;
 
-    private static Optional<ContractOffer> findOfferIfExist(final String target, final Catalog catalog) {
-        return catalog.getContractOffers()
-                      .stream()
-                      .filter(contractOffer -> contractOffer.getAsset().getId().equals(target))
-                      .findFirst();
-    }
-
     public List<CatalogItem> getCatalog(final String connectorUrl, final String target) {
         // TODO implement catalog fetching
 
@@ -81,11 +74,18 @@ public class EDCCatalogFetcher {
         return contractOffers.stream()
                              .map(contractOffer -> CatalogItem.builder()
                                                               .itemId(contractOffer.getId())
-                                                              .assetPropId(contractOffer.getAssetId())
+                                                              .assetPropId(contractOffer.getAsset().getId())
                                                               .connectorId(connectorId)
                                                               .policy(contractOffer.getPolicy())
                                                               .build())
                              .toList();
+    }
+
+    private Optional<ContractOffer> findOfferIfExist(final String target, final Catalog catalog) {
+        return catalog.getContractOffers()
+                      .stream()
+                      .filter(contractOffer -> contractOffer.getAsset().getId().equals(target))
+                      .findFirst();
     }
 
     private boolean theSameCatalog(final Catalog pageableCatalog, final Catalog newPageableCatalog) {

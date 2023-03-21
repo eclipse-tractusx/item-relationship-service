@@ -81,8 +81,12 @@ class SubmodelFacadeWiremockTest {
         final EdcControlPlaneClient controlPlaneClient = new EdcControlPlaneClient(restTemplate, pollingService,
                 config);
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
+        final CatalogCacheConfiguration cacheConfig = new CatalogCacheConfiguration(Duration.ofMinutes(5), 1000L);
+
+        final InMemoryCatalogCache catalogCache = new InMemoryCatalogCache(
+                new EDCCatalogFetcher(controlPlaneClient, config), cacheConfig);
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
-                config);
+                config, catalogCache);
 
         final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
         final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
