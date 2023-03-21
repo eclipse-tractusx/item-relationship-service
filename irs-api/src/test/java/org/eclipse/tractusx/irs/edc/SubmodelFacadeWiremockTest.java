@@ -81,7 +81,10 @@ class SubmodelFacadeWiremockTest {
         final EdcControlPlaneClient controlPlaneClient = new EdcControlPlaneClient(restTemplate, pollingService,
                 config);
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
-        final CatalogCacheConfiguration cacheConfig = new CatalogCacheConfiguration(Duration.ofMinutes(5), 1000L);
+        final CatalogCacheConfiguration cacheConfig = new CatalogCacheConfiguration();
+
+        cacheConfig.setTtl(Duration.ofMinutes(10));
+        cacheConfig.setMaxCachedItems(1000L);
 
         final InMemoryCatalogCache catalogCache = new InMemoryCatalogCache(
                 new EDCCatalogFetcher(controlPlaneClient, config), cacheConfig);

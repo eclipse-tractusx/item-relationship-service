@@ -30,6 +30,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
@@ -47,6 +48,7 @@ import org.eclipse.tractusx.irs.edc.model.TransferProcessId;
 import org.eclipse.tractusx.irs.edc.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.exceptions.EdcClientException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -67,6 +69,16 @@ class ContractNegotiationServiceTest {
 
     @Spy
     private EdcConfiguration config = new EdcConfiguration();
+
+    @BeforeEach
+    void setUp() {
+        final CatalogCacheConfiguration cacheConfig = new CatalogCacheConfiguration();
+        cacheConfig.setTtl(Duration.ofMinutes(10));
+        cacheConfig.setMaxCachedItems(1000L);
+        EDCCatalogFetcher catalogFetcher = new EDCCatalogFetcher(edcControlPlaneClient, config);
+        final CatalogCache catalogCache = new InMemoryCatalogCache(catalogFetcher, cacheConfig);
+        testee = new ContractNegotiationService(edcControlPlaneClient, config, catalogCache);
+    }
 
     @Test
     void shouldNegotiateSuccessfully() throws ContractNegotiationException {
@@ -120,7 +132,7 @@ class ContractNegotiationServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenAssetIsMissingForBothPage() throws ContractNegotiationException {
+    void shouldThrowExceptionWhenAssetIsMissingForBothPage() {
         // arrange
         final var assetId = "testTarget";
         final var firstPage = mockCatalog("other", DEFAULT_PAGE_SIZE);

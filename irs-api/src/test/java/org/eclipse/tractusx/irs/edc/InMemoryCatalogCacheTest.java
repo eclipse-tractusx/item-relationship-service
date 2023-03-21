@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -47,11 +49,13 @@ class InMemoryCatalogCacheTest {
 
     @BeforeEach
     void setUp() {
-        cacheConfig = mock(CatalogCacheConfiguration.class);
+        cacheConfig = new CatalogCacheConfiguration();
+        cacheConfig.setMaxCachedItems(50L);
+        cacheConfig.setTtl(Duration.parse("P1D"));
+        cacheConfig.setEnabled(true);
+
         catalogFetcher = mock(EDCCatalogFetcher.class);
         catalogCache = new InMemoryCatalogCache(catalogFetcher, cacheConfig);
-        when(cacheConfig.getMaxCachedItems()).thenReturn(50L);
-        when(cacheConfig.getTtl()).thenReturn(Duration.parse("P1D"));
     }
 
     @Test
@@ -135,7 +139,8 @@ class InMemoryCatalogCacheTest {
         when(catalogFetcher.getCatalog(any(), any())).thenReturn(List.of(catalogItem1))
                                                      .thenReturn(List.of(catalogItem1, catalogItem2));
         final Duration cacheTTL = Duration.ofSeconds(2);
-        when(cacheConfig.getTtl()).thenReturn(cacheTTL);
+
+        cacheConfig.setTtl(cacheTTL);
 
         // Act
         final CatalogItem returnedItem1 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
