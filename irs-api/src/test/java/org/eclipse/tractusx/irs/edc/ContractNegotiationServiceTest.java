@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -164,6 +165,7 @@ class ContractNegotiationServiceTest {
         final var asset = mock(Asset.class);
         when(asset.getId()).thenReturn(assetId);
         when(contractOffer.getAsset()).thenReturn(asset);
+        when(contractOffer.getId()).thenReturn(assetId);
         when(catalog.getContractOffers()).thenReturn(IntStream.range(0, numberOfElements)
                                                                       .boxed()
                                                                       .map(i -> contractOffer)
