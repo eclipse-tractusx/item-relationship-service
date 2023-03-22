@@ -146,10 +146,10 @@ class InvestigationJobProcessingEventListener {
         final var response = edcSubmodelFacade.sendNotification(url,
                 isRecursiveAsset ? "notify-request-asset-recursive" : "notify-request-asset",
                 edcRequest(notificationId, bpn, incidentBpns, globalAssetIds));
-        if (!response.deliveredSuccessfully()) {
-            throw new EdcClientException("EDC Provider did not accept message with notificationId " + notificationId);
-        } else {
+        if (response.deliveredSuccessfully()) {
             log.info("Successfully sent notification with id '{}' to EDC endpoint '{}'.", notificationId, url);
+        } else {
+            throw new EdcClientException("EDC Provider did not accept message with notificationId " + notificationId);
         }
 
         return notificationId;
