@@ -111,7 +111,7 @@ bpdm:
   bpnEndpoint: >-
     {{ tpl (.Values.bpdm.url | default "") . }}/api/catena/legal-entities/{partnerId}?idType={idType}
 minioUser: "minio"  # <minio-username>
-minioPassword: "minioPass"  # <minio-password>
+minioPassword:  # <minio-password>
 minioUrl: "http://{{ .Release.Name }}-minio:9000"
 keycloak:
   oauth2:
@@ -170,7 +170,7 @@ minio:
     requests:
       memory: 4Gi
   rootUser: "minio"  # <minio-username>
-  rootPassword: "minioPass"  # <minio-password>
+  rootPassword: "minio"  # <minio-password>
 
   environment:
     MINIO_PROMETHEUS_JOB_ID: minio-actuator
