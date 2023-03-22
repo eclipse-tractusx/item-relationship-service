@@ -62,12 +62,15 @@ class InvestigationJobProcessingEventListenerTest {
     private final EdcDiscoveryFacade edcDiscoveryFacade = mock(EdcDiscoveryFacade.class);
     private final EdcSubmodelFacade edcSubmodelFacade = mock(EdcSubmodelFacade.class);
     private final BpnInvestigationJobCache bpnInvestigationJobCache = mock(BpnInvestigationJobCache.class);
+    private final EssRecursiveNotificationHandler recursiveNotificationHandler = mock(
+            EssRecursiveNotificationHandler.class);
     private final UUID jobId = UUID.randomUUID();
     private final UUID recursiveJobId = UUID.randomUUID();
     private final String bpnRecursiveEdcNotification = "BPN000RECURSIVE";
 
     private final InvestigationJobProcessingEventListener jobProcessingEventListener = new InvestigationJobProcessingEventListener(
-            irsFacade, edcDiscoveryFacade, edcSubmodelFacade, bpnInvestigationJobCache, "", "", List.of(bpnRecursiveEdcNotification));
+            irsFacade, edcDiscoveryFacade, edcSubmodelFacade, bpnInvestigationJobCache, "", "",
+            List.of(bpnRecursiveEdcNotification), recursiveNotificationHandler);
 
     @Captor
     ArgumentCaptor<EdcNotification> edcNotificationCaptor;
@@ -119,8 +122,8 @@ class InvestigationJobProcessingEventListenerTest {
         when(edcDiscoveryFacade.getEdcBaseUrl(anyString())).thenReturn(Optional.of(edcBaseUrl));
         when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
                 () -> true);
-        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(recursiveJobId.toString(),
-                JobState.COMPLETED.name(), "");
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(
+                recursiveJobId.toString(), JobState.COMPLETED.name(), "");
 
         // when
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
@@ -128,7 +131,8 @@ class InvestigationJobProcessingEventListenerTest {
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), eq(ASSET_ID_REQUEST_RECURSIVE),
                 edcNotificationCaptor.capture());
-        assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo("ess-supplier-request");
+        assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo(
+                "ess-supplier-request");
         verify(this.bpnInvestigationJobCache, times(1)).store(eq(recursiveJobId), any(BpnInvestigationJob.class));
     }
 

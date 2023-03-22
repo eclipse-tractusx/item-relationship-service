@@ -55,7 +55,7 @@ public class EssRecursiveController {
     @ResponseStatus(HttpStatus.CREATED)
     public void registerRecursiveBPNInvestigation(final @Valid @RequestBody EdcNotification notification) throws
             EdcClientException {
-        log.info("receive recursive Notification mock called");
+        log.info("Received recursive notification, starting investigation.");
         essRecursiveService.handleNotification(notification);
     }
 

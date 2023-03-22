@@ -60,12 +60,14 @@ class InvestigationJobProcessingEventListener {
     private final String localBpn;
     private final String localEdcEndpoint;
     private final List<String> mockRecursiveEdcAssets;
+    private final EssRecursiveNotificationHandler recursiveNotificationHandler;
 
     /* package */ InvestigationJobProcessingEventListener(final IrsFacade irsFacade,
             final EdcDiscoveryFacade edcDiscoveryFacade, final EdcSubmodelFacade edcSubmodelFacade,
             final BpnInvestigationJobCache bpnInvestigationJobCache, @Value("${ess.localBpn}") final String localBpn,
             @Value("${ess.localEdcEndpoint}") final String localEdcEndpoint,
-            @Value("${ess.discovery.mockRecursiveEdcAsset}") final List<String> mockRecursiveEdcAssets) {
+            @Value("${ess.discovery.mockRecursiveEdcAsset}") final List<String> mockRecursiveEdcAssets,
+            final EssRecursiveNotificationHandler recursiveNotificationHandler) {
         this.irsFacade = irsFacade;
         this.edcDiscoveryFacade = edcDiscoveryFacade;
         this.edcSubmodelFacade = edcSubmodelFacade;
@@ -73,6 +75,7 @@ class InvestigationJobProcessingEventListener {
         this.localBpn = localBpn;
         this.localEdcEndpoint = localEdcEndpoint;
         this.mockRecursiveEdcAssets = mockRecursiveEdcAssets;
+        this.recursiveNotificationHandler = recursiveNotificationHandler;
     }
 
     @Async
@@ -93,9 +96,12 @@ class InvestigationJobProcessingEventListener {
 
             if (supplyChainIsNotImpacted(localSupplyChain)) {
                 triggerInvestigationOnNextLevel(completedJob, investigationJobUpdate);
+                bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
+            } else {
+                bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
+                recursiveNotificationHandler.handleNotification(investigationJob.getJobSnapshot().getJob().getId(),
+                        localSupplyChain);
             }
-
-            bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
         });
     }
 
@@ -137,10 +143,13 @@ class InvestigationJobProcessingEventListener {
         final String notificationId = UUID.randomUUID().toString();
 
         final boolean isRecursiveAsset = mockRecursiveEdcAssets.contains(bpn);
-        final var response = edcSubmodelFacade.sendNotification(url, isRecursiveAsset ? "notify-request-asset-recursive" : "notify-request-asset",
+        final var response = edcSubmodelFacade.sendNotification(url,
+                isRecursiveAsset ? "notify-request-asset-recursive" : "notify-request-asset",
                 edcRequest(notificationId, bpn, incidentBpns, globalAssetIds));
         if (!response.deliveredSuccessfully()) {
             throw new EdcClientException("EDC Provider did not accept message with notificationId " + notificationId);
+        } else {
+            log.info("Successfully sent notification with id '{}' to EDC endpoint '{}'.", notificationId, url);
         }
 
         return notificationId;

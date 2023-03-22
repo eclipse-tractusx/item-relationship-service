@@ -88,7 +88,7 @@ public class EdcRegistration {
 
         if (assetIsNotRegisteredYet(ASSET_ID_REQUEST_RECURSIVE)) {
             log.info("Recursive notification request receiver asset is not registered yet, starting registration.");
-            registerAsset(ASSET_ID_REQUEST_RECURSIVE, "ess-supplier-recursive-request", "/ess/notification/receive-recursive");
+            registerAsset(ASSET_ID_REQUEST_RECURSIVE, "ess-supplier-request", "/ess/notification/receive-recursive");
             registerPolicy("1002", ASSET_ID_REQUEST_RECURSIVE);
             registerContractDefinition("1002", ASSET_ID_REQUEST_RECURSIVE);
             log.info(REGISTRATION_FINISHED);
