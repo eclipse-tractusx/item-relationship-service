@@ -24,10 +24,10 @@ package org.eclipse.tractusx.irs.edc;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,8 @@ import org.eclipse.tractusx.irs.edc.model.CatalogItem;
 import org.springframework.stereotype.Service;
 
 /**
- * Cache Facade which returns a ContractOffer. Either from cache or directly from the EDC if not found in Cache.
+ * Cache Facade which returns a ContractOffer. Either from cache or directly from the
+ * EDC if not found in Cache.
  */
 public interface CatalogCache {
 
@@ -49,12 +50,15 @@ public interface CatalogCache {
 
 }
 
+/**
+ * In-memory implementation of the catalog cache.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 class InMemoryCatalogCache implements CatalogCache {
 
-    private final Map<String, List<CatalogItem>> catalogCache = new HashMap<>();
+    private final Map<String, List<CatalogItem>> catalogCache = new ConcurrentHashMap<>();
     private final EDCCatalogFacade catalogFetcher;
     private final CatalogCacheConfiguration cacheConfig;
 
@@ -98,7 +102,7 @@ class InMemoryCatalogCache implements CatalogCache {
             if (!cacheHasSpaceLeft(listSize)) {
                 removeOldestCacheValues(listSize);
             }
-            catalogItems.addAll(catalog.stream().map(this::setTTL).toList());
+            catalogItems.addAll(catalog.stream().map(this::updateTTL).toList());
 
             catalogCache.put(connectorUrl, catalogItems);
         }
@@ -110,8 +114,8 @@ class InMemoryCatalogCache implements CatalogCache {
         catalogCache.keySet().forEach(this::removeIfExpired);
     }
 
-    private void removeIfExpired(final String s) {
-        final List<CatalogItem> expiredItems = catalogCache.get(s)
+    private void removeIfExpired(final String key) {
+        final List<CatalogItem> expiredItems = catalogCache.get(key)
                                                            .stream()
                                                            .filter(catalogItem -> catalogItem.getValidUntil()
                                                                                              .isBefore(Instant.now()))
@@ -119,7 +123,7 @@ class InMemoryCatalogCache implements CatalogCache {
         final int size = expiredItems.size();
         if (size > 0) {
             log.info("Found '{}' expired items. Removing '{}'", size, expiredItems);
-            catalogCache.get(s).removeIf(catalogItem -> catalogItem.getValidUntil().isBefore(Instant.now()));
+            catalogCache.get(key).removeIf(catalogItem -> catalogItem.getValidUntil().isBefore(Instant.now()));
         }
     }
 
@@ -145,7 +149,7 @@ class InMemoryCatalogCache implements CatalogCache {
         return (cacheSize + listSize) <= cacheConfig.getMaxCachedItems();
     }
 
-    private CatalogItem setTTL(final CatalogItem catalogItem) {
+    private CatalogItem updateTTL(final CatalogItem catalogItem) {
         final Instant nowPlusTTL = Instant.now().plus(cacheConfig.getTtl());
         catalogItem.setValidUntil(nowPlusTTL);
         return catalogItem;
