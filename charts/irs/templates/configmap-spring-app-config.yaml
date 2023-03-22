@@ -64,6 +64,12 @@ data:
         request-ttl: {{ tpl .Values.edc.submodel.request.ttl . | default "PT10M" | quote }}
         path: {{ tpl (.Values.edc.submodel.path | default "/submodel") . | quote }}
         urn-prefix: {{ tpl (.Values.edc.submodel.urnprefix | default "/urn") . | quote }}
+
+      catalog:
+        cache:
+          enabled: {{ tpl .Values.edc.catalog.cache.enabled . | default "true" | quote }}
+          ttl: {{ tpl .Values.edc.catalog.cache.ttl . | default "P1D" | quote }}
+          maxCachedItems: {{ tpl .Values.edc.catalog.cache.maxCachedItems . | default "64000" | quote }}
     {{- end }}
     {{- if .Values.config.content }}
     {{- tpl (toYaml .Values.config.content) . | nindent 4 }}

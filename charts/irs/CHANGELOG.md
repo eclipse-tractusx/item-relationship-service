@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Extended configmap and values.yaml with catalog cache configuration  
+  You can configure the EDC catalog caching configuration like this:
+  ```
+  edc:
+    catalog:
+      cache:
+        enabled: true
+        ttl: P1D
+        maxCachedItems: 64000
+  ```
 
 ## [5.0.4] - 2023-03-07
 ### Changed
