@@ -68,7 +68,7 @@ public class EDCCatalogFacade {
             isLastPage = newPageableCatalog.getContractOffers().size() < pageSize;
             optionalContractOffer = findOfferIfExist(target, newPageableCatalog);
 
-            if (!isLastPage && !isTheSamePage) {
+            if (!isTheSamePage) {
                 contractOffers.addAll(newPageableCatalog.getContractOffers());
             }
         }
