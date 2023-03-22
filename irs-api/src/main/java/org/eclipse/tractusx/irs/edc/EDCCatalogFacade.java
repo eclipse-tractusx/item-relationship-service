@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
 import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.model.CatalogItem;
 import org.springframework.stereotype.Component;
 
 /**

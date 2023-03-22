@@ -31,6 +31,8 @@ import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.configuration.CatalogCacheConfiguration;
+import org.eclipse.tractusx.irs.edc.model.CatalogItem;
 import org.springframework.stereotype.Service;
 
 /**

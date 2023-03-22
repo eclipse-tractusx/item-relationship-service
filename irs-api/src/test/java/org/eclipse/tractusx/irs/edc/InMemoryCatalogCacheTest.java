@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.assertj.core.api.ThrowableAssert;
+import org.eclipse.tractusx.irs.configuration.CatalogCacheConfiguration;
+import org.eclipse.tractusx.irs.edc.model.CatalogItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

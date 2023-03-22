@@ -20,24 +20,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc;
+package org.eclipse.tractusx.irs.configuration;
 
-import java.time.Instant;
+import java.time.Duration;
 
-import lombok.Builder;
 import lombok.Data;
-import org.eclipse.dataspaceconnector.policy.model.Policy;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
- * Catalog Item as it is stored in the cache and used by {@link ContractNegotiationService}.
+ * EDC catalog cache configuration. Automatically populated by Spring from application.yml
+ * and other configuration sources.
  */
-@Builder
+@Component
+@ConfigurationProperties(prefix = "edc.catalog.cache")
 @Data
-public class CatalogItem {
-    private String assetPropId;
-    private String itemId;
-    private Policy policy;
-    private String connectorId;
-    private Instant validUntil;
+public class CatalogCacheConfiguration {
+    private boolean enabled;
+    private Duration ttl;
+    private long maxCachedItems;
 
 }
