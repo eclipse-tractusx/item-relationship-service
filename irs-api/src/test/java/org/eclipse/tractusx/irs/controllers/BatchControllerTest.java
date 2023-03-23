@@ -51,8 +51,8 @@ public class BatchControllerTest {
     @Test
     void shouldReturnUnauthorizedWhenAuthenticationIsMissing() throws Exception {
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
-                                              .content(new ObjectMapper().writeValueAsString(
-                                                      registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
+                                                .content(new ObjectMapper().writeValueAsString(
+                                                        registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
                     .andExpect(status().isUnauthorized());
     }
 
@@ -69,8 +69,8 @@ public class BatchControllerTest {
     @WithMockUser(authorities = "view_irs")
     void shouldRegisterBatchOrder() throws Exception {
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
-                                              .content(new ObjectMapper().writeValueAsString(
-                                                      registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
+                                                .content(new ObjectMapper().writeValueAsString(
+                                                        registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
                     .andExpect(status().isCreated());
     }
 

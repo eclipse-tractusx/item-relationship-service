@@ -23,7 +23,7 @@
 package org.eclipse.tractusx.irs.component.enums;
 
 /**
- *
+ * The state of the batch.
  */
 public enum ProcessingState {
     INITIALIZED,

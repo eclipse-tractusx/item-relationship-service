@@ -23,7 +23,7 @@
 package org.eclipse.tractusx.irs.component.enums;
 
 /**
- *
+ * The strategy how the batch is processed internally in IRS.
  */
 public enum BatchStrategy {
     PRESERVE_BATCH_JOB_ORDER,

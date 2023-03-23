@@ -44,6 +44,7 @@ import org.eclipse.tractusx.irs.component.Batch;
 import org.eclipse.tractusx.irs.component.BatchOrder;
 import org.eclipse.tractusx.irs.component.BatchOrderCreated;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
+import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -114,7 +115,7 @@ public class BatchController {
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = BatchOrder.class),
                                                               examples = @ExampleObject(name = "complete",
-                                                                                        ref = "#/components/examples/complete-job-result"))
+                                                                                        ref = "#/components/examples/complete-order-result"))
                                          }),
                             @ApiResponse(responseCode = "400", description = "Return Batch Order failed.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -147,7 +148,7 @@ public class BatchController {
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class), name = "orderId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
                                                                                max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID orderId) {
-        return BatchOrder.builder().orderId(orderId).batches(List.of(BatchOrder.Batch.builder().batchId(UUID.randomUUID()).build())).build();
+        return BatchOrder.builder().orderId(orderId).state(ProcessingState.ERROR).batches(List.of(BatchOrder.Batch.builder().batchId(UUID.randomUUID()).build())).build();
     }
 
     @Operation(description = "Get a batch with a given batchId for a given orderId.",
@@ -160,7 +161,7 @@ public class BatchController {
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = Batch.class),
                                                               examples = @ExampleObject(name = "complete",
-                                                                                        ref = "#/components/examples/complete-job-result"))
+                                                                                        ref = "#/components/examples/complete-batch-result"))
                                          }),
                             @ApiResponse(responseCode = "400", description = "Return batch failed.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -196,7 +197,7 @@ public class BatchController {
             @Parameter(description = "Id of the batch.", schema = @Schema(implementation = UUID.class), name = "batchId",
                        example = "4bce40b8-64c7-41bf-9ca3-e9432c7fef98") @Size(min = IrsAppConstants.JOB_ID_SIZE,
                                                                                max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID batchId) {
-        return Batch.builder().batchId(batchId).orderId(orderId).build();
+        return Batch.builder().batchId(batchId).batchProcessingState(ProcessingState.INITIALIZED).orderId(orderId).build();
     }
 
 }
