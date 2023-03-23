@@ -207,6 +207,40 @@ class InMemoryCatalogCacheTest {
     }
 
     @Test
+    void shouldOnlyCacheMaxConfiguredAmountOfItems() {
+        // Arrange
+        final String connectorUrl1 = "test1-url";
+        final List<CatalogItem> catalogItemsBatch1 = new ArrayList<>();
+        for (int i = 1; i <= 50; i++) {
+            catalogItemsBatch1.add(CatalogItem.builder()
+                                              .itemId("id-" + i)
+                                              .connectorId("connector-" + i)
+                                              .assetPropId("asset-id-" + i)
+                                              .build());
+        }
+        cacheConfig.setMaxCachedItems(10L);
+        when(catalogFetcher.fetchCatalogItemsUntilMatch(eq(connectorUrl1), any())).thenReturn(catalogItemsBatch1);
+
+        // Act
+        // first retrieval will call connector
+        final Optional<CatalogItem> returnedItem1 = catalogCache.getCatalogItem(connectorUrl1, "asset-id-1");
+        // second retrieval will call connector since the cache is limited to 10
+        final Optional<CatalogItem> returnedItem2 = catalogCache.getCatalogItem(connectorUrl1, "asset-id-22");
+        // third retrieval will call cache since the id is within the first 10 items
+        final Optional<CatalogItem> returnedItem3 = catalogCache.getCatalogItem(connectorUrl1, "asset-id-2");
+
+        // Assert
+        assertThat(returnedItem1).isPresent();
+        assertThat(returnedItem2).isPresent();
+        assertThat(returnedItem3).isPresent();
+        assertThat(returnedItem1.get().getItemId()).isEqualTo("id-1");
+        assertThat(returnedItem2.get().getItemId()).isEqualTo("id-22");
+        assertThat(returnedItem3.get().getItemId()).isEqualTo("id-2");
+
+        verify(catalogFetcher, times(2)).fetchCatalogItemsUntilMatch(any(), any());
+    }
+
+    @Test
     void shouldNotUseCacheWhenDisabled() {
         // Arrange
         final String connectorUrl = "test-url";

@@ -97,11 +97,13 @@ class InMemoryCatalogCache implements CatalogCache {
             if (catalogCache.containsKey(connectorUrl)) {
                 catalogItems = catalogCache.get(connectorUrl);
             }
-            final int listSize = catalog.size();
-            if (!cacheHasSpaceLeft(listSize)) {
-                removeOldestCacheValues(listSize);
+            final int catalogSize = catalog.size();
+            final int cacheSize = getCacheSize();
+            if (!cacheHasSpaceLeft(cacheSize, catalogSize)) {
+                final long numberOfItemsToBeRemoved = (cacheSize + catalogSize) - cacheConfig.getMaxCachedItems();
+                removeOldestCacheValues(numberOfItemsToBeRemoved);
             }
-            catalogItems.addAll(catalog.stream().map(this::updateTTL).toList());
+            catalogItems.addAll(catalog.stream().limit(cacheConfig.getMaxCachedItems()).map(this::updateTTL).toList());
 
             catalogCache.put(connectorUrl, catalogItems);
         }
@@ -126,27 +128,29 @@ class InMemoryCatalogCache implements CatalogCache {
         }
     }
 
-    private void removeOldestCacheValues(final int listSize) {
+    private void removeOldestCacheValues(final long numberOfItemsToRemove) {
         final List<CatalogItem> oldestCatalogItems = catalogCache.values()
                                                                  .stream()
                                                                  .flatMap(List::stream)
                                                                  .sorted(Comparator.comparing(
                                                                          CatalogItem::getValidUntil))
-                                                                 .limit(listSize)
+                                                                 .limit(numberOfItemsToRemove)
                                                                  .toList();
         log.info("Removing '{}' oldest Items: '{}'", oldestCatalogItems.size(), oldestCatalogItems);
 
         catalogCache.values().forEach(catalogItems -> catalogItems.removeAll(oldestCatalogItems));
     }
 
-    private boolean cacheHasSpaceLeft(final int listSize) {
-        final int cacheSize = catalogCache.keySet()
-                                          .stream()
-                                          .map(s -> catalogCache.get(s).size())
-                                          .mapToInt(Integer::intValue)
-                                          .sum();
+    private boolean cacheHasSpaceLeft(final int cacheSize, final int catalogSize) {
+        return (cacheSize + catalogSize) <= cacheConfig.getMaxCachedItems();
+    }
 
-        return (cacheSize + listSize) <= cacheConfig.getMaxCachedItems();
+    private int getCacheSize() {
+        return catalogCache.keySet()
+                           .stream()
+                           .map(s -> catalogCache.get(s).size())
+                           .mapToInt(Integer::intValue)
+                           .sum();
     }
 
     private CatalogItem updateTTL(final CatalogItem catalogItem) {
