@@ -28,6 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
@@ -64,7 +65,7 @@ class ContractNegotiationServiceTest {
         // arrange
         final var assetId = "testTarget";
         final CatalogItem catalogItem = CatalogItem.builder().itemId(assetId).assetPropId(assetId).build();
-        when(catalogCache.getCatalogItem(CONNECTOR_URL, assetId)).thenReturn(catalogItem);
+        when(catalogCache.getCatalogItem(CONNECTOR_URL, assetId)).thenReturn(Optional.ofNullable(catalogItem));
 
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 NegotiationId.builder().value("negotiationId").build());
@@ -89,7 +90,7 @@ class ContractNegotiationServiceTest {
         // arrange
         final var assetId = "testTarget";
         final CatalogItem catalogItem = CatalogItem.builder().itemId(assetId).assetPropId(assetId).build();
-        when(catalogCache.getCatalogItem(CONNECTOR_URL, assetId)).thenReturn(catalogItem);
+        when(catalogCache.getCatalogItem(CONNECTOR_URL, assetId)).thenReturn(Optional.ofNullable(catalogItem));
 
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 NegotiationId.builder().value("negotiationId").build());
@@ -105,7 +106,7 @@ class ContractNegotiationServiceTest {
     void shouldThrowErrorWhenContractOfferCouldNotBeFound() {
         // arrange
         final var assetId = "testTarget";
-        when(catalogCache.getCatalogItem(CONNECTOR_URL, assetId)).thenThrow(NoSuchElementException.class);
+        when(catalogCache.getCatalogItem(CONNECTOR_URL, assetId)).thenReturn(Optional.empty());
 
         // act & assert
         assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, assetId)).isInstanceOf(NoSuchElementException.class);

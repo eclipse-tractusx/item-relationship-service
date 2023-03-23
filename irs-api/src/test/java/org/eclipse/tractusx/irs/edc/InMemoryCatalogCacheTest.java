@@ -35,6 +35,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.tractusx.irs.configuration.CatalogCacheConfiguration;
@@ -72,8 +73,8 @@ class InMemoryCatalogCacheTest {
         when(catalogFetcher.getCatalog(any(), any())).thenReturn(List.of(catalogItem)).thenReturn(List.of());
 
         // Act
-        final CatalogItem catalogItem1 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
-        final CatalogItem catalogItem2 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
+        final Optional<CatalogItem> catalogItem1 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
+        final Optional<CatalogItem> catalogItem2 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
 
         // Assert
         assertThat(catalogItem1).isEqualTo(catalogItem2);
@@ -98,8 +99,8 @@ class InMemoryCatalogCacheTest {
                                                      .thenReturn(List.of(catalogItem2));
 
         // Act
-        final CatalogItem returnedItem1 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
-        final CatalogItem returnedItem2 = catalogCache.getCatalogItem(connectorUrl, "different-test-asset-id");
+        final Optional<CatalogItem> returnedItem1 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
+        final Optional<CatalogItem> returnedItem2 = catalogCache.getCatalogItem(connectorUrl, "different-test-asset-id");
 
         // Assert
         assertThat(returnedItem1).isNotEqualTo(returnedItem2);
@@ -107,7 +108,7 @@ class InMemoryCatalogCacheTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenItemNotFound() {
+    void shouldReturnEmptyWhenItemNotFound() {
         // Arrange
         final String connectorUrl = "test-url";
 
@@ -118,9 +119,11 @@ class InMemoryCatalogCacheTest {
                                                    .build();
         when(catalogFetcher.getCatalog(any(), any())).thenReturn(List.of(catalogItem)).thenReturn(List.of());
 
+        // Act
+        final Optional<CatalogItem> returnedItem = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
+
         // Assert
-        assertThatThrownBy(() -> catalogCache.getCatalogItem(connectorUrl, "test-asset-id")).isInstanceOf(
-                NoSuchElementException.class);
+        assertThat(returnedItem).isEmpty();
         verify(catalogFetcher, times(1)).getCatalog(any(), any());
     }
 
@@ -145,9 +148,9 @@ class InMemoryCatalogCacheTest {
         cacheConfig.setTtl(cacheTTL);
 
         // Act
-        final CatalogItem returnedItem1 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
+        final Optional<CatalogItem> returnedItem1 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
         Thread.sleep(3000);
-        final CatalogItem returnedItem2 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
+        final Optional<CatalogItem> returnedItem2 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
 
         // Assert
         assertThat(returnedItem1).isEqualTo(returnedItem2);
@@ -180,14 +183,17 @@ class InMemoryCatalogCacheTest {
         when(catalogFetcher.getCatalog(eq(connectorUrl2), any())).thenReturn(catalogItemsBatch2);
 
         // Act
-        final CatalogItem returnedItem1 = catalogCache.getCatalogItem(connectorUrl1, "asset-id-25");
-        final CatalogItem returnedItem2 = catalogCache.getCatalogItem(connectorUrl2, "asset-id-51");
-        final CatalogItem returnedItem3 = catalogCache.getCatalogItem(connectorUrl1, "asset-id-1");
+        final Optional<CatalogItem>  returnedItem1 = catalogCache.getCatalogItem(connectorUrl1, "asset-id-25");
+        final Optional<CatalogItem>  returnedItem2 = catalogCache.getCatalogItem(connectorUrl2, "asset-id-51");
+        final Optional<CatalogItem>  returnedItem3 = catalogCache.getCatalogItem(connectorUrl1, "asset-id-1");
 
         // Assert
-        assertThat(returnedItem1.getItemId()).isEqualTo("id-25");
-        assertThat(returnedItem2.getItemId()).isEqualTo("id-51");
-        assertThat(returnedItem3.getItemId()).isEqualTo("id-1");
+        assertThat(returnedItem1).isPresent();
+        assertThat(returnedItem1.get().getItemId()).isEqualTo("id-25");
+        assertThat(returnedItem2).isPresent();
+        assertThat(returnedItem2.get().getItemId()).isEqualTo("id-51");
+        assertThat(returnedItem3).isPresent();
+        assertThat(returnedItem3.get().getItemId()).isEqualTo("id-1");
 
         verify(catalogFetcher, times(3)).getCatalog(any(), any());
     }
@@ -207,15 +213,14 @@ class InMemoryCatalogCacheTest {
                                                      .thenReturn(List.of());
 
         // Act
-        final CatalogItem catalogItem1 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
-        final CatalogItem catalogItem2 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
+        final Optional<CatalogItem>  catalogItem1 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
+        final Optional<CatalogItem>  catalogItem2 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
 
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> catalogCache.getCatalogItem(connectorUrl,
-                "test-asset-id");
+        final Optional<CatalogItem> catalogItem3 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
 
         // Assert
         assertThat(catalogItem1).isEqualTo(catalogItem2);
-        assertThatThrownBy(throwingCallable).isInstanceOf(NoSuchElementException.class);
+        assertThat(catalogItem3).isEmpty();
         verify(catalogFetcher, times(3)).getCatalog(any(), any());
     }
 }

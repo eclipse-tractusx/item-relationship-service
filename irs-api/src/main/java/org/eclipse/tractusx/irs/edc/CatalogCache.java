@@ -46,7 +46,7 @@ public interface CatalogCache {
      * @param target       The id of the desired ContractOffer
      * @return The Contract offer. If not found, a {@link java.util.NoSuchElementException} is thrown.
      */
-    CatalogItem getCatalogItem(String connectorUrl, String target);
+    Optional<CatalogItem> getCatalogItem(String connectorUrl, String target);
 
 }
 
@@ -63,19 +63,17 @@ class InMemoryCatalogCache implements CatalogCache {
     private final CatalogCacheConfiguration cacheConfig;
 
     @Override
-    public CatalogItem getCatalogItem(final String connectorUrl, final String target) {
+    public Optional<CatalogItem> getCatalogItem(final String connectorUrl, final String target) {
         cleanupExpiredCacheValues();
         Optional<CatalogItem> catalogItem = getItemFromCache(connectorUrl, target);
         if (catalogItem.isPresent()) {
-            final CatalogItem item = catalogItem.get();
-            log.info("Retrieved Item from cache: '{}'", item);
-            return item;
+            log.info("Retrieved Item from cache: '{}'", catalogItem);
         } else {
             log.info("Retrieving Catalog from connector '{}'", connectorUrl);
             catalogItem = getOfferFromCatalog(connectorUrl, target);
             catalogItem.ifPresent(item -> log.info("Retrieved Item from connector: '{}'", item));
-            return catalogItem.orElseThrow();
         }
+        return catalogItem;
     }
 
     private Optional<CatalogItem> getItemFromCache(final String connectorUrl, final String target) {

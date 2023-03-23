@@ -58,7 +58,7 @@ public class ContractNegotiationService {
     public NegotiationResponse negotiate(final String providerConnectorUrl, final String target)
             throws ContractNegotiationException {
 
-        final CatalogItem catalogItem = catalogCache.getCatalogItem(providerConnectorUrl, target);
+        final CatalogItem catalogItem = catalogCache.getCatalogItem(providerConnectorUrl, target).orElseThrow();
 
         final ContractOfferRequest contractOfferRequest = ContractOfferRequest.builder()
                                                                               .offerId(
