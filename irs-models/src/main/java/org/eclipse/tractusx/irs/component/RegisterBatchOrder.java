@@ -70,6 +70,7 @@ import org.hibernate.validator.constraints.URL;
 @AllArgsConstructor
 @Builder
 @SuppressWarnings({ "PMD.TooManyStaticImports",
+                    "PMD.ExcessiveImports",
 })
 public class RegisterBatchOrder {
 

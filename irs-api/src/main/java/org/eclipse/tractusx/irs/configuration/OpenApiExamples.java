@@ -194,7 +194,7 @@ public class OpenApiExamples {
     private JobParameter createJobParameter() {
         return JobParameter.builder()
                            .bomLifecycle(BomLifecycle.AS_BUILT)
-                           .depth(5)
+                           .depth(1)
                            .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(), AspectType.ADDRESS_ASPECT.toString()))
                            .direction(Direction.DOWNWARD)
                            .collectAspects(false)
@@ -244,12 +244,12 @@ public class OpenApiExamples {
         return toExample(BatchOrder.builder()
                                    .orderId(UUID)
                                    .state(ProcessingState.COMPLETE)
-                                   .batchChecksum(100)
+                                   .batchChecksum(1)
                                    .batches(
                                        List.of(BatchOrder.Batch
                                                .builder().batchId(UUID)
                                                .batchNumber(1)
-                                               .jobsInBatchChecksum(100)
+                                               .jobsInBatchChecksum(1)
                                                .batchUrl("https://../irs/orders/" + UUID + "/batches/" + UUID)
                                                .batchProcessingState(ProcessingState.PARTIAL)
                                                .build()))
@@ -261,8 +261,8 @@ public class OpenApiExamples {
                               .batchId(UUID)
                               .orderId(UUID)
                               .batchNumber(1)
-                              .batchTotal(5)
-                              .totalJobs(10)
+                              .batchTotal(1)
+                              .totalJobs(1)
                               .startedOn(EXAMPLE_ZONED_DATETIME)
                               .completedOn(EXAMPLE_ZONED_DATETIME)
                               .jobs(List.of(JobStatusResult.builder()
@@ -271,7 +271,7 @@ public class OpenApiExamples {
                                                            .startedOn(EXAMPLE_ZONED_DATETIME)
                                                            .completedOn(EXAMPLE_ZONED_DATETIME)
                                                            .build()))
-                              .jobsInBatchChecksum(100)
+                              .jobsInBatchChecksum(1)
                               .batchProcessingState(ProcessingState.COMPLETE).build());
     }
 
