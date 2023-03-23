@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.edc;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -129,9 +130,10 @@ class InMemoryCatalogCache implements CatalogCache {
         final List<CatalogItem> oldestCatalogItems = catalogCache.values()
                                                                  .stream()
                                                                  .flatMap(List::stream)
-                                                                 .sorted((o1, o2) -> (int) (
-                                                                         o1.getValidUntil().toEpochMilli() - o2.getValidUntil().toEpochMilli()))
-                                                                 .limit(listSize).toList();
+                                                                 .sorted(Comparator.comparing(
+                                                                         CatalogItem::getValidUntil))
+                                                                 .limit(listSize)
+                                                                 .toList();
         log.info("Removing '{}' oldest Items: '{}'", oldestCatalogItems.size(), oldestCatalogItems);
 
         catalogCache.values().forEach(catalogItems -> catalogItems.removeAll(oldestCatalogItems));
