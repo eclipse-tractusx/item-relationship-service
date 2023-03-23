@@ -17,10 +17,10 @@ spec:
       targetPort: control
       protocol: TCP
       name: control
-    - port: {{ .Values.edc.endpoints.data.port }}
-      targetPort: data
+    - port: {{ .Values.edc.endpoints.management.port }}
+      targetPort: management
       protocol: TCP
-      name: data
+      name: management
     - port: {{ .Values.edc.endpoints.validation.port }}
       targetPort: validation
       protocol: TCP

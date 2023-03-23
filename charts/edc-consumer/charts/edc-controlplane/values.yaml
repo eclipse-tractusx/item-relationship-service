@@ -121,12 +121,12 @@ edc:
       port: "8080"
       # -- The path mapping the "default" api is going to be exposed at
       path: /api
-    ## Data management API
-    data:
-      # -- The network port, which the "data" management api is going to be exposed by the container, pod and service
+    ## Management API
+    management:
+      # -- The network port, which the management api is going to be exposed by the container, pod and service
       port: "8181"
-      # -- The path mapping the "data" management api is going to be exposed at
-      path: /data
+      # -- The path mapping the management api is going to be exposed at
+      path: /api/v1/management
     ## Validation API
     validation:
       # -- The network port, which the "validation" api is going to be exposed by the container, pod and service
@@ -244,7 +244,7 @@ configuration:
     edc.oauth.client.id=
     edc.oauth.private.key.alias=
     edc.oauth.provider.jwks.url=
-    edc.oauth.public.key.alias=
+    edc.oauth.certificate.alias=
     edc.oauth.token.url=
     
     edc.vault.hashicorp.url=

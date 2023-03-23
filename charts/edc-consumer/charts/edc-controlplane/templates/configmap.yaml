@@ -10,8 +10,8 @@ data:
   configuration.properties: |-
     web.http.default.port={{ .Values.edc.endpoints.default.port }}
     web.http.default.path={{ .Values.edc.endpoints.default.path }}
-    web.http.data.port={{ .Values.edc.endpoints.data.port }}
-    web.http.data.path={{ .Values.edc.endpoints.data.path }}
+    web.http.management.port={{ .Values.edc.endpoints.management.port }}
+    web.http.management.path={{ .Values.edc.endpoints.management.path }}
     web.http.validation.port={{ .Values.edc.endpoints.validation.port }}
     web.http.validation.path={{ .Values.edc.endpoints.validation.path }}
     web.http.control.port={{ .Values.edc.endpoints.control.port }}
