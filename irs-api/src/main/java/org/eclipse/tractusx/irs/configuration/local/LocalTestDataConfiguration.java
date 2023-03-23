@@ -22,7 +22,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration.local;
 
-import java.io.File;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -31,8 +30,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
+
 
 /**
  * Local spring configuration for loading test data from resrouces.
@@ -42,15 +40,12 @@ import org.springframework.core.io.ResourceLoader;
 @RequiredArgsConstructor
 public class LocalTestDataConfiguration {
 
-    private final ResourceLoader resourceLoader;
-
     @Bean
     public CxTestDataContainer cxTestDataContainer() throws IOException {
-        final Resource resource = resourceLoader.getResource("classpath:test_data/CX_Testdata.json");
-        final File file = resource.getFile();
-
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return objectMapper.readValue(file, CxTestDataContainer.class);
+        try (var stream = getClass().getResourceAsStream("/test_data/CX_Testdata.json")) {
+            return objectMapper.readValue(stream, CxTestDataContainer.class);
+        }
     }
 }
