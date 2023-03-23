@@ -73,7 +73,7 @@ class EDCCatalogFacadeTest {
         when(controlPlaneClient.getCatalog(connectorUrl, 3)).thenReturn(secondPage);
 
         // act
-        final List<CatalogItem> catalog = edcCatalogFacade.getCatalog(connectorUrl, assetId);
+        final List<CatalogItem> catalog = edcCatalogFacade.fetchCatalogItemsUntilMatch(connectorUrl, assetId);
 
         // assert
         assertThat(catalog).hasSize(5);
@@ -90,7 +90,7 @@ class EDCCatalogFacadeTest {
         when(controlPlaneClient.getCatalog(anyString(), anyInt())).thenReturn(firstPage);
 
         // act
-        final List<CatalogItem> catalog = edcCatalogFacade.getCatalog(connectorUrl, assetId);
+        final List<CatalogItem> catalog = edcCatalogFacade.fetchCatalogItemsUntilMatch(connectorUrl, assetId);
 
         // assert
         assertThat(catalog).hasSize(3);
@@ -109,7 +109,7 @@ class EDCCatalogFacadeTest {
         when(controlPlaneClient.getCatalog(connectorUrl, DEFAULT_PAGE_SIZE)).thenReturn(secondPage);
 
         // act
-        final List<CatalogItem> catalog = edcCatalogFacade.getCatalog(connectorUrl, assetId);
+        final List<CatalogItem> catalog = edcCatalogFacade.fetchCatalogItemsUntilMatch(connectorUrl, assetId);
 
         // assert
         assertThat(catalog).hasSize(3);

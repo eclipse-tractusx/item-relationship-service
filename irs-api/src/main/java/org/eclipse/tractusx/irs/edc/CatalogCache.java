@@ -90,7 +90,7 @@ class InMemoryCatalogCache implements CatalogCache {
     }
 
     private Optional<CatalogItem> getOfferFromCatalog(final String connectorUrl, final String target) {
-        final List<CatalogItem> catalog = catalogFetcher.getCatalog(connectorUrl, target);
+        final List<CatalogItem> catalog = catalogFetcher.fetchCatalogItemsUntilMatch(connectorUrl, target);
 
         if (cacheConfig.isEnabled()) {
             List<CatalogItem> catalogItems = new ArrayList<>();

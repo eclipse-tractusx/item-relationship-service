@@ -49,7 +49,15 @@ public class EDCCatalogFacade {
     private final EdcControlPlaneClient controlPlaneClient;
     private final EdcConfiguration config;
 
-    public List<CatalogItem> getCatalog(final String connectorUrl, final String target) {
+    /**
+     * Paginates though the catalog and collects all CatalogItems up to the
+     * point where the requests Item is found.
+     *
+     * @param connectorUrl The EDC Connector from which the Catalog will be requested
+     * @param target       The target assetID which will be searched for
+     * @return The list of catalog Items up to the point where the target CatalogItem is included.
+     */
+    public List<CatalogItem> fetchCatalogItemsUntilMatch(final String connectorUrl, final String target) {
         int offset = 0;
         final int pageSize = config.getControlplane().getCatalogPageSize();
 

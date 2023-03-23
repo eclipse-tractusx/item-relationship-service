@@ -69,7 +69,7 @@ class InMemoryCatalogCacheTest {
                                                    .connectorId("testConnector")
                                                    .assetPropId("test-asset-id")
                                                    .build();
-        when(catalogFetcher.getCatalog(any(), any())).thenReturn(List.of(catalogItem)).thenReturn(List.of());
+        when(catalogFetcher.fetchCatalogItemsUntilMatch(any(), any())).thenReturn(List.of(catalogItem)).thenReturn(List.of());
 
         // Act
         final Optional<CatalogItem> catalogItem1 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
@@ -79,7 +79,7 @@ class InMemoryCatalogCacheTest {
         assertThat(catalogItem1).isPresent();
         assertThat(catalogItem2).isPresent();
         assertThat(catalogItem1.get()).isEqualTo(catalogItem2.get());
-        verify(catalogFetcher, times(1)).getCatalog(any(), any());
+        verify(catalogFetcher, times(1)).fetchCatalogItemsUntilMatch(any(), any());
     }
 
     @Test
@@ -96,8 +96,8 @@ class InMemoryCatalogCacheTest {
                                                     .connectorId("differentTestConnector")
                                                     .assetPropId("different-test-asset-id")
                                                     .build();
-        when(catalogFetcher.getCatalog(any(), any())).thenReturn(List.of(catalogItem1))
-                                                     .thenReturn(List.of(catalogItem2));
+        when(catalogFetcher.fetchCatalogItemsUntilMatch(any(), any())).thenReturn(List.of(catalogItem1))
+                                                                      .thenReturn(List.of(catalogItem2));
 
         // Act
         final Optional<CatalogItem> returnedItem1 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
@@ -108,7 +108,7 @@ class InMemoryCatalogCacheTest {
         assertThat(returnedItem1).isPresent();
         assertThat(returnedItem2).isPresent();
         assertThat(returnedItem1.get()).isNotEqualTo(returnedItem2.get());
-        verify(catalogFetcher, times(2)).getCatalog(any(), any());
+        verify(catalogFetcher, times(2)).fetchCatalogItemsUntilMatch(any(), any());
     }
 
     @Test
@@ -121,14 +121,14 @@ class InMemoryCatalogCacheTest {
                                                    .connectorId("testConnector")
                                                    .assetPropId("not-test-asset-id")
                                                    .build();
-        when(catalogFetcher.getCatalog(any(), any())).thenReturn(List.of(catalogItem)).thenReturn(List.of());
+        when(catalogFetcher.fetchCatalogItemsUntilMatch(any(), any())).thenReturn(List.of(catalogItem)).thenReturn(List.of());
 
         // Act
         final Optional<CatalogItem> returnedItem = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
 
         // Assert
         assertThat(returnedItem).isEmpty();
-        verify(catalogFetcher, times(1)).getCatalog(any(), any());
+        verify(catalogFetcher, times(1)).fetchCatalogItemsUntilMatch(any(), any());
     }
 
     @Test
@@ -145,8 +145,8 @@ class InMemoryCatalogCacheTest {
                                                     .connectorId("differentTestConnector")
                                                     .assetPropId("different-test-asset-id")
                                                     .build();
-        when(catalogFetcher.getCatalog(any(), any())).thenReturn(List.of(catalogItem1))
-                                                     .thenReturn(List.of(catalogItem1, catalogItem2));
+        when(catalogFetcher.fetchCatalogItemsUntilMatch(any(), any())).thenReturn(List.of(catalogItem1))
+                                                                      .thenReturn(List.of(catalogItem1, catalogItem2));
         final Duration cacheTTL = Duration.ofSeconds(2);
 
         cacheConfig.setTtl(cacheTTL);
@@ -162,7 +162,7 @@ class InMemoryCatalogCacheTest {
         assertThat(returnedItem1).isPresent();
         assertThat(returnedItem2).isPresent();
         assertThat(returnedItem1.get()).isEqualTo(returnedItem2.get());
-        verify(catalogFetcher, times(2)).getCatalog(any(), any());
+        verify(catalogFetcher, times(2)).fetchCatalogItemsUntilMatch(any(), any());
     }
 
     @Test
@@ -187,8 +187,8 @@ class InMemoryCatalogCacheTest {
                                               .build());
         }
 
-        when(catalogFetcher.getCatalog(eq(connectorUrl1), any())).thenReturn(catalogItemsBatch1);
-        when(catalogFetcher.getCatalog(eq(connectorUrl2), any())).thenReturn(catalogItemsBatch2);
+        when(catalogFetcher.fetchCatalogItemsUntilMatch(eq(connectorUrl1), any())).thenReturn(catalogItemsBatch1);
+        when(catalogFetcher.fetchCatalogItemsUntilMatch(eq(connectorUrl2), any())).thenReturn(catalogItemsBatch2);
 
         // Act
         final Optional<CatalogItem> returnedItem1 = catalogCache.getCatalogItem(connectorUrl1, "asset-id-25");
@@ -203,7 +203,7 @@ class InMemoryCatalogCacheTest {
         assertThat(returnedItem2.get().getItemId()).isEqualTo("id-51");
         assertThat(returnedItem3.get().getItemId()).isEqualTo("id-1");
 
-        verify(catalogFetcher, times(3)).getCatalog(any(), any());
+        verify(catalogFetcher, times(3)).fetchCatalogItemsUntilMatch(any(), any());
     }
 
     @Test
@@ -216,9 +216,9 @@ class InMemoryCatalogCacheTest {
                                                    .assetPropId("test-asset-id")
                                                    .build();
         cacheConfig.setEnabled(false);
-        when(catalogFetcher.getCatalog(any(), any())).thenReturn(List.of(catalogItem))
-                                                     .thenReturn(List.of(catalogItem))
-                                                     .thenReturn(List.of());
+        when(catalogFetcher.fetchCatalogItemsUntilMatch(any(), any())).thenReturn(List.of(catalogItem))
+                                                                      .thenReturn(List.of(catalogItem))
+                                                                      .thenReturn(List.of());
 
         // Act
         final Optional<CatalogItem> catalogItem1 = catalogCache.getCatalogItem(connectorUrl, "test-asset-id");
@@ -231,6 +231,6 @@ class InMemoryCatalogCacheTest {
         assertThat(catalogItem2).isPresent();
         assertThat(catalogItem3).isEmpty();
         assertThat(catalogItem1.get()).isEqualTo(catalogItem2.get());
-        verify(catalogFetcher, times(3)).getCatalog(any(), any());
+        verify(catalogFetcher, times(3)).fetchCatalogItemsUntilMatch(any(), any());
     }
 }
