@@ -43,7 +43,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(BatchController.class)
 @Import(SecurityConfiguration.class)
-public class BatchControllerTest {
+class BatchControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

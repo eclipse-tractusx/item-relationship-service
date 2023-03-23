@@ -79,7 +79,7 @@ public class OpenApiExamples {
     private static final ZonedDateTime EXAMPLE_ZONED_DATETIME = ZonedDateTime.parse("2022-02-03T14:48:54.709Z");
     private static final String JOB_ID = "e5347c88-a921-11ec-b909-0242ac120002";
 
-    private static final UUID UUID_ID = UUID.fromString("e5347c88-a921-11ec-b909-0242ac120002");
+    private static final UUID UUID_ID = UUID.fromString("f253718e-a270-4367-901b-9d50d9bd8462");
     private static final String GLOBAL_ASSET_ID = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0";
     private static final String SUBMODEL_IDENTIFICATION = "urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff";
     private static final String JOB_HANDLE_ID_1 = "6c311d29-5753-46d4-b32c-19b918ea93b0";
@@ -143,7 +143,7 @@ public class OpenApiExamples {
 
     private Example createJobListProcessingState() {
         return toExample(new PageResult(new PagedListHolder<>(List.of(JobStatusResult.builder()
-                                                                                     .id(UUID_ID.fromString(
+                                                                                     .id(UUID.fromString(
                                                                                              JOB_HANDLE_ID_1))
                                                                                      .state(JobState.COMPLETED)
                                                                                      .startedOn(EXAMPLE_ZONED_DATETIME)
@@ -153,13 +153,13 @@ public class OpenApiExamples {
     }
 
     private JobHandle createJobHandle(final String name) {
-        return JobHandle.builder().id(UUID_ID.fromString(name)).build();
+        return JobHandle.builder().id(UUID.fromString(name)).build();
     }
 
     private Example createFailedJobResult() {
         return toExample(Jobs.builder()
                              .job(Job.builder()
-                                     .id(UUID_ID.fromString(JOB_ID))
+                                     .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.ERROR)
                                      .owner("")
@@ -176,7 +176,7 @@ public class OpenApiExamples {
     private Example createPartialJobResult() {
         return toExample(Jobs.builder()
                              .job(Job.builder()
-                                     .id(UUID_ID.fromString(JOB_ID))
+                                     .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.RUNNING)
                                      .owner("")
@@ -219,7 +219,7 @@ public class OpenApiExamples {
     private Example createCompleteJobResult() {
         return toExample(Jobs.builder()
                              .job(Job.builder()
-                                     .id(UUID_ID.fromString(JOB_ID))
+                                     .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.COMPLETED)
                                      .owner("")
@@ -266,7 +266,7 @@ public class OpenApiExamples {
                               .startedOn(EXAMPLE_ZONED_DATETIME)
                               .completedOn(EXAMPLE_ZONED_DATETIME)
                               .jobs(List.of(JobStatusResult.builder()
-                                                           .id(UUID_ID.fromString(JOB_HANDLE_ID_1))
+                                                           .id(UUID.fromString(JOB_HANDLE_ID_1))
                                                            .state(JobState.COMPLETED)
                                                            .startedOn(EXAMPLE_ZONED_DATETIME)
                                                            .completedOn(EXAMPLE_ZONED_DATETIME)
@@ -401,7 +401,7 @@ public class OpenApiExamples {
     private Example createCanceledJobResult() {
         return toExample(Jobs.builder()
                              .job(Job.builder()
-                                     .id(UUID_ID.fromString(JOB_ID))
+                                     .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.CANCELED)
                                      .owner("")

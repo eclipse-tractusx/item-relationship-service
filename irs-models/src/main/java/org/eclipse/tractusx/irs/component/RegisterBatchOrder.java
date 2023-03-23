@@ -52,6 +52,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -138,6 +139,7 @@ public class RegisterBatchOrder {
     /**
      * Validation constants
      */
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     /* package */ static final class RegisterBatchOrderConstants {
         /* package */ static final String MIN_TREE_DEPTH_DESC = "1";
         /* package */ static final String MAX_TREE_DEPTH_DESC = "100";
