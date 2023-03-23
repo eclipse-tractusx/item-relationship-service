@@ -67,9 +67,9 @@ data:
 
       catalog:
         cache:
-          enabled: {{ tpl .Values.edc.catalog.cache.enabled . | default "true" | quote }}
-          ttl: {{ tpl .Values.edc.catalog.cache.ttl . | default "P1D" | quote }}
-          maxCachedItems: {{ tpl .Values.edc.catalog.cache.maxCachedItems . | default "64000" | quote }}
+          enabled: {{ .Values.edc.catalog.cache.enabled | default true }}
+          ttl: {{ .Values.edc.catalog.cache.ttl | default "P1D" | quote }}
+          maxCachedItems: {{ .Values.edc.catalog.cache.maxCachedItems | default 64000 }}
     {{- end }}
     {{- if .Values.config.content }}
     {{- tpl (toYaml .Values.config.content) . | nindent 4 }}
