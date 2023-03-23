@@ -44,7 +44,7 @@ public class LocalTestDataConfiguration {
     public CxTestDataContainer cxTestDataContainer() throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        try (var stream = getClass().getResourceAsStream("/test_data/CX_Testdata.json")) {
+        try (var stream = LocalTestDataConfiguration.class.getResourceAsStream("/test_data/CX_Testdata.json")) {
             return objectMapper.readValue(stream, CxTestDataContainer.class);
         }
     }
