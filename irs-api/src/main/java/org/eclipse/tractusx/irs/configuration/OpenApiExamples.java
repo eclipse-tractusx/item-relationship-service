@@ -79,7 +79,7 @@ public class OpenApiExamples {
     private static final ZonedDateTime EXAMPLE_ZONED_DATETIME = ZonedDateTime.parse("2022-02-03T14:48:54.709Z");
     private static final String JOB_ID = "e5347c88-a921-11ec-b909-0242ac120002";
 
-    private static final UUID UUID = java.util.UUID.fromString("e5347c88-a921-11ec-b909-0242ac120002");
+    private static final UUID UUID_ID = UUID.fromString("e5347c88-a921-11ec-b909-0242ac120002");
     private static final String GLOBAL_ASSET_ID = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0";
     private static final String SUBMODEL_IDENTIFICATION = "urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff";
     private static final String JOB_HANDLE_ID_1 = "6c311d29-5753-46d4-b32c-19b918ea93b0";
@@ -143,7 +143,7 @@ public class OpenApiExamples {
 
     private Example createJobListProcessingState() {
         return toExample(new PageResult(new PagedListHolder<>(List.of(JobStatusResult.builder()
-                                                                                     .id(UUID.fromString(
+                                                                                     .id(UUID_ID.fromString(
                                                                                              JOB_HANDLE_ID_1))
                                                                                      .state(JobState.COMPLETED)
                                                                                      .startedOn(EXAMPLE_ZONED_DATETIME)
@@ -153,13 +153,13 @@ public class OpenApiExamples {
     }
 
     private JobHandle createJobHandle(final String name) {
-        return JobHandle.builder().id(UUID.fromString(name)).build();
+        return JobHandle.builder().id(UUID_ID.fromString(name)).build();
     }
 
     private Example createFailedJobResult() {
         return toExample(Jobs.builder()
                              .job(Job.builder()
-                                     .id(UUID.fromString(JOB_ID))
+                                     .id(UUID_ID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.ERROR)
                                      .owner("")
@@ -176,7 +176,7 @@ public class OpenApiExamples {
     private Example createPartialJobResult() {
         return toExample(Jobs.builder()
                              .job(Job.builder()
-                                     .id(UUID.fromString(JOB_ID))
+                                     .id(UUID_ID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.RUNNING)
                                      .owner("")
@@ -219,7 +219,7 @@ public class OpenApiExamples {
     private Example createCompleteJobResult() {
         return toExample(Jobs.builder()
                              .job(Job.builder()
-                                     .id(UUID.fromString(JOB_ID))
+                                     .id(UUID_ID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.COMPLETED)
                                      .owner("")
@@ -242,15 +242,15 @@ public class OpenApiExamples {
 
     private Example createCompleteOrderResult() {
         return toExample(BatchOrder.builder()
-                                   .orderId(UUID)
+                                   .orderId(UUID_ID)
                                    .state(ProcessingState.COMPLETE)
                                    .batchChecksum(1)
                                    .batches(
                                        List.of(BatchOrder.Batch
-                                               .builder().batchId(UUID)
+                                               .builder().batchId(UUID_ID)
                                                .batchNumber(1)
                                                .jobsInBatchChecksum(1)
-                                               .batchUrl("https://../irs/orders/" + UUID + "/batches/" + UUID)
+                                               .batchUrl("https://../irs/orders/" + UUID_ID + "/batches/" + UUID_ID)
                                                .batchProcessingState(ProcessingState.PARTIAL)
                                                .build()))
                                    .build());
@@ -258,15 +258,15 @@ public class OpenApiExamples {
 
     private Example createCompleteBatchResult() {
         return toExample(Batch.builder()
-                              .batchId(UUID)
-                              .orderId(UUID)
+                              .batchId(UUID_ID)
+                              .orderId(UUID_ID)
                               .batchNumber(1)
                               .batchTotal(1)
                               .totalJobs(1)
                               .startedOn(EXAMPLE_ZONED_DATETIME)
                               .completedOn(EXAMPLE_ZONED_DATETIME)
                               .jobs(List.of(JobStatusResult.builder()
-                                                           .id(UUID.fromString(JOB_HANDLE_ID_1))
+                                                           .id(UUID_ID.fromString(JOB_HANDLE_ID_1))
                                                            .state(JobState.COMPLETED)
                                                            .startedOn(EXAMPLE_ZONED_DATETIME)
                                                            .completedOn(EXAMPLE_ZONED_DATETIME)
@@ -401,7 +401,7 @@ public class OpenApiExamples {
     private Example createCanceledJobResult() {
         return toExample(Jobs.builder()
                              .job(Job.builder()
-                                     .id(UUID.fromString(JOB_ID))
+                                     .id(UUID_ID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.CANCELED)
                                      .owner("")

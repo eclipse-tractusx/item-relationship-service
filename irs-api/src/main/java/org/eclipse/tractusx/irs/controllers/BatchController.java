@@ -64,6 +64,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(IrsApplication.API_PREFIX)
 @RequiredArgsConstructor
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals",
+                    "PMD.ExcessiveImports",
 })
 public class BatchController {
 
