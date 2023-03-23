@@ -100,7 +100,7 @@ class InMemoryCatalogCache implements CatalogCache {
             final int catalogSize = catalog.size();
             final int cacheSize = getCacheSize();
             if (!cacheHasSpaceLeft(cacheSize, catalogSize)) {
-                final long numberOfItemsToBeRemoved = (cacheSize + catalogSize) - cacheConfig.getMaxCachedItems();
+                final long numberOfItemsToBeRemoved = cacheSize + catalogSize - cacheConfig.getMaxCachedItems();
                 removeOldestCacheValues(numberOfItemsToBeRemoved);
             }
             catalogItems.addAll(catalog.stream().limit(cacheConfig.getMaxCachedItems()).map(this::updateTTL).toList());
