@@ -78,7 +78,7 @@ public class BatchController {
                                                                                           ref = "#/components/examples/job-handle")
                                                               })
                                          }),
-                            @ApiResponse(responseCode = "400", description = "Job registration failed.",
+                            @ApiResponse(responseCode = "400", description = "Batch Order registration failed.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -116,7 +116,7 @@ public class BatchController {
                                                               examples = @ExampleObject(name = "complete",
                                                                                         ref = "#/components/examples/complete-job-result"))
                                          }),
-                            @ApiResponse(responseCode = "400", description = "Return job failed.",
+                            @ApiResponse(responseCode = "400", description = "Return Batch Order failed.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -134,7 +134,7 @@ public class BatchController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-403"))
                                          }),
-                            @ApiResponse(responseCode = "404", description = "Job with the requested jobId not found.",
+                            @ApiResponse(responseCode = "404", description = "Batch Order with the requested orderId not found.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -162,7 +162,7 @@ public class BatchController {
                                                               examples = @ExampleObject(name = "complete",
                                                                                         ref = "#/components/examples/complete-job-result"))
                                          }),
-                            @ApiResponse(responseCode = "400", description = "Return job failed.",
+                            @ApiResponse(responseCode = "400", description = "Return batch failed.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -180,7 +180,7 @@ public class BatchController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-403"))
                                          }),
-                            @ApiResponse(responseCode = "404", description = "Job with the requested jobId not found.",
+                            @ApiResponse(responseCode = "404", description = "Batch with the requested orderId and batchId not found.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",

@@ -35,9 +35,9 @@ import lombok.extern.jackson.Jacksonized;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 
 /**
- *
+ * Batch model
  */
-@Schema(description = "Batch model")
+@Schema(description = "Batch model.")
 @Value
 @Builder
 @AllArgsConstructor

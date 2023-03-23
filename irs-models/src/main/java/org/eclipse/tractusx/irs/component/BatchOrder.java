@@ -34,9 +34,9 @@ import lombok.extern.jackson.Jacksonized;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 
 /**
- *
+ * BatchOrderAck Payload Response
  */
-@Schema(description = "BatchOrderAck Payload Response")
+@Schema(description = "BatchOrderAck Payload Response.")
 @Value
 @Builder
 @AllArgsConstructor
@@ -53,16 +53,16 @@ public class BatchOrder {
     @Schema(implementation = ProcessingState.class, description = "The state of the order.")
     private ProcessingState state;
 
-    @Schema(implementation = Integer.class, description = "Expected number of jobs in batch.")
+    @Schema(implementation = Integer.class, description = "Expected number of batches in order.")
     private Integer batchChecksum;
 
-    @ArraySchema(arraySchema = @Schema(description = "Array of jobs."), maxItems = Integer.MAX_VALUE)
+    @ArraySchema(arraySchema = @Schema(description = "Array of batches."), maxItems = Integer.MAX_VALUE)
     private List<Batch> batches;
 
     /**
-     *
+     * Batch model
      */
-    @Schema(description = "Batch model")
+    @Schema(description = "Batch model.")
     @Value
     @Builder
     @AllArgsConstructor
