@@ -47,8 +47,8 @@ spec:
             - name: default
               containerPort: {{ .Values.edc.endpoints.default.port }}
               protocol: TCP
-            - name: data
-              containerPort: {{ .Values.edc.endpoints.data.port }}
+            - name: management
+              containerPort: {{ .Values.edc.endpoints.management.port }}
               protocol: TCP
             - name: validation
               containerPort: {{ .Values.edc.endpoints.validation.port }}
@@ -65,20 +65,29 @@ spec:
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
-              path: {{ .Values.edc.endpoints.default.path }}/check/liveness
-              port: default
+              path: {{ .Values.edc.endpoints.management.path }}/check/liveness
+              port: management
+              httpHeaders:
+                - name: X-Api-Key
+                  value: {{ .Values.edc.api.auth.key | quote }}
           {{- end }}
           {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
-              path: {{ .Values.edc.endpoints.default.path }}/check/readiness
-              port: default
+              path: {{ .Values.edc.endpoints.management.path }}/check/readiness
+              port: management
+              httpHeaders:
+                - name: X-Api-Key
+                  value: {{ .Values.edc.api.auth.key | quote }}
           {{- end }}
           {{- if .Values.startupProbe.enabled }}
           startupProbe:
             httpGet:
-              path: {{ .Values.edc.endpoints.default.path }}/check/startup
-              port: default
+              path: {{ .Values.edc.endpoints.management.path }}/check/startup
+              port: management
+              httpHeaders:
+                - name: X-Api-Key
+                  value: {{ .Values.edc.api.auth.key | quote }}
             failureThreshold: {{ .Values.startupProbe.failureThreshold }}
             initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
           {{- end }}
