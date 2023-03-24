@@ -246,13 +246,13 @@ public class OpenApiExamples {
                                            .state(ProcessingState.COMPLETE)
                                            .batchChecksum(1)
                                            .batches(
-                                       List.of(BatchOrderResponse.BatchResponse
-                                               .builder().batchId(UUID_ID)
-                                               .batchNumber(1)
-                                               .jobsInBatchChecksum(1)
-                                               .batchUrl("https://../irs/orders/" + UUID_ID + "/batches/" + UUID_ID)
-                                               .batchProcessingState(ProcessingState.PARTIAL)
-                                               .build()))
+                                                   List.of(BatchOrderResponse.BatchResponse
+                                                           .builder().batchId(UUID_ID)
+                                                           .batchNumber(1)
+                                                           .jobsInBatchChecksum(1)
+                                                           .batchUrl("https://../irs/orders/" + UUID_ID + "/batches/" + UUID_ID)
+                                                           .batchProcessingState(ProcessingState.PARTIAL)
+                                                           .build()))
                                            .build());
     }
 
@@ -266,11 +266,11 @@ public class OpenApiExamples {
                                       .startedOn(EXAMPLE_ZONED_DATETIME)
                                       .completedOn(EXAMPLE_ZONED_DATETIME)
                                       .jobs(List.of(JobStatusResult.builder()
-                                                           .id(UUID.fromString(JOB_HANDLE_ID_1))
-                                                           .state(JobState.COMPLETED)
-                                                           .startedOn(EXAMPLE_ZONED_DATETIME)
-                                                           .completedOn(EXAMPLE_ZONED_DATETIME)
-                                                           .build()))
+                                                                   .id(UUID.fromString(JOB_HANDLE_ID_1))
+                                                                   .state(JobState.COMPLETED)
+                                                                   .startedOn(EXAMPLE_ZONED_DATETIME)
+                                                                   .completedOn(EXAMPLE_ZONED_DATETIME)
+                                                                   .build()))
                                       .jobsInBatchChecksum(1)
                                       .batchProcessingState(ProcessingState.COMPLETE).build());
     }
