@@ -22,8 +22,11 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.services;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
@@ -34,6 +37,9 @@ import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.springframework.stereotype.Service;
 
+/**
+ *
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -42,7 +48,7 @@ public class CreationBatchService {
     private final BatchOrderStore batchOrderStore;
     private final BatchStore batchStore;
 
-    public UUID create(RegisterBatchOrder request) {
+    public UUID create(final RegisterBatchOrder request) {
         // TODO: simple split - need to use strategy
         final UUID batchOrderId = UUID.randomUUID();
         final BatchOrder batchOrder = BatchOrder.builder()
@@ -57,19 +63,26 @@ public class CreationBatchService {
                                                 .jobTimeout(request.getJobTimeout())
                                                 .callbackUrl(request.getCallbackUrl())
                                                 .build();
-        final UUID batchId = UUID.randomUUID();
-        // TODO: will be a part of strategy
-        final Batch batch = Batch.builder()
-                                 .batchId(batchId)
-                                 .batchOrderId(batchOrderId)
-                                 .batchNumber(1)
-                                 .batchState(ProcessingState.INITIALIZED)
-                                 .globalAssetIds(request.getGlobalAssetIds().stream().toList())
-                                 .build();
 
+        final List<Batch> batches = createBatches(List.copyOf(request.getGlobalAssetIds()), request.getBatchSize(), batchOrderId);
         batchOrderStore.save(batchOrderId, batchOrder);
-        batchStore.save(batchId, batch);
+        batches.forEach(batch -> batchStore.save(batch.getBatchId(), batch));
+
         return batchOrderId;
+    }
+
+    public List<Batch> createBatches(final List<String> globalAssetIds, final int batchSize, final UUID batchOrderId) {
+        final List<List<String>> partition = Lists.partition(globalAssetIds, batchSize);
+
+        final AtomicInteger batchNumber = new AtomicInteger(1);
+
+        return partition.stream().map(batch -> Batch.builder()
+                                                .batchId(UUID.randomUUID())
+                                                .batchOrderId(batchOrderId)
+                                                .batchNumber(batchNumber.getAndIncrement())
+                                                .batchState(ProcessingState.INITIALIZED)
+                                                .globalAssetIds(batch.stream().toList())
+                                                .build()).toList();
     }
 
 }

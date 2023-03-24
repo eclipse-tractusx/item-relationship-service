@@ -67,6 +67,22 @@ class CreationBatchServiceTest {
         assertThat(actual.getGlobalAssetIds()).containsOnly(FIRST_GLOBAL_ASSET_ID, SECOND_GLOBAL_ASSET_ID);
     }
 
+    @Test
+    void shouldSplitGlobalAssetIdIntoBatches() {
+        // given
+        final List<String> globalAssetIds = List.of("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18" , "19" , "20");
+        final int batchSize = 3;
+
+        // when
+        final List<Batch> batches = service.createBatches(globalAssetIds, batchSize, UUID.randomUUID());
+
+        // then
+        assertThat(batches).hasSize(7);
+        assertThat(batches.get(0).getGlobalAssetIds()).containsExactly("1", "2", "3");
+        assertThat(batches.get(6).getGlobalAssetIds()).containsExactly("19", "20");
+
+    }
+
     private static RegisterBatchOrder exampleBatchRequest() {
         return RegisterBatchOrder.builder()
                                  .globalAssetIds(Set.of(FIRST_GLOBAL_ASSET_ID, SECOND_GLOBAL_ASSET_ID))

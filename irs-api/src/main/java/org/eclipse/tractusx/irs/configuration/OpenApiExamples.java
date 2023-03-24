@@ -30,7 +30,7 @@ import java.util.UUID;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
-import org.eclipse.tractusx.irs.component.Batch;
+import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
@@ -257,22 +257,22 @@ public class OpenApiExamples {
     }
 
     private Example createCompleteBatchResult() {
-        return toExample(Batch.builder()
-                              .batchId(UUID_ID)
-                              .orderId(UUID_ID)
-                              .batchNumber(1)
-                              .batchTotal(1)
-                              .totalJobs(1)
-                              .startedOn(EXAMPLE_ZONED_DATETIME)
-                              .completedOn(EXAMPLE_ZONED_DATETIME)
-                              .jobs(List.of(JobStatusResult.builder()
+        return toExample(BatchResponse.builder()
+                                      .batchId(UUID_ID)
+                                      .orderId(UUID_ID)
+                                      .batchNumber(1)
+                                      .batchTotal(1)
+                                      .totalJobs(1)
+                                      .startedOn(EXAMPLE_ZONED_DATETIME)
+                                      .completedOn(EXAMPLE_ZONED_DATETIME)
+                                      .jobs(List.of(JobStatusResult.builder()
                                                            .id(UUID.fromString(JOB_HANDLE_ID_1))
                                                            .state(JobState.COMPLETED)
                                                            .startedOn(EXAMPLE_ZONED_DATETIME)
                                                            .completedOn(EXAMPLE_ZONED_DATETIME)
                                                            .build()))
-                              .jobsInBatchChecksum(1)
-                              .batchProcessingState(ProcessingState.COMPLETE).build());
+                                      .jobsInBatchChecksum(1)
+                                      .batchProcessingState(ProcessingState.COMPLETE).build());
     }
 
     private Submodel createSubmodel() {

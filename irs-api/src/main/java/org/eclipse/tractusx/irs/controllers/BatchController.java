@@ -39,14 +39,13 @@ import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.IrsApplication;
-import org.eclipse.tractusx.irs.component.Batch;
-import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchOrderCreated;
+import org.eclipse.tractusx.irs.component.BatchOrderResponse;
+import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
-import org.eclipse.tractusx.irs.component.enums.ProcessingState;
+import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
-import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -154,7 +153,7 @@ public class BatchController {
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class), name = "orderId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
                                                                                max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID orderId) {
-        return queryBatchService.findById(orderId);
+        return queryBatchService.findOrderById(orderId);
     }
 
     @Operation(description = "Get a batch with a given batchId for a given orderId.",
@@ -165,7 +164,7 @@ public class BatchController {
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Get a batch with a given batchId for a given orderId.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                                              schema = @Schema(implementation = Batch.class),
+                                                              schema = @Schema(implementation = BatchResponse.class),
                                                               examples = @ExampleObject(name = "complete",
                                                                                         ref = "#/components/examples/complete-batch-result"))
                                          }),
@@ -196,14 +195,14 @@ public class BatchController {
     })
     @GetMapping("/orders/{orderId}/batches/{batchId}")
     @PreAuthorize("hasAuthority('view_irs')")
-    public Batch getBatch(
+    public BatchResponse getBatch(
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class), name = "orderId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
                                                                                max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID orderId,
             @Parameter(description = "Id of the batch.", schema = @Schema(implementation = UUID.class), name = "batchId",
                        example = "4bce40b8-64c7-41bf-9ca3-e9432c7fef98") @Size(min = IrsAppConstants.JOB_ID_SIZE,
                                                                                max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID batchId) {
-        return Batch.builder().batchId(batchId).batchProcessingState(ProcessingState.INITIALIZED).orderId(orderId).build();
+        return queryBatchService.findBatchById(orderId, batchId);
     }
 
 }

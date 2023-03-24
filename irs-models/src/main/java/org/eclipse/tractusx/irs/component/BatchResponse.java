@@ -42,7 +42,7 @@ import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 @Builder
 @AllArgsConstructor
 @Jacksonized
-public class Batch {
+public class BatchResponse {
 
     private static final int UUID_LENGTH = 36;
 

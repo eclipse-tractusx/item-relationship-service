@@ -23,19 +23,28 @@
 package org.eclipse.tractusx.irs.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
+import org.eclipse.tractusx.irs.component.BatchResponse;
+import org.eclipse.tractusx.irs.component.JobStatusResult;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrder;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
+import org.eclipse.tractusx.irs.connector.job.JobStore;
+import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ *
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -44,7 +53,9 @@ public class QueryBatchService {
     private final BatchOrderStore batchOrderStore;
     private final BatchStore batchStore;
 
-    public BatchOrderResponse findById(UUID batchOrderId) {
+    private final JobStore jobStore;
+
+    public BatchOrderResponse findOrderById(final UUID batchOrderId) {
         final BatchOrder batchOrder = batchOrderStore.find(batchOrderId)
                                                      .orElseThrow(() -> new EntityNotFoundException(
                                                              "Cannot find Batch Order with id: " + batchOrderId));
@@ -60,6 +71,14 @@ public class QueryBatchService {
                                  .build();
     }
 
+    public BatchResponse findBatchById(final UUID batchOrderId, final UUID batchId) {
+        return batchStore.find(batchId)
+                         .filter(ba -> ba.getBatchOrderId().equals(batchOrderId))
+                         .map(this::toBatchResponse)
+                         .orElseThrow(() -> new EntityNotFoundException(
+                                 "Cannot find Batch with id: " + batchId));
+    }
+
     private BatchOrderResponse.BatchResponse toResponse(final Batch batch) {
         return BatchOrderResponse.BatchResponse.builder()
                                                .batchId(batch.getBatchId())
@@ -67,6 +86,38 @@ public class QueryBatchService {
                                                .batchProcessingState(batch.getBatchState())
                                                .batchUrl(batch.getBatchUrl())
                                                .build();
+    }
+
+    private BatchResponse toBatchResponse(final Batch batch) {
+        final List<JobStatusResult> jobs = batch.getJobIds()
+                                                      .stream()
+                                                      .map(jobId -> jobStore.find(jobId.toString()))
+                                                      .flatMap(Optional::stream)
+                                                      .map(toJobStatus())
+                                                      .toList();
+
+        return BatchResponse.builder()
+                            .batchId(batch.getBatchId())
+                            .orderId(batch.getBatchOrderId())
+                            .batchNumber(batch.getBatchNumber())
+                            .totalJobs(batch.getJobIds().size())
+//                            .batchTotal()
+//                            .startedOn()
+//                            .completedOn()
+//                            .jobsInBatchChecksum()
+                            .jobs(jobs)
+                            .batchNumber(batch.getBatchNumber())
+                            .batchProcessingState(batch.getBatchState())
+                            .build();
+    }
+
+    private static Function<MultiTransferJob, JobStatusResult> toJobStatus() {
+        return job -> JobStatusResult.builder()
+                                     .id(job.getJobId())
+                                     .state(job.getJob().getState())
+                                     .startedOn(job.getJob().getStartedOn())
+                                     .completedOn(job.getJob().getCompletedOn())
+                                     .build();
     }
 
 }

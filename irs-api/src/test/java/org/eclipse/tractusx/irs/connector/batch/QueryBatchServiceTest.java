@@ -24,9 +24,13 @@ package org.eclipse.tractusx.irs.connector.batch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
+import org.eclipse.tractusx.irs.component.BatchResponse;
+import org.eclipse.tractusx.irs.connector.job.InMemoryJobStore;
+import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,13 +39,15 @@ class QueryBatchServiceTest {
 
     private BatchOrderStore batchOrderStore;
     private BatchStore batchStore;
+    private JobStore jobStore;
     private QueryBatchService service;
 
     @BeforeEach
     void beforeEach() {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
-        service = new QueryBatchService(batchOrderStore, batchStore);
+        jobStore = new InMemoryJobStore();
+        service = new QueryBatchService(batchOrderStore, batchStore, jobStore);
     }
 
     @Test
@@ -54,12 +60,27 @@ class QueryBatchServiceTest {
         batchStore.save(batchId, createBatch(batchId, batchOrderId));
 
         // when
-        final BatchOrderResponse response = service.findById(batchOrderId);
+        final BatchOrderResponse response = service.findOrderById(batchOrderId);
 
         // then
         assertThat(response.getOrderId()).isEqualTo(batchOrderId);
         assertThat(response.getBatches()).hasSize(1);
+    }
 
+    @Test
+    void shouldFindBatch() {
+        // given
+        final UUID batchOrderId = UUID.randomUUID();
+
+        final UUID batchId = UUID.randomUUID();
+        batchStore.save(batchId, createBatch(batchId, batchOrderId));
+
+        // when
+        final BatchResponse response = service.findBatchById(batchOrderId, batchId);
+
+        // then
+        assertThat(response.getOrderId()).isEqualTo(batchOrderId);
+        assertThat(response.getBatchId()).isEqualTo(batchId);
     }
 
     private BatchOrder createBatchOrder(final UUID batchOrderId) {
@@ -67,7 +88,7 @@ class QueryBatchServiceTest {
     }
 
     private Batch createBatch(final UUID batchId, final UUID batchOrderId) {
-        return Batch.builder().batchId(batchId).batchOrderId(batchOrderId).build();
+        return Batch.builder().batchId(batchId).batchOrderId(batchOrderId).jobIds(List.of(UUID.randomUUID())).build();
     }
 
 }
