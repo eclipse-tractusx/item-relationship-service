@@ -84,7 +84,7 @@ class QueryBatchServiceTest {
     }
 
     private BatchOrder createBatchOrder(final UUID batchOrderId) {
-        return BatchOrder.builder().build();
+        return BatchOrder.builder().batchOrderId(batchOrderId).build();
     }
 
     private Batch createBatch(final UUID batchId, final UUID batchOrderId) {

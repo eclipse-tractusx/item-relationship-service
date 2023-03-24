@@ -60,6 +60,7 @@ class CreationBatchServiceTest {
         final UUID batchOrderId = service.create(registerBatchOrder);
 
         // then
+        assertThat(batchOrderId).isNotNull();
         assertThat(batchOrderStore.findAll()).hasSize(1);
         assertThat(batchStore.findAll()).hasSize(1);
 
