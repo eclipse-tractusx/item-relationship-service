@@ -170,7 +170,7 @@ minio:
     requests:
       memory: 4Gi
   rootUser: "minio"  # <minio-username>
-  rootPassword: "minio"  # <minio-password>
+  rootPassword: "minioPass"  # <minio-password>
 
   environment:
     MINIO_PROMETHEUS_JOB_ID: minio-actuator

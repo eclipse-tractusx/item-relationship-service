@@ -45,7 +45,7 @@ public interface CatalogCache {
     /**
      * @param connectorUrl The connectur URL from which the ContractOffer should be fetched
      * @param target       The id of the desired ContractOffer
-     * @return The Contract offer. If not found, a {@link java.util.NoSuchElementException} is thrown.
+     * @return The ContractOffer, if available.
      */
     Optional<CatalogItem> getCatalogItem(String connectorUrl, String target);
 
