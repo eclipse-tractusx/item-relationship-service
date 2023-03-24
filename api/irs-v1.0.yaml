@@ -413,7 +413,7 @@ paths:
                 complete:
                   $ref: '#/components/examples/complete-order-result'
               schema:
-                $ref: '#/components/schemas/BatchOrder'
+                $ref: '#/components/schemas/BatchOrderResponse'
           description: Get a batch order for a given orderId.
         "400":
           content:
@@ -490,7 +490,7 @@ paths:
                 complete:
                   $ref: '#/components/examples/complete-batch-result'
               schema:
-                $ref: '#/components/schemas/Batch'
+                $ref: '#/components/schemas/BatchResponse'
           description: Get a batch with a given batchId for a given orderId.
         "400":
           content:
@@ -989,7 +989,46 @@ components:
           description: Number of running item transfers.
           maximum: 2147483647
           minimum: 0
-    Batch:
+    BatchOrderCreated:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Id of the Batch Order.
+    BatchOrderResponse:
+      type: object
+      additionalProperties: false
+      description: BatchOrderAck Payload Response.
+      properties:
+        batchChecksum:
+          type: integer
+          format: int32
+          description: Expected number of batches in order.
+        batches:
+          type: array
+          description: Array of batches.
+          items:
+            $ref: '#/components/schemas/BatchResponse'
+          maxItems: 2147483647
+        orderId:
+          type: string
+          format: uuid
+          description: Id of the order.
+          maxLength: 36
+          minLength: 36
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        state:
+          type: string
+          description: The state of the order.
+          enum:
+            - INITIALIZED
+            - COMPLETE
+            - PROCESSING
+            - PARTIAL
+            - ERROR
+    BatchResponse:
       type: object
       additionalProperties: false
       description: Batch model.
@@ -1045,45 +1084,6 @@ components:
           type: integer
           format: int32
           description: Total amount of jobs inside the order.
-    BatchOrder:
-      type: object
-      additionalProperties: false
-      description: BatchOrderAck Payload Response.
-      properties:
-        batchChecksum:
-          type: integer
-          format: int32
-          description: Expected number of batches in order.
-        batches:
-          type: array
-          description: Array of batches.
-          items:
-            $ref: '#/components/schemas/Batch'
-          maxItems: 2147483647
-        orderId:
-          type: string
-          format: uuid
-          description: Id of the order.
-          maxLength: 36
-          minLength: 36
-          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
-        state:
-          type: string
-          description: The state of the order.
-          enum:
-            - INITIALIZED
-            - COMPLETE
-            - PROCESSING
-            - PARTIAL
-            - ERROR
-    BatchOrderCreated:
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Id of the Batch Order.
     Bpn:
       type: object
       additionalProperties: false
@@ -1106,15 +1106,15 @@ components:
       additionalProperties: false
       description: Error response.
       properties:
+        error:
+          type: string
+          description: Error.
         messages:
           type: array
           description: List of error messages.
           items:
             type: string
           maxItems: 2147483647
-        error:
-          type: string
-          description: Error.
         statusCode:
           type: string
           description: Error code.
@@ -1254,17 +1254,6 @@ components:
         - globalAssetId
         - id
         - state
-    JobHandle:
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Id of the job.
-          maxLength: 36
-          minLength: 36
-          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
     JobErrorDetails:
       type: object
       additionalProperties: false
@@ -1282,6 +1271,17 @@ components:
           type: string
           format: date-time
           description: Datetime error occurs.
+    JobHandle:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Id of the job.
+          maxLength: 36
+          minLength: 36
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
     JobParameter:
       type: object
       additionalProperties: false
