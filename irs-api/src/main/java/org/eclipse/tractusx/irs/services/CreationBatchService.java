@@ -72,11 +72,11 @@ public class CreationBatchService {
     }
 
     public List<Batch> createBatches(final List<String> globalAssetIds, final int batchSize, final UUID batchOrderId) {
-        final List<List<String>> partition = Lists.partition(globalAssetIds, batchSize);
+        final List<List<String>> batches = Lists.partition(globalAssetIds, batchSize);
 
         final AtomicInteger batchNumber = new AtomicInteger(1);
 
-        return partition.stream().map(batch -> Batch.builder()
+        return batches.stream().map(batch -> Batch.builder()
                                                 .batchId(UUID.randomUUID())
                                                 .batchOrderId(batchOrderId)
                                                 .batchNumber(batchNumber.getAndIncrement())
