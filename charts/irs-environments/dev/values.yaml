@@ -91,7 +91,7 @@ irs-edc-consumer:
           nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
         endpoints:
           - ids
-          - data
+          - management
         className: ""
         tls:
           - hosts:
@@ -125,7 +125,7 @@ irs-edc-consumer:
         edc.oauth.client.id=4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90:keyid:4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90
         edc.oauth.private.key.alias=irs-dev-daps-cert-consumer-key
         edc.oauth.provider.jwks.url=https://daps-irs.dev.demo.catena-x.net/.well-known/jwks.json
-        edc.oauth.public.key.alias=irs-dev-daps-cert-consumer
+        edc.oauth.certificate.alias=irs-dev-daps-cert-consumer
         edc.oauth.token.url=https://daps-irs.dev.demo.catena-x.net/token
         edc.vault.hashicorp.url=https://vault.demo.catena-x.net
         edc.vault.hashicorp.token=<path:traceability-irs/data/dev/controlplane#vaultToken>
@@ -176,7 +176,7 @@ irs-edc-consumer:
         edc.oauth.private.key.alias=irs-dev-daps-cert-consumer-key
         edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
         edc.oauth.provider.jwks.url=https://daps-irs.dev.demo.catena-x.net/.well-known/jwks.json
-        edc.oauth.public.key.alias=irs-dev-daps-cert-consumer
+        edc.oauth.certificate.alias=irs-dev-daps-cert-consumer
         edc.oauth.token.url=https://daps-irs.dev.demo.catena-x.net/token
         edc.vault.hashicorp.url=https://vault.demo.catena-x.net
         edc.vault.hashicorp.token=<path:traceability-irs/data/dev/controlplane#vaultToken>
