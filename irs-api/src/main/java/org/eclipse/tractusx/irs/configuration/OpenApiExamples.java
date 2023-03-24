@@ -31,7 +31,7 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.Batch;
-import org.eclipse.tractusx.irs.component.BatchOrder;
+import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
@@ -241,19 +241,19 @@ public class OpenApiExamples {
     }
 
     private Example createCompleteOrderResult() {
-        return toExample(BatchOrder.builder()
-                                   .orderId(UUID_ID)
-                                   .state(ProcessingState.COMPLETE)
-                                   .batchChecksum(1)
-                                   .batches(
-                                       List.of(BatchOrder.Batch
+        return toExample(BatchOrderResponse.builder()
+                                           .orderId(UUID_ID)
+                                           .state(ProcessingState.COMPLETE)
+                                           .batchChecksum(1)
+                                           .batches(
+                                       List.of(BatchOrderResponse.BatchResponse
                                                .builder().batchId(UUID_ID)
                                                .batchNumber(1)
                                                .jobsInBatchChecksum(1)
                                                .batchUrl("https://../irs/orders/" + UUID_ID + "/batches/" + UUID_ID)
                                                .batchProcessingState(ProcessingState.PARTIAL)
                                                .build()))
-                                   .build());
+                                           .build());
     }
 
     private Example createCompleteBatchResult() {

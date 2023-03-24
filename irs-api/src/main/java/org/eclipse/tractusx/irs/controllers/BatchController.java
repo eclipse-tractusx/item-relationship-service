@@ -24,7 +24,6 @@ package org.eclipse.tractusx.irs.controllers;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import java.util.List;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,10 +40,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.IrsApplication;
 import org.eclipse.tractusx.irs.component.Batch;
-import org.eclipse.tractusx.irs.component.BatchOrder;
+import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchOrderCreated;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
+import org.eclipse.tractusx.irs.services.CreationBatchService;
+import org.eclipse.tractusx.irs.services.QueryBatchService;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -67,6 +68,9 @@ import org.springframework.web.bind.annotation.RestController;
                     "PMD.ExcessiveImports",
 })
 public class BatchController {
+
+    private final CreationBatchService creationBatchService;
+    private final QueryBatchService queryBatchService;
 
     @Operation(operationId = "registerOrder",
                summary = "Registers an IRS order to retrieve a batches containing item graphs for an array of {globalAssetIds}.",
@@ -103,7 +107,8 @@ public class BatchController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('view_irs')")
     public BatchOrderCreated registerBatchOrder(final @Valid @RequestBody RegisterBatchOrder request) {
-        return BatchOrderCreated.builder().id(UUID.randomUUID()).build();
+        final UUID batchOrderId = creationBatchService.create(request);
+        return BatchOrderCreated.builder().id(batchOrderId).build();
     }
 
     @Operation(description = "Get a batch order for a given orderId.",
@@ -114,7 +119,7 @@ public class BatchController {
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Get a batch order for a given orderId.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                                              schema = @Schema(implementation = BatchOrder.class),
+                                                              schema = @Schema(implementation = BatchOrderResponse.class),
                                                               examples = @ExampleObject(name = "complete",
                                                                                         ref = "#/components/examples/complete-order-result"))
                                          }),
@@ -145,11 +150,11 @@ public class BatchController {
     })
     @GetMapping("/orders/{orderId}")
     @PreAuthorize("hasAuthority('view_irs')")
-    public BatchOrder getBatchOrder(
+    public BatchOrderResponse getBatchOrder(
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class), name = "orderId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
                                                                                max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID orderId) {
-        return BatchOrder.builder().orderId(orderId).state(ProcessingState.ERROR).batches(List.of(BatchOrder.Batch.builder().batchId(UUID.randomUUID()).build())).build();
+        return queryBatchService.findById(orderId);
     }
 
     @Operation(description = "Get a batch with a given batchId for a given orderId.",

@@ -41,7 +41,7 @@ import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 @Builder
 @AllArgsConstructor
 @Jacksonized
-public class BatchOrder {
+public class BatchOrderResponse {
 
     private static final int UUID_LENGTH = 36;
 
@@ -57,7 +57,7 @@ public class BatchOrder {
     private Integer batchChecksum;
 
     @ArraySchema(arraySchema = @Schema(description = "Array of batches."), maxItems = Integer.MAX_VALUE)
-    private List<Batch> batches;
+    private List<BatchResponse> batches;
 
     /**
      * Batch model
@@ -67,7 +67,7 @@ public class BatchOrder {
     @Builder
     @AllArgsConstructor
     @Jacksonized
-    public static class Batch {
+    public static class BatchResponse {
 
         @Schema(description = "Id of the batch.", minLength = UUID_LENGTH,
                 maxLength = UUID_LENGTH, implementation = UUID.class,
