@@ -65,20 +65,29 @@ spec:
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
-              path: {{ .Values.edc.endpoints.default.path }}/check/liveness
-              port: default
+              path: {{ .Values.edc.endpoints.management.path }}/check/liveness
+              port: management
+              httpHeaders:
+                - name: X-Api-Key
+                  value: {{ .Values.edc.api.auth.key | quote }}
           {{- end }}
           {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
-              path: {{ .Values.edc.endpoints.default.path }}/check/readiness
-              port: default
+              path: {{ .Values.edc.endpoints.management.path }}/check/readiness
+              port: management
+              httpHeaders:
+                - name: X-Api-Key
+                  value: {{ .Values.edc.api.auth.key | quote }}
           {{- end }}
           {{- if .Values.startupProbe.enabled }}
           startupProbe:
             httpGet:
-              path: {{ .Values.edc.endpoints.default.path }}/check/startup
-              port: default
+              path: {{ .Values.edc.endpoints.management.path }}/check/startup
+              port: management
+              httpHeaders:
+                - name: X-Api-Key
+                  value: {{ .Values.edc.api.auth.key | quote }}
             failureThreshold: {{ .Values.startupProbe.failureThreshold }}
             initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
           {{- end }}
