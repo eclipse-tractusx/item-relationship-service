@@ -20,59 +20,13 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.connector.batch;
+package org.eclipse.tractusx.irs.services.events;
 
-import java.util.List;
 import java.util.UUID;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.component.enums.ProcessingState;
-
 /**
- * Entity for execute batch of jobs and monitor processing state.
+ * Event published after Batch Order registration to start processing first Batch.
  */
-@Getter
-@Builder(toBuilder = true)
-@Slf4j
-public class Batch {
-
-    /**
-     * Batch Id
-     */
-    private UUID batchId;
-
-    /**
-     * Batch Order Id
-     */
-    private UUID batchOrderId;
-
-    /**
-     * Processing State of Batch
-     */
-    private ProcessingState batchState;
-
-    /**
-     * Batch Number in Batch Order
-     */
-    private Integer batchNumber;
-
-    /**
-     * Batch Url
-     */
-    private String batchUrl;
-
-    /**
-     * List of Job Ids created to process this Batch
-     */
-    @Setter
-    private List<UUID> jobIds;
-
-    /**
-     * List of Global Asset Ids that need to be process in this Batch
-     */
-    private List<String> globalAssetIds;
+public record BatchOrderRegisteredEvent(UUID batchOrderId) {
 
 }

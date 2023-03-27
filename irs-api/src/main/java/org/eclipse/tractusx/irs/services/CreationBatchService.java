@@ -35,6 +35,8 @@ import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrder;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
+import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 /**
@@ -47,6 +49,7 @@ public class CreationBatchService {
 
     private final BatchOrderStore batchOrderStore;
     private final BatchStore batchStore;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public UUID create(final RegisterBatchOrder request) {
         // TODO: simple split - need to use strategy
@@ -67,7 +70,7 @@ public class CreationBatchService {
         final List<Batch> batches = createBatches(List.copyOf(request.getGlobalAssetIds()), request.getBatchSize(), batchOrderId);
         batchOrderStore.save(batchOrderId, batchOrder);
         batches.forEach(batch -> batchStore.save(batch.getBatchId(), batch));
-
+        applicationEventPublisher.publishEvent(new BatchOrderRegisteredEvent(batchOrderId));
         return batchOrderId;
     }
 

@@ -35,6 +35,8 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.context.ApplicationEventPublisher;
 
 class CreationBatchServiceTest {
 
@@ -42,13 +44,14 @@ class CreationBatchServiceTest {
     public static final String SECOND_GLOBAL_ASSET_ID = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b1";
     private BatchOrderStore batchOrderStore;
     private BatchStore batchStore;
+    private ApplicationEventPublisher applicationEventPublisher = Mockito.mock(ApplicationEventPublisher.class);
     private CreationBatchService service;
 
     @BeforeEach
     void beforeEach() {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
-        service = new CreationBatchService(batchOrderStore, batchStore);
+        service = new CreationBatchService(batchOrderStore, batchStore, applicationEventPublisher);
     }
 
     @Test
