@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.PageResult;
+import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
@@ -80,6 +81,16 @@ class BatchControllerTest {
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
                                                 .content(new ObjectMapper().writeValueAsString(
                                                         registerBatchOrder("MALFORMED_GLOBAL_ASSET"))))
+                    .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(authorities = "view_irs")
+    void shouldReturnBadRequestWhenBatchSizeNotMod10Compliant() throws Exception {
+        final RegisterBatchOrder registerBatchOrder = registerBatchOrder("MALFORMED_GLOBAL_ASSET");
+        registerBatchOrder.setBatchSize(33);
+        this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
+                                                .content(new ObjectMapper().writeValueAsString(registerBatchOrder)))
                     .andExpect(status().isBadRequest());
     }
 

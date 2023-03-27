@@ -22,8 +22,11 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component;
 
+import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatchOrderConstants.DEFAULT_BATCH_SIZE;
 import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatchOrderConstants.DEFAULT_BATCH_SIZE_DESC;
+import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatchOrderConstants.DEFAULT_JOB_TIMEOUT;
 import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatchOrderConstants.DEFAULT_JOB_TIMEOUT_DESC;
+import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatchOrderConstants.DEFAULT_TIMEOUT;
 import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatchOrderConstants.DEFAULT_TIMEOUT_DESC;
 import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatchOrderConstants.GLOBAL_ASSET_ID_REGEX;
 import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatchOrderConstants.MAX_BATCH_SIZE;
@@ -60,6 +63,7 @@ import lombok.NoArgsConstructor;
 import org.eclipse.tractusx.irs.component.enums.BatchStrategy;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
+import org.eclipse.tractusx.irs.validators.Mod10;
 import org.hibernate.validator.constraints.URL;
 
 /**
@@ -109,19 +113,20 @@ public class RegisterBatchOrder {
             description = "Size of the batch.")
     @Min(MIN_BATCH_SIZE)
     @Max(MAX_BATCH_SIZE)
-    private Integer batchSize;
+    @Mod10(message = "Batch size value must be mod 10 compliant")
+    private Integer batchSize = DEFAULT_BATCH_SIZE;
 
     @Schema(implementation = Integer.class, minimum = MIN_TIMEOUT_DESC, maximum = MAX_TIMEOUT_DESC, defaultValue = DEFAULT_TIMEOUT_DESC,
             description = "Timeout in seconds for the complete batch order processing.")
     @Min(MIN_TIMEOUT)
     @Max(MAX_TIMEOUT)
-    private Integer timeout;
+    private Integer timeout = DEFAULT_TIMEOUT;
 
     @Schema(implementation = Integer.class, minimum = MIN_JOB_TIMEOUT_DESC, maximum = MAX_JOB_TIMEOUT_DESC, defaultValue = DEFAULT_JOB_TIMEOUT_DESC,
             description = "Timeout in seconds for each job processing inside the complete order.")
     @Min(MIN_JOB_TIMEOUT)
     @Max(MAX_JOB_TIMEOUT)
-    private Integer jobTimeout;
+    private Integer jobTimeout = DEFAULT_JOB_TIMEOUT;
 
     @Schema(implementation = BatchStrategy.class/*, defaultValue = BatchStrategy.PRESERVE_BATCH_JOB_ORDER.name()*/, description = "The strategy how the batch is processed internally in IRS.")
     private BatchStrategy batchStrategy;
@@ -150,16 +155,19 @@ public class RegisterBatchOrder {
         /* package */ static final String DEFAULT_BATCH_SIZE_DESC = "20";
         /* package */ static final int MIN_BATCH_SIZE = 10;
         /* package */ static final int MAX_BATCH_SIZE = 100;
+        /* package */ static final int DEFAULT_BATCH_SIZE = 20;
         /* package */ static final String MIN_TIMEOUT_DESC = "60";
         /* package */ static final String MAX_TIMEOUT_DESC = "86400";
         /* package */ static final String DEFAULT_TIMEOUT_DESC = "43200";
         /* package */ static final int MIN_TIMEOUT = 60;
         /* package */ static final int MAX_TIMEOUT = 86_400;
+        /* package */ static final int DEFAULT_TIMEOUT = 43_200;
         /* package */ static final String MIN_JOB_TIMEOUT_DESC = "60";
         /* package */ static final String MAX_JOB_TIMEOUT_DESC = "7200";
         /* package */ static final String DEFAULT_JOB_TIMEOUT_DESC = "3600";
         /* package */ static final int MIN_JOB_TIMEOUT = 60;
         /* package */ static final int MAX_JOB_TIMEOUT = 7200;
+        /* package */ static final int DEFAULT_JOB_TIMEOUT = 3600;
         /* package */ static final String GLOBAL_ASSET_ID_REGEX = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
     }
 }
