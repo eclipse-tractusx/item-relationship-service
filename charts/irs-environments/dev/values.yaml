@@ -134,6 +134,7 @@ irs-edc-consumer:
         edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
         edc.data.encryption.keys.alias=irs-dev-daps-cert-consumer-key
         edc.data.encryption.algorithm=NONE
+        edc.oauth.endpoint.audience=https://irs-consumer-controlplane.dev.demo.catena-x.net/api/v1/ids/data
 
   ###############################
   # EDC Dataplane Configuration #
