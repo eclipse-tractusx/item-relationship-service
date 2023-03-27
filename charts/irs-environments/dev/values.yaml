@@ -39,11 +39,6 @@ irs-helm:
         secret: "123456"
       endpoint:
         data: "http://irs-dev-edc-controlplane:8181/api/v1/management"
-  config:
-    override: false
-    content:
-      semanticshub:
-        pageSize: 1000
 
   #######################
   # Minio Configuration #
