@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added config parameter for SemanticsHub request page size when retrieving all models. Can be used to fine tune requests. Default: 100 items per page
 
+### Changed
+- Updated default path in template for `edc.controlplane.endpoint.data` to match EDC 0.3.0 management endpoint `/api/v1/management`
 
 ## [5.0.5] - 2023-03-20
 ### Changed
