@@ -22,24 +22,30 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Utility class to mask strings for log output
- */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Masker {
+import org.junit.jupiter.api.Test;
 
-    public static final int UNMASKED_LENGTH = 4;
+class MaskerTest {
 
-    public static String mask(final String stringToMask) {
-        if (StringUtils.length(stringToMask) <= UNMASKED_LENGTH) {
-            return "****"; // mask everything
-        }
-        // mask everything after the first 4 characters
-        final String mask = StringUtils.repeat("*", stringToMask.length() - UNMASKED_LENGTH);
-        return StringUtils.overlay(stringToMask, mask, UNMASKED_LENGTH, stringToMask.length());
+    @Test
+    void maskWithLongText() {
+        final String thisIsLongEnough = Masker.mask("thisIsLongEnough");
+
+        assertThat(thisIsLongEnough).isEqualTo("this************");
+    }
+
+    @Test
+    void maskWithShortText() {
+        final String shortText = Masker.mask("hi");
+
+        assertThat(shortText).isEqualTo("****");
+    }
+
+    @Test
+    void maskWithNullText() {
+        final String nullText = Masker.mask(null);
+
+        assertThat(nullText).isEqualTo("****");
     }
 }
