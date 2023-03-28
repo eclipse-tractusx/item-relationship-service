@@ -24,7 +24,7 @@ edc-controlplane:
         nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       endpoints:
         - ids
-        - data
+        - management
       className: ""
       tls:
         - hosts:
@@ -112,7 +112,7 @@ edc-dataplane:
       edc.oauth.private.key.alias=irs-dev-daps-cert-provider-key
       edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
       edc.oauth.provider.jwks.url=https://daps-irs.dev.demo.catena-x.net/.well-known/jwks.json
-      edc.oauth.public.key.alias=irs-dev-daps-cert-provider
+      edc.oauth.certificate.alias=irs-dev-daps-cert-provider
       edc.oauth.token.url=https://daps-irs.dev.demo.catena-x.net/token
       edc.vault.hashicorp.url=https://vault.demo.catena-x.net
       edc.vault.hashicorp.token=<path:traceability-irs/data/dev/controlplane#vaultToken>
