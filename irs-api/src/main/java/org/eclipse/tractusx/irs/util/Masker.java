@@ -20,34 +20,23 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc;
+package org.eclipse.tractusx.irs.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
-import java.time.Duration;
-import java.util.Map;
-
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
-import org.junit.jupiter.api.Test;
-
-class EdcCallbackControllerTest {
-
-    private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
-    private final EdcCallbackController testee = new EdcCallbackController(storage);
-
-    @Test
-    void shouldStoreAgreementId() {
-        // arrange
-        final var ref = EndpointDataReference.Builder.newInstance()
-                                                     .endpoint("test")
-                                                     .properties(Map.of("cid", "testId"))
-                                                     .build();
-
-        // act
-        testee.receiveEdcCallback(ref);
-
-        // assert
-        final var result = storage.remove("testId");
-        assertThat(result).isNotNull().contains(ref);
+/**
+ * Utility class to mask strings for log output
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class Masker {
+    public static String mask(final String stringToMask) {
+        if (StringUtils.length(stringToMask) <= 4) {
+            return "****"; // mask everything
+        }
+        // mask everything after the first 4 characters
+        final String mask = StringUtils.repeat("*", stringToMask.length() - 4);
+        return StringUtils.overlay(stringToMask, mask, 4, stringToMask.length());
     }
 }
