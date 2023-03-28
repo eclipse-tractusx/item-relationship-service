@@ -95,7 +95,7 @@ digitalTwinRegistry:
     {{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/lookup/shells?assetIds={assetIds}
 semanticshub:
   url:  # https://<semantics-hub-url>
-  pageSize: 100 # Number of aspect models to retrieve per page
+  pageSize: "100" # Number of aspect models to retrieve per page
   modelJsonSchemaEndpoint: >-
     {{- if .Values.semanticshub.url }}
     {{- tpl (.Values.semanticshub.url | default "" ) . }}/{urn}/json-schema
