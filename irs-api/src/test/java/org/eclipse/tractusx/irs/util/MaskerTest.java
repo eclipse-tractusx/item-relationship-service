@@ -20,34 +20,32 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc;
+package org.eclipse.tractusx.irs.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.Duration;
-import java.util.Map;
-
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.junit.jupiter.api.Test;
 
-class EdcCallbackControllerTest {
-
-    private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
-    private final EdcCallbackController testee = new EdcCallbackController(storage);
+class MaskerTest {
 
     @Test
-    void shouldStoreAgreementId() {
-        // arrange
-        final var ref = EndpointDataReference.Builder.newInstance()
-                                                     .endpoint("test")
-                                                     .properties(Map.of("cid", "testId"))
-                                                     .build();
+    void maskWithLongText() {
+        final String thisIsLongEnough = Masker.mask("thisIsLongEnough");
 
-        // act
-        testee.receiveEdcCallback(ref);
+        assertThat(thisIsLongEnough).isEqualTo("this************");
+    }
 
-        // assert
-        final var result = storage.remove("testId");
-        assertThat(result).isNotNull().contains(ref);
+    @Test
+    void maskWithShortText() {
+        final String shortText = Masker.mask("hi");
+
+        assertThat(shortText).isEqualTo("****");
+    }
+
+    @Test
+    void maskWithNullText() {
+        final String nullText = Masker.mask(null);
+
+        assertThat(nullText).isEqualTo("****");
     }
 }
