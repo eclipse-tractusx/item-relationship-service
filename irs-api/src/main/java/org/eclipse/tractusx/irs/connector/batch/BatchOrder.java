@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.jackson.Jacksonized;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
@@ -38,6 +39,7 @@ import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 @Getter
 @Builder(toBuilder = true)
 @Slf4j
+@Jacksonized
 public class BatchOrder {
 
     /**
