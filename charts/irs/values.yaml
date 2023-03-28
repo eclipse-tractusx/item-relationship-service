@@ -112,7 +112,7 @@ bpdm:
   bpnEndpoint: >-
     {{ tpl (.Values.bpdm.url | default "") . }}/api/catena/legal-entities/{partnerId}?idType={idType}
 minioUser: "minio"  # <minio-username>
-minioPassword: "minioPass"  # <minio-password>
+minioPassword:  # <minio-password>
 minioUrl: "http://{{ .Release.Name }}-minio:9000"
 keycloak:
   oauth2:
@@ -139,6 +139,11 @@ edc:
       ttl: PT10M  # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
     path: /submodel
     urnprefix: /urn
+  catalog:
+    cache:
+      enabled: true  # Set to false to disable caching
+      ttl: P1D  # Time after which a cached Item is no longer valid and the real catalog is called instead
+      maxCachedItems: 64000  # Maximum amount of cached catalog items
 
 config:
   # If true, the config provided below will completely replace the configmap.

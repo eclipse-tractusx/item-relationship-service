@@ -132,6 +132,12 @@ edc:
       read: PT90S # HTTP read timeout for the submodel client
       connect: PT90S # HTTP connect timeout for the submodel client
 
+  catalog:
+    cache:
+      enabled: true # Set to false to disable caching
+      ttl: P1D # Time after which a cached Item is no longer valid and the real catalog is called instead
+      maxCachedItems: 64000 # Maximum amount of cached catalog items
+
 digitalTwinRegistry:
   descriptorEndpoint: ${DIGITALTWINREGISTRY_DESCRIPTOR_URL:} # The endpoint to retrieve AAS descriptors from the DTR, must contain the placeholder {aasIdentifier}
   shellLookupEndpoint: ${DIGITALTWINREGISTRY_SHELL_LOOKUP_URL:} # The endpoint to lookup shells from the DTR, must contain the placeholder {assetIds}
