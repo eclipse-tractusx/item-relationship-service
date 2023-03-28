@@ -59,19 +59,19 @@ class JobProcessingEventListener {
     @Async
     @EventListener
     public void handleJobProcessingFinishedEvent(final JobProcessingFinishedEvent jobProcessingFinishedEvent) {
-        if (thereIsCallbackUrlRegistered(jobProcessingFinishedEvent.getCallbackUrl())) {
+        if (thereIsCallbackUrlRegistered(jobProcessingFinishedEvent.callbackUrl())) {
             log.info("Processing of job has finished - attempting to notify job requestor");
 
             final URI callbackUri = buildCallbackUri(jobProcessingFinishedEvent);
             if (urlValidator.isValid(callbackUri.toString())) {
                 log.info("Got callback url {} for jobId {} with state {}", callbackUri,
-                        jobProcessingFinishedEvent.getJobId(), jobProcessingFinishedEvent.getJobState());
+                        jobProcessingFinishedEvent.jobId(), jobProcessingFinishedEvent.jobState());
 
                 try {
                     final ResponseEntity<Void> callbackResponse = restTemplate.getForEntity(callbackUri, Void.class);
-                    log.info("Callback url pinged, received http status: {}, jobId {}", callbackResponse.getStatusCode(), jobProcessingFinishedEvent.getJobId());
+                    log.info("Callback url pinged, received http status: {}, jobId {}", callbackResponse.getStatusCode(), jobProcessingFinishedEvent.jobId());
                 } catch (final ResourceAccessException resourceAccessException) {
-                    log.warn("Callback url is not reachable - connection timed out, jobId {}", jobProcessingFinishedEvent.getJobId());
+                    log.warn("Callback url is not reachable - connection timed out, jobId {}", jobProcessingFinishedEvent.jobId());
                 }
             }
         }
@@ -84,10 +84,10 @@ class JobProcessingEventListener {
     @SuppressWarnings("PMD.UseConcurrentHashMap")
     private URI buildCallbackUri(final JobProcessingFinishedEvent jobProcessingFinishedEvent) {
         final Map<String, Object> uriVariables = new HashMap<>();
-        uriVariables.put("id", jobProcessingFinishedEvent.getJobId());
-        uriVariables.put("state", jobProcessingFinishedEvent.getJobState());
+        uriVariables.put("id", jobProcessingFinishedEvent.jobId());
+        uriVariables.put("state", jobProcessingFinishedEvent.jobState());
 
-        final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(jobProcessingFinishedEvent.getCallbackUrl());
+        final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(jobProcessingFinishedEvent.callbackUrl());
         uriComponentsBuilder.uriVariables(uriVariables);
         return uriComponentsBuilder.build().toUri();
     }

@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -35,7 +36,8 @@ class JobProcessingEventListenerTest {
         final String callbackUrlTemplate = "https://hostname.com/callback?id={id}&state={state}";
         final String jobId = UUID.randomUUID().toString();
         final JobState jobState = JobState.COMPLETED;
-        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId, jobState, callbackUrlTemplate);
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId, jobState, callbackUrlTemplate,
+                Optional.empty());
 
         // when
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
@@ -51,7 +53,8 @@ class JobProcessingEventListenerTest {
         final String callbackUrlTemplate = "http://qwerty.de/{id}/{state}";
         final String jobId = UUID.randomUUID().toString();
         final JobState jobState = JobState.ERROR;
-        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId, jobState, callbackUrlTemplate);
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId, jobState, callbackUrlTemplate,
+                Optional.empty());
 
         // when
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
@@ -67,7 +70,8 @@ class JobProcessingEventListenerTest {
         final String callbackUrlTemplate = "https://hostname.com/";
         final String jobId = UUID.randomUUID().toString();
         final JobState jobState = JobState.COMPLETED;
-        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId, jobState, callbackUrlTemplate);
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId, jobState, callbackUrlTemplate,
+                Optional.empty());
 
         // when
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
@@ -82,7 +86,8 @@ class JobProcessingEventListenerTest {
         // given
         final String callbackUrlTemplate = "https://hostname.com/callback?id={id}";
         final String jobId = UUID.randomUUID().toString();
-        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId, JobState.COMPLETED, callbackUrlTemplate);
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId, JobState.COMPLETED, callbackUrlTemplate,
+                Optional.empty());
 
         // when
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
@@ -96,7 +101,8 @@ class JobProcessingEventListenerTest {
     void shouldNotCallCallbackUrlIfIsNotValid() {
         // given
         final String callbackUrlTemplate = "wrongCallbackUrl/id={id}";
-        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(UUID.randomUUID().toString(), JobState.COMPLETED, callbackUrlTemplate);
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(UUID.randomUUID().toString(), JobState.COMPLETED, callbackUrlTemplate,
+                Optional.empty());
 
         // when
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
@@ -109,7 +115,8 @@ class JobProcessingEventListenerTest {
     void shouldNotCallCallbackUrlIfCallbackUrlIsMissing() {
         // given
         final String emptyCallbackUrlTemplate = "";
-        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(UUID.randomUUID().toString(), JobState.COMPLETED, emptyCallbackUrlTemplate);
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(UUID.randomUUID().toString(), JobState.COMPLETED, emptyCallbackUrlTemplate,
+                Optional.empty());
 
         // when
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);

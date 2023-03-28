@@ -43,6 +43,9 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import javax.swing.text.html.Option;
+
+import org.checkerframework.checker.nullness.Opt;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.util.TestMother;
@@ -98,6 +101,7 @@ class JobOrchestratorTest {
                         .ignoringFields("job.job.jobId")
                         .isEqualTo(MultiTransferJob.builder()
                                                    .job(job2.getJob().toBuilder().state(JobState.UNSAVED).build())
+                                                   .batchId(Optional.empty())
                                                    .build());
     }
 

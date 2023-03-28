@@ -65,7 +65,7 @@ public class BatchOrderEventListener {
             List<UUID> createdJobIds = firstBatch.getGlobalAssetIds()
                                                  .stream()
                                                  .map(globalAssetId -> createRegisterJob(batchOrder, globalAssetId))
-                                                 .map(irsItemGraphQueryService::registerItemJob)
+                                                 .map(registerJob -> irsItemGraphQueryService.registerItemJob(registerJob, firstBatch.getBatchId()))
                                                  .map(JobHandle::getId)
                                                  .collect(Collectors.toList());
             firstBatch.setJobIds(createdJobIds);
@@ -74,7 +74,7 @@ public class BatchOrderEventListener {
 
     }
 
-    private RegisterJob createRegisterJob(BatchOrder batchOrder, String globalAssetId) {
+    private RegisterJob createRegisterJob(final BatchOrder batchOrder, final String globalAssetId) {
         return RegisterJob.builder()
                           .globalAssetId(globalAssetId)
                           .bomLifecycle(batchOrder.getBomLifecycle())
