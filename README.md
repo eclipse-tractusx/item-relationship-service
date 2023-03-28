@@ -129,10 +129,10 @@ DockerHub: https://hub.docker.com/r/tractusx/irs-api
 
 Eclipse Tractus-X product(s) installed within the image:
 
-GitHub: https://github.com/eclipse-tractusx/item-relationship-service
-Project home: https://projects.eclipse.org/projects/automotive.tractusx
-License: Apache License, Version 2.0
-Used base image: eclipse-temurin:19-jre-alpine
+- GitHub: https://github.com/eclipse-tractusx/item-relationship-service
+- Project home: https://projects.eclipse.org/projects/automotive.tractusx
+- License: Apache License, Version 2.0
+- Used base image: eclipse-temurin:19-jre-alpine
 
 As with all Docker images, these likely also contain other software which may be under other licenses (such as Bash, etc from the base distribution, along with any direct or indirect dependencies of the primary software being contained).
 

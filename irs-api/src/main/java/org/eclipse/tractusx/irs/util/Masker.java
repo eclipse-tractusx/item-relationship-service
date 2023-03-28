@@ -20,34 +20,26 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.semanticshub;
+package org.eclipse.tractusx.irs.util;
 
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 /**
- * Pagination wrapper Object.
- *
- * @param <T> Type of paginated item
+ * Utility class to mask strings for log output
  */
-@SuppressWarnings({ "PMD.UnusedFormalParameter" })
-public class PaginatedResponse<T> {
-    private final List<T> items;
-    private final int totalItems;
-    private final int currentPage;
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class Masker {
 
-    public PaginatedResponse(final @JsonProperty("items") List<T> items,
-            final @JsonProperty("totalItems") int totalItems, final @JsonProperty("currentPage") int currentPage) {
-        this.items = List.copyOf(items);
-        this.totalItems = totalItems;
-        this.currentPage = currentPage;
-    }
+    public static final int UNMASKED_LENGTH = 4;
 
-    public PageImpl<T> toPageImpl(final int pageSize) {
-        return new PageImpl<>(items, PageRequest.of(currentPage, pageSize), totalItems);
-
+    public static String mask(final String stringToMask) {
+        if (StringUtils.length(stringToMask) <= UNMASKED_LENGTH) {
+            return "****"; // mask everything
+        }
+        // mask everything after the first 4 characters
+        final String mask = StringUtils.repeat("*", stringToMask.length() - UNMASKED_LENGTH);
+        return StringUtils.overlay(stringToMask, mask, UNMASKED_LENGTH, stringToMask.length());
     }
 }

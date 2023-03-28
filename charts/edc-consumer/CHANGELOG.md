@@ -5,6 +5,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.1.1] - 2023-03-28
+### Changed
+- Renamed `edc.receiver.http.endpoint` to `edc.receiver.http.dynamic.endpoint`
+- Renamed `edc.ids.endpoint.audience` to `edc.oauth.endpoint.audience`
+- Renamed `ids` endpoint to `protocol`
+
+## [1.1.0] - 2023-03-24
+### Changed
+- Update EDC to 0.3.0
+- Renamed controlplane property `edc.oauth.public.key.alias` to `edc.oauth.certificate.alias`
+- Changed data-endpoint `/data` to management-endpoint `/api/v1/management`
+- Removed management endpoint from ingress
+
+## [1.0.4] - 2023-02-28
 ### Changed
 - Downgrade EDC to 0.1.6
 - Renamed controlplane property `edc.oauth.endpoint.audience` to `edc.ids.endpoint.audience`
