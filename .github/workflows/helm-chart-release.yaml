@@ -43,13 +43,13 @@ jobs:
           echo "Exported $chartVersion helm charts version"
 
       - name: Install Helm
-        if: steps.step1.outputs.current_version != steps.step2.outputs.current_version
+        if: steps.step1.outputs.latest_version != steps.step2.outputs.current_version
         uses: azure/setup-helm@v3
         with:
           version: v3.8.1
 
       - name: Update helm dependencies
-        if: steps.step1.outputs.current_version != steps.step2.outputs.current_version
+        if: steps.step1.outputs.latest_version != steps.step2.outputs.current_version
         run: |
           cd charts/${{ matrix.chart }}
           helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -59,7 +59,7 @@ jobs:
           helm dependency update
 
       - name: Run chart-releaser
-        if: steps.step1.outputs.current_version != steps.step2.outputs.current_version
+        if: steps.step1.outputs.latest_version != steps.step2.outputs.current_version
         uses: helm/chart-releaser-action@v1.5.0
         with:
           charts_dir: charts/${{ matrix.chart }}
