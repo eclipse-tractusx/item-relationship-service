@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added config parameter for SemanticsHub request page size when retrieving all models. Can be used to fine tune requests. Default: 100 items per page
+
 
 ## [5.0.5] - 2023-03-20
 ### Changed

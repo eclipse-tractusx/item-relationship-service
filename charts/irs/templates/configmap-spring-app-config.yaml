@@ -39,6 +39,7 @@ data:
 
     semanticshub:
       url: {{ tpl (.Values.semanticshub.url | default "") . | quote }}
+      pageSize: {{ tpl (.Values.semanticshub.pageSize | default "100") . }}
       modelJsonSchemaEndpoint: {{ tpl (.Values.semanticshub.modelJsonSchemaEndpoint | default "") . | quote }}
       defaultUrns: {{ tpl (.Values.semanticshub.defaultUrns | default "") . | quote }}
       {{- if .Values.semanticshub.localModels }}
