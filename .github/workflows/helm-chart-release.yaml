@@ -32,13 +32,13 @@ jobs:
       - name: Get helm charts latest tag version
         id: step1
         run: |
-          latestVersion=$(git tag | grep "${{ matrix.chart }}-[1-9]" | tail -1)
+          latestVersion=$(git tag | grep "${{ matrix.chart }}-[1-9]" | tail -1 | sed 's/.*-//g')
           echo "latest_version=$latestVersion" >> $GITHUB_OUTPUT
           echo "Exported $latestVersion latest helm charts version"
       - name: Get helm charts current version
         id: step2
         run: |
-          chartVersion=irs-helm-$(cat ./charts/${{ matrix.chart }}/Chart.yaml | grep "version:" | head -1 | cut -d ":" -d " " -f2)
+          chartVersion=$(cat ./charts/${{ matrix.chart }}/Chart.yaml | grep "version:" | head -1 | cut -d ":" -d " " -f2)
           echo "current_version=$chartVersion" >> $GITHUB_OUTPUT
           echo "Exported $chartVersion helm charts version"
 
@@ -63,6 +63,5 @@ jobs:
         uses: helm/chart-releaser-action@v1.5.0
         with:
           charts_dir: charts/${{ matrix.chart }}
-          mark_as_latest: false
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
