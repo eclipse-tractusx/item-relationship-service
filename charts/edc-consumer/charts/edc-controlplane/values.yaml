@@ -139,11 +139,11 @@ edc:
       port: "9999"
       # -- The path mapping the "control" api is going to be exposed at
       path: /api/controlplane/control
-    ## IDS endpoints
-    ids:
-      # -- The network port, which the "ids" multipart api is going to be exposed by the container, pod and service
+    ## protocol endpoints
+    protocol:
+      # -- The network port, which the "protocol" multipart api is going to be exposed by the container, pod and service
       port: "8282"
-      # -- The path mapping the "ids" multipart api is going to be exposed at
+      # -- The path mapping the "protocol" multipart api is going to be exposed at
       path: /api/v1/ids
     ## Prometheus endpoint
     metrics:
@@ -166,7 +166,7 @@ ingresses:
     annotations: {}
     # -- EDC endpoints exposed by this ingress resource
     endpoints:
-      - ids
+      - protocol
     # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
     className: ""
     # -- Enables TLS on the ingress resource
