@@ -25,12 +25,12 @@ package org.eclipse.tractusx.irs.services;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
+import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrder;
@@ -78,11 +78,11 @@ public class CreationBatchService {
     }
 
     public List<Batch> createBatches(final List<String> globalAssetIds, final int batchSize, final UUID batchOrderId) {
-        final List<List<String>> batches = Lists.partition(globalAssetIds, batchSize);
+        final List<List<String>> globalAssetIdsBatches = Lists.partition(globalAssetIds, batchSize);
 
         final AtomicInteger batchNumber = new AtomicInteger(1);
 
-        return batches.stream().map(batch -> {
+        return globalAssetIdsBatches.stream().map(batch -> {
             final UUID batchId = UUID.randomUUID();
             return Batch.builder()
                         .batchId(batchId)
@@ -90,7 +90,8 @@ public class CreationBatchService {
                         .batchNumber(batchNumber.getAndIncrement())
                         .batchUrl(buildBatchUrl(batchOrderId, batchId))
                         .batchState(ProcessingState.INITIALIZED)
-                        .jobProgressList(batch.stream().map(globalAssetId -> JobProgress.builder().globalAssetId(globalAssetId).build()).toList())
+                        .jobProgressList(batch.stream().map(globalAssetId ->
+                                JobProgress.builder().globalAssetId(globalAssetId).jobState(JobState.UNSAVED).build()).toList())
                         .build();
         }).toList();
     }

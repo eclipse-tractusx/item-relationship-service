@@ -39,9 +39,9 @@ import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
-import org.springframework.stereotype.Service;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 /**
  * Event Listener to handle registration and processing of Batches and Batch Orders
@@ -97,8 +97,9 @@ public class BatchOrderEventListener {
         jobEvent.batchId().ifPresent(batchId -> {
             batchStore.find(batchId).ifPresent(batch -> {
                 batch.getJobProgressList().stream()
+                     .filter(jobProgress -> jobProgress.getJobId() != null)
                      .filter(jobProgress -> jobProgress.getJobId().toString().equals(jobEvent.jobId()))
-                        .forEach(jobProgress -> jobProgress.setJobState(jobEvent.jobState()));
+                     .forEach(jobProgress -> jobProgress.setJobState(jobEvent.jobState()));
                 batchStore.save(batchId, batch);
             });
         });
