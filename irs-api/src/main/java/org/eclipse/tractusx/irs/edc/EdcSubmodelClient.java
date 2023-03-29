@@ -24,6 +24,8 @@ package org.eclipse.tractusx.irs.edc;
 
 import java.net.SocketTimeoutException;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -43,6 +45,7 @@ import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.services.AsyncPollingService;
 import org.eclipse.tractusx.irs.services.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.eclipse.tractusx.irs.util.Masker;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -139,9 +142,10 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
         final String providerConnectorUrl = submodelEndpointAddress.substring(0, indexOfUrn);
         final String target = submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
+        final String decodedTarget = URLDecoder.decode(target, StandardCharsets.UTF_8);
         log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerConnectorUrl,
-                target);
-        return contractNegotiationService.negotiate(providerConnectorUrl, target);
+                decodedTarget);
+        return contractNegotiationService.negotiate(providerConnectorUrl, decodedTarget);
     }
 
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(
@@ -168,13 +172,12 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private Optional<String> retrieveSubmodelData(final String submodel, final String contractAgreementId,
             final StopWatch stopWatch) {
-        log.info("Retrieving dataReference from storage for contractAgreementId {}", contractAgreementId);
+        log.info("Retrieving dataReference from storage for contractAgreementId {}", Masker.mask(contractAgreementId));
         final Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.remove(contractAgreementId);
 
         if (dataReference.isPresent()) {
             final EndpointDataReference ref = dataReference.get();
-            log.info("Retrieving data from EDC data plane with dataReference {}:{}", ref.getAuthKey(),
-                    ref.getAuthCode());
+            log.info("Retrieving data from EDC data plane for dataReference with id {}", ref.getId());
             final String data = edcDataPlaneClient.getData(ref, submodel);
             stopWatch.stop();
             log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
@@ -206,7 +209,9 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         });
     }
 
-    @SuppressWarnings({"PMD.AvoidRethrowingException", "PMD.AvoidCatchingGenericException"})
+    @SuppressWarnings({ "PMD.AvoidRethrowingException",
+                        "PMD.AvoidCatchingGenericException"
+    })
     private <T> T execute(final String endpointAddress, final CheckedSupplier<T> supplier) throws EdcClientException {
         if (!urlValidator.isValid(endpointAddress)) {
             throw new IllegalArgumentException(String.format("Malformed endpoint address '%s'", endpointAddress));
@@ -233,6 +238,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     /**
      * Functional interface for a supplier that may throw a checked exception.
+     *
      * @param <T> the returned type
      */
     private interface CheckedSupplier<T> {

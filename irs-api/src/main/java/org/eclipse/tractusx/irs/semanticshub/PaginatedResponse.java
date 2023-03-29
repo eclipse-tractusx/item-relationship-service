@@ -30,14 +30,24 @@ import org.springframework.data.domain.PageRequest;
 
 /**
  * Pagination wrapper Object.
+ *
  * @param <T> Type of paginated item
  */
 @SuppressWarnings({ "PMD.UnusedFormalParameter" })
-public class PaginatedResponse<T> extends PageImpl<T> {
+public class PaginatedResponse<T> {
+    private final List<T> items;
+    private final int totalItems;
+    private final int currentPage;
+
     public PaginatedResponse(final @JsonProperty("items") List<T> items,
-            final @JsonProperty("totalItems") int totalItems,
-            final @JsonProperty("currentPage") int currentPage,
-            final @JsonProperty("itemCount") int itemCount) {
-        super(items, PageRequest.of(currentPage, itemCount), totalItems);
+            final @JsonProperty("totalItems") int totalItems, final @JsonProperty("currentPage") int currentPage) {
+        this.items = List.copyOf(items);
+        this.totalItems = totalItems;
+        this.currentPage = currentPage;
+    }
+
+    public PageImpl<T> toPageImpl(final int pageSize) {
+        return new PageImpl<>(items, PageRequest.of(currentPage, pageSize), totalItems);
+
     }
 }

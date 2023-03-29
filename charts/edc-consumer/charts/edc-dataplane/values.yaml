@@ -215,7 +215,7 @@ configuration:
     edc.oauth.private.key.alias=
     edc.oauth.provider.audience=
     edc.oauth.provider.jwks.url=
-    edc.oauth.public.key.alias=
+    edc.oauth.certificate.alias=
     edc.oauth.token.url=
     edc.vault.hashicorp.url=
     edc.vault.hashicorp.token=

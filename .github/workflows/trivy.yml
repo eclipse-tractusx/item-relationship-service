@@ -41,7 +41,7 @@ jobs:
           output: "trivy-results1.sarif"
           severity: "CRITICAL,HIGH"
           # full-irs is a demonstration and not intended to run in a production environment, it can be excluded
-          skip-dirs: "charts/connector/aasregistry,charts/connector/daps,charts/connector/edc-provider,charts/connector/submodelservers,charts/irs-environments/local,charts/full-irs"  # skip scanning external images.
+          skip-dirs: "charts/connector/aasregistry,charts/connector/daps,charts/connector/edc-provider,charts/connector/submodelservers,charts/irs-environments/local,local/full-irs"  # skip scanning external images.
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
