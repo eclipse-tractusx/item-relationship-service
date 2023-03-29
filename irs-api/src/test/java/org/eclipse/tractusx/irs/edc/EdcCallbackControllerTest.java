@@ -28,13 +28,12 @@ import java.time.Duration;
 import java.util.Map;
 
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 
 class EdcCallbackControllerTest {
 
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
-    private final EdcCallbackController testee = new EdcCallbackController(storage, new JsonUtil());
+    private final EdcCallbackController testee = new EdcCallbackController(storage);
 
     @Test
     void shouldStoreAgreementId() {

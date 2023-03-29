@@ -43,6 +43,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.configuration.CatalogCacheConfiguration;
 import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
 import org.eclipse.tractusx.irs.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.services.AsyncPollingService;
@@ -81,8 +82,15 @@ class SubmodelFacadeWiremockTest {
         final EdcControlPlaneClient controlPlaneClient = new EdcControlPlaneClient(restTemplate, pollingService,
                 config);
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
+        final CatalogCacheConfiguration cacheConfig = new CatalogCacheConfiguration();
+
+        cacheConfig.setTtl(Duration.ofMinutes(10));
+        cacheConfig.setMaxCachedItems(1000L);
+
+        final InMemoryCatalogCache catalogCache = new InMemoryCatalogCache(
+                new EDCCatalogFacade(controlPlaneClient, config), cacheConfig);
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
-                config);
+                config, catalogCache);
 
         final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
         final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();

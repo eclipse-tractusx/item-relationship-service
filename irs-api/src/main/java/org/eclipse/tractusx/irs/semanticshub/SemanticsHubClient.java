@@ -193,8 +193,9 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
             do {
                 semanticHubPage = getSemanticHubPage(currentPage++, config.getPageSize());
                 log.info("Got response from semantic hub '{}'", semanticHubPage.toString());
-                aspectModelsCollection.addAll(semanticHubPage.orElseThrow().getContent());
-            } while (semanticHubPage.isPresent() && semanticHubPage.get().hasNext());
+                aspectModelsCollection.addAll(
+                        semanticHubPage.orElseThrow().toPageImpl(config.getPageSize()).getContent());
+            } while (semanticHubPage.isPresent() && semanticHubPage.get().toPageImpl(config.getPageSize()).hasNext());
 
             return Optional.of(aspectModelsCollection);
         }
