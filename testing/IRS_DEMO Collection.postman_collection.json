@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "8e3a3590-b11f-4b0d-834a-03ff91565ff0",
+		"_postman_id": "3c02329f-7c65-4787-8fce-b80f7b3372ac",
 		"name": "IRS DEMO Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -2037,6 +2037,161 @@
 								{
 									"key": "jobId",
 									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Batch Processing",
+			"item": [
+				{
+					"name": "Register Batch Order",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"aspects\": [\r\n        \"AssemblyPartRelationship\",\r\n        \"SerialPartTypization\",\r\n        \"Batch\"\r\n    ],\r\n    \"bomlLifecycle\": \"asBuilt\",\r\n    \"collectAspects\": true,\r\n    \"lookupBPNs\": true,\r\n    \"direction\": \"downward\",\r\n    \"depth\": 10,\r\n    \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search for given orderId",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs/:jobId?returnUncompletedJob=true",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs",
+								":jobId"
+							],
+							"query": [
+								{
+									"key": "returnUncompletedJob",
+									"value": "true"
+								}
+							],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search for given orderId and batchId",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/jobs/:jobId?returnUncompletedJob=true",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"jobs",
+								":jobId"
+							],
+							"query": [
+								{
+									"key": "returnUncompletedJob",
+									"value": "true"
+								}
+							],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": null
 								}
 							]
 						}
