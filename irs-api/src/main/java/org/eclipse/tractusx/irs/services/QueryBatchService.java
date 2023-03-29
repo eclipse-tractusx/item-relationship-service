@@ -23,6 +23,7 @@
 package org.eclipse.tractusx.irs.services;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -89,22 +90,23 @@ public class QueryBatchService {
     }
 
     private BatchResponse toBatchResponse(final Batch batch) {
-        final List<JobStatusResult> jobs = Optional.ofNullable(batch.getJobIds())
-                                                      .stream()
-                                                      .map(jobId -> jobStore.find(jobId.toString()))
-                                                      .flatMap(Optional::stream)
-                                                      .map(toJobStatus())
-                                                      .toList();
+        final List<JobStatusResult> jobs = batch.getJobProgressList()
+                                                .stream()
+                                                .filter(jobProgress -> jobProgress.getJobId() != null)
+                                                .map(jobId -> jobStore.find(jobId.toString()))
+                                                .flatMap(Optional::stream)
+                                                .map(toJobStatus())
+                                                .toList();
 
         return BatchResponse.builder()
                             .batchId(batch.getBatchId())
                             .orderId(batch.getBatchOrderId())
                             .batchNumber(batch.getBatchNumber())
-                            .totalJobs(Optional.ofNullable(batch.getJobIds()).map(List::size).orElse(0))
-//                            .batchTotal()
+                            .totalJobs(Optional.ofNullable(batch.getJobProgressList()).map(List::size).orElse(0))
+                            //                            .batchTotal()
                             .startedOn(batch.getStartedOn())
                             .completedOn(batch.getCompletedOn())
-//                            .jobsInBatchChecksum()
+                            //                            .jobsInBatchChecksum()
                             .jobs(jobs)
                             .batchNumber(batch.getBatchNumber())
                             .batchProcessingState(batch.getBatchState())

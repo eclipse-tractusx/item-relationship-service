@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.enums.BatchStrategy;
@@ -68,7 +69,8 @@ class CreationBatchServiceTest {
         assertThat(batchStore.findAll()).hasSize(1);
 
         Batch actual = batchStore.findAll().stream().findFirst().orElseThrow();
-        assertThat(actual.getGlobalAssetIds()).containsOnly(FIRST_GLOBAL_ASSET_ID, SECOND_GLOBAL_ASSET_ID);
+        assertThat(actual.getJobProgressList().stream().map(JobProgress::getGlobalAssetId).collect(
+                Collectors.toList())).containsOnly(FIRST_GLOBAL_ASSET_ID, SECOND_GLOBAL_ASSET_ID);
     }
 
     @Test
@@ -82,8 +84,10 @@ class CreationBatchServiceTest {
 
         // then
         assertThat(batches).hasSize(7);
-        assertThat(batches.get(0).getGlobalAssetIds()).containsExactly("1", "2", "3");
-        assertThat(batches.get(6).getGlobalAssetIds()).containsExactly("19", "20");
+        assertThat(batches.get(0).getJobProgressList().stream().map(JobProgress::getGlobalAssetId).collect(
+                Collectors.toList())).containsExactly("1", "2", "3");
+        assertThat(batches.get(6).getJobProgressList().stream().map(JobProgress::getGlobalAssetId).collect(
+                Collectors.toList())).containsExactly("19", "20");
 
     }
 

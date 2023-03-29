@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.services;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrder;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
+import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -88,7 +90,9 @@ public class CreationBatchService {
                         .batchNumber(batchNumber.getAndIncrement())
                         .batchUrl(buildBatchUrl(batchOrderId, batchId))
                         .batchState(ProcessingState.INITIALIZED)
-                        .globalAssetIds(batch.stream().toList())
+                        .jobProgressList(globalAssetIds.stream()
+                                                       .map(globalAssetId -> JobProgress.builder().globalAssetId(globalAssetId).build()).collect(
+                                        Collectors.toList()))
                         .build();
         }).toList();
     }

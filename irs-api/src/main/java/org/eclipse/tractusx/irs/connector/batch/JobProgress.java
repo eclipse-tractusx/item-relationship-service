@@ -22,67 +22,36 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.connector.batch;
 
-import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.UUID;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.component.enums.ProcessingState;
+import org.eclipse.tractusx.irs.component.enums.JobState;
 
 /**
- * Entity for execute batch of jobs and monitor processing state.
+ * Details about job progress used to monitor progress in job
  */
-@Getter
+@Data
 @Builder(toBuilder = true)
 @Slf4j
 @Jacksonized
-public class Batch {
+public class JobProgress {
 
     /**
-     * Batch Id
+     * Global Asset Id that was requested by Batch Order
      */
-    private UUID batchId;
+    private String globalAssetId;
 
     /**
-     * Batch Order Id
+     * Job Id that was registered by Batch Order process
      */
-    private UUID batchOrderId;
+    private UUID jobId;
 
     /**
-     * Processing State of Batch
+     * Job status that will be updated by handle job events
      */
-    private ProcessingState batchState;
-
-    /**
-     * Batch Number in Batch Order
-     */
-    private Integer batchNumber;
-
-    /**
-     * Batch Url
-     */
-    private String batchUrl;
-
-    /**
-     * List of Job Progress with details about job
-     */
-    @Setter
-    private List<JobProgress> jobProgressList;
-
-    /**
-     * Timestamp when the Batch was started
-     */
-    @Setter
-    private ZonedDateTime startedOn;
-
-    /**
-     * Timestamp when the Batch was started
-     */
-    @Setter
-    private ZonedDateTime completedOn;
+    private JobState jobState;
 
 }
