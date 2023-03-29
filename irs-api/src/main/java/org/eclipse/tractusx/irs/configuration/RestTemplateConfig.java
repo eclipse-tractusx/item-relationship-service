@@ -144,6 +144,24 @@ public class RestTemplateConfig {
         return authorizedClientManager;
     }
 
+    @Bean(EDC_REST_TEMPLATE)
+        /* package */ RestTemplate edcRestTemplate(final RestTemplateBuilder restTemplateBuilder,
+            @Value("${edc.submodel.timeout.read}") final Duration readTimeout,
+            @Value("${edc.submodel.timeout.connect}") final Duration connectTimeout) {
+        final RestTemplate restTemplate = restTemplateBuilder.setReadTimeout(readTimeout)
+                                                             .setConnectTimeout(connectTimeout)
+                                                             .build();
+        final List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
+        for (final HttpMessageConverter<?> converter : messageConverters) {
+            if (converter instanceof final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
+                final ObjectMapper mappingJackson2HttpMessageConverterObjectMapper = mappingJackson2HttpMessageConverter.getObjectMapper();
+                PolicyRegistrationTypes.TYPES.forEach(
+                        mappingJackson2HttpMessageConverterObjectMapper::registerSubtypes);
+            }
+        }
+        return restTemplate;
+    }
+
     /**
      * Interceptor to add Authorization header to every call done via Rest template
      */
@@ -177,24 +195,6 @@ public class RestTemplateConfig {
         private String buildAuthorizationHeaderValue(final OAuth2AccessToken accessToken) {
             return accessToken.getTokenType().getValue() + " " + accessToken.getTokenValue();
         }
-    }
-
-    @Bean(EDC_REST_TEMPLATE)
-        /* package */ RestTemplate edcRestTemplate(final RestTemplateBuilder restTemplateBuilder,
-            @Value("${edc.submodel.timeout.read}") final Duration readTimeout,
-            @Value("${edc.submodel.timeout.connect}") final Duration connectTimeout) {
-        final RestTemplate restTemplate = restTemplateBuilder.setReadTimeout(readTimeout)
-                                                             .setConnectTimeout(connectTimeout)
-                                                             .build();
-        final List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
-        for (final HttpMessageConverter<?> converter : messageConverters) {
-            if (converter instanceof final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
-                final ObjectMapper mappingJackson2HttpMessageConverterObjectMapper = mappingJackson2HttpMessageConverter.getObjectMapper();
-                PolicyRegistrationTypes.TYPES.forEach(
-                        mappingJackson2HttpMessageConverterObjectMapper::registerSubtypes);
-            }
-        }
-        return restTemplate;
     }
 
 }
