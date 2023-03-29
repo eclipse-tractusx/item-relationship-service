@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.services;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -55,20 +57,21 @@ public class BatchOrderEventListener {
     @EventListener
     public void handleBatchOrderRegisteredEvent(final BatchOrderRegisteredEvent batchOrderRegisteredEvent) {
         batchOrderStore.find(batchOrderRegisteredEvent.batchOrderId()).ifPresent(batchOrder -> {
-            Batch firstBatch = batchStore.findAll()
+            final Batch firstBatch = batchStore.findAll()
                                          .stream()
                                          .filter(batch -> batch.getBatchOrderId().equals(batchOrder.getBatchOrderId()))
                                          .filter(batch -> batch.getBatchNumber().equals(1))
                                          .findFirst()
                                          .orElseThrow();
 
-            List<UUID> createdJobIds = firstBatch.getGlobalAssetIds()
+            final List<UUID> createdJobIds = firstBatch.getGlobalAssetIds()
                                                  .stream()
                                                  .map(globalAssetId -> createRegisterJob(batchOrder, globalAssetId))
                                                  .map(registerJob -> irsItemGraphQueryService.registerItemJob(registerJob, firstBatch.getBatchId()))
                                                  .map(JobHandle::getId)
                                                  .collect(Collectors.toList());
             firstBatch.setJobIds(createdJobIds);
+            firstBatch.setStartedOn(ZonedDateTime.now(ZoneOffset.UTC));
             batchStore.save(firstBatch.getBatchId(), firstBatch);
         });
 

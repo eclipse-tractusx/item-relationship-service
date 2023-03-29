@@ -38,6 +38,7 @@ import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  *
@@ -79,13 +80,21 @@ public class CreationBatchService {
 
         final AtomicInteger batchNumber = new AtomicInteger(1);
 
-        return batches.stream().map(batch -> Batch.builder()
-                                                .batchId(UUID.randomUUID())
-                                                .batchOrderId(batchOrderId)
-                                                .batchNumber(batchNumber.getAndIncrement())
-                                                .batchState(ProcessingState.INITIALIZED)
-                                                .globalAssetIds(batch.stream().toList())
-                                                .build()).toList();
+        return batches.stream().map(batch -> {
+            final UUID batchId = UUID.randomUUID();
+            return Batch.builder()
+                        .batchId(batchId)
+                        .batchOrderId(batchOrderId)
+                        .batchNumber(batchNumber.getAndIncrement())
+                        .batchUrl(buildBatchUrl(batchOrderId, batchId))
+                        .batchState(ProcessingState.INITIALIZED)
+                        .globalAssetIds(batch.stream().toList())
+                        .build();
+        }).toList();
+    }
+
+    private static String buildBatchUrl(final UUID batchOrderId, final UUID batchId) {
+        return ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString() + "/" + batchOrderId + "/batches/" + batchId;
     }
 
 }

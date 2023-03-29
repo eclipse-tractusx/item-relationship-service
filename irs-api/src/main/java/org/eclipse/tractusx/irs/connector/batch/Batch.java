@@ -22,9 +22,11 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.connector.batch;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -76,5 +78,11 @@ public class Batch {
      * List of Global Asset Ids that need to be process in this Batch
      */
     private List<String> globalAssetIds;
+
+    @Setter
+    private ZonedDateTime startedOn;
+
+    @Setter
+    private ZonedDateTime completedOn;
 
 }

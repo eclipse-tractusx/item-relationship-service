@@ -76,7 +76,7 @@ public class QueryBatchService {
                          .filter(ba -> ba.getBatchOrderId().equals(batchOrderId))
                          .map(this::toBatchResponse)
                          .orElseThrow(() -> new EntityNotFoundException(
-                                 "Cannot find Batch with id: " + batchId));
+                                 "Cannot find Batch with orderId: " + batchOrderId + " and id: " + batchId));
     }
 
     private BatchOrderResponse.BatchResponse toResponse(final Batch batch) {
@@ -89,7 +89,7 @@ public class QueryBatchService {
     }
 
     private BatchResponse toBatchResponse(final Batch batch) {
-        final List<JobStatusResult> jobs = batch.getJobIds()
+        final List<JobStatusResult> jobs = Optional.ofNullable(batch.getJobIds())
                                                       .stream()
                                                       .map(jobId -> jobStore.find(jobId.toString()))
                                                       .flatMap(Optional::stream)
@@ -100,10 +100,10 @@ public class QueryBatchService {
                             .batchId(batch.getBatchId())
                             .orderId(batch.getBatchOrderId())
                             .batchNumber(batch.getBatchNumber())
-                            .totalJobs(batch.getJobIds().size())
+                            .totalJobs(Optional.ofNullable(batch.getJobIds()).map(List::size).orElse(0))
 //                            .batchTotal()
-//                            .startedOn()
-//                            .completedOn()
+                            .startedOn(batch.getStartedOn())
+                            .completedOn(batch.getCompletedOn())
 //                            .jobsInBatchChecksum()
                             .jobs(jobs)
                             .batchNumber(batch.getBatchNumber())
