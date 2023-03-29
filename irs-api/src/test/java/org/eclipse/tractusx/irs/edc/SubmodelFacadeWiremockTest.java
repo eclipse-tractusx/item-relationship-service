@@ -35,13 +35,16 @@ import static org.mockito.Mockito.mock;
 
 import java.time.Clock;
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.assertj.core.api.ThrowableAssert;
+import org.eclipse.dataspaceconnector.policy.model.PolicyRegistrationTypes;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.configuration.CatalogCacheConfiguration;
 import org.eclipse.tractusx.irs.configuration.EdcConfiguration;
@@ -52,18 +55,19 @@ import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 class SubmodelFacadeWiremockTest {
 
     private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
-    private WireMockServer wireMockServer;
-
-    private EdcSubmodelClient submodelFacade;
-
     private final EdcConfiguration config = new EdcConfiguration();
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
+    private WireMockServer wireMockServer;
+    private EdcSubmodelClient submodelFacade;
 
     @BeforeEach
     void configureSystemUnderTest() {
@@ -76,7 +80,16 @@ class SubmodelFacadeWiremockTest {
         config.getSubmodel().setPath("/submodel");
         config.getSubmodel().setUrnPrefix("/urn");
 
-        final RestTemplate restTemplate = new RestTemplate();
+        final RestTemplate restTemplate = new RestTemplateBuilder().build();
+        final List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
+        for (final HttpMessageConverter<?> converter : messageConverters) {
+            if (converter instanceof final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
+                final ObjectMapper mappingJackson2HttpMessageConverterObjectMapper = mappingJackson2HttpMessageConverter.getObjectMapper();
+                PolicyRegistrationTypes.TYPES.forEach(
+                        mappingJackson2HttpMessageConverterObjectMapper::registerSubtypes);
+            }
+        }
+
         final AsyncPollingService pollingService = new AsyncPollingService(Clock.systemUTC(),
                 Executors.newScheduledThreadPool(1));
         final EdcControlPlaneClient controlPlaneClient = new EdcControlPlaneClient(restTemplate, pollingService,
