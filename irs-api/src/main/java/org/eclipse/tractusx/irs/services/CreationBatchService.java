@@ -90,9 +90,7 @@ public class CreationBatchService {
                         .batchNumber(batchNumber.getAndIncrement())
                         .batchUrl(buildBatchUrl(batchOrderId, batchId))
                         .batchState(ProcessingState.INITIALIZED)
-                        .jobProgressList(globalAssetIds.stream()
-                                                       .map(globalAssetId -> JobProgress.builder().globalAssetId(globalAssetId).build()).collect(
-                                        Collectors.toList()))
+                        .jobProgressList(batch.stream().map(globalAssetId -> JobProgress.builder().globalAssetId(globalAssetId).build()).toList())
                         .build();
         }).toList();
     }
