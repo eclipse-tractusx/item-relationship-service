@@ -1,5 +1,6 @@
 name: Veracode SAST test
 on:
+  workflow_dispatch: # Trigger manually
   schedule:
     - cron: '0 0 * * *' # Once a day
 
@@ -37,7 +38,7 @@ jobs:
           path: 'irs-api/target/*exec.jar'
 
       - name: Veracode Upload And Scan
-        uses: veracode/veracode-uploadandscan-action@0.2.4
+        uses: veracode/veracode-uploadandscan-action@0.2.5
         with:
           appname: 'IRS'
           version: '${{ github.run_id }}'

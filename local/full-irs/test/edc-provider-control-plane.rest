@@ -1,0 +1,34 @@
+@hostname = localhost
+@port = 6181
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+@idsEndpoint = /api/v1/ids/data
+@headerName = X-Api-Key
+@headerValue = password
+
+
+### Get Ids data
+# @name ids
+
+GET http://{{host}}{{idsEndpoint}} 
+{{headerName}}: {{headerValue}}
+Content-Type: {{contentType}}
+
+### Get Assets
+
+GET http://{{host}}/data/assets
+{{headerName}}: {{headerValue}}
+Content-Type: {{contentType}}
+
+### Get Policy Definitions
+
+GET http://{{host}}/data/policydefinitions
+{{headerName}}: {{headerValue}}
+Content-Type: {{contentType}}
+
+### Get Contract Definitions
+
+GET http://{{host}}/data/contractdefinitions
+{{headerName}}: {{headerValue}}
+Content-Type: {{contentType}}
+

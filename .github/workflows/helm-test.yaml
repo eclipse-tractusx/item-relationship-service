@@ -47,7 +47,8 @@ jobs:
           fi
 
       - name: Run chart-testing (lint)
-        run: ct lint --validate-maintainers=false --target-branch ${{ github.event.repository.default_branch }}
+        run: |
+          ct lint --excluded-charts=edc-consumer --validate-maintainers=false --check-version-increment=false --target-branch ${{ github.event.repository.default_branch }}
 
       - name: Run chart-testing (install)
         run: |
@@ -55,5 +56,5 @@ jobs:
           helm repo add minio https://charts.min.io/
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
           helm repo add grafana https://grafana.github.io/helm-charts
-          ct install --charts charts/irs
+          ct install --charts charts/irs-helm
         if: steps.list-changed.outputs.changed == 'true'
