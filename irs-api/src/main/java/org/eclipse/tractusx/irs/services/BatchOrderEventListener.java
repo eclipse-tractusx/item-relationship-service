@@ -59,14 +59,14 @@ public class BatchOrderEventListener {
     @EventListener
     public void handleBatchOrderRegisteredEvent(final BatchOrderRegisteredEvent batchOrderRegisteredEvent) {
         batchOrderStore.find(batchOrderRegisteredEvent.batchOrderId()).ifPresent(batchOrder -> {
-            Batch firstBatch = batchStore.findAll()
+            final Batch firstBatch = batchStore.findAll()
                                          .stream()
                                          .filter(batch -> batch.getBatchOrderId().equals(batchOrder.getBatchOrderId()))
                                          .filter(batch -> batch.getBatchNumber().equals(1))
                                          .findFirst()
                                          .orElseThrow();
 
-            List<JobProgress> createdJobIds = firstBatch.getJobProgressList()
+            final List<JobProgress> createdJobIds = firstBatch.getJobProgressList()
                                                         .stream()
                                                         .map(JobProgress::getGlobalAssetId)
                                                         .map(globalAssetId -> createRegisterJob(batchOrder,
@@ -83,7 +83,7 @@ public class BatchOrderEventListener {
 
     }
 
-    private JobProgress createJobProgress(JobHandle jobHandle, String globalAssetId) {
+    private JobProgress createJobProgress(final JobHandle jobHandle, final String globalAssetId) {
         return JobProgress.builder()
                           .jobId(jobHandle.getId())
                           .jobState(JobState.INITIAL)

@@ -23,7 +23,6 @@
 package org.eclipse.tractusx.irs.services;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -108,7 +107,6 @@ public class QueryBatchService {
                             .completedOn(batch.getCompletedOn())
                             //                            .jobsInBatchChecksum()
                             .jobs(jobs)
-                            .batchNumber(batch.getBatchNumber())
                             .batchProcessingState(batch.getBatchState())
                             .build();
     }
