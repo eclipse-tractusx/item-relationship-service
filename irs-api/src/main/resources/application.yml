@@ -178,3 +178,4 @@ bpdm:
     read: PT90S # HTTP read timeout for the bpdm client
     connect: PT90S # HTTP connect timeout for the bpdm client
 
+apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK}

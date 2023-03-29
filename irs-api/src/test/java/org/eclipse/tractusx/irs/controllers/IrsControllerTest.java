@@ -56,6 +56,7 @@ import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
 import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
+import org.eclipse.tractusx.irs.services.AuthorizationService;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
 import org.junit.jupiter.api.Test;
@@ -85,6 +86,8 @@ class IrsControllerTest {
     private IrsItemGraphQueryService service;
     @MockBean
     private SemanticHubService semanticHubService;
+    @MockBean(name = "authorizationService")
+    private AuthorizationService authorizationService;
 
     private static Stream<RegisterJob> corruptedJobs() {
         return Stream.of(registerJobWithDepthAndAspect(110, null),
@@ -98,6 +101,7 @@ class IrsControllerTest {
     void initiateJobForGlobalAssetId() throws Exception {
         final UUID returnedJob = UUID.randomUUID();
         when(service.registerItemJob(any())).thenReturn(JobHandle.builder().id(returnedJob).build());
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
                                               .content(new ObjectMapper().writeValueAsString(
@@ -117,6 +121,17 @@ class IrsControllerTest {
     @Test
     @WithMockUser(authorities = "view_irs_wrong_authority")
     void shouldReturnForbiddenStatusWhenRequiredAuthorityIsMissing() throws Exception {
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(new ObjectMapper().writeValueAsString(
+                                                      registerJobWithoutDepthAndAspect())))
+                    .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(authorities = "view_irs")
+    void shouldReturnForbiddenStatusWhenWrongBpnInJwtToken() throws Exception {
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.FALSE);
+
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
                                               .content(new ObjectMapper().writeValueAsString(
                                                       registerJobWithoutDepthAndAspect())))
@@ -144,6 +159,7 @@ class IrsControllerTest {
 
         final String returnJobAsString = objectMapper.writeValueAsString(returnedJob);
 
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
         when(service.getJobsByState(any(), any(), any())).thenReturn(
                 new PageResult(new PagedListHolder<>(List.of(returnedJob))));
 
@@ -165,6 +181,7 @@ class IrsControllerTest {
     void cancelJobById() throws Exception {
         final Job canceledJob = Job.builder().id(jobId).state(JobState.CANCELED).build();
 
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
         when(this.service.cancelJobById(jobId)).thenReturn(canceledJob);
 
         this.mockMvc.perform(put("/irs/jobs/" + jobId)).andExpect(status().isOk());
@@ -173,6 +190,7 @@ class IrsControllerTest {
     @Test
     @WithMockUser(authorities = "view_irs")
     void cancelJobById_throwEntityNotFoundException() throws Exception {
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
         given(this.service.cancelJobById(jobId)).willThrow(
                 new EntityNotFoundException("No job exists with id " + jobId));
 
@@ -193,6 +211,7 @@ class IrsControllerTest {
     @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenRegisterJobWithMalformedAspectJson() throws Exception {
         when(service.registerItemJob(any())).thenThrow(IllegalArgumentException.class);
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
         final String requestBody = "{ \"aspects\": [ \"MALFORMED\" ], \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\" }";
 
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -202,6 +221,7 @@ class IrsControllerTest {
     @Test
     @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenCancelingAlreadyCompletedJob() throws Exception {
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
         given(this.service.cancelJobById(jobId)).willThrow(new IllegalStateException(
                 format("Cannot transition from state %s to %s", JobState.COMPLETED, JobState.CANCELED)));
 
@@ -226,6 +246,7 @@ class IrsControllerTest {
                                                       .models(List.of(assemblyPartRelationship))
                                                       .build();
 
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
         given(this.semanticHubService.getAllAspectModels()).willReturn(aspectModels);
         final String aspectModelResponseAsString = objectMapper.writeValueAsString(aspectModels);
 
