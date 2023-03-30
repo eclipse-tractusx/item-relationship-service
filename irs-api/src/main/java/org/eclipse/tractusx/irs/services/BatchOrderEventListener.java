@@ -79,13 +79,13 @@ public class BatchOrderEventListener {
     @EventListener
     public void handleBatchProcessingFinishedEvent(final BatchProcessingFinishedEvent batchProcessingFinishedEvent) {
         batchOrderStore.find(batchProcessingFinishedEvent.batchOrderId()).ifPresent(batchOrder -> {
-            List<ProcessingState> batchStates = batchStore.findAll()
+            final List<ProcessingState> batchStates = batchStore.findAll()
                                                           .stream()
                                                           .filter(batch -> batch.getBatchOrderId()
                                                                                 .equals(batchOrder.getBatchOrderId()))
                                                           .map(Batch::getBatchState)
                                                           .collect(Collectors.toList());
-            ProcessingState batchState = calculateBatchOrderState(batchStates);
+            final ProcessingState batchState = calculateBatchOrderState(batchStates);
             batchOrder.setBatchOrderState(batchState);
             batchOrderStore.save(batchOrder.getBatchOrderId(), batchOrder);
             if (ProcessingState.COMPLETE.equals(batchState) || ProcessingState.ERROR.equals(batchState)) {
@@ -103,7 +103,7 @@ public class BatchOrderEventListener {
         });
     }
 
-    private void startBatch(BatchOrder batchOrder, Batch batch) {
+    private void startBatch(final BatchOrder batchOrder, final Batch batch) {
         final List<JobProgress> createdJobIds = batch.getJobProgressList()
                                                      .stream()
                                                      .map(JobProgress::getGlobalAssetId)
@@ -160,7 +160,7 @@ public class BatchOrderEventListener {
                           .build();
     }
 
-    private ProcessingState calculateProcessingState(List<JobProgress> progressList) {
+    private ProcessingState calculateProcessingState(final List<JobProgress> progressList) {
         if (progressList.stream().anyMatch(jobProgress -> JobState.RUNNING.equals(jobProgress.getJobState()))) {
             return ProcessingState.PROCESSING;
         } else if (progressList.stream().anyMatch(jobProgress -> JobState.ERROR.equals(jobProgress.getJobState()))) {
@@ -173,7 +173,7 @@ public class BatchOrderEventListener {
         }
     }
 
-    private ProcessingState calculateBatchOrderState(List<ProcessingState> stateList) {
+    private ProcessingState calculateBatchOrderState(final List<ProcessingState> stateList) {
         if (stateList.stream().anyMatch(ProcessingState.PROCESSING::equals)) {
             return ProcessingState.PROCESSING;
         } else if (stateList.stream().anyMatch(ProcessingState.ERROR::equals)) {
