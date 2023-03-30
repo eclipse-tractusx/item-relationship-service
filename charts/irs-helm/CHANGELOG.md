@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.8] - 2023-03-30
+### Fixed
+- Moved license headers into if clauses to avoid empty resource files which lead to installation errors
+
 ## [5.0.7] - 2023-03-30
 ### Added
 - Add minio resource limits 
