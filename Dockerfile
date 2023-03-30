@@ -47,6 +47,8 @@ RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -pl :$BUILD_TARGET 
 # Copy the jar and build image
 FROM eclipse-temurin:19-jre-alpine AS irs-api
 
+RUN apk upgrade --no-cache libssl3
+
 ARG UID=10000
 ARG GID=1000
 
