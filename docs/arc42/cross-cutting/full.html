@@ -600,7 +600,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h4 id="_irs_api">IRS API</h4>
 <div class="paragraph">
 <p>The IRS is secured using OAuth2.0 / Open ID Connect. Every request to the IRS API requires a valid bearer token.
-Additionally every IRS API endpoint requires 'view_irs' role, that should be present in the token.</p>
+JWT token should also contain two fields:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>'view irs' role inside resource_access claim,</p>
+</li>
+<li>
+<p>bpn claim which is equal to the configuration value from 'API_ALLOWED_BPN' property</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">
@@ -979,7 +989,7 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-03-30 08:52:35 UTC
+Last updated 2023-03-30 10:37:26 UTC
 </div>
 </div>
 </body>

@@ -796,6 +796,12 @@ pre.rouge {
       <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the submodel client</span>
       <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the submodel client</span>
 
+  <span class="na">catalog</span><span class="pi">:</span>
+    <span class="na">cache</span><span class="pi">:</span>
+      <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span> <span class="c1"># Set to false to disable caching</span>
+      <span class="na">ttl</span><span class="pi">:</span> <span class="s">P1D</span> <span class="c1"># Time after which a cached Item is no longer valid and the real catalog is called instead</span>
+      <span class="na">maxCachedItems</span><span class="pi">:</span> <span class="m">64000</span> <span class="c1"># Maximum amount of cached catalog items</span>
+
 <span class="na">digitalTwinRegistry</span><span class="pi">:</span>
   <span class="na">descriptorEndpoint</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_DESCRIPTOR_URL:}</span> <span class="c1"># The endpoint to retrieve AAS descriptors from the DTR, must contain the placeholder {aasIdentifier}</span>
   <span class="na">shellLookupEndpoint</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_SHELL_LOOKUP_URL:}</span> <span class="c1"># The endpoint to lookup shells from the DTR, must contain the placeholder {assetIds}</span>
@@ -834,13 +840,15 @@ pre.rouge {
   <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">keycloak</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
   <span class="na">timeout</span><span class="pi">:</span>
     <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the bpdm client</span>
-    <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the bpdm client</span></code></pre>
+    <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the bpdm client</span>
+
+<span class="na">apiAllowedBpn</span><span class="pi">:</span> <span class="s">${API_ALLOWED_BPN:BPNL00000003CRHK}</span></code></pre>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-03-30 08:52:35 UTC
+Last updated 2023-03-30 10:37:26 UTC
 </div>
 </div>
 </body>

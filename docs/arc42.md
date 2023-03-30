@@ -609,7 +609,10 @@ A job can be in one of the following states:
 #### IRS API
 
 The IRS is secured using OAuth2.0 / Open ID Connect. Every request to the IRS API requires a valid bearer token.
-Additionally every IRS API endpoint requires 'view_irs' role, that should be present in the token.
+JWT token should also contain two fields:
+
+* 'view irs' role inside resource_access claim,
+* bpn claim which is equal to the configuration value from 'API_ALLOWED_BPN' property
 
 #### IRS as DTR client
 

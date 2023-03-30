@@ -841,6 +841,12 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the submodel client</span>
       <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the submodel client</span>
 
+  <span class="na">catalog</span><span class="pi">:</span>
+    <span class="na">cache</span><span class="pi">:</span>
+      <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span> <span class="c1"># Set to false to disable caching</span>
+      <span class="na">ttl</span><span class="pi">:</span> <span class="s">P1D</span> <span class="c1"># Time after which a cached Item is no longer valid and the real catalog is called instead</span>
+      <span class="na">maxCachedItems</span><span class="pi">:</span> <span class="m">64000</span> <span class="c1"># Maximum amount of cached catalog items</span>
+
 <span class="na">digitalTwinRegistry</span><span class="pi">:</span>
   <span class="na">descriptorEndpoint</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_DESCRIPTOR_URL:}</span> <span class="c1"># The endpoint to retrieve AAS descriptors from the DTR, must contain the placeholder {aasIdentifier}</span>
   <span class="na">shellLookupEndpoint</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_SHELL_LOOKUP_URL:}</span> <span class="c1"># The endpoint to lookup shells from the DTR, must contain the placeholder {assetIds}</span>
@@ -879,7 +885,9 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">keycloak</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
   <span class="na">timeout</span><span class="pi">:</span>
     <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the bpdm client</span>
-    <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the bpdm client</span></code></pre>
+    <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the bpdm client</span>
+
+<span class="na">apiAllowedBpn</span><span class="pi">:</span> <span class="s">${API_ALLOWED_BPN:BPNL00000003CRHK}</span></code></pre>
 </div>
 </div>
 </div>
@@ -889,7 +897,28 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="yaml"><span class="c1">#####################</span>
+<pre class="rouge highlight"><code data-lang="yaml">          <span class="na">labelSelector</span><span class="pi">:</span>
+            <span class="na">matchExpressions</span><span class="pi">:</span>
+              <span class="pi">-</span> <span class="na">key</span><span class="pi">:</span> <span class="s">app.kubernetes.io/name</span>
+                <span class="na">operator</span><span class="pi">:</span> <span class="s">DoesNotExist</span>
+          <span class="na">topologyKey</span><span class="pi">:</span> <span class="s">kubernetes.io/hostname</span>
+
+<span class="c1"># Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm</span>
+<span class="c1"># @url: https://github.com/helm/charts/blob/master/stable/nginx-ingress/values.yaml#L210</span>
+<span class="na">livenessProbe</span><span class="pi">:</span>
+  <span class="na">failureThreshold</span><span class="pi">:</span> <span class="m">6</span>
+  <span class="na">initialDelaySeconds</span><span class="pi">:</span> <span class="m">30</span>
+  <span class="na">periodSeconds</span><span class="pi">:</span> <span class="m">10</span>
+  <span class="na">successThreshold</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">timeoutSeconds</span><span class="pi">:</span> <span class="m">1</span>
+<span class="na">readinessProbe</span><span class="pi">:</span>
+  <span class="na">failureThreshold</span><span class="pi">:</span> <span class="m">3</span>
+  <span class="na">initialDelaySeconds</span><span class="pi">:</span> <span class="m">30</span>
+  <span class="na">periodSeconds</span><span class="pi">:</span> <span class="m">10</span>
+  <span class="na">successThreshold</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">timeoutSeconds</span><span class="pi">:</span> <span class="m">1</span>
+
+<span class="c1">#####################</span>
 <span class="c1"># IRS Configuration #</span>
 <span class="c1">#####################</span>
 <span class="na">irsUrl</span><span class="pi">:</span>  <span class="c1"># "https://&lt;irs-url&gt;"</span>
@@ -904,6 +933,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="s">{{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/lookup/shells?assetIds={assetIds}</span>
 <span class="na">semanticshub</span><span class="pi">:</span>
   <span class="na">url</span><span class="pi">:</span>  <span class="c1"># https://&lt;semantics-hub-url&gt;</span>
+  <span class="na">pageSize</span><span class="pi">:</span> <span class="s2">"</span><span class="s">100"</span>  <span class="c1"># Number of aspect models to retrieve per page</span>
   <span class="na">modelJsonSchemaEndpoint</span><span class="pi">:</span> <span class="pi">&gt;-</span>
     <span class="s">{{- if .Values.semanticshub.url }}</span>
     <span class="s">{{- tpl (.Values.semanticshub.url | default "" ) . }}/{urn}/json-schema</span>
@@ -920,7 +950,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">bpnEndpoint</span><span class="pi">:</span> <span class="pi">&gt;-</span>
     <span class="s">{{ tpl (.Values.bpdm.url | default "") . }}/api/catena/legal-entities/{partnerId}?idType={idType}</span>
 <span class="na">minioUser</span><span class="pi">:</span> <span class="s2">"</span><span class="s">minio"</span>  <span class="c1"># &lt;minio-username&gt;</span>
-<span class="na">minioPassword</span><span class="pi">:</span> <span class="s2">"</span><span class="s">minioPass"</span>  <span class="c1"># &lt;minio-password&gt;</span>
+<span class="na">minioPassword</span><span class="pi">:</span>  <span class="c1"># &lt;minio-password&gt;</span>
 <span class="na">minioUrl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">http://{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-minio:9000"</span>
 <span class="na">keycloak</span><span class="pi">:</span>
   <span class="na">oauth2</span><span class="pi">:</span>
@@ -947,6 +977,11 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">ttl</span><span class="pi">:</span> <span class="s">PT10M</span>  <span class="c1"># Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)</span>
     <span class="na">path</span><span class="pi">:</span> <span class="s">/submodel</span>
     <span class="na">urnprefix</span><span class="pi">:</span> <span class="s">/urn</span>
+  <span class="na">catalog</span><span class="pi">:</span>
+    <span class="na">cache</span><span class="pi">:</span>
+      <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>  <span class="c1"># Set to false to disable caching</span>
+      <span class="na">ttl</span><span class="pi">:</span> <span class="s">P1D</span>  <span class="c1"># Time after which a cached Item is no longer valid and the real catalog is called instead</span>
+      <span class="na">maxCachedItems</span><span class="pi">:</span> <span class="m">64000</span>  <span class="c1"># Maximum amount of cached catalog items</span>
 
 <span class="na">config</span><span class="pi">:</span>
   <span class="c1"># If true, the config provided below will completely replace the configmap.</span>
@@ -971,7 +1006,11 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">persistence</span><span class="pi">:</span>
     <span class="na">size</span><span class="pi">:</span> <span class="s">1Gi</span>
   <span class="na">resources</span><span class="pi">:</span>
+    <span class="na">limits</span><span class="pi">:</span>
+      <span class="na">cpu</span><span class="pi">:</span> <span class="m">1</span>
+      <span class="na">memory</span><span class="pi">:</span> <span class="s">4Gi</span>
     <span class="na">requests</span><span class="pi">:</span>
+      <span class="na">cpu</span><span class="pi">:</span> <span class="m">0.25</span>
       <span class="na">memory</span><span class="pi">:</span> <span class="s">4Gi</span>
   <span class="na">rootUser</span><span class="pi">:</span> <span class="s2">"</span><span class="s">minio"</span>  <span class="c1"># &lt;minio-username&gt;</span>
   <span class="na">rootPassword</span><span class="pi">:</span> <span class="s2">"</span><span class="s">minioPass"</span>  <span class="c1"># &lt;minio-password&gt;</span>
@@ -1023,38 +1062,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">persistence</span><span class="pi">:</span>
     <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
 
-  <span class="na">user</span><span class="pi">:</span>  <span class="c1"># &lt;grafana-username&gt;</span>
-  <span class="na">password</span><span class="pi">:</span>  <span class="c1"># &lt;grafana-password&gt;</span>
-
-  <span class="na">admin</span><span class="pi">:</span>
-    <span class="na">existingSecret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-irs-helm"</span>
-    <span class="na">userKey</span><span class="pi">:</span> <span class="s">grafanaUser</span>
-    <span class="na">passwordKey</span><span class="pi">:</span> <span class="s">grafanaPassword</span>
-
-  <span class="na">datasources</span><span class="pi">:</span>
-    <span class="na">datasources.yaml</span><span class="pi">:</span>
-      <span class="na">apiVersion</span><span class="pi">:</span> <span class="m">1</span>
-      <span class="na">datasources</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Prometheus</span>
-          <span class="na">type</span><span class="pi">:</span> <span class="s">prometheus</span>
-          <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">http://{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-prometheus-server"</span>
-          <span class="na">isDefault</span><span class="pi">:</span> <span class="no">true</span>
-
-  <span class="na">dashboardProviders</span><span class="pi">:</span>
-    <span class="na">dashboardproviders.yaml</span><span class="pi">:</span>
-      <span class="na">apiVersion</span><span class="pi">:</span> <span class="m">1</span>
-      <span class="na">providers</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s1">'</span><span class="s">default'</span>
-          <span class="na">orgId</span><span class="pi">:</span> <span class="m">1</span>
-          <span class="na">folder</span><span class="pi">:</span> <span class="s1">'</span><span class="s">'</span>
-          <span class="na">type</span><span class="pi">:</span> <span class="s">file</span>
-          <span class="na">disableDeletion</span><span class="pi">:</span> <span class="no">false</span>
-          <span class="na">editable</span><span class="pi">:</span> <span class="no">true</span>
-          <span class="na">options</span><span class="pi">:</span>
-            <span class="na">path</span><span class="pi">:</span> <span class="s">/var/lib/grafana/dashboards/default</span>
-
-  <span class="na">dashboards</span><span class="pi">:</span>
-    <span class="na">default</span><span class="pi">:</span></code></pre>
+  <span class="na">user</span><span class="pi">:</span>  <span class="c1"># &lt;grafana-username&gt;</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1173,8 +1181,7 @@ The <strong>key</strong> of each entry is the <code>Base64</code> encoded URN of
         <span class="na">nginx.ingress.kubernetes.io/backend-protocol</span><span class="pi">:</span> <span class="s2">"</span><span class="s">HTTP"</span>
         <span class="na">nginx.ingress.kubernetes.io/force-ssl-redirect</span><span class="pi">:</span> <span class="s2">"</span><span class="s">true"</span>
       <span class="na">endpoints</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">ids</span>
-        <span class="pi">-</span> <span class="s">data</span>
+        <span class="pi">-</span> <span class="s">protocol</span>
       <span class="na">className</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
       <span class="na">tls</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span>
@@ -1212,7 +1219,7 @@ The <strong>key</strong> of each entry is the <code>Base64</code> encoded URN of
       <span class="s">edc.oauth.client.id=&lt;daps-client-id&gt;</span>
       <span class="s">edc.oauth.private.key.alias=&lt;daps-privatekey-name&gt;</span>
       <span class="s">edc.oauth.provider.jwks.url=&lt;daps-jwks-url&gt;</span>
-      <span class="s">edc.oauth.public.key.alias=&lt;daps-certificate-name&gt;</span>
+      <span class="s">edc.oauth.certificate.alias=&lt;daps-certificate-name&gt;</span>
       <span class="s">edc.oauth.token.url=&lt;daps-token-url&gt;</span>
       <span class="s">edc.vault.hashicorp.url=&lt;vault-url&gt;</span>
       <span class="s">edc.vault.hashicorp.token=&lt;vault-token&gt;</span>
@@ -1253,7 +1260,7 @@ The <strong>key</strong> of each entry is the <code>Base64</code> encoded URN of
       <span class="s">edc.oauth.private.key.alias=&lt;daps-privatekey-name&gt;</span>
       <span class="s">edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL</span>
       <span class="s">edc.oauth.provider.jwks.url=&lt;daps-jwks-url&gt;</span>
-      <span class="s">edc.oauth.public.key.alias=&lt;daps-certificate-name&gt;</span>
+      <span class="s">edc.oauth.certificate.alias=&lt;daps-certificate-name&gt;</span>
       <span class="s">edc.oauth.token.url=&lt;daps-token-url&gt;</span>
       <span class="s">edc.vault.hashicorp.url=&lt;vault-url&gt;</span>
       <span class="s">edc.vault.hashicorp.token=&lt;vault-token&gt;</span>
@@ -1421,7 +1428,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-03-30 08:52:35 UTC
+Last updated 2023-03-30 10:37:26 UTC
 </div>
 </div>
 </body>
