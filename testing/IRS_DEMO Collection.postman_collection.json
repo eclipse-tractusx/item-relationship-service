@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "8e3a3590-b11f-4b0d-834a-03ff91565ff0",
+		"_postman_id": "3c02329f-7c65-4787-8fce-b80f7b3372ac",
 		"name": "IRS DEMO Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -2036,6 +2036,155 @@
 							"variable": [
 								{
 									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Batch Processing",
+			"item": [
+				{
+					"name": "Register Batch Order",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"aspects\": [\r\n\t\t\"AssemblyPartRelationship\"\r\n\t],\r\n\t\"collectAspects\": true,\r\n\t\"lookupBPNs\": true,\r\n\t\"direction\": \"downward\",\r\n\t\"batchSize\": 10,\r\n    \"batchStrategy\": \"PRESERVE_BATCH_JOB_ORDER\",\r\n\t\"globalAssetIds\": [\r\n\t\t\"urn:uuid:88f51be1-3771-4335-8b5c-4c5050143124\",\r\n\t\t\"urn:uuid:88f51be1-3771-4335-8b5c-4c5050123124\",\r\n\t\t\"urn:uuid:88f51be1-3771-4335-8b5c-4c5050123125\",\r\n\t\t\"urn:uuid:88f51be1-3771-4335-8b5c-4c5050123126\",\r\n\t\t\"urn:uuid:88f51be1-3771-4335-8b5c-4c5050123127\",\r\n\t\t\"urn:uuid:88f51be1-3771-4335-8b5c-4c505b123127\",\r\n\t\t\"urn:uuid:88f51be1-3771-4835-8b5c-4c5050123127\",\r\n\t\t\"urn:uuid:88f51be1-3771-4335-845c-4c505012b127\",\r\n\t\t\"urn:uuid:88f51be1-3772-4335-8b5c-4c5052123127\",\r\n\t\t\"urn:uuid:88f51be1-3771-4335-8b5c-4c5055123127\",\r\n\t\t\"urn:uuid:88f51be3-3771-4335-8b5c-4c5054123121\",\r\n\t\t\"urn:uuid:88f41be1-3771-4335-8b5c-4c5050123122\",\r\n\t\t\"urn:uuid:88f58be1-3771-4335-8b5c-4c5050123123\",\r\n\t\t\"urn:uuid:88f58be1-3771-1335-8b5c-4c5050123125\",\r\n\t\t\"urn:uuid:88158be1-3771-4335-8b5c-4c5050123127\",\r\n\t\t\"urn:uuid:18158be1-3771-4335-8b5c-4c5050123127\",\r\n\t\t\"urn:uuid:83158be1-3771-4335-8b5c-4c5050123127\"\r\n\t]\r\n}"
+						},
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/orders",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search for given orderId",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/orders/:orderId",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"orders",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search for given orderId and batchId",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{IRS_HOST}}/irs/orders/:orderId/batches/:batchId",
+							"host": [
+								"{{IRS_HOST}}"
+							],
+							"path": [
+								"irs",
+								"orders",
+								":orderId",
+								"batches",
+								":batchId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": ""
+								},
+								{
+									"key": "batchId",
 									"value": ""
 								}
 							]
