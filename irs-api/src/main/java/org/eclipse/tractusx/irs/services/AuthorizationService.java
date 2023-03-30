@@ -20,34 +20,33 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.semanticshub;
+package org.eclipse.tractusx.irs.services;
 
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
- * Pagination wrapper Object.
- *
- * @param <T> Type of paginated item
+ * BPN contains in JWT Token matches BPN under which IRS product is registered.
  */
-@SuppressWarnings({ "PMD.UnusedFormalParameter" })
-public class PaginatedResponse<T> {
-    private final List<T> items;
-    private final int totalItems;
-    private final int currentPage;
+@Component
+public class AuthorizationService {
 
-    public PaginatedResponse(final @JsonProperty("items") List<T> items,
-            final @JsonProperty("totalItems") int totalItems, final @JsonProperty("currentPage") int currentPage) {
-        this.items = List.copyOf(items);
-        this.totalItems = totalItems;
-        this.currentPage = currentPage;
+    private final SecurityHelperService securityHelperService;
+    private final String apiAllowedBpn;
+
+    public AuthorizationService(@Value("${apiAllowedBpn:}") final String apiAllowedBpn) {
+        this.securityHelperService = new SecurityHelperService();
+        this.apiAllowedBpn = apiAllowedBpn;
     }
 
-    public PageImpl<T> toPageImpl(final int pageSize) {
-        return new PageImpl<>(items, PageRequest.of(currentPage, pageSize), totalItems);
+    public boolean verifyBpn() {
+        if (StringUtils.isBlank(apiAllowedBpn)) {
+            return false;
+        }
 
+        final String bpnFromToken = securityHelperService.getBpnClaim();
+        return apiAllowedBpn.equals(bpnFromToken);
     }
+
 }

@@ -1,3 +1,25 @@
+# Copyright (c) 2021,2022,2023
+#       2022: ZF Friedrichshafen AG
+#       2022: ISTOS GmbH
+#       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+#       2022,2023: BOSCH AG
+# Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0. *
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -39,6 +61,7 @@ data:
 
     semanticshub:
       url: {{ tpl (.Values.semanticshub.url | default "") . | quote }}
+      pageSize: {{ tpl (.Values.semanticshub.pageSize | default "100") . }}
       modelJsonSchemaEndpoint: {{ tpl (.Values.semanticshub.modelJsonSchemaEndpoint | default "") . | quote }}
       defaultUrns: {{ tpl (.Values.semanticshub.defaultUrns | default "") . | quote }}
       {{- if .Values.semanticshub.localModels }}
@@ -52,7 +75,7 @@ data:
       controlplane:
         request-ttl: {{ .Values.edc.controlplane.request.ttl | default "PT10M" | quote }}
         endpoint:
-          data: {{ tpl (.Values.edc.controlplane.endpoint.data | default (printf "http://%s%s" .Release.Name "-edc-controlplane:8181/data")) . | quote }}
+          data: {{ tpl (.Values.edc.controlplane.endpoint.data | default (printf "http://%s%s" .Release.Name "-edc-controlplane:8181/api/v1/management")) . | quote }}
         provider-suffix: {{ tpl .Values.edc.controlplane.provider.suffix . | quote }}
         catalog-limit: {{ .Values.edc.controlplane.catalog.limit }}
         catalog-page-size: {{ .Values.edc.controlplane.catalog.pagesize }}
@@ -64,6 +87,12 @@ data:
         request-ttl: {{ tpl .Values.edc.submodel.request.ttl . | default "PT10M" | quote }}
         path: {{ tpl (.Values.edc.submodel.path | default "/submodel") . | quote }}
         urn-prefix: {{ tpl (.Values.edc.submodel.urnprefix | default "/urn") . | quote }}
+
+      catalog:
+        cache:
+          enabled: {{ .Values.edc.catalog.cache.enabled | default true }}
+          ttl: {{ .Values.edc.catalog.cache.ttl | default "P1D" | quote }}
+          maxCachedItems: {{ .Values.edc.catalog.cache.maxCachedItems | default 64000 }}
     {{- end }}
     {{- if .Values.config.content }}
     {{- tpl (toYaml .Values.config.content) . | nindent 4 }}

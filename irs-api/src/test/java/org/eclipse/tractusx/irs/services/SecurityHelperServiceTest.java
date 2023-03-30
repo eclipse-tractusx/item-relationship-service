@@ -38,11 +38,15 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 class SecurityHelperServiceTest {
 
     private final String CLIENT_ID = "sa-cl6-cx-2";
+    private final String BPN = "BPNL00000003CRHK";
 
     final SecurityHelperService securityHelperService = new SecurityHelperService();
 
     @Test
     void shouldReturnUnknownWhenNoAuthentication() {
+        // given
+        SecurityContextHolder.setContext(Mockito.mock(SecurityContext.class));
+
         // when
         final String clientIdClaim = securityHelperService.getClientIdClaim();
 
@@ -62,6 +66,18 @@ class SecurityHelperServiceTest {
         assertThat(clientIdClaim).isEqualTo(CLIENT_ID);
     }
 
+    @Test
+    void shouldReturnBpnClaimWhenJwtAuthentication() {
+        // given
+        thereIsJwtAuthentication();
+
+        // when
+        final String bpnClaim = securityHelperService.getBpnClaim();
+
+        // then
+        assertThat(bpnClaim).isEqualTo(BPN);
+    }
+
     private void thereIsJwtAuthentication() {
         final JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwt());
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
@@ -71,7 +87,7 @@ class SecurityHelperServiceTest {
 
     Jwt jwt() {
         return new Jwt("token", Instant.now(), Instant.now().plusSeconds(30), Map.of("alg", "none"),
-                Map.of(SUB, CLIENT_ID, "clientId", CLIENT_ID));
+                Map.of(SUB, CLIENT_ID, "clientId", CLIENT_ID, "bpn", BPN));
     }
 
 }

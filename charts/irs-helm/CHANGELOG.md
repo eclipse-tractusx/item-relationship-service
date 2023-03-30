@@ -6,6 +6,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.9] - 2023-03-30
+### Fixed
+- Moved license headers out of if clauses and add dashes (`---`) after each license header
+
+## [5.0.8] - 2023-03-30
+### Fixed
+- Moved license headers into if clauses to avoid empty resource files which lead to installation errors
+
+## [5.0.7] - 2023-03-30
+### Added
+- Add minio resource limits 
+- Extended configmap and values.yaml with catalog cache configuration  
+  You can configure the EDC catalog caching configuration like this:
+  ```
+  edc:
+    catalog:
+      cache:
+        enabled: true
+        ttl: P1D
+        maxCachedItems: 64000
+  ```
+### Changed
+- Updated IRS Version to 2.4.0
+
+## [5.0.6] - 2023-03-28
+### Added
+- Added config parameter for SemanticsHub request page size when retrieving all models. Can be used to fine tune requests. Default: 100 items per page
+
+### Changed
+- Updated default path in template for `edc.controlplane.endpoint.data` to match EDC 0.3.0 management endpoint `/api/v1/management`
+
 ## [5.0.5] - 2023-03-20
 ### Changed
 - Update IRS to version 2.3.2

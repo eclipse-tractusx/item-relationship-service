@@ -95,6 +95,18 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>json-smart</artifactId>
+                    <groupId>net.minidev</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- Update json-smart manually to avoid vulnerability CVE-2023-1370; can be removed after Spring updates their dependency -->
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>2.4.10</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
