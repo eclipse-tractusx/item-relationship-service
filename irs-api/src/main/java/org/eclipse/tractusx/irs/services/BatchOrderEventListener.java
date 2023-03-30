@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.services;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -33,12 +34,15 @@ import org.eclipse.tractusx.irs.aaswrapper.job.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrder;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
+import org.eclipse.tractusx.irs.services.events.BatchProcessingFinishedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -54,33 +58,49 @@ public class BatchOrderEventListener {
     private final BatchOrderStore batchOrderStore;
     private final BatchStore batchStore;
     private final IrsItemGraphQueryService irsItemGraphQueryService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Async
     @EventListener
     public void handleBatchOrderRegisteredEvent(final BatchOrderRegisteredEvent batchOrderRegisteredEvent) {
         batchOrderStore.find(batchOrderRegisteredEvent.batchOrderId()).ifPresent(batchOrder -> {
-            final Batch firstBatch = batchStore.findAll()
-                                         .stream()
-                                         .filter(batch -> batch.getBatchOrderId().equals(batchOrder.getBatchOrderId()))
-                                         .filter(batch -> batch.getBatchNumber().equals(1))
-                                         .findFirst()
-                                         .orElseThrow();
-
-            final List<JobProgress> createdJobIds = firstBatch.getJobProgressList()
-                                                        .stream()
-                                                        .map(JobProgress::getGlobalAssetId)
-                                                        .map(globalAssetId -> createRegisterJob(batchOrder,
-                                                                globalAssetId))
-                                                        .map(registerJob -> createJobProgress(
-                                                                irsItemGraphQueryService.registerItemJob(registerJob,
-                                                                        firstBatch.getBatchId()),
-                                                                registerJob.getGlobalAssetId()))
-                                                        .collect(Collectors.toList());
-            firstBatch.setJobProgressList(createdJobIds);
-            firstBatch.setStartedOn(ZonedDateTime.now(ZoneOffset.UTC));
-            batchStore.save(firstBatch.getBatchId(), firstBatch);
+            batchStore.findAll().stream()
+                      .filter(batch -> batch.getBatchOrderId().equals(batchOrder.getBatchOrderId()))
+                    .filter(batch -> batch.getBatchNumber().equals(1))
+                    .findFirst().ifPresent(batch -> {
+                        startBatch(batchOrder, batch);
+                      });
         });
 
+    }
+
+    @Async
+    @EventListener
+    public void handleBatchProcessingFinishedEvent(final BatchProcessingFinishedEvent batchProcessingFinishedEvent) {
+        batchOrderStore.find(batchProcessingFinishedEvent.batchOrderId()).ifPresent(batchOrder -> {
+            batchStore.findAll().stream()
+                      .filter(batch -> batch.getBatchOrderId().equals(batchOrder.getBatchOrderId()))
+                      .filter(batch -> batch.getBatchNumber().equals(batchProcessingFinishedEvent.batchNumber() + 1))
+                      .findFirst().ifPresent(batch -> {
+                          startBatch(batchOrder, batch);
+                      });
+        });
+    }
+
+    private void startBatch(BatchOrder batchOrder, Batch batch) {
+        final List<JobProgress> createdJobIds = batch.getJobProgressList()
+                                                     .stream()
+                                                     .map(JobProgress::getGlobalAssetId)
+                                                     .map(globalAssetId -> createRegisterJob(batchOrder,
+                                                             globalAssetId))
+                                                     .map(registerJob -> createJobProgress(
+                                                             irsItemGraphQueryService.registerItemJob(registerJob,
+                                                                     batch.getBatchId()),
+                                                             registerJob.getGlobalAssetId()))
+                                                     .collect(Collectors.toList());
+        batch.setJobProgressList(createdJobIds);
+        batch.setStartedOn(ZonedDateTime.now(ZoneOffset.UTC));
+        batchStore.save(batch.getBatchId(), batch);
     }
 
     private JobProgress createJobProgress(final JobHandle jobHandle, final String globalAssetId) {
@@ -96,10 +116,20 @@ public class BatchOrderEventListener {
     public void handleJobProcessingFinishedEvent(final JobProcessingFinishedEvent jobEvent) {
         jobEvent.batchId().ifPresent(batchId -> {
             batchStore.find(batchId).ifPresent(batch -> {
-                batch.getJobProgressList().stream()
+                final List<JobProgress> progressList = batch.getJobProgressList();
+                progressList.stream()
                      .filter(jobProgress -> jobProgress.getJobId() != null)
                      .filter(jobProgress -> jobProgress.getJobId().toString().equals(jobEvent.jobId()))
                      .forEach(jobProgress -> jobProgress.setJobState(jobEvent.jobState()));
+                final ProcessingState processingState = calculateProcessingState(progressList);
+                batch.setBatchState(processingState);
+                batch.setJobProgressList(progressList);
+                if (ProcessingState.COMPLETE.equals(processingState) || ProcessingState.ERROR.equals(processingState)) {
+                    batch.setCompletedOn(ZonedDateTime.now());
+                    applicationEventPublisher.publishEvent(
+                            new BatchProcessingFinishedEvent(batch.getBatchOrderId(), batch.getBatchId(),
+                                    batch.getBatchNumber()));
+                }
                 batchStore.save(batchId, batch);
             });
         });
@@ -115,6 +145,19 @@ public class BatchOrderEventListener {
                           .collectAspects(batchOrder.getCollectAspects())
                           .callbackUrl(batchOrder.getCallbackUrl())
                           .build();
+    }
+
+    private ProcessingState calculateProcessingState(List<JobProgress> progressList) {
+        if (progressList.stream().anyMatch(jobProgress -> JobState.RUNNING.equals(jobProgress.getJobState()))) {
+            return ProcessingState.PROCESSING;
+        } else if (progressList.stream().anyMatch(jobProgress -> JobState.ERROR.equals(jobProgress.getJobState()))) {
+            return ProcessingState.PARTIAL;
+        } else if (progressList.stream().allMatch(jobProgress -> JobState.COMPLETED.equals(jobProgress.getJobState()))) {
+            return ProcessingState.COMPLETE;
+        } else {
+            // TODO edge cases
+            return ProcessingState.PARTIAL;
+        }
     }
 
 }

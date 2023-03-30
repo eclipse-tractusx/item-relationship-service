@@ -55,6 +55,7 @@ public class Batch {
     /**
      * Processing State of Batch
      */
+    @Setter
     private ProcessingState batchState;
 
     /**
