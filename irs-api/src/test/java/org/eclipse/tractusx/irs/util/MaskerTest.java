@@ -20,34 +20,32 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.semanticshub;
+package org.eclipse.tractusx.irs.util;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.junit.jupiter.api.Test;
 
-/**
- * Pagination wrapper Object.
- *
- * @param <T> Type of paginated item
- */
-@SuppressWarnings({ "PMD.UnusedFormalParameter" })
-public class PaginatedResponse<T> {
-    private final List<T> items;
-    private final int totalItems;
-    private final int currentPage;
+class MaskerTest {
 
-    public PaginatedResponse(final @JsonProperty("items") List<T> items,
-            final @JsonProperty("totalItems") int totalItems, final @JsonProperty("currentPage") int currentPage) {
-        this.items = List.copyOf(items);
-        this.totalItems = totalItems;
-        this.currentPage = currentPage;
+    @Test
+    void maskWithLongText() {
+        final String thisIsLongEnough = Masker.mask("thisIsLongEnough");
+
+        assertThat(thisIsLongEnough).isEqualTo("this************");
     }
 
-    public PageImpl<T> toPageImpl(final int pageSize) {
-        return new PageImpl<>(items, PageRequest.of(currentPage, pageSize), totalItems);
+    @Test
+    void maskWithShortText() {
+        final String shortText = Masker.mask("hi");
 
+        assertThat(shortText).isEqualTo("****");
+    }
+
+    @Test
+    void maskWithNullText() {
+        final String nullText = Masker.mask(null);
+
+        assertThat(nullText).isEqualTo("****");
     }
 }

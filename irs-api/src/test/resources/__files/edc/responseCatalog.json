@@ -50,6 +50,70 @@
       "offerEnd": null,
       "contractStart": null,
       "contractEnd": null
+    },
+    {
+      "id": "notification-receipt-cd:b3693bd7-192e-4b2f-b24b-a1d3e3518dee",
+      "policy": {
+        "permissions": [
+          {
+            "edctype": "dataspaceconnector:permission",
+            "uid": null,
+            "target": "notification-receipt",
+            "action": {
+              "type": "USE",
+              "includedIn": null,
+              "constraint": null
+            },
+            "assignee": null,
+            "assigner": null,
+            "constraints": [
+              {
+                "edctype": "AtomicConstraint",
+                "leftExpression": {
+                  "edctype": "dataspaceconnector:literalexpression",
+                  "value": "idsc:PURPOSE"
+                },
+                "rightExpression": {
+                  "edctype": "dataspaceconnector:literalexpression",
+                  "value": "Investigation"
+                },
+                "operator": "EQ"
+              }
+            ],
+            "duties": []
+          }
+        ],
+        "prohibitions": [],
+        "obligations": [],
+        "extensibleProperties": {},
+        "inheritsFrom": null,
+        "assigner": null,
+        "assignee": null,
+        "target": "notification-receipt",
+        "@type": {
+          "@policytype": "set"
+        }
+      },
+      "asset": {
+        "id": "notification-receipt",
+        "createdAt": 1680088494977,
+        "properties": {
+          "asset:prop:byteSize": null,
+          "asset:prop:name": "Asset to receive investigations",
+          "asset:prop:contenttype": "application/json",
+          "asset:prop:notificationtype": "investigation",
+          "asset:prop:notificationmethod": "receive",
+          "asset:prop:id": "notification-receipt",
+          "asset:prop:fileName": null
+        }
+      },
+      "assetId": null,
+      "provider": "urn:connector:provider",
+      "consumer": "urn:connector:consumer",
+      "offerStart": null,
+      "offerEnd": null,
+      "contractStart": null,
+      "contractEnd": null
     }
   ]
 }

@@ -35,12 +35,20 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 public final class SecurityHelperService {
 
     private static final String UNKNOWN = "Unknown";
+    private static final String CLIENT_ID = "clientId";
+    private static final String BPN = "bpn";
 
     public String getClientIdClaim() {
-        return getClaimOrUnknown("clientId", getAuthenticationFromSecurityContext());
+        return getClaimOrUnknown(CLIENT_ID);
     }
 
-    private String getClaimOrUnknown(final String claimName, final Authentication authentication) {
+    public String getBpnClaim() {
+        return getClaimOrUnknown(BPN);
+    }
+
+    private String getClaimOrUnknown(final String claimName) {
+        final Authentication authentication = getAuthenticationFromSecurityContext();
+
         if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
             final Jwt token = jwtAuthenticationToken.getToken();
 

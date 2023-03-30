@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- IRS is now able to cache the EDC catalog. Caching can be disabled via application config. Maximum amount of cached items and item time-to-live can be configured as well. 
+
+### Changed
+- API endpoints have now additional layer of security and require BPN claim in token. Allowed BPN that can access API can be configured with (*env:API_ALLOWED_BPN*) variable.
+
+### Fixed
+- Fixed issue in paging when calling SemanticsHub with some page size configurations 
 
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
@@ -31,12 +39,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Job creation validates ``aspects`` by using models available in semantic hub or locally provided.
 
-
 ## [2.2.1] - 2023-03-15
 ### Fixed
 - Property "measurementUnit" of AssemblyPartRelationship can now be a String or a Map. According to the latest model, it is supposed to be a String, but due to varying test data, IRS supports both variants.
 - EDC Catalog IDs are now being URL decoded before usage
-
 
 ## [2.2.0] - 2023-01-20
 ### Added
@@ -63,10 +69,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - IRS API now requires 'view_irs' resource access inside Keycloak JWT token.
 - New 2.0.0 version of IRS API. Main goal was to remove 'job' prefix from attribute names
-    - change 'jobId' to 'id' in GET and POST calls
-    - change 'jobState' to 'state' in GET calls
-    - change 'jobCompleted' to 'completedOn' in GET calls
-    - change 'jobId' to 'id' and 'jobState' to 'state' in callback URI variables
+  - change 'jobId' to 'id' in GET and POST calls
+  - change 'jobState' to 'state' in GET calls
+  - change 'jobCompleted' to 'completedOn' in GET calls
+  - change 'jobId' to 'id' and 'jobState' to 'state' in callback URI variables
 
 ## [1.6.0] - 2022-11-25
 ### Added
@@ -79,7 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.5.0] - 2022-11-11
 ### Added
-- Added new parameters 'startedOn' and 'jobCompleted' to Job status response 
+- Added new parameters 'startedOn' and 'jobCompleted' to Job status response
 
 ### Changed
 - Updated Spring Boot to 2.7.5 and Spring Security (Web and OAuth2 Client) dependencies to 5.7.5 due to CVEs
@@ -94,7 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - BPDM URL (*env:BPDM_URL*) is now configurable
 - SemanticsHub URL (*env:SEMANTICSHUB_URL*) and default URNs (*env:SEMANTICSHUB_DEFAULT_URNS*) are now configurable
-- Added an administration guide covering installation and configuration topics (TRI-593) 
+- Added an administration guide covering installation and configuration topics (TRI-593)
 - **Tombstones** Tombstone contains ProcessStep in ProcessingError
 - Added new optional parameter 'callbackUrl' to Job registration request
 

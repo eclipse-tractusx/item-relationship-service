@@ -20,34 +20,25 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.semanticshub;
+package org.eclipse.tractusx.irs.edc.model;
 
-import java.util.List;
+import java.time.Instant;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import lombok.Builder;
+import lombok.Data;
+import org.eclipse.dataspaceconnector.policy.model.Policy;
+import org.eclipse.tractusx.irs.edc.ContractNegotiationService;
 
 /**
- * Pagination wrapper Object.
- *
- * @param <T> Type of paginated item
+ * Catalog Item as it is stored in the cache and used by {@link ContractNegotiationService}.
  */
-@SuppressWarnings({ "PMD.UnusedFormalParameter" })
-public class PaginatedResponse<T> {
-    private final List<T> items;
-    private final int totalItems;
-    private final int currentPage;
+@Builder
+@Data
+public class CatalogItem {
+    private String assetPropId;
+    private String itemId;
+    private Policy policy;
+    private String connectorId;
+    private Instant validUntil;
 
-    public PaginatedResponse(final @JsonProperty("items") List<T> items,
-            final @JsonProperty("totalItems") int totalItems, final @JsonProperty("currentPage") int currentPage) {
-        this.items = List.copyOf(items);
-        this.totalItems = totalItems;
-        this.currentPage = currentPage;
-    }
-
-    public PageImpl<T> toPageImpl(final int pageSize) {
-        return new PageImpl<>(items, PageRequest.of(currentPage, pageSize), totalItems);
-
-    }
 }

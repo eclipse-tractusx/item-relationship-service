@@ -20,34 +20,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.semanticshub;
+package org.eclipse.tractusx.irs.configuration;
 
-import java.util.List;
+import java.time.Duration;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
- * Pagination wrapper Object.
- *
- * @param <T> Type of paginated item
+ * EDC catalog cache configuration. Automatically populated by Spring from application.yml
+ * and other configuration sources.
  */
-@SuppressWarnings({ "PMD.UnusedFormalParameter" })
-public class PaginatedResponse<T> {
-    private final List<T> items;
-    private final int totalItems;
-    private final int currentPage;
+@Component
+@ConfigurationProperties(prefix = "edc.catalog.cache")
+@Data
+public class CatalogCacheConfiguration {
+    private boolean enabled;
+    private Duration ttl;
+    private long maxCachedItems;
 
-    public PaginatedResponse(final @JsonProperty("items") List<T> items,
-            final @JsonProperty("totalItems") int totalItems, final @JsonProperty("currentPage") int currentPage) {
-        this.items = List.copyOf(items);
-        this.totalItems = totalItems;
-        this.currentPage = currentPage;
-    }
-
-    public PageImpl<T> toPageImpl(final int pageSize) {
-        return new PageImpl<>(items, PageRequest.of(currentPage, pageSize), totalItems);
-
-    }
 }
