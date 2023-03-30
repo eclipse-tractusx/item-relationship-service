@@ -169,7 +169,6 @@ public class BatchOrderEventListener {
                                .allMatch(jobProgress -> JobState.COMPLETED.equals(jobProgress.getJobState()))) {
             return ProcessingState.COMPLETE;
         } else {
-            // TODO edge cases?
             return ProcessingState.PARTIAL;
         }
     }
@@ -184,7 +183,6 @@ public class BatchOrderEventListener {
         } else if (stateList.stream().allMatch(ProcessingState.COMPLETE::equals)) {
             return ProcessingState.COMPLETE;
         } else {
-            // TODO edge cases?
             return ProcessingState.PARTIAL;
         }
     }
