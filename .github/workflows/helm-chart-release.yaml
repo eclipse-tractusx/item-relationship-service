@@ -31,7 +31,7 @@ jobs:
       - name: Get helm charts current version
         id: step2
         run: |
-          chartVersion=irs-helm-$(cat ./charts/irs/Chart.yaml | grep "version:" | head -1 | cut -d ":" -d " " -f2)
+          chartVersion=irs-helm-$(cat ./charts/irs-helm/Chart.yaml | grep "version:" | head -1 | cut -d ":" -d " " -f2)
           echo "::set-output name=current_version::$chartVersion"
           echo "Exported $chartVersion helm charts version"
 
@@ -87,7 +87,7 @@ jobs:
 
       - name: Update helm dependencies for irs
         run: |
-          cd charts/irs
+          cd charts/irs-helm
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add minio https://charts.min.io/
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
