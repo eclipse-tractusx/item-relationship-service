@@ -104,7 +104,7 @@ public class QueryBatchService {
                             .totalJobs(Optional.ofNullable(batch.getJobProgressList()).map(List::size).orElse(0))
                             .startedOn(batch.getStartedOn())
                             .completedOn(batch.getCompletedOn())
-                            //                            .batchTotal()
+                            .batchTotal(batch.getBatchTotal())
                             //                            .jobsInBatchChecksum()
                             .jobs(jobs)
                             .batchProcessingState(batch.getBatchState())

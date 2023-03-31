@@ -64,6 +64,11 @@ public class Batch {
     private Integer batchNumber;
 
     /**
+     * Total number of batches
+     */
+    private Integer batchTotal;
+
+    /**
      * Batch Url
      */
     private String batchUrl;

@@ -88,6 +88,7 @@ public class CreationBatchService {
                         .batchId(batchId)
                         .batchOrderId(batchOrderId)
                         .batchNumber(batchNumber.getAndIncrement())
+                        .batchTotal(globalAssetIdsBatches.size())
                         .batchUrl(buildBatchUrl(batchOrderId, batchId))
                         .batchState(ProcessingState.INITIALIZED)
                         .jobProgressList(batch.stream().map(globalAssetId ->
