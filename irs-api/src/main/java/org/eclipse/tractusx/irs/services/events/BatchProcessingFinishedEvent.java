@@ -24,8 +24,10 @@ package org.eclipse.tractusx.irs.services.events;
 
 import java.util.UUID;
 
+import org.eclipse.tractusx.irs.component.enums.ProcessingState;
+
 /**
  * Event published after Batch is finished (completed or error)
  */
-public record BatchProcessingFinishedEvent(UUID batchOrderId, UUID batchId, Integer batchNumber) {
+public record BatchProcessingFinishedEvent(UUID batchOrderId, UUID batchId, ProcessingState batchOrderState, ProcessingState batchState, Integer batchNumber, String callbackUrl) {
 }

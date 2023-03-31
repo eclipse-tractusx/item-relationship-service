@@ -20,10 +20,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-class JobProcessingEventListenerTest {
+class CallbackResponderEventListenerTest {
 
     private final RestTemplate restTemplate = mock(RestTemplate.class);
-    private final JobProcessingEventListener jobProcessingEventListener = new JobProcessingEventListener(restTemplate);
+    private final CallbackResponderEventListener callbackResponderEventListener = new CallbackResponderEventListener(restTemplate);
 
     @BeforeEach
     void mockRestTemplate() {
@@ -40,7 +40,7 @@ class JobProcessingEventListenerTest {
                 Optional.empty());
 
         // when
-        jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
+        callbackResponderEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
         final String expectedCallbackUrl = "https://hostname.com/callback?id=" + jobId + "&state=" + jobState;
 
         // then
@@ -57,7 +57,7 @@ class JobProcessingEventListenerTest {
                 Optional.empty());
 
         // when
-        jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
+        callbackResponderEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
         final String expectedCallbackUrl = "http://qwerty.de/" + jobId + "/" + jobState;
 
         // then
@@ -74,7 +74,7 @@ class JobProcessingEventListenerTest {
                 Optional.empty());
 
         // when
-        jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
+        callbackResponderEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
         final String expectedCallbackUrl = "https://hostname.com/";
 
         // then
@@ -90,7 +90,7 @@ class JobProcessingEventListenerTest {
                 Optional.empty());
 
         // when
-        jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
+        callbackResponderEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
         final String expectedCallbackUrl = "https://hostname.com/callback?id=" + jobId;
 
         // then
@@ -105,7 +105,7 @@ class JobProcessingEventListenerTest {
                 Optional.empty());
 
         // when
-        jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
+        callbackResponderEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
 
         // then
         verifyNoInteractions(this.restTemplate);
@@ -119,7 +119,7 @@ class JobProcessingEventListenerTest {
                 Optional.empty());
 
         // when
-        jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
+        callbackResponderEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
 
         // then
         verifyNoInteractions(this.restTemplate);

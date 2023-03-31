@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.services;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -90,7 +91,7 @@ public class BatchOrderEventListener {
             batchOrderStore.save(batchOrder.getBatchOrderId(), batchOrder);
             if (ProcessingState.COMPLETE.equals(batchState) || ProcessingState.ERROR.equals(batchState)) {
                 applicationEventPublisher.publishEvent(
-                        new BatchOrderProcessingFinishedEvent(batchOrder.getBatchOrderId()));
+                        new BatchOrderProcessingFinishedEvent(batchOrder.getBatchOrderId(), batchOrder.getBatchOrderState(), batchOrder.getCallbackUrl()));
             } else {
                 batchStore.findAll()
                           .stream()
@@ -140,9 +141,14 @@ public class BatchOrderEventListener {
             batch.setJobProgressList(progressList);
             if (ProcessingState.COMPLETE.equals(processingState) || ProcessingState.ERROR.equals(processingState)) {
                 batch.setCompletedOn(ZonedDateTime.now());
+                final Optional<BatchOrder> batchOrder = batchOrderStore.find(batch.getBatchOrderId());
+
+                final String callbackUrl = batchOrder.map(BatchOrder::getCallbackUrl).orElse("");
+                final ProcessingState orderState = batchOrder.map(BatchOrder::getBatchOrderState).orElse(null);
+
                 applicationEventPublisher.publishEvent(
-                        new BatchProcessingFinishedEvent(batch.getBatchOrderId(), batch.getBatchId(),
-                                batch.getBatchNumber()));
+                        new BatchProcessingFinishedEvent(batch.getBatchOrderId(), batch.getBatchId(), orderState, processingState,
+                                batch.getBatchNumber(), callbackUrl));
             }
             batchStore.save(batchId, batch);
         }));
