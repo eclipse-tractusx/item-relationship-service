@@ -51,6 +51,7 @@ public class EdcControlPlaneClient {
 
     public static final String STATUS_CONFIRMED = "CONFIRMED";
     public static final String STATUS_COMPLETED = "COMPLETED";
+    public static final String STATUS_ERROR = "ERROR";
 
     private final RestTemplate edcRestTemplate;
     private final AsyncPollingService pollingService;
@@ -58,9 +59,8 @@ public class EdcControlPlaneClient {
     private final EdcConfiguration config;
 
     /* package */ Catalog getCatalog(final String providerConnectorUrl, final int offset) {
-        final var catalogUrl =
-                config.getControlplane().getEndpoint().getData()
-                        + "/catalog?providerUrl={providerUrl}&limit={limit}&offset={offset}";
+        final var catalogUrl = config.getControlplane().getEndpoint().getData()
+                + "/catalog?providerUrl={providerUrl}&limit={limit}&offset={offset}";
         final var providerUrl = providerConnectorUrl + config.getControlplane().getProviderSuffix();
         final var limit = config.getControlplane().getCatalogPageSize();
 
@@ -88,8 +88,14 @@ public class EdcControlPlaneClient {
 
                                  log.info("Response status of negotiation: {}", response);
 
-                                 if (response != null && STATUS_CONFIRMED.equals(response.getState())) {
-                                     return Optional.of(response);
+                                 if (response != null) {
+                                     return switch (response.getState()) {
+                                         case STATUS_CONFIRMED -> Optional.of(response);
+                                         case STATUS_ERROR -> throw new IllegalStateException(
+                                                 "NegotiationResponse with id " + response.getResponseId()
+                                                         + " is in state ERROR");
+                                         default -> Optional.empty();
+                                     };
                                  }
                                  return Optional.empty();
                              })
@@ -121,8 +127,14 @@ public class EdcControlPlaneClient {
 
                                  log.info("Response status of Transfer Process: {}", response);
 
-                                 if (response != null && STATUS_COMPLETED.equals(response.getState())) {
-                                     return Optional.of(response);
+                                 if (response != null) {
+                                     return switch (response.getState()) {
+                                         case STATUS_COMPLETED -> Optional.of(response);
+                                         case STATUS_ERROR -> throw new IllegalStateException(
+                                                 "TransferProcessResponse with id " + response.getResponseId()
+                                                         + " is in state ERROR");
+                                         default -> Optional.empty();
+                                     };
                                  }
                                  return Optional.empty();
 
