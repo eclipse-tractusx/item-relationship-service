@@ -64,6 +64,7 @@ public class BatchOrderEventListener {
     @Async
     @EventListener
     public void handleBatchOrderRegisteredEvent(final BatchOrderRegisteredEvent batchOrderRegisteredEvent) {
+        log.info("Listener received BatchOrderRegisteredEvent with BatchOrderId: {}.", batchOrderRegisteredEvent.batchOrderId());
         batchOrderStore.find(batchOrderRegisteredEvent.batchOrderId()).ifPresent(batchOrder -> {
             batchStore.findAll()
                       .stream()
@@ -78,8 +79,10 @@ public class BatchOrderEventListener {
 
     @Async
     @EventListener
-    public void handleBatchProcessingFinishedEvent(final BatchProcessingFinishedEvent batchProcessingFinishedEvent) {
-        batchOrderStore.find(batchProcessingFinishedEvent.batchOrderId()).ifPresent(batchOrder -> {
+    public void handleBatchProcessingFinishedEvent(final BatchProcessingFinishedEvent batchEvent) {
+        log.info("Listener received BatchProcessingFinishedEvent with BatchId: {}, BatchOrderId: {} and BatchNumber: {}",
+                batchEvent.batchId(), batchEvent.batchOrderId(), batchEvent.batchNumber());
+        batchOrderStore.find(batchEvent.batchOrderId()).ifPresent(batchOrder -> {
             final List<ProcessingState> batchStates = batchStore.findAll()
                                                           .stream()
                                                           .filter(batch -> batch.getBatchOrderId()
@@ -97,7 +100,7 @@ public class BatchOrderEventListener {
                           .stream()
                           .filter(batch -> batch.getBatchOrderId().equals(batchOrder.getBatchOrderId()))
                           .filter(batch -> batch.getBatchNumber()
-                                                .equals(batchProcessingFinishedEvent.batchNumber() + 1))
+                                                .equals(batchEvent.batchNumber() + 1))
                           .findFirst()
                           .ifPresent(batch -> startBatch(batchOrder, batch));
             }
@@ -130,6 +133,9 @@ public class BatchOrderEventListener {
     @Async
     @EventListener
     public void handleJobProcessingFinishedEvent(final JobProcessingFinishedEvent jobEvent) {
+        log.info("Listener received JobProcessingFinishedEvent with JobId: {}, JobState: {} and BatchId: {}",
+                jobEvent.jobId(), jobEvent.jobState(), jobEvent.batchId());
+
         jobEvent.batchId().ifPresent(batchId -> batchStore.find(batchId).ifPresent(batch -> {
             final List<JobProgress> progressList = batch.getJobProgressList();
             progressList.stream()
