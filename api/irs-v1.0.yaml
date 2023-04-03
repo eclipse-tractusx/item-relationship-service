@@ -1535,9 +1535,9 @@ components:
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
-                \ There are two uri variable placeholders that can be used: jobId and\
-                \ jobState."
-          example: "https://hostname.com/callback?jobId={jobId}&jobState={jobState}"
+                \ There are four uri variable placeholders that can be used: orderId,\
+                \ batchId, orderState and batchState."
+          example: "https://hostname.com/callback?orderId={orderId}&batchId={batchId}&orderState={orderState}&batchState={batchState}"
         collectAspects:
           type: boolean
           description: Flag to specify whether aspects should be requested and collected.
@@ -1602,9 +1602,8 @@ components:
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
-            \ There are two uri variable placeholders that can be used: jobId and\
-            \ jobState."
-          example: "https://hostname.com/callback?jobId={jobId}&jobState={jobState}"
+            \ There are two uri variable placeholders that can be used: id and state."
+          example: "https://hostname.com/callback?id={id}&state={state}"
         collectAspects:
           type: boolean
           description: Flag to specify whether aspects should be requested and collected.
