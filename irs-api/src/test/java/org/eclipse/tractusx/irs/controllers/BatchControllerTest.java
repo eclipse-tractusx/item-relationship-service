@@ -24,29 +24,23 @@ package org.eclipse.tractusx.irs.controllers;
 
 import static org.eclipse.tractusx.irs.util.TestMother.registerBatchOrder;
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
-import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
-import org.eclipse.tractusx.irs.services.SemanticHubService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.support.PagedListHolder;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -107,7 +101,7 @@ class BatchControllerTest {
     @WithMockUser(authorities = "view_irs")
     void shouldReturnBatchOrder() throws Exception {
         final UUID orderId = UUID.randomUUID();
-        when(queryBatchService.findOrderById(eq(orderId))).thenReturn(BatchOrderResponse.builder().orderId(orderId).build());
+        when(queryBatchService.findOrderById(orderId)).thenReturn(BatchOrderResponse.builder().orderId(orderId).build());
 
         this.mockMvc.perform(get("/irs/orders/" + orderId))
                     .andExpect(status().isOk())
@@ -119,7 +113,7 @@ class BatchControllerTest {
     void shouldReturnBatch() throws Exception {
         final UUID orderId = UUID.randomUUID();
         final UUID batchId = UUID.randomUUID();
-        when(queryBatchService.findBatchById(eq(orderId), eq(batchId))).thenReturn(
+        when(queryBatchService.findBatchById(orderId, batchId)).thenReturn(
                 BatchResponse.builder().batchId(batchId).orderId(orderId).build());
 
         this.mockMvc.perform(get("/irs/orders/" + orderId + "/batches/" + batchId))

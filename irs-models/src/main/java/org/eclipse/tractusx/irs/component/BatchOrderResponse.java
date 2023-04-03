@@ -86,7 +86,7 @@ public class BatchOrderResponse {
         @Schema(implementation = ProcessingState.class, description = "The state of the batch.")
         private ProcessingState batchProcessingState;
 
-//        TODO
+//        FIXME
         private Object error;
 
     }
