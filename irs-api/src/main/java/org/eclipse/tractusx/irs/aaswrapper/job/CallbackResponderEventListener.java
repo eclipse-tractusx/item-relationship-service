@@ -46,10 +46,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Listens for JobProcessingFinishedEvent, BatchProcessingFinishedEvent, BatchOrderProcessingFinishedEvent.
+ * Listens for JobProcessingFinishedEvent, BatchProcessingFinishedEvent
+ * and BatchOrderProcessingFinishedEvent.
  * Calling callbackUrl with notification to requestor.
  * Execution is done in a separate thread.
  */
+
 @Slf4j
 @Service
 class CallbackResponderEventListener {
