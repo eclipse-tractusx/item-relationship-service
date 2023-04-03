@@ -46,7 +46,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Listens for {@link JobProcessingFinishedEvent}, {@link BatchProcessingFinishedEvent}, {@link BatchOrderProcessingFinishedEvent}.
+ * Listens for JobProcessingFinishedEvent, BatchProcessingFinishedEvent, BatchOrderProcessingFinishedEvent.
  * Calling callbackUrl with notification to requestor.
  * Execution is done in a separate thread.
  */
