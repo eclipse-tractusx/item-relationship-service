@@ -29,6 +29,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -68,6 +69,26 @@ class PersistentBatchOrderStoreTest {
         assertThat(actual.get())
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
+    }
+
+    @Test
+    void shouldFindAllBatchOrdersInStore() throws BlobPersistenceException {
+        // given
+        final BatchOrder firstOrder = BatchOrder.builder().batchOrderId(BATCH_ORDER_ID).batchOrderState(ProcessingState.INITIALIZED).build();
+        final BatchOrder secondOrder = BatchOrder.builder().batchOrderId(UUID.randomUUID()).batchOrderState(ProcessingState.INITIALIZED).build();
+        final BatchOrder thirdOrder = BatchOrder.builder().batchOrderId(UUID.randomUUID()).batchOrderState(ProcessingState.INITIALIZED).build();
+        given(blobStore.findBlobByPrefix("order:")).willReturn(List.of(
+                toBlob(firstOrder),
+                toBlob(secondOrder),
+                toBlob(thirdOrder)
+        ));
+        // when
+        final List<BatchOrder> actual = store.findAll();
+        // then
+        assertThat(actual).hasSize(3);
+        assertThat(actual.get(0))
+                .usingRecursiveComparison()
+                .isEqualTo(firstOrder);
     }
 
     private byte[] toBlob(final BatchOrder batchOrder) {
