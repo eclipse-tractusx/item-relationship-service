@@ -35,6 +35,8 @@ irs-helm:
       jwkSetUri: <path:traceability-irs/data/int/keycloak/oauth2#jwkSetUri>
   edc:
     controlplane:
+      endpoint:
+        data: http://ess-irs-edc-controlplane:8181/api/v1/management
       apikey:
         secret: "123456"
 
@@ -67,8 +69,8 @@ irs-edc-consumer:
           nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
           nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
         endpoints:
-          - ids
-          - data
+          - protocol
+          - management
         className: ""
         tls:
           - hosts:
@@ -102,7 +104,7 @@ irs-edc-consumer:
         edc.oauth.client.id=D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09:keyid:D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09
         edc.oauth.private.key.alias=irs-int-daps-key
         edc.oauth.provider.jwks.url=https://daps1.int.demo.catena-x.net/.well-known/jwks.json
-        edc.oauth.public.key.alias=irs-int-daps-cert
+        edc.oauth.certificate.alias=irs-int-daps-cert
         edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
         edc.vault.hashicorp.url=https://vault.demo.catena-x.net
         edc.vault.hashicorp.token=<path:traceability-irs/data/int/controlplane#vaultToken>
@@ -153,7 +155,7 @@ irs-edc-consumer:
         edc.oauth.private.key.alias=irs-int-daps-key
         edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
         edc.oauth.provider.jwks.url=https://daps1.int.demo.catena-x.net/.well-known/jwks.json
-        edc.oauth.public.key.alias=irs-int-daps-cert
+        edc.oauth.certificate.alias=irs-int-daps-cert
         edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
         edc.vault.hashicorp.url=https://vault.demo.catena-x.net
         edc.vault.hashicorp.token=<path:traceability-irs/data/int/controlplane#vaultToken>
