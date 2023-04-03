@@ -69,9 +69,7 @@ public class BatchOrderEventListener {
                       .filter(batch -> batch.getBatchOrderId().equals(batchOrder.getBatchOrderId()))
                       .filter(batch -> batch.getBatchNumber().equals(1))
                       .findFirst()
-                      .ifPresent(batch -> {
-                          startBatch(batchOrder, batch);
-                      });
+                      .ifPresent(batch -> startBatch(batchOrder, batch));
         });
     }
 
