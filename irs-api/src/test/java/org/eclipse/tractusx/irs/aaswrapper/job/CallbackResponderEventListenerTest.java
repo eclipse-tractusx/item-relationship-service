@@ -56,8 +56,8 @@ class CallbackResponderEventListenerTest {
         final String callbackUrlTemplate = "https://hostname.com/callback?orderId={orderId}&batchId={batchId}&orderState={orderState}&batchState={batchState}";
         final UUID orderId = UUID.randomUUID();
         final UUID batchId = UUID.randomUUID();
-        final ProcessingState orderState = ProcessingState.COMPLETE;
-        final ProcessingState batchState = ProcessingState.COMPLETE;
+        final ProcessingState orderState = ProcessingState.COMPLETED;
+        final ProcessingState batchState = ProcessingState.COMPLETED;
         final BatchProcessingFinishedEvent batchProcessingFinishedEvent = new BatchProcessingFinishedEvent(orderId, batchId, orderState, batchState, 1, callbackUrlTemplate);
 
         // when
@@ -73,7 +73,7 @@ class CallbackResponderEventListenerTest {
         // given
         final String callbackUrlTemplate = "https://hostname.com/callback?orderId={orderId}&batchId={batchId}&orderState={orderState}&batchState={batchState}";
         final UUID orderId = UUID.randomUUID();
-        final ProcessingState orderState = ProcessingState.COMPLETE;
+        final ProcessingState orderState = ProcessingState.COMPLETED;
         final BatchOrderProcessingFinishedEvent batchOrderProcessingFinishedEvent = new BatchOrderProcessingFinishedEvent(orderId, orderState, callbackUrlTemplate);
 
         // when
@@ -152,8 +152,8 @@ class CallbackResponderEventListenerTest {
     void shouldNotCallCallbackUrlIfIsNotValidAndBatchProcessingFinishedEvent() {
         // given
         final String callbackUrlTemplate = "wrongCallbackUrl/id={id}";
-        final BatchProcessingFinishedEvent batchProcessingFinishedEvent = new BatchProcessingFinishedEvent(UUID.randomUUID(), UUID.randomUUID(), ProcessingState.COMPLETE,
-                ProcessingState.COMPLETE, 1, callbackUrlTemplate);
+        final BatchProcessingFinishedEvent batchProcessingFinishedEvent = new BatchProcessingFinishedEvent(UUID.randomUUID(), UUID.randomUUID(), ProcessingState.COMPLETED,
+                ProcessingState.COMPLETED, 1, callbackUrlTemplate);
 
         // when
         callbackResponderEventListener.handleBatchProcessingFinishedEvent(batchProcessingFinishedEvent);
@@ -166,7 +166,7 @@ class CallbackResponderEventListenerTest {
     void shouldNotCallCallbackUrlIfIsNotValidAndBatchOrderProcessingFinishedEvent() {
         // given
         final String callbackUrlTemplate = "wrongCallbackUrl/id={id}";
-        final BatchOrderProcessingFinishedEvent batchOrderProcessingFinishedEvent = new BatchOrderProcessingFinishedEvent(UUID.randomUUID(), ProcessingState.COMPLETE, callbackUrlTemplate);
+        final BatchOrderProcessingFinishedEvent batchOrderProcessingFinishedEvent = new BatchOrderProcessingFinishedEvent(UUID.randomUUID(), ProcessingState.COMPLETED, callbackUrlTemplate);
 
         // when
         callbackResponderEventListener.handleBatchOrderProcessingFinishedEvent(batchOrderProcessingFinishedEvent);

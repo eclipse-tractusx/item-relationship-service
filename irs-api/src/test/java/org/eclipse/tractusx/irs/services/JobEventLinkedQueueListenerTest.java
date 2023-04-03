@@ -95,6 +95,6 @@ class JobEventLinkedQueueListenerTest {
         // then
         verify(eventPublisher).publishEvent(eventCaptor.capture());
         assertThat(eventCaptor.getValue().batchId()).isEqualTo(BATCH_ID);
-        assertThat(eventCaptor.getValue().batchState()).isEqualTo(ProcessingState.COMPLETE);
+        assertThat(eventCaptor.getValue().batchState()).isEqualTo(ProcessingState.COMPLETED);
     }
 }

@@ -573,7 +573,7 @@ components:
       value:
         batchId: f253718e-a270-4367-901b-9d50d9bd8462
         batchNumber: 1
-        batchProcessingState: COMPLETE
+        batchProcessingState: COMPLETED
         batchTotal: 1
         completedOn: 2022-02-03T14:48:54.709Z
         jobs:
@@ -714,7 +714,7 @@ components:
             batchUrl: https://../irs/orders/f253718e-a270-4367-901b-9d50d9bd8462/batches/f253718e-a270-4367-901b-9d50d9bd8462
             jobsInBatchChecksum: 1
         orderId: f253718e-a270-4367-901b-9d50d9bd8462
-        state: COMPLETE
+        state: COMPLETED
     error-response-400:
       value:
         error: Bad request
@@ -1024,7 +1024,7 @@ components:
           description: The state of the order.
           enum:
             - INITIALIZED
-            - COMPLETE
+            - COMPLETED
             - PROCESSING
             - PARTIAL
             - ERROR
@@ -1049,7 +1049,7 @@ components:
           description: The state of the batch.
           enum:
             - INITIALIZED
-            - COMPLETE
+            - COMPLETED
             - PROCESSING
             - PARTIAL
             - ERROR
