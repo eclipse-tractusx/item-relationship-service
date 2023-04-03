@@ -63,14 +63,12 @@ public class BatchOrderEventListener {
     @EventListener
     public void handleBatchOrderRegisteredEvent(final BatchOrderRegisteredEvent batchOrderRegisteredEvent) {
         log.info("Listener received BatchOrderRegisteredEvent with BatchOrderId: {}.", batchOrderRegisteredEvent.batchOrderId());
-        batchOrderStore.find(batchOrderRegisteredEvent.batchOrderId()).ifPresent(batchOrder -> {
-            batchStore.findAll()
-                      .stream()
-                      .filter(batch -> batch.getBatchOrderId().equals(batchOrder.getBatchOrderId()))
-                      .filter(batch -> batch.getBatchNumber().equals(1))
-                      .findFirst()
-                      .ifPresent(batch -> startBatch(batchOrder, batch));
-        });
+        batchOrderStore.find(batchOrderRegisteredEvent.batchOrderId()).ifPresent(batchOrder -> batchStore.findAll()
+                                                                                                     .stream()
+                                                                                                     .filter(batch -> batch.getBatchOrderId().equals(batchOrder.getBatchOrderId()))
+                                                                                                     .filter(batch -> batch.getBatchNumber().equals(1))
+                                                                                                     .findFirst()
+                                                                                                     .ifPresent(batch -> startBatch(batchOrder, batch)));
     }
 
     @Async
@@ -84,7 +82,7 @@ public class BatchOrderEventListener {
                                                           .filter(batch -> batch.getBatchOrderId()
                                                                                 .equals(batchOrder.getBatchOrderId()))
                                                           .map(Batch::getBatchState)
-                                                          .collect(Collectors.toList());
+                                                          .toList();
             final ProcessingState batchState = calculateBatchOrderState(batchStates);
             batchOrder.setBatchOrderState(batchState);
             batchOrderStore.save(batchOrder.getBatchOrderId(), batchOrder);
@@ -112,7 +110,7 @@ public class BatchOrderEventListener {
                                                              irsItemGraphQueryService.registerItemJob(registerJob,
                                                                      batch.getBatchId()),
                                                              registerJob.getGlobalAssetId()))
-                                                     .collect(Collectors.toList());
+                                                     .toList();
         batch.setJobProgressList(createdJobIds);
         batch.setStartedOn(ZonedDateTime.now(ZoneOffset.UTC));
         batchStore.save(batch.getBatchId(), batch);
