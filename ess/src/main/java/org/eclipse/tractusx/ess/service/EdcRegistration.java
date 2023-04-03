@@ -120,7 +120,7 @@ public class EdcRegistration {
                   }
                 }
                 """.formatted(assetId, notificationType, essBaseUrl + path);
-        final var entity = restTemplate.exchange(edcProviderUrl + "/data/assets", HttpMethod.POST, toEntity(body),
+        final var entity = restTemplate.exchange(edcProviderUrl + "/api/v1/management/assets", HttpMethod.POST, toEntity(body),
                 String.class);
 
         if (entity.getStatusCode().is2xxSuccessful()) {
@@ -151,7 +151,7 @@ public class EdcRegistration {
                    }
                  }
                 """.formatted(policyId, assetId);
-        final var entity = restTemplate.exchange(edcProviderUrl + "/data/policydefinitions", HttpMethod.POST,
+        final var entity = restTemplate.exchange(edcProviderUrl + "/api/v1/management/policydefinitions", HttpMethod.POST,
                 toEntity(body), String.class);
 
         if (entity.getStatusCode().is2xxSuccessful()) {
@@ -178,7 +178,7 @@ public class EdcRegistration {
                   }
                 """.formatted(contractId, assetId, contractId, contractId);
 
-        final var entity = restTemplate.exchange(edcProviderUrl + "/data/contractdefinitions", HttpMethod.POST,
+        final var entity = restTemplate.exchange(edcProviderUrl + "/api/v1/management/contractdefinitions", HttpMethod.POST,
                 toEntity(body), String.class);
         if (entity.getStatusCode().is2xxSuccessful()) {
             log.info("Notification contract definition registered successfully.");
@@ -203,7 +203,7 @@ public class EdcRegistration {
 
     private boolean assetIsNotRegisteredYet(final String assetId) {
         if (restTemplate != null && edcProviderUrl != null) {
-            final var url = edcProviderUrl + "/data/assets?filter=asset:prop:id=" + assetId;
+            final var url = edcProviderUrl + "/api/v1/management/assets?filter=asset:prop:id=" + assetId;
             log.info("Requesting asset from EDC provider with url {}", url);
             final var entity = restTemplate.exchange(url, HttpMethod.GET, toEntity(null), String.class);
             if (entity.getStatusCode().is2xxSuccessful()) {
