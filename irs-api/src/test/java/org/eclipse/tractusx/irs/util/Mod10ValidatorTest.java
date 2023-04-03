@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.eclipse.tractusx.irs.validators.Mod10Validator;
 import org.junit.jupiter.api.Test;
 
-public class Mod10ValidatorTest {
+class Mod10ValidatorTest {
 
     final Mod10Validator mod10Validator = new Mod10Validator();
 
