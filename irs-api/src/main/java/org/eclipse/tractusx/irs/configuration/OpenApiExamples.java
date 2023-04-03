@@ -243,7 +243,7 @@ public class OpenApiExamples {
     private Example createCompleteOrderResult() {
         return toExample(BatchOrderResponse.builder()
                                            .orderId(UUID_ID)
-                                           .state(ProcessingState.COMPLETE)
+                                           .state(ProcessingState.COMPLETED)
                                            .batchChecksum(1)
                                            .batches(
                                                    List.of(BatchOrderResponse.BatchResponse
@@ -272,7 +272,7 @@ public class OpenApiExamples {
                                                                    .completedOn(EXAMPLE_ZONED_DATETIME)
                                                                    .build()))
                                       .jobsInBatchChecksum(1)
-                                      .batchProcessingState(ProcessingState.COMPLETE).build());
+                                      .batchProcessingState(ProcessingState.COMPLETED).build());
     }
 
     private Submodel createSubmodel() {

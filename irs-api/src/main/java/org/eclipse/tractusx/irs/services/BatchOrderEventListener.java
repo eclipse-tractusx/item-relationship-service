@@ -90,7 +90,7 @@ public class BatchOrderEventListener {
             final ProcessingState batchState = calculateBatchOrderState(batchStates);
             batchOrder.setBatchOrderState(batchState);
             batchOrderStore.save(batchOrder.getBatchOrderId(), batchOrder);
-            if (ProcessingState.COMPLETE.equals(batchState) || ProcessingState.ERROR.equals(batchState)) {
+            if (ProcessingState.COMPLETED.equals(batchState) || ProcessingState.ERROR.equals(batchState)) {
                 applicationEventPublisher.publishEvent(
                         new BatchOrderProcessingFinishedEvent(batchOrder.getBatchOrderId(), batchOrder.getBatchOrderState(), batchOrder.getCallbackUrl()));
             } else {
@@ -147,8 +147,8 @@ public class BatchOrderEventListener {
             return ProcessingState.ERROR;
         } else if (stateList.stream().anyMatch(ProcessingState.PARTIAL::equals)) {
             return ProcessingState.PARTIAL;
-        } else if (stateList.stream().allMatch(ProcessingState.COMPLETE::equals)) {
-            return ProcessingState.COMPLETE;
+        } else if (stateList.stream().allMatch(ProcessingState.COMPLETED::equals)) {
+            return ProcessingState.COMPLETED;
         } else {
             return ProcessingState.PARTIAL;
         }

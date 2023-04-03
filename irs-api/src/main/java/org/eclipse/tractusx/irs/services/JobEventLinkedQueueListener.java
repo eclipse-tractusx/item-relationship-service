@@ -110,7 +110,7 @@ public class JobEventLinkedQueueListener {
     }
 
     private static boolean isCompleted(final ProcessingState processingState) {
-        return ProcessingState.COMPLETE.equals(processingState) || ProcessingState.ERROR.equals(processingState);
+        return ProcessingState.COMPLETED.equals(processingState) || ProcessingState.ERROR.equals(processingState);
     }
 
     private void processingCompleted(final Batch batch, final ProcessingState processingState) {
@@ -131,7 +131,7 @@ public class JobEventLinkedQueueListener {
             return ProcessingState.PARTIAL;
         } else if (progressList.stream()
                                .allMatch(jobProgress -> JobState.COMPLETED.equals(jobProgress.getJobState()))) {
-            return ProcessingState.COMPLETE;
+            return ProcessingState.COMPLETED;
         } else {
             return ProcessingState.PARTIAL;
         }
