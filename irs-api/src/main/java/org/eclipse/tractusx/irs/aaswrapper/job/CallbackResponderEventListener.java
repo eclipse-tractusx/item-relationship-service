@@ -51,7 +51,6 @@ import org.springframework.web.util.UriComponentsBuilder;
  * Calling callbackUrl with notification to requestor.
  * Execution is done in a separate thread.
  */
-
 @Slf4j
 @Service
 class CallbackResponderEventListener {
