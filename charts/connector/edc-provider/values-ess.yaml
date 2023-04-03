@@ -23,8 +23,8 @@ edc-controlplane:
         nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
         nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       endpoints:
-        - ids
-        - data
+          - protocol
+          - management
       className: ""
       tls:
         - hosts:
@@ -58,7 +58,7 @@ edc-controlplane:
       edc.oauth.client.id=D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09:keyid:D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09
       edc.oauth.private.key.alias=irs-int-daps-key
       edc.oauth.provider.jwks.url=https://daps1.int.demo.catena-x.net/.well-known/jwks.json
-      edc.oauth.public.key.alias=irs-int-daps-cert
+      edc.oauth.certificate.alias=irs-int-daps-cert
       edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
       edc.vault.hashicorp.url=https://vault.demo.catena-x.net
       edc.vault.hashicorp.token=<path:traceability-irs/data/int/controlplane#vaultToken>
@@ -109,7 +109,7 @@ edc-dataplane:
       edc.oauth.private.key.alias=irs-int-daps-key
       edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
       edc.oauth.provider.jwks.url=https://daps1.int.demo.catena-x.net/.well-known/jwks.json
-      edc.oauth.public.key.alias=irs-int-daps-cert
+      edc.oauth.certificate.alias=irs-int-daps-cert
       edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
       edc.vault.hashicorp.url=https://vault.demo.catena-x.net
       edc.vault.hashicorp.token=<path:traceability-irs/data/int/controlplane#vaultToken>
