@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.verify;
 
 import java.nio.charset.StandardCharsets;
@@ -58,6 +59,18 @@ class PersistentBatchStoreTest {
     }
 
     @Test
+    void shouldHandleBlobPersistenceExceptionOnSave() throws BlobPersistenceException {
+        // given
+        final Batch batch = Batch.builder().batchId(BATCH_ID).batchState(ProcessingState.PARTIAL).build();
+        willThrow(new BlobPersistenceException("message", new Exception()))
+                .given(blobStore).putBlob(eq("batch:" + BATCH_ID), any());
+        // when
+        store.save(BATCH_ID, batch);
+        // then
+        // no exception
+    }
+
+    @Test
     void shouldGetBatchById() throws BlobPersistenceException {
         // given
         final Batch expected = Batch.builder().batchId(BATCH_ID).batchState(ProcessingState.PARTIAL).build();
@@ -69,6 +82,16 @@ class PersistentBatchStoreTest {
         assertThat(actual.get())
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
+    }
+
+    @Test
+    void shouldReturnEmptyWhenBlobPersistenceExceptionOnFindBy() throws BlobPersistenceException {
+        // given
+        willThrow(new BlobPersistenceException("message", new Exception())).given(blobStore).getBlob(eq("batch:" + BATCH_ID));
+        // when
+        final Optional<Batch> actual = store.find(BATCH_ID);
+        // then
+        assertThat(actual).isEmpty();
     }
 
     @Test
@@ -89,6 +112,16 @@ class PersistentBatchStoreTest {
         assertThat(actual.get(0))
                 .usingRecursiveComparison()
                 .isEqualTo(firstBatch);
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenBlobPersistenceExceptionOnFindAll() throws BlobPersistenceException {
+        // given
+        willThrow(new BlobPersistenceException("message", new Exception())).given(blobStore).findBlobByPrefix("batch:");
+        // when
+        final List<Batch> actual = store.findAll();
+        // then
+        assertThat(actual).isEmpty();
     }
 
     private byte[] toBlob(final Batch batch) {
