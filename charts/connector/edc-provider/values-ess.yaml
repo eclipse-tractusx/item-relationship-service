@@ -23,8 +23,8 @@ edc-controlplane:
         nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
         nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       endpoints:
-          - protocol
-          - management
+        - protocol
+        - management
       className: ""
       tls:
         - hosts:
