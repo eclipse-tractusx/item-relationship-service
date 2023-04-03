@@ -56,7 +56,6 @@ public class CreationBatchService {
     private final JobEventLinkedQueueListener jobEventLinkedQueueListener;
 
     public UUID create(final RegisterBatchOrder request) {
-        // FIXME: simple split - need to use strategy
         final UUID batchOrderId = UUID.randomUUID();
         final BatchOrder batchOrder = BatchOrder.builder()
                                                 .batchOrderId(batchOrderId)
