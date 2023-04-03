@@ -29,6 +29,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -68,6 +69,26 @@ class PersistentBatchStoreTest {
         assertThat(actual.get())
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
+    }
+
+    @Test
+    void shouldFindAllBatchesInStore() throws BlobPersistenceException {
+        // given
+        final Batch firstBatch = Batch.builder().batchId(BATCH_ID).batchState(ProcessingState.PARTIAL).build();
+        final Batch secondBatch = Batch.builder().batchId(UUID.randomUUID()).batchState(ProcessingState.PARTIAL).build();
+        final Batch thirdBatch = Batch.builder().batchId(UUID.randomUUID()).batchState(ProcessingState.PARTIAL).build();
+        given(blobStore.findBlobByPrefix("batch:")).willReturn(List.of(
+                toBlob(firstBatch),
+                toBlob(secondBatch),
+                toBlob(thirdBatch)
+        ));
+        // when
+        final List<Batch> actual = store.findAll();
+        // then
+        assertThat(actual).hasSize(3);
+        assertThat(actual.get(0))
+                .usingRecursiveComparison()
+                .isEqualTo(firstBatch);
     }
 
     private byte[] toBlob(final Batch batch) {
