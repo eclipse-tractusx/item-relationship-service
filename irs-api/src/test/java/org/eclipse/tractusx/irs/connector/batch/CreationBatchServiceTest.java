@@ -34,6 +34,7 @@ import org.eclipse.tractusx.irs.component.enums.BatchStrategy;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
+import org.eclipse.tractusx.irs.services.JobEventLinkedQueueListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -49,6 +50,8 @@ class CreationBatchServiceTest {
     private BatchOrderStore batchOrderStore;
     private BatchStore batchStore;
     private ApplicationEventPublisher applicationEventPublisher = Mockito.mock(ApplicationEventPublisher.class);
+
+    private JobEventLinkedQueueListener jobEventLinkedQueueListener = Mockito.mock(JobEventLinkedQueueListener.class);
     private CreationBatchService service;
 
     @BeforeEach
@@ -56,7 +59,7 @@ class CreationBatchServiceTest {
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
-        service = new CreationBatchService(batchOrderStore, batchStore, applicationEventPublisher);
+        service = new CreationBatchService(batchOrderStore, batchStore, applicationEventPublisher, jobEventLinkedQueueListener);
     }
 
     @Test
