@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.verify;
 
 import java.nio.charset.StandardCharsets;
@@ -58,6 +59,18 @@ class PersistentBatchOrderStoreTest {
     }
 
     @Test
+    void shouldHandleBlobPersistenceExceptionOnSave() throws BlobPersistenceException {
+        // given
+        final BatchOrder batchOrder = BatchOrder.builder().batchOrderId(BATCH_ORDER_ID).batchOrderState(ProcessingState.INITIALIZED).build();
+        willThrow(new BlobPersistenceException("message", new Exception()))
+                .given(blobStore).putBlob(eq("order:" + BATCH_ORDER_ID), any());
+        // when
+        store.save(BATCH_ORDER_ID, batchOrder);
+        // then
+        // no exception
+    }
+
+    @Test
     void shouldGetBatchOrderById() throws BlobPersistenceException {
         // given
         final BatchOrder expected = BatchOrder.builder().batchOrderId(BATCH_ORDER_ID).batchOrderState(ProcessingState.INITIALIZED).build();
@@ -69,6 +82,16 @@ class PersistentBatchOrderStoreTest {
         assertThat(actual.get())
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
+    }
+
+    @Test
+    void shouldReturnEmptyWhenBlobPersistenceExceptionOnFindBy() throws BlobPersistenceException {
+        // given
+        willThrow(new BlobPersistenceException("message", new Exception())).given(blobStore).getBlob(eq("order:" + BATCH_ORDER_ID));
+        // when
+        final Optional<BatchOrder> actual = store.find(BATCH_ORDER_ID);
+        // then
+        assertThat(actual).isEmpty();
     }
 
     @Test
@@ -89,6 +112,16 @@ class PersistentBatchOrderStoreTest {
         assertThat(actual.get(0))
                 .usingRecursiveComparison()
                 .isEqualTo(firstOrder);
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenBlobPersistenceExceptionOnFindAll() throws BlobPersistenceException {
+        // given
+        willThrow(new BlobPersistenceException("message", new Exception())).given(blobStore).findBlobByPrefix("order:");
+        // when
+        final List<BatchOrder> actual = store.findAll();
+        // then
+        assertThat(actual).isEmpty();
     }
 
     private byte[] toBlob(final BatchOrder batchOrder) {
