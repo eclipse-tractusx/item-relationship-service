@@ -27,7 +27,7 @@ package org.eclipse.tractusx.irs.component.enums;
  */
 public enum ProcessingState {
     INITIALIZED,
-    COMPLETE,
+    COMPLETED,
     PROCESSING,
     PARTIAL,
     ERROR
