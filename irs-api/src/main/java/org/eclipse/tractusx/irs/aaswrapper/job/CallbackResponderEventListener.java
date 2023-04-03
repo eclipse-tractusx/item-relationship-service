@@ -46,7 +46,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Listens for {@link JobProcessingFinishedEvent}, {@link BatchProcessingFinishedEvent}, {@link BatchOrderProcessingFinishedEvent} and calling callbackUrl with notification.
+ * Listens for {@link JobProcessingFinishedEvent}, {@link BatchProcessingFinishedEvent}, {@link BatchOrderProcessingFinishedEvent}.
+ * Calling callbackUrl with notification to requestor.
  * Execution is done in a separate thread.
  */
 @Slf4j
@@ -141,7 +142,8 @@ class CallbackResponderEventListener {
         uriComponentsBuilder.uriVariables(uriVariables);
         return uriComponentsBuilder.build().toUri();
     }
-
+    
+    @SuppressWarnings("PMD.UseConcurrentHashMap")
     private URI buildCallbackUri(final String callbackUrl, final UUID orderId, final UUID batchId, final ProcessingState orderState, final ProcessingState batchState) {
         final Map<String, Object> uriVariables = new HashMap<>();
         uriVariables.put("orderId", orderId);
