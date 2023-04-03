@@ -47,7 +47,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * Listener with build in ConcurrentLinkedQueue to store all events relevant to calculate Batch state.
  */
 @Slf4j
 @Service
@@ -55,7 +55,6 @@ import org.springframework.stereotype.Service;
 public class JobEventLinkedQueueListener {
 
     private final Map<UUID, LimitedJobEventQueue> queueMap = new ConcurrentHashMap<>();
-
     private final BatchOrderStore batchOrderStore;
     private final BatchStore batchStore;
     private final ApplicationEventPublisher applicationEventPublisher;

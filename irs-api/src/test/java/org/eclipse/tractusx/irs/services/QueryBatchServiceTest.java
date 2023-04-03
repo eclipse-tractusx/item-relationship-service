@@ -20,7 +20,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.connector.batch;
+package org.eclipse.tractusx.irs.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,6 +29,13 @@ import java.util.UUID;
 
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
+import org.eclipse.tractusx.irs.connector.batch.Batch;
+import org.eclipse.tractusx.irs.connector.batch.BatchOrder;
+import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
+import org.eclipse.tractusx.irs.connector.batch.BatchStore;
+import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchOrderStore;
+import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchStore;
+import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.connector.job.InMemoryJobStore;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.services.QueryBatchService;

@@ -20,9 +20,10 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.connector.batch;
+package org.eclipse.tractusx.irs.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import java.util.List;
 import java.util.Set;
@@ -33,6 +34,12 @@ import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.enums.BatchStrategy;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
+import org.eclipse.tractusx.irs.connector.batch.Batch;
+import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
+import org.eclipse.tractusx.irs.connector.batch.BatchStore;
+import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchOrderStore;
+import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchStore;
+import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.JobEventLinkedQueueListener;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,9 +56,9 @@ class CreationBatchServiceTest {
     public static final String SECOND_GLOBAL_ASSET_ID = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b1";
     private BatchOrderStore batchOrderStore;
     private BatchStore batchStore;
-    private ApplicationEventPublisher applicationEventPublisher = Mockito.mock(ApplicationEventPublisher.class);
+    private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
 
-    private JobEventLinkedQueueListener jobEventLinkedQueueListener = Mockito.mock(JobEventLinkedQueueListener.class);
+    private final JobEventLinkedQueueListener jobEventLinkedQueueListener = mock(JobEventLinkedQueueListener.class);
     private CreationBatchService service;
 
     @BeforeEach
