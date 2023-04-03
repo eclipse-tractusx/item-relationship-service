@@ -9,12 +9,63 @@ on:
       - 'charts/**'
 
 jobs:
-  release-helm-charts:
-    strategy:
-      matrix:
-        chart:
-          - irs-helm
-          - edc-consumer
+  get-helm-charts-versions-irs:
+    outputs:
+      latest_version: ${{ steps.step1.outputs.latest_version }}
+      current_version: ${{ steps.step2.outputs.current_version }}
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get helm charts latest tag version
+        id: step1
+        run: |
+          latestVersion=$(git tag | grep "irs-helm-[1-9]" | tail -1)
+          echo "::set-output name=latest_version::$latestVersion"
+          echo "Exported $latestVersion latest helm charts version"
+      - name: Get helm charts current version
+        id: step2
+        run: |
+          chartVersion=irs-helm-$(cat ./charts/irs-helm/Chart.yaml | grep "version:" | head -1 | cut -d ":" -d " " -f2)
+          echo "::set-output name=current_version::$chartVersion"
+          echo "Exported $chartVersion helm charts version"
+
+  get-helm-charts-versions-edc:
+    outputs:
+      latest_version: ${{ steps.step1.outputs.latest_version }}
+      current_version: ${{ steps.step2.outputs.current_version }}
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get helm charts latest tag version
+        id: step1
+        run: |
+          latestVersion=$(git tag | grep "irs-edc-consumer-[1-9]" | tail -1)
+          echo "::set-output name=latest_version::$latestVersion"
+          echo "Exported $latestVersion latest helm charts version"
+      - name: Get helm charts current version
+        id: step2
+        run: |
+          chartVersion=irs-edc-consumer-$(cat ./charts/edc-consumer/Chart.yaml | grep "version:" | head -1 | cut -d ":" -d " " -f2)
+          echo "::set-output name=current_version::$chartVersion"
+          echo "Exported $chartVersion helm charts version"
+
+  release:
+    needs: ["get-helm-charts-versions-irs", "get-helm-charts-versions-edc"]
+    if: needs.get-helm-charts-versions-irs.outputs.latest_version != needs.get-helm-charts-versions-irs.outputs.current_version || needs.get-helm-charts-versions-edc.outputs.latest_version != needs.get-helm-charts-versions-edc.outputs.current_version
+    # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
+    # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -29,29 +80,14 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - name: Get helm charts latest tag version
-        id: step1
-        run: |
-          latestVersion=$(git tag | grep "${{ matrix.chart }}-[1-9]" | tail -1 | sed 's/.*-//g')
-          echo "latest_version=$latestVersion" >> $GITHUB_OUTPUT
-          echo "Exported $latestVersion latest helm charts version"
-      - name: Get helm charts current version
-        id: step2
-        run: |
-          chartVersion=$(cat ./charts/${{ matrix.chart }}/Chart.yaml | grep "version:" | head -1 | cut -d ":" -d " " -f2)
-          echo "current_version=$chartVersion" >> $GITHUB_OUTPUT
-          echo "Exported $chartVersion helm charts version"
-
       - name: Install Helm
-        if: steps.step1.outputs.latest_version != steps.step2.outputs.current_version
         uses: azure/setup-helm@v3
         with:
           version: v3.8.1
 
-      - name: Update helm dependencies
-        if: steps.step1.outputs.latest_version != steps.step2.outputs.current_version
+      - name: Update helm dependencies for irs
         run: |
-          cd charts/${{ matrix.chart }}
+          cd charts/irs-helm
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add minio https://charts.min.io/
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -59,9 +95,6 @@ jobs:
           helm dependency update
 
       - name: Run chart-releaser
-        if: steps.step1.outputs.latest_version != steps.step2.outputs.current_version
         uses: helm/chart-releaser-action@v1.5.0
-        with:
-          charts_dir: charts/${{ matrix.chart }}
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
