@@ -87,13 +87,12 @@ public class JobEventLinkedQueueListener {
                 final ProcessingState processingState = calculateProcessingState(progressList);
                 log.info("BatchId: {} reached {} state.", batchId, processingState);
 
-                batch.setBatchState(processingState);
-                batch.setJobProgressList(progressList);
+                updateBatch(batch, progressList, processingState);
 
                 batchStore.save(batchId, batch);
                 queueMap.remove(batchId);
 
-                if (ProcessingState.COMPLETE.equals(processingState) || ProcessingState.ERROR.equals(processingState)) {
+                if (isCompleted(processingState)) {
                     log.info("BatchId: {} finished processing.", batchId);
                     processingCompleted(batch, processingState);
                 }
@@ -101,8 +100,20 @@ public class JobEventLinkedQueueListener {
         }
     }
 
+    private void updateBatch(final Batch batch, final List<JobProgress> progressList,
+            final ProcessingState processingState) {
+        batch.setBatchState(processingState);
+        batch.setJobProgressList(progressList);
+        if (isCompleted(processingState)) {
+            batch.setCompletedOn(ZonedDateTime.now());
+        }
+    }
+
+    private static boolean isCompleted(final ProcessingState processingState) {
+        return ProcessingState.COMPLETE.equals(processingState) || ProcessingState.ERROR.equals(processingState);
+    }
+
     private void processingCompleted(final Batch batch, final ProcessingState processingState) {
-        batch.setCompletedOn(ZonedDateTime.now());
         final Optional<BatchOrder> batchOrder = batchOrderStore.find(batch.getBatchOrderId());
 
         final String callbackUrl = batchOrder.map(BatchOrder::getCallbackUrl).orElse("");
