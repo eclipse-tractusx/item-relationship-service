@@ -32,6 +32,7 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.services.events.BatchOrderProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.services.events.BatchProcessingFinishedEvent;
@@ -45,7 +46,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Listens for {@link JobProcessingFinishedEvent} and calling callbackUrl with notification.
+ * Listens for {@link JobProcessingFinishedEvent), {@link BatchProcessingFinishedEvent), {@link BatchOrderProcessingFinishedEvent} and calling callbackUrl with notification.
  * Execution is done in a separate thread.
  */
 @Slf4j
@@ -66,7 +67,8 @@ class CallbackResponderEventListener {
         if (thereIsCallbackUrlRegistered(jobProcessingFinishedEvent.callbackUrl())) {
             log.info("Processing of job has finished - attempting to notify job requestor");
 
-            final URI callbackUri = buildCallbackUri(jobProcessingFinishedEvent);
+            final URI callbackUri = buildCallbackUri(jobProcessingFinishedEvent.callbackUrl(),
+                    jobProcessingFinishedEvent.jobId(), jobProcessingFinishedEvent.jobState());
             if (urlValidator.isValid(callbackUri.toString())) {
                 log.info("Got callback url {} for jobId {} with state {}", callbackUri,
                         jobProcessingFinishedEvent.jobId(), jobProcessingFinishedEvent.jobState());
@@ -130,12 +132,12 @@ class CallbackResponderEventListener {
     }
 
     @SuppressWarnings("PMD.UseConcurrentHashMap")
-    private URI buildCallbackUri(final JobProcessingFinishedEvent jobProcessingFinishedEvent) {
+    private URI buildCallbackUri(final String callbackUrl, final String jobId,  final JobState jobState) {
         final Map<String, Object> uriVariables = new HashMap<>();
-        uriVariables.put("id", jobProcessingFinishedEvent.jobId());
-        uriVariables.put("state", jobProcessingFinishedEvent.jobState());
+        uriVariables.put("id", jobId);
+        uriVariables.put("state", jobState);
 
-        final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(jobProcessingFinishedEvent.callbackUrl());
+        final UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(callbackUrl);
         uriComponentsBuilder.uriVariables(uriVariables);
         return uriComponentsBuilder.build().toUri();
     }

@@ -105,8 +105,8 @@ public class RegisterBatchOrder {
     private boolean lookupBPNs;
 
     @URL
-    @Schema(description = "Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: jobId and jobState.",
-            example = "https://hostname.com/callback?jobId={jobId}&jobState={jobState}")
+    @Schema(description = "Callback url to notify requestor when job processing is finished. There are four uri variable placeholders that can be used: orderId, batchId, orderState and batchState.",
+            example = "https://hostname.com/callback?orderId={orderId}&batchId={batchId}&orderState={orderState}&batchState={batchState}")
     private String callbackUrl;
 
     @Schema(implementation = Integer.class, minimum = MIN_BATCH_SIZE_DESC, maximum = MAX_BATCH_SIZE_DESC, defaultValue = DEFAULT_BATCH_SIZE_DESC,

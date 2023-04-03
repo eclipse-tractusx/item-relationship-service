@@ -88,8 +88,8 @@ public class RegisterJob {
     private boolean lookupBPNs;
 
     @URL
-    @Schema(description = "Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: jobId and jobState.",
-            example = "https://hostname.com/callback?jobId={jobId}&jobState={jobState}")
+    @Schema(description = "Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: id and state.",
+            example = "https://hostname.com/callback?id={id}&state={state}")
     private String callbackUrl;
 
     /**
