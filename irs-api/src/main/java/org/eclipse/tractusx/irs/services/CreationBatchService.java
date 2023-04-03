@@ -53,6 +53,7 @@ public class CreationBatchService {
     private final BatchOrderStore batchOrderStore;
     private final BatchStore batchStore;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final JobEventLinkedQueueListener jobEventLinkedQueueListener;
 
     public UUID create(final RegisterBatchOrder request) {
         // TODO: simple split - need to use strategy
@@ -72,7 +73,10 @@ public class CreationBatchService {
 
         final List<Batch> batches = createBatches(List.copyOf(request.getGlobalAssetIds()), request.getBatchSize(), batchOrderId);
         batchOrderStore.save(batchOrderId, batchOrder);
-        batches.forEach(batch -> batchStore.save(batch.getBatchId(), batch));
+        batches.forEach(batch -> {
+            batchStore.save(batch.getBatchId(), batch);
+            jobEventLinkedQueueListener.addQueueForBatch(batch.getBatchId(), batch.getJobProgressList().size());
+        });
         applicationEventPublisher.publishEvent(new BatchOrderRegisteredEvent(batchOrderId));
         return batchOrderId;
     }

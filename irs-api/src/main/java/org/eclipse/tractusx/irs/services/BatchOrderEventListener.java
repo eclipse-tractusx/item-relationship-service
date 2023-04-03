@@ -130,36 +130,6 @@ public class BatchOrderEventListener {
                           .build();
     }
 
-    @Async
-    @EventListener
-    public void handleJobProcessingFinishedEvent(final JobProcessingFinishedEvent jobEvent) {
-        log.info("Listener received JobProcessingFinishedEvent with JobId: {}, JobState: {} and BatchId: {}",
-                jobEvent.jobId(), jobEvent.jobState(), jobEvent.batchId());
-
-        jobEvent.batchId().ifPresent(batchId -> batchStore.find(batchId).ifPresent(batch -> {
-            final List<JobProgress> progressList = batch.getJobProgressList();
-            progressList.stream()
-                        .filter(jobProgress -> jobProgress.getJobId() != null)
-                        .filter(jobProgress -> jobProgress.getJobId().toString().equals(jobEvent.jobId()))
-                        .forEach(jobProgress -> jobProgress.setJobState(jobEvent.jobState()));
-            final ProcessingState processingState = calculateProcessingState(progressList);
-            batch.setBatchState(processingState);
-            batch.setJobProgressList(progressList);
-            if (ProcessingState.COMPLETE.equals(processingState) || ProcessingState.ERROR.equals(processingState)) {
-                batch.setCompletedOn(ZonedDateTime.now());
-                final Optional<BatchOrder> batchOrder = batchOrderStore.find(batch.getBatchOrderId());
-
-                final String callbackUrl = batchOrder.map(BatchOrder::getCallbackUrl).orElse("");
-                final ProcessingState orderState = batchOrder.map(BatchOrder::getBatchOrderState).orElse(null);
-
-                applicationEventPublisher.publishEvent(
-                        new BatchProcessingFinishedEvent(batch.getBatchOrderId(), batch.getBatchId(), orderState, processingState,
-                                batch.getBatchNumber(), callbackUrl));
-            }
-            batchStore.save(batchId, batch);
-        }));
-    }
-
     private RegisterJob createRegisterJob(final BatchOrder batchOrder, final String globalAssetId) {
         return RegisterJob.builder()
                           .globalAssetId(globalAssetId)
@@ -170,19 +140,6 @@ public class BatchOrderEventListener {
                           .collectAspects(batchOrder.getCollectAspects())
                           .callbackUrl(batchOrder.getCallbackUrl())
                           .build();
-    }
-
-    private ProcessingState calculateProcessingState(final List<JobProgress> progressList) {
-        if (progressList.stream().anyMatch(jobProgress -> JobState.RUNNING.equals(jobProgress.getJobState()))) {
-            return ProcessingState.PROCESSING;
-        } else if (progressList.stream().anyMatch(jobProgress -> JobState.ERROR.equals(jobProgress.getJobState()))) {
-            return ProcessingState.PARTIAL;
-        } else if (progressList.stream()
-                               .allMatch(jobProgress -> JobState.COMPLETED.equals(jobProgress.getJobState()))) {
-            return ProcessingState.COMPLETE;
-        } else {
-            return ProcessingState.PARTIAL;
-        }
     }
 
     private ProcessingState calculateBatchOrderState(final List<ProcessingState> stateList) {
