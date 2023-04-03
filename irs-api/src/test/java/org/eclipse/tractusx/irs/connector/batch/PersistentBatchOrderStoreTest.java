@@ -23,6 +23,7 @@
 package org.eclipse.tractusx.irs.connector.batch;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -64,10 +65,8 @@ class PersistentBatchOrderStoreTest {
         final BatchOrder batchOrder = BatchOrder.builder().batchOrderId(BATCH_ORDER_ID).batchOrderState(ProcessingState.INITIALIZED).build();
         willThrow(new BlobPersistenceException("message", new Exception()))
                 .given(blobStore).putBlob(eq("order:" + BATCH_ORDER_ID), any());
-        // when
-        store.save(BATCH_ORDER_ID, batchOrder);
-        // then
-        // no exception
+        // when + then
+        assertDoesNotThrow(() -> store.save(BATCH_ORDER_ID, batchOrder));
     }
 
     @Test
