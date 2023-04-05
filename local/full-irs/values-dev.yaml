@@ -576,7 +576,7 @@ irs:
   edc:
     controlplane:
       endpoint:
-        data: "http://edc-consumer-control-plane:8181/data"
+        data: "http://edc-consumer-control-plane:8181/api/v1/management"
       request:
         ttl: PT10M
       provider:
