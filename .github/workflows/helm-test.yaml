@@ -16,10 +16,10 @@ jobs:
           fetch-depth: 0
 
       - name: Kubernetes KinD Cluster
-        uses: container-tools/kind-action@v1
+        uses: container-tools/kind-action@v2
 
       - name: Build image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: true
@@ -36,7 +36,7 @@ jobs:
           check-latest: true
 
       - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.3.1
+        uses: helm/chart-testing-action@v2.4.0
 
       - name: Run chart-testing (list-changed)
         id: list-changed
