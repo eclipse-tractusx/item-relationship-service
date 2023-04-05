@@ -1,0 +1,11 @@
+{
+	"IRS_HOST": "http://localhost:10165",
+	"KEYCLOAK_TOKEN_URL": "https://centralidp.int.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token",
+	"CLIENT_ID": "sa-cl6-cx-9",
+	"CLIENT_SECRET": "",
+	"DIGITAL_TWIN_REGISTRY": "http://localhost:10196",
+	"GLOBAL_ASSET_ID": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
+	"CONSUMER_CONTROLPLANE": "http://localhost:10198",
+	"PROVIDER_CONTROLPLANE_1": "http://localhost:10197",
+	"EDC_API_KEY": "123456"
+}

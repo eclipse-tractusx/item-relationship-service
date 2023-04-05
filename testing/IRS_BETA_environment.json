@@ -1,0 +1,8 @@
+{
+	"IRS_HOST": "https://irs.beta.demo.catena-x.net",
+	"KEYCLOAK_TOKEN_URL": "https://centralidp.beta.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token",
+	"CLIENT_ID": "",
+	"CLIENT_SECRET": "",
+	"GLOBAL_ASSET_ID": "urn:uuid:aeae35a2-15c0-4044-a58e-6d4238e8bb7b",
+	"DIGITAL_TWIN_REGISTRY": "https://semantics.beta.demo.catena-x.net/registry"
+}

@@ -1,0 +1,14 @@
+{
+	"IRS_HOST": "https://irs.dev.demo.catena-x.net",
+	"KEYCLOAK_TOKEN_URL": "https://centralidp.int.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token",
+	"CLIENT_ID": "",
+	"CLIENT_SECRET": "",
+	"AAS_WRAPPER": "https://irs-aas-wrapper.dev.demo.catena-x.net",
+	"DIGITAL_TWIN_REGISTRY": "https://irs-aas-registry.dev.demo.catena-x.net",
+	"GLOBAL_ASSET_ID": "urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb",
+	"CONSUMER_CONTROLPLANE": "https://irs-consumer-controlplane.dev.demo.catena-x.net",
+	"PROVIDER_CONTROLPLANE_1": "https://irs-provider-controlplane.dev.demo.catena-x.net",
+	"PROVIDER_CONTROLPLANE_2": "https://irs-provider-controlplane2.dev.demo.catena-x.net",
+	"PROVIDER_CONTROLPLANE_3": "https://irs-provider-controlplane3.dev.demo.catena-x.net",
+	"EDC_API_KEY": "123456"
+}
