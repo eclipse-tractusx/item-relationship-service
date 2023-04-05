@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0
 
       - name: Kubernetes KinD Cluster
-        uses: container-tools/kind-action@v1
+        uses: container-tools/kind-action@v2
 
       - name: Build image
         uses: docker/build-push-action@v3
