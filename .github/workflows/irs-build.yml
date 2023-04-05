@@ -48,10 +48,10 @@ jobs:
           mvn clean verify --batch-mode
 
   analyze_with_Sonar:
-    env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     # No need to run if we cannot use the sonar token
-    if: env.SONAR_TOKEN != ''
+    if: >-
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
+      github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -81,6 +81,7 @@ jobs:
       - name: Analyze with Sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn --batch-mode --update-snapshots verify \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
