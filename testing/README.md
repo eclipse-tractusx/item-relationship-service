@@ -25,4 +25,6 @@ If an environment has been changed to update it for the project, it is suggested
 If you want to save environments and the request collection separately from each other (as this project currently does), the Insomnia Exporter currently does not offer the possibility to export them separately from each other. Therefore, this procedure is suggested.
 
 ## Setup
-Once the collection and the desired environment(s) have been imported, the environments must be configured. Add credentials (Client_ID, Client_Secret) to automatically fetch and use an OAuth2-Acces token before each request. Additionally, it is possible to generate one manually by selecting a request and clicking on "Fetch Token".
+Once the collection and the desired environment(s) have been imported, the environments must be configured. Add credentials (Client_ID, Client_Secret) to automatically fetch and use an OAuth2-Access token before each request. Additionally, it is possible to generate one manually by selecting a request and clicking on "Fetch Token".
+
+Some requests consist of prompts and params which can be integrated with an insomnia Plugin named 'param'. To use it, consider installing the plugin from [here](https://insomnia.rest/plugins/insomnia-plugin-param)
