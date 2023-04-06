@@ -1,4 +1,5 @@
 # testing_utils.py
+import time
 from datetime import datetime
 
 
@@ -200,3 +201,18 @@ def summary_for_bpns_is_given(response):
     print("completed:  ", bpnLookups.get('completed'))
     assert bpnLookups.get('completed') != 0
     assert bpnLookups.get('failed') == 0
+
+
+def check_status_is_COMPLETED_within_15_minutes(response):
+    job_status = response.json().get('job').get('state')
+
+    timeout = 5
+    while timeout < 900:
+        if 'COMPLETED' in job_status:
+            break
+        else:
+            time.sleep(5)
+            print("Timeout over: ", timeout)
+            timeout += 5
+
+    assert 'COMPLETED' in job_status
