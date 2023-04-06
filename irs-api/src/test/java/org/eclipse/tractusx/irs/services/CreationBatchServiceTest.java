@@ -23,8 +23,11 @@
 package org.eclipse.tractusx.irs.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -34,21 +37,16 @@ import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.enums.BatchStrategy;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
+import org.eclipse.tractusx.irs.configuration.IrsConfiguration;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchStore;
 import org.eclipse.tractusx.irs.connector.batch.JobProgress;
-import org.eclipse.tractusx.irs.services.CreationBatchService;
-import org.eclipse.tractusx.irs.services.JobEventLinkedQueueListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 class CreationBatchServiceTest {
 
@@ -57,22 +55,23 @@ class CreationBatchServiceTest {
     private BatchOrderStore batchOrderStore;
     private BatchStore batchStore;
     private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
-
     private final JobEventLinkedQueueListener jobEventLinkedQueueListener = mock(JobEventLinkedQueueListener.class);
+    private final IrsConfiguration irsConfiguration = mock(IrsConfiguration.class);
+    private final static String EXAMPLE_URL = "https://exampleUrl.com";
     private CreationBatchService service;
 
     @BeforeEach
     void beforeEach() {
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
-        service = new CreationBatchService(batchOrderStore, batchStore, applicationEventPublisher, jobEventLinkedQueueListener);
+        service = new CreationBatchService(batchOrderStore, batchStore, applicationEventPublisher, jobEventLinkedQueueListener, irsConfiguration);
     }
 
     @Test
-    void shouldStoreBatchOrder() {
+    void shouldStoreBatchOrder() throws MalformedURLException {
         // given
         final RegisterBatchOrder registerBatchOrder = exampleBatchRequest();
+        given(irsConfiguration.getApiUrl()).willReturn(new URL(EXAMPLE_URL));
 
         // when
         final UUID batchOrderId = service.create(registerBatchOrder);
@@ -88,10 +87,11 @@ class CreationBatchServiceTest {
     }
 
     @Test
-    void shouldSplitGlobalAssetIdIntoBatches() {
+    void shouldSplitGlobalAssetIdIntoBatches() throws MalformedURLException {
         // given
         final List<String> globalAssetIds = List.of("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18" , "19" , "20");
         final int batchSize = 3;
+        given(irsConfiguration.getApiUrl()).willReturn(new URL(EXAMPLE_URL));
 
         // when
         final List<Batch> batches = service.createBatches(globalAssetIds, batchSize, UUID.randomUUID());
@@ -116,7 +116,7 @@ class CreationBatchServiceTest {
                                  .timeout(1000)
                                  .jobTimeout(500)
                                  .batchStrategy(BatchStrategy.PRESERVE_JOB_ORDER)
-                                 .callbackUrl("exampleUrl.com")
+                                 .callbackUrl(EXAMPLE_URL)
                                  .batchSize(10)
                                  .build();
     }

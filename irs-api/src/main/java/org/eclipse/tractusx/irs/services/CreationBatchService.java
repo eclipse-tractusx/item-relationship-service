@@ -32,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
+import org.eclipse.tractusx.irs.configuration.IrsConfiguration;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrder;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
@@ -40,7 +41,6 @@ import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  *
@@ -54,6 +54,7 @@ public class CreationBatchService {
     private final BatchStore batchStore;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final JobEventLinkedQueueListener jobEventLinkedQueueListener;
+    private final IrsConfiguration irsConfiguration;
 
     public UUID create(final RegisterBatchOrder request) {
         final UUID batchOrderId = UUID.randomUUID();
@@ -100,8 +101,8 @@ public class CreationBatchService {
         }).toList();
     }
 
-    private static String buildBatchUrl(final UUID batchOrderId, final UUID batchId) {
-        return ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString() + "/" + batchOrderId + "/batches/" + batchId;
+    private String buildBatchUrl(final UUID batchOrderId, final UUID batchId) {
+        return  irsConfiguration.getApiUrl().toString() + "/" + batchOrderId + "/batches/" + batchId;
     }
 
 }
