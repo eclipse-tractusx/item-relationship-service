@@ -20,8 +20,7 @@ edc-controlplane:
         nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
         nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       endpoints:
-        - ids
-        - data
+        - protocol
       className: ""
       tls:
         - hosts:
@@ -34,7 +33,7 @@ edc-controlplane:
   edc:
     receiver:
       callback:
-        url: "http://{{ .Release.Name }}-irs-helm:8181/internal/endpoint-data-reference" # IRS EDC callback URL, e.g. http://app-irs-helm:8181/internal/endpoint-data-reference
+        url: "http://{{ .Release.Name }}-irs-helm:8181/internal/endpoint-data-reference"  # IRS EDC callback URL, e.g. http://app-irs-helm:8181/internal/endpoint-data-reference
     postgresql:
       user: edc
       password: <postgres-password>
@@ -59,7 +58,7 @@ edc-controlplane:
       edc.oauth.client.id=<daps-client-id>
       edc.oauth.private.key.alias=<daps-privatekey-name>
       edc.oauth.provider.jwks.url=<daps-jwks-url>
-      edc.oauth.public.key.alias=<daps-certificate-name>
+      edc.oauth.certificate.alias=<daps-certificate-name>
       edc.oauth.token.url=<daps-token-url>
       edc.vault.hashicorp.url=<vault-url>
       edc.vault.hashicorp.token=<vault-token>
@@ -100,7 +99,7 @@ edc-dataplane:
       edc.oauth.private.key.alias=<daps-privatekey-name>
       edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
       edc.oauth.provider.jwks.url=<daps-jwks-url>
-      edc.oauth.public.key.alias=<daps-certificate-name>
+      edc.oauth.certificate.alias=<daps-certificate-name>
       edc.oauth.token.url=<daps-token-url>
       edc.vault.hashicorp.url=<vault-url>
       edc.vault.hashicorp.token=<vault-token>

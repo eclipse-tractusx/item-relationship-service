@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,6 +24,8 @@ package org.eclipse.tractusx.edc;
 
 import java.net.SocketTimeoutException;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,6 +42,7 @@ import org.eclipse.tractusx.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.edc.model.notification.EdcNotification;
 import org.eclipse.tractusx.edc.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.common.CxTestDataContainer;
+import org.eclipse.tractusx.irs.common.Masker;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.springframework.context.annotation.Profile;
@@ -141,18 +145,13 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             throw new EdcClientException(
                     "Cannot rewrite endpoint address, malformed format: " + submodelEndpointAddress);
         }
+
         final String providerConnectorUrl = submodelEndpointAddress.substring(0, indexOfUrn);
-        final String targetAssetId = submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
-
-        return fetchNegotiationResponse(providerConnectorUrl, targetAssetId);
-    }
-
-    private NegotiationResponse fetchNegotiationResponse(final String submodelEndpointAddress, final String assetId)
-            throws EdcClientException {
-
-        log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", submodelEndpointAddress,
-                assetId);
-        return contractNegotiationService.negotiate(submodelEndpointAddress, assetId);
+        final String target = submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
+        final String decodedTarget = URLDecoder.decode(target, StandardCharsets.UTF_8);
+        log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerConnectorUrl,
+                decodedTarget);
+        return contractNegotiationService.negotiate(providerConnectorUrl, decodedTarget);
     }
 
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(
@@ -192,13 +191,12 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private Optional<String> retrieveSubmodelData(final String submodel, final String contractAgreementId,
             final StopWatch stopWatch) {
-        log.info("Retrieving dataReference from storage for contractAgreementId {}", contractAgreementId);
+        log.info("Retrieving dataReference from storage for contractAgreementId {}", Masker.mask(contractAgreementId));
         final Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.remove(contractAgreementId);
 
         if (dataReference.isPresent()) {
             final EndpointDataReference ref = dataReference.get();
-            log.info("Retrieving data from EDC data plane with dataReference {}:{}", ref.getAuthKey(),
-                    ref.getAuthCode());
+            log.info("Retrieving data from EDC data plane for dataReference with id {}", ref.getId());
             final String data = edcDataPlaneClient.getData(ref, submodel);
             stopWatch.stop();
             log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
@@ -253,7 +251,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Send EDC notification task, endpoint " + submodelEndpointAddress);
 
-            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress, assetId);
+            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
 
             return sendNotificationAsync(negotiationResponse.getContractAgreementId(), notification, stopWatch);
         });

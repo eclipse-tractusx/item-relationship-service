@@ -6,6 +6,16 @@ on:
     paths-ignore:
       - '**/*.md'
       - '**/*.txt'
+      - 'api/**'
+      - 'api-tests/**'
+      - 'charts/**'
+      - 'ci/**'
+      - 'docs/**'
+      - 'dev/**'
+      - 'testdata-transform/**'
+      - 'testing/**'
+      - 'uml-diagrams/**'
+      - 'CHANGELOG.md'
   push:
     branches:
       - main
@@ -15,6 +25,29 @@ on:
 
 jobs:
   build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with Maven
+        run: |
+          mvn clean verify --batch-mode
+
+  analyze_with_Sonar:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -41,13 +74,13 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Build with Maven and analyze with Sonar
+      - name: Analyze with Sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn --batch-mode --update-snapshots \
-          verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          mvn --batch-mode --update-snapshots verify \
+          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
 
   build_images:
@@ -116,15 +149,25 @@ jobs:
       - name: Push image (DockerHub)
         env:
           DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+          IMAGE_NAMESPACE: tractusx
+          IMAGE_NAME: irs-api
         if: env.DOCKER_HUB_USER != ''
         run: |
-          IMAGE_ID=tractusx/${{ matrix.image }}
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          echo IMAGE_ID=$IMAGE_ID
-          
-          docker tag ${{ matrix.image }} $IMAGE_ID:${{ steps.version.outputs.image_tag }}
-          docker push $IMAGE_ID:${{ steps.version.outputs.image_tag }}
+          docker tag ${{ matrix.image }} ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.image_tag }}
+          docker push ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.image_tag }}
+
+      # https://github.com/peter-evans/dockerhub-description
+      - name: Update Docker Hub description
+        env:
+          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+          IMAGE_NAMESPACE: tractusx
+          IMAGE_NAME: irs-api
+        if: env.DOCKER_HUB_USER != '' && github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          repository: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}
 
   trigger-trivy-image-scan:
     needs:

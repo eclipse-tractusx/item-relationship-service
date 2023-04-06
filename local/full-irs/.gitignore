@@ -1,0 +1,5 @@
+# ignore downloaded helm depdencies
+charts/*.tgz
+
+Chart.lock
+tmpcharts/*.tgz

@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.common.ApiConstants;
+import org.eclipse.tractusx.irs.common.Masker;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,12 +45,13 @@ public class EdcCallbackController {
 
     private final EndpointDataReferenceStorage storage;
 
-
     @PostMapping("/endpoint-data-reference")
     public void receiveEdcCallback(final @RequestBody EndpointDataReference dataReference) {
         log.debug("Received EndpointDataReference: {}", StringMapper.mapToString(dataReference));
+        log.debug("Received EndpointDataReference with ID {} and endpoint {}", dataReference.getId(),
+                dataReference.getEndpoint());
         final var contractAgreementId = dataReference.getProperties().get("cid");
         storage.put(contractAgreementId, dataReference);
-        log.info("Endpoint Data Reference received and cached for agreement: {}", contractAgreementId);
+        log.info("Endpoint Data Reference received and cached for agreement: {}", Masker.mask(contractAgreementId));
     }
 }

@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -34,31 +35,35 @@ import static org.mockito.Mockito.mock;
 
 import java.time.Clock;
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.assertj.core.api.ThrowableAssert;
+import org.eclipse.dataspaceconnector.policy.model.PolicyRegistrationTypes;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.edc.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 class SubmodelFacadeWiremockTest {
 
     private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
-    private WireMockServer wireMockServer;
-
-    private EdcSubmodelClient submodelFacade;
-
     private final EdcConfiguration config = new EdcConfiguration();
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
+    private WireMockServer wireMockServer;
+    private EdcSubmodelClient submodelFacade;
 
     @BeforeEach
     void configureSystemUnderTest() {
@@ -71,14 +76,30 @@ class SubmodelFacadeWiremockTest {
         config.getSubmodel().setPath("/submodel");
         config.getSubmodel().setUrnPrefix("/urn");
 
-        final RestTemplate restTemplate = new RestTemplate();
+        final RestTemplate restTemplate = new RestTemplateBuilder().build();
+        final List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
+        for (final HttpMessageConverter<?> converter : messageConverters) {
+            if (converter instanceof final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
+                final ObjectMapper mappingJackson2HttpMessageConverterObjectMapper = mappingJackson2HttpMessageConverter.getObjectMapper();
+                PolicyRegistrationTypes.TYPES.forEach(
+                        mappingJackson2HttpMessageConverterObjectMapper::registerSubtypes);
+            }
+        }
+
         final AsyncPollingService pollingService = new AsyncPollingService(Clock.systemUTC(),
                 Executors.newScheduledThreadPool(1));
         final EdcControlPlaneClient controlPlaneClient = new EdcControlPlaneClient(restTemplate, pollingService,
                 config);
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
+        final CatalogCacheConfiguration cacheConfig = new CatalogCacheConfiguration();
+
+        cacheConfig.setTtl(Duration.ofMinutes(10));
+        cacheConfig.setMaxCachedItems(1000L);
+
+        final InMemoryCatalogCache catalogCache = new InMemoryCatalogCache(
+                new EDCCatalogFacade(controlPlaneClient, config), cacheConfig);
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
-                config);
+                config, catalogCache);
 
         final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
         final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();

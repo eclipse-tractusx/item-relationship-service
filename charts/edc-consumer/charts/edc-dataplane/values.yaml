@@ -159,7 +159,7 @@ resources:
     memory: 1Gi
   requests:
     cpu: 200m
-    memory: 0.25Gi
+    memory: 1Gi
 
 autoscaling:
   # -- Enables [horizontal pod autoscaling](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
@@ -215,7 +215,7 @@ configuration:
     edc.oauth.private.key.alias=
     edc.oauth.provider.audience=
     edc.oauth.provider.jwks.url=
-    edc.oauth.public.key.alias=
+    edc.oauth.certificate.alias=
     edc.oauth.token.url=
     edc.vault.hashicorp.url=
     edc.vault.hashicorp.token=

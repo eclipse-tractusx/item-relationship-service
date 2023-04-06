@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -31,6 +32,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -48,17 +50,17 @@ import java.util.stream.Collectors;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.edc.exceptions.ContractNegotiationException;
+import org.eclipse.tractusx.edc.exceptions.TimeoutException;
+import org.eclipse.tractusx.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.edc.model.notification.EdcNotification;
 import org.eclipse.tractusx.edc.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
-import org.eclipse.tractusx.edc.model.NegotiationResponse;
-import org.eclipse.tractusx.edc.exceptions.ContractNegotiationException;
-import org.eclipse.tractusx.edc.exceptions.TimeoutException;
-import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -241,6 +243,19 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         final String submodelResponse = testee.getSubmodelRawPayload(
                 "http://localhost/" + existingCatenaXId + "/submodel").get(5, TimeUnit.SECONDS);
+
+        assertThat(submodelResponse).startsWith(
+                "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"manufacturerId\"}");
+    }
+
+    @Test
+    void shouldUseDecodedTargetId() throws Exception {
+        final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
+        prepareTestdata(existingCatenaXId, "_serialPartTypization");
+        final String target = URLEncoder.encode(existingCatenaXId, StandardCharsets.UTF_8);
+
+        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/" + target + "/submodel")
+                                              .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).startsWith(
                 "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"manufacturerId\"}");

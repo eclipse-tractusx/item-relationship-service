@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -29,8 +30,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 
 /**
  * Local spring configuration for loading test data from resrouces.
@@ -40,14 +39,11 @@ import org.springframework.core.io.ResourceLoader;
 @RequiredArgsConstructor
 public class LocalTestDataConfiguration {
 
-    private final ResourceLoader resourceLoader;
-
     @Bean
     public CxTestDataContainer cxTestDataContainer() throws IOException {
-        final Resource resource = resourceLoader.getResource("classpath:test_data/CX_Testdata.json");
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        try (var stream = resource.getURL().openStream()) {
+        try (var stream = LocalTestDataConfiguration.class.getResourceAsStream("/test_data/CX_Testdata.json")) {
             return objectMapper.readValue(stream, CxTestDataContainer.class);
         }
     }

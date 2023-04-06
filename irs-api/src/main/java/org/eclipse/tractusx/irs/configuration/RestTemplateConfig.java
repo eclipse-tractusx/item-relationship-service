@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -26,9 +27,12 @@ import static org.eclipse.tractusx.edc.EdcSubmodelFacade.EDC_REST_TEMPLATE;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.dataspaceconnector.policy.model.PolicyRegistrationTypes;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -36,10 +40,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -57,6 +62,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration
 @RequiredArgsConstructor
+@SuppressWarnings("PMD.ExcessiveImports")
 public class RestTemplateConfig {
 
     public static final String DTR_REST_TEMPLATE = "oAuthRestTemplate";
@@ -89,9 +95,9 @@ public class RestTemplateConfig {
 
     @Bean(SEMHUB_REST_TEMPLATE)
         /* package */ RestTemplate semanticHubRestTemplate(final RestTemplateBuilder restTemplateBuilder,
-            @Value("${semanticsHub.timeout.read}") final Duration readTimeout,
-            @Value("${semanticsHub.timeout.connect}") final Duration connectTimeout,
-            @Value("${semanticsHub.oAuthClientId}") final String clientRegistrationId) {
+            @Value("${semanticshub.timeout.read}") final Duration readTimeout,
+            @Value("${semanticshub.timeout.connect}") final Duration connectTimeout,
+            @Value("${semanticshub.oAuthClientId}") final String clientRegistrationId) {
         return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId);
     }
 
@@ -126,7 +132,7 @@ public class RestTemplateConfig {
              * @return false
              */
             @Override
-            public boolean hasError(final HttpStatus statusCode) {
+            public boolean hasError(final ClientHttpResponse statusCode) {
                 return false;
             }
         });
@@ -145,6 +151,24 @@ public class RestTemplateConfig {
         authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
 
         return authorizedClientManager;
+    }
+
+    @Bean(EDC_REST_TEMPLATE)
+        /* package */ RestTemplate edcRestTemplate(final RestTemplateBuilder restTemplateBuilder,
+            @Value("${edc.submodel.timeout.read}") final Duration readTimeout,
+            @Value("${edc.submodel.timeout.connect}") final Duration connectTimeout) {
+        final RestTemplate restTemplate = restTemplateBuilder.setReadTimeout(readTimeout)
+                                                             .setConnectTimeout(connectTimeout)
+                                                             .build();
+        final List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
+        for (final HttpMessageConverter<?> converter : messageConverters) {
+            if (converter instanceof final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
+                final ObjectMapper mappingJackson2HttpMessageConverterObjectMapper = mappingJackson2HttpMessageConverter.getObjectMapper();
+                PolicyRegistrationTypes.TYPES.forEach(
+                        mappingJackson2HttpMessageConverterObjectMapper::registerSubtypes);
+            }
+        }
+        return restTemplate;
     }
 
     /**
@@ -180,13 +204,6 @@ public class RestTemplateConfig {
         private String buildAuthorizationHeaderValue(final OAuth2AccessToken accessToken) {
             return accessToken.getTokenType().getValue() + " " + accessToken.getTokenValue();
         }
-    }
-
-    @Bean(EDC_REST_TEMPLATE)
-        /* package */ RestTemplate edcRestTemplate(final RestTemplateBuilder restTemplateBuilder,
-            @Value("${edc.submodel.timeout.read}") final Duration readTimeout,
-            @Value("${edc.submodel.timeout.connect}") final Duration connectTimeout) {
-        return restTemplateBuilder.setReadTimeout(readTimeout).setConnectTimeout(connectTimeout).build();
     }
 
 }

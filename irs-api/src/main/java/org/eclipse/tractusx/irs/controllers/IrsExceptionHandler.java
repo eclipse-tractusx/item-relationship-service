@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -54,10 +55,12 @@ public class IrsExceptionHandler {
     public ResponseEntity<ErrorResponse> handleResponseStatusException(final ResponseStatusException exception) {
         log.info(exception.getClass().getName(), exception);
 
-        return ResponseEntity.status(exception.getStatus())
+        final HttpStatus httpStatus = HttpStatus.valueOf(exception.getStatusCode().value());
+
+        return ResponseEntity.status(httpStatus)
                              .body(ErrorResponse.builder()
-                                                .withStatusCode(exception.getStatus())
-                                                .withError(exception.getStatus().getReasonPhrase())
+                                                .withStatusCode(httpStatus)
+                                                .withError(httpStatus.getReasonPhrase())
                                                 .withMessages(List.of(exception.getReason()))
                                                 .build());
     }

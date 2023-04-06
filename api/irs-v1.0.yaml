@@ -182,24 +182,19 @@ paths:
         - description: Zero-based page index (0..N)
           in: query
           name: page
-          required: false
           schema:
             type: integer
             default: 0
-            minimum: 0
         - description: The size of the page to be returned
           in: query
           name: size
-          required: false
           schema:
             type: integer
             default: 20
-            minimum: 1
         - description: "Sorting criteria in the format: property,(asc|desc). Default\
           \ sort order is ascending. Multiple sort criteria are supported."
           in: query
           name: sort
-          required: false
           schema:
             type: array
             items:
@@ -448,6 +443,44 @@ paths:
       summary: Cancel job for requested jobId.
       tags:
         - Item Relationship Service
+  /irs/aspectmodels:
+    get:
+      description: Get all available aspect models from semantic hub or local models.
+      operationId: getAllAspectModels
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: "#/components/examples/aspect-models-list"
+              schema:
+                $ref: "#/components/schemas/AspectModels"
+          description: Returns all available aspect models.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: "#/components/examples/error-response-401"
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: "#/components/examples/error-response-403"
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          description: Authorized failed.
+      security:
+        - oAuth2:
+            - profile email
+      summary: Get all available aspect models from semantic hub or local models.
+      tags:
+        - Aspect Models
 components:
   examples:
     canceled-job-result:
@@ -600,6 +633,7 @@ components:
             processingError:
               errorDetail: Details to reason of Failure
               lastAttempt: 2022-02-03T14:48:54.709Z
+              processStep: SchemaValidation
               retryCounter: 0
     error-response-400:
       value:
@@ -766,6 +800,7 @@ components:
             processingError:
               errorDetail: Details to reason of Failure
               lastAttempt: 2022-02-03T14:48:54.709Z
+              processStep: SchemaValidation
               retryCounter: 0
     partial-job-result:
       value:
@@ -800,6 +835,20 @@ components:
         relationships: [ ]
         submodels: [ ]
         tombstones: [ ]
+    aspect-models-list:
+      value:
+        lastUpdated: 2023-02-13T08:18:11.990659500Z
+        models:
+          - urn: urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship
+            name: AssemblyPartRelationship
+            status: RELEASED
+            type: BAMM
+            version: 1.1.1
+          - urn: urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization
+            name: SerialPartTypization
+            status: RELEASED
+            type: BAMM
+            version: 1.1.0
   schemas:
     AdministrativeInformation:
       type: object
@@ -937,6 +986,7 @@ components:
             - 100 CONTINUE
             - 101 SWITCHING_PROTOCOLS
             - 102 PROCESSING
+            - 103 EARLY_HINTS
             - 103 CHECKPOINT
             - 200 OK
             - 201 CREATED
@@ -1002,18 +1052,6 @@ components:
             - 509 BANDWIDTH_LIMIT_EXCEEDED
             - 510 NOT_EXTENDED
             - 511 NETWORK_AUTHENTICATION_REQUIRED
-    GlobalAssetIdentification:
-      type: object
-      additionalProperties: false
-      description: CATENA-X global asset id in the format urn:uuid:uuid4.
-      properties:
-        globalAssetId:
-          type: string
-          description: CATENA-X global asset id in the format urn:uuid:uuid4.
-          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-          maxLength: 45
-          minLength: 45
-          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
     IdentifierKeyValuePair:
       type: object
       additionalProperties: false
@@ -1040,7 +1078,12 @@ components:
         exception:
           $ref: '#/components/schemas/JobErrorDetails'
         globalAssetId:
-          $ref: '#/components/schemas/GlobalAssetIdentification'
+          type: string
+          description: Part global unique id in the format urn:uuid:uuid4.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          maxLength: 45
+          minLength: 45
+          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         id:
           type: string
           format: uuid
@@ -1110,30 +1153,6 @@ components:
       properties:
         aspects:
           type: string
-          enum:
-            - AddressAspect
-            - AssemblyPartRelationship
-            - Batch
-            - BatteryPass
-            - CertificateOfDestruction
-            - CertificateOfDismantler
-            - ChargingProcess
-            - ClaimData
-            - DiagnosticData
-            - EndOfLife
-            - EsrCertificate
-            - EsrCertificateStateStatistic
-            - IdConversion
-            - MarketplaceOffer
-            - MaterialForHomologation
-            - MaterialForRecycling
-            - PartAsPlanned
-            - PhysicalDimension
-            - ProductDescription
-            - ReturnRequest
-            - SerialPartTypization
-            - SingleLevelBomAsPlanned
-            - SingleLevelUsageAsBuilt
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
@@ -1239,7 +1258,12 @@ components:
           format: date-time
           description: Datetime of assembly.
         childCatenaXId:
-          $ref: '#/components/schemas/GlobalAssetIdentification'
+          type: string
+          description: CatenaX child global asset id in the format urn:uuid:uuid4.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          maxLength: 45
+          minLength: 45
+          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         lastModifiedOn:
           type: string
           format: date-time
@@ -1293,12 +1317,12 @@ components:
         processStep:
           type: string
           enum:
-            - SUBMODEL_REQUEST
-            - DIGITAL_TWIN_REQUEST
-            - SCHEMA_VALIDATION
-            - SCHEMA_REQUEST
-            - BPDM_REQUEST
-            - BPDM_VALIDATION
+            - SubmodelRequest
+            - DigitalTwinRequest
+            - SchemaValidation
+            - SchemaRequest
+            - BpdmRequest
+            - BpdmValidation
         retryCounter:
           type: integer
           format: int32
@@ -1383,30 +1407,6 @@ components:
           type: array
           items:
             type: string
-            enum:
-              - AddressAspect
-              - AssemblyPartRelationship
-              - Batch
-              - BatteryPass
-              - CertificateOfDestruction
-              - CertificateOfDismantler
-              - ChargingProcess
-              - ClaimData
-              - DiagnosticData
-              - EndOfLife
-              - EsrCertificate
-              - EsrCertificateStateStatistic
-              - IdConversion
-              - MarketplaceOffer
-              - MaterialForHomologation
-              - MaterialForRecycling
-              - PartAsPlanned
-              - PhysicalDimension
-              - ProductDescription
-              - ReturnRequest
-              - SerialPartTypization
-              - SingleLevelBomAsPlanned
-              - SingleLevelUsageAsBuilt
           maxItems: 2147483647
         bomLifecycle:
           type: string
@@ -1460,7 +1460,12 @@ components:
         aspectType:
           type: string
         catenaXId:
-          $ref: '#/components/schemas/GlobalAssetIdentification'
+          type: string
+          description: CATENA-X global asset id in the format urn:uuid:uuid4.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          maxLength: 45
+          minLength: 45
+          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         linkedItem:
           $ref: '#/components/schemas/LinkedItem'
     Submodel:
@@ -1524,6 +1529,30 @@ components:
           type: string
         processingError:
           $ref: '#/components/schemas/ProcessingError'
+    AspectModel:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+        type:
+          type: string
+        urn:
+          type: string
+        version:
+          type: string
+    AspectModels:
+      type: object
+      additionalProperties: false
+      properties:
+        lastUpdated:
+          type: string
+        models:
+          type: array
+          items:
+            $ref: '#/components/schemas/AspectModel'
   securitySchemes:
     oAuth2:
       flows:

@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,22 +22,14 @@
  ********************************************************************************/
 package org.eclipse.tractusx.edc;
 
-import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.dataspaceconnector.policy.model.Action;
-import org.eclipse.dataspaceconnector.policy.model.Permission;
-import org.eclipse.dataspaceconnector.policy.model.Policy;
-import org.eclipse.dataspaceconnector.policy.model.PolicyType;
-import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
-import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
-import org.eclipse.tractusx.edc.model.ContractOfferInCatalogResponse;
+import org.eclipse.tractusx.edc.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.edc.model.ContractOfferRequest;
 import org.eclipse.tractusx.edc.model.NegotiationId;
 import org.eclipse.tractusx.edc.model.NegotiationRequest;
@@ -44,7 +37,7 @@ import org.eclipse.tractusx.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.edc.model.TransferProcessDataDestination;
 import org.eclipse.tractusx.edc.model.TransferProcessId;
 import org.eclipse.tractusx.edc.model.TransferProcessRequest;
-import org.eclipse.tractusx.edc.exceptions.ContractNegotiationException;
+import org.eclipse.tractusx.edc.model.CatalogItem;
 import org.springframework.stereotype.Service;
 
 /**
@@ -59,37 +52,22 @@ public class ContractNegotiationService {
 
     private final EdcConfiguration config;
 
-    private static Optional<ContractOffer> findOfferIfExist(final String target, final Catalog catalog) {
-        return catalog.getContractOffers()
-                      .stream()
-                      .filter(contractOffer -> contractOffer.getAsset().getId().equals(target))
-                      .findFirst();
-    }
-
-    private static Policy policyFor(final String target) {
-        return Policy.Builder.newInstance()
-                             .permission(Permission.Builder.newInstance()
-                                                           .target(target)
-                                                           .action(Action.Builder.newInstance().type("USE").build())
-                                                           .build())
-                             .type(PolicyType.SET)
-                             .build();
-    }
+    private final CatalogCache catalogCache;
 
     public NegotiationResponse negotiate(final String providerConnectorUrl, final String target)
             throws ContractNegotiationException {
 
-        final ContractOfferInCatalogResponse contractResponse = findOfferInPageableCatalog(providerConnectorUrl, target);
+        final CatalogItem catalogItem = catalogCache.getCatalogItem(providerConnectorUrl, target).orElseThrow();
 
         final ContractOfferRequest contractOfferRequest = ContractOfferRequest.builder()
                                                                               .offerId(
-                                                                                      contractResponse.getContractOffer().getId())
+                                                                                      catalogItem.getItemId())
                                                                               .assetId(target)
-                                                                              .policy(policyFor(target))
+                                                                              .policy(catalogItem.getPolicy())
                                                                               .build();
 
         final NegotiationRequest negotiationRequest = NegotiationRequest.builder()
-                                                                        .connectorId(contractResponse.getConnectorId())
+                                                                        .connectorId(catalogItem.getConnectorId())
                                                                         .connectorAddress(providerConnectorUrl
                                                                                 + config.getControlplane().getProviderSuffix())
                                                                         .offer(contractOfferRequest)
@@ -110,7 +88,7 @@ public class ContractNegotiationService {
                                                   .requestId(UUID.randomUUID().toString())
                                                   .protocol(TransferProcessRequest.DEFAULT_PROTOCOL)
                                                   .managedResources(TransferProcessRequest.DEFAULT_MANAGED_RESOURCES)
-                                                  .connectorId(contractResponse.getConnectorId())
+                                                  .connectorId(catalogItem.getConnectorId())
                                                   .connectorAddress(
                                                           providerConnectorUrl + config.getControlplane().getProviderSuffix())
                                                   .contractId(response.getContractAgreementId())
@@ -128,35 +106,6 @@ public class ContractNegotiationService {
         log.info("Transfer process completed for transferProcessId: {}", transferProcessId.getValue());
         return response;
     }
-
-    private ContractOfferInCatalogResponse findOfferInPageableCatalog(final String providerConnectorUrl, final String target) {
-        int offset = 0;
-        final int pageSize = config.getControlplane().getCatalogPageSize();
-
-        log.info("Get catalog from EDC provider.");
-        Catalog pageableCatalog = edcControlPlaneClient.getCatalog(providerConnectorUrl, offset);
-
-        boolean isLastPage = pageableCatalog.getContractOffers().size() < pageSize;
-        Optional<ContractOffer> optionalContractOffer = findOfferIfExist(target, pageableCatalog);
-
-        while (!isLastPage && optionalContractOffer.isEmpty()) {
-            offset += pageSize;
-            pageableCatalog = edcControlPlaneClient.getCatalog(providerConnectorUrl, offset);
-            isLastPage = pageableCatalog.getContractOffers().size() < pageSize;
-            optionalContractOffer = findOfferIfExist(target, pageableCatalog);
-        }
-
-        final String connectorId = pageableCatalog.getId();
-
-        log.info("Search for offer for asset id: {}", target);
-
-        return optionalContractOffer.map(contractOffer -> ContractOfferInCatalogResponse
-                .builder()
-                .contractOffer(contractOffer)
-                .connectorId(connectorId).build())
-                                    .orElseThrow(NoSuchElementException::new);
-    }
-
 
     private NegotiationResponse getNegotiationResponse(final CompletableFuture<NegotiationResponse> negotiationResponse)
             throws ContractNegotiationException {

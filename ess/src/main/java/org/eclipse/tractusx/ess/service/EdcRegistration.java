@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,7 +24,8 @@ package org.eclipse.tractusx.ess.service;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.nimbusds.jose.shaded.json.JSONArray;
+import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.edc.StringMapper;
@@ -207,7 +209,8 @@ public class EdcRegistration {
             log.info("Requesting asset from EDC provider with url {}", url);
             final var entity = restTemplate.exchange(url, HttpMethod.GET, toEntity(null), String.class);
             if (entity.getStatusCode().is2xxSuccessful()) {
-                final JSONArray array = StringMapper.mapFromString(entity.getBody(), JSONArray.class);
+//                TODO: (KM) check if its working - below is only assumption SB3
+                final List array = StringMapper.mapFromString(entity.getBody(), List.class);
                 return array.isEmpty();
             }
             log.error("Cannot ask EDC provider for asset registration, please check it! Status code was {}",

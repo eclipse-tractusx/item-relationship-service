@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,6 +25,7 @@ package org.eclipse.tractusx.edc;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -79,15 +81,22 @@ class AssemblyPartRelationship implements RelationshipSubmodel {
                                                                       .lastModifiedOn(this.lastModifiedOn);
 
             if (thereIsQuantity()) {
-                final String datatypeURI = thereIsMeasurementUnit() ? this.quantity.getMeasurementUnit().getDatatypeURI() : null;
-                final String lexicalValue = thereIsMeasurementUnit() ? this.quantity.getMeasurementUnit().getLexicalValue() : null;
+                MeasurementUnit measurementUnit = MeasurementUnit.builder().build();
+                if (this.quantity.getMeasurementUnit() instanceof String str) {
+                    measurementUnit = MeasurementUnit.builder()
+                                   .lexicalValue(str)
+                                   .build();
+                } else if (this.quantity.getMeasurementUnit() instanceof Map<?, ?> map) {
+                    measurementUnit = MeasurementUnit.builder()
+                                   .lexicalValue(String.valueOf(map.get("lexicalValue")))
+                                   .datatypeURI(String.valueOf(map.get("datatypeURI")))
+                                   .build();
+                }
+
 
                 linkedItem.quantity(org.eclipse.tractusx.irs.component.Quantity.builder()
                                                                                .quantityNumber(this.quantity.getQuantityNumber())
-                                                                               .measurementUnit(MeasurementUnit.builder()
-                                                                                                               .datatypeURI(datatypeURI)
-                                                                                                               .lexicalValue(lexicalValue)
-                                                                                                               .build())
+                                                                               .measurementUnit(measurementUnit)
                                                                                .build());
             }
 
@@ -96,10 +105,6 @@ class AssemblyPartRelationship implements RelationshipSubmodel {
                                .linkedItem(linkedItem.build())
                                .aspectType(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString())
                                .build();
-        }
-
-        private boolean thereIsMeasurementUnit() {
-            return this.quantity != null && this.quantity.getMeasurementUnit() != null;
         }
 
         private boolean thereIsQuantity() {
@@ -114,7 +119,7 @@ class AssemblyPartRelationship implements RelationshipSubmodel {
         /* package */ static class Quantity {
 
             private Double quantityNumber;
-            private MeasurementUnit measurementUnit;
+            private Object measurementUnit;
 
             /**
              * MeasurementUnit

@@ -1,0 +1,79 @@
+---
+replicaCount: 1
+
+image:
+  repository: ghcr.io/catenax-ng/product-edc/edc-controlplane-postgresql-hashicorp-vault
+  pullPolicy: IfNotPresent
+  tag: "0.2.0"
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+livenessProbe:
+  enabled: true
+
+readinessProbe:
+  enabled: true
+
+startupProbe:
+  enabled: true
+  failureThreshold: 12
+  initialDelaySeconds: 10
+
+service:
+  type: ClusterIP
+
+resources:
+  limits:
+    cpu: 600m
+    memory: 1Gi
+  requests:
+    cpu: 200m
+    memory: 0.25Gi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+logging:
+  properties: |-
+    .level=DEBUG
+    org.eclipse.dataspaceconnector.level=ALL
+    handlers=java.util.logging.ConsoleHandler
+    java.util.logging.ConsoleHandler.formatter=java.util.logging.SimpleFormatter
+    java.util.logging.ConsoleHandler.level=ALL
+    java.util.logging.SimpleFormatter.format=[%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS] [%4$-7s] %5$s%6$s%n
+
+opentelemetry:
+  properties: |-
+    otel.javaagent.enabled=false
+    otel.javaagent.debug=false
+
+edc:
+  endpoints:
+    default:
+      port: "8080"
+      path: /api
+    management:
+      port: "8181"
+      path: /data
+    validation:
+      port: "8182"
+      path: /validation
+    control:
+      port: "9999"
+      path: /api/controlplane/control
+    ids:
+      port: "8282"
+      path: /api/v1/ids
+    metrics:
+      port: "9090"
+      path: /metrics
+
+ingresses:
+  - enabled: false

@@ -1,0 +1,58 @@
+@startuml
+
+skinparam monochrome true
+skinparam shadowing false
+
+actor user
+
+package "OEM" {
+
+
+  interface "IRS API"  as IRSAPI_OEM
+  component "[**IRS**]" as IRS_OEM
+  component "[**Notification**]" as Notification_OEM
+
+}
+
+
+
+ component "EDC Consumer" as EDC_Consumer
+ component "EDC Provider" as EDC_Provider
+
+package "Tier 1" {
+
+  component "ESSIncident SubmodelServer" as SubmodelServer
+  interface "IRS API"  as IRSAPI_TIER
+  component "[**IRS**]" as IRS_TIER
+}
+
+
+package "Shared Services" {
+
+    component   "DTwin Registry" as DTwin_Registry
+    component   "SPT & APR providing SubmodelServer" as Part_SubmodelServer
+    component   "Discovery Service" as Service_Discovery
+}
+
+
+IRS_OEM <---> DTwin_Registry : lookup AAS
+IRS_OEM <---> Part_SubmodelServer : lookup SPT
+IRS_OEM <---> Service_Discovery : lookup EDC address by BPNL
+user -> IRSAPI_OEM
+IRSAPI_OEM - IRS_OEM
+IRS_OEM <-> Notification_OEM
+EDC_Consumer <-> EDC_Provider: 1: negotation
+EDC_Provider -> SubmodelServer : 1: send notification
+SubmodelServer -> EDC_Provider : 2: send ack 201
+EDC_Consumer <-> EDC_Provider: 2: forward ack 201
+EDC_Consumer <-> EDC_Provider: 2: negotation
+Notification_OEM -> EDC_Consumer : 1: send notification
+Notification_OEM <- EDC_Consumer : 2: ack 201
+Notification_OEM <- EDC_Consumer : 3: invoke callback
+SubmodelServer -> IRSAPI_TIER : start BPNInvest
+IRSAPI_TIER - IRS_TIER
+
+EDC_Provider <- SubmodelServer : 3: invoke callback method
+
+
+@enduml

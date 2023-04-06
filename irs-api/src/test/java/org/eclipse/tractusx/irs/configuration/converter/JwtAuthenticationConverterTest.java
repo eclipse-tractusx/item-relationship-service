@@ -1,3 +1,25 @@
+/********************************************************************************
+ * Copyright (c) 2021,2022,2023
+ *       2022: ZF Friedrichshafen AG
+ *       2022: ISTOS GmbH
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Apache License, Version 2.0 which is available at
+ * https://www.apache.org/licenses/LICENSE-2.0. *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration.converter;
 
 import static org.springframework.security.oauth2.jwt.JwtClaimNames.SUB;
@@ -8,8 +30,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-import com.nimbusds.jose.shaded.json.JSONArray;
-import com.nimbusds.jose.shaded.json.JSONObject;
+import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,9 +43,10 @@ class JwtAuthenticationConverterTest {
     @Test
     void shouldParseJwtTokenAndFindViewIrsRole() {
         // given
-        final JSONArray irsRoles = new JSONArray();
-        irsRoles.addAll(List.of("view_irs"));
-        final Map<String, Object> irsResourceAccess = Map.of("Cl20-CX-IRS", new JSONObject(Map.of("roles", irsRoles)));
+        final Map<String, Object> irsResourceAccess = new LinkedTreeMap<>();
+        final Map<String, Object> irsRoles = new LinkedTreeMap<>();
+        irsRoles.put("roles", List.of("view_irs"));
+        irsResourceAccess.put("Cl20-CX-IRS", irsRoles);
         final Jwt jwt = jwt(irsResourceAccess);
 
         // when
@@ -39,7 +61,10 @@ class JwtAuthenticationConverterTest {
     @Test
     void shouldParseJwtTokenAndNotFindIrsRolesWhenWrongKey() {
         // given
-        final Map<String, Object> irsResourceAccess = Map.of("Cl20-CX-IRS-WRONG-KEY", new JSONObject(Map.of("roles", new JSONArray())));
+        final Map<String, Object> irsResourceAccess = new LinkedTreeMap<>();
+        final Map<String, Object> irsRoles = new LinkedTreeMap<>();
+        irsRoles.put("roles", List.of());
+        irsResourceAccess.put("Cl20-CX-IRS-WRONG-KEY", irsRoles);
         final Jwt jwt = jwt(irsResourceAccess);
 
         // when
@@ -54,9 +79,10 @@ class JwtAuthenticationConverterTest {
     @Test
     void shouldParseJwtTokenAndNotFindIrsRolesWhenWrongRolesKey() {
         // given
-        final JSONArray irsRoles = new JSONArray();
-        irsRoles.addAll(List.of("view_irs"));
-        final Map<String, Object> irsResourceAccess = Map.of("Cl20-CX-IRS", new JSONObject(Map.of("rolesWrong", irsRoles)));
+        final Map<String, Object> irsResourceAccess = new LinkedTreeMap<>();
+        final Map<String, Object> irsRoles = new LinkedTreeMap<>();
+        irsRoles.put("rolesWrong", List.of("view_irs"));
+        irsResourceAccess.put("Cl20-CX-IRS-WRONG-KEY", irsRoles);
         final Jwt jwt = jwt(irsResourceAccess);
 
         // when
@@ -69,7 +95,8 @@ class JwtAuthenticationConverterTest {
     }
 
     Jwt jwt(final Map<String, Object> irsResourceAccess) {
-        final Map<String, Object> claims = Map.of("resource_access",  new JSONObject(irsResourceAccess), SUB, "sub", "clientId", "clientId");
+        final Map<String, Object> claims = new LinkedTreeMap<>();
+        claims.putAll(Map.of("resource_access",  irsResourceAccess, SUB, "sub", "clientId", "clientId"));
 
         return new Jwt("token", Instant.now(), Instant.now().plusSeconds(30), Map.of("alg", "none"),
                 claims);

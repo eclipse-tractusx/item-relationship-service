@@ -1,0 +1,27 @@
+# docker run   --rm   -d   -p 8080:8080 -p 8443:8443   --name wiremock-demo   rodolpheche/wiremock:2.25.1
+@hostname = localhost
+@port = 8088
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+@adminMappingEndpoint = /__admin/mappings
+@adminFilesEndpoint = /__admin/files
+
+### Get Admin
+
+GET http://{{host}}/__admin
+Content-Type: {{contentType}}
+
+### Get Admin mappings
+
+GET http://{{host}}{{adminMappingEndpoint}}
+Content-Type: {{contentType}}
+
+### Get Admin files
+
+GET http://{{host}}{{adminFilesEndpoint}}
+Content-Type: {{contentType}}
+
+### Get Model
+
+GET http://{{host}}/hub/api/v1/models/urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization/json-schema
+Content-Type: {{contentType}}

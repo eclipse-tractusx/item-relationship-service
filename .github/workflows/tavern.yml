@@ -25,6 +25,7 @@ on:
         type: string
         description: JIRA execution ticket to safe results in.
         default: 'TRI-1180'
+#        default: 'TRI-910' main
         required: true
   schedule:
     - cron: '0 1 * * 1-5' # At 01:00 on every day-of-week from Monday through Friday.
@@ -64,11 +65,11 @@ jobs:
           JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
           JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
           TEST_EXECUTION_TICKET: ${{ github.event.inputs.execution-ticket || 'TRI-1180' }}
-        # Remove tokens and upload the tavern results to JIRA Test execution TRI-1180
+#          TEST_EXECUTION_TICKET: ${{ github.event.inputs.execution-ticket || 'TRI-910' }} main
+        # Remove tokens and upload the tavern results to JIRA Test execution
         run: |
           sed "s/access_tok.*:s = '.*'//g" tavern-results.xml | sed "s/Authorization: Bearer .*/Authorization:/g" | uniq > result.xml
           curl -H "Content-Type: multipart/form-data" \
           -u $JIRA_USERNAME:$JIRA_PASSWORD \
           -F 'file=@result.xml' \
           "https://jira.catena-x.net/rest/raven/1.0/import/execution/junit?testExecKey=$TEST_EXECUTION_TICKET"
-          

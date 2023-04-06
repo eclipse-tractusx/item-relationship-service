@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,6 +23,7 @@
 package org.eclipse.tractusx.irs.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -45,10 +47,15 @@ import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
+import org.eclipse.tractusx.irs.semanticshub.AspectModel;
+import org.eclipse.tractusx.irs.semanticshub.AspectModels;
+import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
+import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.eclipse.tractusx.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -70,6 +77,9 @@ class IrsItemGraphQueryServiceTest {
 
     @InjectMocks
     private IrsItemGraphQueryService testee;
+
+    @Mock
+    private SemanticsHubFacade semanticsHubFacade;
 
     @Test
     void registerItemJobWithoutDepthShouldBuildFullTree() throws Exception {
@@ -132,7 +142,9 @@ class IrsItemGraphQueryServiceTest {
     @Test
     void shouldReturnFoundJobs() {
         final List<JobState> states = List.of(JobState.COMPLETED);
-        final MultiTransferJob multiTransferJob = MultiTransferJob.builder().job(generate.fakeJob(JobState.COMPLETED)).build();
+        final MultiTransferJob multiTransferJob = MultiTransferJob.builder()
+                                                                  .job(generate.fakeJob(JobState.COMPLETED))
+                                                                  .build();
         when(jobStore.findByStates(states)).thenReturn(List.of(multiTransferJob));
 
         final PageResult jobs = testee.getJobsByState(states, Pageable.ofSize(10));
@@ -187,6 +199,31 @@ class IrsItemGraphQueryServiceTest {
         testee.getJobsByState(states, jobStates, Pageable.ofSize(10));
 
         verify(jobStore).findByStates(states);
+    }
+
+    @Test
+    void shouldThrowExceptionForInvalidAspectTypes() throws SchemaNotFoundException {
+        when(semanticsHubFacade.getAllAspectModels()).thenReturn(AspectModels.builder().models(List.of()).build());
+        final List<String> aspects = List.of("Invalid.Type");
+
+        final Executable executable = () -> testee.registerItemJob(registerJobWithDepthAndAspect(1, aspects));
+
+        assertThrows(IllegalArgumentException.class, executable);
+    }
+
+    @Test
+    void shouldThrowExceptionForUnknownAspectTypes() throws SchemaNotFoundException {
+        when(semanticsHubFacade.getAllAspectModels()).thenReturn(AspectModels.builder()
+                                                                             .models(List.of(AspectModel.builder()
+                                                                                                        .urn("Aspect1")
+                                                                                                        .name("Aspect1")
+                                                                                                        .build()))
+                                                                             .build());
+        final List<String> aspects = List.of("InvalidType");
+
+        final Executable executable = () -> testee.registerItemJob(registerJobWithDepthAndAspect(1, aspects));
+
+        assertThrows(IllegalArgumentException.class, executable);
     }
 
 }

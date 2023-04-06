@@ -1,9 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022
- *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,16 +24,15 @@ package org.eclipse.tractusx.irs.component;
 
 import java.util.List;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 
@@ -49,9 +49,9 @@ public class JobParameter {
     @Schema(implementation = BomLifecycle.class)
     private BomLifecycle bomLifecycle;
 
-    @Schema(implementation = AspectType.class)
+    @Schema(implementation = String.class)
     @Singular
-    private List<AspectType> aspects;
+    private List<String> aspects;
 
     @Schema(implementation = Integer.class)
     @Min(0)

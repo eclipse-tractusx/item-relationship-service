@@ -131,6 +131,12 @@ edc:
       read: PT90S # HTTP read timeout for the submodel client
       connect: PT90S # HTTP connect timeout for the submodel client
 
+  catalog:
+    cache:
+      enabled: true # Set to false to disable caching
+      ttl: P1D # Time after which a cached Item is no longer valid and the real catalog is called instead
+      maxCachedItems: 64000 # Maximum amount of cached catalog items
+
 digitalTwinRegistry:
   descriptorEndpoint: ${DIGITALTWINREGISTRY_DESCRIPTOR_URL:} # The endpoint to retrieve AAS descriptors from the DTR, must contain the placeholder {aasIdentifier}
   shellLookupEndpoint: ${DIGITALTWINREGISTRY_SHELL_LOOKUP_URL:} # The endpoint to lookup shells from the DTR, must contain the placeholder {assetIds}
@@ -139,9 +145,10 @@ digitalTwinRegistry:
     read: PT90S # HTTP read timeout for the digital twin registry client
     connect: PT90S # HTTP connect timeout for the digital twin registry client
 
-semanticsHub:
+semanticshub:
   # The endpoint to retrieve the json schema of a model from the semantic hub. If specified, must contain the placeholder {urn}.
   modelJsonSchemaEndpoint: "${SEMANTICSHUB_URL:}"
+  url: ""
 
   # Path to directory on filesystem where semantic models can be loaded from.
   # The filenames inside the directory must match the Base64 encoded URNs of the models.
@@ -161,6 +168,7 @@ semanticsHub:
   timeout:
     read: PT90S # HTTP read timeout for the semantic hub client
     connect: PT90S # HTTP connect timeout for the semantic hub client
+  pageSize: "${SEMANTICSHUB_PAGE_SIZE:100}"
 
 bpdm:
   bpnEndpoint: "${BPDM_URL:}" # Endpoint to resolve BPNs, must contain the placeholders {partnerId} and {idType}
@@ -202,3 +210,5 @@ ess:
       BPNL00000003B0Q0: "NO"
       BPNL00ARBITRARY7: "YES"
     mockRecursiveEdcAsset: BPNL00ARBITRARY4, BPNL00ARBITRARY5, BPNL00ARBITRARY6
+
+apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK}
