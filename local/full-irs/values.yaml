@@ -47,7 +47,7 @@ config:
   edc:
     consumer:
       hostname:
-        controlplane: &config-edc-consumer-controlplane-hostname "http://edc-consumer-control-plane:8080/BPNL00000003AWSS/"
+        controlplane: &config-edc-consumer-controlplane-hostname "http://edc-consumer-control-plane:8282/api/v1/ids"
       database:
         host: &config-edc-consumer-database-host "edc-consumer-database"
         name: &config-edc-consumer-database-name "edc-consumer"
@@ -59,7 +59,7 @@ config:
           name: &config-edc-consumer-database-secret-name edc-consumer-database
     provider:
       hostname:
-        controlplane: &config-edc-provider-controlplane-hostname "http://edc-provider-control-plane:8080/BPNL00000003AWSS/"
+        controlplane: &config-edc-provider-controlplane-hostname "http://edc-provider-control-plane:8282/api/v1/ids"
       database:
         host: &config-edc-provider-database-host "edc-provider-database"
         name: &config-edc-provider-database-name "edc-provider"
@@ -565,7 +565,7 @@ irs:
   edc:
     controlplane:
       endpoint:
-        data: "http://edc-consumer-control-plane:8181/data"
+        data: "http://edc-consumer-control-plane:8181/api/v1/management"
       request:
         ttl: PT10M
       provider:

@@ -16,19 +16,19 @@ Content-Type: {{contentType}}
 
 ### Get Assets
 
-GET http://{{host}}/data/assets
+GET http://{{host}}/api/v1/management/assets
 {{headerName}}: {{headerValue}}
 Content-Type: {{contentType}}
 
 ### Get Policy Definitions
 
-GET http://{{host}}/data/policydefinitions
+GET http://{{host}}/api/v1/management/policydefinitions
 {{headerName}}: {{headerValue}}
 Content-Type: {{contentType}}
 
 ### Get Contract Definitions
 
-GET http://{{host}}/data/contractdefinitions
+GET http://{{host}}/api/v1/management/contractdefinitions
 {{headerName}}: {{headerValue}}
 Content-Type: {{contentType}}
 

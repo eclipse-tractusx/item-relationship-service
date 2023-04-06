@@ -48,6 +48,10 @@ jobs:
           mvn clean verify --batch-mode
 
   analyze_with_Sonar:
+    # No need to run if we cannot use the sonar token
+    if: >-
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
+      github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -117,14 +121,20 @@ jobs:
       - name: Log in to registry
         env:
           DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-        if: env.DOCKER_HUB_USER == ''
+        if: >-
+          env.DOCKER_HUB_USER == '' &&
+          (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
+          github.actor != 'dependabot[bot]'
         # This is where you will update the PAT to GITHUB_TOKEN
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Push image (GHCR)
         env:
           DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-        if: env.DOCKER_HUB_USER == ''
+        if: >- 
+          env.DOCKER_HUB_USER == '' &&
+          (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
+          github.actor != 'dependabot[bot]'
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}
           # Change all uppercase to lowercase
@@ -170,6 +180,9 @@ jobs:
           repository: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}
 
   trigger-trivy-image-scan:
+    if: >-
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
+      github.actor != 'dependabot[bot]'
     needs:
       - build_images
     uses: ./.github/workflows/trivy-image-scan.yml

@@ -18,7 +18,6 @@ data:
     web.http.control.path={{ .Values.edc.endpoints.control.path }}
     web.http.protocol.port={{ .Values.edc.endpoints.protocol.port }}
     web.http.protocol.path={{ .Values.edc.endpoints.protocol.path }}
-    edc.api.auth.key={{ .Values.edc.api.auth.key }}
     ids.webhook.address={{ .Values.edc.controlplane.url }}
     edc.ids.id=urn:connector:edc-consumer-controlplane
     edc.ids.catalog.id=urn:catalog:default

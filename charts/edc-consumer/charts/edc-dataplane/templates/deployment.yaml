@@ -76,12 +76,23 @@ spec:
             failureThreshold: {{ .Values.startupProbe.failureThreshold }}
             initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
           {{- end }}
+          env:
+            - name: EDC_API_AUTH_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "edc-dataplane.fullname" . }}
+                  key: apiToken
+            - name: EDC_VAULT_HASHICORP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "edc-dataplane.fullname" . }}
+                  key: vaultToken
           envFrom:
             - configMapRef:
                 name: {{ include "edc-dataplane.fullname" . }}-env
             {{- if .Values.envSecretName }}
             - secretRef:
-            name: {{ .Values.envSecretName | quote }}
+                name: {{ .Values.envSecretName | quote }}
             {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
