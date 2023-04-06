@@ -48,7 +48,7 @@ public class LocalTestDataConfigurationAware {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-        try (var stream = getClass().getResourceAsStream("/test_data/CX_Testdata.json")) {
+        try (var stream = LocalTestDataConfigurationAware.class.getResourceAsStream("/test_data/CX_Testdata.json")) {
             final CxTestDataContainer cxTestDataContainer = objectMapper.readValue(stream, CxTestDataContainer.class);
             Mockito.when(localTestDataConfiguration.cxTestDataContainer()).thenReturn(cxTestDataContainer);
         }
