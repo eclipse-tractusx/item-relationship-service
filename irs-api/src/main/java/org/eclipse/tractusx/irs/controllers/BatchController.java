@@ -72,10 +72,12 @@ public class BatchController {
     private final QueryBatchService queryBatchService;
 
     @Operation(operationId = "registerOrder",
-               summary = "Registers an IRS order to retrieve a batches containing item graphs for an array of {globalAssetIds}.",
+               summary = "Registers an IRS order with an array of {globalAssetIds}. "
+                       + "Each globalAssetId will be processed in an IRS Job, grouped in batches.",
                security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Item Relationship Service" },
-               description = "Registers an IRS order to retrieve a batches containing item graphs for an array of {globalAssetIds}.")
+               description = "Registers an IRS order with an array of {globalAssetIds}. "
+                       + "Each globalAssetId will be processed in an IRS Job, grouped in batches.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Returns orderId of registered Batch order.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = BatchOrderCreated.class),

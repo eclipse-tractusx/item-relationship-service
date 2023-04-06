@@ -337,8 +337,8 @@ paths:
         - Aspect Models
   /irs/orders:
     post:
-      description: "Registers an IRS order to retrieve a batches containing item graphs\
-          \ for an array of {globalAssetIds}."
+      description: "Registers an IRS order with an array of {globalAssetIds}.\
+      \ Each globalAssetId will be processed in an IRS Job, grouped in batches."
       operationId: registerOrder
       requestBody:
         content:
@@ -386,8 +386,8 @@ paths:
       security:
         - oAuth2:
             - profile email
-      summary: "Registers an IRS order to retrieve a batches containing item graphs\
-          \ for an array of {globalAssetIds}."
+      summary: "Registers an IRS order with an array of {globalAssetIds}.\
+      \ Each globalAssetId will be processed in an IRS Job, grouped in batches."
       tags:
         - Item Relationship Service
   /irs/orders/{orderId}:
