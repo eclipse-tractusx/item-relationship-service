@@ -1,15 +1,15 @@
 {
   "_type": "export",
   "__export_format": 4,
-  "__export_date": "2023-04-05T10:19:22.857Z",
+  "__export_date": "2023-04-06T13:45:26.595Z",
   "__export_source": "insomnia.desktop.app:v2023.1.0",
   "resources": [
     {
       "_id": "req_2e35d9dac9d44f949385b9979f51432f",
       "parentId": "fld_784cde5184c64deeafe5e433525fa308",
-      "modified": 1680685048122,
+      "modified": 1680785521218,
       "created": 1680682418619,
-      "url": "{{DIGITAL_TWIN_REGISTRY}}/registry/shell-descriptors/:aasIdentifier",
+      "url": "{{DIGITAL_TWIN_REGISTRY}}/registry/shell-descriptors/{% param 'string/string', 'aasIdentifier', 'ask/stored', '' %}",
       "name": "Get Shell by aasIdentifier",
       "description": "",
       "method": "GET",
@@ -252,7 +252,7 @@
     {
       "_id": "req_a80337d72c21445ab0393ace01db3f19",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680685185402,
+      "modified": 1680785290215,
       "created": 1680682418551,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "1.0.0 [Register Job] https://${environment}/irs/jobs",
@@ -260,7 +260,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n}"
+        "text": "{\n  \"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -296,7 +296,7 @@
     {
       "_id": "req_34bc07a365894ddd9e759e96d7d98871",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680685479442,
+      "modified": 1680785268059,
       "created": 1680682418539,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "1.1.0 [Register Job globalAssetId <Unknown>] https://${environment}/irs/jobs",
@@ -304,7 +304,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\r\n  \"globalAssetId\":\"urn:uuid:88f51be1-3771-4335-8b5c-4c5050123123\"\r\n}"
+        "text": "{\n  \"globalAssetId\":\"urn:uuid:88f51be1-3771-4335-8b5c-4c5050123123\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -360,7 +360,7 @@
     {
       "_id": "req_68144e5e87e04b3e9911a8bd467ee5db",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680685939801,
+      "modified": 1680785260788,
       "created": 1680682418514,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "1.2.0 [Register Job with depth and bomLifecycle asBuilt] https://${environment}/irs/jobs",
@@ -368,7 +368,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\",\r\n  \"bomLifecycle\": \"asBuilt\",\r\n  \"depth\": 2,\r\n  \"collectAspects\": true\r\n}"
+        "text": "{\n  \"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n  \"bomLifecycle\": \"asBuilt\",\n  \"depth\": 2,\n  \"collectAspects\": true\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -392,7 +392,7 @@
     {
       "_id": "req_26070026ceb04a5486518b9cf880d3e9",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680685950880,
+      "modified": 1680785251392,
       "created": 1680682418504,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "1.2.1 [Register Job with depth and bomLifecycle asPlanned] https://${environment}/irs/jobs",
@@ -400,7 +400,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\r\n  \"globalAssetId\": \"urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c\",\r\n  \"bomLifecycle\": \"asPlanned\",\r\n  \"depth\": 2\r\n}"
+        "text": "{\n  \"globalAssetId\": \"urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c\",\n  \"bomLifecycle\": \"asPlanned\",\n  \"depth\": 2\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -424,7 +424,7 @@
     {
       "_id": "req_2d566fcbbd6f41e9b1420423f7ef1173",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680685957811,
+      "modified": 1680785246843,
       "created": 1680682418488,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "1.3.0 [Register Job with aspect SerialPartTypization] https://${environment}/irs/jobs",
@@ -432,7 +432,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
+        "text": "{\n  \"aspects\": [\n    \"SerialPartTypization\"\n  ],\n  \"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\", \n  \"collectAspects\": true\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -456,7 +456,7 @@
     {
       "_id": "req_5f150b46365e4611a89da0c4a7c4db5f",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680685965004,
+      "modified": 1680785233930,
       "created": 1680682418479,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "1.3.1 [Register Job with aspect SerialPartTypization and AssemblyPartRelationship] https://${environment}/irs/jobs",
@@ -464,7 +464,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\",\r\n    \"AssemblyPartRelationship\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
+        "text": "{\n  \"aspects\": [\n    \"SerialPartTypization\",\n    \"AssemblyPartRelationship\"\n  ],\n  \"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\", \n  \"collectAspects\": true\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -488,7 +488,7 @@
     {
       "_id": "req_23ccd53647b842a9991d7ac9ee4ee2e5",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680685975112,
+      "modified": 1680785226968,
       "created": 1680682418469,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "1.3.2 [Register Job with aspect MaterialForRecycling and BatteryPass] https://${environment}/irs/jobs",
@@ -496,7 +496,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\r\n  \"aspects\": [\r\n    \"BatteryPass\",\r\n    \"MaterialForRecycling\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
+        "text": "{\n  \"aspects\": [\n    \"BatteryPass\",\n    \"MaterialForRecycling\"\n  ],\n  \"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\", \n  \"collectAspects\": true\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -520,7 +520,7 @@
     {
       "_id": "req_35c64cb622f945a281e278f3b42f20bb",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680686114277,
+      "modified": 1680785219935,
       "created": 1680682418460,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "1.3.3 [Register Job with aspect type Batch and CertificateOfDestruction] https://${environment}/irs/jobs",
@@ -528,7 +528,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\r\n  \"aspects\": [\r\n    \"Batch\",\r\n    \"CertificateOfDestruction\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
+        "text": "{\n  \"aspects\": [\n    \"Batch\",\n    \"CertificateOfDestruction\"\n  ],\n  \"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\", \n  \"collectAspects\": true\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -552,7 +552,7 @@
     {
       "_id": "req_db27e7d378074480a0b875f3fef18276",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680686121434,
+      "modified": 1680785212732,
       "created": 1680682418451,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "1.3.4 [Register Job with aspect SerialPartTypization and AddressAspect] https://${environment}/irs/jobs",
@@ -560,7 +560,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\r\n  \"aspects\": [\r\n    \"SerialPartTypization\",\r\n    \"AddressAspect\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
+        "text": "{\n  \"aspects\": [\n    \"SerialPartTypization\",\n    \"AddressAspect\"\n  ],\n  \"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\", \n  \"collectAspects\": true\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -648,7 +648,7 @@
     {
       "_id": "req_175a8c0d15d74083bac8947b3101e522",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680686151356,
+      "modified": 1680788147309,
       "created": 1680682418424,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "1.4.0 [Register Job with invalid or not exisiting aspect type] https://${environment}/irs/jobs",
@@ -656,7 +656,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\r\n  \"aspects\": [\r\n    \"PartSerialTypization\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
+        "text": "{\n  \"aspects\": [\n    \"PartSerialTypization\"\n  ],\n  \"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\", \n  \"collectAspects\": true\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -680,7 +680,7 @@
     {
       "_id": "req_d4bf91b155fd4cec87a02ab5b5d22448",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680686157711,
+      "modified": 1680785318943,
       "created": 1680682418414,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "1.4.1 [Register Job with invalid or not exisiting aspect type] https://${environment}/irs/jobs",
@@ -688,7 +688,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\r\n  \"aspects\": [\r\n    \"\"\r\n  ],\r\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \r\n  \"collectAspects\": true\r\n}"
+        "text": "{\n  \"aspects\": [\n    \"\"\n  ],\n  \"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\", \n  \"collectAspects\": true\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -712,7 +712,7 @@
     {
       "_id": "req_a7534dc824a14d738380367ea3ab204e",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680686163930,
+      "modified": 1680785325820,
       "created": 1680682418401,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "1.5.0 [Register Job with all aspect type] https://{environment}/irs/jobs",
@@ -720,7 +720,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"aspects\": [\n    \"SerialPartTypization\",\n    \"AssemblyPartRelationship\",\n    \"Batch\",\n    \"ProductDescription\",\n    \"IdConversion\",\n    \"MarketplaceOffer\",\n    \"MaterialForRecycling\",\n    \"PhysicalDimension\",\n    \"ReturnRequest\",\n    \"CertificateOfDestruction\",\n    \"CertificateOfDismantler\",\n    \"EndOfLife\",\n    \"EsrCertificate\",\n    \"EsrCertificateStateStatistic\",\n    \"ChargingProcess\",\n    \"AddressAspect\",\n    \"ClaimData\",\n    \"BatteryPass\",\n    \"DiagnosticData\",\n    \"MaterialForHomologation\",\n    \"PartAsPlanned\"\n  ],\n  \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\", \n  \"collectAspects\": true\n}"
+        "text": "{\n  \"aspects\": [\n    \"SerialPartTypization\",\n    \"AssemblyPartRelationship\",\n    \"Batch\",\n    \"ProductDescription\",\n    \"IdConversion\",\n    \"MarketplaceOffer\",\n    \"MaterialForRecycling\",\n    \"PhysicalDimension\",\n    \"ReturnRequest\",\n    \"CertificateOfDestruction\",\n    \"CertificateOfDismantler\",\n    \"EndOfLife\",\n    \"EsrCertificate\",\n    \"EsrCertificateStateStatistic\",\n    \"ChargingProcess\",\n    \"AddressAspect\",\n    \"ClaimData\",\n    \"BatteryPass\",\n    \"DiagnosticData\",\n    \"MaterialForHomologation\",\n    \"PartAsPlanned\"\n  ],\n  \"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\", \n  \"collectAspects\": true\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -744,7 +744,7 @@
     {
       "_id": "req_d556415e74c543eebc0e5b0d466438b1",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680686170338,
+      "modified": 1680785332453,
       "created": 1680682418392,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "1.6.0 [Register Job with BPN lookup] https://{environment}/irs/jobs",
@@ -752,7 +752,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"aspects\": [\n        \"SerialPartTypization\",\n        \"Batch\"\n    ],\n    \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\",\n    \"lookupBPNs\": false\n}"
+        "text": "{\n    \"aspects\": [\n        \"SerialPartTypization\",\n        \"Batch\"\n    ],\n    \"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n    \"lookupBPNs\": false\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -929,9 +929,9 @@
     {
       "_id": "req_0ccf4d7f2f6048f089ba97f8438994e1",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680686209026,
+      "modified": 1680785592879,
       "created": 1680682418325,
-      "url": "{{IRS_HOST}}/irs/jobs/:jobId",
+      "url": "{{IRS_HOST}}/irs/jobs/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
       "name": "3.0.0 [Search for given jobId] http://${environment}/irs/jobs/:jobId?returnUncompletedJob=true",
       "description": "",
       "method": "GET",
@@ -960,9 +960,9 @@
     {
       "_id": "req_99e7a18c126a485a991fe01bd872b4dd",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680686215988,
+      "modified": 1680785629378,
       "created": 1680682418316,
-      "url": "{{IRS_HOST}}/irs/jobs/:jobId",
+      "url": "{{IRS_HOST}}/irs/jobs/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
       "name": "3.1.0 [Search for given jobId] http://${environment}/irs/jobs/:jobId",
       "description": "",
       "method": "GET",
@@ -989,9 +989,9 @@
     {
       "_id": "req_d55ac0a71bba4c759fe910d368690f7a",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680686221831,
+      "modified": 1680785640313,
       "created": 1680682418307,
-      "url": "{{IRS_HOST}}/irs/jobs/:jobId",
+      "url": "{{IRS_HOST}}/irs/jobs/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
       "name": "3.1.1 [Search for invalid jobId] http://${environment}/irs/jobs/:jobId",
       "description": "",
       "method": "GET",
@@ -1018,9 +1018,9 @@
     {
       "_id": "req_2e8e67ed9c0c4f8db542ff4d9dbce855",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680686229976,
+      "modified": 1680788253678,
       "created": 1680682418297,
-      "url": "{{IRS_HOST}}/irs/jobs/:jobId",
+      "url": "{{IRS_HOST}}/irs/jobs/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
       "name": "3.1.2 [Search for unknown jobId] http://${environment}/irs/jobs/:jobId",
       "description": "",
       "method": "GET",
@@ -1047,9 +1047,9 @@
     {
       "_id": "req_4c66b4dc5e3b4de78293ca6e4de21411",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680686241925,
+      "modified": 1680785649588,
       "created": 1680682418280,
-      "url": "{{IRS_HOST}}/irs/jobs/:jobid",
+      "url": "{{IRS_HOST}}/irs/jobs/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
       "name": "6.0.0 [Cancel Job for given jobId] /irs/jobs/:jobid",
       "description": "",
       "method": "PUT",
@@ -1076,7 +1076,7 @@
     {
       "_id": "req_a2450c0751814f43b6e54063f35c5cae",
       "parentId": "fld_0a77eb5a2bb745fd831f9f891f366eec",
-      "modified": 1680686249404,
+      "modified": 1680785379563,
       "created": 1680682418265,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "Register Job",
@@ -1084,7 +1084,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\r\n    \"aspects\": [\r\n        \"AssemblyPartRelationship\",\r\n        \"SerialPartTypization\",\r\n        \"Batch\"\r\n    ],\r\n    \"bomlLifecycle\": \"asBuilt\",\r\n    \"collectAspects\": true,\r\n    \"lookupBPNs\": true,\r\n    \"direction\": \"downward\",\r\n    \"depth\": 10,\r\n    \"globalAssetId\": \"{{GLOBAL_ASSET_ID}}\"\r\n}"
+        "text": "{\n    \"aspects\": [\n        \"AssemblyPartRelationship\",\n        \"SerialPartTypization\",\n        \"Batch\"\n    ],\n    \"bomlLifecycle\": \"asBuilt\",\n    \"collectAspects\": true,\n    \"lookupBPNs\": true,\n    \"direction\": \"downward\",\n    \"depth\": 10,\n    \"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -1185,9 +1185,9 @@
     {
       "_id": "req_5c5ba69311324db6819ad339e2736f41",
       "parentId": "fld_0a77eb5a2bb745fd831f9f891f366eec",
-      "modified": 1680686272510,
+      "modified": 1680785661613,
       "created": 1680682418238,
-      "url": "{{IRS_HOST}}/irs/jobs/:jobId",
+      "url": "{{IRS_HOST}}/irs/jobs/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
       "name": "Search for given jobId",
       "description": "",
       "method": "GET",
@@ -1216,9 +1216,9 @@
     {
       "_id": "req_fddce5c1d5574315bc35c2e963a5dd6b",
       "parentId": "fld_0a77eb5a2bb745fd831f9f891f366eec",
-      "modified": 1680686279134,
+      "modified": 1680785667756,
       "created": 1680682418229,
-      "url": "{{IRS_HOST}}/irs/jobs/:jobid",
+      "url": "{{IRS_HOST}}/irs/jobs/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
       "name": "Cancel Job for given jobId",
       "description": "",
       "method": "PUT",
@@ -1245,9 +1245,9 @@
     {
       "_id": "req_7a6b5777d1bc4b2db218707fe07e0082",
       "parentId": "fld_1e05c58dbf7240e0bf97b592ab1026c1",
-      "modified": 1680686285300,
+      "modified": 1680787142083,
       "created": 1680682418213,
-      "url": "https://semantics.int.demo.catena-x.net/hub/api/v1/models",
+      "url": "{{ _.SEMANTIC_HUB_URL }}/hub/api/v1/models",
       "name": "Get all models",
       "description": "",
       "method": "GET",
@@ -1286,9 +1286,9 @@
     {
       "_id": "req_fff738e77ad44b439e823971e1c65bf8",
       "parentId": "fld_1e05c58dbf7240e0bf97b592ab1026c1",
-      "modified": 1680686291449,
+      "modified": 1680787192766,
       "created": 1680682418204,
-      "url": "https://semantics.int.demo.catena-x.net/hub/api/v1/models/urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization",
+      "url": "{{ _.SEMANTIC_HUB_URL }}/hub/api/v1/models/urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization",
       "name": "Get SerialPartTypization",
       "description": "",
       "method": "GET",
@@ -1315,9 +1315,9 @@
     {
       "_id": "req_e80d811bc5d54e6fbb0926152c06a75c",
       "parentId": "fld_1e05c58dbf7240e0bf97b592ab1026c1",
-      "modified": 1680686298835,
+      "modified": 1680787206836,
       "created": 1680682418192,
-      "url": "https://semantics.int.demo.catena-x.net/hub/api/v1/models/urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization/json-schema",
+      "url": "{{ _.SEMANTIC_HUB_URL }}/hub/api/v1/models/urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization/json-schema",
       "name": "Get SerialPartTypization Json Schema",
       "description": "",
       "method": "GET",
@@ -1344,9 +1344,9 @@
     {
       "_id": "req_61327d8edf304d1eb63c2eaaef528f0b",
       "parentId": "fld_a3ed111da88c4bcab40b440cb9750055",
-      "modified": 1680686305723,
+      "modified": 1680787129609,
       "created": 1680682418174,
-      "url": "https://catenax-bpdm-int.demo.catena-x.net/v1/api/catena/business-partner/:bpn",
+      "url": "{{ _.BPDM_URL }}/v1/api/catena/business-partner/{% param 'string/string', 'BPN', 'ask/stored', '' %}",
       "name": "Get business partner by id",
       "description": "",
       "method": "GET",
@@ -1385,9 +1385,9 @@
     {
       "_id": "req_bc2bb8267f614334828ae8ecea0faf0f",
       "parentId": "fld_1915aa023f314301bb45fca5f3c187f1",
-      "modified": 1680686312160,
+      "modified": 1680786005861,
       "created": 1680682418157,
-      "url": "{{IRS_HOST}}/esr/esr-statistics/:globalAssetId/:bomLifecycle/:certificate/submodel",
+      "url": "{{IRS_HOST}}/esr/esr-statistics/{% prompt 'globalAssetId', 'Provide global asset ID or use default', _.GLOBAL_ASSET_ID, '', false, true %}/{% param 'string/string', 'Bom Lifecycle', 'ask/stored', '' %}/{% param 'string/string', 'certificate', 'ask/stored', '' %}/submodel",
       "name": "Get Esr Statistics",
       "description": "",
       "method": "GET",
@@ -1470,9 +1470,9 @@
     {
       "_id": "req_86148af88f2d4a04a53df5043563a2cb",
       "parentId": "fld_817617af9e9641c58a2c2bf08842ec3b",
-      "modified": 1680686324924,
+      "modified": 1680786035557,
       "created": 1680682418134,
-      "url": "{{IRS_HOST}}/ess/bpn/investigations/:jobId",
+      "url": "{{IRS_HOST}}/ess/bpn/investigations/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
       "name": "Search for investigation by jobId",
       "description": "",
       "method": "GET",
@@ -1543,9 +1543,9 @@
     {
       "_id": "req_c6085002230144979f83a821d14701ab",
       "parentId": "fld_e578440486514e1c8b619af87b6b75ba",
-      "modified": 1680686342629,
+      "modified": 1680786066949,
       "created": 1680682418109,
-      "url": "{{IRS_HOST}}/irs/orders/:orderId",
+      "url": "{{IRS_HOST}}/irs/orders/{% param 'string/string', 'Order ID', 'ask/stored', '' %}",
       "name": "Search for given orderId",
       "description": "",
       "method": "GET",
@@ -1572,9 +1572,9 @@
     {
       "_id": "req_8a21a5adc48048698872fd2447a8f887",
       "parentId": "fld_e578440486514e1c8b619af87b6b75ba",
-      "modified": 1680686356029,
+      "modified": 1680786103331,
       "created": 1680682418099,
-      "url": "{{IRS_HOST}}/irs/orders/:orderId/batches/:batchId",
+      "url": "{{IRS_HOST}}/irs/orders/{% param 'string/string', 'Order ID', 'ask/stored', '' %}/batches/{% param 'string/string', 'Batch ID', 'ask/stored', '' %}",
       "name": "Search for given orderId and batchId",
       "description": "",
       "method": "GET",
@@ -1597,6 +1597,52 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "_type": "request"
+    },
+    {
+      "_id": "env_d2b7eb1621841465ea24b73343568b286aa8ac9a",
+      "parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
+      "modified": 1680782486844,
+      "created": 1680782486844,
+      "name": "Base Environment",
+      "data": {},
+      "dataPropertyOrder": null,
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1680782486844,
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_d2b7eb1621841465ea24b73343568b286aa8ac9a",
+      "parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
+      "modified": 1680788458822,
+      "created": 1680782486851,
+      "name": "Default Jar",
+      "cookies": [
+        {
+          "key": "KC_RESTART",
+          "expires": "1970-01-01T00:00:10.000Z",
+          "maxAge": 0,
+          "domain": "centralidp.int.demo.catena-x.net",
+          "path": "/auth/realms/CX-Central/",
+          "httpOnly": true,
+          "extensions": ["Version=1"],
+          "hostOnly": true,
+          "creation": "2023-04-06T13:30:18.499Z",
+          "lastAccessed": "2023-04-06T13:40:58.822Z",
+          "id": "29248894633162315"
+        }
+      ],
+      "_type": "cookie_jar"
+    },
+    {
+      "_id": "spc_22dfe33611af4731965cc2b08febcfdb",
+      "parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
+      "modified": 1680782484284,
+      "created": 1680782484284,
+      "fileName": "IRS",
+      "contents": "",
+      "contentType": "yaml",
+      "_type": "api_spec"
     }
   ]
 }
