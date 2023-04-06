@@ -88,7 +88,7 @@ stages:
       json:
         globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         collectAspects: true
-        depth: 10
+        depth: 1
         direction: "downward"
       method: POST
       headers:
@@ -157,7 +157,7 @@ stages:
       json:
         globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         collectAspects: false
-        depth: 10
+        depth: 1
         direction: "downward"
       method: POST
       headers:
@@ -227,7 +227,7 @@ stages:
       json:
         globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7c6xyz009123452
         collectAspects: true
-        depth: 10
+        depth: 1
         direction: "downward"
       method: POST
       headers:
@@ -352,7 +352,7 @@ stages:
         aspects:
           - SerialPartTypization
         collectAspects: true
-        depth: 10
+        depth: 1
       method: POST
       headers:
         content-type: application/json
@@ -1684,7 +1684,7 @@ stages:
       json:
         globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         collectAspects: true
-        depth: 10
+        depth: 1
         direction: "downward"
         bomLifecycle: "asPlanned, asBuilt"
       method: POST
@@ -1735,7 +1735,7 @@ stages:
       json:
         globalAssetId: urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa
         collectAspects: true
-        depth: 10
+        depth: 1
         direction: "downward"
       method: POST
       headers:
@@ -1894,7 +1894,7 @@ stages:
       json:
         globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         collectAspects: false
-        depth: 10
+        depth: 1
         direction: "downward"
       method: POST
       headers:
@@ -1965,7 +1965,7 @@ stages:
         globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         collectAspects: false
         lookupBPNs: true
-        depth: 10
+        depth: 1
         direction: "downward"
       method: POST
       headers:
@@ -2036,7 +2036,7 @@ stages:
         globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         collectAspects: false
         lookupBPNs: true
-        depth: 10
+        depth: 1
         direction: "downward"
       method: POST
       headers:
