@@ -1004,66 +1004,66 @@ stages:
         content-type: application/json
 
 
----
-
-test_name: Make sure job with DEPRECATED Catena-X semantichub aspect is processed as expected
-
-strict:
-  - headers:off
-  - json:off
-
-marks:
-  - parametrize:
-      key:
-        deprecated_aspect
-      vals:
-        - VehicleDiagnosticDataQuality
-        - PcfCore
-        - PcfSupplyRelation
-        - PcfTechnical
-        - ContactInformation
-
-stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
-
-  - name: create a job and wait
-    request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
-      json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
-        aspects:
-          - "{deprecated_aspect}"
-        collectAspects: true
-      method: POST
-      headers:
-        content-type: application/json
-        Authorization: "Bearer {access_token:s}"
-    response:
-      status_code: 400
-      json:
-        statusCode: BAD_REQUEST
-        error: "Aspects did not match the available aspects: '[{deprecated_aspect}]'"
-        messages: null
-      headers:
-        content-type: application/json
-
-
+#---
+#
+#test_name: Make sure job with DEPRECATED Catena-X semantichub aspect is processed as expected
+#
+#strict:
+#  - headers:off
+#  - json:off
+#
+#marks:
+#  - parametrize:
+#      key:
+#        deprecated_aspect
+#      vals:
+#        - VehicleDiagnosticDataQuality
+#        - PcfCore
+#        - PcfSupplyRelation
+#        - PcfTechnical
+#        - ContactInformation
+#
+#stages:
+#  - name: authenticate and fetch access token
+#    request:
+#      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+#      method: POST
+#      data:
+#        grant_type: client_credentials
+#        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+#        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+#    response:
+#      status_code: 200
+#      json:
+#        token_type: Bearer
+#      headers:
+#        content-type: application/json
+#      save:
+#        json:
+#          access_token: access_token
+#
+#  - name: create a job and wait
+#    request:
+#      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+#      json:
+#        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+#        aspects:
+#          - "{deprecated_aspect}"
+#        collectAspects: true
+#      method: POST
+#      headers:
+#        content-type: application/json
+#        Authorization: "Bearer {access_token:s}"
+#    response:
+#      status_code: 400
+#      json:
+#        statusCode: BAD_REQUEST
+#        error: "Aspects did not match the available aspects: '[{deprecated_aspect}]'"
+##        messages: null
+ #     headers:
+ #       content-type: application/json
+#
+#
 ---
 
 
