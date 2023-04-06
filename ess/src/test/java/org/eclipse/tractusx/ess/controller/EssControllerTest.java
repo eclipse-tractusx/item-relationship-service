@@ -23,7 +23,6 @@
 package org.eclipse.tractusx.ess.controller;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -74,7 +73,7 @@ class EssControllerTest {
     @WithMockUser(authorities = "view_irs")
     void shouldGetJob() throws Exception {
         final String jobId = UUID.randomUUID().toString();
-        when(essService.getIrsJob(eq(jobId))).thenReturn(Jobs.builder().build());
+        when(essService.getIrsJob(jobId)).thenReturn(Jobs.builder().build());
 
         this.mockMvc.perform(get(path + "/" + jobId))
                     .andExpect(status().isOk());

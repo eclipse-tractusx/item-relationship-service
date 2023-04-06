@@ -50,7 +50,7 @@ class IrsFacadeTest {
     private IrsFacade irsFacade;
 
     @Test
-    public void shouldFetchIrsJobResponse() {
+    void shouldFetchIrsJobResponse() {
         // given
         final UUID jobId = UUID.randomUUID();
         final Jobs expectedResponse = Jobs.builder()
@@ -69,7 +69,7 @@ class IrsFacadeTest {
     }
 
     @Test
-    public void shouldStartIrsJobAndReturnJobId() {
+    void shouldStartIrsJobAndReturnJobId() {
         // given
         final UUID jobId = UUID.randomUUID();
         final JobHandle expectedResponse = JobHandle.builder().id(jobId).build();

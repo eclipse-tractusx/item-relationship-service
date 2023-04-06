@@ -129,7 +129,7 @@ public class EdcRegistration {
             log.info("Notification asset registered successfully.");
         } else {
             log.error("Could not create notification asset, provider returned status code {}",
-                    entity.getStatusCodeValue());
+                    entity.getStatusCode().value());
         }
 
     }
@@ -160,7 +160,7 @@ public class EdcRegistration {
             log.info("Notification policy registered successfully.");
         } else {
             log.error("Could not create notification policy, provider returned status code {}",
-                    entity.getStatusCodeValue());
+                    entity.getStatusCode().value());
         }
     }
 
@@ -186,7 +186,7 @@ public class EdcRegistration {
             log.info("Notification contract definition registered successfully.");
         } else {
             log.error("Could not create notification contract definition, provider returned status code {}",
-                    entity.getStatusCodeValue());
+                    entity.getStatusCode().value());
         }
     }
 
@@ -209,12 +209,11 @@ public class EdcRegistration {
             log.info("Requesting asset from EDC provider with url {}", url);
             final var entity = restTemplate.exchange(url, HttpMethod.GET, toEntity(null), String.class);
             if (entity.getStatusCode().is2xxSuccessful()) {
-//                TODO: (KM) check if its working - below is only assumption SB3
-                final List array = StringMapper.mapFromString(entity.getBody(), List.class);
+                final List<?> array = StringMapper.mapFromString(entity.getBody(), List.class);
                 return array.isEmpty();
             }
             log.error("Cannot ask EDC provider for asset registration, please check it! Status code was {}",
-                    entity.getStatusCodeValue());
+                    entity.getStatusCode().value());
         }
         return false;
     }
