@@ -4,7 +4,7 @@ replicaCount: 1
 image:
   repository: ghcr.io/catenax-ng/product-edc/edc-controlplane-postgresql-hashicorp-vault
   pullPolicy: IfNotPresent
-  tag: "0.2.0"
+  tag: "0.3.0"
 
 serviceAccount:
   create: true
@@ -61,14 +61,14 @@ edc:
       path: /api
     management:
       port: "8181"
-      path: /data
+      path: /api/v1/management
     validation:
       port: "8182"
       path: /validation
     control:
       port: "9999"
       path: /api/controlplane/control
-    ids:
+    protocol:
       port: "8282"
       path: /api/v1/ids
     metrics:

@@ -3,12 +3,14 @@ name: IRS Cucumber Xray execution
 on:
   workflow_dispatch: # Trigger manually
   push:
-    branches: main
+    branches:
+      - main
     paths-ignore:
       - '**/*.md'
       - '**/*.txt'
   pull_request:
-    branches: main
+    branches:
+      - main
     paths-ignore:
       - '**/*.md'
       - '**/*.txt'
@@ -26,6 +28,10 @@ on:
 
 jobs:
   build:
+    # This job does not need to run unless we can access the credentials
+    if: >-
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
+      github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
 
     steps:
@@ -49,8 +55,8 @@ jobs:
         env:
           JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
           JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
-          # JIRA filter 11349: project = TRI AND type = Test AND "Test Type" = Cucumber
-          # Downloads all feature files of cucumber tests inside TRI project
+        # JIRA filter 11349: project = TRI AND type = Test AND "Test Type" = Cucumber
+        # Downloads all feature files of cucumber tests inside TRI project
         run: |
           export HTTP_RESULT=$(curl -s --show-error -w "%{http_code}" -u $JIRA_USERNAME:$JIRA_PASSWORD "https://jira.catena-x.net/rest/raven/1.0/export/test?filter=11349&fz=true" -o features.zip)
           [[ $HTTP_RESULT == 200 || $HTTP_RESULT == 400 ]]
