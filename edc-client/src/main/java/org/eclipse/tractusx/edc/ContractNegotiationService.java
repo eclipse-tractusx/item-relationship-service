@@ -75,7 +75,7 @@ public class ContractNegotiationService {
 
         final NegotiationId negotiationId = edcControlPlaneClient.startNegotiations(negotiationRequest);
 
-        log.info("Fetch negotation id: {}", negotiationId.getValue());
+        log.info("Fetch negotiation id: {}", negotiationId.getValue());
 
         final CompletableFuture<NegotiationResponse> responseFuture = edcControlPlaneClient.getNegotiationResult(
                 negotiationId);
