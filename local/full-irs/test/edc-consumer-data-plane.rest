@@ -2,7 +2,7 @@
 @port = 7181
 @host = {{hostname}}:{{port}}
 @contentType = application/json
-@assetsEndpoint = /data/assets
+@assetsEndpoint = /api/v1/management/assets
 @headerName = X-Api-Key
 @headerValue = password
 

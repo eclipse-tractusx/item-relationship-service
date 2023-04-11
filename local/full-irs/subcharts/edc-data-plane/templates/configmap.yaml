@@ -19,7 +19,7 @@ data:
     edc.oauth.client.id={{ .Values.edc.oauth.client.id }}
     edc.oauth.private.key.alias={{ .Values.edc.oauth.private.key.alias }}
     edc.oauth.provider.jwks.url={{ .Values.edc.oauth.provider.jwks.url}}
-    edc.oauth.public.key.alias={{ .Values.edc.oauth.public.key.alias }}
+    edc.oauth.certificate.alias={{ .Values.edc.oauth.public.key.alias }}
     edc.oauth.token.url={{ .Values.edc.oauth.token.url }}
     edc.vault.hashicorp.timeout.seconds=30
     edc.vault.hashicorp.health.check.enabled=false

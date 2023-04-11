@@ -208,9 +208,9 @@ if __name__ == "__main__":
 
     check_url_args(submodel_server_upload_urls, submodel_server_urls, edc_upload_urls, edc_urls)
 
-    edc_asset_path = "/data/assets"
-    edc_policy_path = "/data/policydefinitions"
-    edc_contract_definition_path = "/data/contractdefinitions"
+    edc_asset_path = "/api/v1/management/assets"
+    edc_policy_path = "/api/v1/management/policydefinitions"
+    edc_contract_definition_path = "/api/v1/management/contractdefinitions"
 
     headers = {
         'Content-Type': 'application/json'

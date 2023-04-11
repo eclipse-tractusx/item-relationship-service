@@ -10,14 +10,14 @@ data:
   configuration.properties: |-
     web.http.default.port={{ .Values.edc.endpoints.default.port }}
     web.http.default.path={{ .Values.edc.endpoints.default.path }}
-    web.http.data.port={{ .Values.edc.endpoints.management.port }}
-    web.http.data.path={{ .Values.edc.endpoints.management.path }}
+    web.http.management.port={{ .Values.edc.endpoints.management.port }}
+    web.http.management.path={{ .Values.edc.endpoints.management.path }}
     web.http.validation.port={{ .Values.edc.endpoints.validation.port }}
     web.http.validation.path={{ .Values.edc.endpoints.validation.path }}
     web.http.control.port={{ .Values.edc.endpoints.control.port }}
     web.http.control.path={{ .Values.edc.endpoints.control.path }}
-    web.http.ids.port={{ .Values.edc.endpoints.ids.port }}
-    web.http.ids.path={{ .Values.edc.endpoints.ids.path }}
+    web.http.protocol.port={{ .Values.edc.endpoints.protocol.port }}
+    web.http.protocol.path={{ .Values.edc.endpoints.protocol.path }}
     edc.hostname={{ .Values.edc.hostname }}
     
     edc.vault.hashicorp.health.check.enabled=false
@@ -52,7 +52,7 @@ data:
     edc.data.encryption.algorithm=NONE
 
     edc.oauth.token.url={{ .Values.edc.oauth.token.url }}
-    edc.oauth.public.key.alias={{ .Values.edc.oauth.public.key.alias }}
+    edc.oauth.certificate.alias={{ .Values.edc.oauth.public.key.alias }}
     edc.oauth.private.key.alias={{ .Values.edc.oauth.private.key.alias }}
 
     edc.oauth.client.id={{ .Values.edc.oauth.client.id }}
@@ -66,7 +66,7 @@ data:
 
     edc.api.auth.key={{ .Values.edc.api.auth.key }}
 
-    edc.receiver.http.endpoint={{ .Values.edc.receiver.http.endpoint }}
+    edc.receiver.http.dynamic.endpoint={{ .Values.edc.receiver.http.endpoint }}
     
     edc.ids.title=Eclipse Dataspace Connector
     edc.ids.description=Eclipse Dataspace Connector
