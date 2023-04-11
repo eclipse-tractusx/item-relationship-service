@@ -24,7 +24,7 @@ stages:
         json:
           access_token: access_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -42,7 +42,7 @@ stages:
           job_id: id
     delay_after: 3
 
-  - name: fetch response for created job
+  - name: verify job response with desired test steps
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -67,7 +67,7 @@ strict:
 stages:
   - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -86,9 +86,10 @@ stages:
       save:
         json:
           job_id: id
-   # delay_after: 320
 
-  - name: fetch response for created job
+  - &verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+    name: verify job response with desired test steps and wait for desired job status
+    max_retries: 60
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -99,11 +100,23 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-    #  json:
-    #    job:
-    #      state: COMPLETED
+      json:
+        job:
+          state: COMPLETED
+    delay_after: 10
+
+  - name: verify job response with desired test steps
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
       verify_response_with:
-        - function: api-tests.tavern_helpers:check_status_is_COMPLETED_within_15_minutes
         - function: api-tests.tavern_helpers:submodels_are_not_empty
         - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
@@ -120,7 +133,7 @@ strict:
 stages:
   - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -139,9 +152,10 @@ stages:
       save:
         json:
           job_id: id
-   # delay_after: 300
 
-  - name: fetch response for created job
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -152,11 +166,7 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-    #  json:
-    #    job:
-    #      state: COMPLETED
       verify_response_with:
-        - function: api-tests.tavern_helpers:check_status_is_COMPLETED_within_15_minutes
         - function: api-tests.tavern_helpers:submodels_are_empty
         - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
@@ -207,7 +217,7 @@ strict:
 stages:
   - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -228,9 +238,10 @@ stages:
       save:
         json:
           job_id: id
-  #  delay_after: 240
 
-  - name: fetch response for created job and check details
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps and check details
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -241,12 +252,8 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-     # json:
-     #   job:
-     #     state: COMPLETED
       verify_response_with:
       #  - function: api-tests.tavern_helpers:tombstones_are_empty
-        - function: api-tests.tavern_helpers:check_status_is_COMPLETED_within_15_minutes
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
         - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
@@ -265,7 +272,7 @@ strict:
 stages:
   - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -287,9 +294,10 @@ stages:
       save:
         json:
           job_id: id
-   # delay_after: 320
 
-  - name: fetch response for created job and check details
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps and check details
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -300,11 +308,7 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-     # json:
-     #   job:
-     #     state: COMPLETED
       verify_response_with:
-        - function: api-tests.tavern_helpers:check_status_is_COMPLETED_within_15_minutes
         #- function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
@@ -323,7 +327,7 @@ strict:
 stages:
   - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -345,11 +349,12 @@ stages:
       save:
         json:
           job_id: id
-   # delay_after: 400
 
- # - *authenticate_and_fetch_token
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
 
-  - name: fetch response for created job and check details
+  - *authenticate_and_fetch_token
+
+  - name: verify job response with desired test steps and check details
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -360,11 +365,7 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-     # json:
-     #   job:
-     #     state: COMPLETED
       verify_response_with:
-        - function: api-tests.tavern_helpers:check_status_is_COMPLETED_within_15_minutes
         #- function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
@@ -384,7 +385,7 @@ strict:
 stages:
   - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -406,9 +407,10 @@ stages:
       save:
         json:
           job_id: id
-    #delay_after: 240
 
-  - name: fetch response for created job and check details
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps and check details
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -419,11 +421,7 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-      #json:
-      #  job:
-       #   state: COMPLETED
       verify_response_with:
-        - function: api-tests.tavern_helpers:check_status_is_COMPLETED_within_15_minutes
         #- function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
@@ -443,7 +441,7 @@ strict:
 stages:
   - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -465,9 +463,10 @@ stages:
       save:
         json:
           job_id: id
-    #delay_after: 300
 
-  - name: fetch response for created job and check details
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps and check details
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -478,11 +477,7 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-     # json:
-      #  job:
-       #   state: COMPLETED
       verify_response_with:
-        - function: api-tests.tavern_helpers:check_status_is_COMPLETED_within_15_minutes
         #- function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
@@ -502,7 +497,7 @@ strict:
 stages:
   - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -524,9 +519,10 @@ stages:
       save:
         json:
           job_id: id
-    #delay_after: 240
 
-  - name: fetch response for created job and check details
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps and check details
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -537,11 +533,7 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-    #  json:
-     #   job:
-      #    state: COMPLETED
       verify_response_with:
-        - function: api-tests.tavern_helpers:check_status_is_COMPLETED_within_15_minutes
        # - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
@@ -561,7 +553,7 @@ strict:
 stages:
   - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -595,7 +587,7 @@ strict:
 stages:
   - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -626,7 +618,7 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 200
+    delay_after: 100
 
   - name: fetch response for running job and check existence of submodels and relationships
     request:
@@ -696,7 +688,7 @@ strict:
 stages:
   - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -737,11 +729,12 @@ stages:
       save:
         json:
           job_id: id
-   # delay_after: 500
 
- # - *authenticate_and_fetch_token
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
 
-  - name: fetch response for created job and check details
+  - *authenticate_and_fetch_token
+
+  - name: verify job response with desired test steps and check details
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -752,11 +745,7 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-     # json:
-     #   job:
-     #     state: COMPLETED
       verify_response_with:
-        - function: api-tests.tavern_helpers:check_status_is_COMPLETED_within_15_minutes
        # - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
@@ -787,7 +776,7 @@ stages:
 #stages:
 #  - *authenticate_and_fetch_token
 #
-#  - name: create a job and wait
+#  - name: create a job and check for success
 #    request:
 #      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
 #      json:
@@ -1100,7 +1089,7 @@ stages:
       headers:
         content-type: application/json
 
-  - name: fetch response for created job
+  - name: verify job response with desired test steps
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -1269,9 +1258,10 @@ stages:
       save:
         json:
           job_id: id
-   # delay_after: 10
 
-  - name: fetch response for created job
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -1282,11 +1272,7 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-     # json:
-     #   job:
-     #     state: COMPLETED
       verify_response_with:
-        - function: api-tests.tavern_helpers:check_status_is_COMPLETED_within_15_minutes
         - function: api-tests.tavern_helpers:submodels_are_empty
         - function: api-tests.tavern_helpers:relationships_are_empty
         - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
@@ -1361,7 +1347,7 @@ strict:
 stages:
   - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -1380,9 +1366,10 @@ stages:
       save:
         json:
           job_id: id
-   # delay_after: 300
 
-  - name: fetch response for created job
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -1393,11 +1380,7 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-     # json:
-     #   job:
-     #     state: COMPLETED
       verify_response_with:
-        - function: api-tests.tavern_helpers:check_status_is_COMPLETED_within_15_minutes
         - function: api-tests.tavern_helpers:bpns_are_empty
       headers:
         content-type: application/json
@@ -1435,9 +1418,10 @@ stages:
       save:
         json:
           job_id: id
-    #delay_after: 300
 
-  - name: fetch response for created job
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -1448,11 +1432,7 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-     # json:
-     #   job:
-     #     state: COMPLETED
       verify_response_with:
-        - function: api-tests.tavern_helpers:check_status_is_COMPLETED_within_15_minutes
         - function: api-tests.tavern_helpers:bpns_are_not_empty
       headers:
         content-type: application/json
@@ -1490,9 +1470,10 @@ stages:
       save:
         json:
           job_id: id
-  #  delay_after: 300
 
-  - name: fetch response for created job
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -1503,11 +1484,7 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-     # json:
-     #   job:
-     #     state: COMPLETED
       verify_response_with:
-        - function: api-tests.tavern_helpers:check_status_is_COMPLETED_within_15_minutes
         - function: api-tests.tavern_helpers:bpns_are_not_empty
         - function: api-tests.tavern_helpers:summary_for_bpns_is_given
       headers:
