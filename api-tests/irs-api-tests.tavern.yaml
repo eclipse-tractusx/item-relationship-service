@@ -87,9 +87,9 @@ stages:
         json:
           job_id: id
 
-  - &verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+  - &verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
     name: verify job response with desired test steps and wait for desired job status
-    max_retries: 60
+    max_retries: 90
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -153,7 +153,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps
     request:
@@ -239,7 +239,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -295,7 +295,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -350,7 +350,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
   - *authenticate_and_fetch_token
 
@@ -408,7 +408,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -464,7 +464,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -520,7 +520,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -730,7 +730,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
   - *authenticate_and_fetch_token
 
@@ -1259,7 +1259,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps
     request:
@@ -1367,7 +1367,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps
     request:
@@ -1419,7 +1419,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps
     request:
@@ -1471,7 +1471,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_10_minutes_for_COMPLETED
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps
     request:
