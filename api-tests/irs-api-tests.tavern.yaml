@@ -5,7 +5,8 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
+  - &authenticate_and_fetch_token
+    name: authenticate and fetch access token
     request:
       url: "{tavern.env_vars.KEYCLOAK_HOST}"
       method: POST
@@ -64,23 +65,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and wait
     request:
@@ -133,23 +118,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and wait
     request:
@@ -203,23 +172,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and check errors in response
     request:
@@ -252,23 +205,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and wait
     request:
@@ -326,23 +263,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and wait
     request:
@@ -400,23 +321,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and wait
     request:
@@ -442,23 +347,7 @@ stages:
           job_id: id
    # delay_after: 400
 
- # - name: authenticate and fetch access token
- #   request:
- #     url: "{tavern.env_vars.KEYCLOAK_HOST}"
- #     method: POST
- #     data:
- #       grant_type: client_credentials
- #       client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
- #       client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
- #   response:
- #     status_code: 200
- #     json:
- #       token_type: Bearer
- #     headers:
- #       content-type: application/json
- #     save:
- #       json:
- #         access_token: access_token
+ # - *authenticate_and_fetch_token
 
   - name: fetch response for created job and check details
     request:
@@ -493,23 +382,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and wait
     request:
@@ -568,23 +441,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and wait
     request:
@@ -643,23 +500,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and wait
     request:
@@ -718,23 +559,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and wait
     request:
@@ -768,23 +593,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and wait
     request:
@@ -850,23 +659,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and check errors in response
     request:
@@ -901,23 +694,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and wait
     request:
@@ -962,23 +739,7 @@ stages:
           job_id: id
    # delay_after: 500
 
- # - name: authenticate and fetch access token
-  #  request:
-   #   url: "{tavern.env_vars.KEYCLOAK_HOST}"
-    #  method: POST
-   #   data:
-   #     grant_type: client_credentials
-   #     client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-   #     client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-   # response:
-   #   status_code: 200
-   #   json:
-   #     token_type: Bearer
-   #   headers:
-   #     content-type: application/json
-   #   save:
-   #     json:
-   #       access_token: access_token
+ # - *authenticate_and_fetch_token
 
   - name: fetch response for created job and check details
     request:
@@ -1024,23 +785,7 @@ stages:
 #        - ContactInformation
 #
 #stages:
-#  - name: authenticate and fetch access token
-#    request:
-#      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-#      method: POST
-#      data:
-#        grant_type: client_credentials
-#        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-#        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-#    response:
-#      status_code: 200
-#      json:
-#        token_type: Bearer
-#      headers:
-#        content-type: application/json
-#      save:
-#        json:
-#          access_token: access_token
+#  - *authenticate_and_fetch_token
 #
 #  - name: create a job and wait
 #    request:
@@ -1074,23 +819,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all COMPLETED jobs
     request:
@@ -1119,23 +848,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all ERROR jobs
     request:
@@ -1164,23 +877,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all INITIAL jobs
     request:
@@ -1211,23 +908,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job for the next step
     request:
@@ -1275,23 +956,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all jobs
     request:
@@ -1319,23 +984,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get job for unknown globalAssetId
     request:
@@ -1363,23 +1012,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get job for unknown globalAssetId
     request:
@@ -1408,23 +1041,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all jobs
     request:
@@ -1451,23 +1068,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job
     request:
@@ -1527,23 +1128,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all jobs with status UNSAVED, INITIAL, RUNNING, TRANSFERS_FINISHED and CANCELED
     request:
@@ -1571,23 +1156,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all jobs with status COMPLETED and ERROR
     request:
@@ -1615,23 +1184,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all jobs with status COMPLETED and ERROR
     request:
@@ -1660,23 +1213,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and check error in response
     request:
@@ -1711,23 +1248,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job with unknown globalAssetId
     request:
@@ -1784,23 +1305,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all jobs
     request:
@@ -1827,23 +1332,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all jobs with requested pagination settings
     request:
@@ -1870,23 +1359,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and wait
     request:
@@ -1940,23 +1413,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job with lookupBPNs = true and wait
     request:
@@ -2011,23 +1468,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job with lookupBPNs = true and wait
     request:
