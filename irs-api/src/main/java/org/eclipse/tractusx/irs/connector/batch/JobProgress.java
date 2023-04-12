@@ -20,14 +20,38 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.common;
+package org.eclipse.tractusx.irs.connector.batch;
 
-import java.util.Optional;
 import java.util.UUID;
 
+import lombok.Builder;
+import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.component.enums.JobState;
+
 /**
- * Contains detailed information about finished job
+ * Details about job progress used to monitor progress in job
  */
-public record JobProcessingFinishedEvent(String jobId, String jobState, String callbackUrl, Optional<UUID> batchId) {
+@Data
+@Builder(toBuilder = true)
+@Slf4j
+@Jacksonized
+public class JobProgress {
+
+    /**
+     * Global Asset Id that was requested by Batch Order
+     */
+    private String globalAssetId;
+
+    /**
+     * Job Id that was registered by Batch Order process
+     */
+    private UUID jobId;
+
+    /**
+     * Job status that will be updated by handle job events
+     */
+    private JobState jobState;
 
 }

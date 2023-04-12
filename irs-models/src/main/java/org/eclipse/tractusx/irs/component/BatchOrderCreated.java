@@ -20,14 +20,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.common;
+package org.eclipse.tractusx.irs.component;
 
-import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Contains detailed information about finished job
- */
-public record JobProcessingFinishedEvent(String jobId, String jobState, String callbackUrl, Optional<UUID> batchId) {
+import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 
+/**
+ * Id of the created Batch order
+ */
+@ApiModel(description = "Id of the created Batch order.")
+@Builder
+@SuppressWarnings("PMD.ShortVariable")
+public record BatchOrderCreated(@Schema(description = "Id of the Batch Order.", implementation = UUID.class) UUID id) {
+
+    @Override
+    public String toString() {
+        return id.toString();
+    }
 }

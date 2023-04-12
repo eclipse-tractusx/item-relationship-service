@@ -89,7 +89,7 @@ class InvestigationJobProcessingEventListenerTest {
         when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
                 () -> true);
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
-                JobState.COMPLETED.name(), "");
+                JobState.COMPLETED.name(), "", Optional.empty());
 
         // when
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
@@ -105,7 +105,7 @@ class InvestigationJobProcessingEventListenerTest {
         // given
         when(edcDiscoveryFacade.getEdcBaseUrl(anyString())).thenReturn(Optional.empty());
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
-                JobState.COMPLETED.name(), "");
+                JobState.COMPLETED.name(), "", Optional.empty());
 
         // when
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
@@ -124,7 +124,7 @@ class InvestigationJobProcessingEventListenerTest {
         when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
                 () -> true);
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(
-                recursiveJobId.toString(), JobState.COMPLETED.name(), "");
+                recursiveJobId.toString(), JobState.COMPLETED.name(), "", Optional.empty());
 
         // when
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);

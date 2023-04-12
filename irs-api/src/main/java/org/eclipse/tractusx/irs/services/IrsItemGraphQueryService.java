@@ -142,6 +142,10 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
+        return this.registerItemJob(request, null);
+    }
+
+    public JobHandle registerItemJob(final @NonNull RegisterJob request, final UUID batchId) {
         final var params = buildJobParameter(request);
         if (params.getBomLifecycle().equals(BomLifecycle.AS_PLANNED) && params.getDirection()
                                                                               .equals(Direction.UPWARD)) {
@@ -149,7 +153,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             throw new IllegalArgumentException("BomLifecycle asPlanned with direction upward is not supported yet!");
         }
 
-        final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getGlobalAssetId(), params);
+        final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getGlobalAssetId(), params, batchId);
         meterRegistryService.incrementNumberOfCreatedJobs();
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {

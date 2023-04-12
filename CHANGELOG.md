@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
+### Added
+- Introduced Batch processing API endpoints. Batch Order is registered and executed for a bunch of globalAssetIds in one call.
+  - API Endpoint POST Register Batch Order {{IRS_HOST}}/irs/orders
+  - API Endpoint GET Batch Order {{IRS_HOST}}/irs/orders/:orderId
+  - API Endpoint GET Batch {{IRS_HOST}}/irs/orders/:orderId/batches/:batchId
+
 ## [2.4.0] - 2023-03-30
 ### Added
 - IRS is now able to cache the EDC catalog. Caching can be disabled via application config. Maximum amount of cached items and item time-to-live can be configured as well. 

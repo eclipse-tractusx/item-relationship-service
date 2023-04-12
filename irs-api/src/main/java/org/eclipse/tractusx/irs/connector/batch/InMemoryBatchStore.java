@@ -20,14 +20,33 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.common;
+package org.eclipse.tractusx.irs.connector.batch;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Contains detailed information about finished job
+ * Manages storage of {@link Batch} state in memory with no persistence.
  */
-public record JobProcessingFinishedEvent(String jobId, String jobState, String callbackUrl, Optional<UUID> batchId) {
+public class InMemoryBatchStore implements BatchStore {
 
+    private final Map<UUID, Batch> store = new ConcurrentHashMap<>();
+
+    @Override
+    public void save(final UUID batchId, final Batch batch) {
+        store.put(batchId, batch);
+    }
+
+    @Override
+    public Optional<Batch> find(final UUID batchId) {
+        return Optional.ofNullable(store.get(batchId));
+    }
+
+    @Override
+    public List<Batch> findAll() {
+        return store.values().stream().toList();
+    }
 }

@@ -82,7 +82,7 @@ class InvestigationJobProcessingEventListener {
     @Async
     @EventListener
     public void handleJobProcessingFinishedEvent(final JobProcessingFinishedEvent jobProcessingFinishedEvent) {
-        final UUID completedJobId = UUID.fromString(jobProcessingFinishedEvent.getJobId());
+        final UUID completedJobId = UUID.fromString(jobProcessingFinishedEvent.jobId());
         final Optional<BpnInvestigationJob> bpnInvestigationJob = bpnInvestigationJobCache.findByJobId(completedJobId);
 
         bpnInvestigationJob.ifPresent(investigationJob -> {

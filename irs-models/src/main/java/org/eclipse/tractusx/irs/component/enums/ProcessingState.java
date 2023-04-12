@@ -20,14 +20,16 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.common;
-
-import java.util.Optional;
-import java.util.UUID;
+package org.eclipse.tractusx.irs.component.enums;
 
 /**
- * Contains detailed information about finished job
+ * The state of the batch.
  */
-public record JobProcessingFinishedEvent(String jobId, String jobState, String callbackUrl, Optional<UUID> batchId) {
+public enum ProcessingState {
+    INITIALIZED,
+    COMPLETED,
+    PROCESSING,
+    PARTIAL,
+    ERROR
 
 }

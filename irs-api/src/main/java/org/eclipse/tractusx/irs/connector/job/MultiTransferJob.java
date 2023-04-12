@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -69,6 +70,9 @@ public class MultiTransferJob {
     @NonNull
     @Getter
     private Job job;
+
+    @Getter
+    private Optional<UUID> batchId;
 
     /**
      * Collection of transfers that have completed for the job.

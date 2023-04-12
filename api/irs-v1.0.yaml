@@ -481,6 +481,205 @@ paths:
       summary: Get all available aspect models from semantic hub or local models.
       tags:
         - Aspect Models
+  /irs/orders:
+    post:
+      description: "Registers an IRS order with an array of {globalAssetIds}.\
+      \ Each globalAssetId will be processed in an IRS Job, grouped in batches."
+      operationId: registerOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterBatchOrder'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/job-handle'
+              schema:
+                $ref: '#/components/schemas/BatchOrderCreated'
+          description: Returns orderId of registered Batch order.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Batch Order registration failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+      security:
+        - oAuth2:
+            - profile email
+      summary: "Registers an IRS order with an array of {globalAssetIds}.\
+      \ Each globalAssetId will be processed in an IRS Job, grouped in batches."
+      tags:
+        - Item Relationship Service
+  /irs/orders/{orderId}:
+    get:
+      description: Get a batch order for a given orderId.
+      operationId: getBatchOrder
+      parameters:
+        - description: Id of the order.
+          example: 6c311d29-5753-46d4-b32c-19b918ea93b0
+          in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+            maxLength: 36
+            minLength: 36
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/complete-order-result'
+              schema:
+                $ref: '#/components/schemas/BatchOrderResponse'
+          description: Get a batch order for a given orderId.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Return Batch Order failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "404":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-404'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Batch Order with the requested orderId not found.
+      security:
+        - oAuth2:
+            - profile email
+      summary: Get a batch order for a given orderId.
+      tags:
+        - Item Relationship Service
+  /irs/orders/{orderId}/batches/{batchId}:
+    get:
+      description: Get a batch with a given batchId for a given orderId.
+      operationId: getBatch
+      parameters:
+        - description: Id of the order.
+          example: 6c311d29-5753-46d4-b32c-19b918ea93b0
+          in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+            maxLength: 36
+            minLength: 36
+        - description: Id of the batch.
+          example: 4bce40b8-64c7-41bf-9ca3-e9432c7fef98
+          in: path
+          name: batchId
+          required: true
+          schema:
+            type: string
+            format: uuid
+            maxLength: 36
+            minLength: 36
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/complete-batch-result'
+              schema:
+                $ref: '#/components/schemas/BatchResponse'
+          description: Get a batch with a given batchId for a given orderId.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Return batch failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "404":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-404'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Batch with the requested orderId and batchId not found.
+      security:
+        - oAuth2:
+            - profile email
+      summary: Get a batch with a given batchId for a given orderId.
+      tags:
+        - Item Relationship Service
 components:
   examples:
     canceled-job-result:
@@ -503,7 +702,7 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
-            depth: 4
+            depth: 1
             direction: downward
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
@@ -516,6 +715,22 @@ components:
         relationships: [ ]
         submodels: [ ]
         tombstones: [ ]
+    complete-batch-result:
+      value:
+        batchId: f253718e-a270-4367-901b-9d50d9bd8462
+        batchNumber: 1
+        batchProcessingState: COMPLETED
+        batchTotal: 1
+        completedOn: 2022-02-03T14:48:54.709Z
+        jobs:
+          - completedOn: 2022-02-03T14:48:54.709Z
+            id: 6c311d29-5753-46d4-b32c-19b918ea93b0
+            startedOn: 2022-02-03T14:48:54.709Z
+            state: COMPLETED
+        jobsInBatchChecksum: 1
+        orderId: f253718e-a270-4367-901b-9d50d9bd8462
+        startedOn: 2022-02-03T14:48:54.709Z
+        totalJobs: 1
     complete-job-list-processing-state:
       value:
         content:
@@ -549,7 +764,7 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
-            depth: 4
+            depth: 1
             direction: downward
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
@@ -635,6 +850,17 @@ components:
               lastAttempt: 2022-02-03T14:48:54.709Z
               processStep: SchemaValidation
               retryCounter: 0
+    complete-order-result:
+      value:
+        batchChecksum: 1
+        batches:
+          - batchId: f253718e-a270-4367-901b-9d50d9bd8462
+            batchNumber: 1
+            batchProcessingState: PARTIAL
+            batchUrl: https://../irs/orders/f253718e-a270-4367-901b-9d50d9bd8462/batches/f253718e-a270-4367-901b-9d50d9bd8462
+            jobsInBatchChecksum: 1
+        orderId: f253718e-a270-4367-901b-9d50d9bd8462
+        state: COMPLETED
     error-response-400:
       value:
         error: Bad request
@@ -678,7 +904,7 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
-            depth: 4
+            depth: 1
             direction: downward
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
@@ -716,7 +942,7 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
-            depth: 4
+            depth: 1
             direction: downward
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
@@ -822,7 +1048,7 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
-            depth: 4
+            depth: 1
             direction: downward
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
@@ -909,6 +1135,101 @@ components:
           description: Number of running item transfers.
           maximum: 2147483647
           minimum: 0
+    BatchOrderCreated:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Id of the Batch Order.
+    BatchOrderResponse:
+      type: object
+      additionalProperties: false
+      description: BatchOrderAck Payload Response.
+      properties:
+        batchChecksum:
+          type: integer
+          format: int32
+          description: Expected number of batches in order.
+        batches:
+          type: array
+          description: Array of batches.
+          items:
+            $ref: '#/components/schemas/BatchResponse'
+          maxItems: 2147483647
+        orderId:
+          type: string
+          format: uuid
+          description: Id of the order.
+          maxLength: 36
+          minLength: 36
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        state:
+          type: string
+          description: The state of the order.
+          enum:
+            - INITIALIZED
+            - COMPLETED
+            - PROCESSING
+            - PARTIAL
+            - ERROR
+    BatchResponse:
+      type: object
+      additionalProperties: false
+      description: Batch model.
+      properties:
+        batchId:
+          type: string
+          format: uuid
+          description: Id of the batch.
+          maxLength: 36
+          minLength: 36
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        batchNumber:
+          type: integer
+          format: int32
+          description: Sequential number begins with first (1.) batch.
+        batchProcessingState:
+          type: string
+          description: The state of the batch.
+          enum:
+            - INITIALIZED
+            - COMPLETED
+            - PROCESSING
+            - PARTIAL
+            - ERROR
+        batchTotal:
+          type: integer
+          format: int32
+          description: The total number of batches.
+        completedOn:
+          type: string
+          format: date-time
+        jobs:
+          type: array
+          description: Array of jobs.
+          items:
+            $ref: '#/components/schemas/JobStatusResult'
+          maxItems: 2147483647
+        jobsInBatchChecksum:
+          type: integer
+          format: int32
+          description: Expected number of jobs in batch.
+        orderId:
+          type: string
+          format: uuid
+          description: Id of the order.
+          maxLength: 36
+          minLength: 36
+          pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        startedOn:
+          type: string
+          format: date-time
+        totalJobs:
+          type: integer
+          format: int32
+          description: Total amount of jobs inside the order.
     Bpn:
       type: object
       additionalProperties: false
@@ -1365,6 +1686,87 @@ components:
           items:
             type: string
           maxItems: 2147483647
+    RegisterBatchOrder:
+      type: object
+      additionalProperties: false
+      description: Request body for registering a new Batch Order.
+      properties:
+        aspects:
+          type: array
+          items:
+            type: string
+          maxItems: 2147483647
+        batchSize:
+          type: integer
+          format: int32
+          default: 20
+          description: Size of the batch.
+          maximum: 100
+          minimum: 10
+        batchStrategy:
+          type: string
+          description: The strategy how the batch is processed internally in IRS.
+          enum:
+            - PRESERVE_BATCH_JOB_ORDER
+            - PRESERVE_JOB_ORDER
+            - PRESERVE_BATCH_ORDER
+        bomLifecycle:
+          type: string
+          description: The lifecycle context in which the child part was assembled
+            into the parent part.
+          enum:
+            - asBuilt
+            - asPlanned
+        callbackUrl:
+          type: string
+          description: "Callback url to notify requestor when job processing is finished.\
+                    \ There are four uri variable placeholders that can be used: orderId,\
+                    \ batchId, orderState and batchState."
+          example: "https://hostname.com/callback?orderId={orderId}&batchId={batchId}&orderState={orderState}&batchState={batchState}"
+        collectAspects:
+          type: boolean
+          description: Flag to specify whether aspects should be requested and collected.
+            Default is false.
+        depth:
+          type: integer
+          format: int32
+          description: Max depth of the item graph returned. If no depth is set item
+            graph with max depth is returned.
+          maximum: 100
+          minimum: 1
+        direction:
+          type: string
+          default: downward
+          description: Item graph traversal direction.
+          enum:
+            - upward
+            - downward
+        globalAssetIds:
+          type: array
+          items:
+            type: string
+          maxItems: 2147483647
+        jobTimeout:
+          type: integer
+          format: int32
+          default: 3600
+          description: Timeout in seconds for each job processing inside the complete
+            order.
+          maximum: 7200
+          minimum: 60
+        lookupBPNs:
+          type: boolean
+          description: Flag to specify whether BPNs should be collected and resolved
+            via the configured BPDM URL. Default is false.
+        timeout:
+          type: integer
+          format: int32
+          default: 43200
+          description: Timeout in seconds for the complete batch order processing.
+          maximum: 86400
+          minimum: 60
+      required:
+        - globalAssetIds
     RegisterBpnInvestigationJob:
       type: object
       additionalProperties: false
@@ -1380,8 +1782,8 @@ components:
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
-                \ There are two uri variable placeholders that can be used: jobId and\
-                \ jobState."
+                    \ There are two uri variable placeholders that can be used: jobId and\
+                    \ jobState."
           example: "https://hostname.com/callback?jobId={jobId}&jobState={jobState}"
         globalAssetId:
           type: string
@@ -1418,9 +1820,8 @@ components:
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
-            \ There are two uri variable placeholders that can be used: jobId and\
-            \ jobState."
-          example: "https://hostname.com/callback?jobId={jobId}&jobState={jobState}"
+            \ There are two uri variable placeholders that can be used: id and state."
+          example: "https://hostname.com/callback?id={id}&state={state}"
         collectAspects:
           type: boolean
           description: Flag to specify whether aspects should be requested and collected.
