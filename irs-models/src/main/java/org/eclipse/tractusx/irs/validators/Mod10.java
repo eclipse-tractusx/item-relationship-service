@@ -20,16 +20,26 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.aaswrapper.job;
+package org.eclipse.tractusx.irs.validators;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.eclipse.tractusx.irs.component.enums.JobState;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
 /**
- * Contains detailed information about finished job
+ * Modulo 10 constraint
  */
-public record JobProcessingFinishedEvent(String jobId, JobState jobState, String callbackUrl, Optional<UUID> batchId) {
-
+@Documented
+@Constraint(validatedBy = Mod10Validator.class)
+@Target({ ElementType.METHOD, ElementType.FIELD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Mod10 {
+    String message() default "Invalid number";
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
 }

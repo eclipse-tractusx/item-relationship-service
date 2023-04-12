@@ -20,16 +20,33 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.aaswrapper.job;
+package org.eclipse.tractusx.irs.connector.batch;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
-import org.eclipse.tractusx.irs.component.enums.JobState;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Contains detailed information about finished job
+ * Manages storage of {@link BatchOrder} state in memory with no persistence.
  */
-public record JobProcessingFinishedEvent(String jobId, JobState jobState, String callbackUrl, Optional<UUID> batchId) {
+public class InMemoryBatchOrderStore implements BatchOrderStore {
 
+    private final Map<UUID, BatchOrder> store = new ConcurrentHashMap<>();
+
+    @Override
+    public void save(final UUID batchId, final BatchOrder batchOrder) {
+        store.put(batchId, batchOrder);
+    }
+
+    @Override
+    public Optional<BatchOrder> find(final UUID batchId) {
+        return Optional.ofNullable(store.get(batchId));
+    }
+
+    @Override
+    public List<BatchOrder> findAll() {
+        return store.values().stream().toList();
+    }
 }

@@ -20,16 +20,32 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.aaswrapper.job;
+package org.eclipse.tractusx.irs.util;
 
-import java.util.Optional;
-import java.util.UUID;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.validators.Mod10Validator;
+import org.junit.jupiter.api.Test;
 
-/**
- * Contains detailed information about finished job
- */
-public record JobProcessingFinishedEvent(String jobId, JobState jobState, String callbackUrl, Optional<UUID> batchId) {
+class Mod10ValidatorTest {
 
+    final Mod10Validator mod10Validator = new Mod10Validator();
+
+    @Test
+    void shouldReturnTrueForModulo10Value() {
+        final int value = 50;
+
+        final boolean valid = mod10Validator.isValid(value, null);
+
+        assertThat(valid).isTrue();
+    }
+
+    @Test
+    void shouldReturnFalseForNotModulo10Value() {
+        final int value = 99;
+
+        final boolean valid = mod10Validator.isValid(value, null);
+
+        assertThat(valid).isFalse();
+    }
 }
