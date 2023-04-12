@@ -71,49 +71,51 @@ public class JobEventLinkedQueueListener {
 
         jobEvent.batchId().ifPresent(batchId -> Optional.ofNullable(queueMap.get(batchId)).ifPresent(queue -> {
             queue.linkedQueue.add(jobEvent);
-            checkSize(batchId, queue);
+            checkIfIsCompleted(batchId, queue);
         }));
     }
 
-    private void checkSize(final UUID batchId, final LimitedJobEventQueue queue) {
+    private void checkIfIsCompleted(final UUID batchId, final LimitedJobEventQueue queue) {
         if (queue.hasReachLimit()) {
             log.info("BatchId: {} reached size to update status and check state.", batchId);
             batchStore.find(batchId).ifPresent(batch -> {
-                final List<JobProgress> progressList = batch.getJobProgressList();
-                queue.linkedQueue.forEach(event -> progressList.stream()
-                                               .filter(jobProgress -> jobProgress.getJobId().toString().equals(event.jobId()))
-                                               .findFirst()
-                                               .ifPresent(jobProgress -> jobProgress.setJobState(event.jobState())));
-                final ProcessingState processingState = calculateProcessingState(progressList);
-                log.info("BatchId: {} reached {} state.", batchId, processingState);
-
-                updateBatch(batch, progressList, processingState);
-
-                batchStore.save(batchId, batch);
+                final List<JobProgress> progressList = updateProgressOfJobsInBatch(queue, batch);
+                final ProcessingState batchProcessingState = calculateProcessingState(progressList);
+                log.info("BatchId: {} reached {} state.", batchId, batchProcessingState);
+                saveUpdatedBatch(batch, progressList, batchProcessingState);
                 queueMap.remove(batchId);
-
-                if (isCompleted(processingState)) {
-                    log.info("BatchId: {} finished processing.", batchId);
-                    processingCompleted(batch, processingState);
-                }
+                publishFinishProcessingEvent(batch, batchProcessingState);
             });
         }
     }
 
-    private void updateBatch(final Batch batch, final List<JobProgress> progressList,
+    private List<JobProgress> updateProgressOfJobsInBatch(final LimitedJobEventQueue queue, final Batch batch) {
+        final List<JobProgress> progressList = batch.getJobProgressList();
+        queue.linkedQueue.forEach(event -> progressList.stream()
+                                                       .filter(jobProgress -> jobProgress.getJobId()
+                                                                                         .toString()
+                                                                                         .equals(event.jobId()))
+                                                       .findFirst()
+                                                       .ifPresent(jobProgress -> jobProgress.setJobState(
+                                                               event.jobState())));
+        return progressList;
+    }
+
+    private void saveUpdatedBatch(final Batch batch, final List<JobProgress> progressList,
             final ProcessingState processingState) {
         batch.setBatchState(processingState);
         batch.setJobProgressList(progressList);
         if (isCompleted(processingState)) {
             batch.setCompletedOn(ZonedDateTime.now());
         }
+        batchStore.save(batch.getBatchId(), batch);
     }
 
     private static boolean isCompleted(final ProcessingState processingState) {
         return ProcessingState.COMPLETED.equals(processingState) || ProcessingState.ERROR.equals(processingState);
     }
 
-    private void processingCompleted(final Batch batch, final ProcessingState processingState) {
+    private void publishFinishProcessingEvent(final Batch batch, final ProcessingState processingState) {
         final Optional<BatchOrder> batchOrder = batchOrderStore.find(batch.getBatchOrderId());
 
         final String callbackUrl = batchOrder.map(BatchOrder::getCallbackUrl).orElse("");
