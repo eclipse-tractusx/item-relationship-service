@@ -97,7 +97,7 @@ spec:
                   name: {{ template "irs.secretName" . }}
                   key: edcApiSecret
             {{- if .Values.env }}
-            {{- include "common.tplvalues.render" (dict "value" .Values.primary.extraEnvVars "context" $) | nindent 12 }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.env "context" $) | nindent 12 }}
             {{- end }}
           ports:
             - name: http
