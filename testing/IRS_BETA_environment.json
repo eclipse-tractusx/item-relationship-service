@@ -5,6 +5,6 @@
 	"CLIENT_SECRET": "",
 	"GLOBAL_ASSET_ID": "urn:uuid:aeae35a2-15c0-4044-a58e-6d4238e8bb7b",
 	"DIGITAL_TWIN_REGISTRY": "https://semantics.beta.demo.catena-x.net/registry",
-	"SEMANTIC_HUB_URL": "https://semantics.int.demo.catena-x.net",
-	"BPDM_URL": "https://catenax-bpdm-int.demo.catena-x.net"
+	"SEMANTIC_HUB_URL": "https://semantics.beta.demo.catena-x.net",
+	"BPDM_URL": "https://partners-pool.beta.demo.catena-x.net"
 }
