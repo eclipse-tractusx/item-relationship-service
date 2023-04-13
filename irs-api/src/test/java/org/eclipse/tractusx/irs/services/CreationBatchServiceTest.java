@@ -44,6 +44,7 @@ import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchStore;
 import org.eclipse.tractusx.irs.connector.batch.JobProgress;
+import org.eclipse.tractusx.irs.services.timeouts.TimeoutSchedulerBatchProcessingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
@@ -57,6 +58,7 @@ class CreationBatchServiceTest {
     private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
     private final JobEventLinkedQueueListener jobEventLinkedQueueListener = mock(JobEventLinkedQueueListener.class);
     private final IrsConfiguration irsConfiguration = mock(IrsConfiguration.class);
+    private final TimeoutSchedulerBatchProcessingService timeoutScheduler = mock(TimeoutSchedulerBatchProcessingService.class);
     private final static String EXAMPLE_URL = "https://exampleUrl.com";
     private CreationBatchService service;
 
@@ -64,7 +66,8 @@ class CreationBatchServiceTest {
     void beforeEach() {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
-        service = new CreationBatchService(batchOrderStore, batchStore, applicationEventPublisher, jobEventLinkedQueueListener, irsConfiguration);
+        service = new CreationBatchService(batchOrderStore, batchStore, applicationEventPublisher,
+                jobEventLinkedQueueListener, irsConfiguration, timeoutScheduler);
     }
 
     @Test
