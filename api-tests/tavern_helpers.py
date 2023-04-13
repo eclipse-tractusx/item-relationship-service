@@ -201,3 +201,10 @@ def summary_for_bpns_is_given(response):
     print("completed:  ", bpnLookups.get('completed'))
     assert bpnLookups.get('completed') != 0
     assert bpnLookups.get('failed') == 0
+
+
+def errors_for_invalid_batchSize_are_correct(response):
+    print(response.json().get("messages"))
+    error_list = response.json().get("messages")
+    assert 'batchSize:Batch size value must be mod 10 compliant' in error_list
+    assert 'batchSize:must be greater than or equal to 10' in error_list

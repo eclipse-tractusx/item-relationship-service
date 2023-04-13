@@ -1,0 +1,155 @@
+test_name: Make sure batch-job with several valid globalAssetIds has been requested correctly
+# -> job starten -> 201 und jobId checken -> job aufrufen und Pflichtangaben abfragen
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a batch job with several valid globalAssetIds
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders"
+      json:
+        globalAssetIds:
+          - urn:uuid:771d2ccc-a081-4d3a-bcb2-46c6a0a33743
+          - urn:uuid:3db730be-9de5-4db5-a58d-684de36484e7
+          - urn:uuid:73173bf5-08df-4898-9d6d-8899015c161e
+          - urn:uuid:07e0997f-4212-4456-8f27-164b30fc8355
+          - urn:uuid:88f51be1-3771-4335-8b5c-4c5050123127
+        aspects:
+          - "AssemblyPartRelationship"
+          - "SerialPartTypization"
+        collectAspects: true
+        lookupBPNs: true
+        batchSize: 10
+        batchStrategy: "PRESERVE_BATCH_JOB_ORDER"
+        depth: 1
+        direction: "downward"
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+#  - name: verify job response with desired test steps and wait for desired job status
+#    max_retries: 90
+#    request:
+#      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+#      params:
+ #       returnUncompletedJob: true
+ #     method: GET
+ #     headers:
+ #       content-type: application/json
+ #       Authorization: "Bearer {access_token:s}"
+ #   response:
+ #     status_code: 200
+ #     json:
+ #       job:
+ #         state: COMPLETED
+ #   delay_after: 10
+
+  - name: verify job response with desired test steps
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        # check bachURL is assambled correctly; batchId batchNumber jobsInBatchCheckSum batchProcessingState error are presented
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+        - function: api-tests.tavern_helpers:errors_for_unknown_globalAssetId_are_correct
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure batch-job with invalid request data has been responsed correctly
+# -> FERTIG
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: authenticate and fetch access token
+    request:
+      url: "{tavern.env_vars.KEYCLOAK_HOST}"
+      method: POST
+      data:
+        grant_type: client_credentials
+        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
+        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
+    response:
+      status_code: 200
+      json:
+        token_type: Bearer
+      headers:
+        content-type: application/json
+      save:
+        json:
+          access_token: access_token
+
+  - name: create a batch job with several valid globalAssetIds but invalid batchSize and check response
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders"
+      json:
+        globalAssetIds:
+          - urn:uuid:771d2ccc-a081-4d3a-bcb2-46c6a0a33743
+          - urn:uuid:3db730be-9de5-4db5-a58d-684de36484e7
+          - urn:uuid:73173bf5-08df-4898-9d6d-8899015c161e
+          - urn:uuid:07e0997f-4212-4456-8f27-164b30fc8355
+          - urn:uuid:88f51be1-3771-4335-8b5c-4c5050123127
+        aspects:
+          - "AssemblyPartRelationship"
+          - "SerialPartTypization"
+        collectAspects: true
+        lookupBPNs: true
+        batchSize: 2
+        batchStrategy: "PRESERVE_BATCH_JOB_ORDER"
+        depth: 1
+        direction: "downward"
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+      verify_response_with:
+        function: api-tests.tavern_helpers:errors_for_invalid_batchSize_are_correct
+      json:
+        statusCode: BAD_REQUEST
+        error: Invalid Arguments.
+      headers:
+        content-type: application/json
+
