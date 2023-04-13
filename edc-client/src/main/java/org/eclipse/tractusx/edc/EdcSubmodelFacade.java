@@ -42,8 +42,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EdcSubmodelFacade {
 
-    public static final String EDC_REST_TEMPLATE = "edcRestTemplate";
-
     private final EdcSubmodelClient client;
 
     @SuppressWarnings("PMD.PreserveStackTrace")
