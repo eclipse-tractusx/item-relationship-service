@@ -39,7 +39,17 @@
                     <groupId>org.yaml</groupId>
                     <artifactId>snakeyaml</artifactId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>json-smart</artifactId>
+                    <groupId>net.minidev</groupId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <!-- Update json-smart manually to avoid vulnerability CVE-2023-1370; can be removed after Spring updates their dependency -->
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>2.4.10</version>
         </dependency>
         <!-- Update snakeyaml manually to avoid vulnerability CVE-2020-13936; can be removed after Spring updates their dependency -->
         <dependency>

@@ -56,6 +56,11 @@ data:
             "Type": "resource_access",
             "Value": "{\"Cl20-CX-IRS\": {\"roles\": [\"view_irs\"]}}",
             "ValueType": "json"
+          },
+          {
+            "Type": "bpn",
+            "Value": "BPNL00000003CRHK",
+            "ValueType": "string"
           }
         ]
       }

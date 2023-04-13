@@ -24,10 +24,9 @@ package org.eclipse.tractusx.irs.connector.job;
 
 import lombok.Builder;
 import lombok.Value;
-import org.eclipse.tractusx.irs.component.JobParameter;
 
 /**
- * Represents the result of a {@link JobOrchestrator#startJob(String, JobParameter)} operation.
+ * Represents the result of a {@link JobOrchestrator#startJob} operation.
  */
 @Value
 @Builder(toBuilder = true)

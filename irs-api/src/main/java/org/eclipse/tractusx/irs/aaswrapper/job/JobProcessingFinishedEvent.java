@@ -22,16 +22,14 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job;
 
-import lombok.Value;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.eclipse.tractusx.irs.component.enums.JobState;
 
 /**
  * Contains detailed information about finished job
  */
-@Value
-public class JobProcessingFinishedEvent {
+public record JobProcessingFinishedEvent(String jobId, JobState jobState, String callbackUrl, Optional<UUID> batchId) {
 
-    private final String jobId;
-    private final JobState jobState;
-    private final String callbackUrl;
 }

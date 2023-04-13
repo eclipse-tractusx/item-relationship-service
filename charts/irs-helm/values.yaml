@@ -26,7 +26,7 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/catenax-ng/irs-api
+  repository: tractusx/irs-api
   pullPolicy: Always
 
 imagePullSecrets: []
