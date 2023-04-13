@@ -1,0 +1,62 @@
+name: Jira release publishing
+
+on:
+  workflow_dispatch: # Trigger manually
+    inputs:
+      version:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set current date as env variable
+        run: echo "NOW=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+      - name: Echo current date
+        run: echo $NOW
+
+      - name: Release version
+        env:
+          JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
+          JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
+          VERSION: ${{ github.event.inputs.version }}
+        run: |
+          curl --request PUT \
+          --url 'https://jira.catena-x.net/rest/api/3/version/{id}' \
+          --u $JIRA_USERNAME:$JIRA_PASSWORD \
+          --header 'Accept: application/json' \
+          --header 'Content-Type: application/json' \
+          --data '{
+            "archived": false,
+            "description": "",
+            "id": "10211",
+            "name": "$VERSION",
+            "releaseDate": "$NOW",
+            "released": true,
+            "overdue": true,
+            "projectId": 10211
+          }'
+
+      - name: Create NEXT_RELEASE version
+        env:
+          JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
+          JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
+        run: |
+          curl --request POST --url 'https://jira.catena-x.net/rest/api/3/version' \
+          --u $JIRA_USERNAME:$JIRA_PASSWORD \
+          --header 'Accept: application/json' \
+          --header 'Content-Type: application/json' \
+          --data '{
+            "archived": false,
+            "name": "NEXT_RELEASE",
+            "projectId": 10211,
+            "released": false
+          }'
