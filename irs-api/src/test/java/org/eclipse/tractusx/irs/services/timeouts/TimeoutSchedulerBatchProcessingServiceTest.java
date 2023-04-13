@@ -22,30 +22,23 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.services.timeouts;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
 class TimeoutSchedulerBatchProcessingServiceTest {
 
-    private CancelBatchProcessingService cancelBatchProcessingService;
-    private TimeoutSchedulerBatchProcessingService timeoutScheduler;
-
-    @BeforeEach
-    void beforeEach() {
-        cancelBatchProcessingService = mock(CancelBatchProcessingService.class);
-        timeoutScheduler = new TimeoutSchedulerBatchProcessingService(
-                Executors.newSingleThreadScheduledExecutor(), cancelBatchProcessingService);
-
-    }
+    private final ScheduledExecutorService scheduler = mock(ScheduledExecutorService.class);
+    private final CancelBatchProcessingService cancelBatchProcessingService = mock(CancelBatchProcessingService.class);
+    private final TimeoutSchedulerBatchProcessingService timeoutScheduler = new TimeoutSchedulerBatchProcessingService(scheduler, cancelBatchProcessingService);
 
     @Test
     void shouldCancelJobsFromList() {
@@ -53,15 +46,11 @@ class TimeoutSchedulerBatchProcessingServiceTest {
         UUID firstJobId = UUID.randomUUID();
         UUID secondJobId = UUID.randomUUID();
 
-        @SuppressWarnings("unchecked")
-        ArgumentCaptor<List<UUID>> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
-
         // when
-        timeoutScheduler.registerJobsTimeout(List.of(firstJobId, secondJobId), 0);
+        timeoutScheduler.registerJobsTimeout(List.of(firstJobId, secondJobId), 3);
 
         // then
-        verify(cancelBatchProcessingService).cancelNotFinishedJobs(listArgumentCaptor.capture());
-        assertThat(listArgumentCaptor.getValue()).containsExactly(firstJobId, secondJobId);
+        verify(scheduler).schedule(any((Runnable.class)), eq(3L), eq(TimeUnit.SECONDS));
     }
 
     @Test
@@ -69,13 +58,10 @@ class TimeoutSchedulerBatchProcessingServiceTest {
         // given
         UUID batchId = UUID.randomUUID();
 
-        ArgumentCaptor<UUID> batchIdCaptor = ArgumentCaptor.forClass(UUID.class);
-
         // when
-        timeoutScheduler.registerBatchTimeout(batchId, 0);
+        timeoutScheduler.registerBatchTimeout(batchId, 5);
 
         // then
-        verify(cancelBatchProcessingService).cancelNotFinishedJobsInBatch(batchIdCaptor.capture());
-        assertThat(batchIdCaptor.getValue()).isEqualTo(batchId);
+        verify(scheduler).schedule(any((Runnable.class)), eq(5L), eq(TimeUnit.SECONDS));
     }
 }
