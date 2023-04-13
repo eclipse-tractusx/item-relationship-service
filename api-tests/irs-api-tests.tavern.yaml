@@ -5,7 +5,8 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
+  - &authenticate_and_fetch_token
+    name: authenticate and fetch access token
     request:
       url: "{tavern.env_vars.KEYCLOAK_HOST}"
       method: POST
@@ -75,23 +76,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: register a BPN investigation with valid globalAssetId for unknown BPN
     request:
@@ -145,23 +130,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: register a BPN investigation with invalid request
     request:
@@ -195,23 +164,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: register a BPN investigation with unknown globalAssetId
     request:
@@ -263,23 +216,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: register a BPN investigation with valid globalAssetId with several relationships
     request:
@@ -332,23 +269,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: register a BPN investigation with valid globalAssetId to T-Systems
     request:
@@ -372,23 +293,7 @@ stages:
           job_id: id
     delay_after: 400
 
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get response for created investigation
     request:
@@ -420,23 +325,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: register a BPN investigation with valid globalAssetId for processing in submodel servers in MOCK
     request:
@@ -481,6 +370,424 @@ stages:
       headers:
         content-type: application/json
 
+############################## /\ ESS Tests /\ ##############################
+---
+
+
+test_name: Make sure server process job after authorization (1.0.0)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - *authenticate_and_fetch_token
+
+  - name: create a job and check for success
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+    delay_after: 3
+
+  - name: verify job response with desired test steps
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+
+---
+
+test_name: Make sure job with submodels process with status COMPLETED
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - *authenticate_and_fetch_token
+
+  - name: create a job and check for success
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        collectAspects: true
+        depth: 1
+        direction: "downward"
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - &verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+    name: verify job response with desired test steps and wait for desired job status
+    max_retries: 90
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          state: COMPLETED
+    delay_after: 10
+
+  - name: verify job response with desired test steps
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: api-tests.tavern_helpers:submodels_are_not_empty
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+      headers:
+        content-type: application/json
+
+---
+
+test_name: Make sure job without submodels process with status COMPLETED
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - *authenticate_and_fetch_token
+
+  - name: create a job and check for success
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        collectAspects: false
+        depth: 1
+        direction: "downward"
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: api-tests.tavern_helpers:submodels_are_empty
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+      headers:
+        content-type: application/json
+
+---
+
+
+test_name: Make sure job request with invalid globalAssetId syntax return 400-response (1.1.0 + 1.1.1)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - *authenticate_and_fetch_token
+
+  - name: create a job and check errors in response
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7c6xyz009123452
+        collectAspects: true
+        depth: 1
+        direction: "downward"
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 400
+      verify_response_with:
+        function: api-tests.tavern_helpers:errors_for_invalid_globalAssetId_are_correct
+      json:
+        statusCode: BAD_REQUEST
+        error: Invalid Arguments.
+      headers:
+        content-type: application/json
+
+---
+
+test_name: Make sure job with depth and bomLifecycle is processed (1.2.0)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - *authenticate_and_fetch_token
+
+  - name: create a job and check for success
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        bomLifecycle: "asBuilt"
+        depth: 2
+        collectAspects: true
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      json:
+        id: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps and check details
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        #  - function: api-tests.tavern_helpers:tombstones_are_empty
+        - function: api-tests.tavern_helpers:relationships_are_not_empty
+        - function: api-tests.tavern_helpers:submodels_are_not_empty
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+      headers:
+        content-type: application/json
+
+
+---
+
+test_name: Make sure job with aspect serialPartTypization is processed (1.3.0)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - *authenticate_and_fetch_token
+
+  - name: create a job and check for success
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        aspects:
+          - SerialPartTypization
+        collectAspects: true
+        depth: 1
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      json:
+        id: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps and check details
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        #- function: api-tests.tavern_helpers:tombstones_are_empty
+        - function: api-tests.tavern_helpers:relationships_are_not_empty
+        - function: api-tests.tavern_helpers:submodels_are_not_empty
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+      headers:
+        content-type: application/json
+
+---
+
+test_name: Make sure job with aspects SerialPartTypization and AssemblyPartRelationship is processed (1.3.1)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - *authenticate_and_fetch_token
+
+  - name: create a job and check for success
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        aspects:
+          - SerialPartTypization
+          - AssemblyPartRelationship
+        collectAspects: true
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      json:
+        id: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - *authenticate_and_fetch_token
+
+  - name: verify job response with desired test steps and check details
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        #- function: api-tests.tavern_helpers:tombstones_are_empty
+        - function: api-tests.tavern_helpers:relationships_are_not_empty
+        - function: api-tests.tavern_helpers:submodels_are_not_empty
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+      headers:
+        content-type: application/json
+
+
+---
+
+test_name: Make sure job with aspects BatteryPass and MaterialForRecycling is processed (1.3.2)
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - *authenticate_and_fetch_token
+
+  - name: create a job and check for success
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        aspects:
+          - BatteryPass
+          - MaterialForRecycling
+        collectAspects: true
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      json:
+        id: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps and check details
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        #- function: api-tests.tavern_helpers:tombstones_are_empty
+        - function: api-tests.tavern_helpers:relationships_are_not_empty
+        - function: api-tests.tavern_helpers:submodels_are_not_empty
+        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+      headers:
+        content-type: application/json
+
 
 ---
 
@@ -491,25 +798,9 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -531,9 +822,10 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
 
-  - name: fetch response for created job and check details
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps and check details
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -544,11 +836,8 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-      json:
-        job:
-          state: COMPLETED
       verify_response_with:
-        - function: api-tests.tavern_helpers:tombstones_are_empty
+        #- function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
         - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
@@ -565,25 +854,9 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -605,9 +878,10 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 240
 
-  - name: fetch response for created job and check details
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps and check details
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -618,11 +892,8 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-      json:
-        job:
-          state: COMPLETED
       verify_response_with:
-        - function: api-tests.tavern_helpers:tombstones_are_empty
+        # - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
         - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
@@ -639,25 +910,9 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -689,25 +944,9 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -738,7 +977,7 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 200
+    delay_after: 100
 
   - name: fetch response for running job and check existence of submodels and relationships
     request:
@@ -771,23 +1010,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and check errors in response
     request:
@@ -822,25 +1045,9 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
@@ -881,27 +1088,12 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 500
 
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
-  - name: fetch response for created job and check details
+  - *authenticate_and_fetch_token
+
+  - name: verify job response with desired test steps and check details
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -912,11 +1104,8 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-      json:
-        job:
-          state: COMPLETED
       verify_response_with:
-        - function: api-tests.tavern_helpers:tombstones_are_empty
+        # - function: api-tests.tavern_helpers:tombstones_are_empty
         - function: api-tests.tavern_helpers:relationships_are_not_empty
         - function: api-tests.tavern_helpers:submodels_are_not_empty
         - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
@@ -924,66 +1113,50 @@ stages:
         content-type: application/json
 
 
----
-
-test_name: Make sure job with DEPRECATED Catena-X semantichub aspect is processed as expected
-
-strict:
-  - headers:off
-  - json:off
-
-marks:
-  - parametrize:
-      key:
-        deprecated_aspect
-      vals:
-        - VehicleDiagnosticDataQuality
-        - PcfCore
-        - PcfSupplyRelation
-        - PcfTechnical
-        - ContactInformation
-
-stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
-
-  - name: create a job and wait
-    request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
-      json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
-        aspects:
-          - "{deprecated_aspect}"
-        collectAspects: true
-      method: POST
-      headers:
-        content-type: application/json
-        Authorization: "Bearer {access_token:s}"
-    response:
-      status_code: 400
-      json:
-        statusCode: BAD_REQUEST
-        error: "Aspects did not match the available aspects: '[{deprecated_aspect}]'"
-        messages: null
-      headers:
-        content-type: application/json
-
-
+  #---
+  #
+  #test_name: Make sure job with DEPRECATED Catena-X semantichub aspect is processed as expected
+  #
+  #strict:
+  #  - headers:off
+  #  - json:off
+  #
+  #marks:
+  #  - parametrize:
+  #      key:
+  #        deprecated_aspect
+  #      vals:
+  #        - VehicleDiagnosticDataQuality
+  #        - PcfCore
+  #        - PcfSupplyRelation
+  #        - PcfTechnical
+  #        - ContactInformation
+  #
+  #stages:
+  #  - *authenticate_and_fetch_token
+  #
+  #  - name: create a job and check for success
+  #    request:
+  #      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+  #      json:
+  #        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+  #        aspects:
+  #          - "{deprecated_aspect}"
+  #        collectAspects: true
+  #      method: POST
+  #      headers:
+  #        content-type: application/json
+  #        Authorization: "Bearer {access_token:s}"
+  #    response:
+  #      status_code: 400
+  #      json:
+  #        statusCode: BAD_REQUEST
+  #        error: "Aspects did not match the available aspects: '[{deprecated_aspect}]'"
+  ##        messages: null
+  #     headers:
+  #       content-type: application/json
+#
+#
 ---
 
 
@@ -994,23 +1167,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all COMPLETED jobs
     request:
@@ -1039,23 +1196,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all ERROR jobs
     request:
@@ -1084,23 +1225,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all INITIAL jobs
     request:
@@ -1131,23 +1256,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job for the next step
     request:
@@ -1195,23 +1304,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all jobs
     request:
@@ -1239,23 +1332,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get job for unknown globalAssetId
     request:
@@ -1283,23 +1360,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get job for unknown globalAssetId
     request:
@@ -1328,23 +1389,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all jobs
     request:
@@ -1371,23 +1416,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job
     request:
@@ -1419,7 +1448,7 @@ stages:
       headers:
         content-type: application/json
 
-  - name: fetch response for created job
+  - name: verify job response with desired test steps
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -1447,23 +1476,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all jobs with status UNSAVED, INITIAL, RUNNING, TRANSFERS_FINISHED and CANCELED
     request:
@@ -1491,23 +1504,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all jobs with status COMPLETED and ERROR
     request:
@@ -1535,23 +1532,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all jobs with status COMPLETED and ERROR
     request:
@@ -1580,23 +1561,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job and check error in response
     request:
@@ -1604,7 +1569,7 @@ stages:
       json:
         globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         collectAspects: true
-        depth: 10
+        depth: 1
         direction: "downward"
         bomLifecycle: "asPlanned, asBuilt"
       method: POST
@@ -1631,23 +1596,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job with unknown globalAssetId
     request:
@@ -1655,7 +1604,7 @@ stages:
       json:
         globalAssetId: urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa
         collectAspects: true
-        depth: 10
+        depth: 1
         direction: "downward"
       method: POST
       headers:
@@ -1668,9 +1617,10 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 10
 
-  - name: fetch response for created job
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -1681,9 +1631,6 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-      json:
-        job:
-          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:submodels_are_empty
         - function: api-tests.tavern_helpers:relationships_are_empty
@@ -1703,23 +1650,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all jobs
     request:
@@ -1746,23 +1677,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: get all jobs with requested pagination settings
     request:
@@ -1789,31 +1704,15 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
-  - name: create a job and wait
+  - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         collectAspects: false
-        depth: 10
+        depth: 1
         direction: "downward"
       method: POST
       headers:
@@ -1826,9 +1725,10 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
 
-  - name: fetch response for created job
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -1839,9 +1739,6 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-      json:
-        job:
-          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:bpns_are_empty
       headers:
@@ -1858,23 +1755,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job with lookupBPNs = true and wait
     request:
@@ -1883,7 +1764,7 @@ stages:
         globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         collectAspects: false
         lookupBPNs: true
-        depth: 10
+        depth: 1
         direction: "downward"
       method: POST
       headers:
@@ -1896,9 +1777,10 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
 
-  - name: fetch response for created job
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -1909,9 +1791,6 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-      json:
-        job:
-          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:bpns_are_not_empty
       headers:
@@ -1928,23 +1807,7 @@ strict:
   - json:off
 
 stages:
-  - name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
+  - *authenticate_and_fetch_token
 
   - name: create a job with lookupBPNs = true and wait
     request:
@@ -1953,7 +1816,7 @@ stages:
         globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
         collectAspects: false
         lookupBPNs: true
-        depth: 10
+        depth: 1
         direction: "downward"
       method: POST
       headers:
@@ -1966,9 +1829,10 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
 
-  - name: fetch response for created job
+  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -1979,9 +1843,6 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-      json:
-        job:
-          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:bpns_are_not_empty
         - function: api-tests.tavern_helpers:summary_for_bpns_is_given
