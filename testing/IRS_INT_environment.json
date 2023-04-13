@@ -6,5 +6,5 @@
 	"DIGITAL_TWIN_REGISTRY": "https://semantics.int.demo.catena-x.net/registry",
 	"GLOBAL_ASSET_ID": "urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf",
 	"SEMANTIC_HUB_URL": "https://semantics.int.demo.catena-x.net",
-	"BPDM_URL": "https://catenax-bpdm-int.demo.catena-x.net"
+	"BPDM_URL": "https://partners-pool.int.demo.catena-x.net"
 }
