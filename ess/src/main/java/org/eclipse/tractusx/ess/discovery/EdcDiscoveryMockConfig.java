@@ -22,6 +22,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.discovery;
 
+import java.util.List;
 import java.util.Map;
 
 import lombok.Data;
@@ -36,6 +37,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties("ess.discovery")
 @Data
 public class EdcDiscoveryMockConfig {
-    private Map<String, String> mockEdcAddress;
+    private Map<String, List<String>> mockEdcAddress;
     private Map<String, SupplyChainImpacted> mockEdcResult;
 }

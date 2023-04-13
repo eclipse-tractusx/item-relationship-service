@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -33,19 +34,31 @@ import org.junit.jupiter.api.Test;
 
 class EdcDiscoveryFacadeTest {
 
-    private final EdcDiscoveryMockConfig edcDiscoveryMockConfig = mock(
-            EdcDiscoveryMockConfig.class);
-    private final EdcDiscoveryFacade edcDiscoveryFacade = new EdcDiscoveryFacade(new EdcDiscoveryClientLocalStub(edcDiscoveryMockConfig));
+    private final EdcDiscoveryMockConfig edcDiscoveryMockConfig = mock(EdcDiscoveryMockConfig.class);
+    private final EdcDiscoveryFacade edcDiscoveryFacade = new EdcDiscoveryFacade(
+            new EdcDiscoveryClientLocalStub(edcDiscoveryMockConfig));
 
     @Test
     void shouldReturnEdcBaseUrl() {
         final String bpn = "BPNS000000000DDD";
         final String url = "http://edc-url";
-        when(edcDiscoveryMockConfig.getMockEdcAddress()).thenReturn(Map.of(bpn, url));
+        when(edcDiscoveryMockConfig.getMockEdcAddress()).thenReturn(Map.of(bpn, List.of(url)));
 
         final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl(bpn);
 
         assertThat(edcBaseUrl).isNotEmpty().contains(url);
+    }
+
+    @Test
+    void shouldReturnEdcBaseUrls() {
+        final String bpn = "BPNS000000000DDD";
+        final String url1 = "http://edc-url1";
+        final String url2 = "http://edc-url2";
+        when(edcDiscoveryMockConfig.getMockEdcAddress()).thenReturn(Map.of(bpn, List.of(url1, url2)));
+
+        final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl(bpn);
+
+        assertThat(edcBaseUrl).isNotEmpty().contains(url1);
     }
 
     @Test
