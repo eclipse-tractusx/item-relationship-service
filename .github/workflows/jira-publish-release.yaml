@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v3
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -23,21 +25,29 @@ jobs:
       - name: Echo current date
         run: echo $NOW
 
-      - name: Release version
+      - name: Get Version Id Of Release
         env:
-          JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
-          JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
+          JIRA_USERNAME: ${{ secrets.RELEASE_IRS_JIRA_USERNAME }}
+          JIRA_PASSWORD: ${{ secrets.RELEASE_IRS_JIRA_PASSWORD }}
+        run: |
+          versionId=$(curl --request GET --url 'https://jira.catena-x.net/rest/api/latest/project/10211/versions' \
+          --user $JIRA_USERNAME:$JIRA_PASSWORD --header 'Accept: application/json' | jq '.[] | select(.name == "NEXT_RELEASE").id')
+          echo "Exported $versionId as version id to release"
+
+      - name: Release Version in Jira
+        env:
+          JIRA_USERNAME: ${{ secrets.RELEASE_IRS_JIRA_USERNAME }}
+          JIRA_PASSWORD: ${{ secrets.RELEASE_IRS_JIRA_PASSWORD }}
           VERSION: ${{ github.event.inputs.version }}
         run: |
-          curl --request PUT \
-          --url 'https://jira.catena-x.net/rest/api/3/version/{id}' \
-          --u $JIRA_USERNAME:$JIRA_PASSWORD \
+          curl --request PUT --url 'https://jira.catena-x.net/rest/api/latest/version/$versionId' \
+          --user $JIRA_USERNAME:$JIRA_PASSWORD \
           --header 'Accept: application/json' \
           --header 'Content-Type: application/json' \
           --data '{
             "archived": false,
-            "description": "",
-            "id": "10211",
+            "description": "$VERSION",
+            "id": "$versionId",
             "name": "$VERSION",
             "releaseDate": "$NOW",
             "released": true,
@@ -45,13 +55,13 @@ jobs:
             "projectId": 10211
           }'
 
-      - name: Create NEXT_RELEASE version
+      - name: Create NEXT_RELEASE Version in Jira
         env:
-          JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
-          JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
+          JIRA_USERNAME: ${{ secrets.RELEASE_IRS_JIRA_USERNAME }}
+          JIRA_PASSWORD: ${{ secrets.RELEASE_IRS_JIRA_PASSWORD }}
         run: |
-          curl --request POST --url 'https://jira.catena-x.net/rest/api/3/version' \
-          --u $JIRA_USERNAME:$JIRA_PASSWORD \
+          curl --request POST --url 'https://jira.catena-x.net/rest/api/latest/version' \
+          --user $JIRA_USERNAME:$JIRA_PASSWORD \
           --header 'Accept: application/json' \
           --header 'Content-Type: application/json' \
           --data '{
