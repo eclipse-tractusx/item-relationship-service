@@ -6,6 +6,7 @@ strict:
 
 stages:
   - &authenticate_and_fetch_token
+
     name: authenticate and fetch access token
     request:
       url: "{tavern.env_vars.KEYCLOAK_HOST}"
@@ -1155,8 +1156,7 @@ stages:
   ##        messages: null
   #     headers:
   #       content-type: application/json
-#
-#
+
 ---
 
 
