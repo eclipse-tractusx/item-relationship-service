@@ -6,6 +6,7 @@ on:
       version:
         required: true
         type: string
+        description: Version that will be released in Jira, eg. 2.0.0
 
 jobs:
   build:
@@ -13,12 +14,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
 
       - name: Set current date as env variable
         run: echo "NOW=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
@@ -51,7 +46,7 @@ jobs:
             "name": "$VERSION",
             "releaseDate": "$NOW",
             "released": true,
-            "overdue": true,
+            "overdue": false,
             "projectId": 10211
           }'
 
