@@ -33,6 +33,7 @@ import java.util.UUID;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchStore;
@@ -74,14 +75,48 @@ class CancelBatchProcessingServiceTest {
         assertThat(captor.getValue()).isEqualTo(runningJobId);
     }
 
+    @Test
+    void shouldCancelOnlyNotCompletedJobInBatch() {
+        // given
+        UUID firstJobId = UUID.randomUUID();
+        UUID secondJobId = UUID.randomUUID();
+        UUID runningJobId = UUID.randomUUID();
+        UUID batchId = UUID.randomUUID();
+
+        ArgumentCaptor<UUID> captor = ArgumentCaptor.forClass(UUID.class);
+
+        given(irsItemGraphQueryService.getJobForJobId(firstJobId, false)).willReturn(
+                jobInState(JobState.COMPLETED)
+        );
+        given(irsItemGraphQueryService.getJobForJobId(secondJobId, false)).willReturn(
+                jobInState(JobState.ERROR)
+        );
+        given(irsItemGraphQueryService.getJobForJobId(runningJobId, false)).willReturn(
+                jobInState(JobState.RUNNING)
+        );
+
+        batchStore.save(batchId, createBatch(batchId, ProcessingState.PROCESSING,
+                List.of(firstJobId, secondJobId, runningJobId)));
+
+        // when
+        cancelBatchProcessingService.cancelNotFinishedJobsInBatch(batchId);
+
+        // then
+        verify(irsItemGraphQueryService).cancelJobById(captor.capture());
+        assertThat(captor.getValue()).isEqualTo(runningJobId);
+    }
+
     private static Jobs jobInState(final JobState completed) {
         return Jobs.builder().job(Job.builder().state(completed).build()).build();
     }
 
-    private Batch createBatch(final UUID batchId, final UUID batchOrderId) {
-        return Batch.builder().batchId(batchId).batchOrderId(batchOrderId).jobProgressList(List.of(
-                JobProgress.builder().jobId(UUID.randomUUID()).build()
-        )).build();
+    private Batch createBatch(final UUID batchId, final ProcessingState state, final List<UUID> jobIds) {
+        return Batch.builder()
+                    .batchId(batchId)
+                    .batchState(state)
+                    .jobProgressList(
+                jobIds.stream().map(uuid -> JobProgress.builder().jobId(uuid).build()).toList()
+        ).build();
     }
 
 }
