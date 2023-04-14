@@ -280,7 +280,7 @@ if __name__ == "__main__":
                 submodel_identification = uuid.uuid4().urn
                 semantic_id = tmp_key
 
-                if tmp_data["bpnl"] in bpnl_fail and is_ess:
+                if is_ess and tmp_data["bpnl"] in bpnl_fail:
                     endpoint_address = "http://idonotexist/"+catenax_id+"-"+submodel_identification+"/submodel?content=value&extent=withBlobValue"
                 elif submodel_name == "EsrCertificateStateStatistic" and esr_url is not None:
                     endpoint_address = esr_url + "/" + catenax_id + "/asBuilt/ISO14001/submodel"
