@@ -6,7 +6,6 @@ strict:
 
 stages:
   - &authenticate_and_fetch_token
-
     name: authenticate and fetch access token
     request:
       url: "{tavern.env_vars.KEYCLOAK_HOST}"
@@ -50,7 +49,7 @@ stages:
     name: verify job response with desired test steps and wait for desired job status
     max_retries: 90
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/irs/jobs/{job_id}"
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
       params:
         returnUncompletedJob: true
       method: GET
