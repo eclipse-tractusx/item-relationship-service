@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - API Endpoint POST Register Batch Order {{IRS_HOST}}/irs/orders
   - API Endpoint GET Batch Order {{IRS_HOST}}/irs/orders/:orderId
   - API Endpoint GET Batch {{IRS_HOST}}/irs/orders/:orderId/batches/:batchId
+- Introduced Environmental- and Social Standards processing API endpoints. 
+  - API Endpoint POST Register job to start an investigation if a given bpn is contained in a part chain {{IRS_HOST}}/ess/bpn/investigations
+  - API Endpoint GET BPN Investigation {{IRS_HOST}}/ess/bpn/investigations/:id
+  - API Endpoint POST EDC Notification receive {{IRS_HOST}}/ess/notification/receive
 
 ## [2.4.0] - 2023-03-30
 ### Added

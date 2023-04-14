@@ -179,17 +179,17 @@ bpdm:
 
 # ESS Module specific properties
 ess:
-  localBpn: ${ESS_LOCAL_BPN:BPNL00000003AWSS}
-  localEdcEndpoint: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+  localBpn: ${ESS_LOCAL_BPN:BPNL00000003AWSS} # BPN value of product - used during EDC notification communication
+  localEdcEndpoint: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net} # EDC Provider Url - used during EDC notification communication
   irs:
-    url: "${IRS_URL:https://irs-ess.int.demo.catena-x.net}"
+    url: "${IRS_URL:https://irs-ess.int.demo.catena-x.net}" # IRS Url to connect with
   discovery:
     endpoint: "${DISCOVERY_URL:}" # Endpoint to retrieve EDC base url address for BPN
     oAuthClientId: keycloak # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
     timeout:
-      read: PT90S # HTTP read timeout for the bpdm client
-      connect: PT90S # HTTP connect timeout for the bpdm client
-    mockEdcAddress:
+      read: PT90S # HTTP read timeout for the discovery client
+      connect: PT90S # HTTP connect timeout for the discovery client
+    mockEdcAddress: # Mocked EDC BPN Addresses
       BPNL00000003B6LU: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
       BPNL00000003B3NX: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
       BPNL00000003B0Q0: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
@@ -201,7 +201,7 @@ ess:
       BPNL00ARBITRARY5: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
       BPNL00ARBITRARY6: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
       BPNL00ARBITRARY7: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
-    mockEdcResult:
+    mockEdcResult: # Mocked BPN Investigation results
       BPNL00000003B3NX: "NO"
       BPNL00ARBITRARY1: "NO"
       BPNL00ARBITRARY2: "YES"
@@ -209,6 +209,6 @@ ess:
       BPNL00000003AYRE: "NO"
       BPNL00000003B0Q0: "NO"
       BPNL00ARBITRARY7: "YES"
-    mockRecursiveEdcAsset: BPNL00ARBITRARY4, BPNL00ARBITRARY5, BPNL00ARBITRARY6
+    mockRecursiveEdcAsset: BPNL00ARBITRARY4, BPNL00ARBITRARY5, BPNL00ARBITRARY6 # Mocked BPN Recursive Investigation results
 
-apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK}
+apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK} # BPN value that is allowed to access IRS API
