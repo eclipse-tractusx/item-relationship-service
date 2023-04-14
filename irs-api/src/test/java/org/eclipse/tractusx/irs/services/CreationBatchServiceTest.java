@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.eclipse.tractusx.irs.IrsApplication;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.enums.BatchStrategy;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
@@ -102,6 +103,10 @@ class CreationBatchServiceTest {
                 Collectors.toList())).containsExactly("1", "2", "3");
         assertThat(batches.get(6).getJobProgressList().stream().map(JobProgress::getGlobalAssetId).collect(
                 Collectors.toList())).containsExactly("19", "20");
+        assertThat(batches.get(0).getBatchUrl()).isEqualTo(
+                EXAMPLE_URL + "/" + IrsApplication.API_PREFIX +
+                        "/orders/" + batches.get(0).getBatchOrderId() + "/batches/" + batches.get(0).getBatchId()
+        );
 
     }
 

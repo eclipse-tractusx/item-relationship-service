@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.IrsApplication;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
@@ -102,7 +103,8 @@ public class CreationBatchService {
     }
 
     private String buildBatchUrl(final UUID batchOrderId, final UUID batchId) {
-        return  irsConfiguration.getApiUrl().toString() + "/" + batchOrderId + "/batches/" + batchId;
+        return  irsConfiguration.getApiUrl().toString() + "/" + IrsApplication.API_PREFIX +
+                "/orders/" + batchOrderId + "/batches/" + batchId;
     }
 
 }
