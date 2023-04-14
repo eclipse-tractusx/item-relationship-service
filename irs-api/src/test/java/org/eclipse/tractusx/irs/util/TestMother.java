@@ -56,7 +56,7 @@ import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
-import org.eclipse.tractusx.irs.edc.RelationshipAspect;
+import org.eclipse.tractusx.edc.RelationshipAspect;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import net.datafaker.Faker;
 
@@ -219,7 +219,7 @@ public class TestMother {
                                                 .build();
 
         return new Relationship(GlobalAssetIdentification.of(UUID.randomUUID().toString()), linkedItem,
-                RelationshipAspect.AssemblyPartRelationship.name());
+                RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP.name());
     }
 
     public static Endpoint endpoint(String endpointAddress) {

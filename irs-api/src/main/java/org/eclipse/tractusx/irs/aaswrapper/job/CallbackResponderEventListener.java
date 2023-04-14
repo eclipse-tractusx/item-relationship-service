@@ -32,6 +32,7 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.services.events.BatchOrderProcessingFinishedEvent;
@@ -70,7 +71,7 @@ class CallbackResponderEventListener {
             log.info("Processing of job has finished - attempting to notify job requestor");
 
             final URI callbackUri = buildCallbackUri(jobProcessingFinishedEvent.callbackUrl(),
-                    jobProcessingFinishedEvent.jobId(), jobProcessingFinishedEvent.jobState());
+                    jobProcessingFinishedEvent.jobId(), JobState.valueOf(jobProcessingFinishedEvent.jobState()));
             if (urlValidator.isValid(callbackUri.toString())) {
                 log.info("Got callback url {} for jobId {} with state {}", callbackUri,
                         jobProcessingFinishedEvent.jobId(), jobProcessingFinishedEvent.jobState());

@@ -45,7 +45,6 @@ import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
-import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
 import org.eclipse.tractusx.irs.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
@@ -62,6 +61,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class IrsItemGraphQueryServiceTest {
@@ -137,9 +138,9 @@ class IrsItemGraphQueryServiceTest {
     @Test
     void cancelJobById_throwEntityNotFoundException() {
         when(jobStore.cancelJob(jobId.toString())).thenThrow(
-                new EntityNotFoundException("No job exists with id " + jobId));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId));
 
-        assertThrows(EntityNotFoundException.class, () -> testee.cancelJobById(jobId));
+        assertThrows(ResponseStatusException.class, () -> testee.cancelJobById(jobId));
     }
 
     @Test

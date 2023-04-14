@@ -183,6 +183,9 @@ if __name__ == "__main__":
                         required=False)
     parser.add_argument("-k", "--apikey", type=str, help="EDC provider api key", required=True)
     parser.add_argument("-e", "--esr", type=str, help="ESR URL", required=False)
+    parser.add_argument("--ess", help="Enable ESS data creation with invalid EDC URL", action='store_true',
+                        required=False)
+    parser.add_argument("--bpn", help="Faulty BPN which will create a non existing EDC endpoint", required=False)
 
     args = parser.parse_args()
     config = vars(args)
@@ -195,6 +198,8 @@ if __name__ == "__main__":
     edc_upload_urls = config.get("edcupload")
     edc_api_key = config.get("apikey")
     esr_url = config.get("esr")
+    is_ess = config.get("ess")
+    bpnl_fail = config.get("bpn")
 
     if submodel_server_upload_urls is None:
         submodel_server_upload_urls = submodel_server_urls
@@ -274,11 +279,15 @@ if __name__ == "__main__":
                 submodel_name = tmp_key[tmp_key.index("#") + 1: len(tmp_key)]
                 submodel_identification = uuid.uuid4().urn
                 semantic_id = tmp_key
-                if submodel_name == "EsrCertificateStateStatistic" and esr_url is not None:
+
+                if tmp_data["bpnl"] in bpnl_fail and is_ess:
+                    endpoint_address = "http://idonotexist/"+catenax_id+"-"+submodel_identification+"/submodel?content=value&extent=withBlobValue"
+                elif submodel_name == "EsrCertificateStateStatistic" and esr_url is not None:
                     endpoint_address = esr_url + "/" + catenax_id + "/asBuilt/ISO14001/submodel"
                 else:
                     endpoint_address = edc_url + "/" + catenax_id + \
                                        "-" + submodel_identification + "/submodel?content=value&extent=withBlobValue"
+
                 descriptor = create_submodel_descriptor(submodel_name, submodel_identification, semantic_id,
                                                         endpoint_address)
                 submodel_descriptors.append(json.loads(descriptor))

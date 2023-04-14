@@ -108,7 +108,6 @@ resilience4j:
       registry:
         baseConfig: default
 
-
 edc:
   controlplane:
     request-ttl: ${EDC_CONTROLPLANE_REQUEST_TTL:PT10M} # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
@@ -177,5 +176,39 @@ bpdm:
   timeout:
     read: PT90S # HTTP read timeout for the bpdm client
     connect: PT90S # HTTP connect timeout for the bpdm client
+
+# ESS Module specific properties
+ess:
+  localBpn: ${ESS_LOCAL_BPN:BPNL00000003AWSS}
+  localEdcEndpoint: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+  irs:
+    url: "${IRS_URL:https://irs-ess.int.demo.catena-x.net}"
+  discovery:
+    endpoint: "${DISCOVERY_URL:}" # Endpoint to retrieve EDC base url address for BPN
+    oAuthClientId: keycloak # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+    timeout:
+      read: PT90S # HTTP read timeout for the bpdm client
+      connect: PT90S # HTTP connect timeout for the bpdm client
+    mockEdcAddress:
+      BPNL00000003B6LU: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
+      BPNL00000003B3NX: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00000003B0Q0: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
+      BPNL00ARBITRARY1: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00ARBITRARY2: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00ARBITRARY3: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00000003AYRE: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00ARBITRARY4: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00ARBITRARY5: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00ARBITRARY6: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00ARBITRARY7: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+    mockEdcResult:
+      BPNL00000003B3NX: "NO"
+      BPNL00ARBITRARY1: "NO"
+      BPNL00ARBITRARY2: "YES"
+      BPNL00ARBITRARY3: "NO"
+      BPNL00000003AYRE: "NO"
+      BPNL00000003B0Q0: "NO"
+      BPNL00ARBITRARY7: "YES"
+    mockRecursiveEdcAsset: BPNL00ARBITRARY4, BPNL00ARBITRARY5, BPNL00ARBITRARY6
 
 apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK}

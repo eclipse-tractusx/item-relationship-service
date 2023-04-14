@@ -10,6 +10,152 @@ security:
   - oAuth2:
       - profile email
 paths:
+  /ess/bpn/investigations:
+    post:
+      description: Registers an IRS job to start an investigation if a given bpn is
+        contained in a part chain of a given globalAssetId.
+      operationId: registerBPNInvestigation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterBpnInvestigationJob'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/job-handle'
+              schema:
+                $ref: '#/components/schemas/JobHandle'
+          description: Returns id of registered job.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Job registration failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+      security:
+        - oAuth2:
+            - profile email
+      summary: Registers an IRS job to start an investigation if a given bpn is contained
+        in a part chain of a given globalAssetId.
+      tags:
+        - Environmental- and Social Standards
+  /ess/bpn/investigations/{id}:
+    get:
+      description: Return job with additional supplyChainImpacted information.
+      operationId: getBPNInvestigation
+      parameters:
+        - description: Id of the job.
+          example: 6c311d29-5753-46d4-b32c-19b918ea93b0
+          in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/complete-job-result'
+              schema:
+                $ref: '#/components/schemas/Jobs'
+          description: Return job with item graph for the requested id.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Return job failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "404":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-404'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Job with the requested jobId not found.
+      security:
+        - oAuth2:
+            - profile email
+      summary: Return job with additional supplyChainImpacted information.
+      tags:
+        - Environmental- and Social Standards
+  /ess/notification/receive:
+    post:
+      description: Accepts notifications via EDC. Notifications are filtered by their
+        type and processed accordingly.
+      operationId: receiveEdcNotification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EdcNotification'
+        required: true
+      responses:
+        "200":
+          description: Notification received successfully.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Notification malformed.
+      summary: Accepts notifications sent via EDC.
+      tags:
+        - Environmental- and Social Standards
   /irs/jobs:
     get:
       description: Returns paginated jobs with state and execution times.
@@ -1093,6 +1239,45 @@ components:
           type: string
         manufacturerName:
           type: string
+    EdcNotification:
+      type: object
+      additionalProperties: false
+      properties:
+        content:
+          type: object
+          additionalProperties:
+            type: object
+        header:
+          $ref: '#/components/schemas/EdcNotificationHeader'
+      required:
+        - content
+        - header
+    EdcNotificationHeader:
+      type: object
+      additionalProperties: false
+      description: EDC notification header information
+      properties:
+        notificationId:
+          type: string
+        notificationType:
+          type: string
+        originalNotificationId:
+          type: string
+        recipientBpn:
+          type: string
+        replyAssetId:
+          type: string
+        replyAssetSubPath:
+          type: string
+        senderBpn:
+          type: string
+        senderEdc:
+          type: string
+      required:
+        - notificationId
+        - notificationType
+        - recipientBpn
+        - senderBpn
     Endpoint:
       type: object
       additionalProperties: false
@@ -1535,8 +1720,8 @@ components:
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
-                \ There are four uri variable placeholders that can be used: orderId,\
-                \ batchId, orderState and batchState."
+                    \ There are four uri variable placeholders that can be used: orderId,\
+                    \ batchId, orderState and batchState."
           example: "https://hostname.com/callback?orderId={orderId}&batchId={batchId}&orderState={orderState}&batchState={batchState}"
         collectAspects:
           type: boolean
@@ -1582,6 +1767,39 @@ components:
           minimum: 60
       required:
         - globalAssetIds
+    RegisterBpnInvestigationJob:
+      type: object
+      additionalProperties: false
+      description: The requested job definition.
+      properties:
+        bomLifecycle:
+          type: string
+          description: The lifecycle context in which the child part was assembled
+            into the parent part.
+          enum:
+            - asBuilt
+            - asPlanned
+        callbackUrl:
+          type: string
+          description: "Callback url to notify requestor when job processing is finished.\
+                    \ There are two uri variable placeholders that can be used: jobId and\
+                    \ jobState."
+          example: "https://hostname.com/callback?jobId={jobId}&jobState={jobState}"
+        globalAssetId:
+          type: string
+          description: Id of global asset.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          maxLength: 45
+          minLength: 45
+          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        incidentBpns:
+          type: array
+          items:
+            type: string
+          maxItems: 2147483647
+      required:
+        - globalAssetId
+        - incidentBpns
     RegisterJob:
       type: object
       additionalProperties: false

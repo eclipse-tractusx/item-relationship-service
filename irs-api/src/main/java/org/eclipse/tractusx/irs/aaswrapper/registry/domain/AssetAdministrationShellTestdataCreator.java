@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.tractusx.irs.common.CxTestDataContainer;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
@@ -33,7 +34,6 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.LangString;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInformation;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
-import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
 import org.springframework.web.client.RestClientException;
 
 /**

@@ -39,8 +39,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
-import org.eclipse.tractusx.irs.aaswrapper.job.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.aaswrapper.job.RequestMetric;
+import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.FetchedItems;
@@ -65,7 +65,6 @@ import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
-import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
 import org.eclipse.tractusx.irs.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
@@ -77,8 +76,10 @@ import org.springframework.beans.support.PagedListHolder;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Service for retrieving parts tree.
@@ -217,9 +218,9 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         final Optional<MultiTransferJob> canceled = this.jobStore.cancelJob(idAsString);
         canceled.ifPresent(cancelledJob -> applicationEventPublisher.publishEvent(
-                new JobProcessingFinishedEvent(cancelledJob.getJobIdString(), cancelledJob.getJob().getState(),
+                new JobProcessingFinishedEvent(cancelledJob.getJobIdString(), cancelledJob.getJob().getState().name(),
                         cancelledJob.getJobParameter().getCallbackUrl(), cancelledJob.getBatchId())));
-        return canceled.orElseThrow(() -> new EntityNotFoundException("No job exists with id " + jobId)).getJob();
+        return canceled.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId)).getJob();
     }
 
     @Override
@@ -270,7 +271,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                        .bpns(bpns)
                        .build();
         } else {
-            throw new EntityNotFoundException("No job exists with id " + jobId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId);
         }
     }
 
@@ -364,12 +365,12 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         try {
             final Optional<byte[]> blob = blobStore.getBlob(jobId.toString());
             final byte[] bytes = blob.orElseThrow(
-                    () -> new EntityNotFoundException("Could not find stored data for multiJob with id " + jobId));
+                    () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find stored data for multiJob with id " + jobId));
             return toItemContainer(bytes);
         } catch (BlobPersistenceException e) {
             log.error("Unable to read blob", e);
             meterRegistryService.incrementException();
-            throw new EntityNotFoundException("Could not load stored data for multiJob with id " + jobId, e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not load stored data for multiJob with id " + jobId, e);
         }
     }
 

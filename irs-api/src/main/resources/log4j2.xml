@@ -13,6 +13,8 @@
         </Root>
 
         <Logger name="org.eclipse.tractusx.irs" level="debug"/>
+        <Logger name="org.eclipse.tractusx.edc" level="debug"/>
+        <Logger name="org.eclipse.tractusx.ess" level="debug"/>
         <Logger name="org.springframework.boot.actuate.endpoint.jmx" level="warn"/>
         <Logger name="org.springframework.web" level="info"/>
         <Logger name="org.springframework.web.client.RestTemplate" level="debug"/>

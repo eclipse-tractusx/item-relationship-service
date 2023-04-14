@@ -52,7 +52,6 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
-import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
@@ -68,6 +67,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.server.ResponseStatusException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = { "test",
@@ -119,7 +119,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         final JobHandle registeredJob = service.registerItemJob(registerJob);
 
         // then
-        given().ignoreException(EntityNotFoundException.class)
+        given().ignoreException(ResponseStatusException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
                .until(() -> getRelationshipsSize(registeredJob.getId()), equalTo(expectedRelationshipsSizeFullTree));
@@ -138,7 +138,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         final JobHandle registeredJob = service.registerItemJob(registerJob);
 
         // then
-        given().ignoreException(EntityNotFoundException.class)
+        given().ignoreException(ResponseStatusException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
                .until(() -> getSubmodelsSize(registeredJob.getId()), equalTo(expectedSubmodelsSizeFullTree));
@@ -156,7 +156,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         final JobHandle registeredJob = service.registerItemJob(registerJob);
 
         // then
-        given().ignoreException(EntityNotFoundException.class)
+        given().ignoreException(ResponseStatusException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
                .until(() -> getTombstonesSize(registeredJob.getId()), equalTo(expectedTombstonesSizeFullTree));
@@ -172,7 +172,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         final JobHandle registeredJob = service.registerItemJob(registerJob);
 
         // then
-        given().ignoreException(EntityNotFoundException.class)
+        given().ignoreException(ResponseStatusException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
                .until(() -> getRelationshipsSize(registeredJob.getId()), equalTo(expectedRelationshipsSizeFirstDepth));
@@ -189,7 +189,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         final JobHandle registeredJob = service.registerItemJob(registerJob);
 
         // then
-        given().ignoreException(EntityNotFoundException.class)
+        given().ignoreException(ResponseStatusException.class)
                .await()
                .atMost(10, TimeUnit.SECONDS)
                .until(() -> getRelationshipsSize(registeredJob.getId()), equalTo(expectedRelationshipsSizeFirstDepth));
