@@ -103,8 +103,8 @@ public class CreationBatchService {
     }
 
     private String buildBatchUrl(final UUID batchOrderId, final UUID batchId) {
-        return  irsConfiguration.getApiUrl().toString() + "/" + IrsApplication.API_PREFIX +
-                "/orders/" + batchOrderId + "/batches/" + batchId;
+        return  String.join("/", irsConfiguration.getApiUrl().toString(), IrsApplication.API_PREFIX,
+                "orders", batchOrderId.toString(), "batches", batchId.toString());
     }
 
 }
