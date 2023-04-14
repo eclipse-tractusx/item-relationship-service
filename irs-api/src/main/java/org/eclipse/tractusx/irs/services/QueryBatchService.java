@@ -94,6 +94,7 @@ public class QueryBatchService {
                                                .batchNumber(batch.getBatchNumber())
                                                .batchProcessingState(batch.getBatchState())
                                                .batchUrl(batch.getBatchUrl())
+                                               .jobsInBatchChecksum(batch.getJobProgressList().size())
                                                .build();
     }
 
