@@ -20,16 +20,14 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.aaswrapper.job;
-
-import java.util.Optional;
-import java.util.UUID;
-
-import org.eclipse.tractusx.irs.component.enums.JobState;
+package org.eclipse.tractusx.irs.component.enums;
 
 /**
- * Contains detailed information about finished job
+ * The strategy how the batch is processed internally in IRS.
  */
-public record JobProcessingFinishedEvent(String jobId, JobState jobState, String callbackUrl, Optional<UUID> batchId) {
+public enum BatchStrategy {
+    PRESERVE_BATCH_JOB_ORDER,
+    PRESERVE_JOB_ORDER,
+    PRESERVE_BATCH_ORDER
 
 }

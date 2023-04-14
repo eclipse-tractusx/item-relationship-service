@@ -98,6 +98,7 @@ class JobOrchestratorTest {
                         .ignoringFields("job.job.jobId")
                         .isEqualTo(MultiTransferJob.builder()
                                                    .job(job2.getJob().toBuilder().state(JobState.UNSAVED).build())
+                                                   .batchId(Optional.empty())
                                                    .build());
     }
 

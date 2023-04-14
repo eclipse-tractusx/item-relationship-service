@@ -20,16 +20,14 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.aaswrapper.job;
+package org.eclipse.tractusx.irs.services.events;
 
-import java.util.Optional;
 import java.util.UUID;
 
-import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 
 /**
- * Contains detailed information about finished job
+ * Event published after Batch is finished (completed or error)
  */
-public record JobProcessingFinishedEvent(String jobId, JobState jobState, String callbackUrl, Optional<UUID> batchId) {
-
+public record BatchProcessingFinishedEvent(UUID batchOrderId, UUID batchId, ProcessingState batchOrderState, ProcessingState batchState, Integer batchNumber, String callbackUrl) {
 }

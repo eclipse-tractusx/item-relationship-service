@@ -1,0 +1,9 @@
+{
+	"IRS_HOST": "http://localhost:8080",
+	"KEYCLOAK_TOKEN_URL": "",
+	"CLIENT_ID": "",
+	"CLIENT_SECRET": "",
+	"GLOBAL_ASSET_ID": "",
+	"SEMANTIC_HUB_URL": "",
+	"BPDM_URL": ""
+}

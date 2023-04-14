@@ -20,29 +20,75 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.connector.job;
+package org.eclipse.tractusx.irs.connector.batch;
+
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.UUID;
 
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.jackson.Jacksonized;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 
 /**
- * Represents the result of a {@link JobOrchestrator#startJob} operation.
+ * Entity for execute batch of jobs and monitor processing state.
  */
-@Value
+@Getter
 @Builder(toBuilder = true)
-public class JobInitiateResponse {
-    /**
-     * Job identifier.
-     */
-    private final String jobId;
+@Slf4j
+@Jacksonized
+public class Batch {
 
     /**
-     * Optional error message.
+     * Batch Id
      */
-    private final String error;
+    private UUID batchId;
 
     /**
-     * Response status.
+     * Batch Order Id
      */
-    private final ResponseStatus status;
+    private UUID batchOrderId;
+
+    /**
+     * Processing State of Batch
+     */
+    @Setter
+    private ProcessingState batchState;
+
+    /**
+     * Batch Number in Batch Order
+     */
+    private Integer batchNumber;
+
+    /**
+     * Total number of batches
+     */
+    private Integer batchTotal;
+
+    /**
+     * Batch Url
+     */
+    private String batchUrl;
+
+    /**
+     * List of Job Progress with details about job
+     */
+    @Setter
+    private List<JobProgress> jobProgressList;
+
+    /**
+     * Timestamp when the Batch was started
+     */
+    @Setter
+    private ZonedDateTime startedOn;
+
+    /**
+     * Timestamp when the Batch was started
+     */
+    @Setter
+    private ZonedDateTime completedOn;
+
 }

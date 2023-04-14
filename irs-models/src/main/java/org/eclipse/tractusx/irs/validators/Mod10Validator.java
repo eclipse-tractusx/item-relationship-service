@@ -20,16 +20,25 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.aaswrapper.job;
+package org.eclipse.tractusx.irs.validators;
 
-import java.util.Optional;
-import java.util.UUID;
-
-import org.eclipse.tractusx.irs.component.enums.JobState;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
- * Contains detailed information about finished job
+ * Validates if modulo of provided number is equal to zero
  */
-public record JobProcessingFinishedEvent(String jobId, JobState jobState, String callbackUrl, Optional<UUID> batchId) {
+public class Mod10Validator implements ConstraintValidator<Mod10, Integer> {
+
+    private static final int MOD_10 = 10;
+
+    @Override
+    public boolean isValid(final Integer value, final ConstraintValidatorContext cxt) {
+        if (value == null) {
+            return true;
+        }
+
+        return value % MOD_10 == 0;
+    }
 
 }

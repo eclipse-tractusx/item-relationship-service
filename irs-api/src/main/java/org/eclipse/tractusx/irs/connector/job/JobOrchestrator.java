@@ -118,8 +118,20 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      * @return response.
      */
     public JobInitiateResponse startJob(final String globalAssetId, final JobParameter jobData) {
+        return this.startJob(globalAssetId, jobData, null);
+    }
+
+    /**
+     * Start a job with Batch
+     *
+     * @param globalAssetId root id
+     * @param jobData       additional data for the job to be managed by the {@link JobStore}.
+     * @param batchId       batch id
+     * @return response.
+     */
+    public JobInitiateResponse startJob(final String globalAssetId, final JobParameter jobData, final UUID batchId) {
         final Job job = createJob(globalAssetId, jobData);
-        final var multiJob = MultiTransferJob.builder().job(job).build();
+        final var multiJob = MultiTransferJob.builder().job(job).batchId(Optional.ofNullable(batchId)).build();
         jobStore.create(multiJob);
 
         final Stream<T> requests;
@@ -261,7 +273,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                                                                          .equals(JobState.ERROR)) {
                 applicationEventPublisher.publishEvent(
                         new JobProcessingFinishedEvent(job.getJobIdString(), job.getJob().getState(),
-                                job.getJobParameter().getCallbackUrl()));
+                                job.getJobParameter().getCallbackUrl(), job.getBatchId()));
             }
         });
     }
