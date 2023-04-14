@@ -44,6 +44,7 @@ import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchStore;
 import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
+import org.eclipse.tractusx.irs.services.timeouts.TimeoutSchedulerBatchProcessingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
@@ -57,6 +58,7 @@ class BatchOrderEventListenerTest {
     private BatchStore batchStore;
     private final IrsItemGraphQueryService irsItemGraphQueryService = mock(IrsItemGraphQueryService.class);
     private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
+    private final TimeoutSchedulerBatchProcessingService timeoutScheduler = mock(TimeoutSchedulerBatchProcessingService.class);
 
     private BatchOrderEventListener eventListener;
 
@@ -64,7 +66,8 @@ class BatchOrderEventListenerTest {
     void beforeEach() {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
-        eventListener = new BatchOrderEventListener(batchOrderStore, batchStore, irsItemGraphQueryService, applicationEventPublisher);
+        eventListener = new BatchOrderEventListener(batchOrderStore, batchStore, irsItemGraphQueryService,
+                applicationEventPublisher, timeoutScheduler);
     }
 
     @Test

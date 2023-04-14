@@ -65,7 +65,8 @@ class CreationBatchServiceTest {
     void beforeEach() {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
-        service = new CreationBatchService(batchOrderStore, batchStore, applicationEventPublisher, jobEventLinkedQueueListener, irsConfiguration);
+        service = new CreationBatchService(batchOrderStore, batchStore, applicationEventPublisher,
+                jobEventLinkedQueueListener, irsConfiguration);
     }
 
     @Test

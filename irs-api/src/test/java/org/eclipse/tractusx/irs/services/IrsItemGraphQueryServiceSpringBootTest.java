@@ -44,6 +44,7 @@ import org.eclipse.tractusx.irs.TestConfig;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
 import org.eclipse.tractusx.irs.component.JobHandle;
+import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
@@ -201,6 +202,10 @@ class IrsItemGraphQueryServiceSpringBootTest {
                                                                   .job(Job.builder()
                                                                           .id(UUID.fromString(idAsString))
                                                                           .state(JobState.UNSAVED)
+                                                                          .parameter(JobParameter.builder()
+                                                                                                 .callbackUrl(
+                                                                                                         "example.com")
+                                                                                                 .build())
                                                                           .exception(JobErrorDetails.builder()
                                                                                                     .errorDetail(
                                                                                                             "Job should be canceled")

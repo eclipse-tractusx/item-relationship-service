@@ -39,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
+import org.eclipse.tractusx.irs.aaswrapper.job.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.aaswrapper.job.RequestMetric;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.Bpn;
@@ -73,6 +74,7 @@ import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PagedListHolder;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -98,6 +100,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     private final MeterRegistryService meterRegistryService;
 
     private final SemanticsHubFacade semanticsHubFacade;
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public PageResult getJobsByState(final @NonNull List<JobState> states, final Pageable pageable) {
@@ -212,6 +216,9 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final String idAsString = String.valueOf(jobId);
 
         final Optional<MultiTransferJob> canceled = this.jobStore.cancelJob(idAsString);
+        canceled.ifPresent(cancelledJob -> applicationEventPublisher.publishEvent(
+                new JobProcessingFinishedEvent(cancelledJob.getJobIdString(), cancelledJob.getJob().getState(),
+                        cancelledJob.getJobParameter().getCallbackUrl(), cancelledJob.getBatchId())));
         return canceled.orElseThrow(() -> new EntityNotFoundException("No job exists with id " + jobId)).getJob();
     }
 
