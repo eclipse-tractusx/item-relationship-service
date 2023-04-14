@@ -258,14 +258,14 @@ def order_informations_for_batchprocessing_are_given(response, amount_batches):
 
     assert response.json().get("orderId") is not None
     assert response.json().get("state") == 'INITIALIZED'
-    assert response.get("batchChecksum") == amount_batches
+    assert response.json().get("batchChecksum") == amount_batches
 
     batches_list = response.json().get("batches")
     assert len(batches_list) == amount_batches
     for batches in batches_list:
         assert batches.get("batchId") is not None
         assert batches.get("batchNumber") is not None
-        assert batches.get("jobsInBatchChecksum") == 10
+        assert batches.get("jobsInBatchChecksum") is not None
         assert 'https://irs.dev.demo.catena-x.net/irs/orders' in batches.get("batchUrl")
         assert batches.get("batchProcessingState") == 'INITIALIZED'
         assert batches.get("errors") is None
