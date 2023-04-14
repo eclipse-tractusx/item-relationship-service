@@ -28,23 +28,27 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
  * Schedule timeouts in Batch Process.
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class TimeoutSchedulerBatchProcessingService {
 
     private final ScheduledExecutorService scheduler;
     private final CancelBatchProcessingService cancelBatchProcessingService;
 
-    public void registerJobsTimeout(List<UUID> jobIds, Integer timeoutInSeconds) {
+    public void registerJobsTimeout(final List<UUID> jobIds, final Integer timeoutInSeconds) {
+        log.info("Register job timeout {} seconds for jobIds: {}", timeoutInSeconds, jobIds);
         scheduler.schedule(() -> cancelBatchProcessingService.cancelNotFinishedJobs(jobIds), timeoutInSeconds, TimeUnit.SECONDS);
     }
 
-    public void registerBatchTimeout(UUID batchId, Integer timeoutInSeconds) {
+    public void registerBatchTimeout(final UUID batchId, final Integer timeoutInSeconds) {
+        log.info("Register batch timeout {} seconds for batchId: {}", timeoutInSeconds, batchId);
         scheduler.schedule(() -> cancelBatchProcessingService.cancelNotFinishedJobsInBatch(batchId), timeoutInSeconds, TimeUnit.SECONDS);
     }
 

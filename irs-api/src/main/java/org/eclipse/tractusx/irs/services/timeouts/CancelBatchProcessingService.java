@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
@@ -37,22 +38,26 @@ import org.springframework.stereotype.Service;
  * Execute proper cancel jobs that are taking to long in Batch Process.
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CancelBatchProcessingService {
 
     private final IrsItemGraphQueryService irsItemGraphQueryService;
     private final BatchStore batchStore;
 
-    public void cancelNotFinishedJobs(List<UUID> jobIds) {
+    public void cancelNotFinishedJobs(final List<UUID> jobIds) {
+        log.info("Start scheduled timeout process for jobIds: {}", jobIds.toString());
         jobIds.forEach(jobId -> {
             final JobState jobState = irsItemGraphQueryService.getJobForJobId(jobId, false).getJob().getState();
             if (isNotCompleted(jobState)) {
+                log.info("Not completed job detected. Canceling job with jobId: {}", jobId);
                 irsItemGraphQueryService.cancelJobById(jobId);
             }
         });
     }
 
-    public void cancelNotFinishedJobsInBatch(UUID batchId) {
+    public void cancelNotFinishedJobsInBatch(final UUID batchId) {
+        log.info("Start scheduled timeout process for batchId: {}", batchId.toString());
         batchStore.find(batchId).ifPresent(batch -> {
             if (isBatchNotCompleted(batch.getBatchState())) {
                 cancelNotFinishedJobs(batch.getJobProgressList().stream().map(JobProgress::getJobId).toList());
@@ -60,11 +65,11 @@ public class CancelBatchProcessingService {
         });
     }
 
-    private boolean isNotCompleted(JobState jobState) {
+    private boolean isNotCompleted(final JobState jobState) {
         return JobState.RUNNING.equals(jobState) || JobState.INITIAL.equals(jobState) || JobState.UNSAVED.equals(jobState);
     }
 
-    private boolean isBatchNotCompleted(ProcessingState processingState) {
+    private boolean isBatchNotCompleted(final ProcessingState processingState) {
         return ProcessingState.PROCESSING.equals(processingState) || ProcessingState.INITIALIZED.equals(processingState);
     }
 

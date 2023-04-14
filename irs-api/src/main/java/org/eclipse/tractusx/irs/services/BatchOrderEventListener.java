@@ -115,6 +115,7 @@ public class BatchOrderEventListener {
         batch.setJobProgressList(createdJobIds);
         batch.setStartedOn(ZonedDateTime.now(ZoneOffset.UTC));
         batchStore.save(batch.getBatchId(), batch);
+        timeoutScheduler.registerBatchTimeout(batch.getBatchId(), batchOrder.getTimeout());
         timeoutScheduler.registerJobsTimeout(createdJobIds.stream().map(JobProgress::getJobId).toList(), batchOrder.getJobTimeout());
     }
 

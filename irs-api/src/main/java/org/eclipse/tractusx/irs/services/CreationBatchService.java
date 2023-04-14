@@ -39,7 +39,6 @@ import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
-import org.eclipse.tractusx.irs.services.timeouts.TimeoutSchedulerBatchProcessingService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +55,6 @@ public class CreationBatchService {
     private final ApplicationEventPublisher applicationEventPublisher;
     private final JobEventLinkedQueueListener jobEventLinkedQueueListener;
     private final IrsConfiguration irsConfiguration;
-    private final TimeoutSchedulerBatchProcessingService timeoutScheduler;
 
     public UUID create(final RegisterBatchOrder request) {
         final UUID batchOrderId = UUID.randomUUID();
@@ -78,7 +76,6 @@ public class CreationBatchService {
         batches.forEach(batch -> {
             batchStore.save(batch.getBatchId(), batch);
             jobEventLinkedQueueListener.addQueueForBatch(batch.getBatchId(), batch.getJobProgressList().size());
-            timeoutScheduler.registerBatchTimeout(batch.getBatchId(), batchOrder.getTimeout());
         });
         applicationEventPublisher.publishEvent(new BatchOrderRegisteredEvent(batchOrderId));
         return batchOrderId;
