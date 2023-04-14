@@ -50,7 +50,7 @@ public class EdcDiscoveryFacade {
         final List<EdcAddressResponse> edcAddressResponse = edcDiscoveryClient.getEdcBaseUrl(bpn);
 
         final List<String> endpoints = edcAddressResponse.stream()
-                                                         .flatMap(response -> response.getConnectorEndpoints().stream())
+                                                         .flatMap(response -> response.getConnectorEndpoint().stream())
                                                          .toList();
 
         return endpoints.stream()

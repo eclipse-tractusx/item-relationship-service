@@ -72,7 +72,7 @@ class EdcDiscoveryClientLocalStub implements EdcDiscoveryClient {
 
         return Collections.singletonList(EdcAddressResponse.builder()
                                                            .bpn(bpn)
-                                                           .connectorEndpoints(
+                                                           .connectorEndpoint(
                                                                    connectorEndpoint.orElseGet(Collections::emptyList))
                                                            .build());
     }

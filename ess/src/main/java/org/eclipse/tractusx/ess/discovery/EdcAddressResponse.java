@@ -37,6 +37,6 @@ import lombok.extern.jackson.Jacksonized;
 class EdcAddressResponse {
 
     private String bpn;
-    private List<String> connectorEndpoints;
+    private List<String> connectorEndpoint;
 
 }

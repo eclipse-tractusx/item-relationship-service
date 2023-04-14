@@ -47,7 +47,7 @@ class EdcDiscoveryClientImplTest {
         final String bpn = "BPNS000000000DDD";
         final EdcAddressResponse[] mockResponse = new EdcAddressResponse[] { EdcAddressResponse.builder()
                                                                                                .bpn(bpn)
-                                                                                               .connectorEndpoints(
+                                                                                               .connectorEndpoint(
                                                                                                        Collections.singletonList(
                                                                                                                "http://edc-address.com")).build()
         };
@@ -58,7 +58,7 @@ class EdcDiscoveryClientImplTest {
         assertThat(edcAddressResponse).isNotNull();
         assertThat(edcAddressResponse).hasSize(1);
         assertThat(edcAddressResponse.get(0).getBpn()).isEqualTo(bpn);
-        assertThat(edcAddressResponse.get(0).getConnectorEndpoints()).isNotEmpty();
+        assertThat(edcAddressResponse.get(0).getConnectorEndpoint()).isNotEmpty();
         verify(this.restTemplate, times(1)).postForObject(any(), any(), eq(EdcAddressResponse[].class));
     }
 
@@ -67,7 +67,7 @@ class EdcDiscoveryClientImplTest {
         final String bpn = "BPNS000000000DDD";
         final EdcAddressResponse[] mockResponse = new EdcAddressResponse[] { EdcAddressResponse.builder()
                                                                                                .bpn(bpn)
-                                                                                               .connectorEndpoints(
+                                                                                               .connectorEndpoint(
                                                                                                        List.of("http://edc-address.com",
                                                                                                                "http://edc-address1.com")).build()
         };
@@ -78,9 +78,9 @@ class EdcDiscoveryClientImplTest {
         assertThat(edcAddressResponse).isNotNull();
         assertThat(edcAddressResponse).hasSize(1);
         assertThat(edcAddressResponse.get(0).getBpn()).isEqualTo(bpn);
-        assertThat(edcAddressResponse.get(0).getConnectorEndpoints()).hasSize(2);
-        assertThat(edcAddressResponse.get(0).getConnectorEndpoints().get(0)).isEqualTo("http://edc-address.com");
-        assertThat(edcAddressResponse.get(0).getConnectorEndpoints().get(1)).isEqualTo("http://edc-address1.com");
+        assertThat(edcAddressResponse.get(0).getConnectorEndpoint()).hasSize(2);
+        assertThat(edcAddressResponse.get(0).getConnectorEndpoint().get(0)).isEqualTo("http://edc-address.com");
+        assertThat(edcAddressResponse.get(0).getConnectorEndpoint().get(1)).isEqualTo("http://edc-address1.com");
         verify(this.restTemplate, times(1)).postForObject(any(), any(), eq(EdcAddressResponse[].class));
     }
 }
