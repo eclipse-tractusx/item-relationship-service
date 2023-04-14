@@ -34,11 +34,11 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.tractusx.irs.common.CxTestDataContainer;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
-import org.eclipse.tractusx.irs.configuration.local.CxTestDataContainer;
-import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
+import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -53,6 +53,9 @@ edc-controlplane:
       url: "https://<controlplane-url>"
     dataplane:
       url: "https://<dataplane-url>"
+    vault:
+      hashicorp:
+        token: "<vault-token>"
   configuration:
     properties: |-
       edc.oauth.client.id=<daps-client-id>
@@ -61,7 +64,6 @@ edc-controlplane:
       edc.oauth.certificate.alias=<daps-certificate-name>
       edc.oauth.token.url=<daps-token-url>
       edc.vault.hashicorp.url=<vault-url>
-      edc.vault.hashicorp.token=<vault-token>
       edc.vault.hashicorp.api.secret.path=<vault-secret-store-path>
       edc.data.encryption.keys.alias=<daps-privatekey-name>
       edc.data.encryption.algorithm=NONE
@@ -74,6 +76,9 @@ edc-dataplane:
     api:
       auth:
         key: "<edc-api-key>"
+    vault:
+      hashicorp:
+        token: "<vault-token>"
   ## Ingress declaration to expose the network service.
   ingresses:
     - enabled: true
@@ -102,5 +107,4 @@ edc-dataplane:
       edc.oauth.certificate.alias=<daps-certificate-name>
       edc.oauth.token.url=<daps-token-url>
       edc.vault.hashicorp.url=<vault-url>
-      edc.vault.hashicorp.token=<vault-token>
       edc.vault.hashicorp.api.secret.path=<vault-secret-store-path>

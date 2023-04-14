@@ -23,14 +23,23 @@
 package org.eclipse.tractusx.irs.component;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.jackson.Jacksonized;
 
 /**
  * Summary
  */
-@Value
+@Getter
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 @Builder(toBuilder = true)
 @Schema(description = "Summary of the job with statistics of the job processing.")
 @Jacksonized
@@ -47,6 +56,5 @@ public class Summary {
      */
     @Schema(description = "Summary of the BPN lookups", implementation = AsyncFetchedItems.class)
     private FetchedItems bpnLookups;
-
 
 }
