@@ -251,3 +251,22 @@ def errors_for_invalid_batchSize_are_correct(response):
     error_list = response.json().get("messages")
     assert 'batchSize:Batch size value must be mod 10 compliant' in error_list
     assert 'batchSize:must be greater than or equal to 10' in error_list
+
+
+def order_informations_for_batchprocessing_are_given(response, amount_batches):
+    print(response.json())
+
+    assert response.json().get("orderId") is not None
+    assert response.json().get("state") == 'INITIALIZED'
+    #assert response.get("batchChecksum") ??
+
+    batches_list = response.json().get("batches")
+    assert len(batches_list) == amount_batches
+    for batches in batches_list:
+        assert batches.get("batchId") is not None
+        assert batches.get("batchNumber") is not None
+        #assert batches.get("jobsInBatchChecksum") ???
+        assert 'https://irs.dev.demo.catena-x.net/' in batches.get("batchUrl")
+        #assert 'https://irs.dev.demo.catena-x.net/irs/orders' in batches.get("batchUrl")
+        assert batches.get("batchProcessingState") == 'INITIALIZED'
+        assert batches.get("errors") is None
