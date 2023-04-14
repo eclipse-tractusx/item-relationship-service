@@ -45,7 +45,24 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 60
+
+  - &verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+    name: verify job response with desired test steps and wait for desired job status
+    max_retries: 90
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      json:
+        job:
+          state: COMPLETED
+    delay_after: 10
 
   - name: get response for created investigation
     request:
@@ -58,9 +75,6 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-      json:
-        job:
-          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
       headers:
@@ -99,7 +113,8 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 30
+
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: get response for created investigation
     request:
@@ -112,9 +127,6 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-      json:
-        job:
-          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID_in_unknown_BPN
       headers:
@@ -292,9 +304,8 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 400
 
-  - *authenticate_and_fetch_token
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: get response for created investigation
     request:
@@ -307,9 +318,6 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-      json:
-        job:
-          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
       headers:
@@ -346,7 +354,8 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 200
+
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: get response for created investigation
     request:
@@ -359,9 +368,6 @@ stages:
         Authorization: "Bearer {access_token:s}"
     response:
       status_code: 200
-      json:
-        job:
-          state: COMPLETED
       verify_response_with:
         - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
         - function: api-tests.tavern_helpers:tombstones_are_empty
