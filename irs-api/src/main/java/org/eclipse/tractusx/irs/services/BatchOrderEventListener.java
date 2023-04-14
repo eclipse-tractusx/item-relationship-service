@@ -40,6 +40,7 @@ import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.events.BatchOrderProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
 import org.eclipse.tractusx.irs.services.events.BatchProcessingFinishedEvent;
+import org.eclipse.tractusx.irs.services.timeouts.TimeoutSchedulerBatchProcessingService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -57,6 +58,7 @@ public class BatchOrderEventListener {
     private final BatchStore batchStore;
     private final IrsItemGraphQueryService irsItemGraphQueryService;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final TimeoutSchedulerBatchProcessingService timeoutScheduler;
 
     @Async
     @EventListener
@@ -113,6 +115,8 @@ public class BatchOrderEventListener {
         batch.setJobProgressList(createdJobIds);
         batch.setStartedOn(ZonedDateTime.now(ZoneOffset.UTC));
         batchStore.save(batch.getBatchId(), batch);
+        timeoutScheduler.registerBatchTimeout(batch.getBatchId(), batchOrder.getTimeout());
+        timeoutScheduler.registerJobsTimeout(createdJobIds.stream().map(JobProgress::getJobId).toList(), batchOrder.getJobTimeout());
     }
 
     private JobProgress createJobProgress(final JobHandle jobHandle, final String globalAssetId) {
