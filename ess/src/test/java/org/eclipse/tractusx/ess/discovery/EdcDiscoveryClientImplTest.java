@@ -55,8 +55,7 @@ class EdcDiscoveryClientImplTest {
 
         final List<EdcAddressResponse> edcAddressResponse = bpdmClient.getEdcBaseUrl(bpn);
 
-        assertThat(edcAddressResponse).isNotNull();
-        assertThat(edcAddressResponse).hasSize(1);
+        assertThat(edcAddressResponse).isNotNull().hasSize(1);
         assertThat(edcAddressResponse.get(0).getBpn()).isEqualTo(bpn);
         assertThat(edcAddressResponse.get(0).getConnectorEndpoint()).isNotEmpty();
         verify(this.restTemplate, times(1)).postForObject(any(), any(), eq(EdcAddressResponse[].class));
@@ -75,8 +74,7 @@ class EdcDiscoveryClientImplTest {
 
         final List<EdcAddressResponse> edcAddressResponse = bpdmClient.getEdcBaseUrl(bpn);
 
-        assertThat(edcAddressResponse).isNotNull();
-        assertThat(edcAddressResponse).hasSize(1);
+        assertThat(edcAddressResponse).isNotNull().hasSize(1);
         assertThat(edcAddressResponse.get(0).getBpn()).isEqualTo(bpn);
         assertThat(edcAddressResponse.get(0).getConnectorEndpoint()).hasSize(2);
         assertThat(edcAddressResponse.get(0).getConnectorEndpoint().get(0)).isEqualTo("http://edc-address.com");
