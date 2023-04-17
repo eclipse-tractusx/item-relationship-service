@@ -41,44 +41,56 @@ class EdcDiscoveryFacadeTest {
 
     @Test
     void shouldReturnEdcBaseUrl() {
+        // Arrange
         final String bpn = "BPNS000000000DDD";
         final String url = "http://edc-url";
         when(edcDiscoveryMockConfig.getMockEdcAddress()).thenReturn(Map.of(bpn, List.of(url)));
 
+        // Act
         final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl(bpn);
 
+        // Assert
         assertThat(edcBaseUrl).isNotEmpty().contains(url);
     }
 
     @Test
     void shouldReturnEdcBaseUrls() {
+        // Arrange
         final String bpn = "BPNS000000000DDD";
         final String url1 = "http://edc-url1";
         final String url2 = "http://edc-url2";
         when(edcDiscoveryMockConfig.getMockEdcAddress()).thenReturn(Map.of(bpn, List.of(url1, url2)));
 
+        // Act
         final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl(bpn);
 
+        // Assert
         assertThat(edcBaseUrl).isNotEmpty().contains(url1);
     }
 
     @Test
     void shouldReturnResponseWithEmptyConnectorEndpointList() {
+        // Arrange
         when(edcDiscoveryMockConfig.getMockEdcAddress()).thenReturn(Map.of());
 
+        // Act
         final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl("not_existing");
 
+        // Assert
         assertThat(edcBaseUrl).isEmpty();
     }
 
     @Test
     void shouldReturnEmptyOptionalWhenClientReturnsNull() {
+        // Arrange
         final EdcDiscoveryClientLocalStub clientMock = mock(EdcDiscoveryClientLocalStub.class);
         final EdcDiscoveryFacade edcDiscoveryFacade = new EdcDiscoveryFacade(clientMock);
         when(clientMock.getEdcBaseUrl(anyString())).thenReturn(null);
 
+        // Act
         final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl("not_existing");
 
+        // Assert
         assertThat(edcBaseUrl).isEmpty();
     }
 

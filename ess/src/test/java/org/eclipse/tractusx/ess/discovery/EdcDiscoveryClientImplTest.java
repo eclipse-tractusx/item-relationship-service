@@ -39,11 +39,12 @@ import org.springframework.web.client.RestTemplate;
 class EdcDiscoveryClientImplTest {
 
     private final RestTemplate restTemplate = mock(RestTemplate.class);
-    private final EdcDiscoveryClient bpdmClient = new EdcDiscoveryClientImpl(restTemplate,
+    private final EdcDiscoveryClient edcDiscoveryClient = new EdcDiscoveryClientImpl(restTemplate,
             "url/api/administration/connectors/discovery");
 
     @Test
     void shouldCallExternalServiceOnceAndGetEdcAddressResponse() {
+        // Arrange
         final String bpn = "BPNS000000000DDD";
         final EdcAddressResponse[] mockResponse = new EdcAddressResponse[] { EdcAddressResponse.builder()
                                                                                                .bpn(bpn)
@@ -53,8 +54,10 @@ class EdcDiscoveryClientImplTest {
         };
         doReturn(mockResponse).when(restTemplate).postForObject(any(), any(), eq(EdcAddressResponse[].class));
 
-        final List<EdcAddressResponse> edcAddressResponse = List.of(bpdmClient.getEdcBaseUrl(bpn));
+        // Act
+        final List<EdcAddressResponse> edcAddressResponse = List.of(edcDiscoveryClient.getEdcBaseUrl(bpn));
 
+        // Assert
         assertThat(edcAddressResponse).isNotNull().hasSize(1);
         assertThat(edcAddressResponse.get(0).getBpn()).isEqualTo(bpn);
         assertThat(edcAddressResponse.get(0).getConnectorEndpoint()).isNotEmpty();
@@ -63,6 +66,7 @@ class EdcDiscoveryClientImplTest {
 
     @Test
     void shouldCallExternalServiceWithTwoEndpointsOnceAndGetEdcAddressResponse() {
+        // Arrange
         final String bpn = "BPNS000000000DDD";
         final EdcAddressResponse[] mockResponse = new EdcAddressResponse[] { EdcAddressResponse.builder()
                                                                                                .bpn(bpn)
@@ -72,8 +76,10 @@ class EdcDiscoveryClientImplTest {
         };
         doReturn(mockResponse).when(restTemplate).postForObject(any(), any(), eq(EdcAddressResponse[].class));
 
-        final List<EdcAddressResponse> edcAddressResponse = List.of(bpdmClient.getEdcBaseUrl(bpn));
+        // Act
+        final List<EdcAddressResponse> edcAddressResponse = List.of(edcDiscoveryClient.getEdcBaseUrl(bpn));
 
+        // Assert
         assertThat(edcAddressResponse).isNotNull().hasSize(1);
         assertThat(edcAddressResponse.get(0).getBpn()).isEqualTo(bpn);
         assertThat(edcAddressResponse.get(0).getConnectorEndpoint()).hasSize(2);
@@ -84,12 +90,15 @@ class EdcDiscoveryClientImplTest {
 
     @Test
     void shouldReturnNullWhenRestTemplateReturnsNull() {
+        // Arrange
         final String bpn = "BPNS000000000DDD";
         doReturn(null).when(restTemplate).postForObject(any(), any(), eq(EdcAddressResponse[].class));
 
-        final EdcAddressResponse[] edcBaseUrl = bpdmClient.getEdcBaseUrl(bpn);
-        assertThat(edcBaseUrl).isNull();
+        // Act
+        final EdcAddressResponse[] edcBaseUrl = edcDiscoveryClient.getEdcBaseUrl(bpn);
 
+        // Assert
+        assertThat(edcBaseUrl).isNull();
         verify(this.restTemplate, times(1)).postForObject(any(), any(), eq(EdcAddressResponse[].class));
     }
 }
