@@ -1,15 +1,15 @@
 {
   "_type": "export",
   "__export_format": 4,
-  "__export_date": "2023-04-06T13:45:26.595Z",
+  "__export_date": "2023-04-17T08:07:07.906Z",
   "__export_source": "insomnia.desktop.app:v2023.1.0",
   "resources": [
     {
       "_id": "req_2e35d9dac9d44f949385b9979f51432f",
       "parentId": "fld_784cde5184c64deeafe5e433525fa308",
-      "modified": 1680785521218,
+      "modified": 1681716476162,
       "created": 1680682418619,
-      "url": "{{DIGITAL_TWIN_REGISTRY}}/registry/shell-descriptors/{% param 'string/string', 'aasIdentifier', 'ask/stored', '' %}",
+      "url": "{{DIGITAL_TWIN_REGISTRY}}/registry/shell-descriptors/{% prompt 'aasIdentifier', '', '', '', false, true %}",
       "name": "Get Shell by aasIdentifier",
       "description": "",
       "method": "GET",
@@ -252,7 +252,7 @@
     {
       "_id": "req_a80337d72c21445ab0393ace01db3f19",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680785290215,
+      "modified": 1681716330816,
       "created": 1680682418551,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "1.0.0 [Register Job] https://${environment}/irs/jobs",
@@ -929,9 +929,9 @@
     {
       "_id": "req_0ccf4d7f2f6048f089ba97f8438994e1",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680785592879,
+      "modified": 1681716829578,
       "created": 1680682418325,
-      "url": "{{IRS_HOST}}/irs/jobs/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
+      "url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
       "name": "3.0.0 [Search for given jobId] http://${environment}/irs/jobs/:jobId?returnUncompletedJob=true",
       "description": "",
       "method": "GET",
@@ -960,9 +960,9 @@
     {
       "_id": "req_99e7a18c126a485a991fe01bd872b4dd",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680785629378,
+      "modified": 1681717085453,
       "created": 1680682418316,
-      "url": "{{IRS_HOST}}/irs/jobs/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
+      "url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
       "name": "3.1.0 [Search for given jobId] http://${environment}/irs/jobs/:jobId",
       "description": "",
       "method": "GET",
@@ -989,9 +989,9 @@
     {
       "_id": "req_d55ac0a71bba4c759fe910d368690f7a",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680785640313,
+      "modified": 1681717093358,
       "created": 1680682418307,
-      "url": "{{IRS_HOST}}/irs/jobs/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
+      "url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
       "name": "3.1.1 [Search for invalid jobId] http://${environment}/irs/jobs/:jobId",
       "description": "",
       "method": "GET",
@@ -1018,9 +1018,9 @@
     {
       "_id": "req_2e8e67ed9c0c4f8db542ff4d9dbce855",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680788253678,
+      "modified": 1681717096707,
       "created": 1680682418297,
-      "url": "{{IRS_HOST}}/irs/jobs/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
+      "url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
       "name": "3.1.2 [Search for unknown jobId] http://${environment}/irs/jobs/:jobId",
       "description": "",
       "method": "GET",
@@ -1047,9 +1047,9 @@
     {
       "_id": "req_4c66b4dc5e3b4de78293ca6e4de21411",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
-      "modified": 1680785649588,
+      "modified": 1681717107446,
       "created": 1680682418280,
-      "url": "{{IRS_HOST}}/irs/jobs/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
+      "url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
       "name": "6.0.0 [Cancel Job for given jobId] /irs/jobs/:jobid",
       "description": "",
       "method": "PUT",
@@ -1185,9 +1185,9 @@
     {
       "_id": "req_5c5ba69311324db6819ad339e2736f41",
       "parentId": "fld_0a77eb5a2bb745fd831f9f891f366eec",
-      "modified": 1680785661613,
+      "modified": 1681717133103,
       "created": 1680682418238,
-      "url": "{{IRS_HOST}}/irs/jobs/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
+      "url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
       "name": "Search for given jobId",
       "description": "",
       "method": "GET",
@@ -1216,9 +1216,9 @@
     {
       "_id": "req_fddce5c1d5574315bc35c2e963a5dd6b",
       "parentId": "fld_0a77eb5a2bb745fd831f9f891f366eec",
-      "modified": 1680785667756,
+      "modified": 1681717137253,
       "created": 1680682418229,
-      "url": "{{IRS_HOST}}/irs/jobs/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
+      "url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
       "name": "Cancel Job for given jobId",
       "description": "",
       "method": "PUT",
@@ -1344,9 +1344,9 @@
     {
       "_id": "req_61327d8edf304d1eb63c2eaaef528f0b",
       "parentId": "fld_a3ed111da88c4bcab40b440cb9750055",
-      "modified": 1680787129609,
+      "modified": 1681718801853,
       "created": 1680682418174,
-      "url": "{{ _.BPDM_URL }}/v1/api/catena/business-partner/{% param 'string/string', 'BPN', 'ask/stored', '' %}",
+      "url": "{{ _.BPDM_URL }}/v1/api/catena/business-partner/{% prompt 'BPN', '', '', '', false, true %}",
       "name": "Get business partner by id",
       "description": "",
       "method": "GET",
@@ -1385,9 +1385,9 @@
     {
       "_id": "req_bc2bb8267f614334828ae8ecea0faf0f",
       "parentId": "fld_1915aa023f314301bb45fca5f3c187f1",
-      "modified": 1680786005861,
+      "modified": 1681717263599,
       "created": 1680682418157,
-      "url": "{{IRS_HOST}}/esr/esr-statistics/{% prompt 'globalAssetId', 'Provide global asset ID or use default', _.GLOBAL_ASSET_ID, '', false, true %}/{% param 'string/string', 'Bom Lifecycle', 'ask/stored', '' %}/{% param 'string/string', 'certificate', 'ask/stored', '' %}/submodel",
+      "url": "{{IRS_HOST}}/esr/esr-statistics/{% prompt 'globalAssetId', 'Provide global asset ID or use default', _.GLOBAL_ASSET_ID, '', false, true %}/{% prompt 'BOM Lifecycle', '', '', '', false, true %}/{% prompt 'Certificate', '', '', '', false, true %}/submodel",
       "name": "Get Esr Statistics",
       "description": "",
       "method": "GET",
@@ -1470,9 +1470,9 @@
     {
       "_id": "req_86148af88f2d4a04a53df5043563a2cb",
       "parentId": "fld_817617af9e9641c58a2c2bf08842ec3b",
-      "modified": 1680786035557,
+      "modified": 1681717309378,
       "created": 1680682418134,
-      "url": "{{IRS_HOST}}/ess/bpn/investigations/{% param 'string/string', 'jobId', 'ask/stored', '' %}",
+      "url": "{{IRS_HOST}}/ess/bpn/investigations/{% prompt 'Job ID', '', '', '', false, true %}",
       "name": "Search for investigation by jobId",
       "description": "",
       "method": "GET",
@@ -1543,9 +1543,9 @@
     {
       "_id": "req_c6085002230144979f83a821d14701ab",
       "parentId": "fld_e578440486514e1c8b619af87b6b75ba",
-      "modified": 1680786066949,
+      "modified": 1681717455311,
       "created": 1680682418109,
-      "url": "{{IRS_HOST}}/irs/orders/{% param 'string/string', 'Order ID', 'ask/stored', '' %}",
+      "url": "{{IRS_HOST}}/irs/orders/{% prompt 'Order ID', '', '', '', false, true %}",
       "name": "Search for given orderId",
       "description": "",
       "method": "GET",
@@ -1572,9 +1572,9 @@
     {
       "_id": "req_8a21a5adc48048698872fd2447a8f887",
       "parentId": "fld_e578440486514e1c8b619af87b6b75ba",
-      "modified": 1680786103331,
+      "modified": 1681717669066,
       "created": 1680682418099,
-      "url": "{{IRS_HOST}}/irs/orders/{% param 'string/string', 'Order ID', 'ask/stored', '' %}/batches/{% param 'string/string', 'Batch ID', 'ask/stored', '' %}",
+      "url": "{{IRS_HOST}}/irs/orders/{% prompt 'Order ID', '', '', '', false, true %}/batches/{% prompt 'Batch ID', '', '', '', false, true %}",
       "name": "Search for given orderId and batchId",
       "description": "",
       "method": "GET",
@@ -1597,52 +1597,6 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "_type": "request"
-    },
-    {
-      "_id": "env_d2b7eb1621841465ea24b73343568b286aa8ac9a",
-      "parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
-      "modified": 1680782486844,
-      "created": 1680782486844,
-      "name": "Base Environment",
-      "data": {},
-      "dataPropertyOrder": null,
-      "color": null,
-      "isPrivate": false,
-      "metaSortKey": 1680782486844,
-      "_type": "environment"
-    },
-    {
-      "_id": "jar_d2b7eb1621841465ea24b73343568b286aa8ac9a",
-      "parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
-      "modified": 1680788458822,
-      "created": 1680782486851,
-      "name": "Default Jar",
-      "cookies": [
-        {
-          "key": "KC_RESTART",
-          "expires": "1970-01-01T00:00:10.000Z",
-          "maxAge": 0,
-          "domain": "centralidp.int.demo.catena-x.net",
-          "path": "/auth/realms/CX-Central/",
-          "httpOnly": true,
-          "extensions": ["Version=1"],
-          "hostOnly": true,
-          "creation": "2023-04-06T13:30:18.499Z",
-          "lastAccessed": "2023-04-06T13:40:58.822Z",
-          "id": "29248894633162315"
-        }
-      ],
-      "_type": "cookie_jar"
-    },
-    {
-      "_id": "spc_22dfe33611af4731965cc2b08febcfdb",
-      "parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
-      "modified": 1680782484284,
-      "created": 1680782484284,
-      "fileName": "IRS",
-      "contents": "",
-      "contentType": "yaml",
-      "_type": "api_spec"
     }
   ]
 }
