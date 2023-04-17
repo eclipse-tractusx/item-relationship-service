@@ -3,6 +3,7 @@ irs-helm:
   # IRS Configuration #
   #####################
   irsUrl: "https://irs.dev.demo.catena-x.net"
+  bpn: BPNL00000003CRHK
   ingress:
     enabled: true
     className: "nginx"
@@ -25,27 +26,55 @@ irs-helm:
     url: https://semantics.int.demo.catena-x.net/hub/api/v1/models
   bpdm:
     url: https://partners-pool.int.demo.catena-x.net
-  minioUser: secret-placeholder
-  minioPassword: secret-placeholder
+  minioUser: <path:traceability-irs/data/dev/minio#minioUser>
+  minioPassword: <path:traceability-irs/data/dev/minio#minioPassword>
   keycloak:
     oauth2:
-      clientId: secret-placeholder
-      clientSecret: secret-placeholder
-      clientTokenUri: secret-placeholder
-      jwkSetUri: secret-placeholder
+      clientId: <path:traceability-irs/data/dev/keycloak/oauth2#clientId>
+      clientSecret: <path:traceability-irs/data/dev/keycloak/oauth2#clientSecret>
+      clientTokenUri: <path:traceability-irs/data/dev/keycloak/oauth2#tokenUri>
+      jwkSetUri: <path:traceability-irs/data/dev/keycloak/oauth2#jwkSetUri>
   edc:
+    provider:
+      host: "https://irs-provider-controlplane.dev.demo.catena-x.net"
     controlplane:
       apikey:
         secret: "123456"
       endpoint:
         data: "http://irs-dev-edc-controlplane:8181/api/v1/management"
 
+  discovery:
+    endpoint: "" # Currently unknown
+    mockEdcAddress:  # Mocked EDC BPN Addresses
+      BPNL00000003B6LU: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
+      BPNL00000003B3NX: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00000003B0Q0: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
+      BPNL00ARBITRARY1: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00ARBITRARY2: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00ARBITRARY3: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00000003AYRE: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00ARBITRARY4: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00ARBITRARY5: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00ARBITRARY6: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+      BPNL00ARBITRARY7: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
+  ess:
+    mockEdcResult:  # Mocked BPN Investigation results
+      BPNL00000003B3NX: "NO"
+      BPNL00ARBITRARY1: "NO"
+      BPNL00ARBITRARY2: "YES"
+      BPNL00ARBITRARY3: "NO"
+      BPNL00000003AYRE: "NO"
+      BPNL00000003B0Q0: "NO"
+      BPNL00ARBITRARY7: "YES"
+    mockRecursiveEdcAsset: BPNL00ARBITRARY4, BPNL00ARBITRARY5, BPNL00ARBITRARY6 # Mocked BPN Recursive Investigation results
+
+
   #######################
   # Minio Configuration #
   #######################
   minio:
-    rootUser: secret-placeholder
-    rootPassword: secret-placeholder
+    rootUser: <path:traceability-irs/data/dev/minio#minioUser>
+    rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
 
   #########################
   # Grafana Configuration #
@@ -61,8 +90,8 @@ irs-helm:
             - "irs-grafana.dev.demo.catena-x.net"
           secretName: tls-secret
 
-    user: secret-placeholder
-    password: secret-placeholder
+    user: <path:traceability-irs/data/dev/grafana#username>
+    password: <path:traceability-irs/data/dev/grafana#password>
 
   ############################
   # Prometheus Configuration #
@@ -77,8 +106,8 @@ irs-edc-consumer:
   ##############################
   postgresql:
     auth:
-      postgresPassword: secret-placeholder
-      password: secret-placeholder
+      postgresPassword: <path:traceability-irs/data/dev/controlplane#databasepassword>
+      password: <path:traceability-irs/data/dev/controlplane#databasepassword>
 
   ##################################
   # EDC Controlplane Configuration #
@@ -105,7 +134,7 @@ irs-edc-consumer:
 
     edc:
       postgresql:
-        password: secret-placeholder
+        password: <path:traceability-irs/data/dev/controlplane#databasepassword>
       transfer:
         proxy:
           token:
@@ -130,7 +159,7 @@ irs-edc-consumer:
         edc.oauth.certificate.alias=irs-dev-daps-cert-consumer
         edc.oauth.token.url=https://daps-irs.dev.demo.catena-x.net/token
         edc.vault.hashicorp.url=https://vault.demo.catena-x.net
-        edc.vault.hashicorp.token=secret-placeholder
+        edc.vault.hashicorp.token=<path:traceability-irs/data/dev/controlplane#vaultToken>
         edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
         edc.data.encryption.keys.alias=irs-dev-daps-cert-consumer-key
         edc.data.encryption.algorithm=NONE
@@ -181,5 +210,5 @@ irs-edc-consumer:
         edc.oauth.certificate.alias=irs-dev-daps-cert-consumer
         edc.oauth.token.url=https://daps-irs.dev.demo.catena-x.net/token
         edc.vault.hashicorp.url=https://vault.demo.catena-x.net
-        edc.vault.hashicorp.token=secret-placeholder
+        edc.vault.hashicorp.token=<path:traceability-irs/data/dev/controlplane#vaultToken>
         edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
