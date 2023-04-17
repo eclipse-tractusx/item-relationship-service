@@ -117,8 +117,9 @@ data:
         {{- tpl (toYaml .Values.ess.mockRecursiveEdcAsset) . | nindent 8 }}
         {{- end }}
     {{- end }}
-    {{- if .Values.config.content }}
 
     apiAllowedBpn: {{ tpl (.Values.bpn | default "") . | quote }}
+
+    {{- if .Values.config.content }}
     {{- tpl (toYaml .Values.config.content) . | nindent 4 }}
     {{- end }}
