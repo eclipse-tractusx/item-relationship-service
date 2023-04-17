@@ -22,10 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.discovery;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -46,7 +44,7 @@ interface EdcDiscoveryClient {
      * @param bpn number
      * @return EDC addresses
      */
-    List<EdcAddressResponse> getEdcBaseUrl(String bpn);
+    EdcAddressResponse[] getEdcBaseUrl(String bpn);
 
 }
 
@@ -66,15 +64,15 @@ class EdcDiscoveryClientLocalStub implements EdcDiscoveryClient {
     }
 
     @Override
-    public List<EdcAddressResponse> getEdcBaseUrl(final String bpn) {
+    public EdcAddressResponse[] getEdcBaseUrl(final String bpn) {
         final Optional<List<String>> connectorEndpoint = Optional.ofNullable(
                 this.edcDiscoveryMockConfig.getMockEdcAddress().get(bpn));
 
-        return Collections.singletonList(EdcAddressResponse.builder()
-                                                           .bpn(bpn)
-                                                           .connectorEndpoint(
-                                                                   connectorEndpoint.orElseGet(Collections::emptyList))
-                                                           .build());
+        return new EdcAddressResponse[] { EdcAddressResponse.builder()
+                                                            .bpn(bpn)
+                                                            .connectorEndpoint(connectorEndpoint.orElseGet(
+                                                                    Collections::emptyList)).build()
+        };
     }
 }
 
@@ -95,11 +93,10 @@ class EdcDiscoveryClientImpl implements EdcDiscoveryClient {
     }
 
     @Override
-    public List<EdcAddressResponse> getEdcBaseUrl(final String bpn) {
+    public EdcAddressResponse[] getEdcBaseUrl(final String bpn) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(discoveryAddressUrl);
 
-        return Arrays.stream(Objects.requireNonNull(
-                restTemplate.postForObject(uriBuilder.build().toUri(), Collections.singletonList(bpn),
-                        EdcAddressResponse[].class))).toList();
+        return restTemplate.postForObject(uriBuilder.build().toUri(), Collections.singletonList(bpn),
+                EdcAddressResponse[].class);
     }
 }

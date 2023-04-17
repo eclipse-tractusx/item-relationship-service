@@ -23,6 +23,7 @@
 package org.eclipse.tractusx.ess.discovery;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -64,6 +65,17 @@ class EdcDiscoveryFacadeTest {
     @Test
     void shouldReturnResponseWithEmptyConnectorEndpointList() {
         when(edcDiscoveryMockConfig.getMockEdcAddress()).thenReturn(Map.of());
+
+        final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl("not_existing");
+
+        assertThat(edcBaseUrl).isEmpty();
+    }
+
+    @Test
+    void shouldReturnEmptyOptionalWhenClientReturnsNull() {
+        final EdcDiscoveryClientLocalStub clientMock = mock(EdcDiscoveryClientLocalStub.class);
+        final EdcDiscoveryFacade edcDiscoveryFacade = new EdcDiscoveryFacade(clientMock);
+        when(clientMock.getEdcBaseUrl(anyString())).thenReturn(null);
 
         final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl("not_existing");
 

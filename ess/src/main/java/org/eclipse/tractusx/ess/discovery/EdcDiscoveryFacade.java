@@ -48,7 +48,13 @@ public class EdcDiscoveryFacade {
      */
     public Optional<String> getEdcBaseUrl(final String bpn) {
         log.info("Requesting EDC URLs for BPN '{}'", bpn);
-        final List<EdcAddressResponse> edcAddressResponse = edcDiscoveryClient.getEdcBaseUrl(bpn);
+        final EdcAddressResponse[] edcBaseUrl = edcDiscoveryClient.getEdcBaseUrl(bpn);
+        final List<EdcAddressResponse> edcAddressResponse;
+        if (edcBaseUrl == null) {
+            return Optional.empty();
+        } else {
+            edcAddressResponse = List.of(edcBaseUrl);
+        }
 
         final List<String> endpoints = edcAddressResponse.stream()
                                                          .flatMap(response -> response.getConnectorEndpoint().stream())
