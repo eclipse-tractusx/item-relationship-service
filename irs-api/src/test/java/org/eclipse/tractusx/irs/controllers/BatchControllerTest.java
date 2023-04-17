@@ -37,6 +37,7 @@ import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
+import org.eclipse.tractusx.irs.services.AuthorizationService;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
 import org.junit.jupiter.api.Test;
@@ -61,6 +62,9 @@ class BatchControllerTest {
     @MockBean
     private QueryBatchService queryBatchService;
 
+    @MockBean(name = "authorizationService")
+    private AuthorizationService authorizationService;
+
     @Test
     void shouldReturnUnauthorizedWhenAuthenticationIsMissing() throws Exception {
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
@@ -72,6 +76,8 @@ class BatchControllerTest {
     @Test
     @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenGlobalAssetIdWithWrongFormat() throws Exception {
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
                                                 .content(new ObjectMapper().writeValueAsString(
                                                         registerBatchOrder("MALFORMED_GLOBAL_ASSET"))))
@@ -81,6 +87,8 @@ class BatchControllerTest {
     @Test
     @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenBatchSizeNotMod10Compliant() throws Exception {
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+
         final RegisterBatchOrder registerBatchOrder = registerBatchOrder("MALFORMED_GLOBAL_ASSET");
         registerBatchOrder.setBatchSize(33);
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
@@ -91,6 +99,8 @@ class BatchControllerTest {
     @Test
     @WithMockUser(authorities = "view_irs")
     void shouldRegisterBatchOrder() throws Exception {
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
                                                 .content(new ObjectMapper().writeValueAsString(
                                                         registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
@@ -100,6 +110,8 @@ class BatchControllerTest {
     @Test
     @WithMockUser(authorities = "view_irs")
     void shouldReturnBatchOrder() throws Exception {
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+
         final UUID orderId = UUID.randomUUID();
         when(queryBatchService.findOrderById(orderId)).thenReturn(BatchOrderResponse.builder().orderId(orderId).build());
 
@@ -113,6 +125,7 @@ class BatchControllerTest {
     void shouldReturnBatch() throws Exception {
         final UUID orderId = UUID.randomUUID();
         final UUID batchId = UUID.randomUUID();
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
         when(queryBatchService.findBatchById(orderId, batchId)).thenReturn(
                 BatchResponse.builder().batchId(batchId).orderId(orderId).build());
 
