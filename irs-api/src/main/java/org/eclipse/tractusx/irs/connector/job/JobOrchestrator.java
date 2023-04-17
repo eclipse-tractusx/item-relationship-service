@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.tractusx.irs.aaswrapper.job.JobProcessingFinishedEvent;
+import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobParameter;
@@ -272,7 +272,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                                                                          .getState()
                                                                          .equals(JobState.ERROR)) {
                 applicationEventPublisher.publishEvent(
-                        new JobProcessingFinishedEvent(job.getJobIdString(), job.getJob().getState(),
+                        new JobProcessingFinishedEvent(job.getJobIdString(), job.getJob().getState().name(),
                                 job.getJobParameter().getCallbackUrl(), job.getBatchId()));
             }
         });

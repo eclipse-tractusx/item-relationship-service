@@ -108,7 +108,6 @@ resilience4j:
       registry:
         baseConfig: default
 
-
 edc:
   controlplane:
     request-ttl: ${EDC_CONTROLPLANE_REQUEST_TTL:PT10M} # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
@@ -178,4 +177,20 @@ bpdm:
     read: PT90S # HTTP read timeout for the bpdm client
     connect: PT90S # HTTP connect timeout for the bpdm client
 
-apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK}
+# ESS Module specific properties
+ess:
+  localBpn: ${ESS_LOCAL_BPN:} # BPN value of product - used during EDC notification communication
+  localEdcEndpoint: ${EDC_PROVIDER_URL:} # EDC Provider Url - used during EDC notification communication
+  irs:
+    url: "${IRS_URL:}" # IRS Url to connect with
+  discovery:
+    endpoint: "${DISCOVERY_URL:}" # Endpoint to retrieve EDC base url address for BPN
+    oAuthClientId: keycloak # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+    timeout:
+      read: PT90S # HTTP read timeout for the discovery client
+      connect: PT90S # HTTP connect timeout for the discovery client
+    mockEdcAddress: {} # Mocked EDC BPN Addresses
+    mockEdcResult: {} # Mocked BPN Investigation results
+    mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
+
+apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK} # BPN value that is allowed to access IRS API

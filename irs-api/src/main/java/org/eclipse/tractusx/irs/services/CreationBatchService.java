@@ -67,12 +67,14 @@ public class CreationBatchService {
                                                 .depth(request.getDepth())
                                                 .direction(request.getDirection())
                                                 .collectAspects(request.isCollectAspects())
+                                                .lookupBPNs(request.isLookupBPNs())
                                                 .timeout(request.getTimeout())
                                                 .jobTimeout(request.getJobTimeout())
                                                 .callbackUrl(request.getCallbackUrl())
                                                 .build();
 
-        final List<Batch> batches = createBatches(List.copyOf(request.getGlobalAssetIds()), request.getBatchSize(), batchOrderId);
+        final List<Batch> batches = createBatches(List.copyOf(request.getGlobalAssetIds()), request.getBatchSize(),
+                batchOrderId);
         batchOrderStore.save(batchOrderId, batchOrder);
         batches.forEach(batch -> {
             batchStore.save(batch.getBatchId(), batch);
@@ -96,15 +98,19 @@ public class CreationBatchService {
                         .batchTotal(globalAssetIdsBatches.size())
                         .batchUrl(buildBatchUrl(batchOrderId, batchId))
                         .batchState(ProcessingState.INITIALIZED)
-                        .jobProgressList(batch.stream().map(globalAssetId ->
-                                JobProgress.builder().globalAssetId(globalAssetId).jobState(JobState.UNSAVED).build()).toList())
+                        .jobProgressList(batch.stream()
+                                              .map(globalAssetId -> JobProgress.builder()
+                                                                               .globalAssetId(globalAssetId)
+                                                                               .jobState(JobState.UNSAVED)
+                                                                               .build())
+                                              .toList())
                         .build();
         }).toList();
     }
 
     private String buildBatchUrl(final UUID batchOrderId, final UUID batchId) {
-        return  String.join("/", irsConfiguration.getApiUrl().toString(), IrsApplication.API_PREFIX,
-                "orders", batchOrderId.toString(), "batches", batchId.toString());
+        return String.join("/", irsConfiguration.getApiUrl().toString(), IrsApplication.API_PREFIX, "orders",
+                batchOrderId.toString(), "batches", batchId.toString());
     }
 
 }

@@ -27,8 +27,10 @@ import java.time.Duration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import io.github.resilience4j.retry.RetryRegistry;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
+import org.eclipse.tractusx.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASRecursiveJobHandler;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcessManager;
@@ -41,10 +43,10 @@ import org.eclipse.tractusx.irs.aaswrapper.job.delegate.RelationshipDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.SubmodelDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
+import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.JobTTL;
-import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.persistence.MinioBlobPersistence;
@@ -62,10 +64,15 @@ import org.springframework.context.annotation.Profile;
  * Spring configuration for job-related beans.
  */
 @Configuration
-@SuppressWarnings({ "PMD.ExcessiveImports" })
+@SuppressWarnings({ "PMD.ExcessiveImports", "PMD.TooManyMethods" })
 public class JobConfiguration {
 
     public static final int EXECUTOR_CORE_POOL_SIZE = 5;
+
+    @Bean
+    public OutboundMeterRegistryService outboundMeterRegistryService(final MeterRegistry meterRegistry, final RetryRegistry retryRegistry) {
+        return new OutboundMeterRegistryService(meterRegistry, retryRegistry);
+    }
 
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(

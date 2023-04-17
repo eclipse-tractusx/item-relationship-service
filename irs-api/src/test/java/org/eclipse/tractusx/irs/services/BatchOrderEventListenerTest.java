@@ -44,6 +44,7 @@ import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchStore;
 import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
+import org.eclipse.tractusx.irs.services.timeouts.TimeoutSchedulerBatchProcessingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
@@ -57,6 +58,8 @@ class BatchOrderEventListenerTest {
     private BatchStore batchStore;
     private final IrsItemGraphQueryService irsItemGraphQueryService = mock(IrsItemGraphQueryService.class);
     private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
+    private final TimeoutSchedulerBatchProcessingService timeoutScheduler = mock(
+            TimeoutSchedulerBatchProcessingService.class);
 
     private BatchOrderEventListener eventListener;
 
@@ -64,7 +67,8 @@ class BatchOrderEventListenerTest {
     void beforeEach() {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
-        eventListener = new BatchOrderEventListener(batchOrderStore, batchStore, irsItemGraphQueryService, applicationEventPublisher);
+        eventListener = new BatchOrderEventListener(batchOrderStore, batchStore, irsItemGraphQueryService,
+                applicationEventPublisher, timeoutScheduler);
     }
 
     @Test
@@ -74,16 +78,25 @@ class BatchOrderEventListenerTest {
         final BatchOrder batchOrder = BatchOrder.builder()
                                                 .batchOrderId(BATCH_ORDER_ID)
                                                 .batchOrderState(ProcessingState.INITIALIZED)
-                .collectAspects(Boolean.TRUE)
+                                                .collectAspects(Boolean.TRUE)
+                                                .lookupBPNs(Boolean.TRUE)
                                                 .build();
         final Batch firstBatch = Batch.builder()
                                       .batchId(FIRST_BATCH_ID)
-                                      .batchState(ProcessingState.PARTIAL).batchNumber(1).batchOrderId(BATCH_ORDER_ID)
-                                      .jobProgressList(createJobProgressList(numberOfJobs)).build();
-        final Batch secondBatch = Batch.builder().batchId(SECOND_BATCH_ID)
-                                       .batchState(ProcessingState.PARTIAL).batchNumber(2).batchOrderId(BATCH_ORDER_ID).build();
+                                      .batchState(ProcessingState.PARTIAL)
+                                      .batchNumber(1)
+                                      .batchOrderId(BATCH_ORDER_ID)
+                                      .jobProgressList(createJobProgressList(numberOfJobs))
+                                      .build();
+        final Batch secondBatch = Batch.builder()
+                                       .batchId(SECOND_BATCH_ID)
+                                       .batchState(ProcessingState.PARTIAL)
+                                       .batchNumber(2)
+                                       .batchOrderId(BATCH_ORDER_ID)
+                                       .build();
 
-        given(irsItemGraphQueryService.registerItemJob(any(), any())).willReturn(JobHandle.builder().id(UUID.randomUUID()).build());
+        given(irsItemGraphQueryService.registerItemJob(any(), any())).willReturn(
+                JobHandle.builder().id(UUID.randomUUID()).build());
 
         batchOrderStore.save(BATCH_ORDER_ID, batchOrder);
         batchStore.save(FIRST_BATCH_ID, firstBatch);
@@ -95,8 +108,10 @@ class BatchOrderEventListenerTest {
     }
 
     private List<JobProgress> createJobProgressList(Integer size) {
-        return IntStream.range(0, size).boxed().map(i -> JobProgress.builder().globalAssetId(i.toString()).build()).collect(
-                Collectors.toList());
+        return IntStream.range(0, size)
+                        .boxed()
+                        .map(i -> JobProgress.builder().globalAssetId(i.toString()).build())
+                        .collect(Collectors.toList());
     }
 
 }

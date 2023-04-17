@@ -13,6 +13,9 @@
 
     <modules>
         <module>irs-testing</module>
+        <module>irs-common</module>
+        <module>edc-client</module>
+        <module>ess</module>
         <module>irs-api</module>
         <module>irs-models</module>
         <module>integration-tests</module>
