@@ -38,7 +38,6 @@ import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchStore;
 import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.connector.job.InMemoryJobStore;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
-import org.eclipse.tractusx.irs.services.QueryBatchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -80,7 +79,9 @@ class QueryBatchServiceTest {
         final UUID batchOrderId = UUID.randomUUID();
 
         final UUID batchId = UUID.randomUUID();
+        final UUID secondBatchId = UUID.randomUUID();
         batchStore.save(batchId, createBatch(batchId, batchOrderId));
+        batchStore.save(secondBatchId, createBatch(secondBatchId, batchOrderId));
 
         // when
         final BatchResponse response = service.findBatchById(batchOrderId, batchId);
@@ -88,6 +89,8 @@ class QueryBatchServiceTest {
         // then
         assertThat(response.getOrderId()).isEqualTo(batchOrderId);
         assertThat(response.getBatchId()).isEqualTo(batchId);
+        assertThat(response.getJobsInBatchChecksum()).isEqualTo(3);
+        assertThat(response.getTotalJobs()).isEqualTo(6);
     }
 
     private BatchOrder createBatchOrder(final UUID batchOrderId) {
@@ -96,6 +99,8 @@ class QueryBatchServiceTest {
 
     private Batch createBatch(final UUID batchId, final UUID batchOrderId) {
         return Batch.builder().batchId(batchId).batchOrderId(batchOrderId).jobProgressList(List.of(
+                JobProgress.builder().jobId(UUID.randomUUID()).build(),
+                JobProgress.builder().jobId(UUID.randomUUID()).build(),
                 JobProgress.builder().jobId(UUID.randomUUID()).build()
         )).build();
     }

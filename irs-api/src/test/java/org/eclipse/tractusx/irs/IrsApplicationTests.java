@@ -83,7 +83,6 @@ class IrsApplicationTests {
         final Map<String, Object> fixedYamlMap = mapper.readValue(fixedYaml, Map.class);
         final Map<String, Object> generatedYamlMap = mapper.readValue(generatedYaml, Map.class);
 
-//        assertThat(generatedYaml).isEqualToIgnoringWhitespace(Files.readString(new File("../api/irs-v1.0.yaml").toPath(), UTF_8));
         assertThat(generatedYamlMap).isEqualTo(fixedYamlMap);
     }
 

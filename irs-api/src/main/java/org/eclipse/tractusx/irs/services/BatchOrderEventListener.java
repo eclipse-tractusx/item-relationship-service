@@ -40,6 +40,7 @@ import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.events.BatchOrderProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
 import org.eclipse.tractusx.irs.services.events.BatchProcessingFinishedEvent;
+import org.eclipse.tractusx.irs.services.timeouts.TimeoutSchedulerBatchProcessingService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -57,43 +58,48 @@ public class BatchOrderEventListener {
     private final BatchStore batchStore;
     private final IrsItemGraphQueryService irsItemGraphQueryService;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final TimeoutSchedulerBatchProcessingService timeoutScheduler;
 
     @Async
     @EventListener
     public void handleBatchOrderRegisteredEvent(final BatchOrderRegisteredEvent batchOrderRegisteredEvent) {
-        log.info("Listener received BatchOrderRegisteredEvent with BatchOrderId: {}.", batchOrderRegisteredEvent.batchOrderId());
-        batchOrderStore.find(batchOrderRegisteredEvent.batchOrderId()).ifPresent(batchOrder -> batchStore.findAll()
-                                                                                                     .stream()
-                                                                                                     .filter(batch -> batch.getBatchOrderId().equals(batchOrder.getBatchOrderId()))
-                                                                                                     .filter(batch -> batch.getBatchNumber().equals(1))
-                                                                                                     .findFirst()
-                                                                                                     .ifPresent(batch -> startBatch(batchOrder, batch)));
+        log.info("Listener received BatchOrderRegisteredEvent with BatchOrderId: {}.",
+                batchOrderRegisteredEvent.batchOrderId());
+        batchOrderStore.find(batchOrderRegisteredEvent.batchOrderId())
+                       .ifPresent(batchOrder -> batchStore.findAll()
+                                                          .stream()
+                                                          .filter(batch -> batch.getBatchOrderId()
+                                                                                .equals(batchOrder.getBatchOrderId()))
+                                                          .filter(batch -> batch.getBatchNumber().equals(1))
+                                                          .findFirst()
+                                                          .ifPresent(batch -> startBatch(batchOrder, batch)));
     }
 
     @Async
     @EventListener
     public void handleBatchProcessingFinishedEvent(final BatchProcessingFinishedEvent batchEvent) {
-        log.info("Listener received BatchProcessingFinishedEvent with BatchId: {}, BatchOrderId: {} and BatchNumber: {}",
+        log.info(
+                "Listener received BatchProcessingFinishedEvent with BatchId: {}, BatchOrderId: {} and BatchNumber: {}",
                 batchEvent.batchId(), batchEvent.batchOrderId(), batchEvent.batchNumber());
         batchOrderStore.find(batchEvent.batchOrderId()).ifPresent(batchOrder -> {
             final List<ProcessingState> batchStates = batchStore.findAll()
-                                                          .stream()
-                                                          .filter(batch -> batch.getBatchOrderId()
-                                                                                .equals(batchOrder.getBatchOrderId()))
-                                                          .map(Batch::getBatchState)
-                                                          .toList();
+                                                                .stream()
+                                                                .filter(batch -> batch.getBatchOrderId()
+                                                                                      .equals(batchOrder.getBatchOrderId()))
+                                                                .map(Batch::getBatchState)
+                                                                .toList();
             final ProcessingState batchState = calculateBatchOrderState(batchStates);
             batchOrder.setBatchOrderState(batchState);
             batchOrderStore.save(batchOrder.getBatchOrderId(), batchOrder);
             if (ProcessingState.COMPLETED.equals(batchState) || ProcessingState.ERROR.equals(batchState)) {
                 applicationEventPublisher.publishEvent(
-                        new BatchOrderProcessingFinishedEvent(batchOrder.getBatchOrderId(), batchOrder.getBatchOrderState(), batchOrder.getCallbackUrl()));
+                        new BatchOrderProcessingFinishedEvent(batchOrder.getBatchOrderId(),
+                                batchOrder.getBatchOrderState(), batchOrder.getCallbackUrl()));
             } else {
                 batchStore.findAll()
                           .stream()
                           .filter(batch -> batch.getBatchOrderId().equals(batchOrder.getBatchOrderId()))
-                          .filter(batch -> batch.getBatchNumber()
-                                                .equals(batchEvent.batchNumber() + 1))
+                          .filter(batch -> batch.getBatchNumber().equals(batchEvent.batchNumber() + 1))
                           .findFirst()
                           .ifPresent(batch -> startBatch(batchOrder, batch));
             }
@@ -113,6 +119,9 @@ public class BatchOrderEventListener {
         batch.setJobProgressList(createdJobIds);
         batch.setStartedOn(ZonedDateTime.now(ZoneOffset.UTC));
         batchStore.save(batch.getBatchId(), batch);
+        timeoutScheduler.registerBatchTimeout(batch.getBatchId(), batchOrder.getTimeout());
+        timeoutScheduler.registerJobsTimeout(createdJobIds.stream().map(JobProgress::getJobId).toList(),
+                batchOrder.getJobTimeout());
     }
 
     private JobProgress createJobProgress(final JobHandle jobHandle, final String globalAssetId) {
@@ -131,6 +140,7 @@ public class BatchOrderEventListener {
                           .depth(batchOrder.getDepth())
                           .direction(batchOrder.getDirection())
                           .collectAspects(batchOrder.getCollectAspects())
+                          .lookupBPNs(batchOrder.getLookupBPNs())
                           .callbackUrl(batchOrder.getCallbackUrl())
                           .build();
     }
