@@ -44,6 +44,7 @@ import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
+import org.eclipse.tractusx.irs.services.AuthorizationService;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
 import org.springframework.http.HttpStatus;
@@ -70,6 +71,7 @@ public class BatchController {
 
     private final CreationBatchService creationBatchService;
     private final QueryBatchService queryBatchService;
+    private final AuthorizationService authorizationService;
 
     @Operation(operationId = "registerOrder",
                summary = "Registers an IRS order with an array of {globalAssetIds}. "
@@ -106,7 +108,7 @@ public class BatchController {
     })
     @PostMapping("/orders")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
     public BatchOrderCreated registerBatchOrder(final @Valid @RequestBody RegisterBatchOrder request) {
         final UUID batchOrderId = creationBatchService.create(request);
         return BatchOrderCreated.builder().id(batchOrderId).build();
@@ -150,7 +152,7 @@ public class BatchController {
                                          }),
     })
     @GetMapping("/orders/{orderId}")
-    @PreAuthorize("hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
     public BatchOrderResponse getBatchOrder(
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class), name = "orderId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
@@ -196,7 +198,7 @@ public class BatchController {
                                          }),
     })
     @GetMapping("/orders/{orderId}/batches/{batchId}")
-    @PreAuthorize("hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
     public BatchResponse getBatch(
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class), name = "orderId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
