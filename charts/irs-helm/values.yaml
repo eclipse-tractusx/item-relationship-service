@@ -142,6 +142,10 @@ keycloak:
     clientSecret:  # <keycloak-client-secret>
     clientTokenUri:  # <keycloak-token-uri>
     jwkSetUri:  # <keycloak-jwkset-uri>
+portal:
+  oauth2:
+    clientId:  # <portal-client-id>
+    clientSecret:  # <portal-client-secret>
 edc:
   provider:
     host:  # EDC Provider Host URL

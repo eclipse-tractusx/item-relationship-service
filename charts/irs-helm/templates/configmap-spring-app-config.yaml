@@ -48,8 +48,13 @@ data:
               keycloak:
                 client-id: "${KEYCLOAK_OAUTH2_CLIENT_ID}" # taken from secret ENV
                 client-secret: "${KEYCLOAK_OAUTH2_CLIENT_SECRET}" # taken from secret ENV
+              portal:
+                client-id: ${PORTAL_OAUTH2_CLIENT_ID} # taken from secret ENV
+                client-secret: ${PORTAL_OAUTH2_CLIENT_SECRET} # taken from secret ENV
             provider:
               keycloak:
+                token-uri: {{ tpl (.Values.keycloak.oauth2.clientTokenUri | default "http://localhost") . | quote }}
+              portal:
                 token-uri: {{ tpl (.Values.keycloak.oauth2.clientTokenUri | default "http://localhost") . | quote }}
           resourceserver:
             jwt:
@@ -101,6 +106,7 @@ data:
         url: {{ tpl (.Values.irsUrl | default "") . | quote }}
       discovery:
         endpoint: {{ tpl (.Values.discovery.endpoint | default "") . | quote }}
+        oAuthClientId: {{ .Values.discovery.oAuthClientId | default "portal" }}
         {{- if .Values.discovery.mockEdcAddress }}
         {{- tpl (toYaml .Values.discovery.mockEdcAddress) . | nindent 8 }}
         {{- end }}
