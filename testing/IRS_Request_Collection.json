@@ -1,7 +1,7 @@
 {
   "_type": "export",
   "__export_format": 4,
-  "__export_date": "2023-04-17T07:54:31.410Z",
+  "__export_date": "2023-04-17T08:07:07.906Z",
   "__export_source": "insomnia.desktop.app:v2023.1.0",
   "resources": [
     {
@@ -1344,9 +1344,9 @@
     {
       "_id": "req_61327d8edf304d1eb63c2eaaef528f0b",
       "parentId": "fld_a3ed111da88c4bcab40b440cb9750055",
-      "modified": 1681717201718,
+      "modified": 1681718801853,
       "created": 1680682418174,
-      "url": "{{ _.BPDM_URL }}/v1/api/catena/business-partner/{% prompt 'BPDM URL', '', _.BPDM_URL, '', false, true %}",
+      "url": "{{ _.BPDM_URL }}/v1/api/catena/business-partner/{% prompt 'BPN', '', '', '', false, true %}",
       "name": "Get business partner by id",
       "description": "",
       "method": "GET",
