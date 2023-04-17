@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- New config entry "bpn", add the BPN for the IRS instance there  **(mandatory)**
+- Added config entries for ESS use case:
+  - `edc.provider.host` (mandatory for ESS)
+  - `discovery.endpoint`
+  - `discovery.mockEdcAddress`
+  - `ess.mockEdcResult`
+  - `ess.mockRecursiveEdcAsset`
+
 ### Fixed
 - Custom environment variables are now rendered correctly in the deployment resource
 

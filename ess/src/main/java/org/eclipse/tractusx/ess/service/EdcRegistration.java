@@ -204,7 +204,7 @@ public class EdcRegistration {
     }
 
     private boolean assetIsNotRegisteredYet(final String assetId) {
-        if (restTemplate != null && edcProviderUrl != null) {
+        if (restTemplate != null && StringUtils.isNotBlank(edcProviderUrl)) {
             final var url = edcProviderUrl + "/api/v1/management/assets?filter=asset:prop:id=" + assetId;
             log.info("Requesting asset from EDC provider with url {}", url);
             final var entity = restTemplate.exchange(url, HttpMethod.GET, toEntity(null), String.class);

@@ -49,7 +49,7 @@ class EdcRegistrationTest {
 
     @BeforeEach
     void setUp() {
-        testee = new EdcRegistration(restTemplate, "", "", "", "");
+        testee = new EdcRegistration(restTemplate, "http://localhost", "", "", "");
     }
 
     @Test

@@ -93,7 +93,26 @@ data:
           enabled: {{ .Values.edc.catalog.cache.enabled | default true }}
           ttl: {{ .Values.edc.catalog.cache.ttl | default "P1D" | quote }}
           maxCachedItems: {{ .Values.edc.catalog.cache.maxCachedItems | default 64000 }}
+
+    ess:
+      localBpn: {{ tpl (.Values.bpn | default "") . | quote }}
+      localEdcEndpoint: {{ tpl (.Values.edc.provider.host | default "") . | quote }}
+      irs:
+        url: {{ tpl (.Values.irsUrl | default "") . | quote }}
+      discovery:
+        endpoint: {{ tpl (.Values.discovery.endpoint | default "") . | quote }}
+        {{- if .Values.discovery.mockEdcAddress }}
+        {{- tpl (toYaml .Values.discovery.mockEdcAddress) . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.ess.mockEdcResult }}
+        {{- tpl (toYaml .Values.ess.mockEdcResult) . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.ess.mockRecursiveEdcAsset }}
+        {{- tpl (toYaml .Values.ess.mockRecursiveEdcAsset) . | nindent 8 }}
+        {{- end }}
     {{- end }}
     {{- if .Values.config.content }}
+
+    apiAllowedBpn: {{ tpl (.Values.bpn | default "") . | quote }}
     {{- tpl (toYaml .Values.config.content) . | nindent 4 }}
     {{- end }}
