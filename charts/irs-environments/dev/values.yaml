@@ -66,7 +66,7 @@ irs-helm:
       BPNL00000003AYRE: "NO"
       BPNL00000003B0Q0: "NO"
       BPNL00ARBITRARY7: "YES"
-    mockRecursiveEdcAsset: BPNL00ARBITRARY4, BPNL00ARBITRARY5, BPNL00ARBITRARY6 # Mocked BPN Recursive Investigation results
+    mockRecursiveEdcAsset: "BPNL00ARBITRARY4, BPNL00ARBITRARY5, BPNL00ARBITRARY6" # Mocked BPN Recursive Investigation results
 
 
   #######################
