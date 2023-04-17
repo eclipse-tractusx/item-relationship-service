@@ -189,8 +189,8 @@ ess:
     timeout:
       read: PT90S # HTTP read timeout for the discovery client
       connect: PT90S # HTTP connect timeout for the discovery client
-    mockEdcAddress: # Mocked EDC BPN Addresses
-    mockEdcResult: # Mocked BPN Investigation results
+    mockEdcAddress: {} # Mocked EDC BPN Addresses
+    mockEdcResult: {} # Mocked BPN Investigation results
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
 
 apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK} # BPN value that is allowed to access IRS API
