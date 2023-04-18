@@ -102,13 +102,15 @@ data:
       discovery:
         endpoint: {{ tpl (.Values.discovery.endpoint | default "") . | quote }}
         {{- if .Values.discovery.mockEdcAddress }}
-        {{- tpl (toYaml .Values.discovery.mockEdcAddress) . | nindent 8 }}
+        mockEdcAddress:
+        {{- tpl (toYaml .Values.discovery.mockEdcAddress) . | nindent 10 }}
         {{- end }}
         {{- if .Values.ess.mockEdcResult }}
-        {{- tpl (toYaml .Values.ess.mockEdcResult) . | nindent 8 }}
+        mockEdcResult:
+        {{- tpl (toYaml .Values.ess.mockEdcResult) . | nindent 10 }}
         {{- end }}
         {{- if .Values.ess.mockRecursiveEdcAsset }}
-        {{- tpl (toYaml .Values.ess.mockRecursiveEdcAsset) . | nindent 8 }}
+        mockRecursiveEdcAsset: {{ tpl (.Values.ess.mockRecursiveEdcAsset) . | quote }}
         {{- end }}
     {{- end }}
 
