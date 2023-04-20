@@ -1,4 +1,50 @@
 {
+  "policies": {
+    "ID 3.0 Trace": {
+      "id": "id-3.0-trace",
+      "policy": {
+        "prohibitions": [],
+        "obligations": [],
+        "permissions": [
+          {
+            "edctype": "dataspaceconnector:permission",
+            "action": {
+              "type": "USE"
+            },
+            "constraints": [
+              {
+                "edctype": "AtomicConstraint",
+                "leftExpression": {
+                  "edctype": "dataspaceconnector:literalexpression",
+                  "value": "idsc:PURPOSE"
+                },
+                "rightExpression": {
+                  "edctype": "dataspaceconnector:literalexpression",
+                  "value": "ID 3.0 Trace"
+                },
+                "operator": "EQ"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "default": {
+      "id": "default-policy",
+      "policy": {
+        "prohibitions": [],
+        "obligations": [],
+        "permissions": [
+          {
+            "edctype": "dataspaceconnector:permission",
+            "action": {
+              "type": "USE"
+            }
+          }
+        ]
+      }
+    }
+  },
   "https://catenax.io/schema/TestDataContainer/1.0.0": [
     {
       "catenaXId": "urn:uuid:b0cc2da9-c011-4b11-9c58-f48bd06d439e",
@@ -30,6 +76,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "urn:bamm:io.catenax.vehicle.product_description:1.0.0#ProductDescription": [
         {
           "bodyVariant": "Sedan",
@@ -842,6 +889,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:c4cd2818-b616-4a28-b327-7e7e449fbdae",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -901,6 +949,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:e0566a95-a34f-44e0-a562-f5db3367f7f3",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -951,6 +1000,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:b21cfd5b-dcf4-46fa-9227-3eb693567dd8",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1001,6 +1051,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:7bbbc63f-ba86-4e1c-ad78-6bdb4a125783",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1051,6 +1102,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:3e300930-0e1c-459c-8914-1ac631176716",
       "bpnl": "BPNL00000003CSGV",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1121,6 +1173,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:8f9d8c7f-6d7a-48f1-9959-9fa3a1a7a891",
       "bpnl": "BPNL00000000BJTL",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1171,6 +1224,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:ceb6b964-5779-49c1-b5e9-0ee70528fcbd",
       "bpnl": "BPNL00000003CSGV",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1241,6 +1295,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:a4a26b9c-9460-4cc5-8645-85916b86adb0",
       "bpnl": "BPNL00000000BJTL",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1291,6 +1346,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:badddd8a-0abf-4457-9d33-6eb05a3ac0ef",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1341,6 +1397,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:7b87f5d6-f75e-40f1-a439-779ae9f57a21",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1391,6 +1448,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:8914a66e-b59b-405f-afff-b97d71ebece3",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1441,6 +1499,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:a1082992-cc3b-4da1-af6b-aa692ed71461",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1491,6 +1550,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:1e35e091-3d3d-421e-9c7e-14cf1c9442a6",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1541,6 +1601,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:cc8e9448-b294-46e7-8110-337e8bfa3001",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1591,6 +1652,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:fa5804f1-8d4e-437c-aca2-a5491be61758",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1641,6 +1703,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:a0f6803c-e4dc-4cda-8ad2-91cc57868449",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1691,6 +1754,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:492781f5-62ff-4fb2-876c-3498e2844d13",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1741,6 +1805,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:6c7bdfd8-7116-46da-b8e2-7322acd64042",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1791,6 +1856,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:d6142601-5e09-45fe-9b42-e53cf8cd458c",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1841,6 +1907,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:8eb9285f-5b10-4d5a-af7e-44e7fb0520f1",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1891,6 +1958,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:36131844-36f1-426d-ba5d-a7ddcbb509d2",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1941,6 +2009,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:04b8c677-a058-4393-94c1-5c5a48a27535",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -1991,6 +2060,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:ae2ad2b8-ed83-42b8-9953-3d37e224b3d7",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -2041,6 +2111,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:e1ea599a-255d-4abf-a385-70f63cbe9794",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -2091,6 +2162,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:66769f42-4905-424c-8f35-f072fab5a734",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -2141,6 +2213,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:309a2b1a-0061-4895-b587-f72b3d725f8f",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -2191,6 +2264,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:a5d13a5a-5d77-4e74-810f-a9332cc19665",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -2241,6 +2315,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:cd55d855-754f-4a60-935a-88768f0ed2fb",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -2291,6 +2366,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:5371bcac-94d0-4254-9292-6666b8e28204",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -2341,6 +2417,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:9940dd40-a292-4a27-9733-08b1ca750149",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -2391,6 +2468,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:5fd291cf-e8df-4a46-8a8d-5054dbc3d1bf",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -2441,6 +2519,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:8e916bb5-34cb-48cc-bb30-3dea756a25b0",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -2491,6 +2570,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:03556cd3-ae2a-48ad-a6a4-89631f8d41c8",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -2541,6 +2621,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:98c92d24-0d86-4dfa-97bb-1f67794fc9f9",
       "bpnl": "BPNL00000003AYRE",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -2591,6 +2672,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:51ff7c73-34e9-45d4-816c-d92578843e68",
       "bpnl": "BPNL00000003B2OM",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -2756,6 +2838,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:4b2b21d0-8fed-4d32-b262-f75c5b846df8",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -2850,6 +2933,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:393f7bf3-c73f-4b0d-86ee-f5be8aa338c4",
       "bpnl": "BPNL00000003B3NX",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -2920,6 +3004,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:5eb6d06a-f873-4ada-9fac-8431ad5a600d",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -3014,6 +3099,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:b86bfe10-6a4f-41be-8a00-6f11ce38702e",
       "bpnl": "BPNL00000003AXS3",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -3093,6 +3179,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:93bb7e1e-1a1a-437a-90c4-b2830cb19290",
       "bpnl": "BPNL00000003B5MJ",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -3213,6 +3300,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:620b64c1-3505-4740-b64e-32da0f1b82e5",
       "bpnl": "BPNL00000003AXS3",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -3307,6 +3395,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:0ea1aa79-10d4-4df1-8a5a-5b7eafd26163",
       "bpnl": "BPNL00000003B3NX",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -3377,6 +3466,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:1d312e57-7a0f-47c0-8586-5b5c890d0bcf",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -3471,6 +3561,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:a14aa6a4-5be6-45d2-8544-b179baeeed7d",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -3565,6 +3656,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "urn:bamm:io.catenax.vehicle.product_description:1.0.0#ProductDescription": [
         {
           "bodyVariant": "Sedan",
@@ -4377,6 +4469,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:2bfe82e9-565b-4d55-80a8-4b6a61d33f20",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -4436,6 +4529,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:a609b239-d015-4f37-a8eb-5a1956756ab2",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -4486,6 +4580,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:26d7bebc-263b-4874-8222-971a2720a355",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -4536,6 +4631,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:d2f93c23-6fb6-4585-b3cb-c0c91269e4fd",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -4586,6 +4682,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:6e1fd2a3-5350-4492-9ac2-163eb62094e3",
       "bpnl": "BPNL00000003CSGV",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -4656,6 +4753,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:9e3a7831-c396-48df-acc0-482d6930e3b0",
       "bpnl": "BPNL00000000BJTL",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -4706,6 +4804,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:81a65eb2-be1d-4bb4-ab39-9f859b282bc5",
       "bpnl": "BPNL00000003CSGV",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -4776,6 +4875,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:5d95b5a1-bd5a-4703-bd15-ce9e893a8f3c",
       "bpnl": "BPNL00000000BJTL",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -4826,6 +4926,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:2bafe7e7-e1c4-46f1-8da4-133dc4b92deb",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -4876,6 +4977,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:1e5a8888-5e03-4231-abfa-00de3be05da1",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -4926,6 +5028,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:784af922-1460-49b2-b4dd-d14f72fb3a7a",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -4976,6 +5079,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:14d1edce-921f-48e1-a827-2bbf90146d09",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5026,6 +5130,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:f39b5055-fdc1-463d-8621-9d0e04feed92",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5076,6 +5181,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:97f9e4ef-9c5d-4038-9ea6-1102dfc70e01",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5126,6 +5232,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:0df8a9d4-1410-4c42-8824-ce45ad5dcad6",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5176,6 +5283,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:0d18c568-3e2c-468a-b3b6-005b0bbb0b4f",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5226,6 +5334,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:cf26332b-250a-4e75-a971-e01970e8e04e",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5276,6 +5385,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:4b6a8d0e-d6cf-492a-bbdd-20956baaa6e9",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5326,6 +5436,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:691ec9f3-22fe-49f8-97af-697bcdb903a8",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5376,6 +5487,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:9bec264e-0180-470d-be25-5976ca4eaf5c",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5426,6 +5538,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:a79aa73d-0d8c-4d84-9607-f21f039c8d84",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5476,6 +5589,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:b274c885-0a36-4d74-ad8a-dbc2fb951a8c",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5526,6 +5640,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:2aa238f2-bcb7-4037-bb65-824610f5b23a",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5576,6 +5691,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5626,6 +5742,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:f4db9a02-3181-4f2d-903f-ba5cbc5a9b82",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5676,6 +5793,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:d2d2b3b9-818f-4dc0-b77b-8c851d0c0af2",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5726,6 +5844,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:24d2e568-e161-4eb6-b599-9e1dee3cd333",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5776,6 +5895,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:879f66ad-a5c5-48d4-bda3-18c192423a63",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5826,6 +5946,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:c98dc077-f0fe-423d-8d74-48ef630232e7",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5876,6 +5997,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:a06a4c66-9f8e-43f4-84c1-d5b35c8c53b0",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5926,6 +6048,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:698fe434-5dc2-4c6c-80ff-d5a40223f52f",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -5976,6 +6099,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:7f7d23b1-d951-4297-8b26-dcab953da0c1",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -6026,6 +6150,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:e97af751-4743-4884-8544-d29e26313c43",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -6076,6 +6201,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:7ad788d4-fb9d-47e7-984e-bdef6d9b4fcc",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -6126,6 +6252,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:6003c630-b063-438d-9e4c-6ed9f36ad2b7",
       "bpnl": "BPNL00000003B2OM",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -6291,6 +6418,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:458974fe-e4bf-4221-b108-b727f6da2466",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -6385,6 +6513,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:bb17dcf0-e1ec-4608-bc6c-043c93a66e8c",
       "bpnl": "BPNL00000003B3NX",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -6455,6 +6584,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:fab8e14b-6d39-4efa-aa65-c6cd09d3af9f",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -6549,6 +6679,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:df86b6e7-d3e2-46e7-8250-1e7be432a238",
       "bpnl": "BPNL00000003AXS3",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -6628,6 +6759,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:771d2ccc-a081-4d3a-bcb2-46c6a0a33743",
       "bpnl": "BPNL00000003B5MJ",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -6748,6 +6880,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:3db730be-9de5-4db5-a58d-684de36484e7",
       "bpnl": "BPNL00000003AXS3",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -6842,6 +6975,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:73173bf5-08df-4898-9d6d-8899015c161e",
       "bpnl": "BPNL00000003B3NX",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -6912,6 +7046,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:07e0997f-4212-4456-8f27-164b30fc8355",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -7006,6 +7141,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:3e22f4f9-b2e3-4e8a-9c8f-f2f7ddaa43a2",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -7100,6 +7236,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "urn:bamm:io.catenax.vehicle.product_description:1.0.0#ProductDescription": [
         {
           "bodyVariant": "Sedan",
@@ -7912,6 +8049,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:6bd19830-3f63-4915-906d-0dd26196b7a6",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -7971,6 +8109,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:9663defa-684b-4e75-80d5-82d001ab217a",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8021,6 +8160,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:9107e586-9bfa-4c82-b81c-6c8ae0ee36f6",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8071,6 +8211,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:66488d8e-893a-4f4d-b650-e921ad5223e0",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8121,6 +8262,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:a7fc6773-b3f2-4b9e-b0ca-586cbbd51dd9",
       "bpnl": "BPNL00000003CSGV",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8191,6 +8333,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:80dd9f05-d4e0-4b14-9436-d9a31865b2a8",
       "bpnl": "BPNL00000000BJTL",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8241,6 +8384,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:aacf2b0e-5de2-4952-862e-2b47a12e59bc",
       "bpnl": "BPNL00000003CSGV",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8311,6 +8455,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:d25ba21d-55d8-4ba0-9a3e-2df4f199a08a",
       "bpnl": "BPNL00000000BJTL",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8361,6 +8506,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:571cca8d-ceda-458e-a51c-69bcf53fa1ad",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8411,6 +8557,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:94f95beb-2d2e-4275-af82-ef601d25e7db",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8461,6 +8608,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:5ca6c6f0-3ac2-4b90-b88c-a28935646d55",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8511,6 +8659,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:d4e9558c-f75b-437d-8bd5-83fe14bdeeaf",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8561,6 +8710,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:f473c6ec-3920-433a-89cd-c3b914ed6963",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8611,6 +8761,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:1294c992-af34-4779-b13c-5cae0fd521fb",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8661,6 +8812,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:cb1e4dcd-31a0-47df-994b-f0f541cbaf9f",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8711,6 +8863,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:0bfbebba-8a1c-41a3-8199-b1075f327f7a",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8761,6 +8914,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:da6d0c77-2318-4cf0-b72a-602b758c4893",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8811,6 +8965,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:719cff6f-8425-4a9a-a20f-1ddf92873d57",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8861,6 +9016,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:744ec0a4-575b-47b4-9c97-b5eaad60b51e",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8911,6 +9067,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:34d50337-e11f-4f41-9a48-87cc986d5449",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -8961,6 +9118,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:de9d233e-c371-490b-b02b-092756ccdd42",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9011,6 +9169,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:eab9525d-79c0-4c3c-83dd-4815f2703ed1",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9061,6 +9220,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:82260db6-7ac1-4b61-9b98-e193cfbfcca4",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9111,6 +9271,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:cbb53a71-fba4-4753-868b-e91721d8f7b1",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9161,6 +9322,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:0e90d4a6-8ccc-483b-a786-bfac2a2d6553",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9211,6 +9373,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:12236481-0285-44d8-810f-766c676a0298",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9261,6 +9424,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:1b96d3d5-05e7-4da7-9915-2ed834316ca4",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9311,6 +9475,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:fc7f69b3-27d8-40a8-866e-e4e79608d788",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9361,6 +9526,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:4870af61-d8e5-4923-b8b9-e43bab6e555b",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9411,6 +9577,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:c1bbd0b8-b1df-40c5-b19a-714798799ffe",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9461,6 +9628,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:b2805664-6d1e-481a-b270-bc75cb67ad63",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9511,6 +9679,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:682f4e8e-2157-45ed-8833-0e51d6f4b555",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9561,6 +9730,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:b584ac7a-73b0-4d8b-8dff-a14dad6a8787",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9611,6 +9781,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:625d9e00-b1c2-4d98-a9a7-fea9f00d2521",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9661,6 +9832,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:dc658148-64f5-4840-a42f-80396a42afe3",
       "bpnl": "BPNL00000003B2OM",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9826,6 +9998,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:1c9e90dc-1135-402c-8a4f-11b4e6e8ca6e",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9920,6 +10093,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:6ac8d26d-332f-450b-b281-2db2e4ed161a",
       "bpnl": "BPNL00000003B3NX",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -9990,6 +10164,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:4cf755d5-c54d-4049-bd34-ccb566bd7d08",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -10084,6 +10259,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:44516a17-96a6-48ea-be5f-9c20b71f8220",
       "bpnl": "BPNL00000003AXS3",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -10163,6 +10339,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:6ae4b780-c6dd-4c3c-adf8-b57b5cc8e3da",
       "bpnl": "BPNL00000003B5MJ",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -10283,6 +10460,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:d0545b54-8839-4b13-b6c5-f19f0b7c9105",
       "bpnl": "BPNL00000003AXS3",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -10377,6 +10555,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:eabe1577-a594-409f-9da3-92dfa5b89354",
       "bpnl": "BPNL00000003B3NX",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -10447,6 +10626,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:b6496465-27fc-489e-9470-855215868bb2",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
@@ -10541,6 +10721,7 @@
       ]
     },
     {
+      "policy": "id-3.0-trace",
       "catenaXId": "urn:uuid:04baed27-a656-4cee-be2a-d2c99fa9c574",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
