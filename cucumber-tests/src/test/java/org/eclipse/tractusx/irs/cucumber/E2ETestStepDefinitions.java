@@ -278,7 +278,7 @@ public class E2ETestStepDefinitions {
                               .get("/irs/orders/" + orderId)
                               .as(BatchOrderResponse.class);
 
-        assertThat(batchOrderResponse.getBatches().size()).isEqualTo(batchesSize);
+        assertThat(batchOrderResponse.getBatches()).hasSize(batchesSize);
     }
 
     @Then("I check, if the batch contains {int} jobs")
