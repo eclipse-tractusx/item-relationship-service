@@ -225,9 +225,9 @@ public class E2ETestStepDefinitions {
     @When("I get the batch-id of {string} batch")
     public void iGetTheBatchIdOfBatch(String which) {
         final UUID foundBatchId = switch (which) {
-            case "first" -> batchOrderResponse.getBatches().stream().filter(b -> b.getBatchNumber().equals(1)).findFirst()
+            case "first" -> batchOrderResponse.getBatches().stream().filter(batch -> batch.getBatchNumber().equals(1)).findFirst()
                                              .map(BatchOrderResponse.BatchResponse::getBatchId).orElseThrow();
-            case "last" -> batchOrderResponse.getBatches().stream().filter(b -> b.getBatchNumber().equals(batchOrderResponse.getBatches().size())).findFirst()
+            case "last" -> batchOrderResponse.getBatches().stream().filter(batch -> batch.getBatchNumber().equals(batchOrderResponse.getBatches().size())).findFirst()
                                              .map(BatchOrderResponse.BatchResponse::getBatchId).orElseThrow();
             case "any" -> batchOrderResponse.getBatches().stream().findAny()
                                              .map(BatchOrderResponse.BatchResponse::getBatchId).orElseThrow();
