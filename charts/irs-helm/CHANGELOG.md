@@ -6,6 +6,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.1] - 2023-04-17
+### Fixed
+- Added missing config keys in the spring config map template
+
+## [5.1.0] - 2023-04-17
+### Added
+- New config entry "bpn", add the BPN for the IRS instance there  **(mandatory)**
+- Added config entries for ESS use case:
+  - `edc.provider.host` (mandatory for ESS)
+  - `discovery.endpoint`
+  - `discovery.mockEdcAddress`
+  - `ess.mockEdcResult`
+  - `ess.mockRecursiveEdcAsset`
+
+### Changed
+- Updated IRS version to 2.5.0
+
+### Fixed
+- Custom environment variables are now rendered correctly in the deployment resource
+
+## [5.0.9] - 2023-03-30
+### Fixed
+- Moved license headers out of if clauses and add dashes (`---`) after each license header
+
+## [5.0.8] - 2023-03-30
+### Fixed
+- Moved license headers into if clauses to avoid empty resource files which lead to installation errors
+
 ## [5.0.7] - 2023-03-30
 ### Added
 - Add minio resource limits 

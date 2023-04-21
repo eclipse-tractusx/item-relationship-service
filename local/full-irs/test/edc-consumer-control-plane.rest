@@ -2,7 +2,7 @@
 @port = 7181
 @host = {{hostname}}:{{port}}
 @contentType = application/json
-@catalogEndpoint = /data/catalog
+@catalogEndpoint = /api/v1/management/catalog
 @headerName = X-Api-Key
 @headerValue = password
 
@@ -16,6 +16,6 @@ Content-Type: {{contentType}}
 
 ### Get Assets
 
-GET http://{{host}}/data/assets HTTP/1.1
+GET http://{{host}}/api/v1/management/assets HTTP/1.1
 {{headerName}}: {{headerValue}}
 Content-Type: {{contentType}}

@@ -19,6 +19,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -92,7 +93,29 @@ data:
           enabled: {{ .Values.edc.catalog.cache.enabled | default true }}
           ttl: {{ .Values.edc.catalog.cache.ttl | default "P1D" | quote }}
           maxCachedItems: {{ .Values.edc.catalog.cache.maxCachedItems | default 64000 }}
+
+    ess:
+      localBpn: {{ tpl (.Values.bpn | default "") . | quote }}
+      localEdcEndpoint: {{ tpl (.Values.edc.provider.host | default "") . | quote }}
+      irs:
+        url: {{ tpl (.Values.irsUrl | default "") . | quote }}
+      discovery:
+        endpoint: {{ tpl (.Values.discovery.endpoint | default "") . | quote }}
+        {{- if .Values.discovery.mockEdcAddress }}
+        mockEdcAddress:
+        {{- tpl (toYaml .Values.discovery.mockEdcAddress) . | nindent 10 }}
+        {{- end }}
+        {{- if .Values.ess.mockEdcResult }}
+        mockEdcResult:
+        {{- tpl (toYaml .Values.ess.mockEdcResult) . | nindent 10 }}
+        {{- end }}
+        {{- if .Values.ess.mockRecursiveEdcAsset }}
+        mockRecursiveEdcAsset: {{ tpl (.Values.ess.mockRecursiveEdcAsset) . | quote }}
+        {{- end }}
     {{- end }}
+
+    apiAllowedBpn: {{ tpl (.Values.bpn | default "") . | quote }}
+
     {{- if .Values.config.content }}
     {{- tpl (toYaml .Values.config.content) . | nindent 4 }}
     {{- end }}

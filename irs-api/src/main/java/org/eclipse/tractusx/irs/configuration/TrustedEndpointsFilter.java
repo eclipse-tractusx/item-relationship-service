@@ -35,7 +35,7 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.common.ApiConstants;
 
 /**
  * Filter do differ between trusted and untrusted calls
@@ -82,6 +82,6 @@ public class TrustedEndpointsFilter implements Filter {
 
     private boolean isRequestForTrustedEndpoint(final ServletRequest servletRequest) {
         return ((HttpServletRequestWrapper) servletRequest).getRequestURI()
-                                                           .startsWith("/" + IrsApplication.API_PREFIX_INTERNAL);
+                                                           .startsWith("/" + ApiConstants.API_PREFIX_INTERNAL);
     }
 }

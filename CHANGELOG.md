@@ -8,10 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
+
+## [2.5.0] - 2023-04-17
+### Added
+- Introduced Batch processing API endpoints. Batch Order is registered and executed for a bunch of globalAssetIds in one call.
+  - API Endpoint POST Register Batch Order {{IRS_HOST}}/irs/orders
+  - API Endpoint GET Batch Order {{IRS_HOST}}/irs/orders/:orderId
+  - API Endpoint GET Batch {{IRS_HOST}}/irs/orders/:orderId/batches/:batchId
+- Introduced Environmental- and Social Standards processing API endpoints. 
+  - API Endpoint POST Register job to start an investigation if a given bpn is contained in a part chain {{IRS_HOST}}/ess/bpn/investigations
+  - API Endpoint GET BPN Investigation {{IRS_HOST}}/ess/bpn/investigations/:id
+  - API Endpoint POST EDC Notification receive {{IRS_HOST}}/ess/notification/receive
+
+
 ## [2.4.1] - 2023-04-21
 ### Fixed
 - Updated spring-boot version to 3.0.6 to fix security issue
 - change GID in Dockerfile to fix https://github.com/eclipse-tractusx/item-relationship-service/issues/101
+
 
 ## [2.4.0] - 2023-03-30
 ### Added
@@ -188,7 +202,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.4.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.5.0...HEAD
+[2.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.4.0...2.5.0
 [2.4.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.4.0...2.4.1
 [2.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.3.2...2.4.0
 [2.3.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.3.1...2.3.2

@@ -114,6 +114,9 @@ edc:
     url:
   dataplane:
     url:
+  vault:
+    hashicorp:
+      token:
   endpoints:
     ## Default api exposing health checks etc
     default:
@@ -248,7 +251,6 @@ configuration:
     edc.oauth.token.url=
     
     edc.vault.hashicorp.url=
-    edc.vault.hashicorp.token=
     edc.vault.hashicorp.api.secret.path=
     
     edc.data.encryption.keys.alias=

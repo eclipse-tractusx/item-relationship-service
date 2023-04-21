@@ -13,6 +13,9 @@
 
     <modules>
         <module>irs-testing</module>
+        <module>irs-common</module>
+        <module>edc-client</module>
+        <module>ess</module>
         <module>irs-api</module>
         <module>irs-models</module>
         <module>integration-tests</module>
@@ -54,12 +57,12 @@
         <checkstyle.version>10.8.0</checkstyle.version>
         <jacoco.version>0.8.8</jacoco.version>
         <pmd-plugin.version>3.19.0</pmd-plugin.version>
-        <owasp-plugin.version>7.4.4</owasp-plugin.version>
+        <owasp-plugin.version>8.2.1</owasp-plugin.version>
 
         <surefire-plugin.version>3.0.0-M8</surefire-plugin.version>
         <jar-plugin.version>3.3.0</jar-plugin.version>
         <compiler-plugin.version>3.11.0</compiler-plugin.version>
-        <install-plugin.version>3.1.0</install-plugin.version>
+        <install-plugin.version>3.1.1</install-plugin.version>
     </properties>
 
     <dependencyManagement>

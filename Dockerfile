@@ -30,8 +30,11 @@ COPY api api
 COPY .mvn .mvn
 COPY pom.xml .
 
+COPY ess ess
 COPY integration-tests integration-tests
 COPY irs-api irs-api
+COPY irs-common irs-common
+COPY edc-client edc-client
 COPY irs-models irs-models
 COPY irs-parent-spring-boot irs-parent-spring-boot
 COPY irs-testing irs-testing
@@ -45,7 +48,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -pl :$BUILD_TARGET 
 
 
 # Copy the jar and build image
-FROM eclipse-temurin:19-jre-alpine AS irs-api
+FROM eclipse-temurin:20-jre-alpine AS irs-api
 
 RUN apk upgrade --no-cache libssl3 libcrypto3
 
