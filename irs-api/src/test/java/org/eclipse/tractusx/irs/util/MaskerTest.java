@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.eclipse.tractusx.irs.common.Masker;
 import org.junit.jupiter.api.Test;
 
 class MaskerTest {

@@ -25,6 +25,9 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.edc.EdcSubmodelFacade;
+import org.eclipse.tractusx.edc.RelationshipAspect;
+import org.eclipse.tractusx.edc.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
@@ -35,10 +38,7 @@ import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
-import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.RelationshipAspect;
-import org.eclipse.tractusx.irs.exceptions.EdcClientException;
-import org.eclipse.tractusx.irs.exceptions.JsonParseException;
+import org.eclipse.tractusx.irs.common.JsonParseException;
 
 /**
  * Builds relationship array for AAShell from previous step.
@@ -62,7 +62,7 @@ public class RelationshipDelegate extends AbstractDelegate {
 
         final RelationshipAspect relationshipAspect = RelationshipAspect.from(jobData.getBomLifecycle(), jobData.getDirection());
         itemContainerBuilder.build().getShells().stream().findFirst().ifPresent(
-            shell -> shell.findRelationshipEndpointAddresses(AspectType.fromValue(relationshipAspect.name())).forEach(address -> {
+            shell -> shell.findRelationshipEndpointAddresses(AspectType.fromValue(relationshipAspect.getName())).forEach(address -> {
                 try {
                     final List<Relationship> relationships = submodelFacade.getRelationships(address, relationshipAspect);
                     final List<String> idsToProcess = getIdsToProcess(relationships, relationshipAspect.getDirection());

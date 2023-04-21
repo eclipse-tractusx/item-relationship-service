@@ -31,7 +31,7 @@ import java.nio.file.Path;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
-import org.eclipse.tractusx.irs.util.LocalTestDataConfigurationAware;
+import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.Test;
 
 class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigurationAware {

@@ -33,11 +33,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.eclipse.tractusx.edc.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
-import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.exceptions.JsonParseException;
+import org.eclipse.tractusx.irs.common.JsonParseException;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;

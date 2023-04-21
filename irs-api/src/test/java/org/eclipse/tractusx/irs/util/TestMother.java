@@ -27,6 +27,7 @@ import static org.eclipse.tractusx.irs.controllers.IrsAppConstants.UUID_SIZE;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -37,6 +38,7 @@ import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.LinkedItem;
+import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -54,7 +56,7 @@ import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
-import org.eclipse.tractusx.irs.edc.RelationshipAspect;
+import org.eclipse.tractusx.edc.RelationshipAspect;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import net.datafaker.Faker;
 
@@ -107,6 +109,13 @@ public class TestMother {
         registerJob.setLookupBPNs(lookupBPNs);
 
         return registerJob;
+    }
+
+    public static RegisterBatchOrder registerBatchOrder(final String... globalAssetId) {
+        final RegisterBatchOrder registerBatchOrder = new RegisterBatchOrder();
+        registerBatchOrder.setGlobalAssetIds(Set.of(globalAssetId));
+
+        return registerBatchOrder;
     }
 
     public static JobParameter jobParameter() {
@@ -210,7 +219,7 @@ public class TestMother {
                                                 .build();
 
         return new Relationship(GlobalAssetIdentification.of(UUID.randomUUID().toString()), linkedItem,
-                RelationshipAspect.AssemblyPartRelationship.name());
+                RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP.name());
     }
 
     public static Endpoint endpoint(String endpointAddress) {

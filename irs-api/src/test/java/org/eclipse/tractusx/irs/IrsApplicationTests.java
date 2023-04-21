@@ -83,7 +83,7 @@ class IrsApplicationTests {
         final Map<String, Object> fixedYamlMap = mapper.readValue(fixedYaml, Map.class);
         final Map<String, Object> generatedYamlMap = mapper.readValue(generatedYaml, Map.class);
 
-        assertThat(fixedYamlMap).isEqualTo(generatedYamlMap);
+        assertThat(generatedYamlMap).isEqualTo(fixedYamlMap);
     }
 
     @Test
