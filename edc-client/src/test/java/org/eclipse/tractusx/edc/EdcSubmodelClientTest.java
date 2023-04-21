@@ -52,6 +52,7 @@ import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.edc.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.edc.exceptions.TimeoutException;
+import org.eclipse.tractusx.edc.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.edc.model.NegotiationResponse;
 import org.eclipse.tractusx.edc.model.notification.EdcNotification;
 import org.eclipse.tractusx.edc.model.notification.EdcNotificationResponse;
@@ -291,7 +292,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     private void prepareTestdata(final String catenaXId, final String submodelDataSuffix)
-            throws ContractNegotiationException, IOException {
+            throws ContractNegotiationException, IOException, UsagePolicyException {
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);

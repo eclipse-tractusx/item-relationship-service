@@ -28,6 +28,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -36,6 +37,7 @@ import java.util.concurrent.Executors;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.github.resilience4j.retry.internal.InMemoryRetryRegistry;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
+import org.eclipse.tractusx.edc.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,6 +53,9 @@ class SubmodelExponentialRetryTest {
 
     @Mock
     private RestTemplate restTemplate;
+
+    @Mock
+    private PolicyCheckerService policyCheckerService;
 
     private final RetryRegistry retryRegistry = new InMemoryRetryRegistry();
     private EdcSubmodelFacade testee;
@@ -68,9 +73,10 @@ class SubmodelExponentialRetryTest {
         final EDCCatalogFacade edcCatalogFacade = new EDCCatalogFacade(controlPlaneClient, config);
         final CatalogCacheConfiguration cacheConfiguration = mock(CatalogCacheConfiguration.class);
         final CatalogCache catalogCache = new InMemoryCatalogCache(edcCatalogFacade, cacheConfiguration);
+        when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
 
         final ContractNegotiationService negotiationService = new ContractNegotiationService(controlPlaneClient,
-                config, catalogCache);
+                config, catalogCache, policyCheckerService);
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
         final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
 
