@@ -46,7 +46,7 @@ public class AtomicConstraintValidator {
                 && expectedOperator.equals(atomicConstraint.getOperator());
     }
 
-    private boolean isExpressionValid(Expression expression, String value) {
+    private boolean isExpressionValid(final Expression expression, final String value) {
         if (expression instanceof LiteralExpression literalExpression) {
             return literalExpression.asString().equals(value);
         }

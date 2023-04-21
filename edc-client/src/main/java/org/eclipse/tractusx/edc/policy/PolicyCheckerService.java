@@ -35,17 +35,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class PolicyCheckerService {
 
-    public boolean isValid(Policy policy) {
+    public boolean isValid(final Policy policy) {
         PolicyDefinition policyDefinition = r2Traceability();
         return policy.getPermissions().stream().anyMatch(permission -> isValid(permission, policyDefinition));
     }
 
-    private boolean isValid(Permission permission, PolicyDefinition policyDefinition) {
+    private boolean isValid(final Permission permission, final PolicyDefinition policyDefinition) {
         return permission.getAction().getType().equals(policyDefinition.getPermissionActionType())
                 && permission.getConstraints().stream().anyMatch(constraint -> isValid(constraint, policyDefinition));
     }
 
-    private boolean isValid(Constraint constraint, PolicyDefinition policyDefinition) {
+    private boolean isValid(final Constraint constraint, final PolicyDefinition policyDefinition) {
         if (constraint instanceof AtomicConstraint atomicConstraint) {
             return AtomicConstraintValidator.builder()
                                      .atomicConstraint(atomicConstraint)
