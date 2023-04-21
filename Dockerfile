@@ -50,7 +50,7 @@ FROM eclipse-temurin:19-jre-alpine AS irs-api
 RUN apk upgrade --no-cache libssl3 libcrypto3
 
 ARG UID=10000
-ARG GID=1000
+ARG GID=3000
 
 WORKDIR /app
 
