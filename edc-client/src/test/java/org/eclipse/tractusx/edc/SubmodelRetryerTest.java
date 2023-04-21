@@ -73,7 +73,6 @@ class SubmodelExponentialRetryTest {
         final EDCCatalogFacade edcCatalogFacade = new EDCCatalogFacade(controlPlaneClient, config);
         final CatalogCacheConfiguration cacheConfiguration = mock(CatalogCacheConfiguration.class);
         final CatalogCache catalogCache = new InMemoryCatalogCache(edcCatalogFacade, cacheConfiguration);
-        when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
 
         final ContractNegotiationService negotiationService = new ContractNegotiationService(controlPlaneClient,
                 config, catalogCache, policyCheckerService);
