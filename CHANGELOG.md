@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
+## [2.4.1] - 2023-04-21
+### Fixed
+- Updated spring-boot version to 3.0.6 to fix security issue
+- change GID in Dockerfile to fix https://github.com/eclipse-tractusx/item-relationship-service/issues/101
+
 ## [2.4.0] - 2023-03-30
 ### Added
 - IRS is now able to cache the EDC catalog. Caching can be disabled via application config. Maximum amount of cached items and item time-to-live can be configured as well. 
@@ -184,6 +189,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 [Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.4.0...HEAD
+[2.4.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.4.0...2.4.1
 [2.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.3.2...2.4.0
 [2.3.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.3.1...2.3.2
 [2.3.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.3.0...2.3.1
