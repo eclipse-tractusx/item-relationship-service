@@ -25,6 +25,9 @@ package org.eclipse.tractusx.edc.policy;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * Policy Definition that is accepted by IRS.
+ */
 @Builder
 @Data
 public class PolicyDefinition {

@@ -28,6 +28,9 @@ import org.eclipse.dataspaceconnector.policy.model.Expression;
 import org.eclipse.dataspaceconnector.policy.model.LiteralExpression;
 import org.eclipse.dataspaceconnector.policy.model.Operator;
 
+/**
+ * Check and validate AtomicConstraint as a part of Policy in Catalog fetch from EDC providers.
+ */
 @Builder
 public class AtomicConstraintValidator {
 
