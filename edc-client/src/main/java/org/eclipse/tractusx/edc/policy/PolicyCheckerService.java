@@ -36,7 +36,7 @@ import org.springframework.stereotype.Service;
 public class PolicyCheckerService {
 
     public boolean isValid(final Policy policy) {
-        PolicyDefinition policyDefinition = r2Traceability();
+        final PolicyDefinition policyDefinition = r2Traceability();
         return policy.getPermissions().stream().anyMatch(permission -> isValid(permission, policyDefinition));
     }
 
