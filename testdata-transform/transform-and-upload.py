@@ -246,7 +246,7 @@ if __name__ == "__main__":
     testdata = data["https://catenax.io/schema/TestDataContainer/1.0.0"]
     policies = default_policy_definition
     if "policies" in data.keys():
-        policies = data["policies"]
+        policies.update(data["policies"])
 
     contract_id = 1
 
