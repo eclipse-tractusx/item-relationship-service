@@ -148,14 +148,21 @@ def check_url_args(submodel_server_upload_urls_, submodel_server_urls_, edc_uplo
 
 def create_policy(policy_, edc_upload_url_, edc_policy_path_, headers_, session_):
     url_ = edc_upload_url_ + edc_policy_path_
-    print(url_)
-    print(json.dumps(policy_))
-    response_ = session_.request(method="POST", url=url_, headers=headers_, data=json.dumps(policy_))
+    response_ = session_.request(method="POST", url=url_+"/request", headers=headers_, data=json.dumps({
+        "filter": "id="+policy_['id']
+    }))
     print(response_)
-    print(response_.reason)
-    print(response_.json())
-    policy_id_ = response_.json()["id"]
-    print(policy_id_)
+    if response_.status_code == 200 and response_.json():
+        print(f"Policy {policy_['id']} already exists. Skipping creation.")
+    else:
+        print(url_)
+        print(json.dumps(policy_))
+        response_ = session_.request(method="POST", url=url_, headers=headers_, data=json.dumps(policy_))
+        print(response_)
+        print(response_.reason)
+        print(response_.json())
+        policy_id_ = response_.json()["id"]
+        print(policy_id_)
 
 
 if __name__ == "__main__":
@@ -176,6 +183,8 @@ if __name__ == "__main__":
     parser.add_argument("--ess", help="Enable ESS data creation with invalid EDC URL", action='store_true',
                         required=False)
     parser.add_argument("--bpn", help="Faulty BPN which will create a non existing EDC endpoint", required=False)
+    parser.add_argument("-p", "--policy", help="Default Policy which should be used for EDC contract definitions",
+                        required=False)
 
     args = parser.parse_args()
     config = vars(args)
@@ -190,11 +199,15 @@ if __name__ == "__main__":
     esr_url = config.get("esr")
     is_ess = config.get("ess")
     bpnl_fail = config.get("bpn")
+    default_policy = config.get("policy")
 
     if submodel_server_upload_urls is None:
         submodel_server_upload_urls = submodel_server_urls
     if edc_upload_urls is None:
         edc_upload_urls = edc_urls
+
+    if default_policy is None:
+        default_policy = "default-policy"
 
     check_url_args(submodel_server_upload_urls, submodel_server_urls, edc_upload_urls, edc_urls)
 
@@ -211,12 +224,32 @@ if __name__ == "__main__":
         'Content-Type': 'application/json'
     }
 
+    default_policy_definition = {
+        "default": {
+            "id": default_policy,
+            "policy": {
+                "prohibitions": [],
+                "obligations": [],
+                "permissions": [
+                    {
+                        "edctype": "dataspaceconnector:permission",
+                        "action": {
+                            "type": "USE"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+
     # Opening JSON file
     f = open(filepath)
     data = json.load(f)
     f.close()
     testdata = data["https://catenax.io/schema/TestDataContainer/1.0.0"]
-    policies = data["policies"]
+    policies = default_policy_definition
+    if "policies" in data.keys():
+        policies = data["policies"]
 
     contract_id = 1
 
@@ -225,9 +258,10 @@ if __name__ == "__main__":
     session = requests.Session()
     session.mount('https://', HTTPAdapter(max_retries=retries))
 
-    for policy in policies.keys():
-        for url in edc_upload_urls:
-            create_policy(policies[policy], url, edc_policy_path, headers_with_api_key, session)
+    if policies:
+        for policy in policies.keys():
+            for url in edc_upload_urls:
+                create_policy(policies[policy], url, edc_policy_path, headers_with_api_key, session)
 
     for tmp_data in testdata:
         catenax_id = tmp_data["catenaXId"]
@@ -265,10 +299,10 @@ if __name__ == "__main__":
         if esr_url and apr in tmp_keys and "childParts" in tmp_data[apr][0] and tmp_data[apr][0]["childParts"]:
             tmp_data.update({esr: ""})
 
-        policy_id = "default-policy"
+        policy_id = default_policy
         if "policy" in tmp_keys:
             policy_id = tmp_data["policy"]
-            print("Policy:" + policy_id)
+            print("Policy: " + policy_id)
 
         for tmp_key in tmp_keys:
             if "PlainObject" not in tmp_key and "catenaXId" not in tmp_key and "bpn" not in tmp_key and "policy" not in tmp_key:
