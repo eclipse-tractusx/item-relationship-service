@@ -116,4 +116,16 @@ class ContractNegotiationServiceTest {
         assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, assetId)).isInstanceOf(NoSuchElementException.class);
     }
 
+    @Test
+    void shouldThrowErrorWhenPolicyCheckerReturnFalse() {
+        // arrange
+        final var assetId = "testTarget";
+        final CatalogItem catalogItem = CatalogItem.builder().itemId(assetId).assetPropId(assetId).build();
+        when(catalogCache.getCatalogItem(CONNECTOR_URL, assetId)).thenReturn(Optional.ofNullable(catalogItem));
+        when(policyCheckerService.isValid(any())).thenReturn(Boolean.FALSE);
+
+        // act & assert
+        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, assetId)).isInstanceOf(EdcClientException.class);
+    }
+
 }
