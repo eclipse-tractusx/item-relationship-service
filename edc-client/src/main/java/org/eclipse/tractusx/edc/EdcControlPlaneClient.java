@@ -28,7 +28,9 @@ import java.util.concurrent.CompletableFuture;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.dataspaceconnector.spi.query.QuerySpec;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
+import org.eclipse.tractusx.edc.model.CatalogRequest;
 import org.eclipse.tractusx.edc.model.NegotiationId;
 import org.eclipse.tractusx.edc.model.NegotiationRequest;
 import org.eclipse.tractusx.edc.model.NegotiationResponse;
@@ -61,12 +63,20 @@ public class EdcControlPlaneClient {
 
     /* package */ Catalog getCatalog(final String providerConnectorUrl, final int offset) {
         final var catalogUrl = config.getControlplane().getEndpoint().getData()
-                + "/catalog?providerUrl={providerUrl}&limit={limit}&offset={offset}";
+                + "/catalog/request";
         final var providerUrl = providerConnectorUrl + config.getControlplane().getProviderSuffix();
         final var limit = config.getControlplane().getCatalogPageSize();
 
-        return edcRestTemplate.exchange(catalogUrl, HttpMethod.GET, new HttpEntity<>(null, headers()), Catalog.class,
-                providerUrl, limit, offset).getBody();
+        final CatalogRequest request = buildCatalogRequest(offset, providerUrl, limit);
+        return edcRestTemplate.exchange(catalogUrl, HttpMethod.POST, new HttpEntity<>(request, headers()), Catalog.class).getBody();
+    }
+
+    private CatalogRequest buildCatalogRequest(final int offset, final String providerUrl, final int limit) {
+        final QuerySpec.Builder querySpec = QuerySpec.Builder.newInstance().offset(offset);
+        if (config.getControlplane().getCatalogPageSize() > 0) {
+            querySpec.limit(limit);
+        }
+        return CatalogRequest.builder().providerUrl(providerUrl).querySpec(querySpec.build()).build();
     }
 
     /* package */ NegotiationId startNegotiations(final NegotiationRequest request) {

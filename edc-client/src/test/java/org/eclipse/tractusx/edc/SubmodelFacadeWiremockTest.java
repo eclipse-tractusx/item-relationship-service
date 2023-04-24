@@ -132,10 +132,10 @@ class SubmodelFacadeWiremockTest {
 
     private void prepareNegotiation() {
         final var contentType = "application/json;charset=UTF-8";
-        final var pathCatalog = "/catalog";
+        final var pathCatalog = "/catalog/request";
         final var pathNegotiate = "/contractnegotiations";
         final var pathStartTransfer = "/transferprocess";
-        givenThat(get(urlPathEqualTo(pathCatalog)).willReturn(aResponse().withStatus(200)
+        givenThat(post(urlPathEqualTo(pathCatalog)).willReturn(aResponse().withStatus(200)
                                                                          .withHeader("Content-Type", contentType)
                                                                          .withBodyFile("edc/responseCatalog.json")));
 
