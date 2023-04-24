@@ -148,21 +148,18 @@ def check_url_args(submodel_server_upload_urls_, submodel_server_urls_, edc_uplo
 
 def create_policy(policy_, edc_upload_url_, edc_policy_path_, headers_, session_):
     url_ = edc_upload_url_ + edc_policy_path_
-    response_ = session_.request(method="POST", url=url_+"/request", headers=headers_, data=json.dumps({
-        "filter": "id="+policy_['id']
+    response_ = session_.request(method="POST", url=url_ + "/request", headers=headers_, data=json.dumps({
+        "filter": "id=" + policy_['id']
     }))
-    print(response_)
     if response_.status_code == 200 and response_.json():
         print(f"Policy {policy_['id']} already exists. Skipping creation.")
     else:
-        print(url_)
-        print(json.dumps(policy_))
         response_ = session_.request(method="POST", url=url_, headers=headers_, data=json.dumps(policy_))
         print(response_)
-        print(response_.reason)
-        print(response_.json())
-        policy_id_ = response_.json()["id"]
-        print(policy_id_)
+        if response_.status_code > 205:
+            print(response_.text)
+        else:
+            print(f"Successfully created policy {response_.json()['id']}.")
 
 
 if __name__ == "__main__":
