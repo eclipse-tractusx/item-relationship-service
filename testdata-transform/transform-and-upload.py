@@ -33,8 +33,7 @@ def create_edc_asset_payload(submodel_url_, asset_prop_id_, digital_twin_submode
             "properties": {
                 "asset:prop:id": asset_prop_id_,
                 "asset:prop:description": "product description",
-                "asset:prop:contenttype": "application/json",
-                "asset:prop:policy-id": "use-eu"
+                "asset:prop:contenttype": "application/json"
             }
         },
         "dataAddress": {
@@ -54,8 +53,7 @@ def create_esr_edc_asset_payload(esr_url_, asset_prop_id_, digital_twin_id_):
             "properties": {
                 "asset:prop:id": asset_prop_id_,
                 "asset:prop:description": "product description",
-                "asset:prop:contenttype": "application/json",
-                "asset:prop:policy-id": "use-eu"
+                "asset:prop:contenttype": "application/json"
             }
         },
         "dataAddress": {
@@ -69,28 +67,8 @@ def create_esr_edc_asset_payload(esr_url_, asset_prop_id_, digital_twin_id_):
     })
 
 
-def create_edc_policy_payload(edc_policy_id_, asset_prop_id_):
+def create_edc_contract_definition_payload(edc_policy_id_, asset_prop_id_):
     return json.dumps({
-        "id": edc_policy_id_,
-        "policy": {
-            "prohibitions": [],
-            "obligations": [],
-            "permissions": [
-                {
-                    "edctype": "dataspaceconnector:permission",
-                    "action": {
-                        "type": "USE"
-                    },
-                    "target": asset_prop_id_
-                }
-            ]
-        }
-    })
-
-
-def create_edc_contract_definition_payload(contract_id_, edc_policy_id_, asset_prop_id_):
-    return json.dumps({
-        "id": contract_id_,
         "criteria": [
             {
                 "operandLeft": "asset:prop:id",
@@ -168,6 +146,22 @@ def check_url_args(submodel_server_upload_urls_, submodel_server_urls_, edc_uplo
             f"'{submodel_server_urls_}'")
 
 
+def create_policy(policy_, edc_upload_url_, edc_policy_path_, headers_, session_):
+    url_ = edc_upload_url_ + edc_policy_path_
+    response_ = session_.request(method="POST", url=url_ + "/request", headers=headers_, data=json.dumps({
+        "filter": "id=" + policy_['id']
+    }))
+    if response_.status_code == 200 and response_.json():
+        print(f"Policy {policy_['id']} already exists. Skipping creation.")
+    else:
+        response_ = session_.request(method="POST", url=url_, headers=headers_, data=json.dumps(policy_))
+        print(response_)
+        if response_.status_code > 205:
+            print(response_.text)
+        else:
+            print(f"Successfully created policy {response_.json()['id']}.")
+
+
 if __name__ == "__main__":
     timestamp_start = time.time()
     parser = argparse.ArgumentParser(description="Script to upload testdata into CX-Network.",
@@ -186,6 +180,8 @@ if __name__ == "__main__":
     parser.add_argument("--ess", help="Enable ESS data creation with invalid EDC URL", action='store_true',
                         required=False)
     parser.add_argument("--bpn", help="Faulty BPN which will create a non existing EDC endpoint", required=False)
+    parser.add_argument("-p", "--policy", help="Default Policy which should be used for EDC contract definitions",
+                        required=False)
 
     args = parser.parse_args()
     config = vars(args)
@@ -200,11 +196,15 @@ if __name__ == "__main__":
     esr_url = config.get("esr")
     is_ess = config.get("ess")
     bpnl_fail = config.get("bpn")
+    default_policy = config.get("policy")
 
     if submodel_server_upload_urls is None:
         submodel_server_upload_urls = submodel_server_urls
     if edc_upload_urls is None:
         edc_upload_urls = edc_urls
+
+    if default_policy is None:
+        default_policy = "default-policy"
 
     check_url_args(submodel_server_upload_urls, submodel_server_urls, edc_upload_urls, edc_urls)
 
@@ -221,11 +221,32 @@ if __name__ == "__main__":
         'Content-Type': 'application/json'
     }
 
+    default_policy_definition = {
+        "default": {
+            "id": default_policy,
+            "policy": {
+                "prohibitions": [],
+                "obligations": [],
+                "permissions": [
+                    {
+                        "edctype": "dataspaceconnector:permission",
+                        "action": {
+                            "type": "USE"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+
     # Opening JSON file
     f = open(filepath)
     data = json.load(f)
     f.close()
     testdata = data["https://catenax.io/schema/TestDataContainer/1.0.0"]
+    policies = default_policy_definition
+    if "policies" in data.keys():
+        policies.update(data["policies"])
 
     contract_id = 1
 
@@ -233,6 +254,11 @@ if __name__ == "__main__":
                     backoff_factor=0.1)
     session = requests.Session()
     session.mount('https://', HTTPAdapter(max_retries=retries))
+
+    if policies:
+        for policy in policies.keys():
+            for url in edc_upload_urls:
+                create_policy(policies[policy], url, edc_policy_path, headers_with_api_key, session)
 
     for tmp_data in testdata:
         catenax_id = tmp_data["catenaXId"]
@@ -249,9 +275,11 @@ if __name__ == "__main__":
         for tmp_key in tmp_keys:
             if "Batch" in tmp_key or "SerialPartTypization" in tmp_key:
                 specific_asset_ids = copy(tmp_data[tmp_key][0]["localIdentifiers"])
-                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ", "")
+                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ",
+                                                                                                                 "")
             if "PartAsPlanned" in tmp_key:
-                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ", "")
+                name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ",
+                                                                                                                 "")
                 specific_asset_ids.append({
                     "value": tmp_data[tmp_key][0]["partTypeInformation"]["manufacturerPartId"],
                     "key": "manufacturerPartId"
@@ -268,9 +296,14 @@ if __name__ == "__main__":
         if esr_url and apr in tmp_keys and "childParts" in tmp_data[apr][0] and tmp_data[apr][0]["childParts"]:
             tmp_data.update({esr: ""})
 
+        policy_id = default_policy
+        if "policy" in tmp_keys:
+            policy_id = tmp_data["policy"]
+            print("Policy: " + policy_id)
+
         for tmp_key in tmp_keys:
-            if "PlainObject" not in tmp_key and "catenaXId" not in tmp_key and "bpn" not in tmp_key:
-                # 1. Prepare submodel endpoint address
+            if "PlainObject" not in tmp_key and "catenaXId" not in tmp_key and "bpn" not in tmp_key and "policy" not in tmp_key:
+                # Prepare submodel endpoint address
                 submodel_url = submodel_server_urls[contract_id % len(submodel_server_urls)]
                 submodel_upload_url = submodel_server_upload_urls[contract_id % len(submodel_server_upload_urls)]
                 edc_url = edc_urls[contract_id % len(edc_urls)]
@@ -281,7 +314,7 @@ if __name__ == "__main__":
                 semantic_id = tmp_key
 
                 if is_ess and tmp_data["bpnl"] in bpnl_fail:
-                    endpoint_address = "http://idonotexist/"+catenax_id+"-"+submodel_identification+"/submodel?content=value&extent=withBlobValue"
+                    endpoint_address = "http://idonotexist/" + catenax_id + "-" + submodel_identification + "/submodel?content=value&extent=withBlobValue"
                 elif submodel_name == "EsrCertificateStateStatistic" and esr_url is not None:
                     endpoint_address = esr_url + "/" + catenax_id + "/asBuilt/ISO14001/submodel"
                 else:
@@ -295,7 +328,7 @@ if __name__ == "__main__":
                 edc_policy_id = str(uuid.uuid4())
                 asset_prop_id = catenax_id + "-" + submodel_identification
 
-                # 2. Create submodel on submodel server
+                print("Create submodel on submodel server")
                 if tmp_data[tmp_key] != "":
                     payload = create_submodel_payload(tmp_data[tmp_key][0])
                     response = session.request(method="POST",
@@ -303,7 +336,7 @@ if __name__ == "__main__":
                                                headers=headers, data=payload)
                     print_response(response)
 
-                # 3. Create edc asset
+                print("Create edc asset")
                 if submodel_name == "EsrCertificateStateStatistic" and esr_url is not None:
                     payload = create_esr_edc_asset_payload(esr_url, asset_prop_id, catenax_id)
                 else:
@@ -313,22 +346,16 @@ if __name__ == "__main__":
                                            data=payload)
                 print_response(response)
 
-                # 4. Create edc policy
-                payload = create_edc_policy_payload(contract_id, asset_prop_id)
-                response = session.request(method="POST", url=edc_upload_url + edc_policy_path,
-                                           headers=headers_with_api_key,
-                                           data=payload)
-                print_response(response)
-                # 5. Create edc contract definition
-                payload = create_edc_contract_definition_payload(contract_id, contract_id, asset_prop_id)
+                print("Create edc contract definition")
+                payload = create_edc_contract_definition_payload(policy_id, asset_prop_id)
                 response = session.request(method="POST", url=edc_upload_url + edc_contract_definition_path,
                                            headers=headers_with_api_key,
                                            data=payload)
                 print_response(response)
                 contract_id = contract_id + 1
 
-        # Create aas shell
         if submodel_descriptors:
+            print("Create aas shell")
             payload = create_aas_shell(catenax_id, name_at_manufacturer, identification, specific_asset_ids,
                                        submodel_descriptors)
             response = session.request(method="POST", url=create_digital_twin_payload_url(aas_url),
