@@ -27,4 +27,4 @@ If you want to save environments and the request collection separately from each
 ## Setup
 Once the collection and the desired environment(s) have been imported, the environments must be configured. Add credentials (Client_ID, Client_Secret) to automatically fetch and use an OAuth2-Access token before each request. Additionally, it is possible to generate one manually by selecting a request and clicking on "Fetch Token".
 
-Some requests consist of prompts and params which can be integrated with an insomnia Plugin named 'param'. To use it, consider installing the plugin from [here](https://insomnia.rest/plugins/insomnia-plugin-param)
+Some requests consist of prompts which you need to provide data. The last input will be remembered and filled in advance for the next request.
