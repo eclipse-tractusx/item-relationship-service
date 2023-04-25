@@ -23,22 +23,6 @@ jobs:
         with:
           version: v3.9.3
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-          check-latest: true
-
-      - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.4.0
-
-      - name: Run chart-testing (list-changed)
-        id: list-changed
-        run: |
-          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }})
-          if [[ -n "$changed" ]]; then
-             echo "::set-output name=changed::true"
-          fi
-
       - name: Add repos
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -48,9 +32,11 @@ jobs:
           helm repo add irs https://eclipse-tractusx.github.io/item-relationship-service
 
       - name: Run helm install
+        # Install latest released irs-helm version
         run: |
           helm install irs irs/irs-helm
 
       - name: Run helm upgrade
+        # Upgrade the installed irs-helm version with the locally available charts
         run: |
           helm upgrade irs charts/irs-helm
