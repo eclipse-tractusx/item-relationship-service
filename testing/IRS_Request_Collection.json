@@ -1597,6 +1597,553 @@
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
       "_type": "request"
+    },
+    {
+      "_id": "req_8c6c3d78589e4342966e42f80d95743d",
+      "parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+      "modified": 1681831217402,
+      "created": 1675675609564,
+      "url": "{{ _.CONSUMER_CONTROLPLANE }}/api/v1/management/catalog",
+      "name": "CONSUMER Get catalog",
+      "description": "",
+      "method": "GET",
+      "body": {
+        "params": [],
+        "mimeType": "application/x-www-form-urlencoded"
+      },
+      "parameters": [
+        {
+          "name": "providerUrl",
+          "value": "{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/ids/data",
+          "disabled": false,
+          "id": "pair_c5ea4df5df664291806a4c3bd2009d4b"
+        },
+        {
+          "id": "pair_7ff130997c24476889c22e9d12ea7499",
+          "name": "providerUrl",
+          "value": "{{ _.PROVIDER_CONTROLPLANE_2 }}/api/v1/ids/data",
+          "description": "",
+          "disabled": true
+        },
+        {
+          "id": "pair_3dd058bf8eab4d9e8b7f76cdf9c58a86",
+          "name": "providerUrl",
+          "value": "{{ _.PROVIDER_CONTROLPLANE_3 }}/api/v1/ids/data",
+          "description": "",
+          "disabled": true
+        },
+        {
+          "id": "pair_bd6a08271675462da556f31f6b91592f",
+          "name": "limit",
+          "value": "50",
+          "description": ""
+        },
+        {
+          "id": "pair_ad93b441b56542e59ffe06ca32c1a24e",
+          "name": "offset",
+          "value": "50",
+          "description": ""
+        }
+      ],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "apikey",
+        "disabled": false,
+        "key": "X-Api-Key",
+        "value": "{{ _.EDC_API_KEY }}",
+        "addTo": "header"
+      },
+      "metaSortKey": -1675675609564,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+      "parentId": "fld_ffbe46c3addc49fbb0247f24788433ea",
+      "modified": 1677746266561,
+      "created": 1675675609576,
+      "name": "EDC-Requests",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1675675593197.5,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_2e68cc0bfedf45249ba83d8029747fae",
+      "parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+      "modified": 1681831250337,
+      "created": 1678358655308,
+      "url": "{{ _.CONSUMER_CONTROLPLANE }}/api/v1/management/catalog/request",
+      "name": "CONSUMER Get catalog",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"providerUrl\": \"{% prompt 'edc', '', '', '', false, true %}/api/v1/ids/data\",\n  \"querySpec\": {\n\t\t\"limit\": 50\n  }\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "apikey",
+        "disabled": false,
+        "key": "X-Api-Key",
+        "value": "{{ _.EDC_API_KEY }}",
+        "addTo": "header"
+      },
+      "metaSortKey": -1675675609560.5,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_46258202700343669db666505a0481d3",
+      "parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+      "modified": 1680001417847,
+      "created": 1675675609557,
+      "url": "{{ _.CONSUMER_CONTROLPLANE }}/api/v1/management/contractnegotiations",
+      "name": "CONSUMER start contract negotiation",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"connectorId\": \"default\",\n\t\"connectorAddress\": \"{{ _.PROVIDER_CONTROLPLANE_2 }}/api/v1/ids/data\",\n\t\"offer\": {\n\t\t\"offerId\": \"1:9ea66014-6858-4fe5-b6f0-ab18c233c409\",\n\t\t\"assetId\": \"urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6-urn:uuid:d5c4eadf-4aa7-4bc6-9ea9-ba25179d7e46\",\n\t\t\"policy\": {\n\t\t\t\"permissions\": [\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\"edctype\": \"dataspaceconnector:permission\",\n\t\t\t\t\t\"uid\": null,\n\t\t\t\t\t\"target\": \"urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6-urn:uuid:d5c4eadf-4aa7-4bc6-9ea9-ba25179d7e46\",\n\t\t\t\t\t\"action\": {\n\t\t\t\t\t\t\"type\": \"USE\",\n\t\t\t\t\t\t\"includedIn\": null,\n\t\t\t\t\t\t\"constraint\": null\n\t\t\t\t\t},\n\t\t\t\t\t\"assignee\": null,\n\t\t\t\t\t\"assigner\": null,\n\t\t\t\t\t\"constraints\": [],\n\t\t\t\t\t\"duties\": []\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"prohibitions\": [],\n\t\t\t\"obligations\": [],\n\t\t\t\"extensibleProperties\": {},\n\t\t\t\"inheritsFrom\": null,\n\t\t\t\"assigner\": null,\n\t\t\t\"assignee\": null,\n\t\t\t\"target\": \"urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6-urn:uuid:d5c4eadf-4aa7-4bc6-9ea9-ba25179d7e46\",\n\t\t\t\"@type\": {\n\t\t\t\t\"@policytype\": \"set\"\n\t\t\t}\n\t\t}\n\t}\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "apikey",
+        "disabled": false,
+        "key": "X-Api-Key",
+        "value": "{{ _.EDC_API_KEY }}",
+        "addTo": "header"
+      },
+      "metaSortKey": -1675675609557,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_f8523e3451934c9b92900ef1496359b0",
+      "parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+      "modified": 1680001404073,
+      "created": 1675675609549,
+      "url": "{{ _.CONSUMER_CONTROLPLANE }}/api/v1/management/contractnegotiations/{% prompt 'id', '', '', '', false, true %}",
+      "name": "CONSUMER get contract negotiation for id",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "apikey",
+        "disabled": false,
+        "key": "X-Api-Key",
+        "value": "{{ _.EDC_API_KEY }}",
+        "addTo": "header"
+      },
+      "metaSortKey": -1675675609549,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_25a27ae6da014b1c8c36c9fd2bc5b015",
+      "parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+      "modified": 1680001464096,
+      "created": 1675675609541,
+      "url": "{{ _.CONSUMER_CONTROLPLANE }}/api/v1/management/transferprocess",
+      "name": "CONSUMER start transferprocess",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"edctype\": \"dataspaceconnector:datarequest\",\n\t\"protocol\": \"ids-multipart\",\n\t\"assetId\": \"urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6-urn:uuid:d5c4eadf-4aa7-4bc6-9ea9-ba25179d7e46\",\n\t\"contractId\": \"1:00562ab0-1431-47f8-88fb-45f53d431ec3\",\n\t\"dataDestination\": {\n\t\t\"type\": \"HttpProxy\"\n\t},\n\t\"transferType\": {\n\t\t\"contentType\": \"application/octet-stream\",\n\t\t\"isFinite\": true\n\t},\n\t\"managedResources\": false,\n\t\"connectorAddress\": \"{{ _.PROVIDER_CONTROLPLANE_2 }}/api/v1/ids/data\",\n\t\"connectorId\": \"default\",\n\t\"properties\": {\n\t\t\"receiver.http.endpoint\": \"http://irs-dev-irs-helm:8181/internal/endpoint-data-reference\"\n\t}\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "apikey",
+        "disabled": false,
+        "key": "X-Api-Key",
+        "value": "{{ _.EDC_API_KEY }}",
+        "addTo": "header"
+      },
+      "metaSortKey": -1675675609541,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_884bd7e2ecb742b6b34ed923edfea48e",
+      "parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+      "modified": 1679995387568,
+      "created": 1675675609533,
+      "url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/management/transferprocess/{% prompt 'id', '', '', '', false, true %}",
+      "name": "CONSUMER get transferprocess by id",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "apikey",
+        "disabled": false,
+        "key": "X-Api-Key",
+        "value": "{{ _.EDC_API_KEY }}",
+        "addTo": "header"
+      },
+      "metaSortKey": -1675675609533,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_895e87e2292d4569bd41360c7e699600",
+      "parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+      "modified": 1679993996270,
+      "created": 1679993996270,
+      "url": "{{CONSUMER_CONTROLPLANE}}/api/v1/management/transferprocess/{% prompt 'id', '', '', '', false, true %}",
+      "name": "CONSUMER get transferprocess by id",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "apikey",
+        "disabled": false,
+        "key": "X-Api-Key",
+        "value": "{{ _.EDC_API_KEY }}",
+        "addTo": "header"
+      },
+      "metaSortKey": -1675675609529,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_d1cfc45935734ff58afbd54a9d0998b7",
+      "parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+      "modified": 1679994024127,
+      "created": 1675675609525,
+      "url": "{{CONSUMER_CONTROLPLANE}}/api/v1/management/transferprocess/request",
+      "name": "CONSUMER get transferprocess by id Copy",
+      "description": "",
+      "method": "POST",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "apikey",
+        "disabled": false,
+        "key": "X-Api-Key",
+        "value": "{{ _.EDC_API_KEY }}",
+        "addTo": "header"
+      },
+      "metaSortKey": -1675675609525,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_400800e675924c549f6125f7fe511b7f",
+      "parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+      "modified": 1679929171846,
+      "created": 1675675609517,
+      "url": "{{PROVIDER_CONTROLPLANE_1}}/api/v1/management/policydefinitions",
+      "name": "PROVIDER get policydefinitions",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "apikey",
+        "disabled": false,
+        "key": "X-Api-Key",
+        "value": "{{ _.EDC_API_KEY }}",
+        "addTo": "header"
+      },
+      "metaSortKey": -1675675609517,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_33ee0a1e76a84ced8869d5d55855fbe3",
+      "parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+      "modified": 1680265424077,
+      "created": 1675675609509,
+      "url": "{{PROVIDER_CONTROLPLANE_1}}/api/v1/management/assets",
+      "name": "PROVIDER get assets",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "apikey",
+        "disabled": false,
+        "key": "X-Api-Key",
+        "value": "{{ _.EDC_API_KEY }}",
+        "addTo": "header"
+      },
+      "metaSortKey": -1675675609509,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_703b40472afd41528ff146df86d36d21",
+      "parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+      "modified": 1680506822288,
+      "created": 1675675609501,
+      "url": "{{PROVIDER_CONTROLPLANE_1}}/api/v1/management/contractdefinitions",
+      "name": "PROVIDER get contractdefinitions",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "apikey",
+        "disabled": false,
+        "key": "X-Api-Key",
+        "value": "{{ _.EDC_API_KEY }}",
+        "addTo": "header"
+      },
+      "metaSortKey": -1675675609507,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_0058d57969b542f3a58250e36a8b6b7d",
+      "parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+      "modified": 1681831162755,
+      "created": 1675675609493,
+      "url": "{{PROVIDER_CONTROLPLANE_1}}/api/v1/management/contractnegotiations/:id",
+      "name": "PROVIDER get contract negotiation for id",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "apikey",
+        "disabled": false,
+        "key": "X-Api-Key",
+        "value": "{{ _.EDC_API_KEY }}",
+        "addTo": "header"
+      },
+      "metaSortKey": -1675675609493,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_b9709b2192814ac698c66b9ca4d92f2b",
+      "parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+      "modified": 1681831164494,
+      "created": 1675675609486,
+      "url": "{{PROVIDER_CONTROLPLANE_1}}/api/v1/management/transferprocess/{% prompt 'transferProcessId', 'transferProcessId', '', '', false, true %}",
+      "name": "PROVIDER get transfer process by id",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "apikey",
+        "disabled": false,
+        "key": "X-Api-Key",
+        "value": "{{ _.EDC_API_KEY }}",
+        "addTo": "header"
+      },
+      "metaSortKey": -1675675609486,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "env_d2b7eb1621841465ea24b73343568b286aa8ac9a",
+      "parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
+      "modified": 1680782486844,
+      "created": 1680782486844,
+      "name": "Base Environment",
+      "data": {},
+      "dataPropertyOrder": null,
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1680782486844,
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_d2b7eb1621841465ea24b73343568b286aa8ac9a",
+      "parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
+      "modified": 1681743120764,
+      "created": 1680782486851,
+      "name": "Default Jar",
+      "cookies": [
+        {
+          "key": "KC_RESTART",
+          "expires": "1970-01-01T00:00:10.000Z",
+          "maxAge": 0,
+          "domain": "centralidp.int.demo.catena-x.net",
+          "path": "/auth/realms/CX-Central/",
+          "httpOnly": true,
+          "extensions": [
+            "Version=1"
+          ],
+          "hostOnly": true,
+          "creation": "2023-04-06T13:30:18.499Z",
+          "lastAccessed": "2023-04-17T14:52:00.764Z",
+          "id": "22897154448582202"
+        }
+      ],
+      "_type": "cookie_jar"
+    },
+    {
+      "_id": "spc_22dfe33611af4731965cc2b08febcfdb",
+      "parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
+      "modified": 1680782484284,
+      "created": 1680782484284,
+      "fileName": "IRS",
+      "contents": "",
+      "contentType": "yaml",
+      "_type": "api_spec"
     }
   ]
 }
