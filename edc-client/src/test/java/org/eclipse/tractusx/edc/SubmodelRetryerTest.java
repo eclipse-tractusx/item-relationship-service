@@ -42,6 +42,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -84,7 +86,7 @@ class SubmodelExponentialRetryTest {
     @Test
     void shouldRetryExecutionOfGetSubmodelOnClientMaxAttemptTimes() {
         // Arrange
-        given(restTemplate.exchange(any(), any(), any(), eq(Catalog.class), any(), any(), any())).willThrow(
+        given(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class), eq(Catalog.class))).willThrow(
                 new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception"));
 
         // Act
@@ -93,14 +95,14 @@ class SubmodelExponentialRetryTest {
                 HttpServerErrorException.class);
 
         // Assert
-        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(), any(), any(),
-                eq(Catalog.class), any(), any(), any());
+        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class), eq(
+                HttpMethod.POST), any(HttpEntity.class), eq(Catalog.class));
     }
 
     @Test
     void shouldRetryOnAnyRuntimeException() {
         // Arrange
-        given(restTemplate.exchange(any(), any(), any(), eq(Catalog.class), any(), any(), any())).willThrow(
+        given(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class), eq(Catalog.class))).willThrow(
                 new RuntimeException("AASWrapper remote exception"));
 
         // Act
@@ -108,8 +110,8 @@ class SubmodelExponentialRetryTest {
                 "http://test.com/urn:uuid:12345/submodel?content=value")).hasCauseInstanceOf(RuntimeException.class);
 
         // Assert
-        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(), any(), any(),
-                eq(Catalog.class), any(), any(), any());
+        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class), eq(
+                        HttpMethod.POST), any(HttpEntity.class), eq(Catalog.class));
     }
 
 }

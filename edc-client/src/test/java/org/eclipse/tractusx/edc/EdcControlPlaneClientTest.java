@@ -48,6 +48,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -73,6 +74,7 @@ class EdcControlPlaneClientTest {
         config.getControlplane().getEndpoint().setData("https://irs-consumer-controlplane.dev.demo.catena-x.net/data");
         config.getControlplane().setRequestTtl(Duration.ofMinutes(10));
         config.getControlplane().setApiKey(new EdcConfiguration.ControlplaneConfig.ApiKeyConfig());
+        config.getControlplane().setCatalogPageSize(10);
 
         config.setSubmodel(new EdcConfiguration.SubmodelConfig());
         config.getSubmodel().setPath("/submodel");
@@ -84,7 +86,7 @@ class EdcControlPlaneClientTest {
     void shouldReturnValidCatalog() {
         // arrange
         final var catalog = mock(Catalog.class);
-        when(restTemplate.exchange(any(), eq(HttpMethod.GET), any(), eq(Catalog.class), any(Object.class))).thenReturn(
+        when(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class), eq(Catalog.class))).thenReturn(
                 ResponseEntity.of(Optional.of(catalog)));
 
         // act
