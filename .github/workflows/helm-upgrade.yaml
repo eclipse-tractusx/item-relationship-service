@@ -40,7 +40,6 @@ jobs:
           fi
 
       - name: Add repos
-        if: steps.list-changed.outputs.changed == 'true'
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add minio https://charts.min.io/
@@ -49,11 +48,9 @@ jobs:
           helm repo add irs https://eclipse-tractusx.github.io/item-relationship-service
 
       - name: Run helm install
-        if: steps.list-changed.outputs.changed == 'true'
         run: |
           helm install irs irs/irs-helm
 
       - name: Run helm upgrade
-        if: steps.list-changed.outputs.changed == 'true'
         run: |
           helm upgrade irs charts/irs-helm
