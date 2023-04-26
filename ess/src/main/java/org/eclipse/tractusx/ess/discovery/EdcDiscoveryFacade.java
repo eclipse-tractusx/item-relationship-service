@@ -42,13 +42,23 @@ public class EdcDiscoveryFacade {
 
     /**
      * Returns EDC base url or empty
+     *
      * @param bpn number
      * @return address
      */
     public Optional<String> getEdcBaseUrl(final String bpn) {
-        final EdcAddressResponse edcAddressResponse = edcDiscoveryClient.getEdcBaseUrl(bpn);
+        log.info("Requesting EDC URLs for BPN '{}'", bpn);
+        final EdcAddressResponse[] edcBaseUrl = edcDiscoveryClient.getEdcBaseUrl(bpn);
+        final List<EdcAddressResponse> edcAddressResponse;
+        if (edcBaseUrl == null) {
+            return Optional.empty();
+        } else {
+            edcAddressResponse = List.of(edcBaseUrl);
+        }
 
-        final List<String> endpoints = edcAddressResponse.getConnectorEndpoint();
+        final List<String> endpoints = edcAddressResponse.stream()
+                                                         .flatMap(response -> response.getConnectorEndpoint().stream())
+                                                         .toList();
 
         return endpoints.stream()
                         .filter(StringUtils::isNotBlank)

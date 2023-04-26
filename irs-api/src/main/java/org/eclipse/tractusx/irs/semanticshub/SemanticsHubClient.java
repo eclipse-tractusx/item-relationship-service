@@ -78,6 +78,9 @@ interface SemanticsHubClient {
 })
 class SemanticsHubClientLocalStub implements SemanticsHubClient {
 
+    public static final String MODEL_TYPE = "BAMM";
+    public static final String MODEL_STATUS = "RELEASED";
+
     @Override
     public String getModelJsonSchema(final String urn) {
         return "{" + "  \"$schema\": \"http://json-schema.org/draft-07/schema#\"," + "  \"type\": \"integer\"" + "}";
@@ -87,9 +90,11 @@ class SemanticsHubClientLocalStub implements SemanticsHubClient {
     public List<AspectModel> getAllAspectModels() {
         return List.of(
                 new AspectModel("urn:bamm:com.catenax.esr_certificates.esr_certificate:1.0.0#EsrCertificate", "1.0.0",
-                        "EsrCertificate", "BAMM", "RELEASED"),
+                        "EsrCertificate", MODEL_TYPE, MODEL_STATUS),
                 new AspectModel("urn:bamm:io.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship",
-                        "1.0.0", "AssemblyPartRelationship", "BAMM", "RELEASED"));
+                        "1.0.0", "AssemblyPartRelationship", MODEL_TYPE, MODEL_STATUS),
+                new AspectModel("urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+                        "1.0.1", "PartAsPlanned", MODEL_TYPE, MODEL_STATUS));
     }
 }
 

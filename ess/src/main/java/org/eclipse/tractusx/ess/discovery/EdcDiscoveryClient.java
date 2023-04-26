@@ -23,10 +23,12 @@
 package org.eclipse.tractusx.ess.discovery;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -38,10 +40,11 @@ interface EdcDiscoveryClient {
 
     /**
      * Lookup EDC Address for BPN number
+     *
      * @param bpn number
      * @return EDC addresses
      */
-    EdcAddressResponse getEdcBaseUrl(String bpn);
+    EdcAddressResponse[] getEdcBaseUrl(String bpn);
 
 }
 
@@ -49,6 +52,9 @@ interface EdcDiscoveryClient {
  * EDC Discovery Service Rest Client Stub used in local environment
  */
 @Service
+@Profile({ "local",
+           "stubtest"
+})
 class EdcDiscoveryClientLocalStub implements EdcDiscoveryClient {
 
     private final EdcDiscoveryMockConfig edcDiscoveryMockConfig;
@@ -58,23 +64,23 @@ class EdcDiscoveryClientLocalStub implements EdcDiscoveryClient {
     }
 
     @Override
-    public EdcAddressResponse getEdcBaseUrl(final String bpn) {
-        final Optional<String> connectorEndpoint = Optional.ofNullable(
+    public EdcAddressResponse[] getEdcBaseUrl(final String bpn) {
+        final Optional<List<String>> connectorEndpoint = Optional.ofNullable(
                 this.edcDiscoveryMockConfig.getMockEdcAddress().get(bpn));
 
-        return EdcAddressResponse.builder()
-                                 .bpn(bpn)
-                                 .connectorEndpoint(connectorEndpoint
-                                         .map(Collections::singletonList)
-                                         .orElseGet(Collections::emptyList))
-                                 .build();
+        return new EdcAddressResponse[] { EdcAddressResponse.builder()
+                                                            .bpn(bpn)
+                                                            .connectorEndpoint(connectorEndpoint.orElseGet(
+                                                                    Collections::emptyList)).build()
+        };
     }
-
 }
 
 /**
  * EDC Discovery Service Rest Client Implementation
  */
+@Service
+@Profile({ "!local && !stubtest" })
 class EdcDiscoveryClientImpl implements EdcDiscoveryClient {
 
     private final RestTemplate restTemplate;
@@ -87,9 +93,10 @@ class EdcDiscoveryClientImpl implements EdcDiscoveryClient {
     }
 
     @Override
-    public EdcAddressResponse getEdcBaseUrl(final String bpn) {
+    public EdcAddressResponse[] getEdcBaseUrl(final String bpn) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(discoveryAddressUrl);
 
-        return restTemplate.postForObject(uriBuilder.build().toUri(), Collections.singletonList(bpn), EdcAddressResponse.class);
+        return restTemplate.postForObject(uriBuilder.build().toUri(), Collections.singletonList(bpn),
+                EdcAddressResponse[].class);
     }
 }
