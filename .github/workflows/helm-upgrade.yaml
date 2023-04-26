@@ -39,5 +39,5 @@ jobs:
       - name: Run helm upgrade
         # Upgrade the installed irs-helm version with the locally available charts
         run: |
-          helm dependency update charts/irs
+          helm dependency update charts/irs-helm
           helm upgrade irs charts/irs-helm
