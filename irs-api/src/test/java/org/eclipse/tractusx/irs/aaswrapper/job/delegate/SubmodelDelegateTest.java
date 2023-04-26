@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.eclipse.tractusx.edc.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;

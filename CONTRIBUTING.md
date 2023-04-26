@@ -69,11 +69,11 @@ The commit messages have to match a pattern in the form of:
 Example:  
 ``chore(api):[TRI-123] some text``
 
-Detailed pattern can be found here: [commit-msg](./dev/commit-msg)
+Detailed pattern can be found here: [commit-msg](local/development/commit-msg)
 
 #### How to use
 ```shell
-cp dev/commit-msg .git/hooks/commit-msg && chmod 500 .git/hooks/commit-msg
+cp local/development/commit-msg .git/hooks/commit-msg && chmod 500 .git/hooks/commit-msg
 ```
 
 For further information please see https://github.com/hazcod/semantic-commit-hook
