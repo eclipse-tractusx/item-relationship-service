@@ -126,6 +126,7 @@ class InvestigationJobProcessingEventListener {
             final Map<String, List<String>> bpns) {
         bpns.forEach((bpn, globalAssetIds) -> {
             final Optional<String> edcBaseUrl = edcDiscoveryFacade.getEdcBaseUrl(bpn);
+            log.info("Received EDC URL for BPN '{}': '{}'", bpn, edcBaseUrl);
             edcBaseUrl.ifPresentOrElse(url -> {
                 try {
                     final String notificationId = sendEdcNotification(bpn, url,

@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Replaced Discovery Service mock with real implementation
+
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
