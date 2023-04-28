@@ -5,10 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [5.2.0] - 2023-04-28
 ### Added
 - New config entries for portal user, used to call discovery service
   - `portal.oauth2.clientId`
   - `portal.oauth2.clientSecret`
+
+### Changed
+- Updated IRS version to 2.5.1
+
 
 ## [5.1.1] - 2023-04-17
 ### Fixed
