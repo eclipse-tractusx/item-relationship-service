@@ -92,7 +92,7 @@ public class PolicyCheckerService {
     }
 
     private List<String> addEncodedVersion(final String original) {
-        return List.of(original, UriUtils.encode(original,"UTF-8"));
+        return List.of(original, UriUtils.encode(original, "UTF-8"));
     }
 
 }
