@@ -21,18 +21,17 @@ rules:
       functionOptions:
         match: ^application\/(problem\+)?json$|^[a-zA-Z0-9_]+\/[-+.a-zA-Z0-9_]+;(v|version)=[0-9]+$
 
-  # MUST property names must be ASCII snake_case [118]
-  # => https://opensource.zalando.com/restful-api-guidelines/#118
+  # MUST property names must be ASCII camelCase
   must-use-snake-case-for-property-names:
-    message: Property name has to be ASCII snake_case
-    description: MUST property names must be ASCII snake_case [118]
+    message: Property name has to be ASCII camelCase
+    description: MUST property names must be ASCII camelCase
     documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#118
     severity: error
     given: $.paths.*.*[responses,requestBody]..content..schema..properties.*~
     then:
       function: pattern
       functionOptions:
-        match: ^[a-z_][a-z_0-9]*$
+        match: ^[a-z]+([A-Z][a-z0-9]+)+
 
   # SHOULD declare enum values using UPPER_SNAKE_CASE string [240]
   # => https://opensource.zalando.com/restful-api-guidelines/#240
@@ -48,7 +47,7 @@ rules:
       functionOptions:
         match: "^(([A-Z]+)(_[A-Z]+)*)$"
 
-  # SHOULD name date/time properties with _at suffix [235]
+  # SHOULD name date/time properties with On suffix [235]
   # => https://opensource.zalando.com/restful-api-guidelines/#235
   should-use-name-date-and-time-properties-with-at-suffix:
     message: 'SHOULD name date/time properties with _at suffix'
@@ -60,7 +59,7 @@ rules:
     then:
       function: pattern
       functionOptions:
-        match: "^(.*[_]at$).*$"
+        match: "^(.*On$).*$"
 
   # MUST not use null for boolean properties [122]
   # => https://opensource.zalando.com/restful-api-guidelines/#122

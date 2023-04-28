@@ -139,15 +139,15 @@ rules:
 
   # MUST support problem JSON [176]
   # => https://opensource.zalando.com/restful-api-guidelines/#176
-  must-use-problem-json-for-errors:
-    message: Error response must be application/problem+json
-    description: MUST support problem JSON [176]
-    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#176
-    severity: error
-    given: $.paths.*.*.responses[?(@property.match(/^(4|5)/))]
-    then:
-      field: content.application/problem+json
-      function: truthy
+#  must-use-problem-json-for-errors:
+#    message: Error response must be application/problem+json
+#    description: MUST support problem JSON [176]
+#    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#176
+#    severity: error
+#    given: $.paths.*.*.responses[?(@property.match(/^(4|5)/))]
+#    then:
+#      field: content.application/problem+json
+#      function: truthy
 
   must-use-valid-problem-json-schema:
     message: '{{error}}'

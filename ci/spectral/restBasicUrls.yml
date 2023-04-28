@@ -103,19 +103,18 @@ rules:
         match: ^\/[^\/]*((\/{[^}]*})*\/[^\/]*(\/{[^}]*})*){0,3}\/?$
 
 
-  # MUST use snake_case (never camelCase) for query parameters [130]
-  # => https://opensource.zalando.com/restful-api-guidelines/#130
+  # MUST use camelCase for query parameters
   use-snake-case-for-query-parameters:
     description: |
-      MUST use snake_case (never camelCase) for query parameters
-    message: '{{property}} use snake_case for query parameters: {{error}}'
+      MUST use camelCase for query parameters
+    message: '{{property}} use camelCase for query parameters: {{error}}'
     severity: error
     recommended: true
     given: $.paths.*.*.parameters[?(@.in=='query')].name
     then:
       function: pattern
       functionOptions:
-        match: "^[a-z0-9]+(?:_[a-z0-9]+)*$"
+        match: "^[a-z]+([A-Z][a-z0-9]+)+"
 
   # MUST pluralize resource names [134]
   # => https://opensource.zalando.com/restful-api-guidelines/#134
