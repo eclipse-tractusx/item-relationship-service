@@ -103,10 +103,10 @@ maven/mavencentral/org.eclipse.dataspaceconnector/contract-spi/0.0.1-milestone-6
 maven/mavencentral/org.eclipse.dataspaceconnector/core-spi/0.0.1-milestone-6, Apache-2.0, approved, #5189
 maven/mavencentral/org.eclipse.dataspaceconnector/policy-evaluator/0.0.1-milestone-6, Apache-2.0, approved, #5188
 maven/mavencentral/org.eclipse.dataspaceconnector/policy-spi/0.0.1-milestone-6, Apache-2.0, approved, #5192
-maven/mavencentral/org.eclipse.tractusx.irs/irs-edc-client/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
-maven/mavencentral/org.eclipse.tractusx.irs/irs-ess/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-api/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-common/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
+maven/mavencentral/org.eclipse.tractusx.irs/irs-edc-client/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
+maven/mavencentral/org.eclipse.tractusx.irs/irs-ess/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-models/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.hamcrest/hamcrest-core/2.2, BSD-3-Clause, approved, clearlydefined
 maven/mavencentral/org.hamcrest/hamcrest/2.2, BSD-3-Clause, approved, clearlydefined
