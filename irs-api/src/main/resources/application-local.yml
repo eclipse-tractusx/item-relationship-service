@@ -19,11 +19,11 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost
+          jwk-set-uri: https://localhost
       client:
         provider:
           keycloak:
-            token-uri: http://localhost
+            token-uri: https://localhost
 
 # ESS Module specific properties
 ess:

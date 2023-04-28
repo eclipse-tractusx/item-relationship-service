@@ -397,7 +397,10 @@ paths:
       responses:
         "200":
           content:
-            '*/*':
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/canceled-job-response'
               schema:
                 $ref: '#/components/schemas/Job'
           description: Job with requested jobId canceled.
@@ -682,6 +685,14 @@ paths:
         - Item Relationship Service
 components:
   examples:
+    canceled-job-response:
+      value:
+        completedOn: 2022-02-03T14:48:54.709Z
+        globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+        id: 6c311d29-5753-46d4-b32c-19b918ea93b0
+        lastModifiedOn: 2022-02-03T14:48:54.709Z
+        startedOn: 2022-02-03T14:48:54.709Z
+        state: CANCELED
     canceled-job-result:
       value:
         bpns: [ ]
@@ -1960,5 +1971,5 @@ components:
         clientCredentials:
           scopes:
             profile email: ""
-          tokenUrl: http://localhost
+          tokenUrl: https://localhost
       type: oauth2

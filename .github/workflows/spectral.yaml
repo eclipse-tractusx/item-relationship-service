@@ -1,13 +1,13 @@
 name: Analyze API with Spectral
 
 on:
+  workflow_dispatch: # Trigger manually
   push:
     branches:
       - main
     paths:
       - 'api/**'
       - 'ci/spectral/**'
-
 
 jobs:
   build:
