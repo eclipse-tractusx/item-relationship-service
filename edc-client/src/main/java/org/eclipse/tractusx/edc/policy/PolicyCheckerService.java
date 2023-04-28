@@ -22,22 +22,34 @@
  ********************************************************************************/
 package org.eclipse.tractusx.edc.policy;
 
+import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
 import org.eclipse.dataspaceconnector.policy.model.Constraint;
 import org.eclipse.dataspaceconnector.policy.model.Operator;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
  * Check and validate Policy in Catalog fetch from EDC providers.
  */
+@Slf4j
 @Service
 public class PolicyCheckerService {
 
+    private final List<String> allowedPolicies;
+
+    public PolicyCheckerService(@Value("${edc.catalog.policies.allowedNames}") final List<String> allowedPolicies) {
+        this.allowedPolicies = allowedPolicies;
+    }
+
     public boolean isValid(final Policy policy) {
-        final PolicyDefinition policyDefinition = r2Traceability();
-        return policy.getPermissions().stream().anyMatch(permission -> isValid(permission, policyDefinition));
+        final List<PolicyDefinition> policyList = allowedPolicies.stream().map(this::createPolicy).toList();
+        return policy.getPermissions().stream().anyMatch(permission -> policyList.stream().anyMatch(
+                allowedPolicy -> isValid(permission, allowedPolicy)));
     }
 
     private boolean isValid(final Permission permission, final PolicyDefinition policyDefinition) {
@@ -57,7 +69,7 @@ public class PolicyCheckerService {
         return false;
     }
 
-    private static PolicyDefinition r2Traceability() {
+    private PolicyDefinition createPolicy(final String policyName) {
         return PolicyDefinition.builder()
                                .permissionActionType("USE")
                                .constraintType("AtomicConstraint")

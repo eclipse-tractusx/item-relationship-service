@@ -24,6 +24,8 @@ package org.eclipse.tractusx.edc.policy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.eclipse.dataspaceconnector.policy.model.Action;
 import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
 import org.eclipse.dataspaceconnector.policy.model.LiteralExpression;
@@ -34,7 +36,7 @@ import org.junit.jupiter.api.Test;
 
 class PolicyCheckerServiceTest {
 
-    private final PolicyCheckerService policyCheckerService = new PolicyCheckerService();
+    private final PolicyCheckerService policyCheckerService = new PolicyCheckerService(List.of("R2_Traceability"));
 
     @Test
     void shouldConfirmValidPolicy() {
