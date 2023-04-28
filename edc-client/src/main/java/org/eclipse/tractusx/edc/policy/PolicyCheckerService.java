@@ -22,6 +22,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.edc.policy;
 
+import java.util.Collection;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriUtils;
 
 /**
  * Check and validate Policy in Catalog fetch from EDC providers.
@@ -47,9 +49,17 @@ public class PolicyCheckerService {
     }
 
     public boolean isValid(final Policy policy) {
-        final List<PolicyDefinition> policyList = allowedPolicies.stream().map(this::createPolicy).toList();
-        return policy.getPermissions().stream().anyMatch(permission -> policyList.stream().anyMatch(
-                allowedPolicy -> isValid(permission, allowedPolicy)));
+        final List<String> allowedPolicyNamesWithEncoded = allowedPolicies.stream()
+                                                                          .map(this::addEncodedVersion)
+                                                                          .flatMap(Collection::stream)
+                                                                          .toList();
+        final List<PolicyDefinition> policyList = allowedPolicyNamesWithEncoded.stream()
+                                                                               .map(this::createPolicy)
+                                                                               .toList();
+        return policy.getPermissions()
+                     .stream()
+                     .anyMatch(permission -> policyList.stream()
+                                                       .anyMatch(allowedPolicy -> isValid(permission, allowedPolicy)));
     }
 
     private boolean isValid(final Permission permission, final PolicyDefinition policyDefinition) {
@@ -60,11 +70,13 @@ public class PolicyCheckerService {
     private boolean isValid(final Constraint constraint, final PolicyDefinition policyDefinition) {
         if (constraint instanceof AtomicConstraint atomicConstraint) {
             return AtomicConstraintValidator.builder()
-                                     .atomicConstraint(atomicConstraint)
-                                     .leftExpressionValue(policyDefinition.getLeftExpressionValue())
-                                     .rightExpressionValue(policyDefinition.getRightExpressionValue())
-                                     .expectedOperator(Operator.valueOf(policyDefinition.getConstraintOperator()))
-                                     .build().isValid();
+                                            .atomicConstraint(atomicConstraint)
+                                            .leftExpressionValue(policyDefinition.getLeftExpressionValue())
+                                            .rightExpressionValue(policyDefinition.getRightExpressionValue())
+                                            .expectedOperator(
+                                                    Operator.valueOf(policyDefinition.getConstraintOperator()))
+                                            .build()
+                                            .isValid();
         }
         return false;
     }
@@ -77,6 +89,10 @@ public class PolicyCheckerService {
                                .rightExpressionValue(policyName)
                                .constraintOperator("EQ")
                                .build();
+    }
+
+    private List<String> addEncodedVersion(final String original) {
+        return List.of(original, UriUtils.encode(original,"UTF-8"));
     }
 
 }

@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 
 class PolicyCheckerServiceTest {
 
-    private final PolicyCheckerService policyCheckerService = new PolicyCheckerService(List.of("R2_Traceability"));
+    private final PolicyCheckerService policyCheckerService = new PolicyCheckerService(List.of("ID 3.0 Trace"));
 
     @Test
     void shouldConfirmValidPolicy() {
@@ -52,7 +52,7 @@ class PolicyCheckerServiceTest {
                                                                                                                         "idsc:PURPOSE"))
                                                                                                         .rightExpression(
                                                                                                                 new LiteralExpression(
-                                                                                                                        "R2_Traceability"))
+                                                                                                                        "ID 3.0 Trace"))
 
                                                                                                         .operator(
                                                                                                                 Operator.EQ)
@@ -90,6 +90,33 @@ class PolicyCheckerServiceTest {
 
         // then
         assertThat(result).isFalse();
+    }
+
+    @Test
+    void shouldConfirmValidPolicyEvenEncodingVersion() {
+        // given
+        Policy policy = Policy.Builder.newInstance()
+                                      .permission(Permission.Builder.newInstance()
+                                                                    .action(Action.Builder.newInstance()
+                                                                                          .type("USE")
+                                                                                          .build())
+                                                                    .constraint(AtomicConstraint.Builder.newInstance()
+                                                                                                        .leftExpression(
+                                                                                                                new LiteralExpression(
+                                                                                                                        "idsc:PURPOSE"))
+                                                                                                        .rightExpression(
+                                                                                                                new LiteralExpression(
+                                                                                                                        "ID%203.0%20Trace"))
+
+                                                                                                        .operator(
+                                                                                                                Operator.EQ)
+                                                                                                        .build())
+                                                                    .build()).build();
+        // when
+        boolean result = policyCheckerService.isValid(policy);
+
+        // then
+        assertThat(result).isTrue();
     }
 
 }
