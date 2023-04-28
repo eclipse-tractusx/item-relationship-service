@@ -74,7 +74,7 @@ public class PolicyCheckerService {
                                .permissionActionType("USE")
                                .constraintType("AtomicConstraint")
                                .leftExpressionValue("idsc:PURPOSE")
-                               .rightExpressionValue("R2_Traceability")
+                               .rightExpressionValue(policyName)
                                .constraintOperator("EQ")
                                .build();
     }
