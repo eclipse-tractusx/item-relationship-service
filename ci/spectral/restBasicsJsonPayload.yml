@@ -48,10 +48,9 @@ rules:
         match: "^(([A-Z]+)(_[A-Z]+)*)$"
 
   # SHOULD name date/time properties with On suffix [235]
-  # => https://opensource.zalando.com/restful-api-guidelines/#235
   should-use-name-date-and-time-properties-with-at-suffix:
-    message: 'SHOULD name date/time properties with _at suffix'
-    description: SHOULD name date/time properties with _at suffix [235]
+    message: 'SHOULD name date/time properties with On suffix'
+    description: SHOULD name date/time properties with On suffix [235]
     documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#235
     severity: error
     recommended: true

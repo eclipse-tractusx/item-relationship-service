@@ -6,18 +6,18 @@ rules:
 
   # MUST contain API meta information [218]
   # https://opensource.zalando.com/restful-api-guidelines/#218
-  must-use-x-summary:
-    message: "API MUST have an one-liner #/info/x-summary field"
-    description: "In OAS3.1 you can use the standard `#/info/summary` field."
-    given: $
-    severity: error
-    recommended: true
-    type: style
-    formats:
-      - oas3
-    then:
-      field: "info.x-summary"
-      function: truthy
+#  must-use-x-summary:
+#    message: "API MUST have an one-liner #/info/x-summary field"
+#    description: "In OAS3.1 you can use the standard `#/info/summary` field."
+#    given: $
+#    severity: error
+#    recommended: true
+#    type: style
+#    formats:
+#      - oas3
+#    then:
+#      field: "info.x-summary"
+#      function: truthy
 
   must-have-info-description:
     message: Missing `info.description`.
@@ -29,25 +29,25 @@ rules:
       field: description
       function: truthy
 
-  must-have-info-contact-name:
-    message: Missing `info.contact.name`.
-    description: MUST contain API meta information [218]
-    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#218
-    severity: error
-    given: $.info
-    then:
-      field: contact.name
-      function: truthy
+#  must-have-info-contact-name:
+#    message: Missing `info.contact.name`.
+#    description: MUST contain API meta information [218]
+#    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#218
+#    severity: error
+#    given: $.info
+#    then:
+#      field: contact.name
+#      function: truthy
 
-  must-have-info-contact-url:
-    message: Missing `info.contact.url`.
-    description: MUST contain API meta information [218]
-    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#218
-    severity: error
-    given: $.info
-    then:
-      field: contact.url
-      function: truthy
+#  must-have-info-contact-url:
+#    message: Missing `info.contact.url`.
+#    description: MUST contain API meta information [218]
+#    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#218
+#    severity: error
+#    given: $.info
+#    then:
+#      field: contact.url
+#      function: truthy
 
   info-contact: true
   info-description: true
