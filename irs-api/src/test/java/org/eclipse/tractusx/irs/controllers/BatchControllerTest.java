@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.controllers;
 import static org.eclipse.tractusx.irs.util.TestMother.registerBatchOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -81,7 +82,7 @@ class BatchControllerTest {
 
     @Test
     void shouldReturnUnauthorizedWhenAuthenticationIsMissing() throws Exception {
-        this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON).with(csrf())
                                                 .content(new ObjectMapper().writeValueAsString(
                                                         registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
                     .andExpect(status().isUnauthorized());
