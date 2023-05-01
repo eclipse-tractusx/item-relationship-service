@@ -42,6 +42,7 @@ import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -49,7 +50,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(BatchController.class)
+@WebMvcTest(value = BatchController.class, excludeAutoConfiguration = { SecurityAutoConfiguration.class})
 @Import(SecurityConfiguration.class)
 class BatchControllerTest {
 
@@ -88,13 +89,13 @@ class BatchControllerTest {
                     .andExpect(status().isBadRequest());
     }
 
-//    @Test
-//    void shouldReturnUnauthorizedWhenAuthenticationIsMissing() throws Exception {
-//        this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
-//                                                .content(new ObjectMapper().writeValueAsString(
-//                                                        registerBatchOrder("urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6"))))
-//                    .andExpect(status().isUnauthorized());
-//    }
+    @Test
+    void shouldReturnUnauthorizedWhenAuthenticationIsMissing() throws Exception {
+        this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
+                                                .content(new ObjectMapper().writeValueAsString(
+                                                        registerBatchOrder("urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6"))))
+                    .andExpect(status().isUnauthorized());
+    }
 
     @Test
     @WithMockUser(authorities = "view_irs")
