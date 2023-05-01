@@ -25,8 +25,6 @@ package org.eclipse.tractusx.irs.controllers;
 import static org.eclipse.tractusx.irs.util.TestMother.registerBatchOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -42,7 +40,6 @@ import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
 import org.eclipse.tractusx.irs.services.AuthorizationService;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -51,13 +48,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 @WebMvcTest(BatchController.class)
 @Import(SecurityConfiguration.class)
 class BatchControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
     @MockBean
@@ -69,22 +65,11 @@ class BatchControllerTest {
     @MockBean(name = "authorizationService")
     private AuthorizationService authorizationService;
 
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    @BeforeEach
-    public void setUp() {
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(webApplicationContext)
-                .apply(springSecurity())
-                .build();
-    }
-
     @Test
     void shouldReturnUnauthorizedWhenAuthenticationIsMissing() throws Exception {
-        this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON).with(csrf())
-                                                .content(new ObjectMapper().writeValueAsString(
-                                                        registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
+        final UUID orderId = UUID.randomUUID();
+
+        this.mockMvc.perform(get("/irs/orders/" + orderId))
                     .andExpect(status().isUnauthorized());
     }
 
