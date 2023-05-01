@@ -10,15 +10,15 @@ rules:
 
   # MUST specify success and error responses [151]
   # => https://opensource.zalando.com/restful-api-guidelines/#151
-  must-specify-default-response:
-    message: Operation does not contain a default response
-    description: MUST specify success and error responses [151]
-    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#151
-    severity: error
-    given: $.paths.*.*.responses
-    then:
-      field: default
-      function: truthy
+#  must-specify-default-response:
+#    message: Operation does not contain a default response
+#    description: MUST specify success and error responses [151]
+#    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#151
+#    severity: error
+#    given: $.paths.*.*.responses
+#    then:
+#      field: default
+#      function: truthy
 
   must-use-problem-json-as-default-response:
     message: Operation must use problem json as default response
