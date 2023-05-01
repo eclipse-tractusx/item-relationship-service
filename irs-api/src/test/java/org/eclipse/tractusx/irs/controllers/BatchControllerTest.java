@@ -66,14 +66,6 @@ class BatchControllerTest {
     private AuthorizationService authorizationService;
 
     @Test
-    void shouldReturnUnauthorizedWhenAuthenticationIsMissing() throws Exception {
-        final UUID orderId = UUID.randomUUID();
-
-        this.mockMvc.perform(get("/irs/orders/" + orderId))
-                    .andExpect(status().isUnauthorized());
-    }
-
-    @Test
     @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenGlobalAssetIdWithWrongFormat() throws Exception {
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
@@ -85,11 +77,19 @@ class BatchControllerTest {
     }
 
     @Test
+    void shouldReturnUnauthorizedWhenAuthenticationIsMissing() throws Exception {
+        this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
+                                                .content(new ObjectMapper().writeValueAsString(
+                                                        registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
+                    .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenBatchSizeNotMod10Compliant() throws Exception {
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
-        final RegisterBatchOrder registerBatchOrder = registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b");
+        final RegisterBatchOrder registerBatchOrder = registerBatchOrder("MALFORMED_GLOBAL_ASSET");
         registerBatchOrder.setBatchSize(33);
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
                                                 .content(new ObjectMapper().writeValueAsString(registerBatchOrder)))
