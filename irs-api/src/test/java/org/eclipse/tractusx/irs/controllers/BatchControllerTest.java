@@ -77,23 +77,23 @@ class BatchControllerTest {
     }
 
     @Test
-    void shouldReturnUnauthorizedWhenAuthenticationIsMissing() throws Exception {
-        this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
-                                                .content(new ObjectMapper().writeValueAsString(
-                                                        registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
-                    .andExpect(status().isUnauthorized());
-    }
-
-    @Test
     @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenBatchSizeNotMod10Compliant() throws Exception {
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
-        final RegisterBatchOrder registerBatchOrder = registerBatchOrder("MALFORMED_GLOBAL_ASSET");
+        final RegisterBatchOrder registerBatchOrder = registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b");
         registerBatchOrder.setBatchSize(33);
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
                                                 .content(new ObjectMapper().writeValueAsString(registerBatchOrder)))
                     .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnUnauthorizedWhenAuthenticationIsMissing() throws Exception {
+        this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
+                                                .content(new ObjectMapper().writeValueAsString(
+                                                        registerBatchOrder("urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6"))))
+                    .andExpect(status().isUnauthorized());
     }
 
     @Test
