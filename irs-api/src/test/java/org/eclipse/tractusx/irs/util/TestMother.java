@@ -56,7 +56,7 @@ import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
-import org.eclipse.tractusx.edc.RelationshipAspect;
+import org.eclipse.tractusx.irs.edc.client.RelationshipAspect;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import net.datafaker.Faker;
 

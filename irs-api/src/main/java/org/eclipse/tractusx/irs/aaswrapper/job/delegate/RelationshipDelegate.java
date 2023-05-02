@@ -25,9 +25,9 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.edc.EdcSubmodelFacade;
-import org.eclipse.tractusx.edc.RelationshipAspect;
-import org.eclipse.tractusx.edc.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.RelationshipAspect;
+import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
