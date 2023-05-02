@@ -28,7 +28,7 @@ jobs:
           echo "versionId=$(curl --request GET --url 'https://jira.catena-x.net/rest/api/latest/project/10211/versions' \
           --user $JIRA_USERNAME:$JIRA_PASSWORD --header 'Accept: application/json' | jq -r '.[] | select(.name == "NEXT_RELEASE").id')" >> $GITHUB_ENV
       - name: Echo versionId to release
-        run: Exported $versionId as version id to release
+        run: echo Exported $versionId as version id to release
 
       - name: Release Version in Jira
         env:
