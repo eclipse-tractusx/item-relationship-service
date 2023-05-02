@@ -27,24 +27,26 @@ jobs:
         run: |
           echo "versionId=$(curl --request GET --url 'https://jira.catena-x.net/rest/api/latest/project/10211/versions' \
           --user $JIRA_USERNAME:$JIRA_PASSWORD --header 'Accept: application/json' | jq '.[] | select(.name == "NEXT_RELEASE").id')" >> $GITHUB_ENV
-          echo "Exported $versionId as version id to release"
+          echo "Exported ${{ env.versionId }} as version id to release"
 
       - name: Release Version in Jira
         env:
           JIRA_USERNAME: ${{ secrets.RELEASE_IRS_JIRA_USERNAME }}
           JIRA_PASSWORD: ${{ secrets.RELEASE_IRS_JIRA_PASSWORD }}
           VERSION: ${{ github.event.inputs.version }}
+          VERSION_ID: ${{ env.versionId }}
+          RELEASE_DATE: ${{ env.NOW }}
         run: |
-          curl --request PUT --url 'https://jira.catena-x.net/rest/api/latest/version/${{ env.versionId }}' \
+          curl --request PUT --url 'https://jira.catena-x.net/rest/api/latest/version/$VERSION_ID' \
           --user $JIRA_USERNAME:$JIRA_PASSWORD \
           --header 'Accept: application/json' \
           --header 'Content-Type: application/json' \
           --data '{
             "archived": false,
-            "description": "${{ env.VERSION }}",
-            "id": "${{ env.versionId }}",
-            "name": "${{ env.VERSION }}",
-            "releaseDate": "${{ env.NOW }}",
+            "description": "$VERSION",
+            "id": "$VERSION_ID",
+            "name": "$VERSION",
+            "releaseDate": "$RELEASE_DATE",
             "released": true,
             "overdue": false,
             "projectId": 10211
