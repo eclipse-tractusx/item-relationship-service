@@ -41,9 +41,9 @@ jobs:
           --header 'Content-Type: application/json' \
           --data '{
             "archived": false,
-            "description": "${{ VERSION }}",
+            "description": "${{ env.VERSION }}",
             "id": "${{ env.versionId }}",
-            "name": "${{ VERSION }}",
+            "name": "${{ env.VERSION }}",
             "releaseDate": "${{ env.NOW }}",
             "released": true,
             "overdue": false,
