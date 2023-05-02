@@ -1,12 +1,11 @@
 #!/bin/bash
 
-kubectl config set-context rancher-desktop --namespace=irs
-helm uninstall irs-frontend
-helm uninstall irs-dependencies
-helm uninstall irs
-helm uninstall edc-consumer
-helm uninstall edc-provider
-helm uninstall edc-daps
-helm uninstall edc-vault
+helm uninstall irs-frontend -n irs
+helm uninstall irs-dependencies -n irs
+helm uninstall irs -n irs
+helm uninstall edc-consumer -n irs
+helm uninstall edc-provider -n irs
+helm uninstall edc-daps -n irs
+helm uninstall edc-vault -n irs
 
 helm list
