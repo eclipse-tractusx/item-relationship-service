@@ -10,13 +10,6 @@
 4. [Python3](https://www.python.org/downloads/) is installed
 5. [Ruby](https://www.ruby-lang.org/de/documentation/installation/) is installed (optional)
 6. [psql](https://www.compose.com/articles/postgresql-tips-installing-the-postgresql-client/) client is installed (optional)
-7. **CURRENTLY STILL NECESSARY:** Add the digital twin secret in the file:
-
-   ```bash
-   ./template/digital-twin-registry-docker-secret.yaml
-   ```
-
-   Get the **digital twin secret**  via issue in the following [Digital Twin Repository](https://github.com/eclipse-tractusx/sldt-digital-twin-registry) request the image secret for the private digital twin registry image.
 
 ### Step 2: Check out the code
 
@@ -45,7 +38,7 @@ When the deployment is finished you can expect that 13 deployments can be seen i
 * irs
 * irs-minio
 * keycloak (mocked Service)
-* digital-twin-registry
+* cx-irs-dependencies-registry
 * semantic-hub (mocked Service)
 * irs-provider-backend
 * edc-provider-control-plane
@@ -146,12 +139,6 @@ use these snippets for testing purposes.
 }
 ```
 
-<!-- #### Get global asset id
-
-1. Forward ports of digital twin database: ``` kubectl port-forward svc/digital-twin-registry-database 5432:5432 ```
-2. Connect to the database: ``` export PGPASSWORD=digital-twin-registry-pass; psql -h localhost -p 5432 -d digital-twin-registry -U digital-twin-registry-user ```
-3. Execute query to get the global asset id: ``` select id_external from shell where id_short = 'VehicleCombustion' limit 1; ``` -->
-
 ### Testing the IRS API Endpoints
 
 Precondition:
@@ -228,7 +215,7 @@ Precondition:
 
 where edc is a client
 
-Using the ``` ./test/omejdn-service.rest.rest ```, you can execute the token request to get a new token.
+Using the ``` ./test/omejdn-service.rest ```, you can execute the token request to get a new token.
 
 ### HELM
 
@@ -360,9 +347,9 @@ kubectl port-forward svc/semantic-hub 8088:8080
 
 ``` bash
 
-kubectl port-forward svc/digital-twin-registry-database 5432:5432
+kubectl port-forward svc/irs-dependencies-postgresql 5432:5432
 
-export PGPASSWORD=digital-twin-registry-pass; psql -h localhost -p 5432 -d digital-twin-registry -U digital-twin-registry-user
+export PGPASSWORD=password; psql -h localhost -p 5432 -d default-database -U default-user
 
 select * from shell where id_short = 'VehicleCombustion';
 psql \l
@@ -372,7 +359,7 @@ psql \l
 
 ``` bash
 
-kubectl port-forward svc/digital-twin-registry 8080:8080
+kubectl port-forward svc/cx-irs-dependencies-registry-svc 8080:8080
 ```
 
 ### KeyCloak
@@ -453,6 +440,4 @@ kubectl port-forward svc/irs-frontend 3000:8080
    2. Next steps:  
       1. Use the official helm chart from: https://catenax-ng.github.io/product-DAPS
       2. Provide configuration with default client from start.
-4. Use a custom helm chart for digital twin
-   1. Reason: A secret for pulling docker images is missing to use the default chart from: https://eclipse-tractusx.github.io/sldt-digital-twin-registry
 
