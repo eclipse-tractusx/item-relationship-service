@@ -112,19 +112,6 @@ config:
     hostname: &config-digitalTwin-host-name "irs-full-registry.dev.demo.catena-x.net"
     secret:
       name: &config-digitalTwin-secret-name "digital-twin-registry"
-    docker:
-      secret:
-        name: &config-digitalTwin-docker-secret-name "digital-twin-registry-docker"
-    database:
-      host: &config-digitalTwin-database-host "digital-twin-registry-database"
-      name: &config-digitalTwin-database-name "digital-twin-registry"
-      username: &config-digitalTwin-database-username "digital-twin-registry-user"
-      password: &config-digitalTwin-database-password "digital-twin-registry-pass"
-      postgres:
-        password: &config-irs-digitalTwin-database-postgres-password "admin"
-      secret:
-        name: &config-digitalTwin-database-secret-name digital-twin-registry-database
-    idpIssuerUri: "http://edc-daps:4567"
   provider-backend:
     hostname: &config-provider-backend-hostname "irs-full-submodel-server.dev.demo.catena-x.net"
   irs-frontend:
@@ -438,40 +425,27 @@ edc-provider-data-plane:
 semantic-hub:
   fullnameOverride: "semantic-hub"
 
-##################################
-# Digital Twin Registry Database #
-###################################
-digital-twin-registry-database:
-  fullnameOverride: "digital-twin-registry-database"
-  primary:
-    persistence:
-      enabled: true
-      mountPath: "/mnt/data/digital_twin"
-      size: 200Mi
-  volumePermissions:
-    enabled: true
-  readReplicas:
-    persistence:
-      enabled: false
-  auth:
-    database: *config-digitalTwin-database-name
-    username: *config-digitalTwin-database-username
-    existingSecret: *config-digitalTwin-database-secret-name
-  service:
-    type: NodePort
-    control:
-      port: 5432
-
 #########################
 # Digital Twin Registry #
 #########################
 digital-twin-registry:
+  enableKeycloak: false
+  postgresql:
+    primary:
+      persistence:
+        enabled: true
+        size: 200Mi
+  auth:
+    username: default-user
+    password: password
+    database: default-database
+
   registry:
+    authentication: false
     secret:
       name: *config-digitalTwin-secret-name
     idpIssuerUri: *config-keycloak-token-url
-    imagePullSecrets:
-      - name: *config-digitalTwin-docker-secret-name
+    host: *config-digitalTwin-host-name
     ingress:
       enabled: true
       hosts:
@@ -559,7 +533,7 @@ irs:
       jwkSetUri: *config-keycloak-certs-url
 
   digitalTwinRegistry:
-    url: "http://digital-twin-registry:8080"
+    url: "http://cx-irs-dependencies-registry-svc:8080"
     descriptorEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/registry/shell-descriptors/{aasIdentifier}"
     shellLookupEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/lookup/shells?assetIds={assetIds}"
   semanticsHub:
