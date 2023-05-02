@@ -110,8 +110,6 @@ config:
         password: *config-grafana-password
   digitalTwin:
     hostname: &config-digitalTwin-host-name "irs-full-registry.dev.demo.catena-x.net"
-    secret:
-      name: &config-digitalTwin-secret-name "digital-twin-registry"
   provider-backend:
     hostname: &config-provider-backend-hostname "irs-full-submodel-server.dev.demo.catena-x.net"
   irs-frontend:
@@ -435,29 +433,14 @@ digital-twin-registry:
       persistence:
         enabled: true
         size: 200Mi
-  auth:
-    username: default-user
-    password: password
-    database: default-database
 
   registry:
-    authentication: false
-    secret:
-      name: *config-digitalTwin-secret-name
+    authentication: true
     idpIssuerUri: *config-keycloak-token-url
     host: *config-digitalTwin-host-name
     ingress:
       enabled: true
-      hosts:
-        - host: *config-digitalTwin-host-name
-          paths:
-            - path: /
-              pathType: ImplementationSpecific
-      tls:
-        - hosts:
-            - *config-digitalTwin-host-name
-          # Default secret for certificate creation already provided to your namespace
-          secretName: tls-secret
+      tls: true
       className: nginx
       annotations:
         nginx.ingress.kubernetes.io/enable-cors: "true"
