@@ -25,8 +25,7 @@ ARG BUILD_TARGET=irs-api
 
 WORKDIR /build
 
-COPY .config ci
-COPY docs/src/api api
+COPY .config .config
 COPY .mvn .mvn
 COPY pom.xml .
 
