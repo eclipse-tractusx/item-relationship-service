@@ -25,9 +25,9 @@ jobs:
           JIRA_USERNAME: ${{ secrets.RELEASE_IRS_JIRA_USERNAME }}
           JIRA_PASSWORD: ${{ secrets.RELEASE_IRS_JIRA_PASSWORD }}
         run: |
-          echo "versionId=$(curl --request GET --url 'https://jira.catena-x.net/rest/api/latest/project/10211/versions' \
-          --user $JIRA_USERNAME:$JIRA_PASSWORD --header 'Accept: application/json' | jq '.[] | select(.name == "NEXT_RELEASE").id')" >> $GITHUB_ENV
-          echo "Exported ${{ versionId }} as version id to release"
+          echo versionId=$(curl --request GET --url 'https://jira.catena-x.net/rest/api/latest/project/10211/versions' \
+          --user $JIRA_USERNAME:$JIRA_PASSWORD --header 'Accept: application/json' | jq '.[] | select(.name == "NEXT_RELEASE").id') >> $GITHUB_ENV
+          echo "Exported ${{ env.versionId }} as version id to release"
 
       - name: Release Version in Jira
         env:
