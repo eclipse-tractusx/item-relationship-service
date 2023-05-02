@@ -37,16 +37,16 @@ jobs:
           VERSION_ID: ${{ env.versionId }}
           RELEASE_DATE: ${{ env.NOW }}
         run: |
-          curl --request PUT --url 'https://jira.catena-x.net/rest/api/latest/version/$VERSION_ID' \
+          curl --request PUT --url 'https://jira.catena-x.net/rest/api/latest/version/${{VERSION_ID}}' \
           --user $JIRA_USERNAME:$JIRA_PASSWORD \
           --header 'Accept: application/json' \
           --header 'Content-Type: application/json' \
           --data '{
             "archived": false,
-            "description": "$VERSION",
-            "id": "$VERSION_ID",
-            "name": "$VERSION",
-            "releaseDate": "$RELEASE_DATE",
+            "description": "${{VERSION}}",
+            "id": "${{VERSION_ID}}",
+            "name": "${{VERSION}}",
+            "releaseDate": "${{RELEASE_DATE}}",
             "released": true,
             "overdue": false,
             "projectId": 10211
