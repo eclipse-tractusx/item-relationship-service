@@ -16,7 +16,7 @@ registry:
   registry:
     authentication: true
     idpIssuerUri: https://centralidp.int.demo.catena-x.net/auth/realms/CX-Central
-    host: irs-aas-registry.dev.demo.catena-x.net
+    host: irs-aas-registry-test.dev.demo.catena-x.net
     ingress:
       enabled: true
       tls: true
