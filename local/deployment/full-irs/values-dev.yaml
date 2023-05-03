@@ -436,7 +436,7 @@ digital-twin-registry:
 
   registry:
     authentication: true
-    idpIssuerUri: https://irs-full-keycloak.dev.demo.catena-x.net/
+    idpIssuerUri: https://irs-full-keycloak.dev.demo.catena-x.net
     host: *config-digitalTwin-host-name
     ingress:
       enabled: true
