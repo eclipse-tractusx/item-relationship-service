@@ -603,6 +603,72 @@ paths:
       summary: Get a batch order for a given orderId.
       tags:
         - Item Relationship Service
+    put:
+      description: Cancel a batch order for a given orderId.
+      operationId: cancelBatchOrder
+      parameters:
+        - description: Id of the order.
+          example: 6c311d29-5753-46d4-b32c-19b918ea93b0
+          in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+            maxLength: 36
+            minLength: 36
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/complete-order-result'
+              schema:
+                $ref: '#/components/schemas/BatchOrderResponse'
+          description: Cancel a batch order for a given orderId.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Return Batch Order failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorized failed.
+        "404":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-404'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Batch Order with the requested orderId not found.
+      security:
+        - oAuth2:
+            - profile email
+      summary: Cancel a batch order for a given orderId.
+      tags:
+        - Item Relationship Service
   /irs/orders/{orderId}/batches/{batchId}:
     get:
       description: Get a batch with a given batchId for a given orderId.

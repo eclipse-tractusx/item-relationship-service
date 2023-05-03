@@ -31,9 +31,9 @@ import java.util.UUID;
  */
 public interface BatchOrderStore {
 
-    void save(UUID batchId, BatchOrder batch);
+    void save(UUID batchOrderId, BatchOrder batch);
 
-    Optional<BatchOrder> find(UUID batchId);
+    Optional<BatchOrder> find(UUID batchOrderId);
 
     List<BatchOrder> findAll();
 
