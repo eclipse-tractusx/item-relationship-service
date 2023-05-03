@@ -435,8 +435,7 @@ digital-twin-registry:
         size: 200Mi
 
   registry:
-    authentication: true
-    idpIssuerUri: http://irs-full-keycloak.dev.demo.catena-x.net
+    authentication: false
     host: *config-digitalTwin-host-name
     ingress:
       enabled: true
