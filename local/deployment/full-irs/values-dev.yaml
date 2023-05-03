@@ -518,7 +518,7 @@ irs:
       jwkSetUri: *config-keycloak-certs-url
 
   digitalTwinRegistry:
-    url: "http://cx-irs-dependencies-registry-svc:8080/semantics/registry"
+    url: "https://irs-full-registry.dev.demo.catena-x.net/semantics/registry"
     descriptorEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/registry/shell-descriptors/{aasIdentifier}"
     shellLookupEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/lookup/shells?assetIds={assetIds}"
   semanticsHub:
