@@ -20,7 +20,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.edc.exceptions;
+package org.eclipse.tractusx.irs.edc.client.exceptions;
 
 /**
  * Usage Policy Exception errors in the contract negotiation.

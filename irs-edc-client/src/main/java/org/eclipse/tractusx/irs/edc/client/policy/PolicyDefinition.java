@@ -20,7 +20,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.edc.policy;
+package org.eclipse.tractusx.irs.edc.client.policy;
 
 import lombok.Builder;
 import lombok.Data;
