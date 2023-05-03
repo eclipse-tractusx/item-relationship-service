@@ -25,9 +25,8 @@ package org.eclipse.tractusx.irs.edc.client.exceptions;
 /**
  * Usage Policy Exception errors in the contract negotiation.
  */
-
 public class UsagePolicyException extends EdcClientException {
     public UsagePolicyException(final String itemId) {
-        super("No Rahmenbedingungs ID  found in contract offer. Asset " + itemId + " will not be consumed as no legal contract exists. Skip consumption of asset.");
+        super("Asset " + itemId + " cannot be consumed as the offered policies do not match the IRS configuration");
     }
 }

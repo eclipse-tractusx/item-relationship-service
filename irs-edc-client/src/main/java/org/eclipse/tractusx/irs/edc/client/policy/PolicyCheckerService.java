@@ -22,8 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
@@ -49,13 +49,10 @@ public class PolicyCheckerService {
     }
 
     public boolean isValid(final Policy policy) {
-        final List<String> allowedPolicyNamesWithEncoded = allowedPolicies.stream()
-                                                                          .map(this::addEncodedVersion)
-                                                                          .flatMap(Collection::stream)
-                                                                          .toList();
-        final List<PolicyDefinition> policyList = allowedPolicyNamesWithEncoded.stream()
-                                                                               .map(this::createPolicy)
-                                                                               .toList();
+        final List<PolicyDefinition> policyList = allowedPolicies.stream()
+                                                                 .flatMap(this::addEncodedVersion)
+                                                                 .map(this::createPolicy)
+                                                                 .toList();
         return policy.getPermissions()
                      .stream()
                      .anyMatch(permission -> policyList.stream()
@@ -91,8 +88,8 @@ public class PolicyCheckerService {
                                .build();
     }
 
-    private List<String> addEncodedVersion(final String original) {
-        return List.of(original, UriUtils.encode(original, "UTF-8"));
+    private Stream<String> addEncodedVersion(final String original) {
+        return Stream.of(original, UriUtils.encode(original, "UTF-8"));
     }
 
 }
