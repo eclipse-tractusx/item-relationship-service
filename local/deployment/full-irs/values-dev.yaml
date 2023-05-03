@@ -435,8 +435,7 @@ digital-twin-registry:
         size: 200Mi
 
   registry:
-    authentication: true
-    idpIssuerUri: *config-keycloak-token-url
+    authentication: false
     host: *config-digitalTwin-host-name
     ingress:
       enabled: true
