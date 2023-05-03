@@ -56,7 +56,7 @@ jobs:
           KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_SECRET }}
           GLOBAL_ASSET_ID: ${{ github.event.inputs.global-asset-id || 'urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454' }}
         run: |
-          python -m pytest api-tests/irs-api-tests.tavern.yaml --junitxml=tavern-results.xml
+          python -m pytest local/testing/api-tests/irs-api-tests.tavern.yaml --junitxml=tavern-results.xml
 
       - name: Upload results
         if: always()

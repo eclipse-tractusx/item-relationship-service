@@ -39,7 +39,7 @@ jobs:
         with:
           python-version: 3.8 #install the python needed
           cache: 'pip'
-      - run: pip install -r testdata-transform/requirements.txt
+      - run: pip install -r local/testing/testdata/requirements.txt
 
       - name: Delete existing and setup new test data on provider EDC and Registry
         if: ${{ github.event.inputs.esrUrl == '' }}
@@ -50,11 +50,11 @@ jobs:
           EDC_URLs: ${{ github.event.inputs.edcUrls }}
           EDC_API_KEY: ${{ github.event.inputs.edcApiKey }}
         run: |
-          python testdata-transform/reset-env.py \
+          python local/testing/testdata/reset-env.py \
           -a $AAS_URL \
           -edc $EDC_URLs \
           -k $EDC_API_KEY
-          python testdata-transform/transform-and-upload.py \
+          python local/testing/testdata/transform-and-upload.py \
           -f $TESTFILE_PATH \
           -s $SUBMODEL_URLs \
           -a $AAS_URL \
@@ -71,11 +71,11 @@ jobs:
           EDC_API_KEY: ${{ github.event.inputs.edcApiKey }}
           ESR_URL: ${{ github.event.inputs.esrUrl }}
         run: |
-          python testdata-transform/reset-env.py \
+          python local/testing/testdata/reset-env.py \
           -a $AAS_URL \
           -edc $EDC_URLs \
           -k $EDC_API_KEY
-          python testdata-transform/transform-and-upload.py \
+          python local/testing/testdata/transform-and-upload.py \
           -f $TESTFILE_PATH \
           -s $SUBMODEL_URLs \
           -a $AAS_URL \

@@ -30,7 +30,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.eclipse.tractusx.edc.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASRecursiveJobHandler;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcessManager;

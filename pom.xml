@@ -14,13 +14,13 @@
     <modules>
         <module>irs-testing</module>
         <module>irs-common</module>
-        <module>edc-client</module>
-        <module>ess</module>
+        <module>irs-edc-client</module>
+        <module>irs-ess</module>
         <module>irs-api</module>
         <module>irs-models</module>
-        <module>integration-tests</module>
+        <module>irs-integration-tests</module>
         <module>irs-report-aggregate</module>
-        <module>cucumber-tests</module>
+        <module>irs-cucumber-tests</module>
         <module>docs</module>
         <module>irs-load-tests</module>
     </modules>
@@ -130,7 +130,7 @@
                         <threshold>Low</threshold>
                         <xmlOutput>true</xmlOutput>
                         <failThreshold>Low</failThreshold>
-                        <excludeFilterFile>ci/spotbugs-excludes.xml</excludeFilterFile>
+                        <excludeFilterFile>.config/spotbugs-excludes.xml</excludeFilterFile>
                         <plugins>
                             <plugin>
                                 <groupId>com.h3xstream.findsecbugs</groupId>
@@ -217,9 +217,8 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <configLocation>ci/checkstyle.xml</configLocation>
-                    <suppressionsLocation>ci/checkstyle-suppressions.xml</suppressionsLocation>
-                    <encoding>UTF-8</encoding>
+                    <configLocation>.config/checkstyle.xml</configLocation>
+                    <suppressionsLocation>.config/checkstyle-suppressions.xml</suppressionsLocation>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                     <failOnViolation>true</failOnViolation>
@@ -242,7 +241,7 @@
                     <analysisCache>true</analysisCache>
                     <printFailingErrors>true</printFailingErrors>
                     <rulesets>
-                        <ruleset>../ci/pmd-rules.xml</ruleset>
+                        <ruleset>../.config/pmd-rules.xml</ruleset>
                     </rulesets>
                     <excludeRoots>
                         <excludeRoot>target/generated-sources</excludeRoot>
@@ -295,7 +294,7 @@
                         <version>${owasp-plugin.version}</version>
                         <configuration>
                             <skip>false</skip>
-                            <suppressionFile>ci/owasp-suppressions.xml</suppressionFile>
+                            <suppressionFile>.config/owasp-suppressions.xml</suppressionFile>
                         </configuration>
                     </plugin>
                 </plugins>

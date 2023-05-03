@@ -28,8 +28,8 @@ import java.util.Map;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.edc.EdcSubmodelFacade;
-import org.eclipse.tractusx.edc.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.JobParameter;
