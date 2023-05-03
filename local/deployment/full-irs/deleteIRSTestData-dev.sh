@@ -3,6 +3,6 @@
 echo "Deleting testdata"
 
 python ../../testing/testdata/reset-env.py \
-  -a https://irs-full-registry.dev.demo.catena-x.net \
+  -a https://irs-full-registry.dev.demo.catena-x.net/semantics/registry \
   -edc https://irs-full-consumer-controlplane.dev.demo.catena-x.net \
   -k password
