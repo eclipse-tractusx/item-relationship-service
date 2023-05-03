@@ -436,7 +436,7 @@ digital-twin-registry:
 
   registry:
     authentication: true
-    idpIssuerUri: *config-keycloak-token-url
+    idpIssuerUri: *config-keycloak-certs-url
     host: *config-digitalTwin-host-name
     ingress:
       enabled: true
