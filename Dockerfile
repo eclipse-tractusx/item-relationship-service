@@ -25,21 +25,20 @@ ARG BUILD_TARGET=irs-api
 
 WORKDIR /build
 
-COPY ci ci
-COPY api api
+COPY .config .config
 COPY .mvn .mvn
 COPY pom.xml .
 
-COPY ess ess
-COPY integration-tests integration-tests
+COPY irs-ess irs-ess
+COPY irs-integration-tests irs-integration-tests
 COPY irs-api irs-api
 COPY irs-common irs-common
-COPY edc-client edc-client
+COPY irs-edc-client irs-edc-client
 COPY irs-models irs-models
 COPY irs-parent-spring-boot irs-parent-spring-boot
 COPY irs-testing irs-testing
 COPY irs-report-aggregate irs-report-aggregate
-COPY cucumber-tests cucumber-tests
+COPY irs-cucumber-tests irs-cucumber-tests
 COPY docs docs
 COPY irs-load-tests irs-load-tests
 
@@ -53,7 +52,7 @@ FROM eclipse-temurin:20-jre-alpine AS irs-api
 RUN apk upgrade --no-cache libssl3 libcrypto3
 
 ARG UID=10000
-ARG GID=1000
+ARG GID=3000
 
 WORKDIR /app
 

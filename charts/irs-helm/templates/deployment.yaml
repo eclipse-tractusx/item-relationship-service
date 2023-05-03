@@ -91,6 +91,16 @@ spec:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
                   key: keycloakClientSecret
+            - name: PORTAL_OAUTH2_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "irs.secretName" . }}
+                  key: portalClientId
+            - name: PORTAL_OAUTH2_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "irs.secretName" . }}
+                  key: portalClientSecret
             - name: EDC_API_KEY_SECRET
               valueFrom:
                 secretKeyRef:

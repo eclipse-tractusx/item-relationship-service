@@ -100,7 +100,7 @@ Orchestrating application components and integrating with other libraries/framew
 |SpotBugs
 |Static analysis to look for bugs in Java code. Successor of popular FindBugs tool
 |Fail build on violations
-|ci/spotbugs-excludes.xml
+|.config/spotbugs-excludes.xml
 @SuppressFBWarnings(...)
 
 |FindSecBugs
@@ -111,13 +111,13 @@ Orchestrating application components and integrating with other libraries/framew
 |Checkstyle
 |Enforce coding standard
 |Fail build on violations
-|ci/checkstyle-suppressions.xml
+|.config/checkstyle-suppressions.xml
 @SuppressWarnings("checkstyle:XXX")
 
 |PMD
 |Source code analyzer to finds common programming flaws
 |Fail build on violations
-|ci/pmd-rules.xml
+|.config/pmd-rules.xml
 @SuppressWarnings("PMD.XXX")
 
 |JaCoCo

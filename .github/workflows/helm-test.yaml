@@ -56,5 +56,5 @@ jobs:
           helm repo add minio https://charts.min.io/
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
           helm repo add grafana https://grafana.github.io/helm-charts
-          ct install --charts charts/irs-helm
+          ct install --charts charts/irs-helm --helm-extra-set-args "--set=image.tag=testing"
         if: steps.list-changed.outputs.changed == 'true'

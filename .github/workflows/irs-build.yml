@@ -6,15 +6,10 @@ on:
     paths-ignore:
       - '**/*.md'
       - '**/*.txt'
-      - 'api/**'
-      - 'api-tests/**'
       - 'charts/**'
-      - 'ci/**'
+      - '.config/**'
       - 'docs/**'
-      - 'dev/**'
-      - 'testdata-transform/**'
-      - 'testing/**'
-      - 'uml-diagrams/**'
+      - 'local/**'
       - 'CHANGELOG.md'
   push:
     branches:

@@ -30,5 +30,5 @@ The IRS utilizes the configuration mechanism provided by Spring Boot. Configurat
 
 For local testing purposes, there is an additional configuration file called `+application-local.yml+`. Values can be overriden there to support the local dev environment.
 
-Other profiles should be avoided. Instead, any value that might need to change in a runtime environment must be overridable using environment variables. The operator must have total control over the configuration of the IRS.
+Other profiles should be avoided. Instead, the configuration can be overwritten using Spring's external configuration mechanism (see https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html). The operator must have total control over the configuration of the IRS.
 
