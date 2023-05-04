@@ -31,6 +31,7 @@ import org.eclipse.dataspaceconnector.policy.model.Constraint;
 import org.eclipse.dataspaceconnector.policy.model.Operator;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
+import org.eclipse.tractusx.irs.edc.client.StringMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriUtils;
@@ -53,6 +54,8 @@ public class PolicyCheckerService {
                                                                  .flatMap(this::addEncodedVersion)
                                                                  .map(this::createPolicy)
                                                                  .toList();
+        log.info("Checking policy {} against allowed policies: {}", StringMapper.mapToString(policy),
+                String.join(",", allowedPolicies));
         return policy.getPermissions()
                      .stream()
                      .anyMatch(permission -> policyList.stream()
