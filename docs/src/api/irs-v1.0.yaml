@@ -48,7 +48,7 @@ paths:
                   $ref: '#/components/examples/error-response-401'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: No valid authentication credentials.
         "403":
           content:
             application/json:
@@ -57,7 +57,7 @@ paths:
                   $ref: '#/components/examples/error-response-403'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: Authorization refused by server.
       security:
         - oAuth2:
             - profile email
@@ -105,7 +105,7 @@ paths:
                   $ref: '#/components/examples/error-response-401'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: No valid authentication credentials.
         "403":
           content:
             application/json:
@@ -114,7 +114,7 @@ paths:
                   $ref: '#/components/examples/error-response-403'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: Authorization refused by server.
         "404":
           content:
             application/json:
@@ -227,7 +227,7 @@ paths:
                   $ref: '#/components/examples/error-response-401'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: No valid authentication credentials.
         "403":
           content:
             application/json:
@@ -236,7 +236,7 @@ paths:
                   $ref: '#/components/examples/error-response-403'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: Authorization refused by server.
       security:
         - oAuth2:
             - profile email
@@ -279,7 +279,7 @@ paths:
                   $ref: '#/components/examples/error-response-401'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: No valid authentication credentials.
         "403":
           content:
             application/json:
@@ -288,7 +288,7 @@ paths:
                   $ref: '#/components/examples/error-response-403'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: Authorization refused by server.
       security:
         - oAuth2:
             - profile email
@@ -355,7 +355,7 @@ paths:
                   $ref: '#/components/examples/error-response-401'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: No valid authentication credentials.
         "403":
           content:
             application/json:
@@ -364,7 +364,7 @@ paths:
                   $ref: '#/components/examples/error-response-403'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: Authorization refused by server.
         "404":
           content:
             application/json:
@@ -418,7 +418,7 @@ paths:
                   $ref: '#/components/examples/error-response-401'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: No valid authentication credentials.
         "403":
           content:
             application/json:
@@ -427,7 +427,7 @@ paths:
                   $ref: '#/components/examples/error-response-403'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: Authorization refused by server.
         "404":
           content:
             application/json:
@@ -465,7 +465,7 @@ paths:
                   $ref: "#/components/examples/error-response-401"
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-          description: Authorized failed.
+          description: No valid authentication credentials.
         "403":
           content:
             application/json:
@@ -474,7 +474,7 @@ paths:
                   $ref: "#/components/examples/error-response-403"
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-          description: Authorized failed.
+          description: Authorization refused by server.
       security:
         - oAuth2:
             - profile email
@@ -519,7 +519,7 @@ paths:
                   $ref: '#/components/examples/error-response-401'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: No valid authentication credentials.
         "403":
           content:
             application/json:
@@ -528,7 +528,7 @@ paths:
                   $ref: '#/components/examples/error-response-403'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: Authorization refused by server.
       security:
         - oAuth2:
             - profile email
@@ -578,7 +578,7 @@ paths:
                   $ref: '#/components/examples/error-response-401'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: No valid authentication credentials.
         "403":
           content:
             application/json:
@@ -587,7 +587,7 @@ paths:
                   $ref: '#/components/examples/error-response-403'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: Authorization refused by server.
         "404":
           content:
             application/json:
@@ -721,7 +721,7 @@ paths:
                   $ref: '#/components/examples/error-response-401'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: No valid authentication credentials.
         "403":
           content:
             application/json:
@@ -730,7 +730,7 @@ paths:
                   $ref: '#/components/examples/error-response-403'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Authorized failed.
+          description: Authorization refused by server.
         "404":
           content:
             application/json:

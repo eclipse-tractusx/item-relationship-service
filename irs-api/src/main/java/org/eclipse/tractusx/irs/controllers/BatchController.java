@@ -96,13 +96,13 @@ public class BatchController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -135,13 +135,13 @@ public class BatchController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -181,13 +181,13 @@ public class BatchController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
