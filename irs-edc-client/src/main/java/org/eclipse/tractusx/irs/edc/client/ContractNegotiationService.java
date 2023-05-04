@@ -63,6 +63,7 @@ public class ContractNegotiationService {
 
         final CatalogItem catalogItem = catalogCache.getCatalogItem(providerConnectorUrl, target).orElseThrow();
         if (!policyCheckerService.isValid(catalogItem.getPolicy())) {
+            log.info("Policy was not allowed, canceling negotiation.");
             throw new UsagePolicyException(catalogItem.getItemId());
         }
         final ContractOfferRequest contractOfferRequest = ContractOfferRequest.builder()
