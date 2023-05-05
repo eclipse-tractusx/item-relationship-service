@@ -1,13 +1,13 @@
 name: Analyze API with Spectral
 
 on:
+  workflow_dispatch: # Trigger manually
   push:
     branches:
       - main
     paths:
-      - 'api/**'
-      - 'ci/spectral/**'
-
+      - 'docs/src/api/**'
+      - '.config/spectral/**'
 
 jobs:
   build:
@@ -20,5 +20,5 @@ jobs:
       # Run Spectral
       - uses: stoplightio/spectral-action@latest
         with:
-          file_glob: 'api/*.yaml'
-          spectral_ruleset: 'ci/spectral/restCompleteSet.yml'
+          file_glob: 'docs/src/api/*.yaml'
+          spectral_ruleset: '.config/spectral/restCompleteSet.yml'

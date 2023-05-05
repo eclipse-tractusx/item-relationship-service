@@ -37,7 +37,8 @@ public enum ProcessStep {
     SCHEMA_VALIDATION("SchemaValidation"),
     SCHEMA_REQUEST("SchemaRequest"),
     BPDM_REQUEST("BpdmRequest"),
-    BPDM_VALIDATION("BpdmValidation");
+    BPDM_VALIDATION("BpdmValidation"),
+    USAGE_POLICY_VALIDATION("UsagePolicyValidation");
 
     @JsonValue
     private final String value;

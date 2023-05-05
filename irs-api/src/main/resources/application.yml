@@ -142,6 +142,8 @@ edc:
       enabled: true # Set to false to disable caching
       ttl: P1D # Time after which a cached Item is no longer valid and the real catalog is called instead
       maxCachedItems: 64000 # Maximum amount of cached catalog items
+    policies:
+      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability
 
 digitalTwinRegistry:
   descriptorEndpoint: ${DIGITALTWINREGISTRY_DESCRIPTOR_URL:} # The endpoint to retrieve AAS descriptors from the DTR, must contain the placeholder {aasIdentifier}

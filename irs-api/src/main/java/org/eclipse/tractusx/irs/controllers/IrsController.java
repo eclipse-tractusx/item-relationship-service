@@ -107,13 +107,13 @@ public class IrsController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -153,13 +153,13 @@ public class IrsController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -190,20 +190,25 @@ public class IrsController {
                summary = "Cancel job for requested jobId.",
                security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Item Relationship Service" })
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with requested jobId canceled."),
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with requested jobId canceled.",
+                                        content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                             schema = @Schema(implementation = Job.class),
+                                                             examples = @ExampleObject(name = "complete",
+                                                                                       ref = "#/components/examples/canceled-job-response"))
+                                        }),
                             @ApiResponse(responseCode = "400", description = "Cancel job failed.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -244,13 +249,13 @@ public class IrsController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -282,13 +287,13 @@ public class IrsController {
                                                               examples = { @ExampleObject(name = "complete", ref = "#/components/examples/aspect-models-list")
                                                               })
                                          }),
-                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",

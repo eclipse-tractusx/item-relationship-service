@@ -25,12 +25,12 @@
         <!-- To find spring components and expose controller endpoints -->
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
-            <artifactId>ess</artifactId>
+            <artifactId>irs-ess</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
-            <artifactId>edc-client</artifactId>
+            <artifactId>irs-edc-client</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>
@@ -252,7 +252,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/../api/irs-v1.0.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/../docs/src/api/irs-v1.0.yaml</inputSpec>
                             <generatorName>html</generatorName>
                         </configuration>
                     </execution>
