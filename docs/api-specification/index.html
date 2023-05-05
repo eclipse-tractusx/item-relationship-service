@@ -189,7 +189,7 @@ font-style: italic;
     <div class="license-url">http://apache.org/licenses/LICENSE-2.0.html</div>
   <h2>Access</h2>
     <ol>
-      <li>OAuth AuthorizationUrl:TokenUrl:http://localhost</li>
+      <li>OAuth AuthorizationUrl:TokenUrl:https://localhost</li>
     </ol>
 
   <h2><a name="__Methods">Methods</a></h2>
@@ -201,12 +201,21 @@ font-style: italic;
   <ul>
   <li><a href="#getAllAspectModels"><code><span class="http-method">get</span> /irs/aspectmodels</code></a></li>
   </ul>
+  <h4><a href="#EnvironmentalAndSocialStandards">EnvironmentalAndSocialStandards</a></h4>
+  <ul>
+  <li><a href="#getBPNInvestigation"><code><span class="http-method">get</span> /ess/bpn/investigations/{id}</code></a></li>
+  <li><a href="#receiveEdcNotification"><code><span class="http-method">post</span> /ess/notification/receive</code></a></li>
+  <li><a href="#registerBPNInvestigation"><code><span class="http-method">post</span> /ess/bpn/investigations</code></a></li>
+  </ul>
   <h4><a href="#ItemRelationshipService">ItemRelationshipService</a></h4>
   <ul>
   <li><a href="#cancelJobByJobId"><code><span class="http-method">put</span> /irs/jobs/{id}</code></a></li>
+  <li><a href="#getBatch"><code><span class="http-method">get</span> /irs/orders/{orderId}/batches/{batchId}</code></a></li>
+  <li><a href="#getBatchOrder"><code><span class="http-method">get</span> /irs/orders/{orderId}</code></a></li>
   <li><a href="#getJobForJobId"><code><span class="http-method">get</span> /irs/jobs/{id}</code></a></li>
   <li><a href="#getJobsByJobStates"><code><span class="http-method">get</span> /irs/jobs</code></a></li>
   <li><a href="#registerJobForGlobalAssetId"><code><span class="http-method">post</span> /irs/jobs</code></a></li>
+  <li><a href="#registerOrder"><code><span class="http-method">post</span> /irs/orders</code></a></li>
   </ul>
 
   <h1><a name="AspectModels">AspectModels</a></h1>
@@ -262,10 +271,2675 @@ font-style: italic;
     Returns all available aspect models.
         <a href="#AspectModels">AspectModels</a>
     <h4 class="field-label">401</h4>
-    Authorized failed.
+    No valid authentication credentials.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">403</h4>
-    Authorized failed.
+    Authorization refused by server.
+        <a href="#ErrorResponse">ErrorResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="EnvironmentalAndSocialStandards">EnvironmentalAndSocialStandards</a></h1>
+  <div class="method"><a name="getBPNInvestigation"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /ess/bpn/investigations/{id}</code></pre></div>
+    <div class="method-summary">Return job with additional supplyChainImpacted information. (<span class="nickname">getBPNInvestigation</span>)</div>
+    <div class="method-notes">Return job with additional supplyChainImpacted information.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Id of the job. default: null format: uuid</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#Jobs">Jobs</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "relationships" : [ {
+    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+    "aspectType" : "aspectType",
+    "linkedItem" : {
+      "quantity" : {
+        "quantityNumber" : 1210617418.2099607,
+        "measurementUnit" : {
+          "datatypeURI" : "datatypeURI",
+          "lexicalValue" : "lexicalValue"
+        }
+      },
+      "lifecycleContext" : "asBuilt",
+      "assembledOn" : "2000-01-23T04:56:07.000+00:00",
+      "childCatenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+      "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
+    }
+  }, {
+    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+    "aspectType" : "aspectType",
+    "linkedItem" : {
+      "quantity" : {
+        "quantityNumber" : 1210617418.2099607,
+        "measurementUnit" : {
+          "datatypeURI" : "datatypeURI",
+          "lexicalValue" : "lexicalValue"
+        }
+      },
+      "lifecycleContext" : "asBuilt",
+      "assembledOn" : "2000-01-23T04:56:07.000+00:00",
+      "childCatenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+      "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
+    }
+  }, {
+    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+    "aspectType" : "aspectType",
+    "linkedItem" : {
+      "quantity" : {
+        "quantityNumber" : 1210617418.2099607,
+        "measurementUnit" : {
+          "datatypeURI" : "datatypeURI",
+          "lexicalValue" : "lexicalValue"
+        }
+      },
+      "lifecycleContext" : "asBuilt",
+      "assembledOn" : "2000-01-23T04:56:07.000+00:00",
+      "childCatenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+      "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
+    }
+  }, {
+    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+    "aspectType" : "aspectType",
+    "linkedItem" : {
+      "quantity" : {
+        "quantityNumber" : 1210617418.2099607,
+        "measurementUnit" : {
+          "datatypeURI" : "datatypeURI",
+          "lexicalValue" : "lexicalValue"
+        }
+      },
+      "lifecycleContext" : "asBuilt",
+      "assembledOn" : "2000-01-23T04:56:07.000+00:00",
+      "childCatenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+      "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
+    }
+  }, {
+    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+    "aspectType" : "aspectType",
+    "linkedItem" : {
+      "quantity" : {
+        "quantityNumber" : 1210617418.2099607,
+        "measurementUnit" : {
+          "datatypeURI" : "datatypeURI",
+          "lexicalValue" : "lexicalValue"
+        }
+      },
+      "lifecycleContext" : "asBuilt",
+      "assembledOn" : "2000-01-23T04:56:07.000+00:00",
+      "childCatenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+      "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
+    }
+  } ],
+  "tombstones" : [ {
+    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+    "endpointURL" : "endpointURL",
+    "processingError" : {
+      "retryCounter" : 494379917,
+      "errorDetail" : "errorDetail",
+      "lastAttempt" : "2000-01-23T04:56:07.000+00:00",
+      "processStep" : "SubmodelRequest"
+    }
+  }, {
+    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+    "endpointURL" : "endpointURL",
+    "processingError" : {
+      "retryCounter" : 494379917,
+      "errorDetail" : "errorDetail",
+      "lastAttempt" : "2000-01-23T04:56:07.000+00:00",
+      "processStep" : "SubmodelRequest"
+    }
+  }, {
+    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+    "endpointURL" : "endpointURL",
+    "processingError" : {
+      "retryCounter" : 494379917,
+      "errorDetail" : "errorDetail",
+      "lastAttempt" : "2000-01-23T04:56:07.000+00:00",
+      "processStep" : "SubmodelRequest"
+    }
+  }, {
+    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+    "endpointURL" : "endpointURL",
+    "processingError" : {
+      "retryCounter" : 494379917,
+      "errorDetail" : "errorDetail",
+      "lastAttempt" : "2000-01-23T04:56:07.000+00:00",
+      "processStep" : "SubmodelRequest"
+    }
+  }, {
+    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+    "endpointURL" : "endpointURL",
+    "processingError" : {
+      "retryCounter" : 494379917,
+      "errorDetail" : "errorDetail",
+      "lastAttempt" : "2000-01-23T04:56:07.000+00:00",
+      "processStep" : "SubmodelRequest"
+    }
+  } ],
+  "shells" : [ {
+    "identification" : "identification",
+    "idShort" : "idShort",
+    "specificAssetIds" : [ {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    } ],
+    "administration" : {
+      "version" : "version",
+      "revision" : "revision"
+    },
+    "description" : [ {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    } ],
+    "submodelDescriptors" : [ {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    } ],
+    "globalAssetId" : {
+      "value" : [ "value", "value", "value", "value", "value" ]
+    }
+  }, {
+    "identification" : "identification",
+    "idShort" : "idShort",
+    "specificAssetIds" : [ {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    } ],
+    "administration" : {
+      "version" : "version",
+      "revision" : "revision"
+    },
+    "description" : [ {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    } ],
+    "submodelDescriptors" : [ {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    } ],
+    "globalAssetId" : {
+      "value" : [ "value", "value", "value", "value", "value" ]
+    }
+  }, {
+    "identification" : "identification",
+    "idShort" : "idShort",
+    "specificAssetIds" : [ {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    } ],
+    "administration" : {
+      "version" : "version",
+      "revision" : "revision"
+    },
+    "description" : [ {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    } ],
+    "submodelDescriptors" : [ {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    } ],
+    "globalAssetId" : {
+      "value" : [ "value", "value", "value", "value", "value" ]
+    }
+  }, {
+    "identification" : "identification",
+    "idShort" : "idShort",
+    "specificAssetIds" : [ {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    } ],
+    "administration" : {
+      "version" : "version",
+      "revision" : "revision"
+    },
+    "description" : [ {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    } ],
+    "submodelDescriptors" : [ {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    } ],
+    "globalAssetId" : {
+      "value" : [ "value", "value", "value", "value", "value" ]
+    }
+  }, {
+    "identification" : "identification",
+    "idShort" : "idShort",
+    "specificAssetIds" : [ {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    }, {
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "value" : "value",
+      "key" : "key",
+      "subjectId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      }
+    } ],
+    "administration" : {
+      "version" : "version",
+      "revision" : "revision"
+    },
+    "description" : [ {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    }, {
+      "language" : "language",
+      "text" : "text"
+    } ],
+    "submodelDescriptors" : [ {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    }, {
+      "endpoints" : [ {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      }, {
+        "interface" : "interface",
+        "protocolInformation" : {
+          "subprotocolBodyEncoding" : "subprotocolBodyEncoding",
+          "endpointAddress" : "endpointAddress",
+          "subprotocol" : "subprotocol",
+          "endpointProtocolVersion" : "endpointProtocolVersion",
+          "subprotocolBody" : "subprotocolBody",
+          "endpointProtocol" : "endpointProtocol"
+        }
+      } ],
+      "semanticId" : {
+        "value" : [ "value", "value", "value", "value", "value" ]
+      },
+      "identification" : "identification",
+      "idShort" : "idShort",
+      "administration" : {
+        "version" : "version",
+        "revision" : "revision"
+      },
+      "description" : [ {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      }, {
+        "language" : "language",
+        "text" : "text"
+      } ]
+    } ],
+    "globalAssetId" : {
+      "value" : [ "value", "value", "value", "value", "value" ]
+    }
+  } ],
+  "job" : {
+    "exception" : {
+      "exception" : "exception",
+      "errorDetail" : "errorDetail",
+      "exceptionDate" : "2000-01-23T04:56:07.000+00:00"
+    },
+    "owner" : "owner",
+    "summary" : {
+      "bpnLookups" : {
+        "running" : 1280358508,
+        "completed" : 1294386358,
+        "failed" : 314780940
+      },
+      "asyncFetchedItems" : {
+        "running" : 1280358508,
+        "completed" : 1294386358,
+        "failed" : 314780940
+      }
+    },
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "parameter" : {
+      "depth" : 171976544,
+      "bomLifecycle" : "asBuilt",
+      "collectAspects" : true,
+      "aspects" : "aspects",
+      "lookupBPNs" : true,
+      "callbackUrl" : "callbackUrl",
+      "direction" : "upward"
+    },
+    "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+    "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "state" : "UNSAVED",
+    "createdOn" : "2000-01-23T04:56:07.000+00:00",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00",
+    "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
+  },
+  "bpns" : [ {
+    "manufacturerName" : "manufacturerName",
+    "manufacturerId" : "manufacturerId"
+  }, {
+    "manufacturerName" : "manufacturerName",
+    "manufacturerId" : "manufacturerId"
+  }, {
+    "manufacturerName" : "manufacturerName",
+    "manufacturerId" : "manufacturerId"
+  }, {
+    "manufacturerName" : "manufacturerName",
+    "manufacturerId" : "manufacturerId"
+  }, {
+    "manufacturerName" : "manufacturerName",
+    "manufacturerId" : "manufacturerId"
+  } ],
+  "submodels" : [ {
+    "identification" : "identification",
+    "payload" : {
+      "key" : "{}"
+    },
+    "aspectType" : "aspectType"
+  }, {
+    "identification" : "identification",
+    "payload" : {
+      "key" : "{}"
+    },
+    "aspectType" : "aspectType"
+  }, {
+    "identification" : "identification",
+    "payload" : {
+      "key" : "{}"
+    },
+    "aspectType" : "aspectType"
+  }, {
+    "identification" : "identification",
+    "payload" : {
+      "key" : "{}"
+    },
+    "aspectType" : "aspectType"
+  }, {
+    "identification" : "identification",
+    "payload" : {
+      "key" : "{}"
+    },
+    "aspectType" : "aspectType"
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Return job with item graph for the requested id.
+        <a href="#Jobs">Jobs</a>
+    <h4 class="field-label">400</h4>
+    Return job failed.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">401</h4>
+    No valid authentication credentials.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">403</h4>
+    Authorization refused by server.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">404</h4>
+    Job with the requested jobId not found.
+        <a href="#ErrorResponse">ErrorResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="receiveEdcNotification"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /ess/notification/receive</code></pre></div>
+    <div class="method-summary">Accepts notifications sent via EDC. (<span class="nickname">receiveEdcNotification</span>)</div>
+    <div class="method-notes">Accepts notifications via EDC. Notifications are filtered by their type and processed accordingly.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">EdcNotification <a href="#EdcNotification">EdcNotification</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Notification received successfully.
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Notification malformed.
+        <a href="#ErrorResponse">ErrorResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="registerBPNInvestigation"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /ess/bpn/investigations</code></pre></div>
+    <div class="method-summary">Registers an IRS job to start an investigation if a given bpn is contained in a part chain of a given globalAssetId. (<span class="nickname">registerBPNInvestigation</span>)</div>
+    <div class="method-notes">Registers an IRS job to start an investigation if a given bpn is contained in a part chain of a given globalAssetId.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">RegisterBpnInvestigationJob <a href="#RegisterBpnInvestigationJob">RegisterBpnInvestigationJob</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#JobHandle">JobHandle</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">201</h4>
+    Returns id of registered job.
+        <a href="#JobHandle">JobHandle</a>
+    <h4 class="field-label">400</h4>
+    Job registration failed.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">401</h4>
+    No valid authentication credentials.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">403</h4>
+    Authorization refused by server.
         <a href="#ErrorResponse">ErrorResponse</a>
   </div> <!-- method -->
   <hr/>
@@ -297,44 +2971,6 @@ font-style: italic;
 
     <!--Todo: process Response Object and its headers, schema, examples -->
 
-    <h3 class="field-label">Example data</h3>
-    <div class="example-data-content-type">Content-Type: */*</div>
-    <pre class="example"><code>{
-  "exception" : {
-    "exception" : "exception",
-    "errorDetail" : "errorDetail",
-    "exceptionDate" : "2000-01-23T04:56:07.000+00:00"
-  },
-  "owner" : "owner",
-  "summary" : {
-    "bpnLookups" : {
-      "running" : 1280358508,
-      "completed" : 1294386358,
-      "failed" : 314780940
-    },
-    "asyncFetchedItems" : {
-      "running" : 1280358508,
-      "completed" : 1294386358,
-      "failed" : 314780940
-    }
-  },
-  "completedOn" : "2000-01-23T04:56:07.000+00:00",
-  "parameter" : {
-    "depth" : 171976544,
-    "bomLifecycle" : "asBuilt",
-    "collectAspects" : true,
-    "aspects" : "aspects",
-    "lookupBPNs" : true,
-    "callbackUrl" : "callbackUrl",
-    "direction" : "upward"
-  },
-  "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-  "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
-  "state" : "UNSAVED",
-  "createdOn" : "2000-01-23T04:56:07.000+00:00",
-  "startedOn" : "2000-01-23T04:56:07.000+00:00",
-  "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
-}</code></pre>
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
@@ -378,7 +3014,6 @@ font-style: italic;
     This API call produces the following media types according to the <span class="header">Accept</span> request header;
     the media type will be conveyed by the <span class="header">Content-Type</span> response header.
     <ul>
-      <li><code>*/*</code></li>
       <li><code>application/json</code></li>
     </ul>
 
@@ -390,13 +3025,348 @@ font-style: italic;
     Cancel job failed.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">401</h4>
-    Authorized failed.
+    No valid authentication credentials.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">403</h4>
-    Authorized failed.
+    Authorization refused by server.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">404</h4>
     Job for requested jobId not found.
+        <a href="#ErrorResponse">ErrorResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getBatch"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /irs/orders/{orderId}/batches/{batchId}</code></pre></div>
+    <div class="method-summary">Get a batch with a given batchId for a given orderId. (<span class="nickname">getBatch</span>)</div>
+    <div class="method-notes">Get a batch with a given batchId for a given orderId.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">orderId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Id of the order. default: null format: uuid</div><div class="param">batchId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Id of the batch. default: null format: uuid</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#BatchResponse">BatchResponse</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "batchTotal" : 1,
+  "orderId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "batchProcessingState" : "INITIALIZED",
+  "completedOn" : "2000-01-23T04:56:07.000+00:00",
+  "jobs" : [ {
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "state" : "UNSAVED",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00"
+  }, {
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "state" : "UNSAVED",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00"
+  }, {
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "state" : "UNSAVED",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00"
+  }, {
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "state" : "UNSAVED",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00"
+  }, {
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "state" : "UNSAVED",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00"
+  } ],
+  "totalJobs" : 5,
+  "jobsInBatchChecksum" : 5,
+  "batchId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "startedOn" : "2000-01-23T04:56:07.000+00:00",
+  "batchNumber" : 6
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Get a batch with a given batchId for a given orderId.
+        <a href="#BatchResponse">BatchResponse</a>
+    <h4 class="field-label">400</h4>
+    Return batch failed.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">401</h4>
+    No valid authentication credentials.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">403</h4>
+    Authorization refused by server.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">404</h4>
+    Batch with the requested orderId and batchId not found.
+        <a href="#ErrorResponse">ErrorResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getBatchOrder"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /irs/orders/{orderId}</code></pre></div>
+    <div class="method-summary">Get a batch order for a given orderId. (<span class="nickname">getBatchOrder</span>)</div>
+    <div class="method-notes">Get a batch order for a given orderId.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">orderId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Id of the order. default: null format: uuid</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#BatchOrderResponse">BatchOrderResponse</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "batches" : [ {
+    "batchTotal" : 1,
+    "orderId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "batchProcessingState" : "INITIALIZED",
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "jobs" : [ {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    } ],
+    "totalJobs" : 5,
+    "jobsInBatchChecksum" : 5,
+    "batchId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00",
+    "batchNumber" : 6
+  }, {
+    "batchTotal" : 1,
+    "orderId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "batchProcessingState" : "INITIALIZED",
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "jobs" : [ {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    } ],
+    "totalJobs" : 5,
+    "jobsInBatchChecksum" : 5,
+    "batchId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00",
+    "batchNumber" : 6
+  }, {
+    "batchTotal" : 1,
+    "orderId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "batchProcessingState" : "INITIALIZED",
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "jobs" : [ {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    } ],
+    "totalJobs" : 5,
+    "jobsInBatchChecksum" : 5,
+    "batchId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00",
+    "batchNumber" : 6
+  }, {
+    "batchTotal" : 1,
+    "orderId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "batchProcessingState" : "INITIALIZED",
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "jobs" : [ {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    } ],
+    "totalJobs" : 5,
+    "jobsInBatchChecksum" : 5,
+    "batchId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00",
+    "batchNumber" : 6
+  }, {
+    "batchTotal" : 1,
+    "orderId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "batchProcessingState" : "INITIALIZED",
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "jobs" : [ {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    } ],
+    "totalJobs" : 5,
+    "jobsInBatchChecksum" : 5,
+    "batchId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00",
+    "batchNumber" : 6
+  } ],
+  "orderId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "state" : "INITIALIZED",
+  "batchChecksum" : 0
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Get a batch order for a given orderId.
+        <a href="#BatchOrderResponse">BatchOrderResponse</a>
+    <h4 class="field-label">400</h4>
+    Return Batch Order failed.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">401</h4>
+    No valid authentication credentials.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">403</h4>
+    Authorization refused by server.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">404</h4>
+    Batch Order with the requested orderId not found.
         <a href="#ErrorResponse">ErrorResponse</a>
   </div> <!-- method -->
   <hr/>
@@ -2957,10 +5927,10 @@ font-style: italic;
     Return job failed.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">401</h4>
-    Authorized failed.
+    No valid authentication credentials.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">403</h4>
-    Authorized failed.
+    Authorization refused by server.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">404</h4>
     Job with the requested jobId not found.
@@ -3035,10 +6005,10 @@ font-style: italic;
     Return jobs for requested job states failed.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">401</h4>
-    Authorized failed.
+    No valid authentication credentials.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">403</h4>
-    Authorized failed.
+    Authorization refused by server.
         <a href="#ErrorResponse">ErrorResponse</a>
   </div> <!-- method -->
   <hr/>
@@ -3096,10 +6066,71 @@ font-style: italic;
     Job registration failed.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">401</h4>
-    Authorized failed.
+    No valid authentication credentials.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">403</h4>
-    Authorized failed.
+    Authorization refused by server.
+        <a href="#ErrorResponse">ErrorResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="registerOrder"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /irs/orders</code></pre></div>
+    <div class="method-summary">Registers an IRS order with an array of {globalAssetIds}. Each globalAssetId will be processed in an IRS Job, grouped in batches. (<span class="nickname">registerOrder</span>)</div>
+    <div class="method-notes">Registers an IRS order with an array of {globalAssetIds}. Each globalAssetId will be processed in an IRS Job, grouped in batches.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">RegisterBatchOrder <a href="#RegisterBatchOrder">RegisterBatchOrder</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#BatchOrderCreated">BatchOrderCreated</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">201</h4>
+    Returns orderId of registered Batch order.
+        <a href="#BatchOrderCreated">BatchOrderCreated</a>
+    <h4 class="field-label">400</h4>
+    Batch Order registration failed.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">401</h4>
+    No valid authentication credentials.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">403</h4>
+    Authorization refused by server.
         <a href="#ErrorResponse">ErrorResponse</a>
   </div> <!-- method -->
   <hr/>
@@ -3114,7 +6145,12 @@ font-style: italic;
     <li><a href="#AspectModels"><code>AspectModels</code> - </a></li>
     <li><a href="#AssetAdministrationShellDescriptor"><code>AssetAdministrationShellDescriptor</code> - </a></li>
     <li><a href="#AsyncFetchedItems"><code>AsyncFetchedItems</code> - </a></li>
+    <li><a href="#BatchOrderCreated"><code>BatchOrderCreated</code> - </a></li>
+    <li><a href="#BatchOrderResponse"><code>BatchOrderResponse</code> - </a></li>
+    <li><a href="#BatchResponse"><code>BatchResponse</code> - </a></li>
     <li><a href="#Bpn"><code>Bpn</code> - </a></li>
+    <li><a href="#EdcNotification"><code>EdcNotification</code> - </a></li>
+    <li><a href="#EdcNotificationHeader"><code>EdcNotificationHeader</code> - </a></li>
     <li><a href="#Endpoint"><code>Endpoint</code> - </a></li>
     <li><a href="#ErrorResponse"><code>ErrorResponse</code> - </a></li>
     <li><a href="#IdentifierKeyValuePair"><code>IdentifierKeyValuePair</code> - </a></li>
@@ -3132,6 +6168,8 @@ font-style: italic;
     <li><a href="#ProtocolInformation"><code>ProtocolInformation</code> - </a></li>
     <li><a href="#Quantity"><code>Quantity</code> - </a></li>
     <li><a href="#Reference"><code>Reference</code> - </a></li>
+    <li><a href="#RegisterBatchOrder"><code>RegisterBatchOrder</code> - </a></li>
+    <li><a href="#RegisterBpnInvestigationJob"><code>RegisterBpnInvestigationJob</code> - </a></li>
     <li><a href="#RegisterJob"><code>RegisterJob</code> - </a></li>
     <li><a href="#Relationship"><code>Relationship</code> - </a></li>
     <li><a href="#Submodel"><code>Submodel</code> - </a></li>
@@ -3190,11 +6228,70 @@ font-style: italic;
     </div>  <!-- field-items -->
   </div>
   <div class="model">
+    <h3><a name="BatchOrderCreated"><code>BatchOrderCreated</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span> Id of the Batch Order. format: uuid</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="BatchOrderResponse"><code>BatchOrderResponse</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>BatchOrderAck Payload Response.</div>
+    <div class="field-items">
+      <div class="param">batchChecksum (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Expected number of batches in order. format: int32</div>
+<div class="param">batches (optional)</div><div class="param-desc"><span class="param-type"><a href="#BatchResponse">array[BatchResponse]</a></span> Array of batches. </div>
+<div class="param">orderId (optional)</div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span> Id of the order. format: uuid</div>
+<div class="param">state (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The state of the order. </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">INITIALIZED</div><div class="param-enum">COMPLETED</div><div class="param-enum">PROCESSING</div><div class="param-enum">PARTIAL</div><div class="param-enum">ERROR</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="BatchResponse"><code>BatchResponse</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>Batch model.</div>
+    <div class="field-items">
+      <div class="param">batchId (optional)</div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span> Id of the batch. format: uuid</div>
+<div class="param">batchNumber (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Sequential number begins with first (1.) batch. format: int32</div>
+<div class="param">batchProcessingState (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The state of the batch. </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">INITIALIZED</div><div class="param-enum">COMPLETED</div><div class="param-enum">PROCESSING</div><div class="param-enum">PARTIAL</div><div class="param-enum">ERROR</div>
+<div class="param">batchTotal (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> The total number of batches. format: int32</div>
+<div class="param">completedOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">jobs (optional)</div><div class="param-desc"><span class="param-type"><a href="#JobStatusResult">array[JobStatusResult]</a></span> Array of jobs. </div>
+<div class="param">jobsInBatchChecksum (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Expected number of jobs in batch. format: int32</div>
+<div class="param">orderId (optional)</div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span> Id of the order. format: uuid</div>
+<div class="param">startedOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">totalJobs (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total amount of jobs inside the order. format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
     <h3><a name="Bpn"><code>Bpn</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'>Business partner id with name</div>
     <div class="field-items">
       <div class="param">manufacturerId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">manufacturerName (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="EdcNotification"><code>EdcNotification</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">content </div><div class="param-desc"><span class="param-type"><a href="#object">map[String, Object]</a></span>  </div>
+<div class="param">header </div><div class="param-desc"><span class="param-type"><a href="#EdcNotificationHeader">EdcNotificationHeader</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="EdcNotificationHeader"><code>EdcNotificationHeader</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>EDC notification header information</div>
+    <div class="field-items">
+      <div class="param">notificationId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">notificationType </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">originalNotificationId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">recipientBpn </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">replyAssetId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">replyAssetSubPath (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">senderBpn </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">senderEdc (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3209,8 +6306,8 @@ font-style: italic;
     <h3><a name="ErrorResponse"><code>ErrorResponse</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'>Error response.</div>
     <div class="field-items">
-      <div class="param">messages (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> List of error messages. </div>
-<div class="param">error (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Error. </div>
+      <div class="param">error (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Error. </div>
+<div class="param">messages (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> List of error messages. </div>
 <div class="param">statusCode (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Error code. </div>
         <div class="param-enum-header">Enum:</div>
         <div class="param-enum">100 CONTINUE</div><div class="param-enum">101 SWITCHING_PROTOCOLS</div><div class="param-enum">102 PROCESSING</div><div class="param-enum">103 EARLY_HINTS</div><div class="param-enum">103 CHECKPOINT</div><div class="param-enum">200 OK</div><div class="param-enum">201 CREATED</div><div class="param-enum">202 ACCEPTED</div><div class="param-enum">203 NON_AUTHORITATIVE_INFORMATION</div><div class="param-enum">204 NO_CONTENT</div><div class="param-enum">205 RESET_CONTENT</div><div class="param-enum">206 PARTIAL_CONTENT</div><div class="param-enum">207 MULTI_STATUS</div><div class="param-enum">208 ALREADY_REPORTED</div><div class="param-enum">226 IM_USED</div><div class="param-enum">300 MULTIPLE_CHOICES</div><div class="param-enum">301 MOVED_PERMANENTLY</div><div class="param-enum">302 FOUND</div><div class="param-enum">302 MOVED_TEMPORARILY</div><div class="param-enum">303 SEE_OTHER</div><div class="param-enum">304 NOT_MODIFIED</div><div class="param-enum">305 USE_PROXY</div><div class="param-enum">307 TEMPORARY_REDIRECT</div><div class="param-enum">308 PERMANENT_REDIRECT</div><div class="param-enum">400 BAD_REQUEST</div><div class="param-enum">401 UNAUTHORIZED</div><div class="param-enum">402 PAYMENT_REQUIRED</div><div class="param-enum">403 FORBIDDEN</div><div class="param-enum">404 NOT_FOUND</div><div class="param-enum">405 METHOD_NOT_ALLOWED</div><div class="param-enum">406 NOT_ACCEPTABLE</div><div class="param-enum">407 PROXY_AUTHENTICATION_REQUIRED</div><div class="param-enum">408 REQUEST_TIMEOUT</div><div class="param-enum">409 CONFLICT</div><div class="param-enum">410 GONE</div><div class="param-enum">411 LENGTH_REQUIRED</div><div class="param-enum">412 PRECONDITION_FAILED</div><div class="param-enum">413 PAYLOAD_TOO_LARGE</div><div class="param-enum">413 REQUEST_ENTITY_TOO_LARGE</div><div class="param-enum">414 URI_TOO_LONG</div><div class="param-enum">414 REQUEST_URI_TOO_LONG</div><div class="param-enum">415 UNSUPPORTED_MEDIA_TYPE</div><div class="param-enum">416 REQUESTED_RANGE_NOT_SATISFIABLE</div><div class="param-enum">417 EXPECTATION_FAILED</div><div class="param-enum">418 I_AM_A_TEAPOT</div><div class="param-enum">419 INSUFFICIENT_SPACE_ON_RESOURCE</div><div class="param-enum">420 METHOD_FAILURE</div><div class="param-enum">421 DESTINATION_LOCKED</div><div class="param-enum">422 UNPROCESSABLE_ENTITY</div><div class="param-enum">423 LOCKED</div><div class="param-enum">424 FAILED_DEPENDENCY</div><div class="param-enum">425 TOO_EARLY</div><div class="param-enum">426 UPGRADE_REQUIRED</div><div class="param-enum">428 PRECONDITION_REQUIRED</div><div class="param-enum">429 TOO_MANY_REQUESTS</div><div class="param-enum">431 REQUEST_HEADER_FIELDS_TOO_LARGE</div><div class="param-enum">451 UNAVAILABLE_FOR_LEGAL_REASONS</div><div class="param-enum">500 INTERNAL_SERVER_ERROR</div><div class="param-enum">501 NOT_IMPLEMENTED</div><div class="param-enum">502 BAD_GATEWAY</div><div class="param-enum">503 SERVICE_UNAVAILABLE</div><div class="param-enum">504 GATEWAY_TIMEOUT</div><div class="param-enum">505 HTTP_VERSION_NOT_SUPPORTED</div><div class="param-enum">506 VARIANT_ALSO_NEGOTIATES</div><div class="param-enum">507 INSUFFICIENT_STORAGE</div><div class="param-enum">508 LOOP_DETECTED</div><div class="param-enum">509 BANDWIDTH_LIMIT_EXCEEDED</div><div class="param-enum">510 NOT_EXTENDED</div><div class="param-enum">511 NETWORK_AUTHENTICATION_REQUIRED</div>
@@ -3350,7 +6447,7 @@ font-style: italic;
 <div class="param">lastAttempt (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
 <div class="param">processStep (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
         <div class="param-enum-header">Enum:</div>
-        <div class="param-enum">SubmodelRequest</div><div class="param-enum">DigitalTwinRequest</div><div class="param-enum">SchemaValidation</div><div class="param-enum">SchemaRequest</div><div class="param-enum">BpdmRequest</div><div class="param-enum">BpdmValidation</div>
+        <div class="param-enum">SubmodelRequest</div><div class="param-enum">DigitalTwinRequest</div><div class="param-enum">SchemaValidation</div><div class="param-enum">SchemaRequest</div><div class="param-enum">BpdmRequest</div><div class="param-enum">BpdmValidation</div><div class="param-enum">UsagePolicyValidation</div>
 <div class="param">retryCounter (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
     </div>  <!-- field-items -->
   </div>
@@ -3382,6 +6479,42 @@ font-style: italic;
     </div>  <!-- field-items -->
   </div>
   <div class="model">
+    <h3><a name="RegisterBatchOrder"><code>RegisterBatchOrder</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>Request body for registering a new Batch Order.</div>
+    <div class="field-items">
+      <div class="param">aspects (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
+<div class="param">batchSize (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Size of the batch. format: int32</div>
+<div class="param">batchStrategy (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The strategy how the batch is processed internally in IRS. </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">PRESERVE_BATCH_JOB_ORDER</div><div class="param-enum">PRESERVE_JOB_ORDER</div><div class="param-enum">PRESERVE_BATCH_ORDER</div>
+<div class="param">bomLifecycle (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The lifecycle context in which the child part was assembled into the parent part. </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">asBuilt</div><div class="param-enum">asPlanned</div>
+<div class="param">callbackUrl (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Callback url to notify requestor when job processing is finished. There are four uri variable placeholders that can be used: orderId, batchId, orderState and batchState. </div>
+<div class="param">collectAspects (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> Flag to specify whether aspects should be requested and collected. Default is false. </div>
+<div class="param">depth (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Max depth of the item graph returned. If no depth is set item graph with max depth is returned. format: int32</div>
+<div class="param">direction (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Item graph traversal direction. </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">upward</div><div class="param-enum">downward</div>
+<div class="param">globalAssetIds </div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
+<div class="param">jobTimeout (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Timeout in seconds for each job processing inside the complete order. format: int32</div>
+<div class="param">lookupBPNs (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false. </div>
+<div class="param">timeout (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Timeout in seconds for the complete batch order processing. format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="RegisterBpnInvestigationJob"><code>RegisterBpnInvestigationJob</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>The requested job definition.</div>
+    <div class="field-items">
+      <div class="param">bomLifecycle (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The lifecycle context in which the child part was assembled into the parent part. </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">asBuilt</div><div class="param-enum">asPlanned</div>
+<div class="param">callbackUrl (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: jobId and jobState. </div>
+<div class="param">globalAssetId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Id of global asset. </div>
+<div class="param">incidentBpns </div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
     <h3><a name="RegisterJob"><code>RegisterJob</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'>The requested job definition.</div>
     <div class="field-items">
@@ -3389,7 +6522,7 @@ font-style: italic;
 <div class="param">bomLifecycle (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The lifecycle context in which the child part was assembled into the parent part. </div>
         <div class="param-enum-header">Enum:</div>
         <div class="param-enum">asBuilt</div><div class="param-enum">asPlanned</div>
-<div class="param">callbackUrl (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: jobId and jobState. </div>
+<div class="param">callbackUrl (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: id and state. </div>
 <div class="param">collectAspects (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> Flag to specify whether aspects should be requested and collected. Default is false. </div>
 <div class="param">depth (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Max depth of the item graph returned. If no depth is set item graph with max depth is returned. format: int32</div>
 <div class="param">direction (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Item graph traversal direction. </div>

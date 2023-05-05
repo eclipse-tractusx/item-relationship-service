@@ -41,7 +41,7 @@ Create a new Helm chart and use the IRS as a dependency.
 dependencies:
   - name: irs-helm
     repository: https://eclipse-tractusx.github.io/item-relationship-service
-    version: 3.x.x
+    version: 5.x.x
   - name: irs-edc-consumer # optional
     repository: https://eclipse-tractusx.github.io/item-relationship-service
     version: 1.x.x
@@ -79,9 +79,15 @@ spring:
             authorization-grant-type: client_credentials
             client-id: ${KEYCLOAK_OAUTH2_CLIENT_ID} # OAuth2 client ID used to authenticate with the IAM
             client-secret: ${KEYCLOAK_OAUTH2_CLIENT_SECRET} # OAuth2 client secret used to authenticate with the IAM
+          portal:
+            authorization-grant-type: client_credentials
+            client-id: ${PORTAL_OAUTH2_CLIENT_ID} # OAuth2 client ID used to authenticate with the IAM
+            client-secret: ${PORTAL_OAUTH2_CLIENT_SECRET} # OAuth2 client secret used to authenticate with the IAM
         provider:
           keycloak:
             token-uri: ${KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
+          portal:
+            token-uri: ${PORTAL_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
       resourceserver:
         jwt:
           jwk-set-uri: ${KEYCLOAK_OAUTH2_JWK_SET_URI:https://default} # OAuth2 endpoint to request the JWK set
@@ -174,7 +180,6 @@ resilience4j:
       registry:
         baseConfig: default
 
-
 edc:
   controlplane:
     request-ttl: ${EDC_CONTROLPLANE_REQUEST_TTL:PT10M} # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
@@ -203,6 +208,8 @@ edc:
       enabled: true # Set to false to disable caching
       ttl: P1D # Time after which a cached Item is no longer valid and the real catalog is called instead
       maxCachedItems: 64000 # Maximum amount of cached catalog items
+    policies:
+      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability
 
 digitalTwinRegistry:
   descriptorEndpoint: ${DIGITALTWINREGISTRY_DESCRIPTOR_URL:} # The endpoint to retrieve AAS descriptors from the DTR, must contain the placeholder {aasIdentifier}
@@ -244,37 +251,33 @@ bpdm:
     read: PT90S # HTTP read timeout for the bpdm client
     connect: PT90S # HTTP connect timeout for the bpdm client
 
-apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK}
+# ESS Module specific properties
+ess:
+  localBpn: ${ESS_LOCAL_BPN:} # BPN value of product - used during EDC notification communication
+  localEdcEndpoint: ${EDC_PROVIDER_URL:} # EDC Provider Url - used during EDC notification communication
+  irs:
+    url: "${IRS_URL:}" # IRS Url to connect with
+  discovery:
+    endpoint: "${DISCOVERY_URL:}" # Endpoint to retrieve EDC base url address for BPN
+    oAuthClientId: portal # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+    timeout:
+      read: PT90S # HTTP read timeout for the discovery client
+      connect: PT90S # HTTP connect timeout for the discovery client
+    mockEdcAddress: {} # Mocked EDC BPN Addresses
+    mockEdcResult: {} # Mocked BPN Investigation results
+    mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
+
+apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK} # BPN value that is allowed to access IRS API
 ```
 
 ### Helm configuration IRS (values.yaml)
 
 ```yaml
-          labelSelector:
-            matchExpressions:
-              - key: app.kubernetes.io/name
-                operator: DoesNotExist
-          topologyKey: kubernetes.io/hostname
-
-# Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm
-# @url: https://github.com/helm/charts/blob/master/stable/nginx-ingress/values.yaml#L210
-livenessProbe:
-  failureThreshold: 6
-  initialDelaySeconds: 30
-  periodSeconds: 10
-  successThreshold: 1
-  timeoutSeconds: 1
-readinessProbe:
-  failureThreshold: 3
-  initialDelaySeconds: 30
-  periodSeconds: 10
-  successThreshold: 1
-  timeoutSeconds: 1
-
 #####################
 # IRS Configuration #
 #####################
 irsUrl:  # "https://<irs-url>"
+bpn:  # BPN for this IRS instance; only users with this BPN are allowed to access the API
 ingress:
   enabled: false
 
@@ -311,7 +314,13 @@ keycloak:
     clientSecret:  # <keycloak-client-secret>
     clientTokenUri:  # <keycloak-token-uri>
     jwkSetUri:  # <keycloak-jwkset-uri>
+portal:
+  oauth2:
+    clientId:  # <portal-client-id>
+    clientSecret:  # <portal-client-secret>
 edc:
+  provider:
+    host:  # EDC Provider Host URL
   controlplane:
     endpoint:
       data: ""  # <edc-controlplane-endpoint-data>
@@ -335,6 +344,17 @@ edc:
       enabled: true  # Set to false to disable caching
       ttl: P1D  # Time after which a cached Item is no longer valid and the real catalog is called instead
       maxCachedItems: 64000  # Maximum amount of cached catalog items
+    policies:
+      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability
+
+discovery:
+  endpoint:  # EDC Discovery Service endpoint
+  mockEdcAddress:  # Map of BPNs and EDC Provider URLs - this overrides any real Discovery Service for the given BPN
+  oAuthClientId: portal  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+
+ess:
+  mockEdcResult:  # Map of BPNs and YES/NO strings - this configures the ESS mock response in case it called to investigate a BPN
+  mockRecursiveEdcAsset:  # List of BPNs for which the special, mocked notification asset should be used
 
 config:
   # If true, the config provided below will completely replace the configmap.
@@ -416,6 +436,27 @@ grafana:
     enabled: false
 
   user:  # <grafana-username>
+  password:  # <grafana-password>
+
+  admin:
+    existingSecret: "{{ .Release.Name }}-irs-helm"
+    userKey: grafanaUser
+    passwordKey: grafanaPassword
+
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: "http://{{ .Release.Name }}-prometheus-server"
+          isDefault: true
+
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: 'default'
 ```
 
 1. Use this to enable or disable the monitoring components
@@ -528,6 +569,9 @@ edc-controlplane:
       url: "https://<controlplane-url>"
     dataplane:
       url: "https://<dataplane-url>"
+    vault:
+      hashicorp:
+        token: "<vault-token>"
   configuration:
     properties: |-
       edc.oauth.client.id=<daps-client-id>
@@ -536,7 +580,6 @@ edc-controlplane:
       edc.oauth.certificate.alias=<daps-certificate-name>
       edc.oauth.token.url=<daps-token-url>
       edc.vault.hashicorp.url=<vault-url>
-      edc.vault.hashicorp.token=<vault-token>
       edc.vault.hashicorp.api.secret.path=<vault-secret-store-path>
       edc.data.encryption.keys.alias=<daps-privatekey-name>
       edc.data.encryption.algorithm=NONE
@@ -549,6 +592,9 @@ edc-dataplane:
     api:
       auth:
         key: "<edc-api-key>"
+    vault:
+      hashicorp:
+        token: "<vault-token>"
   ## Ingress declaration to expose the network service.
   ingresses:
     - enabled: true
@@ -577,7 +623,6 @@ edc-dataplane:
       edc.oauth.certificate.alias=<daps-certificate-name>
       edc.oauth.token.url=<daps-token-url>
       edc.vault.hashicorp.url=<vault-url>
-      edc.vault.hashicorp.token=<vault-token>
       edc.vault.hashicorp.api.secret.path=<vault-secret-store-path>
 ```
 
@@ -709,4 +754,4 @@ It can also happen if the persistent volume claim is deleted / recreated.
 
 #### Different Job model versions maintenance
 
-Currently, the IRS only supports one version of the Job model at a time. This means that if Job model is changed, old models stored in minio will no longer be supported and returned from IRS endpoints. The IRS application will work as usual, old versions of Job can stay in the minio and don’t need to be removed - the IRS will simply ignore them. If you want to clear the minio from old models - the only way to achieve that is to delete them all and register a new Jobs.
+Currently, the IRS only supports one version of the Job model at a time. This means that if the Job model is changed in a newer IRS version, old models stored in minio will no longer be supported and returned from IRS endpoints. The IRS application will work as usual, old versions of Job can stay in Minio and don’t need to be removed - the IRS will simply ignore them. If you want to clear the minio from old models, the only way to achieve that is to delete them all and register new Jobs.

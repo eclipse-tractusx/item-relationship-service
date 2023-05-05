@@ -809,7 +809,7 @@ The following table entries define overall IRS quality goals. The order of the t
 <td class="tableblock halign-left valign-top"><p class="tableblock">SpotBugs</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Static analysis to look for bugs in Java code. Successor of popular FindBugs tool</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fail build on violations</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ci/spotbugs-excludes.xml
+<td class="tableblock halign-left valign-top"><p class="tableblock">.config/spotbugs-excludes.xml
 @SuppressFBWarnings(&#8230;&#8203;)</p></td>
 </tr>
 <tr>
@@ -822,14 +822,14 @@ The following table entries define overall IRS quality goals. The order of the t
 <td class="tableblock halign-left valign-top"><p class="tableblock">Checkstyle</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Enforce coding standard</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fail build on violations</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ci/checkstyle-suppressions.xml
+<td class="tableblock halign-left valign-top"><p class="tableblock">.config/checkstyle-suppressions.xml
 @SuppressWarnings("checkstyle:XXX")</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PMD</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Source code analyzer to finds common programming flaws</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fail build on violations</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ci/pmd-rules.xml
+<td class="tableblock halign-left valign-top"><p class="tableblock">.config/pmd-rules.xml
 @SuppressWarnings("PMD.XXX")</p></td>
 </tr>
 <tr>
@@ -1133,7 +1133,7 @@ The following table entries define overall IRS quality goals. The order of the t
 <h4 id="_component_diagram_2">Component diagram</h4>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/level-1.svg" alt="level 1" width="671" height="845">
+<img src="architecture-constraints/level-1.svg" alt="level 1" width="1228" height="613">
 </div>
 </div>
 </div>
@@ -1179,7 +1179,8 @@ The following table entries define overall IRS quality goals. The order of the t
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>TransferProcessManager</strong></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The TransferProcessManager handles the outgoing requests to the AASProxy.</p>
+<p>The TransferProcessManager handles the outgoing requests to the various data services.
+A job is processed in this order:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1190,16 +1191,16 @@ The following table entries define overall IRS quality goals. The order of the t
 <p><strong>RecursiveJobHandler</strong> requesting for AAS via the Digital Twin registry.</p>
 </li>
 <li>
-<p>Analyzing the structure of the AAS response by collecting the AssemblyPartRelationship Aspects</p>
+<p>Analyzing the structure of the AAS response by collecting the traversal aspect.</p>
 </li>
 <li>
-<p>Requesting for SubmodelEndpoints for given AssemblyPartRelationship children</p>
+<p>Requesting submodel data for given items of next level.</p>
 </li>
 <li>
 <p>Recursively iteration over step 2-4 until an abort criterion is reached.</p>
 </li>
 <li>
-<p>Assembles the complete item graph</p>
+<p>Assembles the complete item graph.</p>
 </li>
 </ol>
 </div></div></td>
@@ -1213,8 +1214,12 @@ The following table entries define overall IRS quality goals. The order of the t
 <td class="tableblock halign-left valign-top"><p class="tableblock">The JobStore is the database where the jobs with the information about the requested item are stored.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>AASProxy</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The AASProxy is the interface to the EDC Network. It provides an interface for the Asset Administration Shells and for the Submodels.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Digital Twin Client</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Digital Twin Client is the interface to the Digital Twin Registry. It provides an interface for the Asset Administration Shells.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EDC Client</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The EDC Client is used to communicate with the EDC network, negotiate contracts and retrieve submodel data.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1225,7 +1230,7 @@ The following table entries define overall IRS quality goals. The order of the t
 <div class="sect3">
 <h4 id="_irs_controller">IRS controller</h4>
 <div class="paragraph">
-<p>The IRS REST controller to provide a RESTful web service.</p>
+<p>The IRS REST controller is used to provide a RESTful web service.</p>
 </div>
 <div class="sect4">
 <h5 id="_component_diagram_3">Component diagram</h5>
@@ -1321,7 +1326,7 @@ The following table entries define overall IRS quality goals. The order of the t
 </div>
 </div>
 <div class="sect3">
-<h4 id="_transferprocessmanagment">TransferProcessManagment</h4>
+<h4 id="_transferprocessmanagement">TransferProcessManagement</h4>
 <div class="paragraph">
 <p>The TransferProcessManager creates executions and provides them to the executor service. Each execution contains HTTP requests to the asset administration shell registry and to the submodel interface.</p>
 </div>
@@ -1772,10 +1777,10 @@ JWT token should also contain two fields:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>'view irs' role inside resource_access claim,</p>
+<p><code>view_irs</code> role inside <code>resource_access</code> claim,</p>
 </li>
 <li>
-<p>bpn claim which is equal to the configuration value from 'API_ALLOWED_BPN' property</p>
+<p>BPN claim which is equal to the configuration value from <code>API_ALLOWED_BPN</code> property</p>
 </li>
 </ul>
 </div>
@@ -2046,7 +2051,7 @@ In case the model of the persisted data (Jobs) changes, data is dropped and Jobs
 <p>For local testing purposes, there is an additional configuration file called <code>application-local.yml</code>. Values can be overriden there to support the local dev environment.</p>
 </div>
 <div class="paragraph">
-<p>Other profiles should be avoided. Instead, any value that might need to change in a runtime environment must be overridable using environment variables. The operator must have total control over the configuration of the IRS.</p>
+<p>Other profiles should be avoided. Instead, the configuration can be overwritten using Spring&#8217;s external configuration mechanism (see <a href="https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html" class="bare">https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html</a>). The operator must have total control over the configuration of the IRS.</p>
 </div>
 </div>
 </div>
@@ -2241,7 +2246,7 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-03-30 10:37:26 UTC
+Last updated 2023-05-05 10:21:04 UTC
 </div>
 </div>
 </body>

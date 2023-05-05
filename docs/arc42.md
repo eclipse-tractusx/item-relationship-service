@@ -84,10 +84,10 @@ The following table entries define overall IRS quality goals. The order of the t
 | Tool | Scope | Rule | Configuration (via files / annotations) |
 | --- | --- | --- | --- |
 | Tidy | Enforce Maven POM Code Convention | Fail build on untidy pom.xml | N/A |
-| SpotBugs | Static analysis to look for bugs in Java code. Successor of popular FindBugs tool | Fail build on violations | ci/spotbugs-excludes.xml @SuppressFBWarnings(...) |
+| SpotBugs | Static analysis to look for bugs in Java code. Successor of popular FindBugs tool | Fail build on violations | .config/spotbugs-excludes.xml @SuppressFBWarnings(...) |
 | FindSecBugs | SpotBugs plugin adding security bugs coverage | Fail build on violations | N/A |
-| Checkstyle | Enforce coding standard | Fail build on violations | ci/checkstyle-suppressions.xml @SuppressWarnings("checkstyle:XXX") |
-| PMD | Source code analyzer to finds common programming flaws | Fail build on violations | ci/pmd-rules.xml @SuppressWarnings("PMD.XXX") |
+| Checkstyle | Enforce coding standard | Fail build on violations | .config/checkstyle-suppressions.xml @SuppressWarnings("checkstyle:XXX") |
+| PMD | Source code analyzer to finds common programming flaws | Fail build on violations | .config/pmd-rules.xml @SuppressWarnings("PMD.XXX") |
 | JaCoCo | Test coverage | Fail build on coverage &lt; 80% | pom.xml @ExcludeFromCodeCoverageGeneratedReport |
 | Veracode | - Scan source code for vulnerabilities (SAST) - Scan dependencies for known vulnerabilities (SCA) - Check used licenses (FOSS Licenses) |  | <https://web.analysiscenter.veracode.com/> |
 | Dependabot | Automated dependency updates built into GitHub. Provided pull requests on dependency updates. | Any dependency update generates a pull request automatically. | .github/dependabot.yml |
@@ -204,16 +204,17 @@ The interfaces show how the components interact with each other and which interf
 | **IrsItemGraphQueryService** | The **IrsItemGraphQueryService** implements the REST Interface of the IrsController. |
 | **JobOrchestrator** | The **JobOrchestrator** is a component which manages (start, end, cancel, resume) the jobs which execute the item graph retrieval process. |
 | **RecursiveJobHandler** | The **RecursiveJobHandler** handles the job execution recursively until a given abort criteria is reached or the complete item graph is build. |
-| **TransferProcessManager** | The TransferProcessManager handles the outgoing requests to the AASProxy. 1. Initiation of the job and preparation of the stream of **DataRequests** 2. **RecursiveJobHandler** requesting for AAS via the Digital Twin registry. 3. Analyzing the structure of the AAS response by collecting the AssemblyPartRelationship Aspects 4. Requesting for SubmodelEndpoints for given AssemblyPartRelationship children 5. Recursively iteration over step 2-4 until an abort criterion is reached. 6. Assembles the complete item graph |
+| **TransferProcessManager** | The TransferProcessManager handles the outgoing requests to the various data services. A job is processed in this order: 1. Initiation of the job and preparation of the stream of **DataRequests** 2. **RecursiveJobHandler** requesting for AAS via the Digital Twin registry. 3. Analyzing the structure of the AAS response by collecting the traversal aspect. 4. Requesting submodel data for given items of next level. 5. Recursively iteration over step 2-4 until an abort criterion is reached. 6. Assembles the complete item graph. |
 | **BlobStore** | The BlobStore is the database where the relationships and tombstones are stored for a requested item. |
 | **JobStore** | The JobStore is the database where the jobs with the information about the requested item are stored. |
-| **AASProxy** | The AASProxy is the interface to the EDC Network. It provides an interface for the Asset Administration Shells and for the Submodels. |
+| **Digital Twin Client** | The Digital Twin Client is the interface to the Digital Twin Registry. It provides an interface for the Asset Administration Shells. |
+| **EDC Client** | The EDC Client is used to communicate with the EDC network, negotiate contracts and retrieve submodel data. |
 
 ## Level 2
 
 ### IRS controller
 
-The IRS REST controller to provide a RESTful web service.
+The IRS REST controller is used to provide a RESTful web service.
 
 #### Component diagram
 
@@ -246,7 +247,7 @@ The **RecursiveJobHandler** component provide the logic to build jobs with recur
 | ItemTreesAssembler | Assembles multiple partial item graphs into one overall item graph. |
 | BlobPersistence | Interface for storing data blobs. |
 
-### TransferProcessManagment
+### TransferProcessManagement
 
 The TransferProcessManager creates executions and provides them to the executor service. Each execution contains HTTP requests to the asset administration shell registry and to the submodel interface.
 
@@ -611,8 +612,8 @@ A job can be in one of the following states:
 The IRS is secured using OAuth2.0 / Open ID Connect. Every request to the IRS API requires a valid bearer token.
 JWT token should also contain two fields:
 
-* 'view irs' role inside resource_access claim,
-* bpn claim which is equal to the configuration value from 'API_ALLOWED_BPN' property
+* `view_irs` role inside `resource_access` claim,
+* BPN claim which is equal to the configuration value from `API_ALLOWED_BPN` property
 
 #### IRS as DTR client
 
@@ -784,7 +785,7 @@ The IRS utilizes the configuration mechanism provided by Spring Boot. Configurat
 
 For local testing purposes, there is an additional configuration file called `application-local.yml`. Values can be overriden there to support the local dev environment.
 
-Other profiles should be avoided. Instead, any value that might need to change in a runtime environment must be overridable using environment variables. The operator must have total control over the configuration of the IRS.
+Other profiles should be avoided. Instead, the configuration can be overwritten using Spring’s external configuration mechanism (see <https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html).> The operator must have total control over the configuration of the IRS.
 
 ## Operational concepts
 

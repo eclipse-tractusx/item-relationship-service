@@ -459,7 +459,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_irs_controller">IRS controller</a></li>
 <li><a href="#_recursivejobhandler">RecursiveJobHandler</a></li>
-<li><a href="#_transferprocessmanagment">TransferProcessManagment</a></li>
+<li><a href="#_transferprocessmanagement">TransferProcessManagement</a></li>
 </ul>
 </li>
 <li><a href="#_irs_api">IRS API</a>
@@ -540,7 +540,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h3 id="_component_diagram_2">Component diagram</h3>
 <div class="imageblock">
 <div class="content">
-<img src="level-1.svg" alt="level 1" width="671" height="845">
+<img src="level-1.svg" alt="level 1" width="1228" height="613">
 </div>
 </div>
 </div>
@@ -586,7 +586,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>TransferProcessManager</strong></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The TransferProcessManager handles the outgoing requests to the AASProxy.</p>
+<p>The TransferProcessManager handles the outgoing requests to the various data services.
+A job is processed in this order:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -597,16 +598,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><strong>RecursiveJobHandler</strong> requesting for AAS via the Digital Twin registry.</p>
 </li>
 <li>
-<p>Analyzing the structure of the AAS response by collecting the AssemblyPartRelationship Aspects</p>
+<p>Analyzing the structure of the AAS response by collecting the traversal aspect.</p>
 </li>
 <li>
-<p>Requesting for SubmodelEndpoints for given AssemblyPartRelationship children</p>
+<p>Requesting submodel data for given items of next level.</p>
 </li>
 <li>
 <p>Recursively iteration over step 2-4 until an abort criterion is reached.</p>
 </li>
 <li>
-<p>Assembles the complete item graph</p>
+<p>Assembles the complete item graph.</p>
 </li>
 </ol>
 </div></div></td>
@@ -620,8 +621,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">The JobStore is the database where the jobs with the information about the requested item are stored.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>AASProxy</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The AASProxy is the interface to the EDC Network. It provides an interface for the Asset Administration Shells and for the Submodels.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Digital Twin Client</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Digital Twin Client is the interface to the Digital Twin Registry. It provides an interface for the Asset Administration Shells.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EDC Client</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The EDC Client is used to communicate with the EDC network, negotiate contracts and retrieve submodel data.</p></td>
 </tr>
 </tbody>
 </table>
@@ -634,7 +639,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="_irs_controller">IRS controller</h3>
 <div class="paragraph">
-<p>The IRS REST controller to provide a RESTful web service.</p>
+<p>The IRS REST controller is used to provide a RESTful web service.</p>
 </div>
 <div class="sect3">
 <h4 id="_component_diagram_3">Component diagram</h4>
@@ -730,7 +735,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect2">
-<h3 id="_transferprocessmanagment">TransferProcessManagment</h3>
+<h3 id="_transferprocessmanagement">TransferProcessManagement</h3>
 <div class="paragraph">
 <p>The TransferProcessManager creates executions and provides them to the executor service. Each execution contains HTTP requests to the asset administration shell registry and to the submodel interface.</p>
 </div>
@@ -811,7 +816,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-03-30 10:37:26 UTC
+Last updated 2023-05-05 10:21:04 UTC
 </div>
 </div>
 </body>

@@ -605,10 +605,10 @@ JWT token should also contain two fields:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>'view irs' role inside resource_access claim,</p>
+<p><code>view_irs</code> role inside <code>resource_access</code> claim,</p>
 </li>
 <li>
-<p>bpn claim which is equal to the configuration value from 'API_ALLOWED_BPN' property</p>
+<p>BPN claim which is equal to the configuration value from <code>API_ALLOWED_BPN</code> property</p>
 </li>
 </ul>
 </div>
@@ -885,7 +885,7 @@ In case the model of the persisted data (Jobs) changes, data is dropped and Jobs
 <p>For local testing purposes, there is an additional configuration file called <code>application-local.yml</code>. Values can be overriden there to support the local dev environment.</p>
 </div>
 <div class="paragraph">
-<p>Other profiles should be avoided. Instead, any value that might need to change in a runtime environment must be overridable using environment variables. The operator must have total control over the configuration of the IRS.</p>
+<p>Other profiles should be avoided. Instead, the configuration can be overwritten using Spring&#8217;s external configuration mechanism (see <a href="https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html" class="bare">https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html</a>). The operator must have total control over the configuration of the IRS.</p>
 </div>
 </div>
 </div>
@@ -989,7 +989,7 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-03-30 10:37:26 UTC
+Last updated 2023-05-05 10:21:04 UTC
 </div>
 </div>
 </body>

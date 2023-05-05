@@ -722,9 +722,15 @@ You can define the URLs as well as most of the secrets yourself.</p>
             <span class="na">authorization-grant-type</span><span class="pi">:</span> <span class="s">client_credentials</span>
             <span class="na">client-id</span><span class="pi">:</span> <span class="s">${KEYCLOAK_OAUTH2_CLIENT_ID}</span> <span class="c1"># OAuth2 client ID used to authenticate with the IAM</span>
             <span class="na">client-secret</span><span class="pi">:</span> <span class="s">${KEYCLOAK_OAUTH2_CLIENT_SECRET}</span> <span class="c1"># OAuth2 client secret used to authenticate with the IAM</span>
+          <span class="na">portal</span><span class="pi">:</span>
+            <span class="na">authorization-grant-type</span><span class="pi">:</span> <span class="s">client_credentials</span>
+            <span class="na">client-id</span><span class="pi">:</span> <span class="s">${PORTAL_OAUTH2_CLIENT_ID}</span> <span class="c1"># OAuth2 client ID used to authenticate with the IAM</span>
+            <span class="na">client-secret</span><span class="pi">:</span> <span class="s">${PORTAL_OAUTH2_CLIENT_SECRET}</span> <span class="c1"># OAuth2 client secret used to authenticate with the IAM</span>
         <span class="na">provider</span><span class="pi">:</span>
           <span class="na">keycloak</span><span class="pi">:</span>
             <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
+          <span class="na">portal</span><span class="pi">:</span>
+            <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${PORTAL_OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
       <span class="na">resourceserver</span><span class="pi">:</span>
         <span class="na">jwt</span><span class="pi">:</span>
           <span class="na">jwk-set-uri</span><span class="pi">:</span> <span class="s">${KEYCLOAK_OAUTH2_JWK_SET_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request the JWK set</span>
@@ -817,7 +823,6 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">registry</span><span class="pi">:</span>
         <span class="na">baseConfig</span><span class="pi">:</span> <span class="s">default</span>
 
-
 <span class="na">edc</span><span class="pi">:</span>
   <span class="na">controlplane</span><span class="pi">:</span>
     <span class="na">request-ttl</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_REQUEST_TTL:PT10M}</span> <span class="c1"># How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration</span>
@@ -846,6 +851,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span> <span class="c1"># Set to false to disable caching</span>
       <span class="na">ttl</span><span class="pi">:</span> <span class="s">P1D</span> <span class="c1"># Time after which a cached Item is no longer valid and the real catalog is called instead</span>
       <span class="na">maxCachedItems</span><span class="pi">:</span> <span class="m">64000</span> <span class="c1"># Maximum amount of cached catalog items</span>
+    <span class="na">policies</span><span class="pi">:</span>
+      <span class="na">allowedNames</span><span class="pi">:</span> <span class="s">ID 3.0 Trace, ID 3.1 Trace, R2_Traceability</span>
 
 <span class="na">digitalTwinRegistry</span><span class="pi">:</span>
   <span class="na">descriptorEndpoint</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_DESCRIPTOR_URL:}</span> <span class="c1"># The endpoint to retrieve AAS descriptors from the DTR, must contain the placeholder {aasIdentifier}</span>
@@ -887,7 +894,23 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the bpdm client</span>
     <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the bpdm client</span>
 
-<span class="na">apiAllowedBpn</span><span class="pi">:</span> <span class="s">${API_ALLOWED_BPN:BPNL00000003CRHK}</span></code></pre>
+<span class="c1"># ESS Module specific properties</span>
+<span class="na">ess</span><span class="pi">:</span>
+  <span class="na">localBpn</span><span class="pi">:</span> <span class="s">${ESS_LOCAL_BPN:}</span> <span class="c1"># BPN value of product - used during EDC notification communication</span>
+  <span class="na">localEdcEndpoint</span><span class="pi">:</span> <span class="s">${EDC_PROVIDER_URL:}</span> <span class="c1"># EDC Provider Url - used during EDC notification communication</span>
+  <span class="na">irs</span><span class="pi">:</span>
+    <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${IRS_URL:}"</span> <span class="c1"># IRS Url to connect with</span>
+  <span class="na">discovery</span><span class="pi">:</span>
+    <span class="na">endpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${DISCOVERY_URL:}"</span> <span class="c1"># Endpoint to retrieve EDC base url address for BPN</span>
+    <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">portal</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
+    <span class="na">timeout</span><span class="pi">:</span>
+      <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the discovery client</span>
+      <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the discovery client</span>
+    <span class="na">mockEdcAddress</span><span class="pi">:</span> <span class="pi">{}</span> <span class="c1"># Mocked EDC BPN Addresses</span>
+    <span class="na">mockEdcResult</span><span class="pi">:</span> <span class="pi">{}</span> <span class="c1"># Mocked BPN Investigation results</span>
+    <span class="na">mockRecursiveEdcAsset</span><span class="pi">:</span> <span class="c1"># Mocked BPN Recursive Investigation results</span>
+
+<span class="na">apiAllowedBpn</span><span class="pi">:</span> <span class="s">${API_ALLOWED_BPN:BPNL00000003CRHK}</span> <span class="c1"># BPN value that is allowed to access IRS API</span></code></pre>
 </div>
 </div>
 </div>
@@ -897,31 +920,11 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="yaml">          <span class="na">labelSelector</span><span class="pi">:</span>
-            <span class="na">matchExpressions</span><span class="pi">:</span>
-              <span class="pi">-</span> <span class="na">key</span><span class="pi">:</span> <span class="s">app.kubernetes.io/name</span>
-                <span class="na">operator</span><span class="pi">:</span> <span class="s">DoesNotExist</span>
-          <span class="na">topologyKey</span><span class="pi">:</span> <span class="s">kubernetes.io/hostname</span>
-
-<span class="c1"># Following Catena-X Helm Best Practices @url: https://catenax-ng.github.io/docs/kubernetes-basics/helm</span>
-<span class="c1"># @url: https://github.com/helm/charts/blob/master/stable/nginx-ingress/values.yaml#L210</span>
-<span class="na">livenessProbe</span><span class="pi">:</span>
-  <span class="na">failureThreshold</span><span class="pi">:</span> <span class="m">6</span>
-  <span class="na">initialDelaySeconds</span><span class="pi">:</span> <span class="m">30</span>
-  <span class="na">periodSeconds</span><span class="pi">:</span> <span class="m">10</span>
-  <span class="na">successThreshold</span><span class="pi">:</span> <span class="m">1</span>
-  <span class="na">timeoutSeconds</span><span class="pi">:</span> <span class="m">1</span>
-<span class="na">readinessProbe</span><span class="pi">:</span>
-  <span class="na">failureThreshold</span><span class="pi">:</span> <span class="m">3</span>
-  <span class="na">initialDelaySeconds</span><span class="pi">:</span> <span class="m">30</span>
-  <span class="na">periodSeconds</span><span class="pi">:</span> <span class="m">10</span>
-  <span class="na">successThreshold</span><span class="pi">:</span> <span class="m">1</span>
-  <span class="na">timeoutSeconds</span><span class="pi">:</span> <span class="m">1</span>
-
-<span class="c1">#####################</span>
+<pre class="rouge highlight"><code data-lang="yaml"><span class="c1">#####################</span>
 <span class="c1"># IRS Configuration #</span>
 <span class="c1">#####################</span>
 <span class="na">irsUrl</span><span class="pi">:</span>  <span class="c1"># "https://&lt;irs-url&gt;"</span>
+<span class="na">bpn</span><span class="pi">:</span>  <span class="c1"># BPN for this IRS instance; only users with this BPN are allowed to access the API</span>
 <span class="na">ingress</span><span class="pi">:</span>
   <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
 
@@ -958,7 +961,13 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">clientSecret</span><span class="pi">:</span>  <span class="c1"># &lt;keycloak-client-secret&gt;</span>
     <span class="na">clientTokenUri</span><span class="pi">:</span>  <span class="c1"># &lt;keycloak-token-uri&gt;</span>
     <span class="na">jwkSetUri</span><span class="pi">:</span>  <span class="c1"># &lt;keycloak-jwkset-uri&gt;</span>
+<span class="na">portal</span><span class="pi">:</span>
+  <span class="na">oauth2</span><span class="pi">:</span>
+    <span class="na">clientId</span><span class="pi">:</span>  <span class="c1"># &lt;portal-client-id&gt;</span>
+    <span class="na">clientSecret</span><span class="pi">:</span>  <span class="c1"># &lt;portal-client-secret&gt;</span>
 <span class="na">edc</span><span class="pi">:</span>
+  <span class="na">provider</span><span class="pi">:</span>
+    <span class="na">host</span><span class="pi">:</span>  <span class="c1"># EDC Provider Host URL</span>
   <span class="na">controlplane</span><span class="pi">:</span>
     <span class="na">endpoint</span><span class="pi">:</span>
       <span class="na">data</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>  <span class="c1"># &lt;edc-controlplane-endpoint-data&gt;</span>
@@ -982,6 +991,17 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>  <span class="c1"># Set to false to disable caching</span>
       <span class="na">ttl</span><span class="pi">:</span> <span class="s">P1D</span>  <span class="c1"># Time after which a cached Item is no longer valid and the real catalog is called instead</span>
       <span class="na">maxCachedItems</span><span class="pi">:</span> <span class="m">64000</span>  <span class="c1"># Maximum amount of cached catalog items</span>
+    <span class="na">policies</span><span class="pi">:</span>
+      <span class="na">allowedNames</span><span class="pi">:</span> <span class="s">ID 3.0 Trace, ID 3.1 Trace, R2_Traceability</span>
+
+<span class="na">discovery</span><span class="pi">:</span>
+  <span class="na">endpoint</span><span class="pi">:</span>  <span class="c1"># EDC Discovery Service endpoint</span>
+  <span class="na">mockEdcAddress</span><span class="pi">:</span>  <span class="c1"># Map of BPNs and EDC Provider URLs - this overrides any real Discovery Service for the given BPN</span>
+  <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">portal</span>  <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
+
+<span class="na">ess</span><span class="pi">:</span>
+  <span class="na">mockEdcResult</span><span class="pi">:</span>  <span class="c1"># Map of BPNs and YES/NO strings - this configures the ESS mock response in case it called to investigate a BPN</span>
+  <span class="na">mockRecursiveEdcAsset</span><span class="pi">:</span>  <span class="c1"># List of BPNs for which the special, mocked notification asset should be used</span>
 
 <span class="na">config</span><span class="pi">:</span>
   <span class="c1"># If true, the config provided below will completely replace the configmap.</span>
@@ -1062,7 +1082,28 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">persistence</span><span class="pi">:</span>
     <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
 
-  <span class="na">user</span><span class="pi">:</span>  <span class="c1"># &lt;grafana-username&gt;</span></code></pre>
+  <span class="na">user</span><span class="pi">:</span>  <span class="c1"># &lt;grafana-username&gt;</span>
+  <span class="na">password</span><span class="pi">:</span>  <span class="c1"># &lt;grafana-password&gt;</span>
+
+  <span class="na">admin</span><span class="pi">:</span>
+    <span class="na">existingSecret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-irs-helm"</span>
+    <span class="na">userKey</span><span class="pi">:</span> <span class="s">grafanaUser</span>
+    <span class="na">passwordKey</span><span class="pi">:</span> <span class="s">grafanaPassword</span>
+
+  <span class="na">datasources</span><span class="pi">:</span>
+    <span class="na">datasources.yaml</span><span class="pi">:</span>
+      <span class="na">apiVersion</span><span class="pi">:</span> <span class="m">1</span>
+      <span class="na">datasources</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Prometheus</span>
+          <span class="na">type</span><span class="pi">:</span> <span class="s">prometheus</span>
+          <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">http://{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-prometheus-server"</span>
+          <span class="na">isDefault</span><span class="pi">:</span> <span class="no">true</span>
+
+  <span class="na">dashboardProviders</span><span class="pi">:</span>
+    <span class="na">dashboardproviders.yaml</span><span class="pi">:</span>
+      <span class="na">apiVersion</span><span class="pi">:</span> <span class="m">1</span>
+      <span class="na">providers</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s1">'</span><span class="s">default'</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1214,6 +1255,9 @@ The <strong>key</strong> of each entry is the <code>Base64</code> encoded URN of
       <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://&lt;controlplane-url&gt;"</span>
     <span class="na">dataplane</span><span class="pi">:</span>
       <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://&lt;dataplane-url&gt;"</span>
+    <span class="na">vault</span><span class="pi">:</span>
+      <span class="na">hashicorp</span><span class="pi">:</span>
+        <span class="na">token</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;vault-token&gt;"</span>
   <span class="na">configuration</span><span class="pi">:</span>
     <span class="na">properties</span><span class="pi">:</span> <span class="pi">|-</span>
       <span class="s">edc.oauth.client.id=&lt;daps-client-id&gt;</span>
@@ -1222,7 +1266,6 @@ The <strong>key</strong> of each entry is the <code>Base64</code> encoded URN of
       <span class="s">edc.oauth.certificate.alias=&lt;daps-certificate-name&gt;</span>
       <span class="s">edc.oauth.token.url=&lt;daps-token-url&gt;</span>
       <span class="s">edc.vault.hashicorp.url=&lt;vault-url&gt;</span>
-      <span class="s">edc.vault.hashicorp.token=&lt;vault-token&gt;</span>
       <span class="s">edc.vault.hashicorp.api.secret.path=&lt;vault-secret-store-path&gt;</span>
       <span class="s">edc.data.encryption.keys.alias=&lt;daps-privatekey-name&gt;</span>
       <span class="s">edc.data.encryption.algorithm=NONE</span>
@@ -1235,6 +1278,9 @@ The <strong>key</strong> of each entry is the <code>Base64</code> encoded URN of
     <span class="na">api</span><span class="pi">:</span>
       <span class="na">auth</span><span class="pi">:</span>
         <span class="na">key</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;edc-api-key&gt;"</span>
+    <span class="na">vault</span><span class="pi">:</span>
+      <span class="na">hashicorp</span><span class="pi">:</span>
+        <span class="na">token</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;vault-token&gt;"</span>
   <span class="c1">## Ingress declaration to expose the network service.</span>
   <span class="na">ingresses</span><span class="pi">:</span>
     <span class="pi">-</span> <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
@@ -1263,7 +1309,6 @@ The <strong>key</strong> of each entry is the <code>Base64</code> encoded URN of
       <span class="s">edc.oauth.certificate.alias=&lt;daps-certificate-name&gt;</span>
       <span class="s">edc.oauth.token.url=&lt;daps-token-url&gt;</span>
       <span class="s">edc.vault.hashicorp.url=&lt;vault-url&gt;</span>
-      <span class="s">edc.vault.hashicorp.token=&lt;vault-token&gt;</span>
       <span class="s">edc.vault.hashicorp.api.secret.path=&lt;vault-secret-store-path&gt;</span></code></pre>
 </div>
 </div>
@@ -1428,7 +1473,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-03-30 10:37:26 UTC
+Last updated 2023-05-05 10:21:04 UTC
 </div>
 </div>
 </body>
