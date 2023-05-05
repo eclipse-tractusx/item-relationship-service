@@ -76,18 +76,11 @@ dependencies:
     repository: "file://subcharts/semantic-hub"
     condition: install.semanticHub
 
-  # Digital Twin Registry Database
-  - name: postgresql
-    alias: digital-twin-registry-database
-    version: 12.0.0
-    repository: https://charts.bitnami.com/bitnami
-    condition: install.digitalTwin
-
   # Digital Twin Registry
-  - name: digital-twin-registry
+  - name: registry
     alias: digital-twin-registry
-    version: 0.0.1
-    repository: "file://subcharts/digital-twin-registry"
+    version: 0.2.14
+    repository: https://eclipse-tractusx.github.io/charts/dev
     condition: install.digitalTwin
 
   # KeyCloak Service
