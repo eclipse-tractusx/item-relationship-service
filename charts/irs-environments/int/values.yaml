@@ -3,6 +3,7 @@ irs-helm:
   # IRS Configuration #
   #####################
   irsUrl: "https://irs.int.demo.catena-x.net"
+  bpn: BPNL00000003CRHK
   ingress:
     enabled: true
     className: "nginx"
@@ -23,27 +24,31 @@ irs-helm:
     url: https://semantics.int.demo.catena-x.net/registry
   semanticshub:
     url: https://semantics.int.demo.catena-x.net/hub/api/v1/models
+    pageSize: "200"
   bpdm:
     url: https://partners-pool.int.demo.catena-x.net
-  minioUser: secret-placeholder
-  minioPassword: secret-placeholder
+  minioUser: <path:traceability-irs/data/int/minio#minioUser>
+  minioPassword: <path:traceability-irs/data/int/minio#minioPassword>
   keycloak:
     oauth2:
-      clientId: secret-placeholder
-      clientSecret: secret-placeholder
-      clientTokenUri: secret-placeholder
-      jwkSetUri: secret-placeholder
+      clientId: <path:traceability-irs/data/int/keycloak/oauth2#clientId>
+      clientSecret: <path:traceability-irs/data/int/keycloak/oauth2#clientSecret>
+      clientTokenUri: <path:traceability-irs/data/int/keycloak/oauth2#tokenUri>
+      jwkSetUri: <path:traceability-irs/data/int/keycloak/oauth2#jwkSetUri>
   edc:
+    provider:
+      host:
     controlplane:
       apikey:
         secret: "123456"
+
 
   #######################
   # Minio Configuration #
   #######################
   minio:
-    rootUser: secret-placeholder
-    rootPassword: secret-placeholder
+    rootUser: <path:traceability-irs/data/int/minio#minioUser>
+    rootPassword: <path:traceability-irs/data/int/minio#minioPassword>
 
   #########################
   # Grafana Configuration #
@@ -59,8 +64,8 @@ irs-helm:
             - "irs-grafana.int.demo.catena-x.net"
           secretName: tls-secret
 
-    user: secret-placeholder
-    password: secret-placeholder
+    user: <path:traceability-irs/data/int/grafana#username>
+    password: <path:traceability-irs/data/int/grafana#password>
 
   ############################
   # Prometheus Configuration #
@@ -74,8 +79,8 @@ irs-edc-consumer:
   ##############################
   postgresql:
     auth:
-      postgresPassword: secret-placeholder
-      password: secret-placeholder
+      postgresPassword: <path:traceability-irs/data/int/controlplane#databasepassword>
+      password: <path:traceability-irs/data/int/controlplane#databasepassword>
 
   ##################################
   # EDC Controlplane Configuration #
@@ -102,7 +107,7 @@ irs-edc-consumer:
 
     edc:
       postgresql:
-        password: secret-placeholder
+        password: <path:traceability-irs/data/int/controlplane#databasepassword>
       transfer:
         proxy:
           token:
@@ -127,7 +132,7 @@ irs-edc-consumer:
         edc.oauth.certificate.alias=irs-int-daps-cert
         edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
         edc.vault.hashicorp.url=https://vault.demo.catena-x.net
-        edc.vault.hashicorp.token=secret-placeholder
+        edc.vault.hashicorp.token=<path:traceability-irs/data/int/controlplane#vaultToken>
         edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
         edc.data.encryption.keys.alias=irs-int-daps-key
         edc.data.encryption.algorithm=NONE
@@ -178,5 +183,5 @@ irs-edc-consumer:
         edc.oauth.certificate.alias=irs-int-daps-cert
         edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
         edc.vault.hashicorp.url=https://vault.demo.catena-x.net
-        edc.vault.hashicorp.token=secret-placeholder
+        edc.vault.hashicorp.token=<path:traceability-irs/data/int/controlplane#vaultToken>
         edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
