@@ -27,6 +27,6 @@ package org.eclipse.tractusx.irs.edc.client.exceptions;
  */
 public class UsagePolicyException extends EdcClientException {
     public UsagePolicyException(final String itemId) {
-        super("Asset " + itemId + " cannot be consumed as the offered policies do not match the IRS configuration");
+        super("Consumption of asset "+ itemId + "  is not permitted as the required catalog offer policies do not comply with defined IRS policies.");
     }
 }
