@@ -31,7 +31,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -47,10 +49,12 @@ import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.dataspaceconnector.policy.model.PolicyRegistrationTypes;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -98,8 +102,11 @@ class SubmodelFacadeWiremockTest {
 
         final InMemoryCatalogCache catalogCache = new InMemoryCatalogCache(
                 new EDCCatalogFacade(controlPlaneClient, config), cacheConfig);
+
+        final PolicyCheckerService policyCheckerService = mock(PolicyCheckerService.class);
+        when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
-                config, catalogCache);
+                config, catalogCache, policyCheckerService);
 
         final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
         final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();

@@ -38,6 +38,8 @@ import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.common.JsonParseException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
@@ -92,6 +94,28 @@ class SubmodelDelegateTest {
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.SCHEMA_VALIDATION);
+    }
+
+    @Test
+    void shouldCatchUsagePolicyExceptionAndPutTombstone() throws EdcClientException {
+        // given
+        final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder().shell(shellDescriptor(
+                List.of(submodelDescriptor("urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization",
+                                "testSerialPartTypizationEndpoint"),
+                        submodelDescriptor("urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship",
+                                "testAssemblyPartRelationshipEndpoint"))));
+
+        // when
+        when(submodelFacade.getSubmodelRawPayload(any())).thenThrow(new UsagePolicyException("itemId"));
+        final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels,
+                jobParameterCollectAspects(), new AASTransferProcess(), "itemId");
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getTombstones()).hasSize(2);
+        assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
+                ProcessStep.USAGE_POLICY_VALIDATION);
     }
 
     @Test

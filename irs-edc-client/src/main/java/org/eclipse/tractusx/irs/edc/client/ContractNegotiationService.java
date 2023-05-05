@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationId;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
@@ -38,6 +39,7 @@ import org.eclipse.tractusx.irs.edc.client.model.TransferProcessDataDestination;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessId;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -54,11 +56,16 @@ public class ContractNegotiationService {
 
     private final CatalogCache catalogCache;
 
+    private final PolicyCheckerService policyCheckerService;
+
     public NegotiationResponse negotiate(final String providerConnectorUrl, final String target)
-            throws ContractNegotiationException {
+            throws ContractNegotiationException, UsagePolicyException {
 
         final CatalogItem catalogItem = catalogCache.getCatalogItem(providerConnectorUrl, target).orElseThrow();
-
+        if (!policyCheckerService.isValid(catalogItem.getPolicy())) {
+            log.info("Policy was not allowed, canceling negotiation.");
+            throw new UsagePolicyException(catalogItem.getItemId());
+        }
         final ContractOfferRequest contractOfferRequest = ContractOfferRequest.builder()
                                                                               .offerId(
                                                                                       catalogItem.getItemId())

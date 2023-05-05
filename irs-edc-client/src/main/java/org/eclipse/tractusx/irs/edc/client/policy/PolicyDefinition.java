@@ -20,26 +20,23 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component.enums;
+package org.eclipse.tractusx.irs.edc.client.policy;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 
 /**
- * Process step information
+ * Policy Definition that is accepted by IRS.
  */
-@Getter
-@AllArgsConstructor
-public enum ProcessStep {
-    SUBMODEL_REQUEST("SubmodelRequest"),
-    DIGITAL_TWIN_REQUEST("DigitalTwinRequest"),
-    SCHEMA_VALIDATION("SchemaValidation"),
-    SCHEMA_REQUEST("SchemaRequest"),
-    BPDM_REQUEST("BpdmRequest"),
-    BPDM_VALIDATION("BpdmValidation"),
-    USAGE_POLICY_VALIDATION("UsagePolicyValidation");
+@Builder
+@Data
+public class PolicyDefinition {
 
-    @JsonValue
-    private final String value;
+    private String permissionActionType;
+    private String constraintType;
+    private String leftExpressionValue;
+    private String rightExpressionValue;
+    private String constraintOperator;
+
+
 }
