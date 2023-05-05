@@ -172,6 +172,8 @@ edc:
       enabled: true  # Set to false to disable caching
       ttl: P1D  # Time after which a cached Item is no longer valid and the real catalog is called instead
       maxCachedItems: 64000  # Maximum amount of cached catalog items
+    policies:
+      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability
 
 discovery:
   endpoint:  # EDC Discovery Service endpoint

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.3.0] - 2023-05-05
+### Changed
+- Updated IRS to version 2.6.0
+
 ## [5.2.0] - 2023-04-28
 ### Added
 - New config entries for portal user, used to call discovery service
