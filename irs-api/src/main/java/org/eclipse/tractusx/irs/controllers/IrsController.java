@@ -190,7 +190,12 @@ public class IrsController {
                summary = "Cancel job for requested jobId.",
                security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Item Relationship Service" })
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with requested jobId canceled."),
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with requested jobId canceled.",
+                                        content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                             schema = @Schema(implementation = Job.class),
+                                                             examples = @ExampleObject(name = "complete",
+                                                                                       ref = "#/components/examples/canceled-job-response"))
+                                        }),
                             @ApiResponse(responseCode = "400", description = "Cancel job failed.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),

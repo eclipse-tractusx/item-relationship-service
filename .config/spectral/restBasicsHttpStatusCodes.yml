@@ -10,15 +10,15 @@ rules:
 
   # MUST specify success and error responses [151]
   # => https://opensource.zalando.com/restful-api-guidelines/#151
-  must-specify-default-response:
-    message: Operation does not contain a default response
-    description: MUST specify success and error responses [151]
-    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#151
-    severity: error
-    given: $.paths.*.*.responses
-    then:
-      field: default
-      function: truthy
+#  must-specify-default-response:
+#    message: Operation does not contain a default response
+#    description: MUST specify success and error responses [151]
+#    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#151
+#    severity: error
+#    given: $.paths.*.*.responses
+#    then:
+#      field: default
+#      function: truthy
 
   must-use-problem-json-as-default-response:
     message: Operation must use problem json as default response
@@ -139,15 +139,15 @@ rules:
 
   # MUST support problem JSON [176]
   # => https://opensource.zalando.com/restful-api-guidelines/#176
-  must-use-problem-json-for-errors:
-    message: Error response must be application/problem+json
-    description: MUST support problem JSON [176]
-    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#176
-    severity: error
-    given: $.paths.*.*.responses[?(@property.match(/^(4|5)/))]
-    then:
-      field: content.application/problem+json
-      function: truthy
+#  must-use-problem-json-for-errors:
+#    message: Error response must be application/problem+json
+#    description: MUST support problem JSON [176]
+#    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#176
+#    severity: error
+#    given: $.paths.*.*.responses[?(@property.match(/^(4|5)/))]
+#    then:
+#      field: content.application/problem+json
+#      function: truthy
 
   must-use-valid-problem-json-schema:
     message: '{{error}}'

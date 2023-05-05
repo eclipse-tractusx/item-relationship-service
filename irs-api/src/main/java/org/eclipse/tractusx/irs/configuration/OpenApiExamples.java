@@ -115,6 +115,7 @@ public class OpenApiExamples {
         components.addExamples("partial-job-result", createPartialJobResult());
         components.addExamples("canceled-job-result", createCanceledJobResult());
         components.addExamples("failed-job-result", createFailedJobResult());
+        components.addExamples("canceled-job-response", createCanceledJobResponse());
         components.addExamples("complete-job-list-processing-state", createJobListProcessingState());
         components.addExamples("aspect-models-list", createAspectModelsResult());
     }
@@ -273,6 +274,16 @@ public class OpenApiExamples {
                                                                    .build()))
                                       .jobsInBatchChecksum(1)
                                       .batchProcessingState(ProcessingState.COMPLETED).build());
+    }
+
+    private Example createCanceledJobResponse() {
+        return toExample(Job.builder()
+                .id(UUID.fromString(JOB_HANDLE_ID_1))
+                .globalAssetId(createGAID(GLOBAL_ASSET_ID))
+                .state(JobState.CANCELED)
+                .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
+                .startedOn(EXAMPLE_ZONED_DATETIME)
+                .completedOn(EXAMPLE_ZONED_DATETIME).build());
     }
 
     private Submodel createSubmodel() {
