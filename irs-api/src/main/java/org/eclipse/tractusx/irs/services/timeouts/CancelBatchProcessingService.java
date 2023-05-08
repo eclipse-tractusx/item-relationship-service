@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
+import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
@@ -59,6 +60,19 @@ public class CancelBatchProcessingService {
     public void cancelNotFinishedJobsInBatch(final UUID batchId) {
         log.info("Start scheduled timeout process for batchId: {}", batchId.toString());
         batchStore.find(batchId).ifPresent(batch -> {
+            if (isBatchNotCompleted(batch.getBatchState())) {
+                cancelNotFinishedJobs(batch.getJobProgressList().stream().map(JobProgress::getJobId).toList());
+            }
+        });
+    }
+
+    public void cancelNotFinishedJobsInBatchOrder(final UUID batchOrderId) {
+        log.info("Canceling processing of jobs in order with id: {}", batchOrderId.toString());
+        final List<Batch> batches = batchStore.findAll()
+                                              .stream()
+                                              .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
+                                              .toList();
+        batches.forEach(batch -> {
             if (isBatchNotCompleted(batch.getBatchState())) {
                 cancelNotFinishedJobs(batch.getJobProgressList().stream().map(JobProgress::getJobId).toList());
             }

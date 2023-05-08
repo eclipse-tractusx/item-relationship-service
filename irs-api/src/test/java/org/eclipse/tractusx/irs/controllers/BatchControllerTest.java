@@ -27,6 +27,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,6 +41,7 @@ import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
 import org.eclipse.tractusx.irs.services.AuthorizationService;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
+import org.eclipse.tractusx.irs.services.timeouts.CancelBatchProcessingService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +64,9 @@ class BatchControllerTest {
 
     @MockBean
     private QueryBatchService queryBatchService;
+
+    @MockBean
+    private CancelBatchProcessingService cancelBatchProcessingService;
 
     @MockBean(name = "authorizationService")
     private AuthorizationService authorizationService;
@@ -135,5 +140,18 @@ class BatchControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(content().string(containsString(orderId.toString())))
                     .andExpect(content().string(containsString(batchId.toString())));
+    }
+
+    @Test
+    @WithMockUser(authorities = "view_irs")
+    void shouldCancelBatchOrder() throws Exception {
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+
+        final UUID orderId = UUID.randomUUID();
+        when(queryBatchService.findOrderById(orderId)).thenReturn(BatchOrderResponse.builder().orderId(orderId).build());
+
+        this.mockMvc.perform(put("/irs/orders/" + orderId))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(containsString(orderId.toString())));
     }
 }
