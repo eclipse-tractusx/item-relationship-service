@@ -88,10 +88,10 @@ public class BatchOrderEventListener {
                                                                                       .equals(batchOrder.getBatchOrderId()))
                                                                 .map(Batch::getBatchState)
                                                                 .toList();
-            final ProcessingState batchState = calculateBatchOrderState(batchStates);
-            batchOrder.setBatchOrderState(batchState);
+            final ProcessingState batchOrderState = calculateBatchOrderState(batchStates);
+            batchOrder.setBatchOrderState(batchOrderState);
             batchOrderStore.save(batchOrder.getBatchOrderId(), batchOrder);
-            if (ProcessingState.COMPLETED.equals(batchState) || ProcessingState.ERROR.equals(batchState)) {
+            if (ProcessingState.COMPLETED.equals(batchOrderState) || ProcessingState.ERROR.equals(batchOrderState)) {
                 applicationEventPublisher.publishEvent(
                         new BatchOrderProcessingFinishedEvent(batchOrder.getBatchOrderId(),
                                 batchOrder.getBatchOrderState(), batchOrder.getCallbackUrl()));
