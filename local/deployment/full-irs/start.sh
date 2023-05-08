@@ -18,9 +18,6 @@ echo -e "${BLUE}INSTALL_IRS: ${INSTALL_IRS}${NC}"
 echo -e "${BLUE}Update chart dependency${NC}"
 helm dependency update
 
-echo -e "${BLUE}Build chart dependency${NC}"
-helm dependency build
-
 if $INSTALL_EDC
 then
     sh ./installEDC.sh 

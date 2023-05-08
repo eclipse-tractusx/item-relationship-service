@@ -20,26 +20,13 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component.enums;
-
-import com.fasterxml.jackson.annotation.JsonValue;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+package org.eclipse.tractusx.irs.edc.client.exceptions;
 
 /**
- * Process step information
+ * Usage Policy Exception errors in the contract negotiation.
  */
-@Getter
-@AllArgsConstructor
-public enum ProcessStep {
-    SUBMODEL_REQUEST("SubmodelRequest"),
-    DIGITAL_TWIN_REQUEST("DigitalTwinRequest"),
-    SCHEMA_VALIDATION("SchemaValidation"),
-    SCHEMA_REQUEST("SchemaRequest"),
-    BPDM_REQUEST("BpdmRequest"),
-    BPDM_VALIDATION("BpdmValidation"),
-    USAGE_POLICY_VALIDATION("UsagePolicyValidation");
-
-    @JsonValue
-    private final String value;
+public class UsagePolicyException extends EdcClientException {
+    public UsagePolicyException(final String itemId) {
+        super("Consumption of asset " + itemId + "  is not permitted as the required catalog offer policies do not comply with defined IRS policies.");
+    }
 }

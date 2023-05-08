@@ -33,11 +33,13 @@ import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationId;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessId;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -59,13 +61,16 @@ class ContractNegotiationServiceTest {
     @Mock
     private InMemoryCatalogCache catalogCache;
 
+    @Mock
+    private PolicyCheckerService policyCheckerService;
+
     @Test
-    void shouldNegotiateSuccessfully() throws ContractNegotiationException {
+    void shouldNegotiateSuccessfully() throws ContractNegotiationException, UsagePolicyException {
         // arrange
         final var assetId = "testTarget";
         final CatalogItem catalogItem = CatalogItem.builder().itemId(assetId).assetPropId(assetId).build();
         when(catalogCache.getCatalogItem(CONNECTOR_URL, assetId)).thenReturn(Optional.ofNullable(catalogItem));
-
+        when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 NegotiationId.builder().value("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.completedFuture(
@@ -90,7 +95,7 @@ class ContractNegotiationServiceTest {
         final var assetId = "testTarget";
         final CatalogItem catalogItem = CatalogItem.builder().itemId(assetId).assetPropId(assetId).build();
         when(catalogCache.getCatalogItem(CONNECTOR_URL, assetId)).thenReturn(Optional.ofNullable(catalogItem));
-
+        when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 NegotiationId.builder().value("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.failedFuture(
@@ -109,6 +114,18 @@ class ContractNegotiationServiceTest {
 
         // act & assert
         assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, assetId)).isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    void shouldThrowErrorWhenPolicyCheckerReturnFalse() {
+        // arrange
+        final var assetId = "testTarget";
+        final CatalogItem catalogItem = CatalogItem.builder().itemId(assetId).assetPropId(assetId).build();
+        when(catalogCache.getCatalogItem(CONNECTOR_URL, assetId)).thenReturn(Optional.ofNullable(catalogItem));
+        when(policyCheckerService.isValid(any())).thenReturn(Boolean.FALSE);
+
+        // act & assert
+        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, assetId)).isInstanceOf(EdcClientException.class);
     }
 
 }

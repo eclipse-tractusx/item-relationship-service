@@ -774,6 +774,43 @@
       "_type": "request"
     },
     {
+      "_id": "req_f3a1cd536eed4ceb8f5ef2cb77107ad9",
+      "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
+      "modified": 1683218419320,
+      "created": 1683184048412,
+      "url": "{{IRS_HOST}}/irs/jobs",
+      "name": "1.7.0 [Register Job with invalid policy] https://{environment}/irs/jobs",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n    \"aspects\": [\n        \"SerialPartTypization\"\n\t\t],\n    \"globalAssetId\": \"urn:uuid:da53d429-5770-410e-a13e-424e77952d8a\",\n\t  \"collectAspects\": true,\n    \"lookupBPNs\": false\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "oauth2",
+        "grantType": "client_credentials",
+        "accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
+        "clientId": "{{ _.CLIENT_ID }}",
+        "clientSecret": "{{ _.CLIENT_SECRET }}"
+      },
+      "metaSortKey": -1680682418386.5,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
       "_id": "req_346f0c897ae14d7e8bbe8f1288aac095",
       "parentId": "fld_216efc7a70fe40b7b25378c60c4534f9",
       "modified": 1680686177445,

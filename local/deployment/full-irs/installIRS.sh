@@ -28,7 +28,7 @@ then
 
     echo -e "${BLUE}Waiting for the deployments to be available${NC}"
     kubectl wait deployment -n irs --for condition=Available --timeout=90s semantic-hub
-    kubectl wait deployment -n irs --for condition=Available --timeout=90s digital-twin-registry
+    kubectl wait deployment -n irs --for condition=Available --timeout=90s cx-irs-dependencies-registry
     kubectl wait deployment -n irs --for condition=Available --timeout=90s keycloak
     kubectl wait deployment -n irs --for condition=Available --timeout=90s irs-provider-backend
 

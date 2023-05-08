@@ -36,6 +36,7 @@ import java.util.concurrent.Executors;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.github.resilience4j.retry.internal.InMemoryRetryRegistry;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,6 +54,9 @@ class SubmodelExponentialRetryTest {
 
     @Mock
     private RestTemplate restTemplate;
+
+    @Mock
+    private PolicyCheckerService policyCheckerService;
 
     private final RetryRegistry retryRegistry = new InMemoryRetryRegistry();
     private EdcSubmodelFacade testee;
@@ -72,7 +76,7 @@ class SubmodelExponentialRetryTest {
         final CatalogCache catalogCache = new InMemoryCatalogCache(edcCatalogFacade, cacheConfiguration);
 
         final ContractNegotiationService negotiationService = new ContractNegotiationService(controlPlaneClient,
-                config, catalogCache);
+                config, catalogCache, policyCheckerService);
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
         final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
 

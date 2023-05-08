@@ -1,5 +1,5 @@
 @hostname = localhost
-@port = 8080
+@port = 10200
 @host = {{hostname}}:{{port}}
 @contentType = application/json
 @shellDescriptorsEndPoint = /registry/shell-descriptors
