@@ -1,0 +1,97 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Release.Namespace | default "default" | quote }}
+  labels:
+    {{- include "discovery.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "discovery.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "discovery.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "discovery.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: default
+              containerPort: 8080
+              protocol: TCP
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /__admin
+              port: default
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            failureThreshold: 3
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /__admin
+              port: default
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            failureThreshold: 3
+          {{- end }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Chart.Name }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: configuration
+              mountPath: /home/wiremock/mappings/discovery_finder_request.json
+              subPath: discovery_finder_request.json
+            - name: configuration
+              mountPath: home/wiremock/__files/discovery_finder_response.json
+              subPath: discovery_finder_response.json
+            - name: configuration
+              mountPath: /home/wiremock/mappings/bpn_discovery_service_request.json
+              subPath: bpn_discovery_service_request.json
+            - name: configuration
+              mountPath: home/wiremock/__files/bpn_discovery_service_response.json
+              subPath: bpn_discovery_service_response.json
+            - name: configuration
+              mountPath: /home/wiremock/mappings/edc_discovery_request.json.json
+              subPath: edc_discovery_request.json.json
+            - name: configuration
+              mountPath: home/wiremock/__files/edc_discovery_response.json
+              subPath: edc_discovery_response.json
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: { }
+        - name: configuration
+          configMap:
+            name: {{ .Chart.Name }}
+            items:
+              - key: discovery_finder_request.json
+                path: discovery_finder_request.json
+              - key: discovery_finder_response.json
+                path: discovery_finder_response.json
+              - key: bpn_discovery_service_request.json
+                path: bpn_discovery_service_request.json
+              - key: bpn_discovery_service_response.json
+                path: bpn_discovery_service_response.json
+              - key: edc_discovery_request.json
+                path: edc_discovery_request.json
+              - key: edc_discovery_response.json
+                path: edc_discovery_response.json

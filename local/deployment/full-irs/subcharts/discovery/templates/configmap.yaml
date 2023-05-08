@@ -1,0 +1,95 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Release.Namespace | default "default" | quote }}
+  labels:
+    {{- include "discovery.labels" . | nindent 4 }}
+data:
+  discovery_finder_request.json: |-
+    {
+      "request": {
+        "method": "POST",
+        "urlPathPattern": "/api/administration/connectors/discovery/search"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "discovery_finder_response.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+
+  discovery_finder_response.json: |-
+    {
+      "endpoints": [
+        {
+          "type": "bpn",
+          "description": "Service to discover EDC to a particular BPN",
+          "endpointAddress": "https://...",
+          "documentation": "http://.../swagger/index.html",
+          "resourceId": "316417cd-0fb5-4daf-8dfa-8f68125923f1"
+        }
+      ]
+    }
+
+  edc_discovery_request.json: |-
+    {
+      "request": {
+        "method": "POST",
+        "urlPathPattern": "/discovery/api/administration/connectors/discovery"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "edc_discovery_response.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+
+  edc_discovery_response.json: |-
+    [
+      {
+        "bpn": "\\{\\{request.body.[0]\\}\\}",
+        "connectorEndpoint": [
+          "https://irs-provider-controlplane.dev.demo.catena-x.net/",
+          "https://irs-provider-controlplane2.dev.demo.catena-x.net/",
+          "https://irs-provider-controlplane3.dev.demo.catena-x.net/"
+        ]
+      }
+    ]
+
+  bpn_discovery_service_request.json: |-
+    {
+      "request": {
+        "method": "POST",
+        "urlPathPattern": "/api/administration/connectors/bpnDiscovery/search"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "bpn_discovery_service_response.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+
+  bpn_discovery_service_response.json: |-
+    {
+      "bpns": [
+        {"type": "bpn","key": ".*","value": "BPNL00000000BJTL","resourceId": "1ca6f9b5-8e1d-422a-8541-9bb2cf5fe485"},
+        {"type": "bpn","key": ".*","value": "BPNL00000003AVTH","resourceId": "1ca6f9b5-8e1d-422a-8541-9bb2cf5fe485"},
+        {"type": "bpn","key": ".*","value": "BPNL00000003AXS3","resourceId": "1ca6f9b5-8e1d-422a-8541-9bb2cf5fe485"},
+        {"type": "bpn","key": ".*","value": "BPNL00000003AYRE","resourceId": "1ca6f9b5-8e1d-422a-8541-9bb2cf5fe485"},
+        {"type": "bpn","key": ".*","value": "BPNL00000003AZQP","resourceId": "1ca6f9b5-8e1d-422a-8541-9bb2cf5fe485"},
+        {"type": "bpn","key": ".*","value": "BPNL00000003B0Q0","resourceId": "1ca6f9b5-8e1d-422a-8541-9bb2cf5fe485"},
+        {"type": "bpn","key": ".*","value": "BPNL00000003B2OM","resourceId": "1ca6f9b5-8e1d-422a-8541-9bb2cf5fe485"},
+        {"type": "bpn","key": ".*","value": "BPNL00000003B3NX","resourceId": "1ca6f9b5-8e1d-422a-8541-9bb2cf5fe485"},
+        {"type": "bpn","key": ".*","value": "BPNL00000003B5MJ","resourceId": "1ca6f9b5-8e1d-422a-8541-9bb2cf5fe485"},
+        {"type": "bpn","key": ".*","value": "BPNL00000003B5MJ","resourceId": "1ca6f9b5-8e1d-422a-8541-9bb2cf5fe485"},
+        {"type": "bpn","key": ".*","value": "BPNL00000003CSGV","resourceId": "1ca6f9b5-8e1d-422a-8541-9bb2cf5fe485"}
+      ]
+    }
