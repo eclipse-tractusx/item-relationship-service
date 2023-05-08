@@ -47,6 +47,30 @@ def create_edc_asset_payload(submodel_url_, asset_prop_id_, digital_twin_submode
     })
 
 
+def create_edc_registry_asset_payload(registry_url_, asset_prop_id_):
+    return json.dumps({
+        "asset": {
+            "properties": {
+                "asset:prop:id": asset_prop_id_,  # DTR-EDC-instance-unique-ID
+                "asset:prop:type": "data.core.digitalTwinRegistry",
+                "asset:prop:name": "Digital Twin Registry Endpoint of IRS DEV",
+                "asset:prop:contenttype": "application/json",
+                "asset:prop:policy-id": "use-eu"
+            }
+        },
+        "dataAddress": {
+            "properties": {
+                "type": "HttpData",
+                "baseUrl": registry_url_,
+                "proxyPath": True,
+                "proxyBody": True,
+                "proxyMethod": True,
+                "proxyQueryParams": True
+            }
+        }
+    })
+
+
 def create_esr_edc_asset_payload(esr_url_, asset_prop_id_, digital_twin_id_):
     return json.dumps({
         "asset": {
@@ -162,6 +186,48 @@ def create_policy(policy_, edc_upload_url_, edc_policy_path_, headers_, session_
             print(f"Successfully created policy {response_.json()['id']}.")
 
 
+def create_registry_asset(edc_upload_urls_, edc_asset_path_, edc_contract_definition_path_, catalog_path_, header_,
+                          session_, edc_urls_, policy_, registry_asset_id_, aas_upload_url_):
+    for edc_upload_url_ in edc_upload_urls_:
+        index = edc_upload_urls_.index(edc_upload_url_)
+        edc_url_ = edc_urls_[index]
+        print(index)
+        print(edc_url_)
+        print(edc_upload_url_)
+
+        catalog_url_ = edc_upload_url_ + catalog_path_
+        payload_ = {
+            "providerUrl": edc_url_ + "/api/v1/ids/data",
+            "querySpec": {
+                "filter": "asset:prop:type=data.core.digitalTwinRegistry"
+            }
+        }
+        response_ = session_.request(method="POST", url=catalog_url_, headers=header_, data=json.dumps(payload_))
+
+        asset_url_ = edc_upload_url_ + edc_asset_path_
+        print(response_.status_code)
+        print(response_.json())
+        if response_.status_code == 200 and len(response_.json()['contractOffers']) >= 1:
+            print(f"Asset {response_.json()['contractOffers'][0]['asset']['id']} already exists. Skipping creation.")
+        else:
+            payload_ = create_edc_registry_asset_payload(aas_upload_url_, registry_asset_id_)
+            response_ = session_.request(method="POST", url=asset_url_,
+                                         headers=header_,
+                                         data=payload_)
+            print(response_)
+            if response_.status_code > 205:
+                print(response_.text)
+            else:
+                print(f"Successfully created registry asset {response_.json()['id']}.")
+
+            print("Create registry edc contract definition")
+            payload_ = create_edc_contract_definition_payload(policy_, registry_asset_id_)
+            response_ = session_.request(method="POST", url=edc_upload_url_ + edc_contract_definition_path_,
+                                         headers=header_,
+                                         data=payload_)
+            print_response(response_)
+
+
 if __name__ == "__main__":
     timestamp_start = time.time()
     parser = argparse.ArgumentParser(description="Script to upload testdata into CX-Network.",
@@ -171,6 +237,7 @@ if __name__ == "__main__":
     parser.add_argument("-su", "--submodelupload", type=str, nargs="*", help="Submodel server upload URLs",
                         required=False)
     parser.add_argument("-a", "--aas", type=str, help="aas url", required=True)
+    parser.add_argument("-au", "--aasupload", type=str, help="aas url", required=False)
     parser.add_argument("-edc", "--edc", type=str, nargs="*", help="EDC provider control plane display URLs",
                         required=True)
     parser.add_argument("-eu", "--edcupload", type=str, nargs="*", help="EDC provider control plane upload URLs",
@@ -190,6 +257,7 @@ if __name__ == "__main__":
     submodel_server_urls = config.get("submodel")
     submodel_server_upload_urls = config.get("submodelupload")
     aas_url = config.get("aas")
+    aas_upload_url = config.get("aasupload")
     edc_urls = config.get("edc")
     edc_upload_urls = config.get("edcupload")
     edc_api_key = config.get("apikey")
@@ -206,11 +274,17 @@ if __name__ == "__main__":
     if default_policy is None:
         default_policy = "default-policy"
 
+    if aas_upload_url is None:
+        aas_upload_url = aas_url
+
     check_url_args(submodel_server_upload_urls, submodel_server_urls, edc_upload_urls, edc_urls)
 
     edc_asset_path = "/api/v1/management/assets"
     edc_policy_path = "/api/v1/management/policydefinitions"
     edc_contract_definition_path = "/api/v1/management/contractdefinitions"
+    edc_catalog_path = "/api/v1/management/catalog/request"
+
+    registry_asset_id = "registry-asset"
 
     headers = {
         'Content-Type': 'application/json'
@@ -223,7 +297,7 @@ if __name__ == "__main__":
 
     default_policy_definition = {
         "default": {
-            "id": default_policy,
+            "id": "default-policy",
             "policy": {
                 "prohibitions": [],
                 "obligations": [],
@@ -259,6 +333,9 @@ if __name__ == "__main__":
         for policy in policies.keys():
             for url in edc_upload_urls:
                 create_policy(policies[policy], url, edc_policy_path, headers_with_api_key, session)
+
+    create_registry_asset(edc_upload_urls, edc_asset_path, edc_contract_definition_path, edc_catalog_path,
+                          headers_with_api_key, session, edc_urls, default_policy, registry_asset_id, aas_upload_url)
 
     for tmp_data in testdata:
         catenax_id = tmp_data["catenaXId"]
@@ -299,7 +376,7 @@ if __name__ == "__main__":
         policy_id = default_policy
         if "policy" in tmp_keys:
             policy_id = tmp_data["policy"]
-            print("Policy: " + policy_id)
+        print("Policy: " + policy_id)
 
         for tmp_key in tmp_keys:
             if "PlainObject" not in tmp_key and "catenaXId" not in tmp_key and "bpn" not in tmp_key and "policy" not in tmp_key:
@@ -325,7 +402,6 @@ if __name__ == "__main__":
                                                         endpoint_address)
                 submodel_descriptors.append(json.loads(descriptor))
 
-                edc_policy_id = str(uuid.uuid4())
                 asset_prop_id = catenax_id + "-" + submodel_identification
 
                 print("Create submodel on submodel server")
