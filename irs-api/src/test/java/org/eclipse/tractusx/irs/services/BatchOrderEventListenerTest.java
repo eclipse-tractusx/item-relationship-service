@@ -23,6 +23,7 @@
 package org.eclipse.tractusx.irs.services;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -44,6 +45,7 @@ import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchStore;
 import org.eclipse.tractusx.irs.connector.batch.JobProgress;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
+import org.eclipse.tractusx.irs.services.events.BatchProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.services.timeouts.TimeoutSchedulerBatchProcessingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,10 +77,13 @@ class BatchOrderEventListenerTest {
     void shouldStartFirstBatch() {
         // given
         final int numberOfJobs = 10;
+        final int timeout = 60;
         final BatchOrder batchOrder = BatchOrder.builder()
                                                 .batchOrderId(BATCH_ORDER_ID)
                                                 .batchOrderState(ProcessingState.INITIALIZED)
                                                 .collectAspects(Boolean.TRUE)
+                                                .timeout(timeout)
+                                                .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
                                                 .build();
         final Batch firstBatch = Batch.builder()
@@ -105,6 +110,49 @@ class BatchOrderEventListenerTest {
         eventListener.handleBatchOrderRegisteredEvent(new BatchOrderRegisteredEvent(BATCH_ORDER_ID));
         // then
         verify(irsItemGraphQueryService, times(numberOfJobs)).registerItemJob(any(), eq(FIRST_BATCH_ID));
+        verify(timeoutScheduler, times(1)).registerBatchTimeout(eq(FIRST_BATCH_ID), eq(timeout));
+        verify(timeoutScheduler, times(1)).registerJobsTimeout(anyList(), eq(timeout));
+    }
+
+    @Test
+    void shouldStartNextBatchWhenPreviousFinished() {
+        // given
+        final int numberOfJobs = 10;
+        final int timeout = 60;
+        final BatchOrder batchOrder = BatchOrder.builder()
+                                                .batchOrderId(BATCH_ORDER_ID)
+                                                .batchOrderState(ProcessingState.INITIALIZED)
+                                                .collectAspects(Boolean.TRUE)
+                                                .timeout(timeout)
+                                                .jobTimeout(timeout)
+                                                .lookupBPNs(Boolean.TRUE)
+                                                .build();
+        final Batch firstBatch = Batch.builder()
+                                      .batchId(FIRST_BATCH_ID)
+                                      .batchState(ProcessingState.PARTIAL)
+                                      .batchNumber(1)
+                                      .batchOrderId(BATCH_ORDER_ID)
+                                      .build();
+        final Batch secondBatch = Batch.builder()
+                                       .batchId(SECOND_BATCH_ID)
+                                       .batchState(ProcessingState.INITIALIZED)
+                                       .batchNumber(2)
+                                       .batchOrderId(BATCH_ORDER_ID)
+                                       .jobProgressList(createJobProgressList(numberOfJobs))
+                                       .build();
+
+        given(irsItemGraphQueryService.registerItemJob(any(), any())).willReturn(
+                JobHandle.builder().id(UUID.randomUUID()).build());
+
+        batchOrderStore.save(BATCH_ORDER_ID, batchOrder);
+        batchStore.save(FIRST_BATCH_ID, firstBatch);
+        batchStore.save(SECOND_BATCH_ID, secondBatch);
+        // when
+        eventListener.handleBatchProcessingFinishedEvent(new BatchProcessingFinishedEvent(BATCH_ORDER_ID, FIRST_BATCH_ID, ProcessingState.PARTIAL, ProcessingState.COMPLETED, 1, ""));
+        // then
+        verify(irsItemGraphQueryService, times(numberOfJobs)).registerItemJob(any(), eq(SECOND_BATCH_ID));
+        verify(timeoutScheduler, times(1)).registerBatchTimeout(eq(SECOND_BATCH_ID), eq(timeout));
+        verify(timeoutScheduler, times(1)).registerJobsTimeout(anyList(), eq(timeout));
     }
 
     private List<JobProgress> createJobProgressList(Integer size) {
