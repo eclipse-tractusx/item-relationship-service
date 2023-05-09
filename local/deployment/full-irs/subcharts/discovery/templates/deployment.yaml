@@ -103,7 +103,7 @@ spec:
           emptyDir: { }
         - name: configuration
           configMap:
-            name: {{ .Chart.Name }}
+            name: {{ include "discovery.fullname" . }}
             items:
               - key: discovery_finder_request.json
                 path: discovery_finder_request.json
