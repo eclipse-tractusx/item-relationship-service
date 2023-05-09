@@ -6,5 +6,10 @@
 	"DIGITAL_TWIN_REGISTRY": "https://semantics.int.demo.catena-x.net/registry",
 	"GLOBAL_ASSET_ID": "urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf",
 	"SEMANTIC_HUB_URL": "https://semantics.int.demo.catena-x.net",
-	"BPDM_URL": "https://partners-pool.int.demo.catena-x.net"
+	"BPDM_URL": "https://partners-pool.int.demo.catena-x.net",
+	"CONSUMER_CONTROLPLANE": "https://irs-consumer-controlplane.int.demo.catena-x.net",
+	"EDC_API_KEY": "",
+	"DISCOVERY_FINDER": "https://semantics.int.demo.catena-x.net/discoveryfinder",
+	"BPN_DISCOVERY": "https://semantics.int.demo.catena-x.net/bpndiscovery",
+	"EDC_DISCOVERY": "https://portal-backend.int.demo.catena-x.net"
 }

@@ -11,5 +11,8 @@
 	"PROVIDER_CONTROLPLANE_1": "https://irs-provider-controlplane.dev.demo.catena-x.net",
 	"PROVIDER_CONTROLPLANE_2": "https://irs-provider-controlplane2.dev.demo.catena-x.net",
 	"PROVIDER_CONTROLPLANE_3": "https://irs-provider-controlplane3.dev.demo.catena-x.net",
-	"EDC_API_KEY": "123456"
+	"EDC_API_KEY": "123456",
+	"DISCOVERY_FINDER": "https://discovery-mock.dev.demo.catena-x.net",
+	"BPN_DISCOVERY": "https://discovery-mock.dev.demo.catena-x.net",
+	"EDC_DISCOVERY": "https://discovery-mock.dev.demo.catena-x.net"
 }

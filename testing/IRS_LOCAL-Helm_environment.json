@@ -7,7 +7,10 @@
 	"GLOBAL_ASSET_ID": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
 	"SEMANTIC_HUB_URL": "http://localhost:8088",
 	"BPDM_URL": "",
-	"CONSUMER_CONTROLPLANE": "http://localhost:7080",
-	"PROVIDER_CONTROLPLANE_1": "http://localhost:6080",
-	"EDC_API_KEY": "123456"
+	"CONSUMER_CONTROLPLANE": "http://localhost:7181",
+	"PROVIDER_CONTROLPLANE_1": "http://localhost:6181",
+	"EDC_API_KEY": "password",
+	"DISCOVERY_FINDER": "http://localhost:8888",
+	"BPN_DISCOVERY": "http://localhost:8888",
+	"EDC_DISCOVERY": "http://localhost:8888"
 }
