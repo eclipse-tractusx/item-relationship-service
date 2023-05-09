@@ -28,6 +28,8 @@ import java.util.Map;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.JobParameter;
@@ -36,9 +38,8 @@ import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
-import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.exceptions.EdcClientException;
-import org.eclipse.tractusx.irs.exceptions.JsonParseException;
+import org.eclipse.tractusx.irs.common.JsonParseException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.InvalidSchemaException;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
@@ -127,6 +128,11 @@ public class SubmodelDelegate extends AbstractDelegate {
                         Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e, 0,
                                 ProcessStep.SCHEMA_REQUEST));
                 log.info("Cannot load JSON schema for validation. Creating Tombstone.");
+            } catch (final UsagePolicyException e) {
+                log.info("Encountered usage policy exception: {}. Creating Tombstone.", e.getMessage());
+                itemContainerBuilder.tombstone(
+                        Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e, 0,
+                                ProcessStep.USAGE_POLICY_VALIDATION));
             } catch (final EdcClientException e) {
                 log.info("Submodel Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
                 itemContainerBuilder.tombstone(

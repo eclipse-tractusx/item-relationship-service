@@ -9,7 +9,7 @@ DataChainKit brings valuable data chain information to apps and services through
 ## API Description
 For each App or Service Provider can use this documentation to implement their own instance to participate within the Catena-X
 - 📄 [IRS REST API Documentation](https://eclipse-tractusx.github.io/item-relationship-service/docs/api-specification/api-specification.html)
-- 📄 [IRS Specification](https://eclipse-tractusx.github.io/item-relationship-service/docs/arc42) (only for consortia members accessible)
+- 📄 [IRS Specification](https://eclipse-tractusx.github.io/item-relationship-service/docs/arc42)
 
 ## Item Relationship Service
 The Item Relationship Service (IRS) is the first reference application of the DataChainKit. It is built with the Java Spring framework. It is dockerized and can easily be deployed via helm or docker compose on infrastructure you choose.
@@ -17,7 +17,6 @@ The Item Relationship Service (IRS) is the first reference application of the Da
 ### Requirements
 The IRS needs to be deployed with the following components in the same environment: 
 - [Eclipse Dataspace Connector](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector)
-- AAS Wrapper 
 
 The Service interacts with the Catena-X [Digital Twin Registry](https://catena-x.net/en/angebote/digitaler-zwilling) and is built upon the Catena-X Semantic Models which are stored in the [Semantic Hub](https://catena-x.net/en/angebote/digitaler-zwilling). 
 

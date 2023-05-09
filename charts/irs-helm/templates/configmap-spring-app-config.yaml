@@ -48,8 +48,13 @@ data:
               keycloak:
                 client-id: "${KEYCLOAK_OAUTH2_CLIENT_ID}" # taken from secret ENV
                 client-secret: "${KEYCLOAK_OAUTH2_CLIENT_SECRET}" # taken from secret ENV
+              portal:
+                client-id: ${PORTAL_OAUTH2_CLIENT_ID} # taken from secret ENV
+                client-secret: ${PORTAL_OAUTH2_CLIENT_SECRET} # taken from secret ENV
             provider:
               keycloak:
+                token-uri: {{ tpl (.Values.keycloak.oauth2.clientTokenUri | default "http://localhost") . | quote }}
+              portal:
                 token-uri: {{ tpl (.Values.keycloak.oauth2.clientTokenUri | default "http://localhost") . | quote }}
           resourceserver:
             jwt:
@@ -93,7 +98,32 @@ data:
           enabled: {{ .Values.edc.catalog.cache.enabled | default true }}
           ttl: {{ .Values.edc.catalog.cache.ttl | default "P1D" | quote }}
           maxCachedItems: {{ .Values.edc.catalog.cache.maxCachedItems | default 64000 }}
+        policies:
+          allowedNames: {{ .Values.edc.catalog.policies.allowedNames | default "" | quote }}
+
+    ess:
+      localBpn: {{ tpl (.Values.bpn | default "") . | quote }}
+      localEdcEndpoint: {{ tpl (.Values.edc.provider.host | default "") . | quote }}
+      irs:
+        url: {{ tpl (.Values.irsUrl | default "") . | quote }}
+      discovery:
+        endpoint: {{ tpl (.Values.discovery.endpoint | default "") . | quote }}
+        oAuthClientId: {{ .Values.discovery.oAuthClientId | default "portal" }}
+        {{- if .Values.discovery.mockEdcAddress }}
+        mockEdcAddress:
+        {{- tpl (toYaml .Values.discovery.mockEdcAddress) . | nindent 10 }}
+        {{- end }}
+        {{- if .Values.ess.mockEdcResult }}
+        mockEdcResult:
+        {{- tpl (toYaml .Values.ess.mockEdcResult) . | nindent 10 }}
+        {{- end }}
+        {{- if .Values.ess.mockRecursiveEdcAsset }}
+        mockRecursiveEdcAsset: {{ tpl (.Values.ess.mockRecursiveEdcAsset) . | quote }}
+        {{- end }}
     {{- end }}
+
+    apiAllowedBpn: {{ tpl (.Values.bpn | default "") . | quote }}
+
     {{- if .Values.config.content }}
     {{- tpl (toYaml .Values.config.content) . | nindent 4 }}
     {{- end }}

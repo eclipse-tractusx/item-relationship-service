@@ -38,8 +38,8 @@ import java.util.List;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
-import org.eclipse.tractusx.irs.edc.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.junit.jupiter.api.Test;
 
 class RelationshipDelegateTest {

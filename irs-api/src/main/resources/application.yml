@@ -13,9 +13,15 @@ spring:
             authorization-grant-type: client_credentials
             client-id: ${KEYCLOAK_OAUTH2_CLIENT_ID} # OAuth2 client ID used to authenticate with the IAM
             client-secret: ${KEYCLOAK_OAUTH2_CLIENT_SECRET} # OAuth2 client secret used to authenticate with the IAM
+          portal:
+            authorization-grant-type: client_credentials
+            client-id: ${PORTAL_OAUTH2_CLIENT_ID} # OAuth2 client ID used to authenticate with the IAM
+            client-secret: ${PORTAL_OAUTH2_CLIENT_SECRET} # OAuth2 client secret used to authenticate with the IAM
         provider:
           keycloak:
             token-uri: ${KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
+          portal:
+            token-uri: ${PORTAL_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
       resourceserver:
         jwt:
           jwk-set-uri: ${KEYCLOAK_OAUTH2_JWK_SET_URI:https://default} # OAuth2 endpoint to request the JWK set
@@ -108,7 +114,6 @@ resilience4j:
       registry:
         baseConfig: default
 
-
 edc:
   controlplane:
     request-ttl: ${EDC_CONTROLPLANE_REQUEST_TTL:PT10M} # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
@@ -137,6 +142,8 @@ edc:
       enabled: true # Set to false to disable caching
       ttl: P1D # Time after which a cached Item is no longer valid and the real catalog is called instead
       maxCachedItems: 64000 # Maximum amount of cached catalog items
+    policies:
+      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability
 
 digitalTwinRegistry:
   descriptorEndpoint: ${DIGITALTWINREGISTRY_DESCRIPTOR_URL:} # The endpoint to retrieve AAS descriptors from the DTR, must contain the placeholder {aasIdentifier}
@@ -178,4 +185,20 @@ bpdm:
     read: PT90S # HTTP read timeout for the bpdm client
     connect: PT90S # HTTP connect timeout for the bpdm client
 
-apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK}
+# ESS Module specific properties
+ess:
+  localBpn: ${ESS_LOCAL_BPN:} # BPN value of product - used during EDC notification communication
+  localEdcEndpoint: ${EDC_PROVIDER_URL:} # EDC Provider Url - used during EDC notification communication
+  irs:
+    url: "${IRS_URL:}" # IRS Url to connect with
+  discovery:
+    endpoint: "${DISCOVERY_URL:}" # Endpoint to retrieve EDC base url address for BPN
+    oAuthClientId: portal # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+    timeout:
+      read: PT90S # HTTP read timeout for the discovery client
+      connect: PT90S # HTTP connect timeout for the discovery client
+    mockEdcAddress: {} # Mocked EDC BPN Addresses
+    mockEdcResult: {} # Mocked BPN Investigation results
+    mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
+
+apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK} # BPN value that is allowed to access IRS API

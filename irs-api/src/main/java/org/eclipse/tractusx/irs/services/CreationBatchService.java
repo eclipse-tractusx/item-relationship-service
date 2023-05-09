@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.IrsApplication;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
@@ -66,12 +67,14 @@ public class CreationBatchService {
                                                 .depth(request.getDepth())
                                                 .direction(request.getDirection())
                                                 .collectAspects(request.isCollectAspects())
+                                                .lookupBPNs(request.isLookupBPNs())
                                                 .timeout(request.getTimeout())
                                                 .jobTimeout(request.getJobTimeout())
                                                 .callbackUrl(request.getCallbackUrl())
                                                 .build();
 
-        final List<Batch> batches = createBatches(List.copyOf(request.getGlobalAssetIds()), request.getBatchSize(), batchOrderId);
+        final List<Batch> batches = createBatches(List.copyOf(request.getGlobalAssetIds()), request.getBatchSize(),
+                batchOrderId);
         batchOrderStore.save(batchOrderId, batchOrder);
         batches.forEach(batch -> {
             batchStore.save(batch.getBatchId(), batch);
@@ -95,14 +98,19 @@ public class CreationBatchService {
                         .batchTotal(globalAssetIdsBatches.size())
                         .batchUrl(buildBatchUrl(batchOrderId, batchId))
                         .batchState(ProcessingState.INITIALIZED)
-                        .jobProgressList(batch.stream().map(globalAssetId ->
-                                JobProgress.builder().globalAssetId(globalAssetId).jobState(JobState.UNSAVED).build()).toList())
+                        .jobProgressList(batch.stream()
+                                              .map(globalAssetId -> JobProgress.builder()
+                                                                               .globalAssetId(globalAssetId)
+                                                                               .jobState(JobState.UNSAVED)
+                                                                               .build())
+                                              .toList())
                         .build();
         }).toList();
     }
 
     private String buildBatchUrl(final UUID batchOrderId, final UUID batchId) {
-        return  irsConfiguration.getApiUrl().toString() + "/" + batchOrderId + "/batches/" + batchId;
+        return String.join("/", irsConfiguration.getApiUrl().toString(), IrsApplication.API_PREFIX, "orders",
+                batchOrderId.toString(), "batches", batchId.toString());
     }
 
 }

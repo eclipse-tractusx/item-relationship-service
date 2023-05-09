@@ -33,14 +33,15 @@ The result is an item graph in which each node represents a digital item of the 
 |The *RecursiveJobHandler* handles the job execution recursively until a given abort criteria is reached or the complete item graph is build.
 
 |*TransferProcessManager*
-a| The TransferProcessManager handles the outgoing requests to the AASProxy.
+a| The TransferProcessManager handles the outgoing requests to the various data services.
+A job is processed in this order:
 
 1. Initiation of the job and preparation of the stream of *DataRequests*
 2. *RecursiveJobHandler* requesting for AAS via the Digital Twin registry.
-3. Analyzing the structure of the AAS response by collecting the AssemblyPartRelationship Aspects
-4. Requesting for SubmodelEndpoints for given AssemblyPartRelationship children
+3. Analyzing the structure of the AAS response by collecting the traversal aspect.
+4. Requesting submodel data for given items of next level.
 5. Recursively iteration over step 2-4 until an abort criterion is reached.
-6. Assembles the complete item graph
+6. Assembles the complete item graph.
 
 |*BlobStore*
 |The BlobStore is the database where the relationships and tombstones are stored for a requested item.
@@ -48,6 +49,9 @@ a| The TransferProcessManager handles the outgoing requests to the AASProxy.
 |*JobStore*
 |The JobStore is the database where the jobs with the information about the requested item are stored.
 
-|*AASProxy*
-|The AASProxy is the interface to the EDC Network. It provides an interface for the Asset Administration Shells and for the Submodels.
+|*Digital Twin Client*
+|The Digital Twin Client is the interface to the Digital Twin Registry. It provides an interface for the Asset Administration Shells.
+
+|*EDC Client*
+|The EDC Client is used to communicate with the EDC network, negotiate contracts and retrieve submodel data.
 |===

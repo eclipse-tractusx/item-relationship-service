@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.aaswrapper.job.JobProcessingFinishedEvent;
+import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
@@ -97,7 +97,7 @@ public class JobEventLinkedQueueListener {
                                                                                          .equals(event.jobId()))
                                                        .findFirst()
                                                        .ifPresent(jobProgress -> jobProgress.setJobState(
-                                                               event.jobState())));
+                                                               JobState.valueOf(event.jobState()))));
         return progressList;
     }
 

@@ -44,13 +44,16 @@ import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
+import org.eclipse.tractusx.irs.services.AuthorizationService;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
+import org.eclipse.tractusx.irs.services.timeouts.CancelBatchProcessingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -70,6 +73,8 @@ public class BatchController {
 
     private final CreationBatchService creationBatchService;
     private final QueryBatchService queryBatchService;
+    private final CancelBatchProcessingService cancelBatchProcessingService;
+    private final AuthorizationService authorizationService;
 
     @Operation(operationId = "registerOrder",
                summary = "Registers an IRS order with an array of {globalAssetIds}. "
@@ -91,13 +96,13 @@ public class BatchController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -106,7 +111,7 @@ public class BatchController {
     })
     @PostMapping("/orders")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
     public BatchOrderCreated registerBatchOrder(final @Valid @RequestBody RegisterBatchOrder request) {
         final UUID batchOrderId = creationBatchService.create(request);
         return BatchOrderCreated.builder().id(batchOrderId).build();
@@ -130,13 +135,13 @@ public class BatchController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -150,7 +155,7 @@ public class BatchController {
                                          }),
     })
     @GetMapping("/orders/{orderId}")
-    @PreAuthorize("hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
     public BatchOrderResponse getBatchOrder(
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class), name = "orderId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
@@ -176,13 +181,13 @@ public class BatchController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorized failed.",
+                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -196,7 +201,7 @@ public class BatchController {
                                          }),
     })
     @GetMapping("/orders/{orderId}/batches/{batchId}")
-    @PreAuthorize("hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
     public BatchResponse getBatch(
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class), name = "orderId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
@@ -205,6 +210,53 @@ public class BatchController {
                        example = "4bce40b8-64c7-41bf-9ca3-e9432c7fef98") @Size(min = IrsAppConstants.JOB_ID_SIZE,
                                                                                max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID batchId) {
         return queryBatchService.findBatchById(orderId, batchId);
+    }
+
+    @Operation(description = "Cancel a batch order for a given orderId.",
+               operationId = "cancelBatchOrder",
+               summary = "Cancel a batch order for a given orderId.",
+               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
+               tags = { "Item Relationship Service" })
+    @ApiResponses(value = { @ApiResponse(responseCode = "200",
+                                         description = "Cancel a batch order for a given orderId.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = BatchOrderResponse.class),
+                                                              examples = @ExampleObject(name = "complete",
+                                                                                        ref = "#/components/examples/complete-order-result"))
+                                         }),
+                            @ApiResponse(responseCode = "400", description = "Return Batch Order failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-400"))
+                                         }),
+                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-401"))
+                                         }),
+                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-403"))
+                                         }),
+                            @ApiResponse(responseCode = "404", description = "Batch Order with the requested orderId not found.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-404"))
+                                         }),
+    })
+    @PutMapping("/orders/{orderId}")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    public BatchOrderResponse cancelBatchOrder(
+            @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class), name = "orderId",
+                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
+                                                                               max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID orderId) {
+        cancelBatchProcessingService.cancelNotFinishedJobsInBatchOrder(orderId);
+        return queryBatchService.findOrderById(orderId);
     }
 
 }

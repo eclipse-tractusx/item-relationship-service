@@ -47,8 +47,8 @@ jobs:
           IRS_INT: https://irs.int.demo.catena-x.net
           IRS_DEV: https://irs.dev.demo.catena-x.net
         run: |
-          unzip -o features.zip -d cucumber-tests/src/test/resources/features
-          mvn --batch-mode clean install -pl cucumber-tests,irs-models -D"cucumber.filter.tags"="not @Ignore and @INTEGRATION_TEST"
+          unzip -o features.zip -d irs-cucumber-tests/src/test/resources/features
+          mvn --batch-mode clean install -pl irs-cucumber-tests,irs-models -D"cucumber.filter.tags"="not @Ignore and @INTEGRATION_TEST"
 
       - name: Submit results to Xray
         if: ${{ always() && steps.download.outputs.http_response == '200' }}
@@ -59,5 +59,5 @@ jobs:
           curl --request POST \
           -u $JIRA_USERNAME:$JIRA_PASSWORD \
           --header 'Content-Type: application/json' \
-          --data-binary '@cucumber-tests/report.json' \
+          --data-binary '@irs-cucumber-tests/report.json' \
           "https://jira.catena-x.net/rest/raven/1.0/import/execution/cucumber"

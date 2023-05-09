@@ -77,13 +77,13 @@ class IrsApplicationTests {
     @Test
     void generatedOpenApiMatchesContract() throws Exception {
         final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml", String.class);
-        final InputStream fixedYaml = Files.newInputStream(Path.of("../api/irs-v1.0.yaml"));
+        final InputStream fixedYaml = Files.newInputStream(Path.of("../docs/src/api/irs-v1.0.yaml"));
 
         final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         final Map<String, Object> fixedYamlMap = mapper.readValue(fixedYaml, Map.class);
         final Map<String, Object> generatedYamlMap = mapper.readValue(generatedYaml, Map.class);
 
-        assertThat(fixedYamlMap).isEqualTo(generatedYamlMap);
+        assertThat(generatedYamlMap).isEqualTo(fixedYamlMap);
     }
 
     @Test

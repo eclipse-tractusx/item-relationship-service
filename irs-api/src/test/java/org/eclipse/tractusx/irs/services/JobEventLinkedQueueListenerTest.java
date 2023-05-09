@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.eclipse.tractusx.irs.aaswrapper.job.JobProcessingFinishedEvent;
+import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
@@ -88,9 +88,9 @@ class JobEventLinkedQueueListenerTest {
 
         // when
         eventListener.handleJobProcessingFinishedEvent(
-                new JobProcessingFinishedEvent(firstJob.toString(), JobState.COMPLETED, "", Optional.of(BATCH_ID)));
+                new JobProcessingFinishedEvent(firstJob.toString(), JobState.COMPLETED.name(), "", Optional.of(BATCH_ID)));
         eventListener.handleJobProcessingFinishedEvent(
-                new JobProcessingFinishedEvent(secondJob.toString(), JobState.COMPLETED, "", Optional.of(BATCH_ID)));
+                new JobProcessingFinishedEvent(secondJob.toString(), JobState.COMPLETED.name(), "", Optional.of(BATCH_ID)));
 
         // then
         verify(eventPublisher).publishEvent(eventCaptor.capture());

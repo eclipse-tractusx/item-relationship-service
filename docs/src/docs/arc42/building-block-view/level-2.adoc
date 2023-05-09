@@ -2,7 +2,7 @@
 
 == IRS controller
 
-The IRS REST controller to provide a RESTful web service.
+The IRS REST controller is used to provide a RESTful web service.
 
 === Component diagram
 
@@ -63,7 +63,7 @@ include::../../../uml-diagrams/building-block-view/level-2-int-recursive-job-han
 |Interface for storing data blobs.
 |===
 
-== TransferProcessManagment
+== TransferProcessManagement
 
 The TransferProcessManager creates executions and provides them to the executor service. Each execution contains HTTP requests to the asset administration shell registry and to the submodel interface.
 
