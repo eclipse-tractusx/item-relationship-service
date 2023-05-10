@@ -16,9 +16,11 @@ jobs:
         run: echo HELM_VERSION=$(cat charts/irs-helm/CHANGELOG.md | sed -n 's/.*\[\([0-9]\+\.[0-9]\+\.[0-9]\+\)\].*/\1/p' | head -n 1) >> $GITHUB_ENV
 
       - name: Update Chart.yaml
-        run: |
-          sed -n -i 's/.*appVersion:.*/appVersion: ${{ github.ref_name }}/p' charts/irs-helm/Chart.yaml 
-          sed -n -i 's/.*version:.*/version: ${{ env.HELM_VERSION }}/p' charts/irs-helm/Chart.yaml 
+        uses: mikefarah/yq@v4.33.3
+        with:
+          cmd: |
+            yq -i eval '.appVersion = ${{ github.ref_name }}' charts/irs-helm/Chart.yaml 
+            yq -i eval '.version = ${{ env.HELM_VERSION }}' charts/irs-helm/Chart.yaml 
 
       - name: Prepare Helm release
         uses: peter-evans/create-pull-request@v5
