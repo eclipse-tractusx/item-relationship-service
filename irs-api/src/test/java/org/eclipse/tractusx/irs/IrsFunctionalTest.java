@@ -61,7 +61,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.org.awaitility.Awaitility;
 
 @Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = { "bpdm.bpnEndpoint=http://localbpdm.com" })
 @ContextConfiguration(initializers = IrsFunctionalTest.MinioConfigInitializer.class)
 @ActiveProfiles(profiles = { "local" })
 class IrsFunctionalTest {

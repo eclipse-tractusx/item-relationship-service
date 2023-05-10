@@ -23,8 +23,8 @@
 package org.eclipse.tractusx.irs.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.tractusx.irs.util.TestMother.registerJob;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
+import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithLookupBPNs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,8 +43,6 @@ import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.Relationship;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
-import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
@@ -235,11 +233,9 @@ class IrsItemGraphQueryServiceTest {
 
     @Test
     void shouldThrowExceptionWhenLookupBpnAndBpdmEndpointUrlIsMissing() throws SchemaNotFoundException {
-        final boolean lookupBPNs = true;
         when(semanticsHubFacade.getAllAspectModels()).thenReturn(AspectModels.builder().models(List.of(AspectModel.builder().name("AssemblyPartRelationship").build())).build());
 
-        final Executable executable = () -> testee.registerItemJob(registerJob("urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e", 5,
-                List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()), false, lookupBPNs, Direction.DOWNWARD));
+        final Executable executable = () -> testee.registerItemJob(registerJobWithLookupBPNs());
 
         assertThrows(ResponseStatusException.class, executable);
     }
