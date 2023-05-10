@@ -282,6 +282,132 @@
       "_type": "request"
     },
     {
+      "_id": "req_bf05cbc9e3254950a1f0b8799d63ba97",
+      "parentId": "fld_d8d37148ca95493196d260c5e6adbfc6",
+      "modified": 1683630958934,
+      "created": 1682672699249,
+      "url": "{{ _.BPN_DISCOVERY }}/api/administration/connectors/bpnDiscovery/search",
+      "name": "Query BPN Discovery",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"searchFilter\": [\n    {\n      \"type\": \"oen\",\n      \"keys\": [\n        \"oen-1243\",\n        \"oen-11\"\n      ]\n    },\n    {\n      \"type\": \"bpid\",\n      \"keys\": [\n        \"bpid-1243\",\n        \"bpid-11\"\n      ]\n    }\n  ]\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "oauth2",
+        "grantType": "client_credentials",
+        "accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
+        "clientId": "{{ _.CLIENT_ID }}",
+        "clientSecret": "{{ _.CLIENT_SECRET }}",
+        "disabled": false
+      },
+      "metaSortKey": -1683630902023,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_d8d37148ca95493196d260c5e6adbfc6",
+      "parentId": "fld_ffbe46c3addc49fbb0247f24788433ea",
+      "modified": 1683630931664,
+      "created": 1683630887514,
+      "name": "Discovery",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1680682418417.5,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_5cc5e7a14e4144c8930f7c1270fbbe99",
+      "parentId": "fld_d8d37148ca95493196d260c5e6adbfc6",
+      "modified": 1683630963691,
+      "created": 1683031718699,
+      "url": "{{ _.DISCOVERY_FINDER }}/api/administration/connectors/discovery/search",
+      "name": "Query Discovery Finder",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "",
+        "text": "{\n  \"types\": [\n    \"bpn\"\n  ]\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "oauth2",
+        "grantType": "client_credentials",
+        "accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
+        "clientId": "{{ _.CLIENT_ID }}",
+        "clientSecret": "{{ _.CLIENT_SECRET }}",
+        "disabled": false
+      },
+      "metaSortKey": -1683630901923,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_447e74079e50498ca92036cc4b044464",
+      "parentId": "fld_d8d37148ca95493196d260c5e6adbfc6",
+      "modified": 1683630977846,
+      "created": 1683560906453,
+      "url": "{{ _.EDC_DISCOVERY }}/api/administration/connectors/discovery",
+      "name": "Query EDC Discovery",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "[\n\t\"BPNL00000001CRHK\"\n]\t"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "oauth2",
+        "grantType": "client_credentials",
+        "accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
+        "clientId": "{{ _.CLIENT_ID }}",
+        "clientSecret": "{{ _.CLIENT_SECRET }}",
+        "disabled": false
+      },
+      "metaSortKey": -1683630901873,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
       "_id": "fld_216efc7a70fe40b7b25378c60c4534f9",
       "parentId": "fld_ffbe46c3addc49fbb0247f24788433ea",
       "modified": 1680682418562,
