@@ -22,16 +22,16 @@ rules:
         match: ^application\/(problem\+)?json$|^[a-zA-Z0-9_]+\/[-+.a-zA-Z0-9_]+;(v|version)=[0-9]+$
 
   # MUST property names must be ASCII pascalCase
-  must-use-pascal-case-for-property-names:
-    message: Property name has to be ASCII pascalCase
-    description: MUST property names must be ASCII pascalCase
+  must-use-pascal-or-camel-case-for-property-names:
+    message: Property name has to be ASCII PascalCase or camelCase
+    description: MUST property names must be ASCII PascalCase or camelCase
     documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#118
     severity: error
     given: $.paths.*.*[responses,requestBody]..content..schema..properties.*~
     then:
       function: pattern
       functionOptions:
-        match: ^[A-Z][a-z]+(?:[A-Z][a-z]+)*$
+        match: ^[A-Z]?[a-z]+(?:[A-Z][a-z]+)*$
 
   # SHOULD declare enum values using UPPER_SNAKE_CASE string [240]
   # => https://opensource.zalando.com/restful-api-guidelines/#240
