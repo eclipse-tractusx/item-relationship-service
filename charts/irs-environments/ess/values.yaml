@@ -41,7 +41,7 @@ irs-helm:
       endpoint:
         data: http://ess-irs-edc-controlplane:8181/api/v1/management
       apikey:
-        secret: "123456"
+        secret: <path:traceability-irs/data/ess/controlplane#apiKey>
 
   discovery:
     endpoint: "" # Currently unknown
@@ -122,7 +122,7 @@ irs-edc-consumer:
                 alias: irs-int-daps-key
       api:
         auth:
-          key: "123456"
+          key: <path:traceability-irs/data/ess/controlplane#apiKey>
       controlplane:
         url: "https://irs-ess-consumer-controlplane.int.demo.catena-x.net"
       dataplane:
@@ -147,7 +147,7 @@ irs-edc-consumer:
     edc:
       api:
         auth:
-          key: "123456"
+          key: <path:traceability-irs/data/ess/controlplane#apiKey>
     ## Ingress declaration to expose the network service.
     ingresses:
       ## Public / Internet facing Ingress

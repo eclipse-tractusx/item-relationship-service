@@ -49,7 +49,7 @@ irs-edc-provider:
                 alias: irs-int-daps-key
       api:
         auth:
-          key: "123456"
+          key: <path:traceability-irs/data/ess/controlplane#apiKey>
       controlplane:
         url: "https://irs-ess-provider-controlplane.int.demo.catena-x.net"
       dataplane:
@@ -74,7 +74,7 @@ irs-edc-provider:
     edc:
       api:
         auth:
-          key: "123456"
+          key: <path:traceability-irs/data/ess/controlplane#apiKey>
     ## Ingress declaration to expose the network service.
     ingresses:
       ## Public / Internet facing Ingress

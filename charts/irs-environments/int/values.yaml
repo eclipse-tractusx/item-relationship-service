@@ -40,7 +40,7 @@ irs-helm:
       host:
     controlplane:
       apikey:
-        secret: "123456"
+        secret: <path:traceability-irs/data/int/controlplane#apiKey>
 
 
   #######################
@@ -119,7 +119,7 @@ irs-edc-consumer:
                 alias: irs-int-daps-key
       api:
         auth:
-          key: "123456"
+          key: <path:traceability-irs/data/int/controlplane#apiKey>
       controlplane:
         url: "https://irs-consumer-controlplane.int.demo.catena-x.net"
       dataplane:
@@ -144,7 +144,7 @@ irs-edc-consumer:
     edc:
       api:
         auth:
-          key: "123456"
+          key: <path:traceability-irs/data/int/controlplane#apiKey>
     ## Ingress declaration to expose the network service.
     ingresses:
       ## Public / Internet facing Ingress
