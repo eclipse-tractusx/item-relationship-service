@@ -8,6 +8,12 @@ on:
         options:
           - 'dev'
           - 'int'
+  workflow_call: # Trigger by another workflow
+    inputs:
+      environment:
+        required: true
+        type: string
+        default: 'dev'
 
 jobs:
   redeploy:

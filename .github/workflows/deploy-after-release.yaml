@@ -1,0 +1,28 @@
+name: Deploy DEV and run tests after a release
+
+on:
+  push:
+    branches:
+      - "catena-x-environments"
+    paths:
+      - "charts/irs-environments/dev/Chart.yaml"
+
+jobs:
+  deploy-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger deployment
+        uses: ./.github/workflows/deploy.yml
+        with:
+          environment: "dev"
+
+      - name: Wait for deployment to succeed
+        uses: lewagon/wait-on-check-action@v1.3.1
+        with:
+          ref: ${{ github.ref }}
+          check-name: 'redeploy'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+
+      - name: Trigger tests
+        uses: ./.github/workflows/xray-cucumber.yaml
