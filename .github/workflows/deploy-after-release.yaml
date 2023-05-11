@@ -8,8 +8,16 @@ on:
       - "charts/irs-environments/dev/Chart.yaml"
 
 jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
   deploy:
     name: Trigger deployment
+    needs:
+      - checkout
     uses: ./.github/workflows/deploy.yml
     with:
       environment: "dev"
@@ -31,4 +39,4 @@ jobs:
     name: Trigger tests
     needs:
       - wait-for-deployment
-    uses: ./.github/workflows/xray-cucumber.yaml
+    uses: ./.github/workflows/xray-cucumber-integration.yaml
