@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
@@ -71,6 +72,7 @@ import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.context.ApplicationEventPublisher;
@@ -103,6 +105,9 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     private final SemanticsHubFacade semanticsHubFacade;
 
     private final ApplicationEventPublisher applicationEventPublisher;
+
+    @Value("${bpdm.bpnEndpoint:}")
+    private String bpdmUrl;
 
     @Override
     public PageResult getJobsByState(final @NonNull List<JobState> states, final Pageable pageable) {
@@ -155,6 +160,9 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                                                                               .equals(Direction.UPWARD)) {
             // Currently not supported variant
             throw new IllegalArgumentException("BomLifecycle asPlanned with direction upward is not supported yet!");
+        }
+        if (params.isLookupBPNs() && StringUtils.isBlank(bpdmUrl)) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't start job with BPN lookup - configured bpdm endpoint is empty!");
         }
 
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getGlobalAssetId(), params, batchId);
