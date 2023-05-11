@@ -32,6 +32,7 @@ jobs:
           branch: chore/prepare-helm-release-${{ env.HELM_VERSION }}
           base: main
           delete-branch: true
+          title: Prepare Helm release for next version
           body: |
             This PR prepares the Helm chart release for version ${{ env.HELM_VERSION }}. 
             Please check whether the Chart was updated correctly and that the CHANGELOG contains the relevant information
