@@ -10,24 +10,25 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Install yq
         uses: mikefarah/yq@v4.33.3
 
       - name: Define new Helm version
-        run: |
-          echo NEW_HELM_VERSION=$(echo ${{ github.ref_name }} | sed -n 's/.*\([0-9]\+.[0-9]\+.[0-9]\+\)/\1/p') >> $GITHUB_ENV
-          echo "New Helm version is $NEW_HELM_VERSION"
+        run: echo NEW_HELM_VERSION=$(echo ${{ github.ref_name }} | sed -n 's/.*\([0-9]\+.[0-9]\+.[0-9]\+\)/\1/p') >> $GITHUB_ENV
 
       - name: Update DEV
         run: |
-          CURRENT_VERSION=$(yq '.version' charts/irs-environments/dev/Chart.yaml)
+          CURRENT_VERSION=$(yq eval '.version' charts/irs-environments/dev/Chart.yaml)
           NEXT_VERSION=$(echo $CURRENT_VERSION | awk 'BEGIN{FS=OFS="."} {$3+=1} 1')
           yq -i eval '.version = strenv(NEXT_VERSION)' charts/irs-environments/dev/Chart.yaml
           yq -i eval '.dependencies[0].version = strenv(NEW_HELM_VERSION)' charts/irs-environments/dev/Chart.yaml
 
       - name: Update INT
         run: |
-          CURRENT_VERSION=$(yq '.version' charts/irs-environments/int/Chart.yaml)
+          CURRENT_VERSION=$(yq eval '.version' charts/irs-environments/int/Chart.yaml)
           NEXT_VERSION=$(echo $CURRENT_VERSION | awk 'BEGIN{FS=OFS="."} {$3+=1} 1')
           yq -i eval '.version = strenv(NEXT_VERSION)' charts/irs-environments/int/Chart.yaml
           yq -i eval '.dependencies[0].version = strenv(NEW_HELM_VERSION)' charts/irs-environments/int/Chart.yaml
@@ -39,3 +40,4 @@ jobs:
           branch: chore/update-environments-${{ github.ref_name }}
           base: catena-x-environments
           delete-branch: true
+          title: "Update DEV and INT to next release version"
