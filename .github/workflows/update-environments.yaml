@@ -23,15 +23,15 @@ jobs:
         run: |
           CURRENT_VERSION=$(yq eval '.version' charts/irs-environments/dev/Chart.yaml)
           NEXT_VERSION=$(echo $CURRENT_VERSION | awk 'BEGIN{FS=OFS="."} {$3+=1} 1')
-          yq -i eval '.version = strenv(NEXT_VERSION)' charts/irs-environments/dev/Chart.yaml
-          yq -i eval '.dependencies[0].version = strenv(NEW_HELM_VERSION)' charts/irs-environments/dev/Chart.yaml
+          yq -i eval ".version = \"$NEXT_VERSION\"" charts/irs-environments/dev/Chart.yaml
+          yq -i eval ".dependencies[0].version = \"$NEW_HELM_VERSION\"" charts/irs-environments/dev/Chart.yaml
 
       - name: Update INT
         run: |
           CURRENT_VERSION=$(yq eval '.version' charts/irs-environments/int/Chart.yaml)
           NEXT_VERSION=$(echo $CURRENT_VERSION | awk 'BEGIN{FS=OFS="."} {$3+=1} 1')
-          yq -i eval '.version = strenv(NEXT_VERSION)' charts/irs-environments/int/Chart.yaml
-          yq -i eval '.dependencies[0].version = strenv(NEW_HELM_VERSION)' charts/irs-environments/int/Chart.yaml
+          yq -i eval ".version = \"$NEXT_VERSION\"" charts/irs-environments/int/Chart.yaml
+          yq -i eval ".dependencies[0].version = \"$NEW_HELM_VERSION\"" charts/irs-environments/int/Chart.yaml
 
       - name: Create PR
         uses: peter-evans/create-pull-request@v5
@@ -41,3 +41,4 @@ jobs:
           base: catena-x-environments
           delete-branch: true
           title: "Update DEV and INT to next release version"
+          body: "This PR updates the DEV and INT deployments to the new recently released Helm version."
