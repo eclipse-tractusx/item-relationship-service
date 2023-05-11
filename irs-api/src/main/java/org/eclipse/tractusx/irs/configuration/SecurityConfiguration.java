@@ -27,7 +27,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 import java.time.Duration;
 import java.util.List;
 
-import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.common.ApiConstants;
 import org.eclipse.tractusx.irs.configuration.converter.JwtAuthenticationConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,15 +49,19 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-    private static final String[] WHITELIST = { "/actuator/health",
-                                                "/actuator/health/readiness",
-                                                "/actuator/health/liveness",
-                                                "/actuator/prometheus",
-                                                "/api/swagger-ui/**",
-                                                "/api/api-docs",
-                                                "/api/api-docs.yaml",
-                                                "/api/api-docs/swagger-config",
-                                                "/" + IrsApplication.API_PREFIX_INTERNAL + "/endpoint-data-reference"
+    private static final String[] WHITELIST  = {
+        "/actuator/health",
+        "/actuator/health/readiness",
+        "/actuator/health/liveness",
+        "/actuator/prometheus",
+        "/api/swagger-ui/**",
+        "/api/api-docs",
+        "/api/api-docs.yaml",
+        "/api/api-docs/swagger-config",
+        "/" + ApiConstants.API_PREFIX_INTERNAL + "/endpoint-data-reference",
+        "/ess/mock/notification/receive",
+        "/ess/notification/receive",
+        "/ess/notification/receive-recursive"
     };
     private static final long HSTS_MAX_AGE_DAYS = 365;
 

@@ -38,8 +38,9 @@ import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
-import org.eclipse.tractusx.irs.exceptions.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
@@ -56,8 +57,10 @@ public class QueryBatchService {
 
     public BatchOrderResponse findOrderById(final UUID batchOrderId) {
         final BatchOrder batchOrder = batchOrderStore.find(batchOrderId)
-                                                     .orElseThrow(() -> new EntityNotFoundException(
-                                                             "Cannot find Batch Order with id: " + batchOrderId));
+                                                     .orElseThrow(
+                                                             () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                                     "Cannot find Batch Order with id: "
+                                                                             + batchOrderId));
         final List<Batch> batches = batchStore.findAll()
                                               .stream()
                                               .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
@@ -66,15 +69,22 @@ public class QueryBatchService {
         return BatchOrderResponse.builder()
                                  .orderId(batchOrderId)
                                  .state(batchOrder.getBatchOrderState())
+                                 .batchChecksum(batches.size())
                                  .batches(batches.stream().map(this::toResponse).toList())
                                  .build();
     }
 
     public BatchResponse findBatchById(final UUID batchOrderId, final UUID batchId) {
+        final Integer totalJobs = batchStore.findAll()
+                                            .stream()
+                                            .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
+                                            .map(batch -> batch.getJobProgressList().size())
+                                            .reduce(0, Integer::sum);
+
         return batchStore.find(batchId)
-                         .filter(ba -> ba.getBatchOrderId().equals(batchOrderId))
-                         .map(this::toBatchResponse)
-                         .orElseThrow(() -> new EntityNotFoundException(
+                         .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
+                         .map(batch -> toBatchResponse(batch, totalJobs))
+                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                                  "Cannot find Batch with orderId: " + batchOrderId + " and id: " + batchId));
     }
 
@@ -84,10 +94,11 @@ public class QueryBatchService {
                                                .batchNumber(batch.getBatchNumber())
                                                .batchProcessingState(batch.getBatchState())
                                                .batchUrl(batch.getBatchUrl())
+                                               .jobsInBatchChecksum(batch.getJobProgressList().size())
                                                .build();
     }
 
-    private BatchResponse toBatchResponse(final Batch batch) {
+    private BatchResponse toBatchResponse(final Batch batch, final Integer totalNumberOfJobsInOrder) {
         final List<JobStatusResult> jobs = batch.getJobProgressList()
                                                 .stream()
                                                 .filter(jobProgress -> jobProgress.getJobId() != null)
@@ -100,11 +111,12 @@ public class QueryBatchService {
                             .batchId(batch.getBatchId())
                             .orderId(batch.getBatchOrderId())
                             .batchNumber(batch.getBatchNumber())
-                            .totalJobs(Optional.ofNullable(batch.getJobProgressList()).map(List::size).orElse(0))
+                            .totalJobs(totalNumberOfJobsInOrder)
                             .startedOn(batch.getStartedOn())
                             .completedOn(batch.getCompletedOn())
                             .batchTotal(batch.getBatchTotal())
-                            //                            .jobsInBatchChecksum()
+                            .jobsInBatchChecksum(
+                                    Optional.ofNullable(batch.getJobProgressList()).map(List::size).orElse(0))
                             .jobs(jobs)
                             .batchProcessingState(batch.getBatchState())
                             .build();

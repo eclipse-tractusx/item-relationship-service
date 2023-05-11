@@ -11,7 +11,6 @@
     </parent>
 
     <artifactId>irs-api</artifactId>
-
     <name>IRS API</name>
     <description>Item Relationship Service</description>
 
@@ -23,6 +22,23 @@
     </repositories>
 
     <dependencies>
+        <!-- To find spring components and expose controller endpoints -->
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-ess</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-edc-client</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-common</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
@@ -169,18 +185,7 @@
             <version>1.15.4</version>
         </dependency>
 
-        <!-- EDC Client -->
 
-        <dependency>
-            <groupId>org.eclipse.dataspaceconnector</groupId>
-            <artifactId>catalog-spi</artifactId>
-            <version>0.0.1-milestone-6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.dataspaceconnector</groupId>
-            <artifactId>contract-spi</artifactId>
-            <version>0.0.1-milestone-6</version>
-        </dependency>
 
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
@@ -247,7 +252,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/../api/irs-v1.0.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/../docs/src/api/irs-v1.0.yaml</inputSpec>
                             <generatorName>html</generatorName>
                         </configuration>
                     </execution>

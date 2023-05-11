@@ -115,6 +115,7 @@ public class OpenApiExamples {
         components.addExamples("partial-job-result", createPartialJobResult());
         components.addExamples("canceled-job-result", createCanceledJobResult());
         components.addExamples("failed-job-result", createFailedJobResult());
+        components.addExamples("canceled-job-response", createCanceledJobResponse());
         components.addExamples("complete-job-list-processing-state", createJobListProcessingState());
         components.addExamples("aspect-models-list", createAspectModelsResult());
     }
@@ -275,6 +276,16 @@ public class OpenApiExamples {
                                       .batchProcessingState(ProcessingState.COMPLETED).build());
     }
 
+    private Example createCanceledJobResponse() {
+        return toExample(Job.builder()
+                .id(UUID.fromString(JOB_HANDLE_ID_1))
+                .globalAssetId(createGAID(GLOBAL_ASSET_ID))
+                .state(JobState.CANCELED)
+                .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
+                .startedOn(EXAMPLE_ZONED_DATETIME)
+                .completedOn(EXAMPLE_ZONED_DATETIME).build());
+    }
+
     private Submodel createSubmodel() {
         return Submodel.builder()
                        .aspectType("urn:bamm:io.catenax.assembly_part_relationship:1.0.0")
@@ -286,7 +297,7 @@ public class OpenApiExamples {
     private Map<String, Object> createAssemblyPartRelationshipPayloadMap() {
         final String assemblyPartRelationshipPayload =
                 "{\"catenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
-                        + "\"childParts\": [ { \"assembledOn\": \"2022-02-03T14:48:54.709Z\", \"childCatenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
+                        + "\"childParts\": [ { \"createdOn\": \"2022-02-03T14:48:54.709Z\", \"childCatenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
                         + "\"lastModifiedOn\": \"2022-02-03T14:48:54.709Z\", \"lifecycleContext\": \"AsBuilt\", \"quantity\": "
                         + "{\"measurementUnit\": {\"datatypeURI\": \"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\",\"lexicalValue\": \"piece\"},\"quantityNumber\": 1}}]}";
 

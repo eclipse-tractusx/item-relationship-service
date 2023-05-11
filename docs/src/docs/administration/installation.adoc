@@ -31,7 +31,7 @@ Create a new Helm chart and use the IRS as a dependency.
 dependencies:
   - name: irs-helm
     repository: https://eclipse-tractusx.github.io/item-relationship-service
-    version: 3.x.x
+    version: 5.x.x
   - name: irs-edc-consumer # optional
     repository: https://eclipse-tractusx.github.io/item-relationship-service
     version: 1.x.x

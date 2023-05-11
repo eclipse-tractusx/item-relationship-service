@@ -1,0 +1,54 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+
+autonumber "<b>[000]"
+
+
+
+box "IRS" #LightGrey
+participant IRS
+participant PolicyChecker
+end box
+
+participant "EDC" as EDC #99FF99
+
+IRS -> EDC: GET /api/v1/management/catalog
+IRS <-- EDC: 200 contractOffers
+IRS -> IRS : find contractOffer by asset
+IRS -> PolicyChecker : policy check for contractOffer
+activate PolicyChecker
+note left
+    check policy/permission/contraints
+    "constraints": [
+              {
+                "edctype": "AtomicConstraint",
+                "leftExpression": {
+                  "edctype": "dataspaceconnector:literalexpression",
+                  "value": "idsc:PURPOSE"
+                },
+                "rightExpression": {
+                  "edctype": "dataspaceconnector:literalexpression",
+                  "value": "ID 3.0 Trace"
+                },
+                "operator": "EQ"
+              }
+            ]
+end note
+
+alt Policy Check succeeded
+    IRS <-- PolicyChecker: PolicyCheck Accepted
+    IRS -> EDC : POST /api/v1/management/contractnegotiations
+    note left
+        negotation and consume asset
+    end note
+else  Failure
+    IRS <-- PolicyChecker: PolicyCheck Rejected
+    IRS -> IRS : create Tombstone
+      note left
+            standard  error handling
+      end note
+end
+
+@enduml

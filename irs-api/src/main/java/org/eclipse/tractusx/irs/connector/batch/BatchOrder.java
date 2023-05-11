@@ -80,6 +80,11 @@ public class BatchOrder {
     private Boolean collectAspects;
 
     /**
+     * Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL
+     */
+    private Boolean lookupBPNs;
+
+    /**
      * Timeout for Batch Order
      */
     private Integer timeout;
