@@ -64,7 +64,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Validated
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals",
-                    "PMD.ShortVariable"
+                    "PMD.ShortVariable",
+                    "PMD.ExcessiveImports"
 })
 class EssController {
 
