@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.controller;
 
+import static org.eclipse.tractusx.irs.common.ApiConstants.FORBIDDEN_DESC;
+import static org.eclipse.tractusx.irs.common.ApiConstants.UNAUTHORIZED_DESC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.UUID;
@@ -86,13 +88,13 @@ class EssController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
+                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
+                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -124,13 +126,13 @@ class EssController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
+                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
+                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
