@@ -12,6 +12,7 @@ install:
   digitalTwin: false
   semanticHub: false
   keycloak: false
+  discovery: false
 
   irs:
     providerBackend: false
@@ -108,6 +109,8 @@ config:
       grafana:
         user: *config-grafana-username
         password: *config-grafana-password
+  discovery:
+    host: &discovery-host "discovery:8080"
 
 # ###########
 # EDC VAULT #
@@ -647,3 +650,12 @@ irs-frontend:
     client:
       id: *config-keycloak-client-id
       secret: *config-keycloak-client-secret
+
+#####################
+# Discovery Service #
+#####################
+discovery:
+  ingress:
+    enabled: false
+  wiremock:
+    host: *discovery-host

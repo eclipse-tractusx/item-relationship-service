@@ -12,6 +12,7 @@ install:
   digitalTwin: true
   semanticHub: true
   keycloak: true
+  discovery: true
 
   irs:
     providerBackend: true
@@ -114,6 +115,8 @@ config:
     hostname: &config-provider-backend-hostname "irs-full-submodel-server.dev.demo.catena-x.net"
   irs-frontend:
     hostname: &config-irs-frontend-hostname "irs-full-frontend.dev.demo.catena-x.net"
+  discovery:
+    host: &discovery-host "irs-full-discovery.dev.demo.catena-x.net"
 
 ######################
 # DAPS Configuration #
@@ -683,3 +686,26 @@ irs-provider-backend:
       - hosts:
           - *config-provider-backend-hostname
         secretName: tls-secret
+
+#####################
+# Discovery Service #
+#####################
+discovery:
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    hosts:
+      - host: *discovery-host
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - *discovery-host
+        secretName: tls-secret
+  wiremock:
+    host: *discovery-host
