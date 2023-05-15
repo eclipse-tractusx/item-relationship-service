@@ -52,3 +52,4 @@ jobs:
     uses: ./.github/workflows/jira-publish-release.yaml
     with:
       version: ${{ github.ref_name }}
+    secrets: inherit
