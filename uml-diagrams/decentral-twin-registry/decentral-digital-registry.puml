@@ -8,8 +8,8 @@ autonumber "<b>[000]"
 participant "IRS" as IRS
 participant "Discovery Finder" as DCF
 participant "EDC Discovery Finder" as EDCDF
-participant CONSUMER_DATA_PLANE
-participant CONSUMER_CONTROLPLANE
+participant "Consumer Data Plane" as CONSUMER_DATA_PLANE
+participant "Consumer Control Plane" as CONSUMER_CONTROLPLANE
 participant "Decentral Twin Registry" as DTR
 
 IRS -> DCF: POST /api/administration/connectors/search {"types":"bpn"}
