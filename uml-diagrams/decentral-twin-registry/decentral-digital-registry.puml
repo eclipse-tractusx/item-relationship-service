@@ -1,0 +1,98 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+
+autonumber "<b>[000]"
+
+participant "IRS" as IRS
+participant "Discovery Finder" as DCF
+participant "EDC Discovery Finder" as EDCDF
+participant CONSUMER_DATA_PLANE
+participant CONSUMER_CONTROLPLANE
+participant "Decentral Twin Registry" as DTR
+
+IRS -> DCF: POST /api/administration/connectors/search {"types":"bpn"}
+IRS <-- DCF: array of endpoints
+note left
+    In case of error.
+    Retry counter: Repeat call 3 times.
+    If call not succeed create a tombstone.
+end note
+loop for each $endpoints
+    IRS -> EDCDF : POST /api/administration/connectory/discovery {"BPNL":"urn:..."}
+    alt
+         IRS <-- EDCDF : array of connectorEndpoints
+         note left
+                 [
+                   {
+                     "bpn": "string",
+                     "connectorEndpoint": [
+                       "string"
+                     ]
+                   }
+                 ]
+         end note
+         loop for each $connectorEndpoints
+             IRS -> CONSUMER_CONTROLPLANE: POST /api/v1/management/catalog/request {"providerUrl": "{PROVIDER_CONTROL_PLANE}/api/v1/ids/data", "querySpec": { "limit": 50 }, "filter": "asset:prop:type=data.core.digitalTwinRegistry"}
+             note left
+                "asset": {
+                				"id": "registry-asset",
+                				"createdAt": 1684151062604,
+                				"properties": {
+                					"asset:prop:byteSize": null,
+                					"asset:prop:name": "Digital Twin Registry Endpoint of IRS DEV",
+                					"asset:prop:contenttype": "application/json",
+                					"asset:prop:policy-id": "use-eu",
+                					"asset:prop:id": "registry-asset",
+                					"asset:prop:fileName": null,
+                					"asset:prop:type": "data.core.digitalTwinRegistry"
+                				}
+                			},
+             end note
+             IRS <-- CONSUMER_CONTROLPLANE: array of contractOffers
+
+             IRS -> CONSUMER_CONTROLPLANE: GET /api/v1/management/adapter/asset/sync/{"registry-asset"}?providerUrl={PROVIDER_CONTROLPLANE}/api/v1/ids/data
+             note left
+                id= "registry-asset"
+             end note
+             IRS <-- CONSUMER_CONTROLPLANE: authCode (encrypted)
+             note left
+                 {
+                 	"id": "1701f7b6-e5fb-4cea-8196-391df58a8916",
+                 	"endpoint": "https://irs-consumer-dataplane.dev.demo.catena-x.net/api/public",
+                 	"authKey": "Authorization",
+                 	"authCode": "eyJoZUhBa....",
+                 	"properties": {
+                 		"cid": "dea8de11-b176-4d4b-a8c5-24c35cfd45ba:c54025a3-208e-479a-9370-a4cca3b3967d"
+                 	}
+                 }
+             end note
+             IRS -> CONSUMER_DATA_PLANE: GET /api/public/lookup/shells/{globalAssetId}
+             IRS <-- CONSUMER_DATA_PLANE: C-X ID ["urn:uuid:4d2f7418-10bc-4296-9859-095e5190d404"]
+
+             IRS -> CONSUMER_DATA_PLANE : GET /api/public/registry/shell-descriptors/${ C-X ID}
+             note left
+                  .../shell-descriptors/urn:uuid:4d2f7418-10bc-4296-9859-095e5190d404
+             end note
+             CONSUMER_DATA_PLANE -> DTR
+             CONSUMER_DATA_PLANE <-- DTR: AAS shell
+             IRS <-- CONSUMER_DATA_PLANE: AAS shell
+         end loop
+    else
+          IRS <-- EDCDF : 3xx / 4xx / 5 xx
+          note left
+                Retry 3 times.
+          end note
+          IRS --> IRS : Create tombstone
+    end alt
+
+
+end loop
+
+
+
+
+
+
+@enduml
