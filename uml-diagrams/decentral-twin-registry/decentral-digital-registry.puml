@@ -12,7 +12,7 @@ participant "Consumer Data Plane" as CONSUMER_DATA_PLANE
 participant "Consumer Control Plane" as CONSUMER_CONTROLPLANE
 participant "Decentral Twin Registry" as DTR
 
-IRS -> DCF: POST /api/administration/connectors/search {"types":"bpn"}
+IRS -> DCF: POST /api/administration/connectors/discovery/search { "types": [ "bpn" ] }
 IRS <-- DCF: array of endpoints
 note left
     In case of error.
