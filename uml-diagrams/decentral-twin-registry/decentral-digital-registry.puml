@@ -34,7 +34,7 @@ loop for each $endpoints
                  ]
          end note
          loop for each $connectorEndpoints
-             IRS -> CONSUMER_CONTROLPLANE: POST /api/v1/management/catalog/request {"providerUrl": "{PROVIDER_CONTROL_PLANE}/api/v1/ids/data", "querySpec": { "limit": 50 }, "filter": "asset:prop:type=data.core.digitalTwinRegistry"}
+             IRS -> CONSUMER_CONTROLPLANE: POST /api/v1/management/catalog/request { "providerUrl": "{PROVIDER_CONTROL_PLANE}/api/v1/ids/data", "querySpec": { "filter": "asset:prop:type=data.core.digitalTwinRegistry" } }
              note left
                 "asset": {
                 				"id": "registry-asset",
