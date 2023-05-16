@@ -13,7 +13,7 @@ participant "EDC Discovery Finder" as EDCDF
     alt cache contains endpoints for BPNL
         IRS <-- CACHE: array of endpoints from cache
     else
-         IRS -> EDCDF : POST /api/administration/connectory/discovery {"BPNL":"urn:..."}
+         IRS -> EDCDF : POST /api/administration/connectors/discovery [ "BPNL..." ]
          IRS -> CACHE: add connectorEndpoints to cache (TTL 24h)
          IRS <-- CACHE: OK
          IRS <-- EDCDF: array of endpoints from service
