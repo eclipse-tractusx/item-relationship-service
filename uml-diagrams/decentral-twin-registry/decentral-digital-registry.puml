@@ -69,13 +69,14 @@ loop for each $endpoints
                  }
              end note
              IRS -> CONSUMER_DATA_PLANE: GET /api/public/lookup/shells/{globalAssetId}
-             IRS <-- CONSUMER_DATA_PLANE: C-X ID ["urn:uuid:4d2f7418-10bc-4296-9859-095e5190d404"]
+             IRS <-- CONSUMER_DATA_PLANE: aas identifier ["urn:uuid:4d2f7418-10bc-4296-9859-095e5190d404"]
 
-             IRS -> CONSUMER_DATA_PLANE : GET /api/public/registry/shell-descriptors/${ C-X ID}
+             IRS -> CONSUMER_DATA_PLANE : GET /api/public/registry/shell-descriptors/${identifier}
              note left
                   .../shell-descriptors/urn:uuid:4d2f7418-10bc-4296-9859-095e5190d404
+                  request AAS for identifier
              end note
-             CONSUMER_DATA_PLANE -> DTR
+             CONSUMER_DATA_PLANE -> DTR : api/public/registry/shell-descriptors/${identifier}
              CONSUMER_DATA_PLANE <-- DTR: AAS shell
              IRS <-- CONSUMER_DATA_PLANE: AAS shell
          end loop
