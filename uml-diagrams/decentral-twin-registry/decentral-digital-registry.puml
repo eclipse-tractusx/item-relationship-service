@@ -20,7 +20,7 @@ note left
     If call not succeed create a tombstone.
 end note
 loop for each $endpoints
-    IRS -> EDCDF : POST /api/administration/connectory/discovery {"BPNL":"urn:..."}
+    IRS -> EDCDF : POST /api/administration/connectors/discovery [ "BPNL..." ]
     alt
          IRS <-- EDCDF : array of connectorEndpoints
          note left
