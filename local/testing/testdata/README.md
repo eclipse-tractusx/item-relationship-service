@@ -1,6 +1,4 @@
-## Name
-
-testdata-transform.py
+# transform-and-upload.py
 
 ## Prerequisites
 
@@ -8,7 +6,9 @@ Python 3.10 or higher has to be installed.
 
 ## Usage
 
-python testdata-transform.py [ options ]
+```shell
+python transform-and-upload.py [ options ]
+```
 
 ## Description
 
