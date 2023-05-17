@@ -76,8 +76,8 @@ loop for each $endpoints
                   request AAS for identifier
              end note
              CONSUMER_EDC -> DTR : api/public/registry/shell-descriptors/${identifier}
-             CONSUMER_EDC <-- DTR: AAS shell
-             IRS <-- CONSUMER_EDC: AAS shell
+             CONSUMER_EDC <-- DTR: aas payload
+             IRS <-- CONSUMER_EDC: aas payload
          end loop
     else
           IRS <-- EDCDF : 3xx / 4xx / 5 xx

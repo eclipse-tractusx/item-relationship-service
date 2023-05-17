@@ -1,0 +1,56 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+
+autonumber "<b>[000]"
+
+participant "IRS" as IRS
+participant "Discovery Finder" as DCF
+participant "EDC Discovery Finder" as EDCDF
+participant "Consumer EDC" as CONSUMER_EDC
+participant "Decentral Twin Registry" as DTR
+
+IRS -> DCF: POST /api/administration/connectors/search {"types":"bpn"}
+IRS <-- DCF: array of endpoints
+note left
+    In case of error.
+    Retry counter: Repeat call 3 times.
+    If call not succeed create a tombstone.
+end note
+loop for each $endpoints
+    IRS -> EDCDF : POST /api/administration/connectory/discovery {"BPNL":"urn:..."}
+
+         IRS <-- EDCDF : array of connectorEndpoints
+
+         loop for each $connectorEndpoints
+             IRS -> CONSUMER_EDC: POST /api/v1/management/catalog/request {"providerUrl": "{ProviderControlPlane}/api/v1/ids/data", "querySpec": { "filter": "asset:prop:type=data.core.digitalTwinRegistry"}
+
+             IRS <-- CONSUMER_CONTROLPLANE: array of contractOffers
+
+             IRS -> CONSUMER_CONTROLPLANE: GET /api/v1/management/adapter/asset/sync/{"registry-asset"}?providerUrl={ProviderControlPlane}/api/v1/ids/data
+             note left
+                id= "registry-asset"
+             end note
+             IRS <-- CONSUMER_CONTROLPLANE: authCode (encrypted)
+
+             IRS -> CONSUMER_EDC: GET /api/public/lookup/shells/{globalAssetId}
+             IRS <-- CONSUMER_EDC: aas identifier ["urn:uuid:..."]
+
+             IRS -> CONSUMER_EDC : GET /api/public/registry/shell-descriptors/${identifier}
+
+             CONSUMER_EDC -> DTR : api/public/registry/shell-descriptors/${identifier}
+             CONSUMER_EDC <-- DTR: aas payload
+             IRS <-- CONSUMER_EDC: aas payload
+         end loop
+
+
+
+end loop
+
+
+
+
+
+
+@enduml
