@@ -15,16 +15,8 @@ def create_submodel_payload(json_payload):
     return json.dumps(json_payload)
 
 
-def create_submodel_url(host, submodel_id):
-    return host + "/data/" + submodel_id
-
-
 def create_digital_twin_payload(json_payload):
     return json.dumps(json_payload)
-
-
-def create_digital_twin_payload_url(host):
-    return host + "/registry/shell-descriptors"
 
 
 def create_edc_asset_payload(submodel_url_, asset_prop_id_, digital_twin_submodel_id_):
@@ -38,7 +30,7 @@ def create_edc_asset_payload(submodel_url_, asset_prop_id_, digital_twin_submode
         },
         "dataAddress": {
             "properties": {
-                "baseUrl": submodel_url_ + "/data/" + digital_twin_submodel_id_,
+                "baseUrl": f"{submodel_url_}/data/{digital_twin_submodel_id_}",
                 "type": "HttpData",
                 "proxyBody": True,
                 "proxyMethod": True
@@ -82,7 +74,7 @@ def create_esr_edc_asset_payload(esr_url_, asset_prop_id_, digital_twin_id_):
         },
         "dataAddress": {
             "properties": {
-                "baseUrl": esr_url_ + "/" + digital_twin_id_ + "/asBuilt/ISO14001/submodel",
+                "baseUrl": f"{esr_url_}/{digital_twin_id_}/asBuilt/ISO14001/submodel",
                 "type": "HttpData",
                 "proxyBody": True,
                 "proxyMethod": True
@@ -136,8 +128,50 @@ def create_submodel_descriptor(id_short_, identification_, semantic_id_, endpoin
                     "interface": "HTTP",
                     "protocolInformation": {
                         "endpointAddress": endpoint_address_,
-                        "endpointProtocol": "HTTPS",
-                        "endpointProtocolVersion": "1.0"
+                        "endpointProtocol": "AAS/IDS",
+                        "endpointProtocolVersion": "0.1",
+                        "subprotocol": "IDS",
+                        "subprotocolBody": "TDB",
+                        "subprotocolBodyEncoding": "plain"
+                    }
+                }
+            ]
+        }
+    )
+
+
+def create_aas_shell_3_0(global_asset_id_, id_short_, identification_, specific_asset_id_, submodel_descriptors_):
+    return json.dumps({
+        "description": [],
+        "globalAssetId": global_asset_id_,
+        "idShort": id_short_,
+        "id": identification_,
+        "specificAssetIds": specific_asset_id_,
+        "submodelDescriptors": submodel_descriptors_
+    })
+
+
+def create_submodel_descriptor_3_0(id_short_, identification_, semantic_id_, endpoint_address_):
+    return json.dumps(
+        {
+            "description": [],
+            "idShort": id_short_,
+            "id": identification_,
+            "semanticId": {
+                "value": [
+                    semantic_id_
+                ]
+            },
+            "endpoints": [
+                {
+                    "interface": "HTTP",
+                    "protocolInformation": {
+                        "href": endpoint_address_,
+                        "endpointProtocol": "AAS/IDS",
+                        "endpointProtocolVersion": "0.1",
+                        "subprotocol": "IDS",
+                        "subprotocolBody": "TDB",
+                        "subprotocolBodyEncoding": "plain"
                     }
                 }
             ]
@@ -172,8 +206,8 @@ def check_url_args(submodel_server_upload_urls_, submodel_server_urls_, edc_uplo
 
 def create_policy(policy_, edc_upload_url_, edc_policy_path_, headers_, session_):
     url_ = edc_upload_url_ + edc_policy_path_
-    response_ = session_.request(method="POST", url=url_ + "/request", headers=headers_, data=json.dumps({
-        "filter": "id=" + policy_['id']
+    response_ = session_.request(method="POST", url=f"{url_}/request", headers=headers_, data=json.dumps({
+        "filter": f"id={policy_['id']}"
     }))
     if response_.status_code == 200 and response_.json():
         print(f"Policy {policy_['id']} already exists. Skipping creation.")
@@ -197,7 +231,7 @@ def create_registry_asset(edc_upload_urls_, edc_asset_path_, edc_contract_defini
 
         catalog_url_ = edc_upload_url_ + catalog_path_
         payload_ = {
-            "providerUrl": edc_url_ + "/api/v1/ids/data",
+            "providerUrl": f"{edc_url_}/api/v1/ids/data",
             "querySpec": {
                 "filter": "asset:prop:type=data.core.digitalTwinRegistry"
             }
@@ -250,6 +284,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--policy", help="Default Policy which should be used for EDC contract definitions",
                         required=False)
     parser.add_argument("-bpns", "--bpns", type=str, nargs="*", help="Filter upload to upload only specific BPNs", required=False)
+    parser.add_argument("--aas3", help="Create AAS assets in version 3.0", action='store_true', required=False)
 
     args = parser.parse_args()
     config = vars(args)
@@ -267,6 +302,7 @@ if __name__ == "__main__":
     bpnl_fail = config.get("bpn")
     default_policy = config.get("policy")
     bpns_list = config.get("bpns")
+    is_aas3 = config.get("aas3")
 
     if submodel_server_upload_urls is None:
         submodel_server_upload_urls = submodel_server_urls
@@ -339,6 +375,8 @@ if __name__ == "__main__":
     create_registry_asset(edc_upload_urls, edc_asset_path, edc_contract_definition_path, edc_catalog_path,
                           headers_with_api_key, session, edc_urls, default_policy, registry_asset_id, aas_upload_url)
 
+    esr = "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic"
+    apr = "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship"
     for tmp_data in testdata:
         if bpns_list is None or tmp_data["bpnl"] in bpns_list or not bpns_list:
             catenax_id = tmp_data["catenaXId"]
@@ -371,15 +409,13 @@ if __name__ == "__main__":
                 "value": tmp_data["bpnl"]
             })
 
-            esr = "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic"
-            apr = "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship"
             if esr_url and apr in tmp_keys and "childParts" in tmp_data[apr][0] and tmp_data[apr][0]["childParts"]:
                 tmp_data.update({esr: ""})
 
             policy_id = default_policy
             if "policy" in tmp_keys:
                 policy_id = tmp_data["policy"]
-            print("Policy: " + policy_id)
+            print(f"Policy: {policy_id}")
 
             for tmp_key in tmp_keys:
                 if "PlainObject" not in tmp_key and "catenaXId" not in tmp_key and "bpn" not in tmp_key and "policy" not in tmp_key:
@@ -394,24 +430,29 @@ if __name__ == "__main__":
                     semantic_id = tmp_key
 
                     if is_ess and tmp_data["bpnl"] in bpnl_fail:
-                        endpoint_address = "http://idonotexist/" + catenax_id + "-" + submodel_identification + "/submodel?content=value&extent=withBlobValue"
+                        endpoint_address = f"http://idonotexist/{catenax_id}-{submodel_identification}/submodel?content=value&extent=withBlobValue"
                     elif submodel_name == "EsrCertificateStateStatistic" and esr_url is not None:
-                        endpoint_address = esr_url + "/" + catenax_id + "/asBuilt/ISO14001/submodel"
+                        endpoint_address = f"{esr_url}/{catenax_id}/asBuilt/ISO14001/submodel"
                     else:
-                        endpoint_address = edc_url + "/" + catenax_id + \
-                                           "-" + submodel_identification + "/submodel?content=value&extent=withBlobValue"
+                        endpoint_address = F"{edc_url}/{catenax_id}-{submodel_identification}/submodel?content=value&extent=withBlobValue"
 
-                    descriptor = create_submodel_descriptor(submodel_name, submodel_identification, semantic_id,
-                                                            endpoint_address)
-                    submodel_descriptors.append(json.loads(descriptor))
+                    if is_aas3:
+                        endpoint_address = f"{edc_url}/shells/{catenax_id}/submodels/{submodel_identification}/submodel"
+                        descriptor = create_submodel_descriptor_3_0(submodel_name, submodel_identification, semantic_id,
+                                                                    endpoint_address)
+                        submodel_descriptors.append(json.loads(descriptor))
+                    else:
+                        descriptor = create_submodel_descriptor(submodel_name, submodel_identification, semantic_id,
+                                                                endpoint_address)
+                        submodel_descriptors.append(json.loads(descriptor))
 
-                    asset_prop_id = catenax_id + "-" + submodel_identification
+                    asset_prop_id = f"{catenax_id}-{submodel_identification}"
 
                     print("Create submodel on submodel server")
                     if tmp_data[tmp_key] != "":
                         payload = create_submodel_payload(tmp_data[tmp_key][0])
                         response = session.request(method="POST",
-                                                   url=create_submodel_url(submodel_upload_url, submodel_identification),
+                                                   url=f"{submodel_upload_url}/data/{submodel_identification}",
                                                    headers=headers, data=payload)
                         print_response(response)
 
@@ -435,9 +476,13 @@ if __name__ == "__main__":
 
             if submodel_descriptors:
                 print("Create aas shell")
-                payload = create_aas_shell(catenax_id, name_at_manufacturer, identification, specific_asset_ids,
-                                           submodel_descriptors)
-                response = session.request(method="POST", url=create_digital_twin_payload_url(aas_url),
+                if is_aas3:
+                    payload = create_aas_shell_3_0(catenax_id, name_at_manufacturer, identification, specific_asset_ids,
+                                                   submodel_descriptors)
+                else:
+                    payload = create_aas_shell(catenax_id, name_at_manufacturer, identification, specific_asset_ids,
+                                               submodel_descriptors)
+                response = session.request(method="POST", url=f"{aas_url}/registry/shell-descriptors",
                                            headers=headers,
                                            data=payload)
                 print_response(response)
