@@ -125,7 +125,7 @@ irs-edc-consumer:
         url: "https://irs-consumer-dataplane.dev.demo.catena-x.net"
     configuration:
       properties: |-
-        edc.oauth.client.id=4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90:keyid:4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90
+        edc.oauth.client.id=<path:traceability-irs/data/dev/controlplane#edc.oauth.client.id>
         edc.oauth.private.key.alias=irs-dev-daps-cert-consumer-key
         edc.oauth.provider.jwks.url=https://daps-irs.dev.demo.catena-x.net/.well-known/jwks.json
         edc.oauth.certificate.alias=irs-dev-daps-cert-consumer
@@ -175,7 +175,7 @@ irs-edc-consumer:
 
     configuration:
       properties: |-
-        edc.oauth.client.id=4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90:keyid:4D:BE:65:C0:E8:F7:CB:09:FD:43:67:16:EF:68:F1:62:D8:B2:08:90
+        edc.oauth.client.id=<path:traceability-irs/data/dev/controlplane#edc.oauth.client.id>
         edc.oauth.private.key.alias=irs-dev-daps-cert-consumer-key
         edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
         edc.oauth.provider.jwks.url=https://daps-irs.dev.demo.catena-x.net/.well-known/jwks.json

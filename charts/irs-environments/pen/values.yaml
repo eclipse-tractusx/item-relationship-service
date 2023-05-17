@@ -38,7 +38,7 @@ irs-helm:
   edc:
     controlplane:
       apikey:
-        secret: "123456"
+        secret: <path:traceability-irs/data/pen/controlplane#apiKey>
 
   #######################
   # Minio Configuration #
@@ -94,14 +94,14 @@ irs-edc-consumer:
                 alias: irs-int-daps-key
       api:
         auth:
-          key: "123456"
+          key: <path:traceability-irs/data/pen/controlplane#apiKey>
       controlplane:
         url: "https://irs-consumer-controlplane-pen.int.demo.catena-x.net"
       dataplane:
         url: "https://irs-consumer-dataplane-pen.int.demo.catena-x.net"
     configuration:
       properties: |-
-        edc.oauth.client.id=D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09:keyid:D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09
+        edc.oauth.client.id=<path:traceability-irs/data/int/controlplane#edc.oauth.client.id>
         edc.oauth.private.key.alias=irs-int-daps-key
         edc.oauth.provider.jwks.url=https://daps1.int.demo.catena-x.net/.well-known/jwks.json
         edc.oauth.certificate.alias=irs-int-daps-cert
@@ -119,7 +119,7 @@ irs-edc-consumer:
     edc:
       api:
         auth:
-          key: "123456"
+          key: <path:traceability-irs/data/pen/controlplane#apiKey>
     ## Ingress declaration to expose the network service.
     ingresses:
       ## Public / Internet facing Ingress
@@ -151,7 +151,7 @@ irs-edc-consumer:
 
     configuration:
       properties: |-
-        edc.oauth.client.id=D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09:keyid:D9:3A:80:9E:9C:21:95:12:5C:C2:1D:D8:30:80:7A:B9:DD:5F:C9:09
+        edc.oauth.client.id=<path:traceability-irs/data/int/controlplane#edc.oauth.client.id>
         edc.oauth.private.key.alias=irs-int-daps-key
         edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
         edc.oauth.provider.jwks.url=https://daps1.int.demo.catena-x.net/.well-known/jwks.json
