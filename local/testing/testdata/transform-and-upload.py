@@ -434,7 +434,7 @@ if __name__ == "__main__":
                     elif submodel_name == "EsrCertificateStateStatistic" and esr_url is not None:
                         endpoint_address = f"{esr_url}/{catenax_id}/asBuilt/ISO14001/submodel"
                     else:
-                        endpoint_address = F"{edc_url}/{catenax_id}-{submodel_identification}/submodel?content=value&extent=withBlobValue"
+                        endpoint_address = f"{edc_url}/{catenax_id}-{submodel_identification}/submodel?content=value&extent=withBlobValue"
 
                     if is_aas3:
                         endpoint_address = f"{edc_url}/shells/{catenax_id}/submodels/{submodel_identification}/submodel"
