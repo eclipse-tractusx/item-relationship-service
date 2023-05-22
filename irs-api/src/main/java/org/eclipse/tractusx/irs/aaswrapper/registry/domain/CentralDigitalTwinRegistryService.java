@@ -36,7 +36,7 @@ import org.springframework.stereotype.Service;
  * Central implementation of DigitalTwinRegistryService
  */
 @Service
-@ConditionalOnProperty(prefix="digitalTwinRegistry", name="type", havingValue = "central")
+@ConditionalOnProperty(prefix = "digitalTwinRegistry", name = "type", havingValue = "central")
 @RequiredArgsConstructor
 @Slf4j
 public class CentralDigitalTwinRegistryService implements DigitalTwinRegistryService {

@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
  * Decentral implementation of DigitalTwinRegistryService
  */
 @Service
-@ConditionalOnProperty(prefix="digitalTwinRegistry", name="type", havingValue = "decentral")
+@ConditionalOnProperty(prefix = "digitalTwinRegistry", name = "type", havingValue = "decentral")
 @RequiredArgsConstructor
 @Slf4j
 public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryService {
@@ -40,7 +40,6 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     @Override
     public AssetAdministrationShellDescriptor getAAShellDescriptor(final DigitalTwinRegistryKey key) {
         log.info("Retrieved AAS Identification for DigitalTwinRegistryKey: {}", key);
-        // TODO implement in next subtask
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
