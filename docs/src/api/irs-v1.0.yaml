@@ -1551,6 +1551,8 @@ components:
       properties:
         aspects:
           type: string
+        bpn:
+          type: string
         bomLifecycle:
           type: string
           description: The lifecycle context in which the child part was assembled
@@ -1703,6 +1705,27 @@ components:
         totalElements:
           type: integer
           format: int32
+    PartChainIdentificationKey:
+      type: object
+      additionalProperties: false
+      description: Key object contains required attributes for identify part chain entry node.
+      properties:
+        bpn:
+          description: BPN for part chain identification needed in decentral registry approach
+          example: BPNL0123456789XX
+          maxLength: 16
+          minLength: 16
+          pattern: ^(BPN)(L|S|A)(\d{10})([a-zA-Z0-9]{2})$
+          type: string
+        globalAssetId:
+          description: Id of global asset.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+          maxLength: 45
+          minLength: 45
+          pattern: ^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+          type: string
+      required:
+          - globalAssetId
     ProcessingError:
       type: object
       additionalProperties: false
@@ -1918,19 +1941,12 @@ components:
           enum:
             - upward
             - downward
-        globalAssetId:
-          type: string
-          description: Id of global asset.
-          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-          maxLength: 45
-          minLength: 45
-          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        key:
+          $ref: '#/components/schemas/PartChainIdentificationKey'
         lookupBPNs:
           type: boolean
           description: Flag to specify whether BPNs should be collected and resolved
             via the configured BPDM URL. Default is false.
-      required:
-        - globalAssetId
     Relationship:
       type: object
       additionalProperties: false
