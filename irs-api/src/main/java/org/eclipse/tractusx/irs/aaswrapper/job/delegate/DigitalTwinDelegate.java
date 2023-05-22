@@ -54,7 +54,7 @@ public class DigitalTwinDelegate extends AbstractDelegate {
 
         try {
             final AssetAdministrationShellDescriptor aaShell = digitalTwinRegistryService.getAAShellDescriptor(
-                    new DigitalTwinRegistryKey(itemId, "")
+                    new DigitalTwinRegistryKey(itemId, jobData.getBpn())
             );
 
             itemContainerBuilder.shell(aaShell);
