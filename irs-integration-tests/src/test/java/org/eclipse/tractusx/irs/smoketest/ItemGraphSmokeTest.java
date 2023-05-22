@@ -39,6 +39,7 @@ import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -71,7 +72,7 @@ class ItemGraphSmokeTest {
 
     private static RegisterJob registerJob() {
         final RegisterJob registerJob = new RegisterJob();
-        registerJob.setGlobalAssetId(GLOBAL_ASSET_ID);
+        registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(GLOBAL_ASSET_ID).build());
         registerJob.setDepth(TREE_DEPTH);
         registerJob.setAspects(ASPECTS);
         registerJob.setBomLifecycle(BomLifecycle.AS_BUILT);
