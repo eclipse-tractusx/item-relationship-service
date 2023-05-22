@@ -25,5 +25,13 @@ spec:
       targetPort: metrics
       protocol: TCP
       name: metrics
+    - port: {{ .Values.edc.endpoints.observability.port }}
+      targetPort: observability
+      protocol: TCP
+      name: observability
+    - port: {{ .Values.edc.endpoints.management.port }}
+      targetPort: management
+      protocol: TCP
+      name: management
   selector:
     {{- include "edc-dataplane.selectorLabels" . | nindent 4 }}

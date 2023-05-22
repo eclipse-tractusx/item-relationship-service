@@ -8,9 +8,10 @@
 replicaCount: 1
 
 image:
+  registry: docker.io
   # -- Which derivate of the edc data-plane to use.
   # One of: [ghcr.io/catenax-ng/product-edc/edc-dataplane-hashicorp-vault, ghcr.io/catenax-ng/product-edc/edc-dataplane-azure-vault]
-  repository: ghcr.io/catenax-ng/product-edc/edc-dataplane-hashicorp-vault
+  repository: tractusx/edc-dataplane-hashicorp-vault
   # -- [Kubernetes image pull policy](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy) to use
   pullPolicy: IfNotPresent
   # -- Overrides the image tag whose default is the chart appVersion
@@ -118,6 +119,18 @@ edc:
       port: "9090"
       # -- The path mapping the prometheus metrics are going to be exposed at
       path: /metrics
+    ## Observability endpoint
+    observability:
+      # -- The network port, which the observability endpoints are going to be exposed by the container, pod and service
+      port: "8085"
+      # -- The path mapping the observability endpoints are going to be exposed at
+      path: /observability
+
+    management:
+      # -- The network port, which the prometheus metrics are going to be exposed by the container, pod and service
+      port: "8123"
+      # -- The path mapping the prometheus metrics are going to be exposed at
+      path: /management
   api:
     auth:
       key:

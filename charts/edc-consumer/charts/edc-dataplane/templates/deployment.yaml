@@ -56,23 +56,29 @@ spec:
             - name: metrics
               containerPort: {{ .Values.edc.endpoints.metrics.port }}
               protocol: TCP
+            - name: observability
+              containerPort: {{ .Values.edc.endpoints.observability.port }}
+              protocol: TCP
+            - name: management
+              containerPort: {{ .Values.edc.endpoints.management.port }}
+              protocol: TCP
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
-              path: {{ .Values.edc.endpoints.default.path }}/check/liveness
-              port: default
+              path: {{ .Values.edc.endpoints.observability.path }}/check/liveness
+              port: observability
           {{- end }}
           {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
-              path: {{ .Values.edc.endpoints.default.path }}/check/readiness
-              port: default
+              path: {{ .Values.edc.endpoints.observability.path }}/check/readiness
+              port: observability
           {{- end }}
           {{- if .Values.startupProbe.enabled }}
           startupProbe:
             httpGet:
-              path: {{ .Values.edc.endpoints.default.path }}/check/startup
-              port: default
+              path: {{ .Values.edc.endpoints.observability.path }}/check/startup
+              port: observability
             failureThreshold: {{ .Values.startupProbe.failureThreshold }}
             initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
           {{- end }}

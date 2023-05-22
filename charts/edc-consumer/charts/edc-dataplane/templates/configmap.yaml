@@ -14,10 +14,15 @@ data:
     web.http.public.path={{ .Values.edc.endpoints.public.path }}
     web.http.control.port={{ .Values.edc.endpoints.control.port }}
     web.http.control.path={{ .Values.edc.endpoints.control.path }}
+    web.http.management.port={{ .Values.edc.endpoints.management.port }}
+    web.http.management.path={{ .Values.edc.endpoints.management.path }}
+    web.http.observability.port={{ .Values.edc.endpoints.observability.port }}
+    web.http.observability.path={{ .Values.edc.endpoints.observability.path }}
     edc.dataplane.token.validation.endpoint=http://{{ .Release.Name }}-edc-controlplane:8182/validation/token
     edc.vault.hashicorp.timeout.seconds=30
     edc.vault.hashicorp.health.check.enabled=true
     edc.vault.hashicorp.health.check.standby.ok=true
+    tractusx.api.observability.allow-insecure=true
     {{- .Values.configuration.properties | nindent 4 }}
 
   opentelemetry.properties: |-
