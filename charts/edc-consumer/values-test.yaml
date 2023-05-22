@@ -57,7 +57,7 @@ edc-controlplane:
       edc.oauth.token.url=https://daps-irs.dev.demo.catena-x.net/token
       edc.vault.hashicorp.url=https://vault.demo.catena-x.net
       edc.vault.hashicorp.token=<path:traceability-irs/data/dev/controlplane#vaultToken>
-      edc.vault.hashicorp.api.secret.path=/v1/traceability-irs/data
+      edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
       edc.data.encryption.keys.alias=irs-dev-daps-cert-consumer-key
       edc.data.encryption.algorithm=NONE
 
@@ -104,7 +104,7 @@ edc-dataplane:
       edc.oauth.private.key.alias=irs-dev-daps-cert-consumer-key
       edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
       edc.oauth.provider.jwks.url=https://daps-irs.dev.demo.catena-x.net/.well-known/jwks.json
-      edc.oauth.certificate.alias=irs-local-daps-cert-consumer
+      edc.oauth.certificate.alias=irs-dev-daps-cert-consumer
       edc.oauth.token.url=https://daps-irs.dev.demo.catena-x.net/token
       edc.vault.hashicorp.url=https://vault.demo.catena-x.net
       edc.vault.hashicorp.token=<path:traceability-irs/data/dev/controlplane#vaultToken>
