@@ -53,6 +53,7 @@ import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.JobStatusResult;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
@@ -114,7 +115,7 @@ public class E2ETestStepDefinitions {
 
     @Given("I register an IRS job for globalAssetId {string}")
     public void iRegisterAnIRSJobForGlobalAssetId(String globalAssetId) {
-        registerJobBuilder.globalAssetId(globalAssetId);
+        registerJobBuilder.key(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).build());
     }
 
     @Given("I register an IRS batch job for globalAssetIds:")
