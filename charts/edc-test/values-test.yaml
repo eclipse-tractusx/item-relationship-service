@@ -52,7 +52,7 @@ test-edc:
 
   postgresql:
     enabled: true
-    jdbcUrl: "jdbc:postgresql://test-edc-postgresql-hl:5432/edc"
+    jdbcUrl: "jdbc:postgresql://test-edc-test-edc-postgresql-hl:5432/edc"
     username: "<path:traceability-irs/data/dev/controlplane#databaseuser>"
     password: "<path:traceability-irs/data/dev/controlplane#databasepassword>"
 
