@@ -46,6 +46,8 @@ irs-helm:
   minio:
     rootUser: <path:traceability-irs/data/int/minio#minioUser>
     rootPassword: <path:traceability-irs/data/int/minio#minioPassword>
+    serviceAccount:
+      name: "irs-pen-minio-sa"
 
 
 irs-edc-consumer:

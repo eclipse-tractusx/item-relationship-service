@@ -47,6 +47,8 @@ irs-helm:
   minio:
     rootUser: <path:traceability-irs/data/dev/minio#minioUser>
     rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
+    serviceAccount:
+      name: "irs-dev-minio-sa"
 
   #########################
   # Grafana Configuration #
