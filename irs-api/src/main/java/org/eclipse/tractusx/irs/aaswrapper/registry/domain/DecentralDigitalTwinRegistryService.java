@@ -22,6 +22,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -37,10 +40,28 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryService {
 
+    private final DiscoveryFinderClient discoveryFinderClient;
+    private final EDCConnectorsForAASService edcConnectorsForAASService;
+
     @Override
     public AssetAdministrationShellDescriptor getAAShellDescriptor(final DigitalTwinRegistryKey key) {
         log.info("Retrieved AAS Identification for DigitalTwinRegistryKey: {}", key);
-        throw new UnsupportedOperationException("Not implemented yet");
+        final DiscoveryFinderRequest onlyBpn = new DiscoveryFinderRequest(List.of("bpn"));
+        final List<String> providedBpn = List.of(key.bpn());
+        final List<DiscoveryEndpoint> discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn);
+        final List<String> connectorEndpoints = discoveryEndpoints.stream()
+                                                                  .map(discoveryEndpoint -> discoveryFinderClient.findConnectorEndpoints(
+                                                                                                                         discoveryEndpoint.endpointAddress(), providedBpn)
+                                                                                                                 .stream()
+                                                                                                                 .filter(edcDiscoveryResult -> edcDiscoveryResult.bpn()
+                                                                                                                                                                 .equals(key.bpn()))
+                                                                                                                 .map(EdcDiscoveryResult::connectorEndpoint)
+                                                                                                                 .collect(
+                                                                                                                         Collectors.toList()))
+                                                                  .flatMap(List::stream)
+                                                                  .flatMap(List::stream)
+                                                                  .toList();
+        return edcConnectorsForAASService.findAASinConnectors(connectorEndpoints);
     }
 
 }
