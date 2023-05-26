@@ -47,6 +47,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Custom environment variables are now rendered correctly in the deployment resource
 
+## [5.0.10] - 2023-04-21
+### Changed
+- Update IRS to version 2.4.1
+
 ## [5.0.9] - 2023-03-30
 ### Fixed
 - Moved license headers out of if clauses and add dashes (`---`) after each license header
