@@ -215,8 +215,6 @@ minio:
       memory: 4Gi
   rootUser: "minio"  # <minio-username>
   rootPassword: "minioPass"  # <minio-password>
-  serviceAccount:
-    name: "{{ .Release.Name }}-minio-sa"
 
   environment:
     MINIO_PROMETHEUS_JOB_ID: minio-actuator
