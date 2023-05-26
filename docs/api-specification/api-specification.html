@@ -662,6 +662,7 @@ font-style: italic;
   </ul>
   <h4><a href="#ItemRelationshipService">ItemRelationshipService</a></h4>
   <ul>
+  <li><a href="#cancelBatchOrder"><code><span class="http-method">put</span> /irs/orders/{orderId}</code></a></li>
   <li><a href="#cancelJobByJobId"><code><span class="http-method">put</span> /irs/jobs/{id}</code></a></li>
   <li><a href="#getBatch"><code><span class="http-method">get</span> /irs/orders/{orderId}/batches/{batchId}</code></a></li>
   <li><a href="#getBatchOrder"><code><span class="http-method">get</span> /irs/orders/{orderId}</code></a></li>
@@ -3397,6 +3398,247 @@ font-style: italic;
   </div> <!-- method -->
   <hr/>
   <h1><a name="ItemRelationshipService">ItemRelationshipService</a></h1>
+  <div class="method"><a name="cancelBatchOrder"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /irs/orders/{orderId}</code></pre></div>
+    <div class="method-summary">Cancel a batch order for a given orderId. (<span class="nickname">cancelBatchOrder</span>)</div>
+    <div class="method-notes">Cancel a batch order for a given orderId.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">orderId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; Id of the order. default: null format: uuid</div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#BatchOrderResponse">BatchOrderResponse</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "batches" : [ {
+    "batchTotal" : 1,
+    "orderId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "batchProcessingState" : "INITIALIZED",
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "jobs" : [ {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    } ],
+    "totalJobs" : 5,
+    "jobsInBatchChecksum" : 5,
+    "batchId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00",
+    "batchNumber" : 6
+  }, {
+    "batchTotal" : 1,
+    "orderId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "batchProcessingState" : "INITIALIZED",
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "jobs" : [ {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    } ],
+    "totalJobs" : 5,
+    "jobsInBatchChecksum" : 5,
+    "batchId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00",
+    "batchNumber" : 6
+  }, {
+    "batchTotal" : 1,
+    "orderId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "batchProcessingState" : "INITIALIZED",
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "jobs" : [ {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    } ],
+    "totalJobs" : 5,
+    "jobsInBatchChecksum" : 5,
+    "batchId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00",
+    "batchNumber" : 6
+  }, {
+    "batchTotal" : 1,
+    "orderId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "batchProcessingState" : "INITIALIZED",
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "jobs" : [ {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    } ],
+    "totalJobs" : 5,
+    "jobsInBatchChecksum" : 5,
+    "batchId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00",
+    "batchNumber" : 6
+  }, {
+    "batchTotal" : 1,
+    "orderId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "batchProcessingState" : "INITIALIZED",
+    "completedOn" : "2000-01-23T04:56:07.000+00:00",
+    "jobs" : [ {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    }, {
+      "completedOn" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+      "state" : "UNSAVED",
+      "startedOn" : "2000-01-23T04:56:07.000+00:00"
+    } ],
+    "totalJobs" : 5,
+    "jobsInBatchChecksum" : 5,
+    "batchId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+    "startedOn" : "2000-01-23T04:56:07.000+00:00",
+    "batchNumber" : 6
+  } ],
+  "orderId" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+  "state" : "INITIALIZED",
+  "batchChecksum" : 0
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Cancel a batch order for a given orderId.
+        <a href="#BatchOrderResponse">BatchOrderResponse</a>
+    <h4 class="field-label">400</h4>
+    Return Batch Order failed.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">401</h4>
+    No valid authentication credentials.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">403</h4>
+    Authorization refused by server.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">404</h4>
+    Batch Order with the requested orderId not found.
+        <a href="#ErrorResponse">ErrorResponse</a>
+  </div> <!-- method -->
+  <hr/>
   <div class="method"><a name="cancelJobByJobId"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
@@ -7039,7 +7281,7 @@ font-style: italic;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-05 10:21:04 UTC
+Last updated 2023-05-26 11:36:27 UTC
 </div>
 </div>
 </body>

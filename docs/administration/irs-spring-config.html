@@ -807,7 +807,9 @@ pre.rouge {
       <span class="na">ttl</span><span class="pi">:</span> <span class="s">P1D</span> <span class="c1"># Time after which a cached Item is no longer valid and the real catalog is called instead</span>
       <span class="na">maxCachedItems</span><span class="pi">:</span> <span class="m">64000</span> <span class="c1"># Maximum amount of cached catalog items</span>
     <span class="na">policies</span><span class="pi">:</span>
-      <span class="na">allowedNames</span><span class="pi">:</span> <span class="s">ID 3.0 Trace, ID 3.1 Trace, R2_Traceability</span>
+      <span class="c1"># IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.</span>
+      <span class="c1"># If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.</span>
+      <span class="na">allowedNames</span><span class="pi">:</span> <span class="s">ID 3.0 Trace, ID 3.1 Trace, R2_Traceability</span> <span class="c1"># List of comma separated names of the policies to accept.</span>
 
 <span class="na">digitalTwinRegistry</span><span class="pi">:</span>
   <span class="na">descriptorEndpoint</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_DESCRIPTOR_URL:}</span> <span class="c1"># The endpoint to retrieve AAS descriptors from the DTR, must contain the placeholder {aasIdentifier}</span>
@@ -871,7 +873,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-05 10:21:04 UTC
+Last updated 2023-05-26 11:36:27 UTC
 </div>
 </div>
 </body>

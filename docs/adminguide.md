@@ -209,7 +209,9 @@ edc:
       ttl: P1D # Time after which a cached Item is no longer valid and the real catalog is called instead
       maxCachedItems: 64000 # Maximum amount of cached catalog items
     policies:
-      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability
+      # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
+      # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
+      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability # List of comma separated names of the policies to accept.
 
 digitalTwinRegistry:
   descriptorEndpoint: ${DIGITALTWINREGISTRY_DESCRIPTOR_URL:} # The endpoint to retrieve AAS descriptors from the DTR, must contain the placeholder {aasIdentifier}
@@ -304,7 +306,9 @@ semanticshub:
 bpdm:
   url:  # https://<bpdm-url>
   bpnEndpoint: >-
-    {{ tpl (.Values.bpdm.url | default "") . }}/api/catena/legal-entities/{partnerId}?idType={idType}
+    {{- if .Values.bpdm.url }}
+    {{- tpl (.Values.bpdm.url | default "") . }}/api/catena/legal-entities/{partnerId}?idType={idType}
+    {{- end }}
 minioUser: "minio"  # <minio-username>
 minioPassword:  # <minio-password>
 minioUrl: "http://{{ .Release.Name }}-minio:9000"
@@ -345,7 +349,9 @@ edc:
       ttl: P1D  # Time after which a cached Item is no longer valid and the real catalog is called instead
       maxCachedItems: 64000  # Maximum amount of cached catalog items
     policies:
-      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability
+      # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
+      # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
+      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability  # List of comma separated names of the policies to accept.
 
 discovery:
   endpoint:  # EDC Discovery Service endpoint
@@ -453,10 +459,6 @@ grafana:
           isDefault: true
 
   dashboardProviders:
-    dashboardproviders.yaml:
-      apiVersion: 1
-      providers:
-        - name: 'default'
 ```
 
 1. Use this to enable or disable the monitoring components

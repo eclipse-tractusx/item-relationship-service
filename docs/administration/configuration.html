@@ -852,7 +852,9 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">ttl</span><span class="pi">:</span> <span class="s">P1D</span> <span class="c1"># Time after which a cached Item is no longer valid and the real catalog is called instead</span>
       <span class="na">maxCachedItems</span><span class="pi">:</span> <span class="m">64000</span> <span class="c1"># Maximum amount of cached catalog items</span>
     <span class="na">policies</span><span class="pi">:</span>
-      <span class="na">allowedNames</span><span class="pi">:</span> <span class="s">ID 3.0 Trace, ID 3.1 Trace, R2_Traceability</span>
+      <span class="c1"># IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.</span>
+      <span class="c1"># If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.</span>
+      <span class="na">allowedNames</span><span class="pi">:</span> <span class="s">ID 3.0 Trace, ID 3.1 Trace, R2_Traceability</span> <span class="c1"># List of comma separated names of the policies to accept.</span>
 
 <span class="na">digitalTwinRegistry</span><span class="pi">:</span>
   <span class="na">descriptorEndpoint</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_DESCRIPTOR_URL:}</span> <span class="c1"># The endpoint to retrieve AAS descriptors from the DTR, must contain the placeholder {aasIdentifier}</span>
@@ -951,7 +953,9 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <span class="na">bpdm</span><span class="pi">:</span>
   <span class="na">url</span><span class="pi">:</span>  <span class="c1"># https://&lt;bpdm-url&gt;</span>
   <span class="na">bpnEndpoint</span><span class="pi">:</span> <span class="pi">&gt;-</span>
-    <span class="s">{{ tpl (.Values.bpdm.url | default "") . }}/api/catena/legal-entities/{partnerId}?idType={idType}</span>
+    <span class="s">{{- if .Values.bpdm.url }}</span>
+    <span class="s">{{- tpl (.Values.bpdm.url | default "") . }}/api/catena/legal-entities/{partnerId}?idType={idType}</span>
+    <span class="s">{{- end }}</span>
 <span class="na">minioUser</span><span class="pi">:</span> <span class="s2">"</span><span class="s">minio"</span>  <span class="c1"># &lt;minio-username&gt;</span>
 <span class="na">minioPassword</span><span class="pi">:</span>  <span class="c1"># &lt;minio-password&gt;</span>
 <span class="na">minioUrl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">http://{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-minio:9000"</span>
@@ -992,7 +996,9 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">ttl</span><span class="pi">:</span> <span class="s">P1D</span>  <span class="c1"># Time after which a cached Item is no longer valid and the real catalog is called instead</span>
       <span class="na">maxCachedItems</span><span class="pi">:</span> <span class="m">64000</span>  <span class="c1"># Maximum amount of cached catalog items</span>
     <span class="na">policies</span><span class="pi">:</span>
-      <span class="na">allowedNames</span><span class="pi">:</span> <span class="s">ID 3.0 Trace, ID 3.1 Trace, R2_Traceability</span>
+      <span class="c1"># IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.</span>
+      <span class="c1"># If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.</span>
+      <span class="na">allowedNames</span><span class="pi">:</span> <span class="s">ID 3.0 Trace, ID 3.1 Trace, R2_Traceability</span>  <span class="c1"># List of comma separated names of the policies to accept.</span>
 
 <span class="na">discovery</span><span class="pi">:</span>
   <span class="na">endpoint</span><span class="pi">:</span>  <span class="c1"># EDC Discovery Service endpoint</span>
@@ -1099,11 +1105,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
           <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">http://{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-prometheus-server"</span>
           <span class="na">isDefault</span><span class="pi">:</span> <span class="no">true</span>
 
-  <span class="na">dashboardProviders</span><span class="pi">:</span>
-    <span class="na">dashboardproviders.yaml</span><span class="pi">:</span>
-      <span class="na">apiVersion</span><span class="pi">:</span> <span class="m">1</span>
-      <span class="na">providers</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s1">'</span><span class="s">default'</span></code></pre>
+  <span class="na">dashboardProviders</span><span class="pi">:</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1473,7 +1475,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-05 10:21:04 UTC
+Last updated 2023-05-26 11:36:27 UTC
 </div>
 </div>
 </body>
