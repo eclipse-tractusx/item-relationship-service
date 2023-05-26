@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.3.1] - 2023-05-15
+### Fixed
+- `bpdm.bpnEndpoint` will not be set to an unresolvable URL if `bpdm.url` is not set.
+
 ## [5.3.0] - 2023-05-05
 ### Added
 - Added new configuration option for supported policies: `edc.catalog.policies.allowedNames` (comma-separated string)

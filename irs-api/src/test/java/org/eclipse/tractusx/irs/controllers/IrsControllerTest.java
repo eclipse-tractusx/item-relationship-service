@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.controllers;
 import static java.lang.String.format;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJob;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
+import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithUrl;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepthAndAspect;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -146,6 +147,28 @@ class IrsControllerTest {
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
                                               .content(new ObjectMapper().writeValueAsString(registerJob)))
                     .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(authorities = "view_irs")
+    void shouldReturnBadRequestWhenRegisterJobHasWrongCallbackUrl() throws Exception {
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(new ObjectMapper().writeValueAsString(
+                                                      registerJobWithUrl("hhh://example.com"))))
+                    .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(authorities = "view_irs")
+    void shouldAcceptCorrectCallbackUrl() throws Exception {
+        final UUID returnedJob = UUID.randomUUID();
+        when(service.registerItemJob(any())).thenReturn(JobHandle.builder().id(returnedJob).build());
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(new ObjectMapper().writeValueAsString(
+                                                      registerJobWithUrl("https://example.com"))))
+                    .andExpect(status().isCreated());
     }
 
     @Test

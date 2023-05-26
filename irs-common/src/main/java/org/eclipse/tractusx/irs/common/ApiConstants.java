@@ -36,4 +36,13 @@ public class ApiConstants {
      */
     public static final String API_PREFIX_INTERNAL = "internal";
 
+    /**
+     * Api description for 401 http status
+     */
+    public static final String UNAUTHORIZED_DESC = "No valid authentication credentials.";
+    /**
+     * Api description for 403 http status
+     */
+    public static final String FORBIDDEN_DESC = "Authorization refused by server.";
+
 }

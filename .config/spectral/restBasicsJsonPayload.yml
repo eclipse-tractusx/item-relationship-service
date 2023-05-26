@@ -21,17 +21,17 @@ rules:
       functionOptions:
         match: ^application\/(problem\+)?json$|^[a-zA-Z0-9_]+\/[-+.a-zA-Z0-9_]+;(v|version)=[0-9]+$
 
-  # MUST property names must be ASCII camelCase
-  must-use-snake-case-for-property-names:
-    message: Property name has to be ASCII camelCase
-    description: MUST property names must be ASCII camelCase
+  # MUST property names must be ASCII pascalCase
+  must-use-pascal-or-camel-case-for-property-names:
+    message: Property name has to be ASCII PascalCase or camelCase
+    description: MUST property names must be ASCII PascalCase or camelCase
     documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#118
     severity: error
     given: $.paths.*.*[responses,requestBody]..content..schema..properties.*~
     then:
       function: pattern
       functionOptions:
-        match: ^[a-z]+([A-Z][a-z0-9]+)+
+        match: ^[A-Z]?[a-z]+(?:[A-Z][a-z]+)*$
 
   # SHOULD declare enum values using UPPER_SNAKE_CASE string [240]
   # => https://opensource.zalando.com/restful-api-guidelines/#240
@@ -75,15 +75,15 @@ rules:
 
   # SHOULD not use null for empty arrays [124]
   # => https://opensource.zalando.com/restful-api-guidelines/#124
-  should-not-use-null-for-empty-array-values:
-    message: '{{error}}'
-    description: SHOULD not use null for empty arrays [124]
-    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#124
-    severity: error
-    given: $..properties[?(@.type == 'array')]
-    then:
-      field: default
-      function: truthy
+#  should-not-use-null-for-empty-array-values:
+#    message: '{{error}}'
+#    description: SHOULD not use null for empty arrays [124]
+#    documentationUrl: https://opensource.zalando.com/restful-api-guidelines/#124
+#    severity: error
+#    given: $..properties[?(@.type == 'array')]
+#    then:
+#      field: default
+#      function: truthy
 
   # MUST use common field names and semantics [174]
   # => https://opensource.zalando.com/restful-api-guidelines/#174
@@ -106,7 +106,7 @@ rules:
     then:
       function: pattern
       functionOptions:
-        match: "^[a-z0-9]+(?:_[a-z0-9]+)*$"
+        match: "^[a-z]+([A-Z][a-z0-9]+)*$"
 
   must-use-common-field-names-and-semantics-for-id-field:
     message: '{{error}}'

@@ -87,6 +87,12 @@ public class TestMother {
         return registerJob(globalAssetId, 100, List.of(), false, false, direction);
     }
 
+    public static RegisterJob registerJobWithUrl(final String callbackUrl) {
+        final RegisterJob registerJob = registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", 100, List.of(), false, false, Direction.DOWNWARD);
+        registerJob.setCallbackUrl(callbackUrl);
+        return registerJob;
+    }
+
     public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth,
             final List<String> aspectTypes) {
         return registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", depth, aspectTypes,

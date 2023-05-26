@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
+## [2.6.1] - 2023-05-15
+### Added
+- Validation if bpnEndpoint is set in properties before starting a job with lookupBPNs set to true
+- Automate release workflow
+- Validate if callback url starts with http or https before register a job
+
 ## [2.6.0] - 2023-05-05
 ### Added
 - IRS now checks the EDC policies and only negotiates contracts if the policy matches the ones defined in the configuration at `edc.catalog.policies.allowedNames` (comma separated string)
@@ -214,7 +220,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.1...HEAD
+[2.6.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.0...2.6.1
 [2.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.5.1...2.6.0
 [2.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.5.0...2.5.1
 [2.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.4.0...2.5.0
