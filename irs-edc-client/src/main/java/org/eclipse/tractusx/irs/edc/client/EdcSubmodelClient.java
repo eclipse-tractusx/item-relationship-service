@@ -38,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
@@ -120,6 +121,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private final AsyncPollingService pollingService;
     private final OutboundMeterRegistryService meterRegistryService;
     private final RetryRegistry retryRegistry;
+    private final CatalogCache catalogCache;
     private final UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
 
     @Override
@@ -151,7 +153,8 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         final String decodedTarget = URLDecoder.decode(target, StandardCharsets.UTF_8);
         log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerConnectorUrl,
                 decodedTarget);
-        return contractNegotiationService.negotiate(providerConnectorUrl, decodedTarget);
+        final CatalogItem catalogItem = catalogCache.getCatalogItem(providerConnectorUrl, decodedTarget).orElseThrow();
+        return contractNegotiationService.negotiate(providerConnectorUrl, catalogItem);
     }
 
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(
