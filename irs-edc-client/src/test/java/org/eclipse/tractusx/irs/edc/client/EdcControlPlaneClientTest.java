@@ -87,11 +87,25 @@ class EdcControlPlaneClientTest {
     void shouldReturnValidCatalog() {
         // arrange
         final var catalog = mock(Catalog.class);
-        when(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class), eq(Catalog.class))).thenReturn(
-                ResponseEntity.of(Optional.of(catalog)));
+        when(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class),
+                eq(Catalog.class))).thenReturn(ResponseEntity.of(Optional.of(catalog)));
 
         // act
         final var result = testee.getCatalog("test", 0);
+
+        // assert
+        assertThat(result).isEqualTo(catalog);
+    }
+
+    @Test
+    void shouldReturnValidCatalogUsingFilters() {
+        // arrange
+        final var catalog = mock(Catalog.class);
+        when(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class),
+                eq(Catalog.class))).thenReturn(ResponseEntity.of(Optional.of(catalog)));
+
+        // act
+        final var result = testee.getCatalogWithFilter("test", "asset:prop:type", "data.core.digitalTwinRegistry");
 
         // assert
         assertThat(result).isEqualTo(catalog);
