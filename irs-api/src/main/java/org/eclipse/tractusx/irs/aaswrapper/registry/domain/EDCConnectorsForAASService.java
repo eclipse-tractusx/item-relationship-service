@@ -29,15 +29,16 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdminist
 import org.springframework.stereotype.Service;
 
 /**
- * Service that use edc client to make calls to edc connector endpoints to find DigitalTwinRegistry asset
+ * Service that use edc client to make calls to edc connector endpoints
+ * to find DigitalTwinRegistry asset
  */
 @Service
 @RequiredArgsConstructor
 public class EDCConnectorsForAASService {
 
-    private final static String DT_REGISTRY_ASSET_TYPE = "asset:prop:type=data.core.digitalTwinRegistry";
+    private static final String DT_REGISTRY_ASSET_TYPE = "asset:prop:type=data.core.digitalTwinRegistry";
 
-    AssetAdministrationShellDescriptor findAASinConnectors(List<String> connectorEndpoints) {
+    /* package */ AssetAdministrationShellDescriptor findAASinConnectors(final List<String> connectorEndpoints) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

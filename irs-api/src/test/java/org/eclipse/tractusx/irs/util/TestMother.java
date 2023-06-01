@@ -26,9 +26,11 @@ import static org.eclipse.tractusx.irs.controllers.IrsAppConstants.UUID_SIZE;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -120,7 +122,9 @@ public class TestMother {
 
     public static RegisterBatchOrder registerBatchOrder(final String... globalAssetId) {
         final RegisterBatchOrder registerBatchOrder = new RegisterBatchOrder();
-        registerBatchOrder.setGlobalAssetIds(Set.of(globalAssetId));
+        registerBatchOrder.setKeys(Arrays.stream(globalAssetId)
+                                         .map(x -> PartChainIdentificationKey.builder().globalAssetId(x).build())
+                                         .collect(Collectors.toSet()));
 
         return registerBatchOrder;
     }
