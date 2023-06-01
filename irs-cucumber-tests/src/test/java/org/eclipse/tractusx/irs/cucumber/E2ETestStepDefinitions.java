@@ -29,11 +29,13 @@ import static org.awaitility.Awaitility.await;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -120,7 +122,8 @@ public class E2ETestStepDefinitions {
 
     @Given("I register an IRS batch job for globalAssetIds:")
     public void iRegisterAnIRSBatchForGlobalAssetIds(List<String> globalAssetIds) {
-        registerBatchOrderBuilder.globalAssetIds(Set.copyOf(globalAssetIds));
+        registerBatchOrderBuilder.keys(globalAssetIds.stream().map(x -> PartChainIdentificationKey.builder().globalAssetId(x).build())
+                                                     .collect(Collectors.toSet()));
     }
 
     @And("collectAspects {string}")

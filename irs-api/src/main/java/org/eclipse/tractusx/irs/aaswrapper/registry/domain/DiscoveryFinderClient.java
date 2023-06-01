@@ -32,6 +32,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ *
+ */
 public interface DiscoveryFinderClient {
 
     List<DiscoveryEndpoint> findDiscoveryEndpoints(DiscoveryFinderRequest request);
@@ -39,6 +42,9 @@ public interface DiscoveryFinderClient {
 
 }
 
+/**
+ *
+ */
 @Service
 class DiscoveryFinderClientImpl implements DiscoveryFinderClient {
 
@@ -46,7 +52,7 @@ class DiscoveryFinderClientImpl implements DiscoveryFinderClient {
 
     private final RestTemplate restTemplate;
 
-    public DiscoveryFinderClientImpl(
+    /* package */ DiscoveryFinderClientImpl(
             @Value("${digitalTwinRegistry.discoveryFinderUrl:}") final String discoveryFinderUrl,
             @Qualifier(DTR_REST_TEMPLATE) final RestTemplate restTemplate) {
         this.discoveryFinderUrl = discoveryFinderUrl;
@@ -55,7 +61,7 @@ class DiscoveryFinderClientImpl implements DiscoveryFinderClient {
 
     @Override
     @Retry(name = "registry")
-    public List<DiscoveryEndpoint> findDiscoveryEndpoints(DiscoveryFinderRequest request) {
+    public List<DiscoveryEndpoint> findDiscoveryEndpoints(final DiscoveryFinderRequest request) {
         return restTemplate.postForObject(discoveryFinderUrl, request, List.class);
     }
 
