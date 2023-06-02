@@ -58,8 +58,6 @@ class ContractNegotiationServiceTest {
     private EdcControlPlaneClient edcControlPlaneClient;
     @Spy
     private EdcConfiguration config = new EdcConfiguration();
-    @Mock
-    private InMemoryCatalogCache catalogCache;
 
     @Mock
     private PolicyCheckerService policyCheckerService;
@@ -69,7 +67,6 @@ class ContractNegotiationServiceTest {
         // arrange
         final var assetId = "testTarget";
         final CatalogItem catalogItem = CatalogItem.builder().itemId(assetId).assetPropId(assetId).build();
-        when(catalogCache.getCatalogItem(CONNECTOR_URL, assetId)).thenReturn(Optional.ofNullable(catalogItem));
         when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 NegotiationId.builder().value("negotiationId").build());
@@ -82,7 +79,7 @@ class ContractNegotiationServiceTest {
                 CompletableFuture.completedFuture(TransferProcessResponse.builder().build()));
 
         // act
-        NegotiationResponse result = testee.negotiate(CONNECTOR_URL, assetId);
+        NegotiationResponse result = testee.negotiate(CONNECTOR_URL, catalogItem);
 
         // assert
         assertThat(result).isNotNull();
@@ -94,7 +91,6 @@ class ContractNegotiationServiceTest {
         // arrange
         final var assetId = "testTarget";
         final CatalogItem catalogItem = CatalogItem.builder().itemId(assetId).assetPropId(assetId).build();
-        when(catalogCache.getCatalogItem(CONNECTOR_URL, assetId)).thenReturn(Optional.ofNullable(catalogItem));
         when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 NegotiationId.builder().value("negotiationId").build());
@@ -103,17 +99,7 @@ class ContractNegotiationServiceTest {
         when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(response);
 
         // act & assert
-        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, assetId)).isInstanceOf(EdcClientException.class);
-    }
-
-    @Test
-    void shouldThrowErrorWhenContractOfferCouldNotBeFound() {
-        // arrange
-        final var assetId = "testTarget";
-        when(catalogCache.getCatalogItem(CONNECTOR_URL, assetId)).thenReturn(Optional.empty());
-
-        // act & assert
-        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, assetId)).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem)).isInstanceOf(EdcClientException.class);
     }
 
     @Test
@@ -121,11 +107,10 @@ class ContractNegotiationServiceTest {
         // arrange
         final var assetId = "testTarget";
         final CatalogItem catalogItem = CatalogItem.builder().itemId(assetId).assetPropId(assetId).build();
-        when(catalogCache.getCatalogItem(CONNECTOR_URL, assetId)).thenReturn(Optional.ofNullable(catalogItem));
         when(policyCheckerService.isValid(any())).thenReturn(Boolean.FALSE);
 
         // act & assert
-        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, assetId)).isInstanceOf(EdcClientException.class);
+        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem)).isInstanceOf(EdcClientException.class);
     }
 
 }
