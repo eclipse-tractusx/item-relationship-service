@@ -26,9 +26,9 @@ WARNING: Every secret information needed at runtime must be stored here and must
 GitHub contains the application source code as well as the Helm charts used for deployment.
 The IRS Helm charts can be found here: https://github.com/eclipse-tractusx/item-relationship-service/tree/main/charts
 
-== GitHub Container Registry (GHCR)
+== Docker Hub
 
-When the IRS is built by GitHub Action workflows, the final image is pushed to the GHCR, where it can be picked up for deployment.
+When the IRS is built by GitHub Action workflows, the final image is pushed to Docker Hub, where it can be picked up for deployment.
 
 == Kubernetes
 

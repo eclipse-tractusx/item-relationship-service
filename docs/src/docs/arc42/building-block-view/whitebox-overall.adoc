@@ -20,9 +20,6 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall.puml[]
 |IRS
 |The IRS consumes relationship information across the CX-Network and builds the graph view. Within this Documentation, the focus lies on the IRS
 
-|AAS Proxy
-|The AAS Proxy is a System, which enables the consumer to simplify the communication with other CX Partners.
-
 |EDC Consumer
 |The EDC Consumer Component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists out of a control plane and a data plane.
 

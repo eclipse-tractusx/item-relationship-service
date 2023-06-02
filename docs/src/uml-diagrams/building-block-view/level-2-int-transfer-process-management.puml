@@ -40,6 +40,5 @@ SubmodelClient ----( SMSAPI
 
 database BlobStore
 TransferProcessManager -left-( BlobStoreInterface
-'BlobStoreInterface - TransferProcessManager
 BlobStoreInterface <...> BlobStore
 @enduml
