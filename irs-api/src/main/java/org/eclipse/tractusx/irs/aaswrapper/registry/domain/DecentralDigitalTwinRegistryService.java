@@ -77,7 +77,6 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                                                .stream()
                                                                                .findFirst()
                                                                                .orElse(key.globalAssetId());
-        ;
         log.info("Retrieved AAS Identification {} for globalAssetId {}", aaShellIdentification, key.globalAssetId());
 
         return decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(endpointDataReference,
