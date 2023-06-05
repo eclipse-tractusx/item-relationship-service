@@ -25,7 +25,9 @@ package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,12 +36,22 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class EDCConnectorsForAASService {
+public class EndpointDataForConnectorsService {
 
-    private static final String DT_REGISTRY_ASSET_TYPE = "asset:prop:type=data.core.digitalTwinRegistry";
+    private static final String DT_REGISTRY_ASSET_TYPE = "data.core.digitalTwinRegistry";
+    private static final String DT_REGISTRY_ASSET_VALUE = "data.core.digitalTwinRegistry";
 
-    /* package */ AssetAdministrationShellDescriptor findAASinConnectors(final List<String> connectorEndpoints) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    private final EdcSubmodelFacade edcSubmodelFacade;
+
+    /* package */ List<EndpointDataReference> findEndpointDataForConnectors(final List<String> connectorEndpoints) {
+        return connectorEndpoints.stream().map(connector -> {
+            try {
+                return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
+                        DT_REGISTRY_ASSET_VALUE);
+            } catch (EdcClientException e) {
+                throw new RuntimeException(e);
+            }
+        }).toList();
     }
 
 }

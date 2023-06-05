@@ -27,7 +27,9 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +43,8 @@ import org.springframework.stereotype.Service;
 public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryService {
 
     private final DiscoveryFinderClient discoveryFinderClient;
-    private final EDCConnectorsForAASService edcConnectorsForAASService;
+    private final EndpointDataForConnectorsService endpointDataForConnectorsService;
+    private final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient;
 
     @Override
     public AssetAdministrationShellDescriptor getAAShellDescriptor(final DigitalTwinRegistryKey key) {
@@ -51,7 +54,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         final List<DiscoveryEndpoint> discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn);
         final List<String> connectorEndpoints = discoveryEndpoints.stream()
                                                                   .map(discoveryEndpoint -> discoveryFinderClient.findConnectorEndpoints(
-                                                                                                                         discoveryEndpoint.endpointAddress(), providedBpn)
+                                                                                                                         discoveryEndpoint.endpointAddress(),
+                                                                                                                         providedBpn)
                                                                                                                  .stream()
                                                                                                                  .filter(edcDiscoveryResult -> edcDiscoveryResult.bpn()
                                                                                                                                                                  .equals(key.bpn()))
@@ -61,7 +65,24 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                                   .flatMap(List::stream)
                                                                   .flatMap(List::stream)
                                                                   .toList();
-        return edcConnectorsForAASService.findAASinConnectors(connectorEndpoints);
+        // take first
+        final EndpointDataReference endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
+                connectorEndpoints).stream().findFirst().orElseThrow();
+        final IdentifierKeyValuePair identifierKeyValuePair = IdentifierKeyValuePair.builder()
+                                                                                    .key("globalAssetId")
+                                                                                    .value(key.globalAssetId())
+                                                                                    .build();
+        final String aaShellIdentification = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
+                                                                                       endpointDataReference, List.of(identifierKeyValuePair))
+                                                                               .stream()
+                                                                               .findFirst()
+                                                                               .orElse(key.globalAssetId());
+        ;
+        log.info("Retrieved AAS Identification {} for globalAssetId {}", aaShellIdentification, key.globalAssetId());
+
+        return decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(endpointDataReference,
+                aaShellIdentification);
+
     }
 
 }

@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.component.Relationship;
@@ -82,6 +83,22 @@ public class EdcSubmodelFacade {
             final EdcNotification notification) throws EdcClientException {
         try {
             return client.sendNotification(submodelEndpointAddress, assetId, notification).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return null;
+        } catch (ExecutionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof EdcClientException exceptionCause) {
+                throw exceptionCause;
+            }
+            throw new EdcClientException(cause);
+        }
+    }
+
+    public EndpointDataReference getEndpointReferenceForAsset(String endpointAddress, String filterKey,
+            String filterValue) throws EdcClientException {
+        try {
+            return client.getEndpointReferenceForAsset(endpointAddress, filterKey, filterValue).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return null;

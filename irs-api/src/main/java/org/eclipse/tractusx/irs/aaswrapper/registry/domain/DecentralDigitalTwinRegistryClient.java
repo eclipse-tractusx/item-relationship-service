@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.resilience4j.retry.annotation.Retry;
+import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.util.JsonUtil;
@@ -54,16 +55,16 @@ public class DecentralDigitalTwinRegistryClient {
     }
 
     @Retry(name = "registry")
-    public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final String descriptorHostName, final String aasIdentifier) {
-        final String descriptorEndpoint = descriptorHostName + SHELL_DESCRIPTOR_TEMPLATE;
+    public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(final EndpointDataReference endpointDataReference, final String aasIdentifier) {
+        final String descriptorEndpoint = endpointDataReference.getEndpoint() + SHELL_DESCRIPTOR_TEMPLATE;
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(descriptorEndpoint);
         final Map<String, String> values = Map.of(PLACEHOLDER_AAS_IDENTIFIER, aasIdentifier);
         return restTemplate.getForObject(uriBuilder.build(values), AssetAdministrationShellDescriptor.class);
     }
 
     @Retry(name = "registry")
-    public List<String> getAllAssetAdministrationShellIdsByAssetLink(final String shellLookupHostName, final List<IdentifierKeyValuePair> assetIds) {
-        final String shellLookupEndpoint = shellLookupHostName + LOOKUP_SHELLS_TEMPLATE;
+    public List<String> getAllAssetAdministrationShellIdsByAssetLink(final EndpointDataReference endpointDataReference, final List<IdentifierKeyValuePair> assetIds) {
+        final String shellLookupEndpoint = endpointDataReference.getEndpoint() + LOOKUP_SHELLS_TEMPLATE;
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(shellLookupEndpoint);
         final var values = Map.of(PLACEHOLDER_ASSET_IDS, new JsonUtil().asString(assetIds));
         return restTemplate.getForObject(uriBuilder.build(values), List.class);

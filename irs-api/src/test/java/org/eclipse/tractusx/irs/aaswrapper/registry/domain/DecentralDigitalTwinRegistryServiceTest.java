@@ -30,25 +30,35 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import java.util.List;
 
+import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.junit.jupiter.api.Test;
 
 class DecentralDigitalTwinRegistryServiceTest {
 
     private final DiscoveryFinderClient discoveryFinderClient = mock(DiscoveryFinderClient.class);
-    private final EDCConnectorsForAASService edcConnectorsForAASService = mock(EDCConnectorsForAASService.class);
+    private final EndpointDataForConnectorsService endpointDataForConnectorsService = mock(
+            EndpointDataForConnectorsService.class);
 
-    private final DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService = new DecentralDigitalTwinRegistryService(discoveryFinderClient, edcConnectorsForAASService);
+    private final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient = mock(
+            DecentralDigitalTwinRegistryClient.class);
+
+    private final DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService = new DecentralDigitalTwinRegistryService(discoveryFinderClient,
+            endpointDataForConnectorsService, decentralDigitalTwinRegistryClient);
 
     @Test
     void shouldReturnExpectedShell() {
         // given
         final DigitalTwinRegistryKey digitalTwinRegistryKey = new DigitalTwinRegistryKey("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
         final AssetAdministrationShellDescriptor expectedShell = shellDescriptor(Collections.emptyList());
+        EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance().endpoint("url.to.host").build();
         when(discoveryFinderClient.findDiscoveryEndpoints(any(DiscoveryFinderRequest.class))).thenReturn(
                 Collections.singletonList(new DiscoveryEndpoint("type", "desc", "address", "doc", "resId")));
-        when(edcConnectorsForAASService.findAASinConnectors(anyList())).thenReturn(expectedShell);
+        when(endpointDataForConnectorsService.findEndpointDataForConnectors(anyList())).thenReturn(List.of(endpointDataReference));
+        when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(), anyList())).thenReturn(Collections.emptyList());
+        when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(expectedShell);
 
         // when
         final AssetAdministrationShellDescriptor actualShell = decentralDigitalTwinRegistryService.getAAShellDescriptor(
