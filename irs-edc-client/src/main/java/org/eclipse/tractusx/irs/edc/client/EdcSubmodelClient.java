@@ -109,8 +109,8 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(String endpointAddress,
-            String filterKey, String filterValue) throws EdcClientException {
+    public CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
+            final String filterKey, final String filterValue) throws EdcClientException {
         throw new EdcClientException("Not implemented");
     }
 }
@@ -294,9 +294,9 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + endpointAddress);
 
-            Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(endpointAddress, filterKey, filterValue);
+            final Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(endpointAddress, filterKey, filterValue);
 
-            List<CatalogItem> items = catalog.getContractOffers()
+            final List<CatalogItem> items = catalog.getContractOffers()
                                              .stream()
                                              .map(contractOffer -> CatalogItem.builder()
                                                                               .itemId(contractOffer.getId())
@@ -306,7 +306,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
                                                                               .policy(contractOffer.getPolicy())
                                                                               .build())
                                              .toList();
-            NegotiationResponse response = contractNegotiationService.negotiate(endpointAddress,
+            final NegotiationResponse response = contractNegotiationService.negotiate(endpointAddress,
                     items.stream().findFirst().orElseThrow());
 
             return pollingService.<EndpointDataReference>createJob()

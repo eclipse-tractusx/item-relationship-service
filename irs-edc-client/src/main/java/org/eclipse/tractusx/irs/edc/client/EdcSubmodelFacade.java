@@ -95,8 +95,9 @@ public class EdcSubmodelFacade {
         }
     }
 
-    public EndpointDataReference getEndpointReferenceForAsset(String endpointAddress, String filterKey,
-            String filterValue) throws EdcClientException {
+    @SuppressWarnings("PMD.PreserveStackTrace")
+    public EndpointDataReference getEndpointReferenceForAsset(final String endpointAddress, final String filterKey,
+            final String filterValue) throws EdcClientException {
         try {
             return client.getEndpointReferenceForAsset(endpointAddress, filterKey, filterValue).get();
         } catch (InterruptedException e) {
