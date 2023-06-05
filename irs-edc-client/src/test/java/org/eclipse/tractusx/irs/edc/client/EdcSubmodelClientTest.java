@@ -83,6 +83,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     private ContractNegotiationService contractNegotiationService;
     @Mock
     private EdcDataPlaneClient edcDataPlaneClient;
+    @Mock
+    private EdcControlPlaneClient edcControlPlaneClient;
 
     @Mock
     private CatalogCache catalogCache;
@@ -120,7 +122,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         config.getSubmodel().setUrnPrefix("/urn");
         config.getSubmodel().setRequestTtl(Duration.ofMinutes(10));
         testee = new EdcSubmodelClientImpl(config, contractNegotiationService, edcDataPlaneClient,
-                endpointDataReferenceStorage, pollingService, meterRegistry, retryRegistry, catalogCache);
+                endpointDataReferenceStorage, pollingService, meterRegistry, retryRegistry, catalogCache, edcControlPlaneClient);
     }
 
     @Test

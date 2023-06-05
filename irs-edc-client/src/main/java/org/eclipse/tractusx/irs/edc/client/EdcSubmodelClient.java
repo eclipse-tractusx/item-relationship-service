@@ -36,6 +36,7 @@ import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
@@ -62,6 +63,9 @@ public interface EdcSubmodelClient {
 
     CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress, String assetId,
             EdcNotification notification) throws EdcClientException;
+
+    CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(String endpointAddress, String filterKey,
+            String filterValue) throws EdcClientException;
 }
 
 /**
@@ -103,6 +107,12 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
         // not actually sending anything, just return success response
         return CompletableFuture.completedFuture(() -> true);
     }
+
+    @Override
+    public CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(String endpointAddress,
+            String filterKey, String filterValue) throws EdcClientException {
+        throw new EdcClientException("Not implemented");
+    }
 }
 
 /**
@@ -122,6 +132,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private final OutboundMeterRegistryService meterRegistryService;
     private final RetryRegistry retryRegistry;
     private final CatalogCache catalogCache;
+    private final EdcControlPlaneClient edcControlPlaneClient;
     private final UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
 
     @Override
@@ -209,6 +220,22 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         return Optional.empty();
     }
 
+    private Optional<EndpointDataReference> retrieveEndpointReference(final String contractAgreementId,
+            final StopWatch stopWatch) {
+        log.info("Retrieving dataReference from storage for contractAgreementId {}", Masker.mask(contractAgreementId));
+        final Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.remove(contractAgreementId);
+
+        if (dataReference.isPresent()) {
+            final EndpointDataReference ref = dataReference.get();
+            log.info("Retrieving Endpoint Reference data from EDC data plane with id: {}", ref.getId());
+            stopWatch.stop();
+            log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
+
+            return Optional.of(ref);
+        }
+        return Optional.empty();
+    }
+
     private Optional<EdcNotificationResponse> sendSubmodelNotification(final String submodel,
             final String contractAgreementId, final EdcNotification notification, final StopWatch stopWatch) {
         log.info("Retrieving dataReference from storage for contractAgreementId {}", contractAgreementId);
@@ -257,6 +284,38 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
 
             return sendNotificationAsync(negotiationResponse.getContractAgreementId(), notification, stopWatch);
+        });
+    }
+
+    @Override
+    public CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
+            final String filterKey, final String filterValue) throws EdcClientException {
+        return execute(endpointAddress, () -> {
+            final StopWatch stopWatch = new StopWatch();
+            stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + endpointAddress);
+
+            Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(endpointAddress, filterKey, filterValue);
+
+            List<CatalogItem> items = catalog.getContractOffers()
+                                             .stream()
+                                             .map(contractOffer -> CatalogItem.builder()
+                                                                              .itemId(contractOffer.getId())
+                                                                              .assetPropId(
+                                                                                      contractOffer.getAsset().getId())
+                                                                              .connectorId(catalog.getId())
+                                                                              .policy(contractOffer.getPolicy())
+                                                                              .build())
+                                             .toList();
+            NegotiationResponse response = contractNegotiationService.negotiate(endpointAddress,
+                    items.stream().findFirst().orElseThrow());
+
+            return pollingService.<EndpointDataReference>createJob()
+                                 .action(() -> retrieveEndpointReference(response.getContractAgreementId(), stopWatch))
+                                 .timeToLive(config.getSubmodel().getRequestTtl())
+                                 .description("waiting for submodel retrieval")
+                                 .build()
+                                 .schedule();
+
         });
     }
 
