@@ -29,6 +29,7 @@ import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 /**
  * Service that use edc client to make calls to edc connector endpoints
@@ -38,7 +39,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EndpointDataForConnectorsService {
 
-    private static final String DT_REGISTRY_ASSET_TYPE = "data.core.digitalTwinRegistry";
+    private static final String DT_REGISTRY_ASSET_TYPE = "asset:prop:type";
     private static final String DT_REGISTRY_ASSET_VALUE = "data.core.digitalTwinRegistry";
 
     private final EdcSubmodelFacade edcSubmodelFacade;
@@ -49,7 +50,7 @@ public class EndpointDataForConnectorsService {
                 return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
                         DT_REGISTRY_ASSET_VALUE);
             } catch (EdcClientException e) {
-                throw new RuntimeException(e);
+                throw new RestClientException(e.getMessage());
             }
         }).toList();
     }
