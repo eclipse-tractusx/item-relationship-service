@@ -220,10 +220,10 @@ minio:
   rootUser: "minio"  # <minio-username>
   rootPassword: "minioPass"  # <minio-password>
   securityContext:
-    enabled: true # Enable to run containers as non-root. NOTE: if persistence.enabled=false then securityContext will be automatically disabled
-    runAsUser: 1000 # User id of the user for the container
-    runAsGroup: 3000 # Group id of the user for the container
-    fsGroup: 2000 # Group id of the persistent volume mount for the container
+    enabled: true  # Enable to run containers as non-root. NOTE: if persistence.enabled=false then securityContext will be automatically disabled
+    runAsUser: 1000  # User id of the user for the container
+    runAsGroup: 3000  # Group id of the user for the container
+    fsGroup: 2000  # Group id of the persistent volume mount for the container
 
   environment:
     MINIO_PROMETHEUS_JOB_ID: minio-actuator
