@@ -50,7 +50,7 @@ public class EndpointDataForConnectorsService {
                 return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
                         DT_REGISTRY_ASSET_VALUE);
             } catch (EdcClientException e) {
-                throw new RestClientException(e.getMessage());
+                throw new RestClientException(e.getMessage(), e);
             }
         }).toList();
     }
