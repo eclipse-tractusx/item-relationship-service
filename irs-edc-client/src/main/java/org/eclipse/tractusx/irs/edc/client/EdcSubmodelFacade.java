@@ -41,6 +41,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class EdcSubmodelFacade {
 
     private final EdcSubmodelClient client;
