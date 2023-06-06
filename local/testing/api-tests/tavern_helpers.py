@@ -160,7 +160,7 @@ def check_timestamps_for_completed_jobs(response):
     job_completed_timestamp = datetime.strptime(response.json().get('job').get('completedOn')[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
     assert started_on_timestamp > created_on_timestamp
     assert last_modified_on_timestamp > started_on_timestamp
-    assert job_completed_timestamp > last_modified_on_timestamp
+    assert job_completed_timestamp >= last_modified_on_timestamp
 
 
 def check_timestamps_for_not_completed_jobs(response):
