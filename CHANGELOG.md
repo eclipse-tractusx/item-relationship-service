@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Handling of Decentral Digital Twin Registry as a way of request AAS for identifier
+  - Extend Register Job with key field that contain BPN and globalAssetId
+  - Requesting BPN endpoint catalog over Discrovery Finder
+  - Requesting EDC endpoint addresses for BPN over EDC Discovery Finder
+  - Add filter for catalog item search in EDC
+  - Authorize Digital Twin client with EDC Endpoint Reference
 
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
