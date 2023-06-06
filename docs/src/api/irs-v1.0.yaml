@@ -1949,6 +1949,8 @@ components:
           type: boolean
           description: Flag to specify whether BPNs should be collected and resolved
             via the configured BPDM URL. Default is false.
+      required:
+        - key
     Relationship:
       type: object
       additionalProperties: false

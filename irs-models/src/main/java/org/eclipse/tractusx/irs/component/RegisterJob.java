@@ -28,6 +28,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -52,6 +53,7 @@ public class RegisterJob {
     private static final int MAX_TREE_DEPTH = 100;
     private static final String ASPECT_MODEL_REGEX = "^(urn:bamm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$";
 
+    @NotNull
     @Schema(description = "Key object contains required attributes for identify part chain entry node.", implementation = PartChainIdentificationKey.class)
     private PartChainIdentificationKey key;
 
