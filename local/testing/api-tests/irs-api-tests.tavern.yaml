@@ -26,7 +26,7 @@ stages:
 
   - name: register a BPN investigation with valid globalAssetId
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations"
       json:
         globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
         bomLifecycle: asPlanned
@@ -49,7 +49,7 @@ stages:
     name: verify job response with desired test steps and wait for desired job status
     max_retries: 90
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations/{job_id}"
       params:
         returnUncompletedJob: true
       method: GET
@@ -65,7 +65,7 @@ stages:
 
   - name: get response for created investigation
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations/{job_id}"
       params:
         returnUncompletedJob: true
       method: GET
@@ -94,7 +94,7 @@ stages:
 
   - name: register a BPN investigation with valid globalAssetId for unknown BPN
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations"
       json:
         globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
         bomLifecycle: asPlanned
@@ -117,7 +117,7 @@ stages:
 
   - name: get response for created investigation
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations/{job_id}"
       params:
         returnUncompletedJob: true
       method: GET
@@ -146,7 +146,7 @@ stages:
 
   - name: register a BPN investigation with invalid request
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations"
       json:
         globalAssetId111: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
         incidentBpns11:
@@ -180,7 +180,7 @@ stages:
 
   - name: register a BPN investigation with unknown globalAssetId
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations"
       json:
         globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e955555
         incidentBpns:
@@ -200,7 +200,7 @@ stages:
 
   - name: get response for created investigation
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations/{job_id}"
       params:
         returnUncompletedJob: true
       method: GET
@@ -232,7 +232,7 @@ stages:
 
   - name: register a BPN investigation with valid globalAssetId with several relationships
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations"
       json:
         globalAssetId: urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c
         incidentBpns:
@@ -253,7 +253,7 @@ stages:
 
   - name: get response for created investigation
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations/{job_id}"
       params:
         returnUncompletedJob: true
       method: GET
@@ -283,7 +283,7 @@ stages:
 
   - name: register a BPN investigation with valid globalAssetId to T-Systems
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations"
       json:
         globalAssetId: urn:uuid:c7a2b803-f8fe-4b79-b6fc-967ce847c9a9
         bomLifecycle: asPlanned
@@ -306,7 +306,7 @@ stages:
 
   - name: get response for created investigation
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations/{job_id}"
       params:
         returnUncompletedJob: true
       method: GET
@@ -335,7 +335,7 @@ stages:
 
   - name: register a BPN investigation with valid globalAssetId for processing in submodel servers in MOCK
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations"
       json:
         globalAssetId: urn:uuid:1c7a25ea-0490-4944-b9c9-d8c666d47958
         incidentBpns:
@@ -356,7 +356,7 @@ stages:
 
   - name: get response for created investigation
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations/{job_id}"
       params:
         returnUncompletedJob: true
       method: GET
