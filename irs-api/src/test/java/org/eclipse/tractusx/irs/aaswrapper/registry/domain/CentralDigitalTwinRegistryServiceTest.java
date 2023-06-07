@@ -47,31 +47,31 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestClientException;
 
 @ExtendWith(MockitoExtension.class)
-class DigitalTwinRegistryFacadeTest extends LocalTestDataConfigurationAware {
+class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAware {
 
     private final String assemblyPartRelationshipURN = "urn:bamm:io.catenax.assembly_part_relationship:1.0.0";
     private final String serialPartTypizationURN = "urn:bamm:io.catenax.serial_part_typization:1.0.0";
-    private DigitalTwinRegistryFacade digitalTwinRegistryFacade;
+    private DigitalTwinRegistryService digitalTwinRegistryService;
     @Mock
     private DigitalTwinRegistryClient dtRegistryClientMock;
-    private DigitalTwinRegistryFacade dtRegistryFacadeWithMock;
+    private CentralDigitalTwinRegistryService dtRegistryFacadeWithMock;
 
-    DigitalTwinRegistryFacadeTest() throws IOException {
+    CentralDigitalTwinRegistryServiceTest() throws IOException {
         super();
     }
 
     @BeforeEach
     void setUp() throws IOException {
-        digitalTwinRegistryFacade = new DigitalTwinRegistryFacade(new DigitalTwinRegistryClientLocalStub(localTestDataConfiguration.cxTestDataContainer()));
-        dtRegistryFacadeWithMock = new DigitalTwinRegistryFacade(dtRegistryClientMock);
+        digitalTwinRegistryService = new CentralDigitalTwinRegistryService(new DigitalTwinRegistryClientLocalStub(localTestDataConfiguration.cxTestDataContainer()));
+        dtRegistryFacadeWithMock = new CentralDigitalTwinRegistryService(dtRegistryClientMock);
     }
 
     @Test
     void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() {
         final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
 
-        final AssetAdministrationShellDescriptor aasShellDescriptor = digitalTwinRegistryFacade.getAAShellDescriptor(
-                existingCatenaXId);
+        final AssetAdministrationShellDescriptor aasShellDescriptor = digitalTwinRegistryService.getAAShellDescriptor(
+                new DigitalTwinRegistryKey(existingCatenaXId, ""));
         final List<SubmodelDescriptor> shellEndpoints = aasShellDescriptor.getSubmodelDescriptors();
 
         assertThat(shellEndpoints).isNotNull().isNotEmpty();
@@ -89,7 +89,7 @@ class DigitalTwinRegistryFacadeTest extends LocalTestDataConfigurationAware {
                 new RestClientException("Dummy"));
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
-                () -> dtRegistryFacadeWithMock.getAAShellDescriptor(catenaXId));
+                () -> dtRegistryFacadeWithMock.getAAShellDescriptor(new DigitalTwinRegistryKey(catenaXId, "")));
     }
 
     @Test
@@ -100,7 +100,7 @@ class DigitalTwinRegistryFacadeTest extends LocalTestDataConfigurationAware {
 
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenReturn(shellDescriptor);
 
-        final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.getAAShellDescriptor(catenaXId).getSubmodelDescriptors();
+        final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.getAAShellDescriptor(new DigitalTwinRegistryKey(catenaXId, "")).getSubmodelDescriptors();
         assertThat(submodelEndpoints).isEmpty();
     }
 
@@ -112,7 +112,7 @@ class DigitalTwinRegistryFacadeTest extends LocalTestDataConfigurationAware {
 
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenReturn(shellDescriptor);
 
-        dtRegistryFacadeWithMock.getAAShellDescriptor(catenaXId);
+        dtRegistryFacadeWithMock.getAAShellDescriptor(new DigitalTwinRegistryKey(catenaXId, ""));
 
         verify(this.dtRegistryClientMock, times(1)).getAllAssetAdministrationShellIdsByAssetLink(anyList());
         verify(this.dtRegistryClientMock, times(1)).getAssetAdministrationShellDescriptor(catenaXId);
@@ -129,7 +129,7 @@ class DigitalTwinRegistryFacadeTest extends LocalTestDataConfigurationAware {
                 Collections.singletonList(identification));
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(identification)).thenReturn(shellDescriptor);
 
-        final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.getAAShellDescriptor(globalAssetId).getSubmodelDescriptors();
+        final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.getAAShellDescriptor(new DigitalTwinRegistryKey(globalAssetId, "")).getSubmodelDescriptors();
         assertThat(submodelEndpoints).isEmpty();
     }
 
@@ -147,7 +147,7 @@ class DigitalTwinRegistryFacadeTest extends LocalTestDataConfigurationAware {
     void shouldReturnSubmodelEndpointsWhenFilteringByAspectType() {
         final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
 
-        final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryFacade.getAAShellDescriptor(existingCatenaXId).getSubmodelDescriptors();
+        final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryService.getAAShellDescriptor(new DigitalTwinRegistryKey(existingCatenaXId, "")).getSubmodelDescriptors();
 
         assertThat(shellEndpoints).isNotNull().isNotEmpty();
         final SubmodelDescriptor endpoint = shellEndpoints.get(0);

@@ -34,6 +34,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.enums.BatchStrategy;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
@@ -113,7 +114,8 @@ class CreationBatchServiceTest {
 
     private static RegisterBatchOrder exampleBatchRequest() {
         return RegisterBatchOrder.builder()
-                                 .globalAssetIds(Set.of(FIRST_GLOBAL_ASSET_ID, SECOND_GLOBAL_ASSET_ID))
+                                 .keys(Set.of(PartChainIdentificationKey.builder().globalAssetId(FIRST_GLOBAL_ASSET_ID).build(),
+                                         PartChainIdentificationKey.builder().globalAssetId(SECOND_GLOBAL_ASSET_ID).build()))
                                  .bomLifecycle(BomLifecycle.AS_PLANNED)
                                  .aspects(List.of("aspects"))
                                  .depth(1)

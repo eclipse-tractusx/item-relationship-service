@@ -45,6 +45,7 @@ import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.JobParameter;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
@@ -249,7 +250,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @Test
     void shouldThrowIllegalArgumentExceptionForLifecycleAsPlannedAndDirectionUpward() {
         final RegisterJob registerJob = new RegisterJob();
-        registerJob.setGlobalAssetId(UUID.randomUUID().toString());
+        registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(UUID.randomUUID().toString()).build());
         registerJob.setDirection(Direction.UPWARD);
         registerJob.setBomLifecycle(BomLifecycle.AS_PLANNED);
 
