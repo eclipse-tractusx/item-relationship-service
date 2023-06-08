@@ -1755,6 +1755,9 @@ stages:
       save:
         json:
           job_id: id
+    delay_after: 300
+
+  - *authenticate_and_fetch_token
 
   - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
@@ -1807,6 +1810,9 @@ stages:
       save:
         json:
           job_id: id
+    delay_after: 300
+
+  - *authenticate_and_fetch_token
 
   - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
@@ -1859,6 +1865,9 @@ stages:
       save:
         json:
           job_id: id
+    delay_after: 300
+
+  - *authenticate_and_fetch_token
 
   - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
