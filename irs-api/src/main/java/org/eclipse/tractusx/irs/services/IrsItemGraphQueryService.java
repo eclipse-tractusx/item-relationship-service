@@ -165,7 +165,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't start job with BPN lookup - configured bpdm endpoint is empty!");
         }
 
-        final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getGlobalAssetId(), params, batchId);
+        final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getKey().getGlobalAssetId(), params, batchId);
         meterRegistryService.incrementNumberOfCreatedJobs();
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
@@ -186,6 +186,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         return JobParameter.builder()
                            .depth(request.getDepth())
                            .bomLifecycle(bomLifecycle)
+                           .bpn(request.getKey().getBpn())
                            .direction(direction)
                            .aspects(aspectTypeValues.isEmpty()
                                    ? List.of(bomLifecycle.getDefaultAspect())

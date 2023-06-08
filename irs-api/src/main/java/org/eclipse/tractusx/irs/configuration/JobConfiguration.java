@@ -30,6 +30,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
+import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASRecursiveJobHandler;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
@@ -41,7 +42,6 @@ import org.eclipse.tractusx.irs.aaswrapper.job.delegate.BpdmDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.RelationshipDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.SubmodelDelegate;
-import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
@@ -119,8 +119,8 @@ public class JobConfiguration {
 
     @Bean
     public DigitalTwinDelegate digitalTwinDelegate(final BpdmDelegate bpdmDelegate,
-            final DigitalTwinRegistryFacade digitalTwinRegistryFacade) {
-        return new DigitalTwinDelegate(bpdmDelegate, digitalTwinRegistryFacade);
+            final DigitalTwinRegistryService digitalTwinRegistryService) {
+        return new DigitalTwinDelegate(bpdmDelegate, digitalTwinRegistryService);
     }
 
     @Bean

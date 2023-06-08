@@ -29,6 +29,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.JobHandle;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
@@ -114,7 +115,7 @@ public class BatchOrderEventListener {
                                                      .map(registerJob -> createJobProgress(
                                                              irsItemGraphQueryService.registerItemJob(registerJob,
                                                                      batch.getBatchId()),
-                                                             registerJob.getGlobalAssetId()))
+                                                             registerJob.getKey().getGlobalAssetId()))
                                                      .toList();
         batch.setJobProgressList(createdJobIds);
         batch.setStartedOn(ZonedDateTime.now(ZoneOffset.UTC));
@@ -134,7 +135,7 @@ public class BatchOrderEventListener {
 
     private RegisterJob createRegisterJob(final BatchOrder batchOrder, final String globalAssetId) {
         return RegisterJob.builder()
-                          .globalAssetId(globalAssetId)
+                          .key(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).build())
                           .bomLifecycle(batchOrder.getBomLifecycle())
                           .aspects(batchOrder.getAspects())
                           .depth(batchOrder.getDepth())
