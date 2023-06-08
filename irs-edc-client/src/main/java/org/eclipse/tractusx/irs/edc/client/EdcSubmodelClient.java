@@ -122,6 +122,7 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 @Slf4j
 @RequiredArgsConstructor
 @Profile({ "!local && !stubtest" })
+@SuppressWarnings("PMD.TooManyMethods")
 class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private final EdcConfiguration config;
