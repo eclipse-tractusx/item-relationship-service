@@ -29,10 +29,8 @@ import static org.awaitility.Awaitility.await;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -462,7 +460,7 @@ public class E2ETestStepDefinitions {
 
     @After("@INTEGRATION_TEST")
     public void addJobIdToResult(Scenario scenario) {
-        scenario.attach(jobId.toString(), MediaType.TEXT_PLAIN_VALUE, "jobId");
+        scenario.attach(jobId.toString(), MediaType.TEXT_PLAIN_VALUE, "id");
     }
 
     private static class PropertyNotFoundException extends Exception {
