@@ -68,7 +68,7 @@ import org.springframework.http.MediaType;
 public class E2ETestStepDefinitions {
     private RegisterJob.RegisterJobBuilder registerJobBuilder;
     private RegisterBatchOrder.RegisterBatchOrderBuilder registerBatchOrderBuilder;
-    private UUID jobId;
+    private UUID id;
     private UUID orderId;
     private UUID batchId;
     private Jobs completedJob;
@@ -202,7 +202,7 @@ public class E2ETestStepDefinitions {
                                                     .as(JobHandle.class);
 
         assertThat(createdJobResponse.getId()).isNotNull();
-        jobId = createdJobResponse.getId();
+        id = createdJobResponse.getId();
     }
 
     @When("I get the order-id")
@@ -249,7 +249,7 @@ public class E2ETestStepDefinitions {
         };
 
         assertThat(foundJobId).isNotNull();
-        jobId = foundJobId;
+        id = foundJobId;
     }
 
     @Then("I check, if the job has status {string} within {int} minutes")
@@ -260,7 +260,7 @@ public class E2ETestStepDefinitions {
                .until(() -> given().spec(authProperties.getNewAuthenticationRequestSpecification())
                                    .contentType(ContentType.JSON)
                                    .queryParam("returnUncompletedJob", false)
-                                   .get("/irs/jobs/" + jobId)
+                                   .get("/irs/jobs/" + id)
                                    .as(Jobs.class)
                                    .getJob()
                                    .getState()
@@ -269,7 +269,7 @@ public class E2ETestStepDefinitions {
         completedJob = given().spec(authProperties.getNewAuthenticationRequestSpecification())
                               .contentType(ContentType.JSON)
                               .queryParam("returnUncompletedJob", true)
-                              .get("/irs/jobs/" + jobId)
+                              .get("/irs/jobs/" + id)
                               .as(Jobs.class);
     }
 
@@ -298,7 +298,7 @@ public class E2ETestStepDefinitions {
         completedJob = given().spec(authProperties.getNewAuthenticationRequestSpecification())
                               .contentType(ContentType.JSON)
                               .queryParam("returnUncompletedJob", true)
-                              .get("/irs/jobs/" + jobId)
+                              .get("/irs/jobs/" + id)
                               .as(Jobs.class);
 
         assertThat(completedJob.getJob().getParameter().getAspects()).containsAll(aspects);
@@ -460,7 +460,7 @@ public class E2ETestStepDefinitions {
 
     @After("@INTEGRATION_TEST")
     public void addJobIdToResult(Scenario scenario) {
-        scenario.attach(jobId.toString(), MediaType.TEXT_PLAIN_VALUE, "id");
+        scenario.attach(id.toString(), MediaType.TEXT_PLAIN_VALUE, "id");
     }
 
     private static class PropertyNotFoundException extends Exception {
