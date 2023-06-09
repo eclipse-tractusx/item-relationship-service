@@ -37,9 +37,10 @@ public class Masker {
     public static String mask(final String stringToMask) {
         if (StringUtils.length(stringToMask) <= UNMASKED_LENGTH) {
             return "****"; // mask everything
+        } else {
+            // mask everything after the first 4 characters
+            final String mask = StringUtils.repeat("*", stringToMask.length() - UNMASKED_LENGTH);
+            return StringUtils.overlay(stringToMask, mask, UNMASKED_LENGTH, stringToMask.length());
         }
-        // mask everything after the first 4 characters
-        final String mask = StringUtils.repeat("*", stringToMask.length() - UNMASKED_LENGTH);
-        return StringUtils.overlay(stringToMask, mask, UNMASKED_LENGTH, stringToMask.length());
     }
 }
