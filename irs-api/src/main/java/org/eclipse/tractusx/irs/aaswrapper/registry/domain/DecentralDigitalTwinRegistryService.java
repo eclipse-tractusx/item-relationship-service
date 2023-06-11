@@ -60,8 +60,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                                                                                  .filter(edcDiscoveryResult -> edcDiscoveryResult.bpn()
                                                                                                                                                                  .equals(key.bpn()))
                                                                                                                  .map(EdcDiscoveryResult::connectorEndpoint)
-                                                                                                                 .collect(
-                                                                                                                         Collectors.toList()))
+                                                                                                                 .toList())
                                                                   .flatMap(List::stream)
                                                                   .flatMap(List::stream)
                                                                   .toList();
