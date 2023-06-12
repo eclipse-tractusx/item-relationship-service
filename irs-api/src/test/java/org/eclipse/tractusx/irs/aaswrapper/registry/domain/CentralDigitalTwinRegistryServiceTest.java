@@ -85,11 +85,12 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
     @Test
     void shouldThrowExceptionWhenRequestError() {
         final String catenaXId = "test";
+        final DigitalTwinRegistryKey key = new DigitalTwinRegistryKey(catenaXId, "");
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenThrow(
                 new RestClientException("Dummy"));
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
-                () -> dtRegistryFacadeWithMock.getAAShellDescriptor(new DigitalTwinRegistryKey(catenaXId, "")));
+                () -> dtRegistryFacadeWithMock.getAAShellDescriptor(key));
     }
 
     @Test

@@ -122,6 +122,7 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 @Slf4j
 @RequiredArgsConstructor
 @Profile({ "!local && !stubtest" })
+@SuppressWarnings("PMD.TooManyMethods")
 class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private final EdcConfiguration config;
@@ -205,15 +206,13 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private Optional<String> retrieveSubmodelData(final String submodel, final String contractAgreementId,
             final StopWatch stopWatch) {
-        log.info("Retrieving dataReference from storage for contractAgreementId {}", Masker.mask(contractAgreementId));
-        final Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.remove(contractAgreementId);
+        final Optional<EndpointDataReference> dataReference = retrieveEndpointDataReference(contractAgreementId);
 
         if (dataReference.isPresent()) {
             final EndpointDataReference ref = dataReference.get();
             log.info("Retrieving data from EDC data plane for dataReference with id {}", ref.getId());
             final String data = edcDataPlaneClient.getData(ref, submodel);
-            stopWatch.stop();
-            log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
+            stopWatchOnEdcTask(stopWatch);
 
             return Optional.of(data);
         }
@@ -222,14 +221,12 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private Optional<EndpointDataReference> retrieveEndpointReference(final String contractAgreementId,
             final StopWatch stopWatch) {
-        log.info("Retrieving dataReference from storage for contractAgreementId {}", Masker.mask(contractAgreementId));
-        final Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.remove(contractAgreementId);
+        final Optional<EndpointDataReference> dataReference = retrieveEndpointDataReference(contractAgreementId);
 
         if (dataReference.isPresent()) {
             final EndpointDataReference ref = dataReference.get();
             log.info("Retrieving Endpoint Reference data from EDC data plane with id: {}", ref.getId());
-            stopWatch.stop();
-            log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
+            stopWatchOnEdcTask(stopWatch);
 
             return Optional.of(ref);
         }
@@ -238,15 +235,13 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private Optional<EdcNotificationResponse> sendSubmodelNotification(final String submodel,
             final String contractAgreementId, final EdcNotification notification, final StopWatch stopWatch) {
-        log.info("Retrieving dataReference from storage for contractAgreementId {}", contractAgreementId);
-        final Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.remove(contractAgreementId);
+        final Optional<EndpointDataReference> dataReference = retrieveEndpointDataReference(contractAgreementId);
 
         if (dataReference.isPresent()) {
             final EndpointDataReference ref = dataReference.get();
             log.info("Sending data to EDC data plane with dataReference {}:{}", ref.getAuthKey(), ref.getAuthCode());
             final EdcNotificationResponse response = edcDataPlaneClient.sendData(ref, submodel, notification);
-            stopWatch.stop();
-            log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
+            stopWatchOnEdcTask(stopWatch);
             return Optional.of(response);
         }
         return Optional.empty();
@@ -312,11 +307,22 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             return pollingService.<EndpointDataReference>createJob()
                                  .action(() -> retrieveEndpointReference(response.getContractAgreementId(), stopWatch))
                                  .timeToLive(config.getSubmodel().getRequestTtl())
-                                 .description("waiting for submodel retrieval")
+                                 .description("waiting for Endpoint Reference retrieval")
                                  .build()
                                  .schedule();
 
         });
+    }
+
+
+    private Optional<EndpointDataReference> retrieveEndpointDataReference(final String contractAgreementId) {
+        log.info("Retrieving dataReference from storage for contractAgreementId {}", Masker.mask(contractAgreementId));
+        return endpointDataReferenceStorage.remove(contractAgreementId);
+    }
+
+    private static void stopWatchOnEdcTask(final StopWatch stopWatch) {
+        stopWatch.stop();
+        log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
     }
 
     @SuppressWarnings({ "PMD.AvoidRethrowingException",
