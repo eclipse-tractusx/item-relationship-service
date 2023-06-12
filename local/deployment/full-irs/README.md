@@ -4,12 +4,22 @@
 
 ### Step 1: Prerequisites
 
-1. [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/) is installed and running
+1. [Docker](https://docs.docker.com/get-docker/) is installed and the Docker deamon is running with at least 8GB of memory
 2. [helm](https://helm.sh/docs/intro/install/) is installed
-3. [kubectl](https://kubernetes.io/docs/tasks/tools/) is installed
-4. [Python3](https://www.python.org/downloads/) is installed
-5. [Ruby](https://www.ruby-lang.org/de/documentation/installation/) is installed (optional)
-6. [psql](https://www.compose.com/articles/postgresql-tips-installing-the-postgresql-client/) client is installed (optional)
+3. [Minikube](https://minikube.sigs.k8s.io/docs/start/) is installed and running.
+
+   You can also use any other local Kubernetes cluster, this guide is just using Minikube as a reference.
+   ```bash
+   minikube start --memory 8192 --cpus 2 
+   ```
+   Optional: enable minikube metrics
+   ```bash
+   minikube addons enable metrics-server
+   ```
+4. [kubectl](https://kubernetes.io/docs/tasks/tools/) is installed
+5. [Python3](https://www.python.org/downloads/) is installed
+6. [Ruby](https://www.ruby-lang.org/de/documentation/installation/) is installed (optional)
+7. [psql](https://www.compose.com/articles/postgresql-tips-installing-the-postgresql-client/) client is installed (optional)
 
 ### Step 2: Check out the code
 
@@ -22,6 +32,7 @@ Check out the project [Item Relationship Service](https://github.com/eclipse-tra
 To deploy the services on kubernetes, run
 
 ```bash
+cd local/deployment/full-irs
 ./start.sh true true
 ```
 
@@ -58,11 +69,17 @@ error: timed out waiting for the condition on deployments/irs-frontend
 
 ##### 1.1 Get the Status of the deployment
 
-You can see the status of the deployment in Rancher Desktop Dashboard
+The minikube dashboard will give you feedback on how the status of the deployment currently is:
 
-![expected status](img/rancher-desktop-dashboard.png)
+```bash
+minikube dashboard 
+```
 
-#### 2. Forwarding Ports
+Make sure you select the namespace irs:
+
+![minikube-dashboard-overview](img/minikube-dashboard-overview.png)
+
+#### 2. Forward Ports
 
 When the deployment has been finished please use the script to forward the ports:
 
@@ -91,7 +108,7 @@ If you like, you can remove the test data with:
 ./deleteIRSTestData.sh
 ```
 
-### Step4: access Debuggin View
+### Step4: Access the Debugging View
 
 open [http://localhost:3000/](http://localhost:3000/) and you should see the Item Relationship Service login screen:
 
@@ -165,8 +182,39 @@ Test-steps:
 
 1. **open** [http://localhost:3000](http://localhost:3000) and click 'Login'
 2. **copy & past** a valid globalAssetId into the request body
+   ![irs-new-job-front](img/irs-new-job-front.png)
 3. **click** 'Build Data Chain' to start a new IRS job
 4. **open** visualization to see result of the job
+   ![irs-job-list-front](img/irs-job-list-front.png)
+
+Verify Results
+The following example shows a visual overview of all retrieved data assets and digital twins of a data chain.
+![irs-vis-overview-front](img/irs-vis-overview-front.png)
+
+Item Relationship Service visualization overview
+
+With the following snippet, all clickable objects will be explained:
+* **Digital Twin**: the box itself is clickable and will open an overlay to show more information on this object.
+* **Aspect**: the green button is clickable and represents an Aspect or Submodel of the twin.
+* **Relationship Aspect**: the line between Digital Twins is clickable and will give detailed Information about the relationship between the twins.
+  ![irs-vis-clickable-front](img/irs-vis-clickable-front.png)
+
+Relationship Service clickable objects
+
+### Stopping the cluster
+1. stop minikube
+   ```bash
+   minikube stop
+   ```
+2. stop the processes used for port forwarding and minikube dashboard
+3. shut down the Docker daemon
+
+### How to debug an application in the cluster
+If you want to connect your IDE to one of the applications in the cluster, you need to enable debug mode for that application by overriding the entrypoint (using the command and args fields in the deployment resource). How to do this depends on the application. For the IRS, as it is based on Spring Boot and Java, you would need to add this flag to the start command:
+   ```bash
+   -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
+   ```
+Then you can forward the port 8000 for the IRS deployment to your host machine and connect your IDE to that port.
 
 ----
 
