@@ -1,6 +1,6 @@
 = "Under-the-hood" concepts
 
-== Persistency
+== Persistence
 The IRS stores two types of data in a persistent way:
 
 - Job metadata
@@ -57,7 +57,7 @@ It's good to inform the user, why their request did not work, but only if they c
 == Parallelization and threading
 The heart of the IRS is the parallel execution of planned jobs. As almost each job requires multiple calls to various endpoints, those are done in parallel as well to reduce the total execution time for each job.
 
-Tasks execution is orchestrated by the JobOrchestrator class. It utilizes a cental ExecutorService, which manages the number of threads and schedules new Task as they come in.
+Tasks execution is orchestrated by the JobOrchestrator class. It utilizes a central ExecutorService, which manages the number of threads and schedules new Task as they come in.
 
 
 

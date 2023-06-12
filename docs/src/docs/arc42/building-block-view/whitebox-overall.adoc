@@ -6,7 +6,7 @@ The interfaces show how the components interact with each other and which interf
 
 [plantuml, target=whitebox-overview, format=svg]
 ....
-include::../../../uml-diagrams/building-block-view/whitebox_overall.puml[]
+include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.puml[]
 ....
 
 == Component description
@@ -24,7 +24,7 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall.puml[]
 |The EDC Consumer Component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists out of a control plane and a data plane.
 
 |EDC Provider
-|The EDC Provider Component connects with EDC Consumer component and  forms the end point for the actual exchange of data. It handles automatic contract negotiation and the subsequent exchange of data assets for connected applications.
+|The EDC Provider Component connects with EDC Consumer component and forms the end point for the actual exchange of data. It handles automatic contract negotiation and the subsequent exchange of data assets for connected applications.
 
 |Submodel Server
 |The Submodel Server offers endpoints for requesting the Submodel aspects.
