@@ -20,26 +20,14 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.common;
+package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
+import java.util.List;
 
+import lombok.extern.jackson.Jacksonized;
 /**
- * Utility class to mask strings for log output
+ * Request for Discovery Finder
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Masker {
-
-    public static final int UNMASKED_LENGTH = 4;
-
-    public static String mask(final String stringToMask) {
-        if (StringUtils.isBlank(stringToMask) || StringUtils.length(stringToMask) <= UNMASKED_LENGTH) {
-            return "****"; // mask everything
-        }
-        // mask everything after the first 4 characters
-        final String mask = StringUtils.repeat("*", stringToMask.length() - UNMASKED_LENGTH);
-        return StringUtils.overlay(stringToMask, mask, UNMASKED_LENGTH, stringToMask.length());
-    }
+@Jacksonized
+public record DiscoveryFinderRequest(List<String> types) {
 }

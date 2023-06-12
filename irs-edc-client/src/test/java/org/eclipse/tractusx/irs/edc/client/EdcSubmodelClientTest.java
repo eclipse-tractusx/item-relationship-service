@@ -48,8 +48,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import io.github.resilience4j.retry.RetryRegistry;
+import org.eclipse.dataspaceconnector.policy.model.Policy;
+import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
+import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
+import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -83,6 +88,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     private ContractNegotiationService contractNegotiationService;
     @Mock
     private EdcDataPlaneClient edcDataPlaneClient;
+    @Mock
+    private EdcControlPlaneClient edcControlPlaneClient;
 
     @Mock
     private CatalogCache catalogCache;
@@ -120,7 +127,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         config.getSubmodel().setUrnPrefix("/urn");
         config.getSubmodel().setRequestTtl(Duration.ofMinutes(10));
         testee = new EdcSubmodelClientImpl(config, contractNegotiationService, edcDataPlaneClient,
-                endpointDataReferenceStorage, pollingService, meterRegistry, retryRegistry, catalogCache);
+                endpointDataReferenceStorage, pollingService, meterRegistry, retryRegistry, catalogCache, edcControlPlaneClient);
     }
 
     @Test
@@ -315,6 +322,27 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 singleLevelUsageRelationships.get(0).getLinkedItem().getChildCatenaXId());
     }
 
+    @Test
+    void shouldRetrieveEndpointReferenceForAsset() throws Exception {
+        // arrange
+        final String filterKey = "filter-key";
+        final String filterValue = "filter-value";
+        when(edcControlPlaneClient.getCatalogWithFilter(ENDPOINT_ADDRESS, filterKey, filterValue)).thenReturn(
+                createCatalog("asset-id", 3));
+        when(contractNegotiationService.negotiate(any(), any())).thenReturn(
+                NegotiationResponse.builder().contractAgreementId("agreementId").build());
+        final EndpointDataReference expected = mock(EndpointDataReference.class);
+        endpointDataReferenceStorage.put("agreementId", expected);
+
+        // act
+        final var result = testee.getEndpointReferenceForAsset(ENDPOINT_ADDRESS,
+                filterKey, filterValue);
+        final EndpointDataReference actual = result.get(5, TimeUnit.SECONDS);
+
+        // assert
+        assertThat(actual).isEqualTo(expected);
+    }
+
     private void prepareTestdata(final String catenaXId, final String submodelDataSuffix)
             throws ContractNegotiationException, IOException, UsagePolicyException {
         when(catalogCache.getCatalogItem(any(), any())).thenReturn(
@@ -328,6 +356,24 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String data = StringMapper.mapToString(
                 submodelTestdataCreator.createSubmodelForId(catenaXId + submodelDataSuffix));
         when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(data);
+    }
+
+    private Catalog createCatalog(final String assetId, final int numberOfOffers) {
+        final Policy policy = mock(Policy.class);
+
+        final List<ContractOffer> contractOffers = IntStream.range(0, numberOfOffers)
+                                                            .boxed()
+                                                            .map(i -> ContractOffer.Builder.newInstance()
+                                                                                           .id("offer"+i)
+                                                                                           .asset(createAsset(assetId))
+                                                                                           .policy(policy)
+                                                                                           .build())
+                                                            .toList();
+        return Catalog.Builder.newInstance().id("default").contractOffers(contractOffers).build();
+    }
+
+    private static Asset createAsset(final String assetId) {
+        return Asset.Builder.newInstance().id(assetId).property("asset:prop:id", assetId).build();
     }
 }
 

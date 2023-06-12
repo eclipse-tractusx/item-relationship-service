@@ -111,7 +111,7 @@ class SubmodelFacadeWiremockTest {
         final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
         final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
         this.submodelFacade = new EdcSubmodelClientImpl(config, contractNegotiationService, dataPlaneClient, storage,
-                pollingService, meterRegistry, retryRegistry, catalogCache);
+                pollingService, meterRegistry, retryRegistry, catalogCache, controlPlaneClient);
     }
 
     @AfterEach

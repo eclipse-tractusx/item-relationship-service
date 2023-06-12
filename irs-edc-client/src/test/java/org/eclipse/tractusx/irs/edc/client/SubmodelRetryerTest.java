@@ -83,7 +83,7 @@ class SubmodelExponentialRetryTest {
         final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
 
         final EdcSubmodelClient client = new EdcSubmodelClientImpl(config, negotiationService, dataPlaneClient, storage,
-                pollingService, meterRegistry, retryRegistry, catalogCache);
+                pollingService, meterRegistry, retryRegistry, catalogCache, controlPlaneClient);
         testee = new EdcSubmodelFacade(client);
     }
 

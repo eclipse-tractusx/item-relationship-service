@@ -20,26 +20,12 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.common;
+package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
+import java.util.List;
 
 /**
- * Utility class to mask strings for log output
+ * Result of EDC Discovery call
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Masker {
-
-    public static final int UNMASKED_LENGTH = 4;
-
-    public static String mask(final String stringToMask) {
-        if (StringUtils.isBlank(stringToMask) || StringUtils.length(stringToMask) <= UNMASKED_LENGTH) {
-            return "****"; // mask everything
-        }
-        // mask everything after the first 4 characters
-        final String mask = StringUtils.repeat("*", stringToMask.length() - UNMASKED_LENGTH);
-        return StringUtils.overlay(stringToMask, mask, UNMASKED_LENGTH, stringToMask.length());
-    }
+public record EdcDiscoveryResult(String bpn, List<String> connectorEndpoint) {
 }

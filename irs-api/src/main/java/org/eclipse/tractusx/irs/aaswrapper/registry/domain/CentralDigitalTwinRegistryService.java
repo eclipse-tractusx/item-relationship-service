@@ -29,28 +29,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 /**
- * Public API Facade for digital twin registry domain
+ * Central implementation of DigitalTwinRegistryService
  */
 @Service
+@ConditionalOnProperty(prefix = "digitalTwinRegistry", name = "type", havingValue = "central")
 @RequiredArgsConstructor
 @Slf4j
-public class DigitalTwinRegistryFacade {
+public class CentralDigitalTwinRegistryService implements DigitalTwinRegistryService {
 
     private final DigitalTwinRegistryClient digitalTwinRegistryClient;
 
-    /**
-     * Retrieves {@link AssetAdministrationShellDescriptor} from Digital Twin Registry Service.
-     * As a first step id of shell is being retrieved by globalAssetId.
-     *
-     * @param globalAssetId The Asset Administration Shell's global id
-     * @return AAShell
-     */
-    public AssetAdministrationShellDescriptor getAAShellDescriptor(final String globalAssetId) {
-        final String aaShellIdentification = getAAShellIdentificationOrGlobalAssetId(globalAssetId);
-        log.info("Retrieved AAS Identification {} for globalAssetId {}", aaShellIdentification, globalAssetId);
+    @Override
+    public AssetAdministrationShellDescriptor getAAShellDescriptor(final DigitalTwinRegistryKey key) {
+        final String aaShellIdentification = getAAShellIdentificationOrGlobalAssetId(key.globalAssetId());
+        log.info("Retrieved AAS Identification {} for globalAssetId {}", aaShellIdentification, key.globalAssetId());
 
         return digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aaShellIdentification);
     }

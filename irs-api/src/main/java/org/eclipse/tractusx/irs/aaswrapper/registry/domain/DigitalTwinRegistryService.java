@@ -20,26 +20,22 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.common;
+package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 
 /**
- * Utility class to mask strings for log output
+ * Public API Service for digital twin registry domain
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Masker {
+public interface DigitalTwinRegistryService {
 
-    public static final int UNMASKED_LENGTH = 4;
+    /**
+     * Retrieves {@link AssetAdministrationShellDescriptor} from Digital Twin Registry Service.
+     * As a first step id of shell is being retrieved by DigitalTwinRegistryKey.
+     *
+     * @param key The Asset Administration Shell's DigitalTwinRegistryKey
+     * @return AAShell
+     */
+    AssetAdministrationShellDescriptor getAAShellDescriptor(DigitalTwinRegistryKey key);
 
-    public static String mask(final String stringToMask) {
-        if (StringUtils.isBlank(stringToMask) || StringUtils.length(stringToMask) <= UNMASKED_LENGTH) {
-            return "****"; // mask everything
-        }
-        // mask everything after the first 4 characters
-        final String mask = StringUtils.repeat("*", stringToMask.length() - UNMASKED_LENGTH);
-        return StringUtils.overlay(stringToMask, mask, UNMASKED_LENGTH, stringToMask.length());
-    }
 }
