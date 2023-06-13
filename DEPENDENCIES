@@ -8,10 +8,10 @@ maven/mavencentral/com.fasterxml.jackson.core/jackson-core/2.15.0, MIT AND Apach
 maven/mavencentral/com.fasterxml.jackson.core/jackson-databind/2.14.2, Apache-2.0, approved, #4105
 maven/mavencentral/com.fasterxml.jackson.core/jackson-databind/2.15.0, Apache-2.0, approved, #7934
 maven/mavencentral/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.14.2, Apache-2.0, approved, #5933
-maven/mavencentral/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.15.0, Apache-2.0, restricted, clearlydefined
-maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/2.15.0, Apache-2.0, restricted, clearlydefined
+maven/mavencentral/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.15.0, Apache-2.0, approved, #8802
+maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/2.15.0, Apache-2.0, approved, #8808
 maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/2.15.0, Apache-2.0, approved, #7930
-maven/mavencentral/com.fasterxml.jackson.module/jackson-module-parameter-names/2.15.0, Apache-2.0, restricted, clearlydefined
+maven/mavencentral/com.fasterxml.jackson.module/jackson-module-parameter-names/2.15.0, Apache-2.0, approved, #8803
 maven/mavencentral/com.fasterxml/classmate/1.5.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.github.docker-java/docker-java-api/3.2.13, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.github.docker-java/docker-java-transport-zerodep/3.2.13, Apache-2.0 AND (Apache-2.0 AND BSD-3-Clause), approved, #3059
@@ -28,7 +28,7 @@ maven/mavencentral/com.jayway.jsonpath/json-path/2.8.0, Apache-2.0, approved, cl
 maven/mavencentral/com.nimbusds/content-type/2.2, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.nimbusds/lang-tag/1.7, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.nimbusds/nimbus-jose-jwt/9.31, Apache-2.0, approved, clearlydefined
-maven/mavencentral/com.nimbusds/oauth2-oidc-sdk/9.43.2, , restricted, clearlydefined
+maven/mavencentral/com.nimbusds/oauth2-oidc-sdk/9.43.2, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.squareup.okhttp3/okhttp/4.10.0, Apache-2.0 AND MPL-2.0, approved, #3057
 maven/mavencentral/com.squareup.okio/okio-jvm/3.0.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.vaadin.external.google/android-json/0.0.20131108.vaadin1, Apache-2.0, approved, CQ21310
@@ -88,10 +88,10 @@ maven/mavencentral/org.apache.commons/commons-compress/1.21, Apache-2.0 AND BSD-
 maven/mavencentral/org.apache.commons/commons-compress/1.22, Apache-2.0 AND BSD-3-Clause, approved, #4299
 maven/mavencentral/org.apache.commons/commons-lang3/3.12.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.apache.logging.log4j/log4j-api/2.20.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.apache.logging.log4j/log4j-core/2.20.0, Apache-2.0, restricted, clearlydefined
+maven/mavencentral/org.apache.logging.log4j/log4j-core/2.20.0, Apache-2.0 AND (Apache-2.0 AND LGPL-2.0-or-later), approved, #8809
 maven/mavencentral/org.apache.logging.log4j/log4j-jul/2.20.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.apache.logging.log4j/log4j-slf4j2-impl/2.20.0, Apache-2.0, restricted, clearlydefined
-maven/mavencentral/org.apache.logging.log4j/log4j-to-slf4j/2.20.0, Apache-2.0, restricted, clearlydefined
+maven/mavencentral/org.apache.logging.log4j/log4j-slf4j2-impl/2.20.0, Apache-2.0, approved, #8801
+maven/mavencentral/org.apache.logging.log4j/log4j-to-slf4j/2.20.0, Apache-2.0, approved, #8799
 maven/mavencentral/org.apache.tomcat.embed/tomcat-embed-core/10.1.8, Apache-2.0 AND (EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0) AND (CDDL-1.0 OR GPL-2.0-only WITH Classpath-exception-2.0) AND W3C AND CC0-1.0, approved, #5949
 maven/mavencentral/org.apache.tomcat.embed/tomcat-embed-el/10.1.8, Apache-2.0, approved, #6997
 maven/mavencentral/org.apache.tomcat.embed/tomcat-embed-websocket/10.1.8, Apache-2.0, approved, #7920
@@ -118,7 +118,7 @@ maven/mavencentral/org.jboss.logging/jboss-logging/3.5.0.Final, Apache-2.0, appr
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-common/1.8.21, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.5.31, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.8.21, , restricted, clearlydefined
+maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.8.21, Apache-2.0, approved, #8807
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.5.31, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.8.21, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib/1.6.20, Apache-2.0, approved, clearlydefined
@@ -150,28 +150,28 @@ maven/mavencentral/org.springframework.boot/spring-boot-autoconfigure/3.1.0, Apa
 maven/mavencentral/org.springframework.boot/spring-boot-starter-actuator/3.1.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.boot/spring-boot-starter-aop/3.1.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.boot/spring-boot-starter-json/3.1.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.springframework.boot/spring-boot-starter-log4j2/3.1.0, , restricted, clearlydefined
+maven/mavencentral/org.springframework.boot/spring-boot-starter-log4j2/3.1.0, Apache-2.0, approved, #8800
 maven/mavencentral/org.springframework.boot/spring-boot-starter-logging/3.1.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.springframework.boot/spring-boot-starter-oauth2-client/3.1.0, , restricted, clearlydefined
-maven/mavencentral/org.springframework.boot/spring-boot-starter-oauth2-resource-server/3.1.0, , restricted, clearlydefined
-maven/mavencentral/org.springframework.boot/spring-boot-starter-security/3.1.0, , restricted, clearlydefined
+maven/mavencentral/org.springframework.boot/spring-boot-starter-oauth2-client/3.1.0, Apache-2.0, approved, #8806
+maven/mavencentral/org.springframework.boot/spring-boot-starter-oauth2-resource-server/3.1.0, Apache-2.0, approved, #8804
+maven/mavencentral/org.springframework.boot/spring-boot-starter-security/3.1.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.boot/spring-boot-starter-test/3.1.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.boot/spring-boot-starter-tomcat/3.1.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.springframework.boot/spring-boot-starter-validation/3.1.0, , restricted, clearlydefined
+maven/mavencentral/org.springframework.boot/spring-boot-starter-validation/3.1.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.boot/spring-boot-starter-web/3.1.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.boot/spring-boot-starter/3.1.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.boot/spring-boot-test-autoconfigure/3.1.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.boot/spring-boot-test/3.1.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework.boot/spring-boot/3.1.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.springframework.data/spring-data-commons/3.1.0, , restricted, clearlydefined
-maven/mavencentral/org.springframework.security/spring-security-config/6.1.0, , restricted, clearlydefined
-maven/mavencentral/org.springframework.security/spring-security-core/6.1.0, , restricted, clearlydefined
-maven/mavencentral/org.springframework.security/spring-security-crypto/6.1.0, , restricted, clearlydefined
-maven/mavencentral/org.springframework.security/spring-security-oauth2-client/6.1.0, , restricted, clearlydefined
-maven/mavencentral/org.springframework.security/spring-security-oauth2-core/6.1.0, , restricted, clearlydefined
-maven/mavencentral/org.springframework.security/spring-security-oauth2-jose/6.1.0, , restricted, clearlydefined
-maven/mavencentral/org.springframework.security/spring-security-oauth2-resource-server/6.1.0, , restricted, clearlydefined
-maven/mavencentral/org.springframework.security/spring-security-web/6.1.0, , restricted, clearlydefined
+maven/mavencentral/org.springframework.data/spring-data-commons/3.1.0, Apache-2.0, approved, #8805
+maven/mavencentral/org.springframework.security/spring-security-config/6.1.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.springframework.security/spring-security-core/6.1.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.springframework.security/spring-security-crypto/6.1.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.springframework.security/spring-security-oauth2-client/6.1.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.springframework.security/spring-security-oauth2-core/6.1.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.springframework.security/spring-security-oauth2-jose/6.1.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.springframework.security/spring-security-oauth2-resource-server/6.1.0, Apache-2.0, approved, #8798
+maven/mavencentral/org.springframework.security/spring-security-web/6.1.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.springframework/spring-aop/6.0.9, Apache-2.0, approved, #5940
 maven/mavencentral/org.springframework/spring-beans/6.0.9, Apache-2.0, approved, #5937
 maven/mavencentral/org.springframework/spring-context/6.0.9, Apache-2.0, approved, #5936
