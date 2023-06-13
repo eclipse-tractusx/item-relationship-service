@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -80,10 +82,12 @@ public class EdcControlPlaneClient {
         return CatalogRequest.builder().providerUrl(providerUrl).querySpec(querySpec.build()).build();
     }
 
-    /* package */ Catalog getCatalogWithFilter(final String providerConnectorUrl, final String key,
-            final String value) {
+    /* package */ Catalog getCatalogWithFilter(final String providerConnectorUrl, final String key, final String value)
+            throws URISyntaxException {
         final var catalogUrl = config.getControlplane().getEndpoint().getData() + "/catalog/request";
-        final var providerUrl = providerConnectorUrl + config.getControlplane().getProviderSuffix();
+        final var providerUrl = new URI(providerConnectorUrl + config.getControlplane().getProviderSuffix()).normalize()
+                                                                                                            .toString();
+
         final var querySpec = QuerySpec.Builder.newInstance().filter(List.of(new Criterion(key, "=", value)));
         final var catalogRequest = CatalogRequest.builder()
                                                  .providerUrl(providerUrl)

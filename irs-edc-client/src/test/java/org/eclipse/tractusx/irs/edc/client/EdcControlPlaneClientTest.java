@@ -29,6 +29,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.net.URISyntaxException;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.Optional;
@@ -58,14 +59,13 @@ import org.springframework.web.client.RestTemplate;
 @ExtendWith(MockitoExtension.class)
 class EdcControlPlaneClientTest {
 
-    @Mock
-    private RestTemplate restTemplate;
-
     @Spy
     private final AsyncPollingService pollingService = new AsyncPollingService(Clock.systemUTC(),
             Executors.newSingleThreadScheduledExecutor());
     @Spy
     private final EdcConfiguration config = new EdcConfiguration();
+    @Mock
+    private RestTemplate restTemplate;
     @InjectMocks
     private EdcControlPlaneClient testee;
 
@@ -99,7 +99,7 @@ class EdcControlPlaneClientTest {
     }
 
     @Test
-    void shouldReturnValidCatalogUsingFilters() {
+    void shouldReturnValidCatalogUsingFilters() throws URISyntaxException {
         // arrange
         final var catalog = mock(Catalog.class);
         when(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class),
@@ -116,8 +116,8 @@ class EdcControlPlaneClientTest {
     void shouldReturnValidNegotiationId() {
         // arrange
         final var negotiationId = NegotiationId.builder().value("test").build();
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(NegotiationId.class)))
-                .thenReturn(ResponseEntity.of(Optional.of(negotiationId)));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(NegotiationId.class))).thenReturn(
+                ResponseEntity.of(Optional.of(negotiationId)));
         final NegotiationRequest request = NegotiationRequest.builder().build();
 
         // act
@@ -135,8 +135,8 @@ class EdcControlPlaneClientTest {
                                                          .contractAgreementId("testContractId")
                                                          .state("CONFIRMED")
                                                          .build();
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(NegotiationResponse.class)))
-                .thenReturn(ResponseEntity.of(Optional.of(negotiationResult)));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(NegotiationResponse.class))).thenReturn(
+                ResponseEntity.of(Optional.of(negotiationResult)));
 
         // act
         final var result = testee.getNegotiationResult(negotiationId);
@@ -151,8 +151,8 @@ class EdcControlPlaneClientTest {
         // arrange
         final var processId = TransferProcessId.builder().value("test").build();
         final var request = TransferProcessRequest.builder().requestId("testRequest").build();
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(TransferProcessId.class)))
-                .thenReturn(ResponseEntity.of(Optional.of(processId)));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(TransferProcessId.class))).thenReturn(
+                ResponseEntity.of(Optional.of(processId)));
 
         // act
         final var result = testee.startTransferProcess(request);
@@ -166,8 +166,8 @@ class EdcControlPlaneClientTest {
         // arrange
         final var processId = TransferProcessId.builder().value("test").build();
         final var response = TransferProcessResponse.builder().responseId("testResponse").state("COMPLETED").build();
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(TransferProcessResponse.class)))
-                .thenReturn(ResponseEntity.of(Optional.of(response)));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(),
+                eq(TransferProcessResponse.class))).thenReturn(ResponseEntity.of(Optional.of(response)));
 
         // act
         final var result = testee.getTransferProcess(processId);
