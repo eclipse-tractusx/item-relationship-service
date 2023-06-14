@@ -24,7 +24,6 @@ package org.eclipse.tractusx.irs.edc.client;
 
 import java.net.SocketTimeoutException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -169,10 +168,12 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         final String providerConnectorUrl = submodelEndpointAddress.substring(0, indexOfUrn);
         final String target = submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
         final String decodedTarget = URLDecoder.decode(target, StandardCharsets.UTF_8);
-        log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerConnectorUrl,
+        final String providerWithSuffix = appendSuffix(providerConnectorUrl,
+                config.getControlplane().getProviderSuffix());
+        log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerWithSuffix,
                 decodedTarget);
-        final CatalogItem catalogItem = catalogCache.getCatalogItem(providerConnectorUrl, decodedTarget).orElseThrow();
-        return contractNegotiationService.negotiate(providerConnectorUrl, catalogItem);
+        final CatalogItem catalogItem = catalogCache.getCatalogItem(providerWithSuffix, decodedTarget).orElseThrow();
+        return contractNegotiationService.negotiate(providerWithSuffix, catalogItem);
     }
 
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(
@@ -294,13 +295,9 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         return execute(endpointAddress, () -> {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + endpointAddress);
+            final String providerWithSuffix = appendSuffix(endpointAddress, config.getControlplane().getProviderSuffix());
 
-            final Catalog catalog;
-            try {
-                catalog = edcControlPlaneClient.getCatalogWithFilter(endpointAddress, filterKey, filterValue);
-            } catch (URISyntaxException e) {
-                throw new EdcClientException(e);
-            }
+            final Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(providerWithSuffix, filterKey, filterValue);
 
             final List<CatalogItem> items = catalog.getContractOffers()
                                                    .stream()
@@ -313,7 +310,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
                                                                                     .policy(contractOffer.getPolicy())
                                                                                     .build())
                                                    .toList();
-            final NegotiationResponse response = contractNegotiationService.negotiate(endpointAddress,
+            final NegotiationResponse response = contractNegotiationService.negotiate(providerWithSuffix,
                     items.stream().findFirst().orElseThrow());
 
             return pollingService.<EndpointDataReference>createJob()
@@ -324,6 +321,16 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
                                  .schedule();
 
         });
+    }
+
+    private String appendSuffix(final String endpointAddress, final String providerSuffix) {
+        String addressWithSuffix;
+        if (endpointAddress.endsWith("/") && providerSuffix.startsWith("/")) {
+            addressWithSuffix = endpointAddress.substring(0, endpointAddress.length() - 1) + providerSuffix;
+        } else {
+            addressWithSuffix = endpointAddress + providerSuffix;
+        }
+        return addressWithSuffix;
     }
 
     private Optional<EndpointDataReference> retrieveEndpointDataReference(final String contractAgreementId) {

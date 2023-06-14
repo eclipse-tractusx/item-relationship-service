@@ -22,8 +22,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -66,10 +64,9 @@ public class EdcControlPlaneClient {
 
     /* package */ Catalog getCatalog(final String providerConnectorUrl, final int offset) {
         final var catalogUrl = config.getControlplane().getEndpoint().getData() + "/catalog/request";
-        final var providerUrl = providerConnectorUrl + config.getControlplane().getProviderSuffix();
         final var limit = config.getControlplane().getCatalogPageSize();
 
-        final CatalogRequest request = buildCatalogRequest(offset, providerUrl, limit);
+        final CatalogRequest request = buildCatalogRequest(offset, providerConnectorUrl, limit);
         return edcRestTemplate.exchange(catalogUrl, HttpMethod.POST, new HttpEntity<>(request, headers()),
                 Catalog.class).getBody();
     }
@@ -82,15 +79,12 @@ public class EdcControlPlaneClient {
         return CatalogRequest.builder().providerUrl(providerUrl).querySpec(querySpec.build()).build();
     }
 
-    /* package */ Catalog getCatalogWithFilter(final String providerConnectorUrl, final String key, final String value)
-            throws URISyntaxException {
+    /* package */ Catalog getCatalogWithFilter(final String providerConnectorUrl, final String key, final String value) {
         final var catalogUrl = config.getControlplane().getEndpoint().getData() + "/catalog/request";
-        final var providerUrl = new URI(providerConnectorUrl + config.getControlplane().getProviderSuffix()).normalize()
-                                                                                                            .toString();
 
         final var querySpec = QuerySpec.Builder.newInstance().filter(List.of(new Criterion(key, "=", value)));
         final var catalogRequest = CatalogRequest.builder()
-                                                 .providerUrl(providerUrl)
+                                                 .providerUrl(providerConnectorUrl)
                                                  .querySpec(querySpec.build())
                                                  .build();
         return edcRestTemplate.exchange(catalogUrl, HttpMethod.POST, new HttpEntity<>(catalogRequest, headers()),
