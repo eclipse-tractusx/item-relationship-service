@@ -56,9 +56,10 @@ test-edc:
 
   postgresql:
     enabled: true
+    auth:
+      username: "<path:traceability-irs/data/dev/controlplane#databaseuser>"
+      password: "<path:traceability-irs/data/dev/controlplane#databasepassword>"
     jdbcUrl: "jdbc:postgresql://test-edc-provider-test-edc-postgresql-hl:5432/edc"
-    username: "<path:traceability-irs/data/dev/controlplane#databaseuser>"
-    password: "<path:traceability-irs/data/dev/controlplane#databasepassword>"
 
   vault:
     hashicorp:
