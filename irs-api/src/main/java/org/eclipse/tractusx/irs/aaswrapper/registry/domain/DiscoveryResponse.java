@@ -25,8 +25,7 @@ package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 import java.util.List;
 
 /**
- * The result of searching Discovery Endpoints.
- * @param endpoints the list of {@link DiscoveryEndpoint}s
+ * The result of searching the Discovery Finder. Contains a list of {@link DiscoveryEndpoint}s.
  */
 public record DiscoveryResponse(List<DiscoveryEndpoint> endpoints) {
 }
