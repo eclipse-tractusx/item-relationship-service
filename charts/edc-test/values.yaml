@@ -128,3 +128,5 @@ test-edc:
   backendService:
     httpProxyTokenReceiverUrl: ""
 
+postgresql:
+  enabled:

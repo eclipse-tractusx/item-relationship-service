@@ -86,10 +86,5 @@ test-edc:
   backendService:
     httpProxyTokenReceiverUrl: "https://irs-submodel-server3.dev.demo.catena-x.net/data/endpoint-data-reference"
 
-
-test-edc-postgresql:
-  auth:
-    username: <path:traceability-irs/data/dev/controlplane#databaseuser>
-    database: <path:traceability-irs/data/dev/controlplane#databaseuser>
-    postgresPassword: <path:traceability-irs/data/dev/controlplane#databasepassword>
-    password: <path:traceability-irs/data/dev/controlplane#databasepassword>
+postgresql:
+  enabled: false

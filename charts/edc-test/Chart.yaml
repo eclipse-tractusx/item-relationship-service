@@ -26,3 +26,8 @@ dependencies:
     alias: test-edc
     repository: https://eclipse-tractusx.github.io/charts/dev
     version: 0.4.1
+  - condition: postgresql.enabled
+    alias: test-edc-postgresql
+    name: postgresql
+    repository: https://charts.bitnami.com/bitnami
+    version: 12.1.6

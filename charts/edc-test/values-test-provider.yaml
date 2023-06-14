@@ -1,4 +1,6 @@
 test-edc:
+  install:
+    postgresql: false
   participant:
     id: BPNL00000003CRHK
   controlplane:
@@ -86,6 +88,8 @@ test-edc:
   backendService:
     httpProxyTokenReceiverUrl: "https://irs-submodel-server3.dev.demo.catena-x.net/data/endpoint-data-reference-provider"
 
+postgresql:
+  enabled: true
 
 test-edc-postgresql:
   auth:
