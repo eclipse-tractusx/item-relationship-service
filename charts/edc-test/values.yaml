@@ -95,6 +95,10 @@ test-edc:
 
 
   postgresql:
+    auth:
+      database: "edc"
+      username: "user"
+      password: "password"
     enabled: true
     jdbcUrl: ""
     username: ""
