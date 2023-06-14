@@ -58,6 +58,8 @@ test-edc:
       database: "edc"
       username: "<path:traceability-irs/data/dev/controlplane#databaseuser>"
       password: "<path:traceability-irs/data/dev/controlplane#databasepassword>"
+    username: "<path:traceability-irs/data/dev/controlplane#databaseuser>"
+    password: "<path:traceability-irs/data/dev/controlplane#databasepassword>"
     jdbcUrl: "jdbc:postgresql://postgresql-hl:5432/edc"
 
   vault:
