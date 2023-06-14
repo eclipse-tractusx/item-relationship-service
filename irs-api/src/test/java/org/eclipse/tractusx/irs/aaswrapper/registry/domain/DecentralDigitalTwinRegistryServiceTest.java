@@ -57,9 +57,8 @@ class DecentralDigitalTwinRegistryServiceTest {
         EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance()
                                                                                    .endpoint("url.to.host")
                                                                                    .build();
-        final DiscoveryEndpoint[] discoveryEndpoints = { new DiscoveryEndpoint("type", "desc", "address", "doc",
-                "resId")
-        };
+        final List<DiscoveryEndpoint> discoveryEndpoints = List.of(
+                new DiscoveryEndpoint("type", "desc", "address", "doc", "resId"));
         when(discoveryFinderClient.findDiscoveryEndpoints(any(DiscoveryFinderRequest.class))).thenReturn(
                 new DiscoveryResponse(discoveryEndpoints));
         when(endpointDataForConnectorsService.findEndpointDataForConnectors(anyList())).thenReturn(
