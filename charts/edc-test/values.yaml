@@ -1,4 +1,7 @@
 test-edc:
+  install:
+    daps: false
+    vault: false
   participant:
     id:
   controlplane:
