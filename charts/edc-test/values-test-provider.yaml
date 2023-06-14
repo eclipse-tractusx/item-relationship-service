@@ -75,15 +75,15 @@ test-edc:
         secret: /v1/traceability-irs
         health: /v1/sys/health
     secretNames:
-      transferProxyTokenSignerPrivateKey: irs-dev-daps-cert-consumer-key
-      transferProxyTokenSignerPublicKey: irs-dev-daps-cert-consumer
+      transferProxyTokenSignerPrivateKey: dev-test-provider-key
+      transferProxyTokenSignerPublicKey: dev-test-provider
       transferProxyTokenEncryptionAesKey: test-edc-encryption-key
-      dapsPrivateKey: irs-dev-daps-cert-consumer-key
-      dapsPublicKey: irs-dev-daps-cert-consumer
+      dapsPrivateKey: dev-test-provider-key
+      dapsPublicKey: dev-test-provider
 
   daps:
     url: "https://daps-irs.dev.demo.catena-x.net"
-    clientId: "<path:traceability-irs/data/dev/controlplane#edc.oauth.client.id>"
+    clientId: 6D:4F:4F:7F:21:62:0B:F6:84:2B:01:6F:02:0B:92:BE:0A:EB:AE:5E:keyid:6D:4F:4F:7F:21:62:0B:F6:84:2B:01:6F:02:0B:92:BE:0A:EB:AE:5E
     paths:
       jwks: /.well-known/jwks.json
       token: /token
