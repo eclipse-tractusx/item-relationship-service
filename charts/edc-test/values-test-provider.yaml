@@ -1,0 +1,93 @@
+test-edc:
+  controlplane:
+    ingresses:
+      - enabled: true
+        hostname: "irs-test-controlplane-provider.dev.demo.catena-x.net"
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        endpoints:
+          - protocol
+          - management
+        tls:
+          enabled: true
+          secretName: tls-secret
+
+    endpoints:
+      management:
+        authKey: "123456"
+
+    internationalDataSpaces:
+      id: TXDC
+      description: Tractus-X Eclipse IDS Data Space Connector
+      title: ""
+      maintainer: ""
+      curator: ""
+      catalogId: TXDC-Catalog
+
+    # Explicitly declared url for reaching the ids api (e.g. if ingresses not used)
+    url:
+      ids: ""
+
+  dataplane:
+    ingresses:
+      - enabled: true
+        hostname: "irs-test-dataplane-provider.dev.demo.catena-x.net"
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        endpoints:
+          - public
+        className: "nginx"
+        tls:
+          enabled: true
+          secretName: tls-secret
+
+    # Explicitly declared url for reaching the public api (e.g. if ingresses not used)
+    url:
+      public: ""
+
+
+  postgresql:
+    enabled: true
+    jdbcUrl: "jdbc:postgresql://test-edc-provider-test-edc-postgresql-hl:5432/edc"
+    username: "<path:traceability-irs/data/dev/controlplane#databaseuser>"
+    password: "<path:traceability-irs/data/dev/controlplane#databasepassword>"
+
+  vault:
+    hashicorp:
+      url: "https://vault.demo.catena-x.net"
+      token: "<path:traceability-irs/data/dev/controlplane#vaultToken>"
+      timeout: 30
+      healthCheck:
+        enabled: true
+        standbyOk: true
+      paths:
+        secret: /v1/traceability-irs
+        health: /v1/sys/health
+    secretNames:
+      transferProxyTokenSignerPrivateKey: irs-dev-daps-cert-consumer-key
+      transferProxyTokenSignerPublicKey: irs-dev-daps-cert-consumer
+      transferProxyTokenEncryptionAesKey: test-edc-encryption-key
+      dapsPrivateKey: irs-dev-daps-cert-consumer-key
+      dapsPublicKey: irs-dev-daps-cert-consumer
+
+  daps:
+    url: "https://daps-irs.dev.demo.catena-x.net"
+    clientId: "<path:traceability-irs/data/dev/controlplane#edc.oauth.client.id>"
+    paths:
+      jwks: /.well-known/jwks.json
+      token: /token
+
+  backendService:
+    httpProxyTokenReceiverUrl: "https://irs-submodel-server3.dev.demo.catena-x.net/data/endpoint-data-reference-provider"
+
+
+test-edc-postgresql:
+  auth:
+    username: <path:traceability-irs/data/dev/controlplane#databaseuser>
+    database: <path:traceability-irs/data/dev/controlplane#databaseuser>
+    postgresPassword: <path:traceability-irs/data/dev/controlplane#databasepassword>
+    password: <path:traceability-irs/data/dev/controlplane#databasepassword>
