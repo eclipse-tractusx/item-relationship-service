@@ -26,7 +26,7 @@ test-edc:
       # -- ids api, used for inter connector communication and must be internet facing
       protocol:
         port: 8084
-        path: /api/v1/ids
+        path: /api/v1/dsp
       # -- metrics api, used for application metrics, must not be internet facing
       metrics:
         port: 9090
