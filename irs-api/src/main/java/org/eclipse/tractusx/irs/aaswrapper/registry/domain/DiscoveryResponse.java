@@ -22,9 +22,10 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 
+import java.util.List;
+
 /**
- * A single Discovery Endpoint.
+ * The result of searching the Discovery Finder. Contains a list of {@link DiscoveryEndpoint}s.
  */
-public record DiscoveryEndpoint(String type, String description, String endpointAddress, String documentation,
-                                String resourceId) {
+public record DiscoveryResponse(List<DiscoveryEndpoint> endpoints) {
 }

@@ -56,6 +56,12 @@ import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
+import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
+import org.eclipse.tractusx.irs.component.LinkedItem;
+import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
+import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TimeoutException;
@@ -64,12 +70,6 @@ import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
-import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
-import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
-import org.eclipse.tractusx.irs.component.LinkedItem;
-import org.eclipse.tractusx.irs.component.Relationship;
-import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
-import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,36 +83,33 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     private static final String ENDPOINT_ADDRESS = "http://localhost/urn:123456/submodel";
-
+    private static final String PROVIDER_SUFFIX = "/test";
+    private final EndpointDataReferenceStorage endpointDataReferenceStorage = new EndpointDataReferenceStorage(
+            Duration.ofMinutes(1));
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private final TimeMachine clock = new TimeMachine();
+    private final AsyncPollingService pollingService = new AsyncPollingService(clock, scheduler);
+    @Spy
+    private final EdcConfiguration config = new EdcConfiguration();
+    private final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
     @Mock
     private ContractNegotiationService contractNegotiationService;
     @Mock
     private EdcDataPlaneClient edcDataPlaneClient;
     @Mock
     private EdcControlPlaneClient edcControlPlaneClient;
-
     @Mock
     private CatalogCache catalogCache;
-
-    private final EndpointDataReferenceStorage endpointDataReferenceStorage = new EndpointDataReferenceStorage(
-            Duration.ofMinutes(1));
-    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-
-    private final TimeMachine clock = new TimeMachine();
-
-    private final AsyncPollingService pollingService = new AsyncPollingService(clock, scheduler);
-
-    @Spy
-    private final EdcConfiguration config = new EdcConfiguration();
-
     private EdcSubmodelClient testee;
-
     @Mock
     private OutboundMeterRegistryService meterRegistry;
-    private final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
 
     EdcSubmodelClientTest() throws IOException {
         super();
+    }
+
+    private static Asset createAsset(final String assetId) {
+        return Asset.Builder.newInstance().id(assetId).property("asset:prop:id", assetId).build();
     }
 
     @BeforeEach
@@ -121,13 +118,15 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         config.getControlplane().setEndpoint(new EdcConfiguration.ControlplaneConfig.EndpointConfig());
         config.getControlplane().getEndpoint().setData("https://irs-consumer-controlplane.dev.demo.catena-x.net/data");
         config.getControlplane().setRequestTtl(Duration.ofMinutes(10));
+        config.getControlplane().setProviderSuffix(PROVIDER_SUFFIX);
 
         config.setSubmodel(new EdcConfiguration.SubmodelConfig());
         config.getSubmodel().setPath("/submodel");
         config.getSubmodel().setUrnPrefix("/urn");
         config.getSubmodel().setRequestTtl(Duration.ofMinutes(10));
         testee = new EdcSubmodelClientImpl(config, contractNegotiationService, edcDataPlaneClient,
-                endpointDataReferenceStorage, pollingService, meterRegistry, retryRegistry, catalogCache, edcControlPlaneClient);
+                endpointDataReferenceStorage, pollingService, meterRegistry, retryRegistry, catalogCache,
+                edcControlPlaneClient);
     }
 
     @Test
@@ -327,7 +326,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         // arrange
         final String filterKey = "filter-key";
         final String filterValue = "filter-value";
-        when(edcControlPlaneClient.getCatalogWithFilter(ENDPOINT_ADDRESS, filterKey, filterValue)).thenReturn(
+        when(edcControlPlaneClient.getCatalogWithFilter(ENDPOINT_ADDRESS + PROVIDER_SUFFIX, filterKey, filterValue)).thenReturn(
                 createCatalog("asset-id", 3));
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
@@ -335,8 +334,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         endpointDataReferenceStorage.put("agreementId", expected);
 
         // act
-        final var result = testee.getEndpointReferenceForAsset(ENDPOINT_ADDRESS,
-                filterKey, filterValue);
+        final var result = testee.getEndpointReferenceForAsset(ENDPOINT_ADDRESS, filterKey, filterValue);
         final EndpointDataReference actual = result.get(5, TimeUnit.SECONDS);
 
         // assert
@@ -364,16 +362,12 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final List<ContractOffer> contractOffers = IntStream.range(0, numberOfOffers)
                                                             .boxed()
                                                             .map(i -> ContractOffer.Builder.newInstance()
-                                                                                           .id("offer"+i)
+                                                                                           .id("offer" + i)
                                                                                            .asset(createAsset(assetId))
                                                                                            .policy(policy)
                                                                                            .build())
                                                             .toList();
         return Catalog.Builder.newInstance().id("default").contractOffers(contractOffers).build();
-    }
-
-    private static Asset createAsset(final String assetId) {
-        return Asset.Builder.newInstance().id(assetId).property("asset:prop:id", assetId).build();
     }
 }
 

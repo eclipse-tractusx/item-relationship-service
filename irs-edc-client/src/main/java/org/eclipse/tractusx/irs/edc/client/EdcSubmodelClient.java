@@ -38,15 +38,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.common.CxTestDataContainer;
+import org.eclipse.tractusx.irs.common.Masker;
+import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
+import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
-import org.eclipse.tractusx.irs.common.CxTestDataContainer;
-import org.eclipse.tractusx.irs.common.Masker;
-import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
-import org.eclipse.tractusx.irs.component.Relationship;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -136,6 +136,11 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private final EdcControlPlaneClient edcControlPlaneClient;
     private final UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
 
+    private static void stopWatchOnEdcTask(final StopWatch stopWatch) {
+        stopWatch.stop();
+        log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
+    }
+
     @Override
     public CompletableFuture<List<Relationship>> getRelationships(final String submodelEndpointAddress,
             final RelationshipAspect traversalAspectType) throws EdcClientException {
@@ -163,10 +168,12 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         final String providerConnectorUrl = submodelEndpointAddress.substring(0, indexOfUrn);
         final String target = submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
         final String decodedTarget = URLDecoder.decode(target, StandardCharsets.UTF_8);
-        log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerConnectorUrl,
+        final String providerWithSuffix = appendSuffix(providerConnectorUrl,
+                config.getControlplane().getProviderSuffix());
+        log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerWithSuffix,
                 decodedTarget);
-        final CatalogItem catalogItem = catalogCache.getCatalogItem(providerConnectorUrl, decodedTarget).orElseThrow();
-        return contractNegotiationService.negotiate(providerConnectorUrl, catalogItem);
+        final CatalogItem catalogItem = catalogCache.getCatalogItem(providerWithSuffix, decodedTarget).orElseThrow();
+        return contractNegotiationService.negotiate(providerWithSuffix, catalogItem);
     }
 
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(
@@ -288,20 +295,22 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         return execute(endpointAddress, () -> {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + endpointAddress);
+            final String providerWithSuffix = appendSuffix(endpointAddress, config.getControlplane().getProviderSuffix());
 
-            final Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(endpointAddress, filterKey, filterValue);
+            final Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(providerWithSuffix, filterKey, filterValue);
 
             final List<CatalogItem> items = catalog.getContractOffers()
-                                             .stream()
-                                             .map(contractOffer -> CatalogItem.builder()
-                                                                              .itemId(contractOffer.getId())
-                                                                              .assetPropId(
-                                                                                      contractOffer.getAsset().getId())
-                                                                              .connectorId(catalog.getId())
-                                                                              .policy(contractOffer.getPolicy())
-                                                                              .build())
-                                             .toList();
-            final NegotiationResponse response = contractNegotiationService.negotiate(endpointAddress,
+                                                   .stream()
+                                                   .map(contractOffer -> CatalogItem.builder()
+                                                                                    .itemId(contractOffer.getId())
+                                                                                    .assetPropId(
+                                                                                            contractOffer.getAsset()
+                                                                                                         .getId())
+                                                                                    .connectorId(catalog.getId())
+                                                                                    .policy(contractOffer.getPolicy())
+                                                                                    .build())
+                                                   .toList();
+            final NegotiationResponse response = contractNegotiationService.negotiate(providerWithSuffix,
                     items.stream().findFirst().orElseThrow());
 
             return pollingService.<EndpointDataReference>createJob()
@@ -314,15 +323,19 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         });
     }
 
+    private String appendSuffix(final String endpointAddress, final String providerSuffix) {
+        String addressWithSuffix;
+        if (endpointAddress.endsWith("/") && providerSuffix.startsWith("/")) {
+            addressWithSuffix = endpointAddress.substring(0, endpointAddress.length() - 1) + providerSuffix;
+        } else {
+            addressWithSuffix = endpointAddress + providerSuffix;
+        }
+        return addressWithSuffix;
+    }
 
     private Optional<EndpointDataReference> retrieveEndpointDataReference(final String contractAgreementId) {
         log.info("Retrieving dataReference from storage for contractAgreementId {}", Masker.mask(contractAgreementId));
         return endpointDataReferenceStorage.remove(contractAgreementId);
-    }
-
-    private static void stopWatchOnEdcTask(final StopWatch stopWatch) {
-        stopWatch.stop();
-        log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
     }
 
     @SuppressWarnings({ "PMD.AvoidRethrowingException",
