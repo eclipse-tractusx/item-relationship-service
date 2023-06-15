@@ -140,7 +140,8 @@
         "@type": "Policy",
         "odrl:permission": []
       }
-    },
+    }
+  },
   "https://catenax.io/schema/TestDataContainer/1.0.0": [
     {
       "catenaXId": "urn:uuid:fdbe0d36-743e-4117-9290-03c16a725570",
