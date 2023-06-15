@@ -23,8 +23,8 @@ node "IRS Kubernetes Cluster" as k8s {
 }
 
 IRS -> Keycloak
-IRS --> dtr
-consumer --> providers
+providers -- dtr
+consumer -- providers
 consumer -- vault
 
 @enduml

@@ -63,7 +63,7 @@ Orchestrating application components and integrating with other libraries/framew
 |FOSS licenses approved by the eclipse foundation has to be used. It could represent the initial set that the CX community agrees on to regulate the content contribution under FOSS licenses.
 |Apache License 2.0
 |Apache License 2.0 is one of the approved licenses which should be used to respect and guarantee Intellectual property (IP).
-|Java OpenJDK Version JDK >= 11
+|Java OpenJDK Version JDK >= 17
 |IRS provides an open source application standard. OpenJDK is used, which is licensed under GNU General Public License (GNU GPL) Version 2.
 |===
 

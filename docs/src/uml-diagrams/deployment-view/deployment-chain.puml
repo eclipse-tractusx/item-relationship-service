@@ -6,7 +6,7 @@ skinparam ranksep 20
 
 node ArgoCD
 node GitHub
-node "GitHub Container Registry" as ghcr
+node "Docker Hub" as docker
 node "Kubernetes Cluster" as k8s
 node "HashiCorp Vault" as vault
 actor Operator as ops
@@ -16,6 +16,6 @@ ops --> vault : store credentials
 ArgoCD --> GitHub : fetch Helm charts
 ArgoCD --> k8s : create resources
 ArgoCD -> vault : fetch credentials
-GitHub --> ghcr : push Docker image
-k8s --> ghcr : fetch Docker image
+GitHub --> docker : push Docker image
+k8s --> docker : fetch Docker image
 @enduml

@@ -37,7 +37,8 @@ import org.springframework.web.client.RestTemplate;
  */
 public interface DiscoveryFinderClient {
 
-    List<DiscoveryEndpoint> findDiscoveryEndpoints(DiscoveryFinderRequest request);
+    DiscoveryResponse findDiscoveryEndpoints(DiscoveryFinderRequest request);
+
     List<EdcDiscoveryResult> findConnectorEndpoints(String endpointAddress, List<String> bpns);
 
 }
@@ -61,14 +62,16 @@ class DiscoveryFinderClientImpl implements DiscoveryFinderClient {
 
     @Override
     @Retry(name = "registry")
-    public List<DiscoveryEndpoint> findDiscoveryEndpoints(final DiscoveryFinderRequest request) {
-        return restTemplate.postForObject(discoveryFinderUrl, request, List.class);
+    public DiscoveryResponse findDiscoveryEndpoints(final DiscoveryFinderRequest request) {
+        return restTemplate.postForObject(discoveryFinderUrl, request, DiscoveryResponse.class);
     }
 
     @Override
     @Retry(name = "registry")
-    public List<EdcDiscoveryResult> findConnectorEndpoints(final String endpointAddress,
-            final List<String> bpns) {
-        return restTemplate.postForObject(endpointAddress, bpns, List.class);
+    public List<EdcDiscoveryResult> findConnectorEndpoints(final String endpointAddress, final List<String> bpns) {
+        final EdcDiscoveryResult[] edcDiscoveryResults = restTemplate.postForObject(endpointAddress, bpns,
+                EdcDiscoveryResult[].class);
+
+        return edcDiscoveryResults == null ? List.of() : List.of(edcDiscoveryResults);
     }
 }

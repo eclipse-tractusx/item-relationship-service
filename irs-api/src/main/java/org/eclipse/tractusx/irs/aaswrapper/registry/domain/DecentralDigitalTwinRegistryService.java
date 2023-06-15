@@ -50,7 +50,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         log.info("Retrieved AAS Identification for DigitalTwinRegistryKey: {}", key);
         final DiscoveryFinderRequest onlyBpn = new DiscoveryFinderRequest(List.of("bpn"));
         final List<String> providedBpn = List.of(key.bpn());
-        final List<DiscoveryEndpoint> discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn);
+        final List<DiscoveryEndpoint> discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn)
+                                                                                .endpoints();
         final List<String> connectorEndpoints = discoveryEndpoints.stream()
                                                                   .map(discoveryEndpoint -> discoveryFinderClient.findConnectorEndpoints(
                                                                                                                          discoveryEndpoint.endpointAddress(),

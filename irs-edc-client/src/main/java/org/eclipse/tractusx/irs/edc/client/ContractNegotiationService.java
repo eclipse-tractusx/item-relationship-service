@@ -52,8 +52,6 @@ public class ContractNegotiationService {
 
     private final EdcControlPlaneClient edcControlPlaneClient;
 
-    private final EdcConfiguration config;
-
     private final PolicyCheckerService policyCheckerService;
 
     public NegotiationResponse negotiate(final String providerConnectorUrl, final CatalogItem catalogItem)
@@ -72,8 +70,7 @@ public class ContractNegotiationService {
 
         final NegotiationRequest negotiationRequest = NegotiationRequest.builder()
                                                                         .connectorId(catalogItem.getConnectorId())
-                                                                        .connectorAddress(providerConnectorUrl
-                                                                                + config.getControlplane().getProviderSuffix())
+                                                                        .connectorAddress(providerConnectorUrl)
                                                                         .offer(contractOfferRequest)
                                                                         .build();
 
@@ -94,7 +91,7 @@ public class ContractNegotiationService {
                                                   .managedResources(TransferProcessRequest.DEFAULT_MANAGED_RESOURCES)
                                                   .connectorId(catalogItem.getConnectorId())
                                                   .connectorAddress(
-                                                          providerConnectorUrl + config.getControlplane().getProviderSuffix())
+                                                          providerConnectorUrl)
                                                   .contractId(response.getContractAgreementId())
                                                   .assetId(catalogItem.getAssetPropId())
                                                   .dataDestination(destination)

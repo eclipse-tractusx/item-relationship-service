@@ -45,20 +45,28 @@ class DecentralDigitalTwinRegistryServiceTest {
     private final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient = mock(
             DecentralDigitalTwinRegistryClient.class);
 
-    private final DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService = new DecentralDigitalTwinRegistryService(discoveryFinderClient,
-            endpointDataForConnectorsService, decentralDigitalTwinRegistryClient);
+    private final DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService = new DecentralDigitalTwinRegistryService(
+            discoveryFinderClient, endpointDataForConnectorsService, decentralDigitalTwinRegistryClient);
 
     @Test
     void shouldReturnExpectedShell() {
         // given
-        final DigitalTwinRegistryKey digitalTwinRegistryKey = new DigitalTwinRegistryKey("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
+        final DigitalTwinRegistryKey digitalTwinRegistryKey = new DigitalTwinRegistryKey(
+                "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
         final AssetAdministrationShellDescriptor expectedShell = shellDescriptor(Collections.emptyList());
-        EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance().endpoint("url.to.host").build();
+        EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance()
+                                                                                   .endpoint("url.to.host")
+                                                                                   .build();
+        final List<DiscoveryEndpoint> discoveryEndpoints = List.of(
+                new DiscoveryEndpoint("type", "desc", "address", "doc", "resId"));
         when(discoveryFinderClient.findDiscoveryEndpoints(any(DiscoveryFinderRequest.class))).thenReturn(
-                Collections.singletonList(new DiscoveryEndpoint("type", "desc", "address", "doc", "resId")));
-        when(endpointDataForConnectorsService.findEndpointDataForConnectors(anyList())).thenReturn(List.of(endpointDataReference));
-        when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(), anyList())).thenReturn(Collections.emptyList());
-        when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(expectedShell);
+                new DiscoveryResponse(discoveryEndpoints));
+        when(endpointDataForConnectorsService.findEndpointDataForConnectors(anyList())).thenReturn(
+                List.of(endpointDataReference));
+        when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
+                anyList())).thenReturn(Collections.emptyList());
+        when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
+                expectedShell);
 
         // when
         final AssetAdministrationShellDescriptor actualShell = decentralDigitalTwinRegistryService.getAAShellDescriptor(

@@ -45,7 +45,7 @@ include::../../../uml-diagrams/cross-cutting/job-state-machine.puml[]
 include::../../../uml-diagrams/cross-cutting/job-store-datamodel.puml[]
 ....
 
-== Job Response  Datamodel
+== Job Response Datamodel
 
 [plantuml, target=job-response-model, format=svg]
 ....
