@@ -10,26 +10,23 @@ node "Kubernetes Cluster" as k8s {
 
     component IRS
     component Minio
-    component "DT Registry" as dtr
+    component "Decentral Registry" as dtr
     component "EDC Consumer" as consumer
     component "EDC Provider" as provider
-    database "Consumer DB" as cdb
-    database "Provider DB" as pdb
     component "DAPS" as daps
     collections "Submodel Provider" as submodel
 
 
     IRS --> Minio
-    IRS --> consumer
-    IRS --> dtr
-    IRS --> daps
-    consumer -- provider
-    provider -- submodel
-    consumer - cdb
-    provider - pdb
+    IRS -> consumer
+    consumer --> daps
+    provider --> daps
+    consumer <--> provider
+    provider --- submodel
+    provider --- dtr
 
 }
 
-IRS -> Keycloak
+IRS --> Keycloak
 
 @enduml

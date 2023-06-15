@@ -1,0 +1,52 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam spacing 50
+
+
+component [**IRSApplication**] <<System>> {
+	component [**IRS**] <<System>> as IRS
+	component [**EDC Consumer**] <<System>> as EDC
+
+}
+
+component [**CatenaX-Network**] <<CX-Environment>> {
+    component [**IAM/KeyCloak**] <<System>> as IAM_IRS
+    component [**IAM/DAPS**] <<System>> as IAM_DAPS
+}
+
+component [**Tier/OEM**] <<Tier/OEM-Environment>> {
+
+    component [**EDC_Provider_OEM**] <<System>> as EDCProviderOEM
+    component [**EDC_Provider_Tier1**] <<System>> as EDCProviderTier1
+    component [**EDC_Provider_Tier1.1**] <<System>> as EDCProviderTier11
+    component [**SubmodelServer_OEM**] <<System>> as SubmodelServerOEM
+    component [**SubmodelServer_Tier1**] <<System>> as SubmodelServerTier1
+    component [**SubmodelServer_Tier1.1**] <<System>> as SubmodelServerTier11
+    component [**Digital Twin Registry_OEM**] <<System>> as DT_REGOEM
+    component [**Digital Twin Registry_Tier1**] <<System>> as DT_REG1
+    component [**Digital Twin Registry_Tier1.1**] <<System>> as DT_REG11
+}
+
+
+actor IrsApiConsumer
+
+IrsApiConsumer -right(0- IRS
+IrsApiConsumer <.r.> IAM_IRS
+IRS <.d.> EDC
+IRS <.l.> IAM_IRS
+EDC <..> IAM_DAPS
+EDC <..> EDCProviderOEM
+EDC <...> EDCProviderTier1
+EDC <....> EDCProviderTier11
+IAM_DAPS <..> EDCProviderOEM
+IAM_DAPS <...> EDCProviderTier1
+IAM_DAPS <....> EDCProviderTier11
+EDCProviderOEM <..> SubmodelServerOEM
+EDCProviderTier1 <..> SubmodelServerTier1
+EDCProviderTier11 <..> SubmodelServerTier11
+EDCProviderOEM <..> DT_REGOEM
+EDCProviderTier1 <..> DT_REG1
+EDCProviderTier11 <..> DT_REG11
+
+@enduml

@@ -28,7 +28,6 @@ import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatc
 import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatchOrderConstants.DEFAULT_JOB_TIMEOUT_DESC;
 import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatchOrderConstants.DEFAULT_TIMEOUT;
 import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatchOrderConstants.DEFAULT_TIMEOUT_DESC;
-import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatchOrderConstants.GLOBAL_ASSET_ID_REGEX;
 import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatchOrderConstants.MAX_BATCH_SIZE;
 import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatchOrderConstants.MAX_BATCH_SIZE_DESC;
 import static org.eclipse.tractusx.irs.component.RegisterBatchOrder.RegisterBatchOrderConstants.MAX_JOB_TIMEOUT;
@@ -51,10 +50,10 @@ import java.util.Set;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -80,8 +79,9 @@ import org.hibernate.validator.constraints.URL;
 public class RegisterBatchOrder {
 
     @NotEmpty
-    @ArraySchema(schema = @Schema(description = "Array of global asset id's.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0", implementation = String.class, pattern = GLOBAL_ASSET_ID_REGEX), maxItems = Integer.MAX_VALUE)
-    private Set<@Pattern(regexp = GLOBAL_ASSET_ID_REGEX) String> globalAssetIds;
+    @Valid
+    @ArraySchema(schema = @Schema(description = "Keys array contains required attributes for identify part chain entry node ", implementation = PartChainIdentificationKey.class), maxItems = Integer.MAX_VALUE)
+    private Set<PartChainIdentificationKey> keys;
 
     @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)
     private BomLifecycle bomLifecycle;

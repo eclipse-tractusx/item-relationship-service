@@ -54,7 +54,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = { "digitalTwinRegistry.type=central" })
 @ActiveProfiles(profiles = { "local", "test" })
 @Import(TestConfig.class)
 class IrsApplicationTests {

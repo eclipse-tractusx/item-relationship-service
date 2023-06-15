@@ -38,8 +38,17 @@ jobs:
             Please check whether the Chart was updated correctly and that the CHANGELOG contains the relevant information
             for this release. Also, make sure that the values.yaml is correct before merging this PR.
 
+      - name: Get previous version
+        run: echo PREVIOUS_VERSION=$(git tag | grep -E ^[0-9]+\\.[0-9]+\\.[0-9]+ | tail -2 | head -n +1) >> $GITHUB_ENV
+
       - name: Extract changelog text
-        run: echo CHANGELOG=$(sed -n -e '/## \[${{ github.ref_name }}\]/,/## \[/ p' CHANGELOG.md | head -n -1) >> $GITHUB_ENV
+        # See: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "CHANGELOG<<$EOF" >> $GITHUB_ENV
+          sed -n -e '/## \[${{ github.ref_name }}\]/,/## \[/ p' CHANGELOG.md | head -n -1 | tail -n +2 >> $GITHUB_ENV
+          echo **Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ env.PREVIOUS_VERSION }}...${{ github.ref_name }} >> $GITHUB_ENV
+          echo "$EOF" >> "$GITHUB_ENV"
 
       - name: Create IRS release
         uses: softprops/action-gh-release@v1

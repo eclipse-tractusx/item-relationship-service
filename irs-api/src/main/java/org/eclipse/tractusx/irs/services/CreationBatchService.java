@@ -30,6 +30,7 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
@@ -73,8 +74,8 @@ public class CreationBatchService {
                                                 .callbackUrl(request.getCallbackUrl())
                                                 .build();
 
-        final List<Batch> batches = createBatches(List.copyOf(request.getGlobalAssetIds()), request.getBatchSize(),
-                batchOrderId);
+        final List<Batch> batches = createBatches(List.copyOf(request.getKeys().stream().map(PartChainIdentificationKey::getGlobalAssetId).toList()),
+                request.getBatchSize(), batchOrderId);
         batchOrderStore.save(batchOrderId, batchOrder);
         batches.forEach(batch -> {
             batchStore.save(batch.getBatchId(), batch);

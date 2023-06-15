@@ -110,11 +110,13 @@ ingress:
   enabled: false
 
 digitalTwinRegistry:
+  type: decentral  # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
   url:  # "https://<digital-twin-registry-url>"
   descriptorEndpoint: >-
     {{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/registry/shell-descriptors/{aasIdentifier}
   shellLookupEndpoint: >-
     {{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/lookup/shells?assetIds={assetIds}
+  discoveryFinderUrl:  # "https://<discovery-finder-url>
 semanticshub:
   url:  # https://<semantics-hub-url>
   pageSize: "100"  # Number of aspect models to retrieve per page
@@ -219,6 +221,11 @@ minio:
       memory: 4Gi
   rootUser: "minio"  # <minio-username>
   rootPassword: "minioPass"  # <minio-password>
+  securityContext:
+    enabled: true  # Enable to run containers as non-root. NOTE: if persistence.enabled=false then securityContext will be automatically disabled
+    runAsUser: 1000  # User id of the user for the container
+    runAsGroup: 3000  # Group id of the user for the container
+    fsGroup: 2000  # Group id of the persistent volume mount for the container
 
   environment:
     MINIO_PROMETHEUS_JOB_ID: minio-actuator

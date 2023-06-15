@@ -76,14 +76,14 @@ class SubmodelExponentialRetryTest {
         final CatalogCache catalogCache = new InMemoryCatalogCache(edcCatalogFacade, cacheConfiguration);
 
         final ContractNegotiationService negotiationService = new ContractNegotiationService(controlPlaneClient,
-                config, catalogCache, policyCheckerService);
+                policyCheckerService);
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
         final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
 
         final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
 
         final EdcSubmodelClient client = new EdcSubmodelClientImpl(config, negotiationService, dataPlaneClient, storage,
-                pollingService, meterRegistry, retryRegistry);
+                pollingService, meterRegistry, retryRegistry, catalogCache, controlPlaneClient);
         testee = new EdcSubmodelFacade(client);
     }
 
