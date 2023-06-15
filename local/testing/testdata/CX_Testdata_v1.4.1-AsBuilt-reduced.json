@@ -1,6 +1,6 @@
 {
   "policies": {
-    "DSP": {
+    "ID 3.0 Trace": {
       "@context": {
         "odrl": "http://www.w3.org/ns/odrl/2/"
       },

@@ -353,22 +353,7 @@ if __name__ == "__main__":
             "@id": "default-policy",
             "policy": {
                 "@type": "Policy",
-                "odrl:permission": [
-                    {
-                        "odrl:action": "USE",
-                        "odrl:constraint": {
-                            "@type": "LogicalConstraint",
-                            "odrl:or": [
-                                {
-                                    "@type": "Constraint",
-                                    "odrl:leftOperand": "BusinessPartnerNumber",
-                                    "odrl:operator": "EQ",
-                                    "odrl:rightOperand": "BPNL00000003CRHK"
-                                }
-                            ]
-                        }
-                    }
-                ]
+                "odrl:permission": []
             }
         }
     }
