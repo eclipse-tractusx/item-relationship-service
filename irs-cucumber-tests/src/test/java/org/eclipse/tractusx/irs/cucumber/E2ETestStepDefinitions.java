@@ -68,7 +68,7 @@ import org.springframework.http.MediaType;
 public class E2ETestStepDefinitions {
     private RegisterJob.RegisterJobBuilder registerJobBuilder;
     private RegisterBatchOrder.RegisterBatchOrderBuilder registerBatchOrderBuilder;
-    private UUID id;
+    private UUID jobId;
     private UUID orderId;
     private UUID batchId;
     private Jobs completedJob;
@@ -202,7 +202,7 @@ public class E2ETestStepDefinitions {
                                                     .as(JobHandle.class);
 
         assertThat(createdJobResponse.getId()).isNotNull();
-        id = createdJobResponse.getId();
+        jobId = createdJobResponse.getId();
     }
 
     @When("I get the order-id")
@@ -211,14 +211,14 @@ public class E2ETestStepDefinitions {
         authProperties = authenticationPropertiesBuilder.build();
 
         final BatchOrderCreated createdOrderResponse = given().spec(authProperties.getNewAuthenticationRequestSpecification())
-                                                    .contentType(ContentType.JSON)
-                                                    .body(order)
-                                                    .when()
-                                                    .post("/irs/orders")
-                                                    .then()
-                                                    .statusCode(HttpStatus.CREATED.value())
-                                                    .extract()
-                                                    .as(BatchOrderCreated.class);
+                                                              .contentType(ContentType.JSON)
+                                                              .body(order)
+                                                              .when()
+                                                              .post("/irs/orders")
+                                                              .then()
+                                                              .statusCode(HttpStatus.CREATED.value())
+                                                              .extract()
+                                                              .as(BatchOrderCreated.class);
 
         assertThat(createdOrderResponse.id()).isNotNull();
         orderId = createdOrderResponse.id();
@@ -228,11 +228,11 @@ public class E2ETestStepDefinitions {
     public void iGetTheBatchIdOfBatch(String which) {
         final UUID foundBatchId = switch (which) {
             case "first" -> batchOrderResponse.getBatches().stream().filter(batch -> batch.getBatchNumber().equals(1)).findFirst()
-                                             .map(BatchOrderResponse.BatchResponse::getBatchId).orElseThrow();
+                                              .map(BatchOrderResponse.BatchResponse::getBatchId).orElseThrow();
             case "last" -> batchOrderResponse.getBatches().stream().filter(batch -> batch.getBatchNumber().equals(batchOrderResponse.getBatches().size())).findFirst()
                                              .map(BatchOrderResponse.BatchResponse::getBatchId).orElseThrow();
             case "any" -> batchOrderResponse.getBatches().stream().findAny()
-                                             .map(BatchOrderResponse.BatchResponse::getBatchId).orElseThrow();
+                                            .map(BatchOrderResponse.BatchResponse::getBatchId).orElseThrow();
             default -> throw new PendingException(String.format("Type: '%s' not supported.", which));
         };
 
@@ -249,7 +249,7 @@ public class E2ETestStepDefinitions {
         };
 
         assertThat(foundJobId).isNotNull();
-        id = foundJobId;
+        jobId = foundJobId;
     }
 
     @Then("I check, if the job has status {string} within {int} minutes")
@@ -260,7 +260,7 @@ public class E2ETestStepDefinitions {
                .until(() -> given().spec(authProperties.getNewAuthenticationRequestSpecification())
                                    .contentType(ContentType.JSON)
                                    .queryParam("returnUncompletedJob", false)
-                                   .get("/irs/jobs/" + id)
+                                   .get("/irs/jobs/" + jobId)
                                    .as(Jobs.class)
                                    .getJob()
                                    .getState()
@@ -269,16 +269,16 @@ public class E2ETestStepDefinitions {
         completedJob = given().spec(authProperties.getNewAuthenticationRequestSpecification())
                               .contentType(ContentType.JSON)
                               .queryParam("returnUncompletedJob", true)
-                              .get("/irs/jobs/" + id)
+                              .get("/irs/jobs/" + jobId)
                               .as(Jobs.class);
     }
 
     @Then("I check, if the order contains {int} batches")
     public void iCheckIfTheOrderContainsBatches(int batchesSize) {
         batchOrderResponse = given().spec(authProperties.getNewAuthenticationRequestSpecification())
-                              .contentType(ContentType.JSON)
-                              .get("/irs/orders/" + orderId)
-                              .as(BatchOrderResponse.class);
+                                    .contentType(ContentType.JSON)
+                                    .get("/irs/orders/" + orderId)
+                                    .as(BatchOrderResponse.class);
 
         assertThat(batchOrderResponse.getBatches()).hasSize(batchesSize);
     }
@@ -286,9 +286,9 @@ public class E2ETestStepDefinitions {
     @Then("I check, if the batch contains {int} jobs")
     public void iCheckIfTheBatchContainsJobs(int jobSize) {
         batchResponse = given().spec(authProperties.getNewAuthenticationRequestSpecification())
-                                    .contentType(ContentType.JSON)
-                                    .get("/irs/orders/" + orderId + "/batches/" + batchId)
-                                    .as(BatchResponse.class);
+                               .contentType(ContentType.JSON)
+                               .get("/irs/orders/" + orderId + "/batches/" + batchId)
+                               .as(BatchResponse.class);
 
         assertThat(batchResponse.getJobsInBatchChecksum()).isEqualTo(jobSize);
     }
@@ -298,7 +298,7 @@ public class E2ETestStepDefinitions {
         completedJob = given().spec(authProperties.getNewAuthenticationRequestSpecification())
                               .contentType(ContentType.JSON)
                               .queryParam("returnUncompletedJob", true)
-                              .get("/irs/jobs/" + id)
+                              .get("/irs/jobs/" + jobId)
                               .as(Jobs.class);
 
         assertThat(completedJob.getJob().getParameter().getAspects()).containsAll(aspects);
@@ -356,9 +356,9 @@ public class E2ETestStepDefinitions {
     @And("I check, if batch {int} contains {int} job")
     public void iCheckIfBatchContainsJob(int batchNumber, int jobSize) {
         final Optional<BatchOrderResponse.BatchResponse> foundBatch = batchOrderResponse.getBatches()
-                                                                                   .stream()
-                                                                                   .filter(batch -> batch.getBatchNumber().equals(batchNumber))
-                                                                                   .findFirst();
+                                                                                        .stream()
+                                                                                        .filter(batch -> batch.getBatchNumber().equals(batchNumber))
+                                                                                        .findFirst();
 
         assertThat(foundBatch).isPresent();
         assertThat(foundBatch.get().getJobsInBatchChecksum()).isEqualTo(jobSize);
@@ -460,7 +460,7 @@ public class E2ETestStepDefinitions {
 
     @After("@INTEGRATION_TEST")
     public void addJobIdToResult(Scenario scenario) {
-        scenario.attach(id.toString(), MediaType.TEXT_PLAIN_VALUE, "id");
+        scenario.attach(jobId.toString(), MediaType.TEXT_PLAIN_VALUE, "jobId");
     }
 
     private static class PropertyNotFoundException extends Exception {
