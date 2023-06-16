@@ -288,7 +288,7 @@ public class OpenApiExamples {
 
     private Submodel createSubmodel() {
         return Submodel.builder()
-                       .aspectType("urn:bamm:io.catenax.assembly_part_relationship:1.0.0")
+                       .aspectType("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0")
                        .identification(SUBMODEL_IDENTIFICATION)
                        .payload(createAssemblyPartRelationshipPayloadMap())
                        .build();
@@ -297,7 +297,7 @@ public class OpenApiExamples {
     private Map<String, Object> createAssemblyPartRelationshipPayloadMap() {
         final String assemblyPartRelationshipPayload =
                 "{\"catenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
-                        + "\"childParts\": [ { \"createdOn\": \"2022-02-03T14:48:54.709Z\", \"childCatenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
+                        + "\"childItems\": [ { \"createdOn\": \"2022-02-03T14:48:54.709Z\", \"catenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
                         + "\"lastModifiedOn\": \"2022-02-03T14:48:54.709Z\", \"lifecycleContext\": \"AsBuilt\", \"quantity\": "
                         + "{\"measurementUnit\": {\"datatypeURI\": \"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\",\"lexicalValue\": \"piece\"},\"quantityNumber\": 1}}]}";
 

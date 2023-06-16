@@ -58,7 +58,7 @@ class SubmodelTestdataCreator {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsBuilt).orElse(Map.of());
         } else if (endpointAddress.contains("singleLevelUsageAsBuilt")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelUsageAsBuilt).orElse(Map.of());
-        } else if (endpointAddress.contains("serialPartTypization")) {
+        } else if (endpointAddress.contains("serialPart")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSerialPart).orElse(Map.of());
         } else if (endpointAddress.contains("singleLevelBomAsPlanned")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned).orElse(Map.of());

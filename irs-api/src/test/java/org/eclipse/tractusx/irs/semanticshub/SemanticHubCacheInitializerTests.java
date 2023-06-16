@@ -48,7 +48,7 @@ class SemanticHubCacheInitializerTests {
     SemanticsHubCacheInitializer semanticsHubCacheInitializer;
 
     private Optional<String> getJsonSchemaFromCache() {
-        final String defaultUrn = "urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization";
+        final String defaultUrn = "urn:bamm:io.catenax.serial_part:1.0.0#SerialPart";
 
         return ofNullable(cacheManager.getCache("schema_cache")).map(
                 cache -> cache.get(defaultUrn, String.class));

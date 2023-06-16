@@ -233,7 +233,7 @@ class IrsItemGraphQueryServiceTest {
 
     @Test
     void shouldThrowExceptionWhenLookupBpnAndBpdmEndpointUrlIsMissing() throws SchemaNotFoundException {
-        when(semanticsHubFacade.getAllAspectModels()).thenReturn(AspectModels.builder().models(List.of(AspectModel.builder().name("AssemblyPartRelationship").build())).build());
+        when(semanticsHubFacade.getAllAspectModels()).thenReturn(AspectModels.builder().models(List.of(AspectModel.builder().name("SingleLevelBomAsBuilt").build())).build());
 
         final Executable executable = () -> testee.registerItemJob(registerJobWithLookupBPNs());
 
