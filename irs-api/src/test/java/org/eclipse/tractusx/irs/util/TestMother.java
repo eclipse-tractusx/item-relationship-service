@@ -28,7 +28,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -78,7 +77,7 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithoutDepth() {
-        return registerJobWithDepthAndAspect(null, List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()));
+        return registerJobWithDepthAndAspect(null, List.of(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()));
     }
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<String> aspectTypes) {
@@ -104,7 +103,7 @@ public class TestMother {
 
     public static RegisterJob registerJobWithLookupBPNs() {
         return registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", null,
-                List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()), false, true, Direction.DOWNWARD);
+                List.of(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()), false, true, Direction.DOWNWARD);
     }
 
     public static RegisterJob registerJob(final String globalAssetId, final Integer depth,
@@ -134,8 +133,8 @@ public class TestMother {
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.DOWNWARD)
-                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(),
-                                   AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()))
+                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
+                                   AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
                            .build();
     }
 
@@ -143,8 +142,8 @@ public class TestMother {
         return JobParameter.builder()
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
-                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(),
-                                   AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()))
+                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
+                                   AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
                            .collectAspects(true)
                            .build();
     }
@@ -162,8 +161,8 @@ public class TestMother {
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.DOWNWARD)
-                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(),
-                                   AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()))
+                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
+                                   AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
                            .lookupBPNs(true)
                            .build();
     }
@@ -230,7 +229,7 @@ public class TestMother {
                                                 .build();
 
         return new Relationship(GlobalAssetIdentification.of(UUID.randomUUID().toString()), linkedItem,
-                RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP.name());
+                RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT.name(), "BPN");
     }
 
     public static Endpoint endpoint(String endpointAddress) {

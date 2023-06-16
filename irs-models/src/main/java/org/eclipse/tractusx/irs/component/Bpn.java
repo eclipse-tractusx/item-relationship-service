@@ -42,4 +42,9 @@ public class Bpn {
     private String manufacturerId;
     private String manufacturerName;
 
+    public Bpn updateManufacturerName(final String manufacturerName) {
+        this.manufacturerName = manufacturerName;
+        return this;
+    }
+
 }

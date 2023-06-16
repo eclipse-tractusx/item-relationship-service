@@ -138,16 +138,16 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);
         endpointDataReferenceStorage.put("agreementId", ref);
-        final String assemblyPartRelationshipJson = readAssemblyPartRelationshipData();
-        when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(assemblyPartRelationshipJson);
+        final String singleLevelBomAsBuiltJson = readSingleLevelBomAsBuiltData();
+        when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(singleLevelBomAsBuiltJson);
 
         // act
-        final var result = testee.getRelationships(ENDPOINT_ADDRESS, RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP);
+        final var result = testee.getRelationships(ENDPOINT_ADDRESS, RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT);
         final List<Relationship> resultingRelationships = result.get(5, TimeUnit.SECONDS);
 
         // assert
-        final List<Relationship> expectedRelationships = StringMapper.mapFromString(assemblyPartRelationshipJson,
-                RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP.getSubmodelClazz()).asRelationships();
+        final List<Relationship> expectedRelationships = StringMapper.mapFromString(singleLevelBomAsBuiltJson,
+                RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT.getSubmodelClazz()).asRelationships();
         assertThat(resultingRelationships).isNotNull().containsAll(expectedRelationships);
     }
 
@@ -180,7 +180,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
 
         // act
-        final var result = testee.getRelationships(ENDPOINT_ADDRESS, RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP);
+        final var result = testee.getRelationships(ENDPOINT_ADDRESS, RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT);
         clock.travelToFuture(Duration.ofMinutes(20));
 
         // assert
@@ -200,8 +200,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     @NotNull
-    private String readAssemblyPartRelationshipData() throws IOException {
-        final URL resourceAsStream = getClass().getResource("/__files/assemblyPartRelationship.json");
+    private String readSingleLevelBomAsBuiltData() throws IOException {
+        final URL resourceAsStream = getClass().getResource("/__files/singleLevelBomAsBuilt.json");
         Objects.requireNonNull(resourceAsStream);
         try {
             return Files.readString(Paths.get(resourceAsStream.toURI()), StandardCharsets.UTF_8);
@@ -211,12 +211,12 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndAssemblyPartRelationship() throws Exception {
+    void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsBuilt() throws Exception {
         final String existingCatenaXId = "urn:uuid:15090ed9-0b5c-4761-ad71-c085cf84fa63";
-        prepareTestdata(existingCatenaXId, "_assemblyPartRelationship");
+        prepareTestdata(existingCatenaXId, "_singleLevelBomAsBuilt");
 
         final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + existingCatenaXId + "/submodel", RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP)
+                                                                  "http://localhost/" + existingCatenaXId + "/submodel", RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT)
                                                           .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isNotEmpty();
@@ -255,22 +255,22 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldReturnEmptyRelationshipsWhenRequestingWithNotExistingCatenaXIdAndAssemblyPartRelationship()
+    void shouldReturnEmptyRelationshipsWhenRequestingWithNotExistingCatenaXIdAndSingleLevelBomAsBuilt()
             throws Exception {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-        prepareTestdata(catenaXId, "_assemblyPartRelationship");
+        prepareTestdata(catenaXId, "_singleLevelBomAsBuilt");
 
         final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + catenaXId + "/submodel", RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP)
+                                                                  "http://localhost/" + catenaXId + "/submodel", RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT)
                                                           .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isEmpty();
     }
 
     @Test
-    void shouldReturnRawSerialPartTypizationWhenExisting() throws Exception {
+    void shouldReturnRawSerialPartWhenExisting() throws Exception {
         final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
-        prepareTestdata(existingCatenaXId, "_serialPartTypization");
+        prepareTestdata(existingCatenaXId, "_serialPart");
 
         final String submodelResponse = testee.getSubmodelRawPayload(
                 "http://localhost/" + existingCatenaXId + "/submodel").get(5, TimeUnit.SECONDS);
@@ -282,7 +282,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Test
     void shouldUseDecodedTargetId() throws Exception {
         final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
-        prepareTestdata(existingCatenaXId, "_serialPartTypization");
+        prepareTestdata(existingCatenaXId, "_serialPart");
         final String target = URLEncoder.encode(existingCatenaXId, StandardCharsets.UTF_8);
 
         final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/" + target + "/submodel")
@@ -297,27 +297,27 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String parentCatenaXId = "urn:uuid:bd661150-8491-4442-943b-3e6e96fb0049";
         final BomLifecycle asBuilt = BomLifecycle.AS_BUILT;
 
-        prepareTestdata(parentCatenaXId, "_assemblyPartRelationship");
-        final List<Relationship> assemblyPartRelationships = testee.getRelationships(
+        prepareTestdata(parentCatenaXId, "_singleLevelBomAsBuilt");
+        final List<Relationship> relationships = testee.getRelationships(
                 "http://localhost/" + parentCatenaXId + "/submodel",
                 RelationshipAspect.from(asBuilt, Direction.DOWNWARD)).get(5, TimeUnit.SECONDS);
 
-        final GlobalAssetIdentification childCatenaXId = assemblyPartRelationships.stream()
-                                                                                  .findAny()
-                                                                                  .map(Relationship::getLinkedItem)
-                                                                                  .map(LinkedItem::getChildCatenaXId)
-                                                                                  .orElseThrow();
+        final GlobalAssetIdentification childCatenaXId = relationships.stream()
+                                                                      .findAny()
+                                                                      .map(Relationship::getLinkedItem)
+                                                                      .map(LinkedItem::getChildCatenaXId)
+                                                                      .orElseThrow();
 
         prepareTestdata(childCatenaXId.getGlobalAssetId(), "_singleLevelUsageAsBuilt");
         final List<Relationship> singleLevelUsageRelationships = testee.getRelationships(
                 "http://localhost/" + childCatenaXId.getGlobalAssetId() + "/submodel",
                 RelationshipAspect.from(asBuilt, Direction.UPWARD)).get(5, TimeUnit.SECONDS);
 
-        assertThat(assemblyPartRelationships).isNotEmpty();
+        assertThat(relationships).isNotEmpty();
         assertThat(singleLevelUsageRelationships).isNotEmpty();
-        assertThat(assemblyPartRelationships.get(0).getCatenaXId()).isEqualTo(
+        assertThat(relationships.get(0).getCatenaXId()).isEqualTo(
                 singleLevelUsageRelationships.get(0).getCatenaXId());
-        assertThat(assemblyPartRelationships.get(0).getLinkedItem().getChildCatenaXId()).isEqualTo(
+        assertThat(relationships.get(0).getLinkedItem().getChildCatenaXId()).isEqualTo(
                 singleLevelUsageRelationships.get(0).getLinkedItem().getChildCatenaXId());
     }
 

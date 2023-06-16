@@ -1142,16 +1142,16 @@ components:
       value:
         lastUpdated: 2023-02-13T08:18:11.990659500Z
         models:
-          - urn: urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship
-            name: AssemblyPartRelationship
+          - urn: urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt
+            name: SingleLevelBomAsBuilt
             status: RELEASED
             type: BAMM
-            version: 1.1.1
-          - urn: urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization
-            name: SerialPartTypization
+            version: 1.0.0
+          - urn: urn:bamm:io.catenax.serial_part:1.0.0#SerialPart
+            name: SerialPart
             status: RELEASED
             type: BAMM
-            version: 1.1.0
+            version: 1.0.0
   schemas:
     AdministrativeInformation:
       type: object

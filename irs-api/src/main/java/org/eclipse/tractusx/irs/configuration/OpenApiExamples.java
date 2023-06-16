@@ -122,23 +122,23 @@ public class OpenApiExamples {
 
     private Example createAspectModelsResult() {
         final AspectModel assemblyPartRelationship = AspectModel.builder()
-                                                                .name("AssemblyPartRelationship")
-                                                                .urn("urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship")
-                                                                .version("1.1.1")
+                                                                .name("SingleLevelBomAsBuilt")
+                                                                .urn("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt")
+                                                                .version("1.0.0")
                                                                 .status("RELEASED")
                                                                 .type("BAMM")
                                                                 .build();
-        final AspectModel serialPartTypization = AspectModel.builder()
-                                                            .name("SerialPartTypization")
-                                                            .urn("urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization")
-                                                            .version("1.1.0")
+        final AspectModel serialPart = AspectModel.builder()
+                                                            .name("SerialPart")
+                                                            .urn("urn:bamm:io.catenax.serial_part:1.0.0#SerialPart")
+                                                            .version("1.0.0")
                                                             .status("RELEASED")
                                                             .type("BAMM")
                                                             .build();
 
         return toExample(AspectModels.builder()
                                      .lastUpdated("2023-02-13T08:18:11.990659500Z")
-                                     .models(List.of(assemblyPartRelationship, serialPartTypization))
+                                     .models(List.of(assemblyPartRelationship, serialPart))
                                      .build());
     }
 
@@ -196,7 +196,7 @@ public class OpenApiExamples {
         return JobParameter.builder()
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .depth(1)
-                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(), AspectType.ADDRESS_ASPECT.toString()))
+                           .aspects(List.of(AspectType.SERIAL_PART.toString(), AspectType.ADDRESS_ASPECT.toString()))
                            .direction(Direction.DOWNWARD)
                            .collectAspects(false)
                            .build();

@@ -42,23 +42,23 @@ class SubmodelTestdataCreatorTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldReturnAssemblyPartRelationshipWithoutChildrenWhenRequestingWithTestId() {
-        final AssemblyPartRelationship dummyAssemblyPartRelationshipForId = submodelTestdataCreator.createSubmodelForId(
-                "test", AssemblyPartRelationship.class);
-        assertThat(dummyAssemblyPartRelationshipForId.getCatenaXId()).isNull();
-        assertThat(dummyAssemblyPartRelationshipForId.getChildParts()).isNull();
+    void shouldReturnSingleLevelBomAsBuiltWithoutChildrenWhenRequestingWithTestId() {
+        final SingleLevelBomAsBuilt dummySingleLevelBomAsBuiltForId = submodelTestdataCreator.createSubmodelForId(
+                "test", SingleLevelBomAsBuilt.class);
+        assertThat(dummySingleLevelBomAsBuiltForId.getCatenaXId()).isNull();
+        assertThat(dummySingleLevelBomAsBuiltForId.getChildItems()).isNull();
     }
 
     @Test
-    void shouldReturnAssemblyPartRelationshipWithPreDefinedChildrenWhenRequestingWithCatenaXId() {
+    void shouldReturnSingleLevelBomAsBuiltWithPreDefinedChildrenWhenRequestingWithCatenaXId() {
         final String catenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
-        final AssemblyPartRelationship assemblyPartRelationship = submodelTestdataCreator.createSubmodelForId(
-                catenaXId + "_assemblyPartRelationship", AssemblyPartRelationship.class);
+        final SingleLevelBomAsBuilt singleLevelBomAsBuilt = submodelTestdataCreator.createSubmodelForId(
+                catenaXId + "_singleLevelBomAsBuilt", SingleLevelBomAsBuilt.class);
 
-        final Set<AssemblyPartRelationship.ChildData> childParts = assemblyPartRelationship.getChildParts();
+        final Set<SingleLevelBomAsBuilt.ChildData> childParts = singleLevelBomAsBuilt.getChildItems();
         assertThat(childParts).hasSize(1);
         final List<String> childIDs = List.of("urn:uuid:10bba299-87d1-4335-90d5-a48015de7a32");
-        childParts.forEach(childData -> assertThat(childIDs).contains(childData.getChildCatenaXId()));
+        childParts.forEach(childData -> assertThat(childIDs).contains(childData.getCatenaXId()));
     }
 
 }

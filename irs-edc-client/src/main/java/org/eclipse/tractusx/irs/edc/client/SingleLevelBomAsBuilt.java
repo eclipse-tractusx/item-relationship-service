@@ -41,20 +41,20 @@ import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 
 /**
- * AssemblyPartRelationship
+ * SingleLevelBomAsBuilt
  */
 @Data
 @Jacksonized
 @AllArgsConstructor
 @NoArgsConstructor
-class AssemblyPartRelationship implements RelationshipSubmodel {
+class SingleLevelBomAsBuilt implements RelationshipSubmodel {
 
     private String catenaXId;
-    private Set<ChildData> childParts;
+    private Set<ChildData> childItems;
 
     @Override
     public List<Relationship> asRelationships() {
-        return Optional.ofNullable(this.childParts).stream().flatMap(Collection::stream)
+        return Optional.ofNullable(this.childItems).stream().flatMap(Collection::stream)
                        .map(childData -> childData.toRelationship(this.catenaXId))
                        .toList();
     }
@@ -70,12 +70,12 @@ class AssemblyPartRelationship implements RelationshipSubmodel {
         private ZonedDateTime createdOn;
         private Quantity quantity;
         private ZonedDateTime lastModifiedOn;
-        private String lifecycleContext;
-        private String childCatenaXId;
+        private String catenaXId;
+        private String businessPartner;
 
         public Relationship toRelationship(final String catenaXId) {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
-                                                                      .childCatenaXId(GlobalAssetIdentification.of(this.childCatenaXId))
+                                                                      .childCatenaXId(GlobalAssetIdentification.of(this.catenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_BUILT)
                                                                       .assembledOn(this.createdOn)
                                                                       .lastModifiedOn(this.lastModifiedOn);
@@ -103,7 +103,8 @@ class AssemblyPartRelationship implements RelationshipSubmodel {
             return Relationship.builder()
                                .catenaXId(GlobalAssetIdentification.of(catenaXId))
                                .linkedItem(linkedItem.build())
-                               .aspectType(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString())
+                               .bpn(this.businessPartner)
+                               .aspectType(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString())
                                .build();
         }
 

@@ -100,12 +100,12 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
     @BeforeEach
     void setUp() throws SchemaNotFoundException {
-        final List<AspectModel> models = List.of(getAspectModel(AspectType.SERIAL_PART_TYPIZATION.toString(),
-                        "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"),
+        final List<AspectModel> models = List.of(getAspectModel(AspectType.SERIAL_PART.toString(),
+                        "urn:bamm:io.catenax.serial_part:1.0.0#SerialPart"),
                 getAspectModel(AspectType.PRODUCT_DESCRIPTION.toString(),
                         "urn:bamm:io.catenax.vehicle.product_description:2.0.0#ProductDescription"),
-                getAspectModel(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString(),
-                        "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship"));
+                getAspectModel(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString(),
+                        "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt"));
         final AspectModels aspectModels = new AspectModels(models, "2023-02-13T08:18:11.990659500Z");
         when(semanticsHubFacade.getAllAspectModels()).thenReturn(aspectModels);
     }
@@ -131,8 +131,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
         final RegisterJob registerJob = registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", 100,
-                List.of(AspectType.SERIAL_PART_TYPIZATION.toString(), AspectType.PRODUCT_DESCRIPTION.toString(),
-                        AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()), true, false, Direction.DOWNWARD);
+                List.of(AspectType.SERIAL_PART.toString(), AspectType.PRODUCT_DESCRIPTION.toString(),
+                        AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()), true, false, Direction.DOWNWARD);
         final int expectedSubmodelsSizeFullTree = 3; // stub
 
         // when
@@ -150,7 +150,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(false).build());
         final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
-                List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()));
+                List.of(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()));
         final int expectedTombstonesSizeFullTree = 1; // stub
 
         // when
@@ -233,7 +233,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @Test
     void registerJobWithoutAspectsShouldUseDefault() {
         // given
-        final String defaultAspectType = AspectType.SERIAL_PART_TYPIZATION.toString();
+        final String defaultAspectType = AspectType.SERIAL_PART.toString();
         final List<String> emptyAspectTypeFilterList = List.of();
         final RegisterJob registerJob = registerJobWithDepthAndAspect(null, emptyAspectTypeFilterList);
 
