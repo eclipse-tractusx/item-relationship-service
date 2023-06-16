@@ -235,7 +235,7 @@ public class TestMother {
 
     public static Endpoint endpoint(String endpointAddress) {
         return Endpoint.builder()
-                       .protocolInformation(ProtocolInformation.builder().endpointAddress(endpointAddress).build())
+                       .protocolInformation(ProtocolInformation.builder().href(endpointAddress).build())
                        .build();
     }
 

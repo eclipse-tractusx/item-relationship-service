@@ -56,7 +56,7 @@ class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigura
                                                     .getEndpoints()
                                                     .get(0)
                                                     .getProtocolInformation()
-                                                    .getEndpointAddress();
+                                                    .getHref();
 
         assertThat(aasDescriptor.getSubmodelDescriptors()).isNotEmpty();
         assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getEndpoints()).isNotNull();

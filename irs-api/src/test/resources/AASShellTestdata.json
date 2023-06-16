@@ -5,11 +5,7 @@
       "text": ""
     }
   ],
-  "globalAssetId": {
-    "value": [
-      "urn:uuid:fb774862-44f8-44fd-a794-7368a9038d38"
-    ]
-  },
+  "globalAssetId": "urn:uuid:fb774862-44f8-44fd-a794-7368a9038d38",
   "idShort": "",
   "identification": "urn:uuid:fb774862-44f8-44fd-a794-7368a9038d38",
   "specificAssetIds": [
@@ -28,7 +24,7 @@
   ],
   "submodelDescriptors": [
     {
-      "identification": "urn:uuid:53125dc3-5e6f-4f4b-838d-447432b97918",
+      "id": "urn:uuid:53125dc3-5e6f-4f4b-838d-447432b97918",
       "idShort": "serialPartTypization",
       "semanticId": {
         "value": [
@@ -39,7 +35,7 @@
         {
           "interface": "EDC",
           "protocolInformation": {
-            "endpointAddress": "http://provider.connector:port/<BPN>/urn%3Auuid%3Afb774862-44f8-44fd-a794-7368a9038d38-urn%3Auuid%3A53125dc3-5e6f-4f4b-838d-447432b97918/submodel?content=value&extent=WithBLOBValue",
+            "href": "http://provider.connector:port/<BPN>/urn%3Auuid%3Afb774862-44f8-44fd-a794-7368a9038d38-urn%3Auuid%3A53125dc3-5e6f-4f4b-838d-447432b97918/submodel?content=value&extent=WithBLOBValue",
             "endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
             "endpointProtocolVersion": "0.0.1-SNAPSHOT"
           }

@@ -77,7 +77,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
         assertThat(shellEndpoints).isNotNull().isNotEmpty();
         final Endpoint endpoint = shellEndpoints.get(0).getEndpoints().get(0);
 
-        assertThat(endpoint.getProtocolInformation().getEndpointAddress()).contains(existingCatenaXId);
+        assertThat(endpoint.getProtocolInformation().getHref()).contains(existingCatenaXId);
         assertThat(shellEndpoints.get(0).getSemanticId().getValue()).containsExactly(assemblyPartRelationshipURN);
         assertThat(shellEndpoints.get(1).getSemanticId().getValue()).containsExactly(serialPartTypizationURN);
     }

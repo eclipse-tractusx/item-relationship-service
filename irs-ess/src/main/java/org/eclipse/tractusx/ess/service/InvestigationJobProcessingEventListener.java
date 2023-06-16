@@ -180,17 +180,14 @@ class InvestigationJobProcessingEventListener {
     private static Map<String, List<String>> getBPNsFromShells(
             final List<AssetAdministrationShellDescriptor> shellDescriptors, final String startAssetId) {
         return shellDescriptors.stream()
-                               .filter(descriptor -> descriptor.getGlobalAssetId()
-                                                               .getValue()
-                                                               .stream()
-                                                               .noneMatch(startAssetId::equals))
+                               .filter(descriptor -> !descriptor.getGlobalAssetId().equals(startAssetId))
                                .collect(Collectors.groupingBy(shell -> shell.findManufacturerId().orElseThrow(),
-                                       Collectors.mapping(shell -> shell.getGlobalAssetId().getValue().get(0),
+                                       Collectors.mapping(AssetAdministrationShellDescriptor::getGlobalAssetId,
                                                Collectors.toList())));
     }
 
     private boolean supplyChainIsNotImpacted(final SupplyChainImpacted supplyChain) {
-        return supplyChain.equals(SupplyChainImpacted.NO);
+        return SupplyChainImpacted.NO.equals(supplyChain);
     }
 
 }

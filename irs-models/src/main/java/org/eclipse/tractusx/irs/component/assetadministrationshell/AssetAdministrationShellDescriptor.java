@@ -30,6 +30,9 @@ import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -62,7 +65,9 @@ public class AssetAdministrationShellDescriptor {
     /**
      * globalAssetId
      */
-    private Reference globalAssetId;
+    @Schema(description = "Id of global asset.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+            implementation = String.class)
+    private String globalAssetId;
     /**
      * idShort
      */
@@ -119,7 +124,7 @@ public class AssetAdministrationShellDescriptor {
                                           .map(SubmodelDescriptor::getEndpoints)
                                           .flatMap(endpoints -> endpoints.stream()
                                                                          .map(Endpoint::getProtocolInformation)
-                                                                         .map(ProtocolInformation::getEndpointAddress))
+                                                                         .map(ProtocolInformation::getHref))
                                           .collect(Collectors.toList());
     }
 

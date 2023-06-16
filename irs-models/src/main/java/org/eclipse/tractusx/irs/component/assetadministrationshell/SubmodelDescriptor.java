@@ -54,7 +54,7 @@ public class SubmodelDescriptor {
     /**
      * identification
      */
-    private String identification;
+    private String id;
     /**
      * semanticId
      */

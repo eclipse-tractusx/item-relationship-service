@@ -37,7 +37,7 @@ public class ProtocolInformation {
     /**
      * endpointAddress
      */
-    private String endpointAddress;
+    private String href;
     /**
      * endpointProtocol
      */

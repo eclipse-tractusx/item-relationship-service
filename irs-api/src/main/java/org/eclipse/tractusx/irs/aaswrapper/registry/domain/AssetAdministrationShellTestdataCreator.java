@@ -67,10 +67,9 @@ class AssetAdministrationShellTestdataCreator {
         cxTestData.get().getProductDescription().ifPresent(submodel -> submodelDescriptors.add(createProductDescriptionSubmodelDescriptor(catenaXId)));
         cxTestData.get().getPhysicalDimension().ifPresent(submodel -> submodelDescriptors.add(createPhysicalDimensionSubmodelDescriptor(catenaXId)));
 
-        final Reference globalAssetId = Reference.builder().value(List.of(catenaXId)).build();
         return AssetAdministrationShellDescriptor.builder()
                                                  .description(List.of(LangString.builder().build()))
-                                                 .globalAssetId(globalAssetId)
+                                                 .globalAssetId(catenaXId)
                                                  .idShort("idShort")
                                                  .identification(catenaXId)
                                                  .specificAssetIds(List.of(IdentifierKeyValuePair.builder().key("ManufacturerId").value("BPNL00000003AYRE").build()))
@@ -126,7 +125,7 @@ class AssetAdministrationShellTestdataCreator {
     private SubmodelDescriptor createSubmodelDescriptor(final String catenaXId, final String submodelUrn,
             final String submodelName) {
         final ProtocolInformation protocolInformation = ProtocolInformation.builder()
-                                                                           .endpointAddress(catenaXId.concat("_").concat(submodelName))
+                                                                           .href(catenaXId.concat("_").concat(submodelName))
                                                                            .endpointProtocol("AAS/SUBMODEL")
                                                                            .endpointProtocolVersion("1.0RC02")
                                                                            .build();
@@ -139,7 +138,7 @@ class AssetAdministrationShellTestdataCreator {
         final Reference reference = Reference.builder().value(List.of(submodelUrn)).build();
 
         return SubmodelDescriptor.builder()
-                                 .identification(catenaXId)
+                                 .id(catenaXId)
                                  .idShort(submodelName)
                                  .endpoints(List.of(endpoint))
                                  .semanticId(reference)
