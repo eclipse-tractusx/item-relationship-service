@@ -21,7 +21,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-package org.eclipse.tractusx.irs.persistence;
+package org.eclipse.tractusx.irs.common.persistence;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,5 +38,5 @@ public interface BlobPersistence {
 
     Collection<byte[]> findBlobByPrefix(String prefix) throws BlobPersistenceException;
 
-    boolean delete(String jobId, List<String> processIds) throws BlobPersistenceException;
+    boolean delete(String blobId, List<String> processIds) throws BlobPersistenceException;
 }

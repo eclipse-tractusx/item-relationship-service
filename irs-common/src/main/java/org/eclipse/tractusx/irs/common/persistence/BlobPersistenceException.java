@@ -20,19 +20,15 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs;
 
-import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
+package org.eclipse.tractusx.irs.common.persistence;
 
-@TestConfiguration
-public class TestConfig {
+/**
+ * Exception for everything related to BlobPersistence actions
+ */
+public class BlobPersistenceException extends Exception {
 
-    @Primary
-    @Bean
-    public BlobPersistence inMemoryBlobStore() {
-        return new InMemoryBlobStore();
+    public BlobPersistenceException(final String message, final Throwable cause) {
+        super(message, cause);
     }
 }

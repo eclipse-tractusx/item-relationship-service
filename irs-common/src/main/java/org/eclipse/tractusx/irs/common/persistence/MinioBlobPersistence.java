@@ -20,7 +20,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.persistence;
+package org.eclipse.tractusx.irs.common.persistence;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
