@@ -36,6 +36,7 @@ import lombok.extern.jackson.Jacksonized;
 @Data
 @Builder
 @Jacksonized
+@SuppressWarnings("PMD.ShortVariable")
 public class SubmodelDescriptor {
 
     /**
