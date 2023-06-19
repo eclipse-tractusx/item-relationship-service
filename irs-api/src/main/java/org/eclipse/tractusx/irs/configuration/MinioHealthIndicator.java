@@ -78,9 +78,9 @@ class MinioHealthIndicator implements HealthIndicator {
                 if (minioBlobPersistence.bucketExists(blobstoreConfiguration.getBucketName())) {
                     return true;
                 }
-            } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException |
-                     NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException |
-                     InternalException e) {
+            } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException
+                     | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException
+                     | InternalException e) {
                 log.error("Lost connection to Minio", e);
             }
         }
