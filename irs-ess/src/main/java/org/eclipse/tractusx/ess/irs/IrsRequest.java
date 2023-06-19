@@ -26,6 +26,8 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Value;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 
@@ -36,7 +38,7 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 class IrsRequest {
-    private String globalAssetId;
+    private IdentificationKey key;
     private String bomLifecycle;
     private List<String> aspects;
     private boolean collectAspects;
@@ -50,11 +52,23 @@ class IrsRequest {
      */
     /* package */ static IrsRequest bpnInvestigations(final String globalAssetId, final BomLifecycle bomLifecycle) {
         return IrsRequest.builder()
-                         .globalAssetId(globalAssetId)
+                         .key(IdentificationKey.builder().globalAssetId(globalAssetId).build())
                          .bomLifecycle(bomLifecycle != null
                                  ? bomLifecycle.getName() : BomLifecycle.AS_PLANNED.getName())
                          .depth(1)
                          .collectAspects(false)
                          .build();
+    }
+
+    /**
+     * Key object contains required attributes for identify part chain entry node
+     */
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    static class IdentificationKey {
+        private String globalAssetId;
+        private String bpn;
     }
 }
