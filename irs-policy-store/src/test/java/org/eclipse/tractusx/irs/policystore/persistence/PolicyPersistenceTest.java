@@ -26,6 +26,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -81,11 +83,9 @@ class PolicyPersistenceTest {
         final var policies = List.of(policy);
         when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
 
-
         // act & assert
         assertThatThrownBy(() -> testee.save("testBpn", policy)).isInstanceOf(PolicyStoreException.class);
     }
-
 
     @Test
     void saveWithError() throws BlobPersistenceException {
@@ -93,6 +93,17 @@ class PolicyPersistenceTest {
         final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now());
         when(mockPersistence.getBlob(any())).thenThrow(
                 new BlobPersistenceException("test", new IllegalStateException()));
+
+        // act & assert
+        assertThatThrownBy(() -> testee.save("testBpn", policy)).isInstanceOf(PolicyStoreException.class);
+    }
+
+    @Test
+    void saveWithWriteError() throws BlobPersistenceException {
+        // arrange
+        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now());
+        doThrow(new BlobPersistenceException("test", new IllegalStateException())).when(mockPersistence)
+                                                                                  .putBlob(any(), any());
 
         // act & assert
         assertThatThrownBy(() -> testee.save("testBpn", policy)).isInstanceOf(PolicyStoreException.class);
@@ -124,5 +135,20 @@ class PolicyPersistenceTest {
 
         // assert
         assertThat(readPolicies).hasSize(1);
+    }
+
+    @Test
+    void readAllWithError() throws BlobPersistenceException, JsonProcessingException {
+        // arrange
+        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now());
+        final var policies = List.of(policy);
+        final var mapperMock = mock(ObjectMapper.class);
+        when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
+        when(mapperMock.readerForListOf(Policy.class)).thenThrow(new IllegalStateException());
+
+        final var localTestee = new PolicyPersistence(mockPersistence, mapperMock);
+
+        // act & assert
+        assertThatThrownBy(() -> localTestee.readAll("testBpn")).isInstanceOf(PolicyStoreException.class);
     }
 }

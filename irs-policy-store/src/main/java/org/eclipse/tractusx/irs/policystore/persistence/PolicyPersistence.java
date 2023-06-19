@@ -86,7 +86,7 @@ public class PolicyPersistence {
             return persistence.getBlob(bpn).map(blob -> {
                 try {
                     return mapper.readerForListOf(Policy.class).<List<Policy>>readValue(blob);
-                } catch (IOException e) {
+                } catch (IOException | RuntimeException e) {
                     throw new PolicyStoreException("Could not read the policies from the store", e);
                 }
             }).map(ArrayList::new).orElseGet(ArrayList::new);
