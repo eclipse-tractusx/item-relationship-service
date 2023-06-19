@@ -81,6 +81,7 @@ public class PolicyPersistence {
         });
     }
 
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public List<Policy> readAll(final String bpn) {
         try {
             return persistence.getBlob(bpn).map(blob -> {
