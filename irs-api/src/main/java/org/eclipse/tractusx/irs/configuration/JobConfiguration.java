@@ -64,13 +64,16 @@ import org.springframework.context.annotation.Profile;
  * Spring configuration for job-related beans.
  */
 @Configuration
-@SuppressWarnings({ "PMD.ExcessiveImports", "PMD.TooManyMethods" })
+@SuppressWarnings({ "PMD.ExcessiveImports",
+                    "PMD.TooManyMethods"
+})
 public class JobConfiguration {
-
     public static final int EXECUTOR_CORE_POOL_SIZE = 5;
+    private static final Integer EXPIRE_AFTER_DAYS = 7;
 
     @Bean
-    public OutboundMeterRegistryService outboundMeterRegistryService(final MeterRegistry meterRegistry, final RetryRegistry retryRegistry) {
+    public OutboundMeterRegistryService outboundMeterRegistryService(final MeterRegistry meterRegistry,
+            final RetryRegistry retryRegistry) {
         return new OutboundMeterRegistryService(meterRegistry, retryRegistry);
     }
 
@@ -104,7 +107,7 @@ public class JobConfiguration {
     @Bean(name = "JobPersistence")
     public BlobPersistence blobStore(final BlobstoreConfiguration config) throws BlobPersistenceException {
         return new MinioBlobPersistence(config.getEndpoint(), config.getAccessKey(), config.getSecretKey(),
-                config.getBucketName());
+                config.getBucketName(), EXPIRE_AFTER_DAYS);
     }
 
     @Bean
@@ -124,8 +127,7 @@ public class JobConfiguration {
     }
 
     @Bean
-    public BpdmDelegate bpdmDelegate(final RelationshipDelegate relationshipDelegate,
-            final BpdmFacade bpdmFacade) {
+    public BpdmDelegate bpdmDelegate(final RelationshipDelegate relationshipDelegate, final BpdmFacade bpdmFacade) {
         return new BpdmDelegate(relationshipDelegate, bpdmFacade);
     }
 

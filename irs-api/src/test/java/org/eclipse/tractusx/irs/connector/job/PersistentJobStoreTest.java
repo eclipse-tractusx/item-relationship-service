@@ -94,7 +94,7 @@ class PersistentJobStoreTest {
     @BeforeEach
     void setUp() throws BlobPersistenceException {
         final MinioBlobPersistence blobStore = new MinioBlobPersistence("http://" + minioContainer.getHostAddress(),
-                ACCESS_KEY, SECRET_KEY, "testbucket");
+                ACCESS_KEY, SECRET_KEY, "testbucket", 1);
         blobStoreSpy = Mockito.spy(blobStore);
         sut = new PersistentJobStore(blobStoreSpy, meterRegistryService);
     }

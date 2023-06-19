@@ -20,7 +20,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.policystore;
+package org.eclipse.tractusx.irs.policystore.config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -39,4 +39,5 @@ public class PolicyBlobstoreConfiguration {
     private String accessKey;
     private String secretKey;
     private String bucketName;
+    private int daysToLive;
 }

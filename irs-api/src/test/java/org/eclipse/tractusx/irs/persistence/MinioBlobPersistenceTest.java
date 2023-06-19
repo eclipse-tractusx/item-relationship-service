@@ -58,7 +58,7 @@ class MinioBlobPersistenceTest {
 
     @BeforeEach
     void setUp() throws BlobPersistenceException {
-        testee = new MinioBlobPersistence("test-bucket", client);
+        testee = new MinioBlobPersistence("test-bucket", client, 1);
     }
 
     @Test

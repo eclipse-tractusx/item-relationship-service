@@ -44,7 +44,7 @@ class MinioHealthIndicatorTest {
         when(blobstoreConfiguration.getBucketName()).thenReturn("bucket-name");
         when(minioClient.bucketExists(any())).thenReturn(Boolean.TRUE);
 
-        final MinioBlobPersistence blobPersistence = new MinioBlobPersistence("bucket-name", minioClient);
+        final MinioBlobPersistence blobPersistence = new MinioBlobPersistence("bucket-name", minioClient, 1);
         final MinioHealthIndicator minioHealthIndicator = new MinioHealthIndicator(blobPersistence, blobstoreConfiguration);
 
         // when

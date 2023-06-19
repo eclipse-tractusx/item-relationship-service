@@ -26,6 +26,8 @@ import static org.eclipse.tractusx.irs.common.ApiConstants.FORBIDDEN_DESC;
 import static org.eclipse.tractusx.irs.common.ApiConstants.UNAUTHORIZED_DESC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import java.util.List;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -38,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
+import org.eclipse.tractusx.irs.policystore.models.Policy;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -93,7 +96,6 @@ public class PolicyStoreController {
         service.registerPolicy(request);
     }
 
-
     @Operation(operationId = "getAllowedPolicies",
                summary = "Lists the registered policies that should be accepted in EDC negotiation.",
                security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
@@ -116,10 +118,9 @@ public class PolicyStoreController {
     @GetMapping("/policies")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
-    public void getPolicies() {
-        service.getStoredPolicies();
+    public List<Policy> getPolicies() {
+        return service.getStoredPolicies();
     }
-
 
     @Operation(operationId = "deleteAllowedPolicy",
                summary = "Removes a policy that should no longer be accepted in EDC negotiation.",

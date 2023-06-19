@@ -20,15 +20,25 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.policystore.models;
+package org.eclipse.tractusx.irs.policystore.config;
 
-import java.time.OffsetDateTime;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
+import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 /**
- * Request object for policy creation
- * @param policyId the ID of the policy
- * @param validUntil the timestamp after which the policy should no longer be accepted
+ * Config values for the policy store.
  */
-public record CreatePolicyRequest(String policyId, OffsetDateTime validUntil) {
+@Configuration
+public class PolicyConfiguration {
 
+    @Profile("!test")
+    @Bean(name = "PolicyStorePersistence")
+    public BlobPersistence blobStore(final PolicyBlobstoreConfiguration config) throws BlobPersistenceException {
+        return new MinioBlobPersistence(config.getEndpoint(), config.getAccessKey(), config.getSecretKey(),
+                config.getBucketName(), config.getDaysToLive());
+    }
 }

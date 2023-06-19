@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -32,6 +34,8 @@ import org.eclipse.dataspaceconnector.policy.model.Operator;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.StringMapper;
+import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriUtils;
@@ -45,21 +49,35 @@ public class PolicyCheckerService {
 
     private final List<String> allowedPolicies;
 
-    public PolicyCheckerService(@Value("${edc.catalog.policies.allowedNames}") final List<String> allowedPolicies) {
+    private final PolicyStoreService policyStore;
+
+    public PolicyCheckerService(@Value("${edc.catalog.policies.allowedNames}") final List<String> allowedPolicies,
+            final PolicyStoreService policyStore) {
         this.allowedPolicies = allowedPolicies;
+        this.policyStore = policyStore;
     }
 
     public boolean isValid(final Policy policy) {
-        final List<PolicyDefinition> policyList = allowedPolicies.stream()
-                                                                 .flatMap(this::addEncodedVersion)
-                                                                 .map(this::createPolicy)
-                                                                 .toList();
+        final List<PolicyDefinition> policyList = getAllowedPolicies();
         log.info("Checking policy {} against allowed policies: {}", StringMapper.mapToString(policy),
                 String.join(",", allowedPolicies));
         return policy.getPermissions()
                      .stream()
                      .anyMatch(permission -> policyList.stream()
                                                        .anyMatch(allowedPolicy -> isValid(permission, allowedPolicy)));
+    }
+
+    @NotNull
+    private List<PolicyDefinition> getAllowedPolicies() {
+        final var storedPolicies = new ArrayList<>(policyStore.getStoredPolicies()
+                                                              .stream()
+                                                              .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
+                                                              .map(org.eclipse.tractusx.irs.policystore.models.Policy::policyId)
+                                                              .toList());
+        if (storedPolicies.isEmpty()) {
+            storedPolicies.addAll(allowedPolicies);
+        }
+        return storedPolicies.stream().flatMap(this::addEncodedVersion).map(this::createPolicy).toList();
     }
 
     private boolean isValid(final Permission permission, final PolicyDefinition policyDefinition) {

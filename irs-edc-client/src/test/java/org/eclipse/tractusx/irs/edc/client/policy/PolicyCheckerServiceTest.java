@@ -32,11 +32,25 @@ import org.eclipse.dataspaceconnector.policy.model.LiteralExpression;
 import org.eclipse.dataspaceconnector.policy.model.Operator;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
+import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class PolicyCheckerServiceTest {
 
-    private final PolicyCheckerService policyCheckerService = new PolicyCheckerService(List.of("ID 3.0 Trace"));
+    private PolicyCheckerService policyCheckerService ;
+    @Mock
+    private PolicyStoreService policyStore;
+
+    @BeforeEach
+    void setUp() {
+        policyCheckerService = new PolicyCheckerService(List.of("ID 3.0 Trace"),
+                policyStore);
+    }
 
     @Test
     void shouldConfirmValidPolicy() {
