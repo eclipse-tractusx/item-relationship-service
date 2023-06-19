@@ -67,7 +67,7 @@ class IrsRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    static class IdentificationKey {
+    /* package */ static class IdentificationKey {
         private String globalAssetId;
         private String bpn;
     }
