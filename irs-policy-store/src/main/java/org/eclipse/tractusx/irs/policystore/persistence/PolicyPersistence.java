@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.persistence;
 
+import static org.eclipse.tractusx.irs.policystore.config.PolicyConfiguration.POLICY_BLOB_PERSISTENCE;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,7 @@ import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
 import org.eclipse.tractusx.irs.policystore.models.Policy;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -43,6 +46,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PolicyPersistence {
+
+    @Qualifier(POLICY_BLOB_PERSISTENCE)
     private final BlobPersistence persistence;
 
     private final ObjectMapper mapper;

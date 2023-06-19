@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration;
 
+import static org.eclipse.tractusx.irs.configuration.JobConfiguration.JOB_BLOB_PERSISTENCE;
+
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -36,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
@@ -47,16 +50,14 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 class MinioHealthIndicator implements HealthIndicator {
-
+    @Qualifier(JOB_BLOB_PERSISTENCE)
     private final BlobPersistence blobPersistence;
     private final BlobstoreConfiguration blobstoreConfiguration;
 
     @Override
     public Health health() {
         if (thereIsMinioConnection()) {
-            return Health.up()
-                    .withDetail("bucketName", blobstoreConfiguration.getBucketName())
-                    .build();
+            return Health.up().withDetail("bucketName", blobstoreConfiguration.getBucketName()).build();
         } else {
             return Health.down().build();
         }
@@ -66,6 +67,7 @@ class MinioHealthIndicator implements HealthIndicator {
      * Verifies if blobPersistence is instance of {@link MinioBlobPersistence} and if bucket exists.
      * If yes it means that there is Minio connection.
      * If bucket does not exist, method tries to recreate it.
+     *
      * @return true if bucket exists, false otherwise
      */
     private boolean thereIsMinioConnection() {
@@ -76,7 +78,9 @@ class MinioHealthIndicator implements HealthIndicator {
                 if (minioBlobPersistence.bucketExists(blobstoreConfiguration.getBucketName())) {
                     return true;
                 }
-            } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
+            } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException |
+                     NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException |
+                     InternalException e) {
                 log.error("Lost connection to Minio", e);
             }
         }

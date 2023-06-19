@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job;
 
+import static org.eclipse.tractusx.irs.configuration.JobConfiguration.JOB_BLOB_PERSISTENCE;
+
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -31,6 +33,7 @@ import org.eclipse.tractusx.irs.connector.job.TransferProcess;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * Retrieves item graph from potentially multiple calls to IRS API behind
@@ -49,6 +52,7 @@ public class TreeRecursiveLogic {
     /**
      * Blob store API.
      */
+    @Qualifier(JOB_BLOB_PERSISTENCE)
     private final BlobPersistence blobStoreApi;
     /**
      * Json Converter.

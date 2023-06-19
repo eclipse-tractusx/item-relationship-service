@@ -54,6 +54,7 @@ import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -68,6 +69,7 @@ import org.springframework.context.annotation.Profile;
                     "PMD.TooManyMethods"
 })
 public class JobConfiguration {
+    public static final String JOB_BLOB_PERSISTENCE = "JobPersistence";
     public static final int EXECUTOR_CORE_POOL_SIZE = 5;
     private static final Integer EXPIRE_AFTER_DAYS = 7;
 
@@ -79,8 +81,9 @@ public class JobConfiguration {
 
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
-            final DigitalTwinDelegate digitalTwinDelegate, final BlobPersistence blobStore, final JobStore jobStore,
-            final MeterRegistryService meterService, final ApplicationEventPublisher applicationEventPublisher,
+            final DigitalTwinDelegate digitalTwinDelegate, @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore,
+            final JobStore jobStore, final MeterRegistryService meterService,
+            final ApplicationEventPublisher applicationEventPublisher,
             @Value("${irs.job.jobstore.ttl.failed:}") final Duration ttlFailedJobs,
             @Value("${irs.job.jobstore.ttl.completed:}") final Duration ttlCompletedJobs) {
 
@@ -104,7 +107,7 @@ public class JobConfiguration {
     }
 
     @Profile("!test")
-    @Bean(name = "JobPersistence")
+    @Bean(JOB_BLOB_PERSISTENCE)
     public BlobPersistence blobStore(final BlobstoreConfiguration config) throws BlobPersistenceException {
         return new MinioBlobPersistence(config.getEndpoint(), config.getAccessKey(), config.getSecretKey(),
                 config.getBucketName(), EXPIRE_AFTER_DAYS);

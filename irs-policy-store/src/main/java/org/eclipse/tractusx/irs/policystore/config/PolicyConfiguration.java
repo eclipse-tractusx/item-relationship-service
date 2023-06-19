@@ -35,8 +35,10 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class PolicyConfiguration {
 
+    public static final String POLICY_BLOB_PERSISTENCE = "PolicyStorePersistence";
+
     @Profile("!test")
-    @Bean(name = "PolicyStorePersistence")
+    @Bean(POLICY_BLOB_PERSISTENCE)
     public BlobPersistence blobStore(final PolicyBlobstoreConfiguration config) throws BlobPersistenceException {
         return new MinioBlobPersistence(config.getEndpoint(), config.getAccessKey(), config.getSecretKey(),
                 config.getBucketName(), config.getDaysToLive());

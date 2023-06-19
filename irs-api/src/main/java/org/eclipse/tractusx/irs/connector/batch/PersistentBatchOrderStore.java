@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.connector.batch;
 
+import static org.eclipse.tractusx.irs.configuration.JobConfiguration.JOB_BLOB_PERSISTENCE;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,6 +37,7 @@ import org.eclipse.tractusx.irs.common.JsonParseException;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -49,6 +52,7 @@ public class PersistentBatchOrderStore implements BatchOrderStore {
 
     private final JsonUtil json = new JsonUtil();
 
+    @Qualifier(JOB_BLOB_PERSISTENCE)
     private final BlobPersistence blobStore;
 
     @Override
