@@ -34,7 +34,7 @@ import org.eclipse.edc.policy.model.AtomicConstraint;
 import org.eclipse.edc.policy.model.LiteralExpression;
 
 public class EdcObjectMapper {
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    public static final ObjectMapper MAPPER = new ObjectMapper();
 
     static {
         MAPPER.registerModule(new JavaTimeModule());
