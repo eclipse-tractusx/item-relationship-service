@@ -201,7 +201,9 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7c6xyz009123452
+        key:
+          globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7c6xyz009123452
+          bpn: "BPNL00000003AYRE"
         collectAspects: true
         depth: 1
         direction: "downward"
@@ -704,7 +706,9 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7c6xyz009123452
+        key:
+          globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7c6xyz009123452
+          bpn: "BPNL00000003AYRE"
         collectAspects: true
         depth: -10
         direction: "downward"
