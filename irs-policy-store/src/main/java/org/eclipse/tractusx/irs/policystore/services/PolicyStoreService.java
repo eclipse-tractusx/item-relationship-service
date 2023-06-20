@@ -26,6 +26,7 @@ import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.Policy;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
@@ -36,6 +37,7 @@ import org.springframework.stereotype.Service;
  * Service to manage stored policies in IRS.
  */
 @Service
+@Slf4j
 public class PolicyStoreService {
 
     private final String apiAllowedBpn;
@@ -52,15 +54,18 @@ public class PolicyStoreService {
     }
 
     public void registerPolicy(final CreatePolicyRequest request) {
+        log.info("Registering new policy with id {}, valid until {}", request.policyId(), request.validUntil());
         persistence.save(apiAllowedBpn,
                 new Policy(request.policyId(), OffsetDateTime.now(clock), request.validUntil()));
     }
 
     public List<Policy> getStoredPolicies() {
+        log.info("Reading all stored polices for BPN {}", apiAllowedBpn);
         return persistence.readAll(apiAllowedBpn);
     }
 
     public void deletePolicy(final String policyId) {
+        log.info("Deleting policy with id {}", policyId);
         persistence.delete(apiAllowedBpn, policyId);
     }
 }

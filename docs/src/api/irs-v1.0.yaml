@@ -1453,6 +1453,9 @@ components:
         validUntil:
           type: string
           format: date-time
+      required:
+        - policyId
+        - validUntil
     EdcNotification:
       type: object
       additionalProperties: false
