@@ -25,7 +25,7 @@ package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.springframework.stereotype.Service;
