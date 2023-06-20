@@ -22,11 +22,10 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration;
 
-import static org.eclipse.tractusx.irs.configuration.JobConfiguration.JOB_BLOB_PERSISTENCE;
-
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
@@ -34,10 +33,10 @@ import io.minio.errors.InternalException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.ServerException;
 import io.minio.errors.XmlParserException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
@@ -47,16 +46,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
+@RequiredArgsConstructor
 class MinioHealthIndicator implements HealthIndicator {
 
-    private final BlobPersistence blobPersistence;
+    private final List<BlobPersistence> blobPersistences;
     private final BlobstoreConfiguration blobstoreConfiguration;
-
-    public MinioHealthIndicator(@Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobPersistence,
-            final BlobstoreConfiguration blobstoreConfiguration) {
-        this.blobPersistence = blobPersistence;
-        this.blobstoreConfiguration = blobstoreConfiguration;
-    }
 
     @Override
     public Health health() {
@@ -75,6 +69,11 @@ class MinioHealthIndicator implements HealthIndicator {
      * @return true if bucket exists, false otherwise
      */
     private boolean thereIsMinioConnection() {
+        return blobPersistences.stream().allMatch(this::connectionWorks);
+    }
+
+    @SuppressWarnings("checkstyle:operatorwrap")
+    private boolean connectionWorks(final BlobPersistence blobPersistence) {
         if (blobPersistence instanceof MinioBlobPersistence minioBlobPersistence) {
             try {
                 minioBlobPersistence.createBucketIfNotExists(blobstoreConfiguration.getBucketName());

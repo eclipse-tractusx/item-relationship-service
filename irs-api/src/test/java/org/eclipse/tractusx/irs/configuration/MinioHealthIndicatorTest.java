@@ -27,6 +27,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+
 import io.minio.MinioClient;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
@@ -45,7 +47,7 @@ class MinioHealthIndicatorTest {
         when(minioClient.bucketExists(any())).thenReturn(Boolean.TRUE);
 
         final MinioBlobPersistence blobPersistence = new MinioBlobPersistence("bucket-name", minioClient, 1);
-        final MinioHealthIndicator minioHealthIndicator = new MinioHealthIndicator(blobPersistence, blobstoreConfiguration);
+        final MinioHealthIndicator minioHealthIndicator = new MinioHealthIndicator(List.of(blobPersistence), blobstoreConfiguration);
 
         // when
         final Health health = minioHealthIndicator.health();
@@ -60,7 +62,7 @@ class MinioHealthIndicatorTest {
         final BlobPersistence blobPersistence = mock(BlobPersistence.class);
         final BlobstoreConfiguration blobstoreConfiguration = mock(BlobstoreConfiguration.class);
 
-        final MinioHealthIndicator minioHealthIndicator = new MinioHealthIndicator(blobPersistence, blobstoreConfiguration);
+        final MinioHealthIndicator minioHealthIndicator = new MinioHealthIndicator(List.of(blobPersistence), blobstoreConfiguration);
 
         // when
         final Health health = minioHealthIndicator.health();
