@@ -80,8 +80,8 @@ class IrsApplicationTests {
         final InputStream fixedYaml = Files.newInputStream(Path.of("../docs/src/api/irs-v1.0.yaml"));
 
         final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        final Map<String, Object> fixedYamlMap = mapper.readValue(fixedYaml, Map.class);
-        final Map<String, Object> generatedYamlMap = mapper.readValue(generatedYaml, Map.class);
+        final Map<String, Object> fixedYamlMap = mapper.readerForMapOf(Object.class).readValue(fixedYaml);
+        final Map<String, Object> generatedYamlMap = mapper.readerForMapOf(Object.class).readValue(generatedYaml);
 
         assertThat(generatedYamlMap).isEqualTo(fixedYamlMap);
     }
