@@ -62,6 +62,7 @@ public class PersistentJobStore extends BaseJobStore {
 
     public PersistentJobStore(@Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore,
             final MeterRegistryService meterService) {
+        super();
         this.blobStore = blobStore;
         this.meterService = meterService;
     }
