@@ -33,7 +33,7 @@ import jakarta.validation.constraints.NotNull;
  * @param policyId   the ID of the policy
  * @param validUntil the timestamp after which the policy should no longer be accepted
  */
-@Schema(description = "Request to add a policy.")
+@Schema(description = "Request to add a policy")
 public record CreatePolicyRequest(@Schema(description = "The ID of the policy to add") @NotNull String policyId,
 
                                   @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations") @NotNull OffsetDateTime validUntil) {

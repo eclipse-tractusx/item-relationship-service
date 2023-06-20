@@ -1447,12 +1447,15 @@ components:
     CreatePolicyRequest:
       type: object
       additionalProperties: false
+      description: Request to add a policy
       properties:
         policyId:
           type: string
+          description: The ID of the policy to add
         validUntil:
           type: string
           format: date-time
+          description: Timestamp after which the policy will no longer be accepted in negotiations
       required:
         - policyId
         - validUntil
