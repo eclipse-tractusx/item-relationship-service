@@ -32,7 +32,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
@@ -44,11 +43,9 @@ import org.springframework.stereotype.Service;
  * Persists and loads the policy data from the BLOB storage.
  */
 @Service
-@RequiredArgsConstructor
 public class PolicyPersistence {
 
-    @Qualifier(POLICY_BLOB_PERSISTENCE)
-    private final BlobPersistence persistence;
+    private final BlobPersistence policyStorePersistence;
 
     private final ObjectMapper mapper;
 
@@ -60,6 +57,12 @@ public class PolicyPersistence {
      * A lock to synchronize access to the collection of stored jobs.
      */
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+    public PolicyPersistence(@Qualifier(POLICY_BLOB_PERSISTENCE) final BlobPersistence policyStorePersistence,
+            final ObjectMapper mapper) {
+        this.policyStorePersistence = policyStorePersistence;
+        this.mapper = mapper;
+    }
 
     public void save(final String bpn, final Policy policy) {
         final var policies = readAll(bpn);
@@ -79,7 +82,7 @@ public class PolicyPersistence {
     private void save(final String bpn, final List<Policy> modifiedPolicies) {
         writeLock(() -> {
             try {
-                persistence.putBlob(bpn, mapper.writeValueAsBytes(modifiedPolicies));
+                policyStorePersistence.putBlob(bpn, mapper.writeValueAsBytes(modifiedPolicies));
             } catch (BlobPersistenceException | JsonProcessingException e) {
                 throw new PolicyStoreException("Unable to store policy data", e);
             }
@@ -89,7 +92,7 @@ public class PolicyPersistence {
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     public List<Policy> readAll(final String bpn) {
         try {
-            return persistence.getBlob(bpn).map(blob -> {
+            return policyStorePersistence.getBlob(bpn).map(blob -> {
                 try {
                     return mapper.readerForListOf(Policy.class).<List<Policy>>readValue(blob);
                 } catch (IOException | RuntimeException e) {
