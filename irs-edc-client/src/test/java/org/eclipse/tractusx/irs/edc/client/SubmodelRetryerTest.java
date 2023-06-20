@@ -35,7 +35,7 @@ import java.util.concurrent.Executors;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import io.github.resilience4j.retry.internal.InMemoryRetryRegistry;
-import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
+import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.junit.jupiter.api.BeforeEach;

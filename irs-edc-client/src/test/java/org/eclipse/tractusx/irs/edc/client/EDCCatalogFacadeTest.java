@@ -34,10 +34,10 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import org.eclipse.dataspaceconnector.policy.model.Policy;
-import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
-import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
-import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
+import com.apicatalog.jsonld.JsonLdError;
+import org.eclipse.edc.policy.model.Policy;
+import org.eclipse.edc.catalog.spi.Catalog;
+import org.eclipse.edc.connector.contract.spi.types.offer.ContractOffer;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
