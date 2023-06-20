@@ -1,6 +1,6 @@
 = Runtime view
 
-This section covers the main processes of the IRS and explains how data is transfered and processed when a job is executed.
+This section covers the main processes of the IRS and explains how data is transferred and processed when a job is executed.
 
 Please see the subpages for the relevant scenarios:
 

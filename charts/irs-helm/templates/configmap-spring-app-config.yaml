@@ -69,6 +69,8 @@ data:
     digitalTwinRegistry:
       descriptorEndpoint: {{ tpl (.Values.digitalTwinRegistry.descriptorEndpoint | default "") . | quote }}
       shellLookupEndpoint: {{ tpl (.Values.digitalTwinRegistry.shellLookupEndpoint | default "") . | quote }}
+      discoveryFinderUrl: {{ tpl (.Values.digitalTwinRegistry.discoveryFinderUrl | default "") . | quote }}
+      type: {{ tpl (.Values.digitalTwinRegistry.type | default "") . | quote }}
 
     semanticshub:
       url: {{ tpl (.Values.semanticshub.url | default "") . | quote }}

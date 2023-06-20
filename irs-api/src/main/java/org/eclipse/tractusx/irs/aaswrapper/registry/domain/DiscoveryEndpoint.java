@@ -23,7 +23,7 @@
 package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 
 /**
- * A result of finding Discovery Endpoint
+ * A single Discovery Endpoint.
  */
 public record DiscoveryEndpoint(String type, String description, String endpointAddress, String documentation,
                                 String resourceId) {
