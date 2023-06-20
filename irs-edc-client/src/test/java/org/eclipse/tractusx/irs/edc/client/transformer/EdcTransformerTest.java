@@ -49,8 +49,6 @@ import org.eclipse.edc.policy.model.OrConstraint;
 import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
-import org.eclipse.tractusx.irs.edc.client.transformer.EdcObjectMapper;
-import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,7 +57,6 @@ class EdcTransformerTest {
 
     private TitaniumJsonLd jsonLd;
     private EdcTransformer edcTransformer;
-    private ObjectMapper objectMapper;
 
     private static @NotNull String getCatalogAsString() {
         return """
@@ -205,7 +202,7 @@ class EdcTransformerTest {
         jsonLd.registerNamespace("dcat", "https://www.w3.org/ns/dcat/");
         jsonLd.registerNamespace("dspace", "https://w3id.org/dspace/v0.8/");
 
-        objectMapper = EdcObjectMapper.MAPPER;
+        ObjectMapper objectMapper = EdcObjectMapper.MAPPER;
         edcTransformer = new EdcTransformer(objectMapper);
     }
 
