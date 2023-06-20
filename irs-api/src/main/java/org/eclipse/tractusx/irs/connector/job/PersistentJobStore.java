@@ -32,7 +32,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.common.JsonParseException;
@@ -48,7 +47,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class PersistentJobStore extends BaseJobStore {
 
     /**
@@ -56,12 +54,17 @@ public class PersistentJobStore extends BaseJobStore {
      */
     private static final String JOB_PREFIX = "job:";
 
-    @Qualifier(JOB_BLOB_PERSISTENCE)
     private final BlobPersistence blobStore;
 
     private final JsonUtil json = new JsonUtil();
 
     private final MeterRegistryService meterService;
+
+    public PersistentJobStore(@Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore,
+            final MeterRegistryService meterService) {
+        this.blobStore = blobStore;
+        this.meterService = meterService;
+    }
 
     @Override
     protected Optional<MultiTransferJob> get(final String jobId) {

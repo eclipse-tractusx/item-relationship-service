@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.JsonParseException;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
@@ -45,15 +44,18 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class PersistentBatchOrderStore implements BatchOrderStore {
 
     private static final String BATCH_ORDER_PREFIX = "order:";
 
     private final JsonUtil json = new JsonUtil();
 
-    @Qualifier(JOB_BLOB_PERSISTENCE)
+
     private final BlobPersistence blobStore;
+
+    public PersistentBatchOrderStore(@Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore) {
+        this.blobStore = blobStore;
+    }
 
     @Override
     public void save(final UUID batchOrderId, final BatchOrder batchOrder) {

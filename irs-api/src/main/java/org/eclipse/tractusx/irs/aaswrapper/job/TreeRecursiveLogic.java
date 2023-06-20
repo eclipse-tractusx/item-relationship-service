@@ -27,7 +27,6 @@ import static org.eclipse.tractusx.irs.configuration.JobConfiguration.JOB_BLOB_P
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
@@ -46,13 +45,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
  * by querying multiple IRS API instances.
  */
 @Slf4j
-@RequiredArgsConstructor
 public class TreeRecursiveLogic {
 
     /**
      * Blob store API.
      */
-    @Qualifier(JOB_BLOB_PERSISTENCE)
+
     private final BlobPersistence blobStoreApi;
     /**
      * Json Converter.
@@ -63,6 +61,13 @@ public class TreeRecursiveLogic {
      * Assembles partial parts trees.
      */
     private final ItemTreesAssembler assembler;
+
+    public TreeRecursiveLogic(@Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStoreApi,
+            final JsonUtil jsonUtil, final ItemTreesAssembler assembler) {
+        this.blobStoreApi = blobStoreApi;
+        this.jsonUtil = jsonUtil;
+        this.assembler = assembler;
+    }
 
     /**
      * Assembles multiple partial item graph into one overall item graph.
@@ -75,7 +80,8 @@ public class TreeRecursiveLogic {
             final String targetBlobName) {
         final var partialTrees = completedTransfers.stream()
                                                    .map(this::downloadPartialItemGraphBlobs)
-                                                   .map(payload -> jsonUtil.fromString(new String(payload, StandardCharsets.UTF_8),
+                                                   .map(payload -> jsonUtil.fromString(
+                                                           new String(payload, StandardCharsets.UTF_8),
                                                            ItemContainer.class));
         final var assembledTree = assembler.retrieveItemGraph(partialTrees);
         final String json = jsonUtil.asString(assembledTree);

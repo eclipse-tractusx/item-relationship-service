@@ -34,7 +34,6 @@ import io.minio.errors.InternalException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.ServerException;
 import io.minio.errors.XmlParserException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
@@ -47,12 +46,17 @@ import org.springframework.stereotype.Component;
  * Minio health indicator for Spring actuator
  */
 @Component
-@RequiredArgsConstructor
 @Slf4j
 class MinioHealthIndicator implements HealthIndicator {
-    @Qualifier(JOB_BLOB_PERSISTENCE)
+
     private final BlobPersistence blobPersistence;
     private final BlobstoreConfiguration blobstoreConfiguration;
+
+    public MinioHealthIndicator(@Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobPersistence,
+            final BlobstoreConfiguration blobstoreConfiguration) {
+        this.blobPersistence = blobPersistence;
+        this.blobstoreConfiguration = blobstoreConfiguration;
+    }
 
     @Override
     public Health health() {
@@ -78,9 +82,9 @@ class MinioHealthIndicator implements HealthIndicator {
                 if (minioBlobPersistence.bucketExists(blobstoreConfiguration.getBucketName())) {
                     return true;
                 }
-            } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException
-                     | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException
-                     | InternalException e) {
+            } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException |
+                     NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException |
+                     InternalException e) {
                 log.error("Lost connection to Minio", e);
             }
         }
