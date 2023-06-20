@@ -103,7 +103,7 @@ class EdcSubmodelFacadeTest {
         when(client.getSubmodelRawPayload(any())).thenReturn(future);
 
         // act
-        ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelRawPayload("");
+        ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelRawPayload("", "123");
 
         // assert
         assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
@@ -116,7 +116,7 @@ class EdcSubmodelFacadeTest {
         when(client.getSubmodelRawPayload(any())).thenThrow(e);
 
         // act
-        ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelRawPayload("");
+        ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelRawPayload("", "123");
 
         // assert
         assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
@@ -132,7 +132,7 @@ class EdcSubmodelFacadeTest {
         when(client.getSubmodelRawPayload(any())).thenReturn(future);
 
         // act
-        testee.getSubmodelRawPayload("");
+        testee.getSubmodelRawPayload("", "123");
 
         // assert
         assertThat(Thread.currentThread().isInterrupted()).isTrue();

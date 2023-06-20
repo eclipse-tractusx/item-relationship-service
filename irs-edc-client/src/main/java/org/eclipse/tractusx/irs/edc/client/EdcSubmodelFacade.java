@@ -64,7 +64,7 @@ public class EdcSubmodelFacade {
     }
 
     @SuppressWarnings("PMD.PreserveStackTrace")
-    public String getSubmodelRawPayload(final String submodelEndpointAddress) throws EdcClientException {
+    public String getSubmodelRawPayload(final String submodelEndpointAddress, final String assetId) throws EdcClientException {
         try {
             return client.getSubmodelRawPayload(submodelEndpointAddress).get();
         } catch (InterruptedException e) {

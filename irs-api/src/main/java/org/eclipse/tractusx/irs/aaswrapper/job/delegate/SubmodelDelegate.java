@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
+import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractIdFromSubprotocolBody.extractAssetId;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -144,6 +146,8 @@ public class SubmodelDelegate extends AbstractDelegate {
     }
 
     private String requestSubmodelAsString(final Endpoint endpoint) throws EdcClientException {
-        return submodelFacade.getSubmodelRawPayload(endpoint.getProtocolInformation().getHref());
+        return submodelFacade.getSubmodelRawPayload(
+                endpoint.getProtocolInformation().getHref(),
+                extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody()));
     }
 }

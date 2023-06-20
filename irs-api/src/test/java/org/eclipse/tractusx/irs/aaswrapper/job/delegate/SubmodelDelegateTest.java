@@ -106,7 +106,7 @@ class SubmodelDelegateTest {
                                 "testAssemblyPartRelationshipEndpoint"))));
 
         // when
-        when(submodelFacade.getSubmodelRawPayload(any())).thenThrow(new UsagePolicyException("itemId"));
+        when(submodelFacade.getSubmodelRawPayload(any(), any())).thenThrow(new UsagePolicyException("itemId"));
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels,
                 jobParameterCollectAspects(), new AASTransferProcess(), "itemId");
 

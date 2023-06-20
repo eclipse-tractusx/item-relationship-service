@@ -128,6 +128,7 @@ class AssetAdministrationShellTestdataCreator {
                                                                            .href(catenaXId.concat("_").concat(submodelName))
                                                                            .endpointProtocol("AAS/SUBMODEL")
                                                                            .endpointProtocolVersion("1.0RC02")
+                                                                           .subprotocolBody("id=9300395e-c0a5-4e88-bc57-a3973fec4c26;idsEndpoint=http://edc.control.plane/")
                                                                            .build();
 
         final Endpoint endpoint = Endpoint.builder()
