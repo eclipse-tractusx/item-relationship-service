@@ -47,20 +47,20 @@ import org.springframework.web.util.UriUtils;
 @Service
 public class PolicyCheckerService {
 
-    private final List<String> allowedPolicies;
+    private final List<String> allowedPoliciesFromConfig;
 
     private final PolicyStoreService policyStore;
 
     public PolicyCheckerService(@Value("${edc.catalog.policies.allowedNames}") final List<String> allowedPolicies,
             final PolicyStoreService policyStore) {
-        this.allowedPolicies = allowedPolicies;
+        this.allowedPoliciesFromConfig = allowedPolicies;
         this.policyStore = policyStore;
     }
 
     public boolean isValid(final Policy policy) {
         final List<PolicyDefinition> policyList = getAllowedPolicies();
         log.info("Checking policy {} against allowed policies: {}", StringMapper.mapToString(policy),
-                String.join(",", allowedPolicies));
+                String.join(",", policyList.stream().map(PolicyDefinition::getRightExpressionValue).toList()));
         return policy.getPermissions()
                      .stream()
                      .anyMatch(permission -> policyList.stream()
@@ -75,7 +75,7 @@ public class PolicyCheckerService {
                                                               .map(org.eclipse.tractusx.irs.policystore.models.Policy::policyId)
                                                               .toList());
         if (storedPolicies.isEmpty()) {
-            storedPolicies.addAll(allowedPolicies);
+            storedPolicies.addAll(allowedPoliciesFromConfig);
         }
         return storedPolicies.stream().flatMap(this::addEncodedVersion).map(this::createPolicy).toList();
     }
