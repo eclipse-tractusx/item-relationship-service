@@ -25,7 +25,7 @@ package org.eclipse.tractusx.irs.edc.client;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.common.ApiConstants;
 import org.eclipse.tractusx.irs.common.Masker;
 import org.springframework.web.bind.annotation.PostMapping;

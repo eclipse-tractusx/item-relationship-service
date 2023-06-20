@@ -26,7 +26,7 @@ import java.time.Instant;
 
 import lombok.Builder;
 import lombok.Data;
-import org.eclipse.dataspaceconnector.policy.model.Policy;
+import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
 
 /**

@@ -48,16 +48,65 @@
 
         <!-- EDC Client -->
         <dependency>
-            <groupId>org.eclipse.dataspaceconnector</groupId>
+            <groupId>org.eclipse.edc</groupId>
             <artifactId>catalog-spi</artifactId>
-            <version>0.0.1-milestone-6</version>
+            <version>0.1.0</version>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.dataspaceconnector</groupId>
+            <groupId>org.eclipse.edc</groupId>
             <artifactId>contract-spi</artifactId>
-            <version>0.0.1-milestone-6</version>
+            <version>0.1.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>dsp-spi</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>connector-core</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.apicatalog</groupId>
+            <artifactId>titanium-json-ld</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>dsp</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>management-api</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>control-plane-api</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>contract-negotiation-api</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>json-ld-spi</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>json-ld</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.glassfish</groupId>-->
+<!--            <artifactId>jakarta.json</artifactId>-->
+<!--            <version>2.0.1</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>

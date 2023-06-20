@@ -36,7 +36,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
-import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
+import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationId;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
