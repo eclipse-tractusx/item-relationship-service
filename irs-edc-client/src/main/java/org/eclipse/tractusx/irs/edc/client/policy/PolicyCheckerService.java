@@ -23,7 +23,6 @@
 package org.eclipse.tractusx.irs.edc.client.policy;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -35,7 +34,6 @@ import org.eclipse.dataspaceconnector.policy.model.Operator;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.StringMapper;
-import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriUtils;
@@ -48,8 +46,7 @@ import org.springframework.web.util.UriUtils;
 @RequiredArgsConstructor
 public class PolicyCheckerService {
 
-    private final PolicyStoreService policyStore;
-
+    private final AcceptedPoliciesProvider policyStore;
 
     public boolean isValid(final Policy policy) {
         final List<PolicyDefinition> policyList = getAllowedPolicies();
@@ -63,13 +60,13 @@ public class PolicyCheckerService {
 
     @NotNull
     private List<PolicyDefinition> getAllowedPolicies() {
-        final var storedPolicies = new ArrayList<>(policyStore.getStoredPolicies()
-                                                              .stream()
-                                                              .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
-                                                              .map(org.eclipse.tractusx.irs.policystore.models.Policy::policyId)
-                                                              .toList());
-
-        return storedPolicies.stream().flatMap(this::addEncodedVersion).map(this::createPolicy).toList();
+        return policyStore.getAcceptedPolicies()
+                          .stream()
+                          .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
+                          .map(AcceptedPolicy::policyId)
+                          .flatMap(this::addEncodedVersion)
+                          .map(this::createPolicy)
+                          .toList();
     }
 
     private boolean isValid(final Permission permission, final PolicyDefinition policyDefinition) {

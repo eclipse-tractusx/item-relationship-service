@@ -34,7 +34,6 @@ import org.eclipse.dataspaceconnector.policy.model.LiteralExpression;
 import org.eclipse.dataspaceconnector.policy.model.Operator;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
-import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,14 +45,12 @@ class PolicyCheckerServiceTest {
 
     private PolicyCheckerService policyCheckerService;
     @Mock
-    private PolicyStoreService policyStore;
+    private AcceptedPoliciesProvider policyStore;
 
     @BeforeEach
     void setUp() {
-        final var policyList = List.of(
-                new org.eclipse.tractusx.irs.policystore.models.Policy("ID 3.0 Trace", OffsetDateTime.now(),
-                        OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getStoredPolicies()).thenReturn(policyList);
+        final var policyList = List.of(new AcceptedPolicy("ID 3.0 Trace", OffsetDateTime.now().plusYears(1)));
+        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
         policyCheckerService = new PolicyCheckerService(policyStore);
     }
 

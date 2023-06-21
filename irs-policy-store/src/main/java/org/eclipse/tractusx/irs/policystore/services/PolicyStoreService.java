@@ -27,6 +27,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
+import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.Policy;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
@@ -38,7 +40,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-public class PolicyStoreService {
+public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     public static final int DEFAULT_POLICY_LIFETIME_YEARS = 100;
     private final String apiAllowedBpn;
@@ -79,5 +81,14 @@ public class PolicyStoreService {
     public void deletePolicy(final String policyId) {
         log.info("Deleting policy with id {}", policyId);
         persistence.delete(apiAllowedBpn, policyId);
+    }
+
+    @Override
+    public List<AcceptedPolicy> getAcceptedPolicies() {
+        return getStoredPolicies().stream().map(this::toAcceptedPolicy).toList();
+    }
+
+    private AcceptedPolicy toAcceptedPolicy(final Policy policy) {
+        return new AcceptedPolicy(policy.policyId(), policy.validUntil());
     }
 }
