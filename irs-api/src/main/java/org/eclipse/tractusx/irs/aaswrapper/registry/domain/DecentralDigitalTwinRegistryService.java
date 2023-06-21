@@ -49,21 +49,10 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     public AssetAdministrationShellDescriptor getAAShellDescriptor(final DigitalTwinRegistryKey key) {
         log.info("Retrieved AAS Identification for DigitalTwinRegistryKey: {}", key);
         final DiscoveryFinderRequest onlyBpn = new DiscoveryFinderRequest(List.of("bpn"));
-        final List<String> providedBpn = List.of(key.bpn());
+
         final List<DiscoveryEndpoint> discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn)
                                                                                 .endpoints();
-        final List<String> connectorEndpoints = discoveryEndpoints.stream()
-                                                                  .map(discoveryEndpoint -> discoveryFinderClient.findConnectorEndpoints(
-                                                                                                                         discoveryEndpoint.endpointAddress(),
-                                                                                                                         providedBpn)
-                                                                                                                 .stream()
-                                                                                                                 .filter(edcDiscoveryResult -> edcDiscoveryResult.bpn()
-                                                                                                                                                                 .equals(key.bpn()))
-                                                                                                                 .map(EdcDiscoveryResult::connectorEndpoint)
-                                                                                                                 .toList())
-                                                                  .flatMap(List::stream)
-                                                                  .flatMap(List::stream)
-                                                                  .toList();
+        final List<String> connectorEndpoints = fetchConnectorEndpoints(key.bpn(), discoveryEndpoints);
         // take first
         final EndpointDataReference endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
                 connectorEndpoints).stream().findFirst().orElseThrow();
@@ -81,6 +70,22 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         return decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(endpointDataReference,
                 aaShellIdentification);
 
+    }
+
+    public List<String> fetchConnectorEndpoints(final String bpn, final List<DiscoveryEndpoint> discoveryEndpoints) {
+        final List<String> providedBpn = List.of(bpn);
+        return discoveryEndpoints.stream()
+                                                                  .map(discoveryEndpoint -> discoveryFinderClient.findConnectorEndpoints(
+                                                                                                                         discoveryEndpoint.endpointAddress(),
+                                                                                                                         providedBpn)
+                                                                                                                 .stream()
+                                                                                                                 .filter(edcDiscoveryResult -> edcDiscoveryResult.bpn()
+                                                                                                                                                                 .equals(bpn))
+                                                                                                                 .map(EdcDiscoveryResult::connectorEndpoint)
+                                                                                                                 .toList())
+                                                                  .flatMap(List::stream)
+                                                                  .flatMap(List::stream)
+                                                                  .toList();
     }
 
 }
