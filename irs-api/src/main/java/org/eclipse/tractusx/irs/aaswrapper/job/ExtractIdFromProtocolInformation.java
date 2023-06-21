@@ -22,16 +22,22 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job;
 
-public class ExtractIdFromSubprotocolBody {
+public class ExtractIdFromProtocolInformation {
 
     private static final String ASSET_ID_PREFIX = "id=";
     private static final String ASSET_ID_SUFIX = ";";
+    private static final String SUFIX_IN_PATH_FROM_HREF = "/shells/";
 
-
-    public static String extractAssetId(String subprotocolBody) {
+    public static String extractAssetId(final String subprotocolBody) {
         return subprotocolBody.substring(
                 subprotocolBody.indexOf(ASSET_ID_PREFIX) + 3,
                 subprotocolBody.indexOf(ASSET_ID_SUFIX));
+    }
+
+    public static String extractSufix(final String href) {
+        return href.substring(
+                href.indexOf(SUFIX_IN_PATH_FROM_HREF)
+        );
     }
 
 }
