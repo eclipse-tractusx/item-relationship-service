@@ -80,7 +80,8 @@ public class SecurityConfiguration {
         httpSecurity.headers(headers -> headers.httpStrictTransportSecurity(
                 httpStrictTransportSecurity ->
                         httpStrictTransportSecurity.maxAgeInSeconds(Duration.ofDays(HSTS_MAX_AGE_DAYS).toSeconds())
-                                                   .includeSubDomains(true).preload(true)
+                                                   .includeSubDomains(true)
+                                                   .preload(true)
                                                    .requestMatcher(AnyRequestMatcher.INSTANCE)));
 
         httpSecurity.headers(headers -> headers.xssProtection(xXssConfig ->
