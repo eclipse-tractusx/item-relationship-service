@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class PolicyStoreService {
 
+    public static final int DEFAULT_POLICY_LIFETIME_YEARS = 100;
     private final String apiAllowedBpn;
     private final Clock clock;
     private final List<Policy> allowedPoliciesFromConfig;
@@ -51,7 +52,8 @@ public class PolicyStoreService {
         this.apiAllowedBpn = apiAllowedBpn;
         this.allowedPoliciesFromConfig = allowedPolicies.stream()
                                                         .map(p -> new Policy(p, OffsetDateTime.now(),
-                                                                OffsetDateTime.now().plusYears(100)))
+                                                                OffsetDateTime.now().plusYears(
+                                                                        DEFAULT_POLICY_LIFETIME_YEARS)))
                                                         .toList();
         this.persistence = persistence;
         this.clock = clock;
