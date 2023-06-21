@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
 import org.eclipse.dataspaceconnector.policy.model.Constraint;
@@ -36,7 +37,6 @@ import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.StringMapper;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriUtils;
 
@@ -45,17 +45,11 @@ import org.springframework.web.util.UriUtils;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PolicyCheckerService {
-
-    private final List<String> allowedPoliciesFromConfig;
 
     private final PolicyStoreService policyStore;
 
-    public PolicyCheckerService(@Value("${edc.catalog.policies.allowedNames}") final List<String> allowedPolicies,
-            final PolicyStoreService policyStore) {
-        this.allowedPoliciesFromConfig = allowedPolicies;
-        this.policyStore = policyStore;
-    }
 
     public boolean isValid(final Policy policy) {
         final List<PolicyDefinition> policyList = getAllowedPolicies();
@@ -74,9 +68,7 @@ public class PolicyCheckerService {
                                                               .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
                                                               .map(org.eclipse.tractusx.irs.policystore.models.Policy::policyId)
                                                               .toList());
-        if (storedPolicies.isEmpty()) {
-            storedPolicies.addAll(allowedPoliciesFromConfig);
-        }
+
         return storedPolicies.stream().flatMap(this::addEncodedVersion).map(this::createPolicy).toList();
     }
 

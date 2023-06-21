@@ -23,7 +23,9 @@
 package org.eclipse.tractusx.irs.edc.client.policy;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.eclipse.dataspaceconnector.policy.model.Action;
@@ -42,14 +44,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class PolicyCheckerServiceTest {
 
-    private PolicyCheckerService policyCheckerService ;
+    private PolicyCheckerService policyCheckerService;
     @Mock
     private PolicyStoreService policyStore;
 
     @BeforeEach
     void setUp() {
-        policyCheckerService = new PolicyCheckerService(List.of("ID 3.0 Trace"),
-                policyStore);
+        final var policyList = List.of(
+                new org.eclipse.tractusx.irs.policystore.models.Policy("ID 3.0 Trace", OffsetDateTime.now(),
+                        OffsetDateTime.now().plusYears(1)));
+        when(policyStore.getStoredPolicies()).thenReturn(policyList);
+        policyCheckerService = new PolicyCheckerService(policyStore);
     }
 
     @Test
@@ -71,7 +76,8 @@ class PolicyCheckerServiceTest {
                                                                                                         .operator(
                                                                                                                 Operator.EQ)
                                                                                                         .build())
-                                                                    .build()).build();
+                                                                    .build())
+                                      .build();
         // when
         boolean result = policyCheckerService.isValid(policy);
 
@@ -98,7 +104,8 @@ class PolicyCheckerServiceTest {
                                                                                                         .operator(
                                                                                                                 Operator.EQ)
                                                                                                         .build())
-                                                                    .build()).build();
+                                                                    .build())
+                                      .build();
         // when
         boolean result = policyCheckerService.isValid(policy);
 
@@ -125,7 +132,8 @@ class PolicyCheckerServiceTest {
                                                                                                         .operator(
                                                                                                                 Operator.EQ)
                                                                                                         .build())
-                                                                    .build()).build();
+                                                                    .build())
+                                      .build();
         // when
         boolean result = policyCheckerService.isValid(policy);
 

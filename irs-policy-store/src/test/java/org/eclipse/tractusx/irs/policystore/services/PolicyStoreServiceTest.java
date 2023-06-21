@@ -54,7 +54,7 @@ class PolicyStoreServiceTest {
 
     @BeforeEach
     void setUp() {
-        testee = new PolicyStoreService(BPN, persistence, clock);
+        testee = new PolicyStoreService(BPN, List.of(), persistence, clock);
     }
 
     @Test

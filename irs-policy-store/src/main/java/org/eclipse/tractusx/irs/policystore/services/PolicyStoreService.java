@@ -41,14 +41,18 @@ import org.springframework.stereotype.Service;
 public class PolicyStoreService {
 
     private final String apiAllowedBpn;
-
     private final Clock clock;
-
+    private final List<Policy> allowedPoliciesFromConfig;
     private final PolicyPersistence persistence;
 
     public PolicyStoreService(@Value("${apiAllowedBpn:}") final String apiAllowedBpn,
+            @Value("${edc.catalog.policies.allowedNames}") final List<String> allowedPolicies,
             final PolicyPersistence persistence, final Clock clock) {
         this.apiAllowedBpn = apiAllowedBpn;
+        this.allowedPoliciesFromConfig = allowedPolicies.stream()
+                                                        .map(p -> new Policy(p, OffsetDateTime.now(),
+                                                                OffsetDateTime.now().plusYears(100)))
+                                                        .toList();
         this.persistence = persistence;
         this.clock = clock;
     }
@@ -61,7 +65,13 @@ public class PolicyStoreService {
 
     public List<Policy> getStoredPolicies() {
         log.info("Reading all stored polices for BPN {}", apiAllowedBpn);
-        return persistence.readAll(apiAllowedBpn);
+        final var storedPolicies = persistence.readAll(apiAllowedBpn);
+        if (storedPolicies.isEmpty()) {
+            log.info("Policy store is empty, returning default values from config");
+            return allowedPoliciesFromConfig;
+        } else {
+            return storedPolicies;
+        }
     }
 
     public void deletePolicy(final String policyId) {
