@@ -22,33 +22,35 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.transformer;
 
+import java.util.Optional;
+
 import jakarta.json.JsonBuilderFactory;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
-import org.eclipse.edc.connector.api.management.contractnegotiation.model.ContractOfferDescription;
+import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.jsonld.spi.JsonLdKeywords;
 import org.eclipse.edc.jsonld.spi.transformer.AbstractJsonLdTransformer;
 import org.eclipse.edc.transform.spi.TransformerContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class JsonObjectFromContractOfferDescriptionTransformer
-        extends AbstractJsonLdTransformer<ContractOfferDescription, JsonObject> {
+public class JsonObjectFromCatalogRequestTransformer extends AbstractJsonLdTransformer<CatalogRequest, JsonObject> {
     private final JsonBuilderFactory jsonFactory;
 
-    public JsonObjectFromContractOfferDescriptionTransformer(JsonBuilderFactory jsonFactory) {
-        super(ContractOfferDescription.class, JsonObject.class);
+    public JsonObjectFromCatalogRequestTransformer(JsonBuilderFactory jsonFactory) {
+        super(CatalogRequest.class, JsonObject.class);
         this.jsonFactory = jsonFactory;
     }
 
     @Override
-    public @Nullable JsonObject transform(@NotNull ContractOfferDescription dto, @NotNull TransformerContext context) {
+    public @Nullable JsonObject transform(@NotNull CatalogRequest dto, @NotNull TransformerContext context) {
         JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
-        builder.add(JsonLdKeywords.TYPE, ContractOfferDescription.TYPE)
-               .add(ContractOfferDescription.OFFER_ID, dto.getOfferId())
-               .add(ContractOfferDescription.ASSET_ID, dto.getAssetId())
-               .add("validity", dto.getValidity())
-               .add(ContractOfferDescription.POLICY, context.transform(dto.getPolicy(), JsonObject.class));
+        builder.add(JsonLdKeywords.TYPE, CatalogRequest.EDC_CATALOG_REQUEST_TYPE)
+               .add(CatalogRequest.EDC_CATALOG_REQUEST_PROVIDER_URL, dto.getProviderUrl())
+               .add(CatalogRequest.EDC_CATALOG_REQUEST_PROTOCOL, dto.getProtocol());
+        Optional.ofNullable(dto.getQuerySpec())
+                .ifPresent(s -> builder.add(CatalogRequest.EDC_CATALOG_REQUEST_QUERY_SPEC,
+                        context.transform(dto.getQuerySpec(), JsonObject.class)));
 
         return builder.build();
     }

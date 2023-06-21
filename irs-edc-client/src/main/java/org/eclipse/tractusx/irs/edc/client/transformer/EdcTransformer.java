@@ -22,14 +22,10 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.transformer;
 
-import static com.apicatalog.jsonld.JsonLd.expand;
-
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-import com.apicatalog.jsonld.JsonLdError;
-import com.apicatalog.jsonld.api.ExpansionApi;
 import com.apicatalog.jsonld.document.JsonDocument;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.json.Json;
@@ -37,12 +33,15 @@ import jakarta.json.JsonBuilderFactory;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import org.eclipse.edc.catalog.spi.Catalog;
+import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.connector.api.management.contractnegotiation.model.ContractOfferDescription;
 import org.eclipse.edc.connector.api.management.contractnegotiation.model.NegotiationInitiateRequestDto;
+import org.eclipse.edc.connector.api.management.contractnegotiation.transform.JsonObjectFromNegotiationStateTransformer;
 import org.eclipse.edc.connector.api.management.transferprocess.model.TransferRequestDto;
 import org.eclipse.edc.connector.api.management.transferprocess.transform.JsonObjectFromTransferProcessDtoTransformer;
 import org.eclipse.edc.connector.core.transform.TransformerContextImpl;
 import org.eclipse.edc.connector.core.transform.TypeTransformerRegistryImpl;
+import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.jsonld.transformer.from.JsonObjectFromAssetTransformer;
 import org.eclipse.edc.jsonld.transformer.from.JsonObjectFromCatalogTransformer;
 import org.eclipse.edc.jsonld.transformer.from.JsonObjectFromCriterionTransformer;
@@ -65,7 +64,11 @@ import org.eclipse.edc.jsonld.transformer.to.JsonObjectToPolicyTransformer;
 import org.eclipse.edc.jsonld.transformer.to.JsonObjectToProhibitionTransformer;
 import org.eclipse.edc.jsonld.transformer.to.JsonObjectToQuerySpecTransformer;
 import org.eclipse.edc.jsonld.transformer.to.JsonValueToGenericTypeTransformer;
+import org.eclipse.edc.protocol.dsp.transferprocess.transformer.type.from.JsonObjectFromDataAddressTransformer;
+import org.eclipse.edc.spi.result.Result;
 import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
+import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -75,22 +78,35 @@ public class EdcTransformer {
     private final JsonObjectFromNegotiationInitiateDtoTransformer jsonObjectFromNegotiationInitiateDtoTransformer;
     private final JsonObjectFromTransferRequestDtoTransformer jsonObjectFromTransferRequestDtoTransformer;
     private final JsonObjectFromContractOfferDescriptionTransformer jsonObjectFromContractOfferDescriptionTransformer;
+    private final JsonObjectFromQuerySpecTransformer jsonObjectFromQuerySpecTransformer;
+    private final JsonObjectFromCatalogRequestTransformer jsonObjectFromCatalogRequestTransformer;
+    private final TitaniumJsonLd titaniumJsonLd;
+    private final TransformerContextImpl transformerContext;
+    private final JsonObjectToNegotiationResponseTransformer jsonObjectToNegotiationResponseTransformer;
+    private final JsonObjectToNegotiationStateTransformer jsonObjectToNegotiationStateTransformer;
 
-    public EdcTransformer(final ObjectMapper objectMapper) {
+    public EdcTransformer(final ObjectMapper objectMapper, final TitaniumJsonLd titaniumJsonLd) {
+        this.titaniumJsonLd = titaniumJsonLd;
         JsonBuilderFactory jsonBuilderFactory = Json.createBuilderFactory(Map.of());
 
         jsonObjectFromNegotiationInitiateDtoTransformer = new JsonObjectFromNegotiationInitiateDtoTransformer(
                 jsonBuilderFactory);
         jsonObjectToCatalogTransformer = new JsonObjectToCatalogTransformer();
         jsonObjectFromTransferRequestDtoTransformer = new JsonObjectFromTransferRequestDtoTransformer(
-                jsonBuilderFactory);
+                jsonBuilderFactory, objectMapper);
         jsonObjectFromContractOfferDescriptionTransformer = new JsonObjectFromContractOfferDescriptionTransformer(
                 jsonBuilderFactory);
+        jsonObjectFromQuerySpecTransformer = new JsonObjectFromQuerySpecTransformer(jsonBuilderFactory);
+        jsonObjectFromCatalogRequestTransformer = new JsonObjectFromCatalogRequestTransformer(jsonBuilderFactory);
+        jsonObjectToNegotiationResponseTransformer = new JsonObjectToNegotiationResponseTransformer();
+        jsonObjectToNegotiationStateTransformer = new JsonObjectToNegotiationStateTransformer();
 
         typeTransformerRegistry = new TypeTransformerRegistryImpl();
-        typeTransformerRegistry.register(new JsonValueToGenericTypeTransformer(objectMapper));
+        transformerContext = new TransformerContextImpl(typeTransformerRegistry);
+
+        // JSON to Object
         typeTransformerRegistry.register(jsonObjectToCatalogTransformer);
-        typeTransformerRegistry.register(jsonObjectFromNegotiationInitiateDtoTransformer);
+        typeTransformerRegistry.register(new JsonValueToGenericTypeTransformer(objectMapper));
         typeTransformerRegistry.register(new JsonObjectToDataServiceTransformer());
         typeTransformerRegistry.register(new JsonObjectToConstraintTransformer());
         typeTransformerRegistry.register(new JsonObjectToDatasetTransformer());
@@ -98,7 +114,18 @@ public class EdcTransformer {
         typeTransformerRegistry.register(new JsonObjectToPermissionTransformer());
         typeTransformerRegistry.register(new JsonObjectToActionTransformer());
         typeTransformerRegistry.register(new JsonObjectToDistributionTransformer());
+        typeTransformerRegistry.register(new JsonObjectToProhibitionTransformer());
+        typeTransformerRegistry.register(new JsonObjectToDutyTransformer());
+        typeTransformerRegistry.register(new JsonObjectToAssetTransformer());
+        typeTransformerRegistry.register(new JsonObjectToQuerySpecTransformer());
+        typeTransformerRegistry.register(new JsonObjectToCriterionTransformer());
+        typeTransformerRegistry.register(jsonObjectToNegotiationResponseTransformer);
+        // JSON from Object
+        typeTransformerRegistry.register(jsonObjectFromNegotiationInitiateDtoTransformer);
+        typeTransformerRegistry.register(jsonObjectFromCatalogRequestTransformer);
         typeTransformerRegistry.register(jsonObjectFromTransferRequestDtoTransformer);
+        typeTransformerRegistry.register(jsonObjectFromQuerySpecTransformer);
+        typeTransformerRegistry.register(jsonObjectFromContractOfferDescriptionTransformer);
         typeTransformerRegistry.register(
                 new JsonObjectFromTransferProcessDtoTransformer(jsonBuilderFactory, objectMapper));
         typeTransformerRegistry.register(new JsonObjectFromCatalogTransformer(jsonBuilderFactory, objectMapper));
@@ -107,39 +134,53 @@ public class EdcTransformer {
         typeTransformerRegistry.register(new JsonObjectFromDistributionTransformer(jsonBuilderFactory));
         typeTransformerRegistry.register(new JsonObjectFromDataServiceTransformer(jsonBuilderFactory));
         typeTransformerRegistry.register(new JsonObjectFromAssetTransformer(jsonBuilderFactory, objectMapper));
-        typeTransformerRegistry.register(new JsonObjectFromQuerySpecTransformer(jsonBuilderFactory));
         typeTransformerRegistry.register(new JsonObjectFromCriterionTransformer(jsonBuilderFactory, objectMapper));
-        typeTransformerRegistry.register(jsonObjectFromContractOfferDescriptionTransformer);
-        typeTransformerRegistry.register(new JsonObjectToProhibitionTransformer());
-        typeTransformerRegistry.register(new JsonObjectToDutyTransformer());
-        typeTransformerRegistry.register(new JsonObjectToAssetTransformer());
-        typeTransformerRegistry.register(new JsonObjectToQuerySpecTransformer());
-        typeTransformerRegistry.register(new JsonObjectToCriterionTransformer());
+        typeTransformerRegistry.register(new JsonObjectFromDataAddressTransformer(jsonBuilderFactory));
     }
 
-    public Catalog transformCatalog(final String jsonString, final Charset charset) throws JsonLdError {
+    public Catalog transformCatalog(final String jsonString, final Charset charset) {
         final JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(charset)));
-        final ExpansionApi expand = expand(JsonDocument.of(reader.read()));
-        final JsonObject jsonObject = expand.get().asJsonArray().getJsonObject(0);
-        return jsonObjectToCatalogTransformer.transform(jsonObject,
-                new TransformerContextImpl(typeTransformerRegistry));
+        final Result<JsonObject> expand = titaniumJsonLd.expand(
+                JsonDocument.of(reader.read()).getJsonContent().orElseThrow().asJsonObject());
+        return jsonObjectToCatalogTransformer.transform(expand.getContent(), transformerContext);
+    }
+
+    public NegotiationResponse transformJsonToNegotiationResponse(final String jsonString, final Charset charset) {
+        // TODO (ds-jhartmann) look into JsonObjectToCatalogTransformer to see how the id transform is handled there
+        final JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(charset)));
+        final Result<JsonObject> expand = titaniumJsonLd.expand(
+                JsonDocument.of(reader.read()).getJsonContent().orElseThrow().asJsonObject());
+        return jsonObjectToNegotiationResponseTransformer.transform(expand.getContent(), transformerContext);
+    }
+
+    public NegotiationState transformJsonToNegotiationState(final String jsonString, final Charset charset) {
+        final JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(charset)));
+        final Result<JsonObject> expand = titaniumJsonLd.expand(
+                JsonDocument.of(reader.read()).getJsonContent().orElseThrow().asJsonObject());
+        return jsonObjectToNegotiationStateTransformer.transform(expand.getContent(), transformerContext);
     }
 
     public JsonObject transformNegotiationInitiateRequestDtoToJson(
             final NegotiationInitiateRequestDto negotiationInitiateRequestDto) {
-        return jsonObjectFromNegotiationInitiateDtoTransformer.transform(negotiationInitiateRequestDto,
-                new TransformerContextImpl(typeTransformerRegistry));
+        final JsonObject transform = jsonObjectFromNegotiationInitiateDtoTransformer.transform(
+                negotiationInitiateRequestDto, transformerContext);
+        return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
     }
 
-    public JsonObject transformTransferRequestDtoToJson(
-            final TransferRequestDto transferRequestDto) {
-        return jsonObjectFromTransferRequestDtoTransformer.transform(transferRequestDto,
-                new TransformerContextImpl(typeTransformerRegistry));
+    public JsonObject transformTransferRequestDtoToJson(final TransferRequestDto transferRequestDto) {
+        return jsonObjectFromTransferRequestDtoTransformer.transform(transferRequestDto, transformerContext);
     }
 
-    public JsonObject transformContractOfferDescriptionToJson(
-            final ContractOfferDescription contractOfferDescription) {
-        return jsonObjectFromContractOfferDescriptionTransformer.transform(contractOfferDescription,
-                new TransformerContextImpl(typeTransformerRegistry));
+    public JsonObject transformContractOfferDescriptionToJson(final ContractOfferDescription contractOfferDescription) {
+
+        final JsonObject transform = jsonObjectFromContractOfferDescriptionTransformer.transform(
+                contractOfferDescription, transformerContext);
+        return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
+    }
+
+    public JsonObject transformCatalogRequestToJson(final CatalogRequest catalogRequest) {
+        final JsonObject transform = jsonObjectFromCatalogRequestTransformer.transform(catalogRequest,
+                transformerContext);
+        return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
     }
 }

@@ -35,6 +35,7 @@ public class JsonLdConfiguration {
     public static final String NAMESPACE_DSPACE = "https://w3id.org/dspace/v0.8/";
     public static final String NAMESPACE_DCAT = "https://www.w3.org/ns/dcat/";
     public static final String NAMESPACE_EDC = "https://w3id.org/edc/v0.0.1/ns/";
+    public static final String NAMESPACE_EDC_ID = NAMESPACE_EDC + "id";
     public static final String NAMESPACE_TRACTUSX = "https://w3id.org/tractusx/v0.0.1/ns/";
     public static final String NAMESPACE_DCT = "https://purl.org/dc/terms/";
 

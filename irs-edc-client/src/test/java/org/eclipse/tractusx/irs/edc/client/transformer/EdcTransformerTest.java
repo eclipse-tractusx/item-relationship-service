@@ -28,6 +28,7 @@ import static org.assertj.core.data.MapEntry.entry;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.apicatalog.jsonld.JsonLdError;
@@ -35,11 +36,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import org.eclipse.edc.catalog.spi.Catalog;
+import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.catalog.spi.DataService;
 import org.eclipse.edc.catalog.spi.Dataset;
 import org.eclipse.edc.catalog.spi.Distribution;
 import org.eclipse.edc.connector.api.management.contractnegotiation.model.ContractOfferDescription;
 import org.eclipse.edc.connector.api.management.contractnegotiation.model.NegotiationInitiateRequestDto;
+import org.eclipse.edc.connector.api.management.transferprocess.model.TransferRequestDto;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.policy.model.Action;
 import org.eclipse.edc.policy.model.AtomicConstraint;
@@ -49,6 +52,8 @@ import org.eclipse.edc.policy.model.OrConstraint;
 import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
+import org.eclipse.edc.spi.types.domain.DataAddress;
+import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,7 +72,7 @@ class EdcTransformerTest {
                 		"@id": "58505404-4da1-427a-82aa-b79482bcd1f0",
                 		"@type": "dcat:Dataset",
                 		"odrl:hasPolicy": {
-                			"@id": "7681f966-36ea-4542-b5ea-0d0db81967de:urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c1",
+                			"@id": "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c1",
                 			"@type": "odrl:Set",
                 			"odrl:permission": {
                 				"odrl:target": "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a",
@@ -129,7 +134,7 @@ class EdcTransformerTest {
         final String target = "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a";
         final String distributionId = "4ba1faa1-7f1a-4fb7-a41c-317f450e7443";
         final String datasetId = "58505404-4da1-427a-82aa-b79482bcd1f0";
-        final String offerId = "7681f966-36ea-4542-b5ea-0d0db81967de:urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c1";
+        final String offerId = "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c1";
 
         final HashMap<String, Object> properties = new HashMap<>();
         properties.put(edcNamespace + "description", "IRS EDC Demo Asset");
@@ -203,13 +208,13 @@ class EdcTransformerTest {
         jsonLd.registerNamespace("dspace", "https://w3id.org/dspace/v0.8/");
 
         ObjectMapper objectMapper = EdcObjectMapper.MAPPER;
-        edcTransformer = new EdcTransformer(objectMapper);
+        edcTransformer = new EdcTransformer(objectMapper, jsonLd);
     }
 
     @Test
-    void shouldDeserializeJsonLdResponseToCatalog() throws JsonLdError {
+    void shouldDeserializeJsonLdResponseToCatalog() {
         // Arrange
-        final String key = "7681f966-36ea-4542-b5ea-0d0db81967de:urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c1";
+        final String key = "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c1";
         final String catalogAsString = getCatalogAsString();
         final DataService expectedDataService = DataService.Builder.newInstance()
                                                                    .id("4ba1faa1-7f1a-4fb7-a41c-317f450e7443")
@@ -248,8 +253,45 @@ class EdcTransformerTest {
     }
 
     @Test
+    void shouldDeserializeNegotiationResponse() {
+        final String negotiationString = createNegotiationResponseAsString();
+        final NegotiationResponse negotiationResponse = edcTransformer.transformJsonToNegotiationResponse(
+                negotiationString, StandardCharsets.UTF_8);
+        assertThat(negotiationResponse.getResponseId()).isNotBlank();
+        assertThat(negotiationResponse.getState()).isNotBlank();
+        assertThat(negotiationResponse.getType()).isNotBlank();
+        assertThat(negotiationResponse.getProtocol()).isNotBlank();
+        assertThat(negotiationResponse.getErrorDetail()).isNull();
+        assertThat(negotiationResponse.getContractAgreementId()).isNotBlank();
+        assertThat(negotiationResponse.getCallbackAddresses()).isEmpty();
+    }
+
+    private String createNegotiationResponseAsString() {
+        return """
+                {
+                	"@type": "edc:ContractNegotiationDto",
+                	"@id": "a2d46fdb-d7a2-4f26-9f70-bccc4b09f563",
+                	"edc:type": "CONSUMER",
+                	"edc:protocol": "dataspace-protocol-http",
+                	"edc:state": "FINALIZED",
+                	"edc:counterPartyAddress": "https://irs-test-controlplane-provider.dev.demo.catena-x.net/api/v1/dsp",
+                	"edc:callbackAddresses": [],
+                	"edc:contractAgreementId": "b75a7451-5857-49da-8438-c80dcb2cbd1e:10:768accf6-693f-4652-a21e-7412a2ce6254",
+                	"@context": {
+                		"dct": "https://purl.org/dc/terms/",
+                		"tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+                		"edc": "https://w3id.org/edc/v0.0.1/ns/",
+                		"dcat": "https://www.w3.org/ns/dcat/",
+                		"odrl": "http://www.w3.org/ns/odrl/2/",
+                		"dspace": "https://w3id.org/dspace/v0.8/"
+                	}
+                }
+                """;
+    }
+
+    @Test
     void shouldSerializeContractOfferDescriptionToJsonObject() {
-        final String offerId = "7681f966-36ea-4542-b5ea-0d0db81967de:urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c";
+        final String offerId = "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c";
         final String assetId = "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a";
         final ContractOfferDescription contractOfferDescription = ContractOfferDescription.Builder.newInstance()
                                                                                                   .offerId(offerId)
@@ -273,7 +315,7 @@ class EdcTransformerTest {
         final String providerBPN = "BPNL00000003CRHK";
         final String providerConnector = "https://provider.edc/api/v1/dsp";
         final String protocol = "dataspace-protocol-http";
-        final String offerId = "7681f966-36ea-4542-b5ea-0d0db81967de:urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c";
+        final String offerId = "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c";
         final String assetId = "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a";
         final NegotiationInitiateRequestDto negotiationInitiateRequestDto = createNegotiation(consumerBPN, providerBPN,
                 providerConnector, protocol, offerId, assetId);
@@ -281,18 +323,59 @@ class EdcTransformerTest {
         final JsonObject negotiationJson = edcTransformer.transformNegotiationInitiateRequestDtoToJson(
                 negotiationInitiateRequestDto);
 
-        final Optional<JsonObject> optional = jsonLd.compact(negotiationJson).asOptional();
-
-        assertThat(optional).isPresent();
-        assertThat(optional.get()).isNotEmpty();
-        assertThat(optional.get()).contains(entry("@type", Json.createValue("edc:NegotiationInitiateRequestDto")));
-        assertThat(optional.get()).contains(entry("edc:connectorAddress", Json.createValue(providerConnector)));
-        assertThat(optional.get()).contains(entry("edc:connectorId", Json.createValue(consumerBPN)));
-        assertThat(optional.get()).contains(entry("edc:protocol", Json.createValue(protocol)));
+        assertThat(negotiationJson).isNotEmpty();
+        assertThat(negotiationJson).contains(entry("@type", Json.createValue("edc:NegotiationInitiateRequestDto")));
+        assertThat(negotiationJson).contains(entry("edc:connectorAddress", Json.createValue(providerConnector)));
+        assertThat(negotiationJson).contains(entry("edc:connectorId", Json.createValue(consumerBPN)));
+        assertThat(negotiationJson).contains(entry("edc:protocol", Json.createValue(protocol)));
     }
 
     @Test
     void shouldSerializeTransferRequestDtoToJsonObject() {
-        assertThat(true).isFalse();
+        final String providerConnector = "https://provider.edc/api/v1/dsp";
+        final String protocol = "dataspace-protocol-http";
+        final String contractId = "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c";
+        final String assetId = "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a";
+        final String connectorId = "BPNL00000003CRHK";
+        final TransferRequestDto transferRequestDto = TransferRequestDto.Builder.newInstance()
+                                                                                .assetId(assetId)
+                                                                                .connectorId(connectorId)
+                                                                                .connectorAddress(providerConnector)
+                                                                                .protocol(protocol)
+                                                                                .contractId(contractId)
+                                                                                .managedResources(false)
+                                                                                .dataDestination(
+                                                                                        DataAddress.Builder.newInstance()
+                                                                                                           .type("HttpProxy")
+                                                                                                           .build())
+                                                                                .privateProperties(
+                                                                                        Map.of("receiverHttpEndpoint",
+                                                                                                "https://backend.app/endpoint-data-reference"))
+                                                                                .build();
+        final JsonObject jsonObject = edcTransformer.transformTransferRequestDtoToJson(transferRequestDto);
+        final Optional<JsonObject> optional = jsonLd.compact(jsonObject).asOptional();
+        assertThat(optional).isPresent();
+        assertThat(optional.get().getJsonObject("edc:privateProperties")).isNotEmpty();
+        assertThat(optional.get().getJsonObject("edc:privateProperties")).containsKey("edc:receiverHttpEndpoint");
+        assertThat(
+                optional.get().getJsonObject("edc:privateProperties").getString("edc:receiverHttpEndpoint")).isEqualTo(
+                "https://backend.app/endpoint-data-reference");
+    }
+
+    @Test
+    void shouldSerializeCatalogRequestToJsonObject() {
+        final String providerConnector = "https://provider.edc/api/v1/dsp";
+        final String protocol = "dataspace-protocol-http";
+        final CatalogRequest catalogRequest = CatalogRequest.Builder.newInstance()
+                                                                    .providerUrl(providerConnector)
+                                                                    .protocol(protocol)
+                                                                    .build();
+        final JsonObject requestJson = edcTransformer.transformCatalogRequestToJson(catalogRequest);
+        final Optional<JsonObject> optional = jsonLd.compact(requestJson).asOptional();
+        assertThat(optional).isPresent();
+        assertThat(optional.get()).isNotEmpty();
+        assertThat(optional.get()).contains(entry("@type", Json.createValue("edc:CatalogRequest")));
+        System.out.println(optional.get());
+        System.out.println(requestJson);
     }
 }

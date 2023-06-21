@@ -22,34 +22,29 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.transformer;
 
-import jakarta.json.JsonBuilderFactory;
 import jakarta.json.JsonObject;
-import jakarta.json.JsonObjectBuilder;
-import org.eclipse.edc.connector.api.management.contractnegotiation.model.ContractOfferDescription;
-import org.eclipse.edc.jsonld.spi.JsonLdKeywords;
 import org.eclipse.edc.jsonld.spi.transformer.AbstractJsonLdTransformer;
 import org.eclipse.edc.transform.spi.TransformerContext;
+import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class JsonObjectFromContractOfferDescriptionTransformer
-        extends AbstractJsonLdTransformer<ContractOfferDescription, JsonObject> {
-    private final JsonBuilderFactory jsonFactory;
+public class JsonObjectToNegotiationStateTransformer extends AbstractJsonLdTransformer<JsonObject, NegotiationState> {
+    public static final String CONTRACT_NEGOTIATION_STATE = "https://w3id.org/edc/v0.0.1/ns/state";
 
-    public JsonObjectFromContractOfferDescriptionTransformer(JsonBuilderFactory jsonFactory) {
-        super(ContractOfferDescription.class, JsonObject.class);
-        this.jsonFactory = jsonFactory;
+    protected JsonObjectToNegotiationStateTransformer() {
+        super(JsonObject.class, NegotiationState.class);
     }
 
     @Override
-    public @Nullable JsonObject transform(@NotNull ContractOfferDescription dto, @NotNull TransformerContext context) {
-        JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
-        builder.add(JsonLdKeywords.TYPE, ContractOfferDescription.TYPE)
-               .add(ContractOfferDescription.OFFER_ID, dto.getOfferId())
-               .add(ContractOfferDescription.ASSET_ID, dto.getAssetId())
-               .add("validity", dto.getValidity())
-               .add(ContractOfferDescription.POLICY, context.transform(dto.getPolicy(), JsonObject.class));
-
+    public @Nullable NegotiationState transform(@NotNull final JsonObject jsonObject,
+            @NotNull final TransformerContext transformerContext) {
+        final NegotiationState.NegotiationStateBuilder builder = NegotiationState.builder();
+        jsonObject.forEach((key, value) -> {
+            if (key.equals(CONTRACT_NEGOTIATION_STATE)) {
+                builder.state(this.transformString(value, transformerContext));
+            }
+        });
         return builder.build();
     }
 }

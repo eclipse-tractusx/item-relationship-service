@@ -31,6 +31,7 @@ import jakarta.json.JsonBuilderFactory;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
 import org.eclipse.edc.connector.api.management.contractnegotiation.model.NegotiationInitiateRequestDto;
+import org.eclipse.edc.jsonld.spi.JsonLdKeywords;
 import org.eclipse.edc.jsonld.spi.transformer.AbstractJsonLdTransformer;
 import org.eclipse.edc.spi.types.domain.callback.CallbackAddress;
 import org.eclipse.edc.transform.spi.TransformerContext;
@@ -50,7 +51,7 @@ public class JsonObjectFromNegotiationInitiateDtoTransformer
     public @Nullable JsonObject transform(@NotNull NegotiationInitiateRequestDto dto,
             @NotNull TransformerContext context) {
         JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
-        builder.add("@type", NegotiationInitiateRequestDto.TYPE)
+        builder.add(JsonLdKeywords.TYPE, NegotiationInitiateRequestDto.TYPE)
                .add(NegotiationInitiateRequestDto.CONNECTOR_ADDRESS, dto.getConnectorAddress())
                .add(NegotiationInitiateRequestDto.CONNECTOR_ID, dto.getConnectorId())
                .add(NegotiationInitiateRequestDto.OFFER, context.transform(dto.getOffer(), JsonObject.class))
