@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createCatalog;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -48,14 +49,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import io.github.resilience4j.retry.RetryRegistry;
-import org.eclipse.dataspaceconnector.policy.model.Policy;
-import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
-import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
-import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.LinkedItem;
@@ -106,10 +102,6 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     EdcSubmodelClientTest() throws IOException {
         super();
-    }
-
-    private static Asset createAsset(final String assetId) {
-        return Asset.Builder.newInstance().id(assetId).property("asset:prop:id", assetId).build();
     }
 
     @BeforeEach
@@ -189,7 +181,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldThrowErrorWhenCatalogItemCouldNotBeFound() throws Exception {
+    void shouldThrowErrorWhenCatalogItemCouldNotBeFound() {
         // arrange
         when(catalogCache.getCatalogItem(any(), any())).thenReturn(Optional.empty());
 
@@ -326,8 +318,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         // arrange
         final String filterKey = "filter-key";
         final String filterValue = "filter-value";
-        when(edcControlPlaneClient.getCatalogWithFilter(ENDPOINT_ADDRESS + PROVIDER_SUFFIX, filterKey, filterValue)).thenReturn(
-                createCatalog("asset-id", 3));
+        when(edcControlPlaneClient.getCatalogWithFilter(ENDPOINT_ADDRESS + PROVIDER_SUFFIX, filterKey,
+                filterValue)).thenReturn(createCatalog("asset-id", 3));
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         final EndpointDataReference expected = mock(EndpointDataReference.class);
@@ -354,20 +346,6 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String data = StringMapper.mapToString(
                 submodelTestdataCreator.createSubmodelForId(catenaXId + submodelDataSuffix));
         when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(data);
-    }
-
-    private Catalog createCatalog(final String assetId, final int numberOfOffers) {
-        final Policy policy = mock(Policy.class);
-
-        final List<ContractOffer> contractOffers = IntStream.range(0, numberOfOffers)
-                                                            .boxed()
-                                                            .map(i -> ContractOffer.Builder.newInstance()
-                                                                                           .id("offer" + i)
-                                                                                           .asset(createAsset(assetId))
-                                                                                           .policy(policy)
-                                                                                           .build())
-                                                            .toList();
-        return Catalog.Builder.newInstance().id("default").contractOffers(contractOffers).build();
     }
 }
 

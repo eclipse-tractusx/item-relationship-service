@@ -27,18 +27,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import org.eclipse.edc.api.model.IdResponseDto;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
-import org.eclipse.tractusx.irs.edc.client.model.NegotiationId;
-import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
-import org.eclipse.tractusx.irs.edc.client.model.TransferProcessId;
-import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
+import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -69,12 +66,12 @@ class ContractNegotiationServiceTest {
         final CatalogItem catalogItem = CatalogItem.builder().itemId(assetId).assetPropId(assetId).build();
         when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
-                NegotiationId.builder().value("negotiationId").build());
+                IdResponseDto.Builder.newInstance().id("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.completedFuture(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(response);
         when(edcControlPlaneClient.startTransferProcess(any())).thenReturn(
-                TransferProcessId.builder().value("transferProcessId").build());
+                IdResponseDto.Builder.newInstance().id("transferProcessId").build());
         when(edcControlPlaneClient.getTransferProcess(any())).thenReturn(
                 CompletableFuture.completedFuture(TransferProcessResponse.builder().build()));
 
@@ -93,7 +90,7 @@ class ContractNegotiationServiceTest {
         final CatalogItem catalogItem = CatalogItem.builder().itemId(assetId).assetPropId(assetId).build();
         when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
-                NegotiationId.builder().value("negotiationId").build());
+                IdResponseDto.Builder.newInstance().id("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.failedFuture(
                 new RuntimeException("Test exception"));
         when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(response);

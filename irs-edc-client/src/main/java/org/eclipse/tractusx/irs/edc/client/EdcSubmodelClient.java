@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
+
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URLDecoder;
@@ -295,19 +297,26 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         return execute(endpointAddress, () -> {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + endpointAddress);
-            final String providerWithSuffix = appendSuffix(endpointAddress, config.getControlplane().getProviderSuffix());
+            final String providerWithSuffix = appendSuffix(endpointAddress,
+                    config.getControlplane().getProviderSuffix());
 
-            final Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(providerWithSuffix, filterKey, filterValue);
+            // TODO move method to catalogCache and facade
+            final Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(providerWithSuffix, filterKey,
+                    filterValue);
 
-            final List<CatalogItem> items = catalog.getContractOffers()
+            final List<CatalogItem> items = catalog.getDatasets()
                                                    .stream()
                                                    .map(contractOffer -> CatalogItem.builder()
                                                                                     .itemId(contractOffer.getId())
                                                                                     .assetPropId(
-                                                                                            contractOffer.getAsset()
-                                                                                                         .getId())
+                                                                                            contractOffer.getProperty(
+                                                                                                                 NAMESPACE_EDC_ID)
+                                                                                                         .toString())
                                                                                     .connectorId(catalog.getId())
-                                                                                    .policy(contractOffer.getPolicy())
+                                                                                    .policies(contractOffer.getOffers()
+                                                                                                           .values()
+                                                                                                           .stream()
+                                                                                                           .toList())
                                                                                     .build())
                                                    .toList();
             final NegotiationResponse response = contractNegotiationService.negotiate(providerWithSuffix,

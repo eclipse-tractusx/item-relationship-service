@@ -22,26 +22,16 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.model;
 
-import java.time.Instant;
-import java.util.List;
-
 import lombok.Builder;
-import lombok.Data;
-import org.eclipse.edc.catalog.spi.Dataset;
-import org.eclipse.edc.policy.model.Policy;
-import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * Catalog Item as it is stored in the cache and used by {@link ContractNegotiationService}.
+ * EDC negotiation state response.
  */
-@Builder
-@Data
-public class CatalogItem {
-    private String assetPropId;
-    private String itemId;
-    private List<Policy> policies;
-    private String connectorId;
-    private List<Dataset> datasets;
-    private Instant validUntil;
-
+@Value
+@Builder(toBuilder = true)
+@Jacksonized
+public class NegotiationState {
+    /* private */ String state;
 }

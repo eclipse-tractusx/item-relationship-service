@@ -26,23 +26,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import jakarta.json.JsonObject;
 import org.assertj.core.api.Assertions;
+import org.eclipse.edc.api.model.IdResponseDto;
 import org.eclipse.edc.catalog.spi.Catalog;
-import org.eclipse.tractusx.irs.edc.client.model.NegotiationId;
-import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
+import org.eclipse.edc.catalog.spi.CatalogRequest;
+import org.eclipse.edc.connector.api.management.contractnegotiation.model.NegotiationInitiateRequestDto;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
-import org.eclipse.tractusx.irs.edc.client.model.TransferProcessId;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
+import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,10 +66,13 @@ class EdcControlPlaneClientTest {
     private RestTemplate restTemplate;
 
     @Spy
-    private final AsyncPollingService pollingService = new AsyncPollingService(Clock.systemUTC(),
+    private AsyncPollingService pollingService = new AsyncPollingService(Clock.systemUTC(),
             Executors.newSingleThreadScheduledExecutor());
     @Spy
-    private final EdcConfiguration config = new EdcConfiguration();
+    private EdcConfiguration config = new EdcConfiguration();
+
+    @Mock
+    private EdcTransformer edcTransformer;
     @InjectMocks
     private EdcControlPlaneClient testee;
 
@@ -88,8 +95,12 @@ class EdcControlPlaneClientTest {
     void shouldReturnValidCatalog() {
         // arrange
         final var catalog = mock(Catalog.class);
-        when(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class),
-                eq(Catalog.class))).thenReturn(ResponseEntity.of(Optional.of(catalog)));
+        final var catalogString = "test";
+        final JsonObject emptyJsonObject = JsonObject.EMPTY_JSON_OBJECT;
+        doReturn(emptyJsonObject).when(edcTransformer).transformCatalogRequestToJson(any(CatalogRequest.class));
+        doReturn(catalog).when(edcTransformer).transformCatalog(anyString(), eq(StandardCharsets.UTF_8));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class),
+                eq(String.class))).thenReturn(ResponseEntity.of(Optional.of(catalogString)));
 
         // act
         final var result = testee.getCatalog("test", 0);
@@ -102,8 +113,12 @@ class EdcControlPlaneClientTest {
     void shouldReturnValidCatalogUsingFilters() {
         // arrange
         final var catalog = mock(Catalog.class);
-        when(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class),
-                eq(Catalog.class))).thenReturn(ResponseEntity.of(Optional.of(catalog)));
+        final var catalogString = "test";
+        final JsonObject emptyJsonObject = JsonObject.EMPTY_JSON_OBJECT;
+        doReturn(emptyJsonObject).when(edcTransformer).transformCatalogRequestToJson(any(CatalogRequest.class));
+        doReturn(catalog).when(edcTransformer).transformCatalog(anyString(), eq(StandardCharsets.UTF_8));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class),
+                eq(String.class))).thenReturn(ResponseEntity.of(Optional.of(catalogString)));
 
         // act
         final var result = testee.getCatalogWithFilter("test", "asset:prop:type", "data.core.digitalTwinRegistry");
@@ -115,10 +130,10 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnValidNegotiationId() {
         // arrange
-        final var negotiationId = NegotiationId.builder().value("test").build();
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(NegotiationId.class)))
-                .thenReturn(ResponseEntity.of(Optional.of(negotiationId)));
-        final NegotiationRequest request = NegotiationRequest.builder().build();
+        final var negotiationId = IdResponseDto.Builder.newInstance().id("test").build();
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(IdResponseDto.class))).thenReturn(
+                ResponseEntity.of(Optional.of(negotiationId)));
+        final NegotiationInitiateRequestDto request = NegotiationInitiateRequestDto.Builder.newInstance().build();
 
         // act
         final var result = testee.startNegotiations(request);
@@ -130,13 +145,13 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnConfirmedNegotiationResult() throws Exception {
         // arrange
-        final var negotiationId = NegotiationId.builder().value("test").build();
+        final var negotiationId = IdResponseDto.Builder.newInstance().id("negotiationId").build();
         final var negotiationResult = NegotiationResponse.builder()
                                                          .contractAgreementId("testContractId")
                                                          .state("CONFIRMED")
                                                          .build();
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(NegotiationResponse.class)))
-                .thenReturn(ResponseEntity.of(Optional.of(negotiationResult)));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(NegotiationResponse.class))).thenReturn(
+                ResponseEntity.of(Optional.of(negotiationResult)));
 
         // act
         final var result = testee.getNegotiationResult(negotiationId);
@@ -149,10 +164,10 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnValidTransferProcessId() {
         // arrange
-        final var processId = TransferProcessId.builder().value("test").build();
+        final var processId = IdResponseDto.Builder.newInstance().id("transferProcessId").build();
         final var request = TransferProcessRequest.builder().requestId("testRequest").build();
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(TransferProcessId.class)))
-                .thenReturn(ResponseEntity.of(Optional.of(processId)));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(IdResponseDto.class))).thenReturn(
+                ResponseEntity.of(Optional.of(processId)));
 
         // act
         final var result = testee.startTransferProcess(request);
@@ -164,10 +179,10 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnCompletedTransferProcessResult() throws Exception {
         // arrange
-        final var processId = TransferProcessId.builder().value("test").build();
+        final var processId = IdResponseDto.Builder.newInstance().id("transferProcessId").build();
         final var response = TransferProcessResponse.builder().responseId("testResponse").state("COMPLETED").build();
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(TransferProcessResponse.class)))
-                .thenReturn(ResponseEntity.of(Optional.of(response)));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(),
+                eq(TransferProcessResponse.class))).thenReturn(ResponseEntity.of(Optional.of(response)));
 
         // act
         final var result = testee.getTransferProcess(processId);
