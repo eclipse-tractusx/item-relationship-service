@@ -106,6 +106,7 @@ policystore:
     accessKey: "${MINIO_ACCESS_KEY}" # S3 access key
     secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
     bucketName: irs-policy-bucket # the name of the S3 bucket to be created / used by the policy store
+    daysToLive: # number of days to keep policies in the store, leave blank (or < 1) to disable cleanup
 
 resilience4j:
   retry: # REST client retry configuration

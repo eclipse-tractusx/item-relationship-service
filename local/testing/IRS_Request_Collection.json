@@ -5,6 +5,113 @@
 	"__export_source": "insomnia.desktop.app:v2023.2.2",
 	"resources": [
 		{
+			"_id": "req_89d9d2e9c0af46a8af26336017a65a47",
+			"parentId": "fld_a9dafef964074fb2bc3ad8ee8b934392",
+			"modified": 1687243172179,
+			"created": 1687243056648,
+			"url": "{{IRS_HOST}}/irs/policies",
+			"name": "Get all policies",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "oauth2",
+				"grantType": "client_credentials",
+				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
+				"clientId": "{{ _.CLIENT_ID }}",
+				"clientSecret": "{{ _.CLIENT_SECRET }}"
+			},
+			"metaSortKey": -1687243056648,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "fld_a9dafef964074fb2bc3ad8ee8b934392",
+			"parentId": "fld_86d2b3cc317140938409b97480e84293",
+			"modified": 1687243055015,
+			"created": 1687243055015,
+			"name": "Policy Store",
+			"description": "",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1687243055015,
+			"_type": "request_group"
+		},
+		{
+			"_id": "req_ca7bd38207974cdbadd3001a02a6ba30",
+			"parentId": "fld_a9dafef964074fb2bc3ad8ee8b934392",
+			"modified": 1687243241313,
+			"created": 1687243204155,
+			"url": "{{IRS_HOST}}/irs/policies/{% prompt 'policyId', '', '', '', false, true %}",
+			"name": "Delete policy",
+			"description": "",
+			"method": "DELETE",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "oauth2",
+				"grantType": "client_credentials",
+				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
+				"clientId": "{{ _.CLIENT_ID }}",
+				"clientSecret": "{{ _.CLIENT_SECRET }}"
+			},
+			"metaSortKey": -1685602897140.75,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_c2a6ea1764ba4738b52f13b8dfcace24",
+			"parentId": "fld_a9dafef964074fb2bc3ad8ee8b934392",
+			"modified": 1687243190523,
+			"created": 1687243182397,
+			"url": "{{IRS_HOST}}/irs/policies",
+			"name": "Register policy",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"policyId\": \"R2_Traceability\",\n\t\"validUntil\": \"2026-08-01T00:00:00Z\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "oauth2",
+				"grantType": "client_credentials",
+				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
+				"clientId": "{{ _.CLIENT_ID }}",
+				"clientSecret": "{{ _.CLIENT_SECRET }}"
+			},
+			"metaSortKey": -1683962737633.5,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
 			"_id": "req_f8313cc8e9604c67a7b3c1049fd30669",
 			"parentId": "fld_0a976d33962f49ef8a6756811b096a1d",
 			"modified": 1681716476162,
