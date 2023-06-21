@@ -48,11 +48,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     @Override
     public AssetAdministrationShellDescriptor getAAShellDescriptor(final DigitalTwinRegistryKey key) {
         log.info("Retrieved AAS Identification for DigitalTwinRegistryKey: {}", key);
-        final DiscoveryFinderRequest onlyBpn = new DiscoveryFinderRequest(List.of("bpn"));
-
-        final List<DiscoveryEndpoint> discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn)
-                                                                                .endpoints();
-        final List<String> connectorEndpoints = fetchConnectorEndpoints(key.bpn(), discoveryEndpoints);
+        final List<String> connectorEndpoints = fetchConnectorEndpoints(key.bpn());
         // take first
         final EndpointDataReference endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
                 connectorEndpoints).stream().findFirst().orElseThrow();
@@ -72,7 +68,10 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
     }
 
-    public List<String> fetchConnectorEndpoints(final String bpn, final List<DiscoveryEndpoint> discoveryEndpoints) {
+    public List<String> fetchConnectorEndpoints(final String bpn) {
+        final DiscoveryFinderRequest onlyBpn = new DiscoveryFinderRequest(List.of("bpn"));
+        final List<DiscoveryEndpoint> discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn)
+                                                                                .endpoints();
         final List<String> providedBpn = List.of(bpn);
         return discoveryEndpoints.stream()
                                                                   .map(discoveryEndpoint -> discoveryFinderClient.findConnectorEndpoints(
