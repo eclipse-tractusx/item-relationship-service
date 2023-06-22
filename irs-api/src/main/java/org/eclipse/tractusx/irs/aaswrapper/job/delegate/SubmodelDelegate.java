@@ -23,8 +23,9 @@
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractIdFromProtocolInformation.extractAssetId;
-import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractIdFromProtocolInformation.extractSufix;
+import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractIdFromProtocolInformation.extractSuffix;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,6 @@ import java.util.Map;
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.registry.domain.ConnectorEndpointsService;
-import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DecentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
@@ -152,9 +152,13 @@ public class SubmodelDelegate extends AbstractDelegate {
 
     private String requestSubmodelAsString(final Endpoint endpoint, final String bpn) throws EdcClientException {
         final String connectorEndpoint = connectorEndpointsService.fetchConnectorEndpoints(bpn).stream().findFirst().orElseThrow();
-        return submodelFacade.getSubmodelRawPayload(
-                connectorEndpoint,
-                extractSufix(endpoint.getProtocolInformation().getHref()),
-                extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody()));
+        try {
+            return submodelFacade.getSubmodelRawPayload(
+                    connectorEndpoint,
+                    extractSuffix(endpoint.getProtocolInformation().getHref()),
+                    extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody()));
+        } catch (URISyntaxException e) {
+            throw new EdcClientException(e);
+        }
     }
 }

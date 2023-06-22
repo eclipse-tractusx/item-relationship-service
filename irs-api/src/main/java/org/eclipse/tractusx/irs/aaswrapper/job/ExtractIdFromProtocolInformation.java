@@ -22,22 +22,23 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 public class ExtractIdFromProtocolInformation {
 
     private static final String ASSET_ID_PREFIX = "id=";
-    private static final String ASSET_ID_SUFIX = ";";
-    private static final String SUFIX_IN_PATH_FROM_HREF = "/shells/";
+    private static final String ASSET_ID_SUFFIX = ";";
 
     public static String extractAssetId(final String subprotocolBody) {
         return subprotocolBody.substring(
                 subprotocolBody.indexOf(ASSET_ID_PREFIX) + 3,
-                subprotocolBody.indexOf(ASSET_ID_SUFIX));
+                subprotocolBody.indexOf(ASSET_ID_SUFFIX));
     }
 
-    public static String extractSufix(final String href) {
-        return href.substring(
-                href.indexOf(SUFIX_IN_PATH_FROM_HREF)
-        );
+    public static String extractSuffix(final String href) throws URISyntaxException {
+        final URI uri = new URI(href);
+        return uri.getPath();
     }
 
 }

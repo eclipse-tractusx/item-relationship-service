@@ -2,6 +2,8 @@ package org.eclipse.tractusx.irs.aaswrapper.job;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.net.URISyntaxException;
+
 import org.junit.jupiter.api.Test;
 
 class ExtractIdFromProtocolInformationTest {
@@ -19,15 +21,15 @@ class ExtractIdFromProtocolInformationTest {
     }
 
     @Test
-    void shouldExtractSufixPathFromHref() {
+    void shouldExtractSufixPathFromHref() throws URISyntaxException {
         // given
-        final String href = "https://edc.data.plane/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel";
+        final String href = "https://edc.data.plane/shells/123/submodels/456/submodel";
 
         // when
-        final String actual = ExtractIdFromProtocolInformation.extractAssetId(href);
+        final String actual = ExtractIdFromProtocolInformation.extractSuffix(href);
 
         // then
-        assertThat(actual).isEqualTo("/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel");
+        assertThat(actual).isEqualTo("/shells/123/submodels/456/submodel");
     }
 
 }
