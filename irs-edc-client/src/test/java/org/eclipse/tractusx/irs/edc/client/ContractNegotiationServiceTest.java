@@ -71,22 +71,13 @@ class ContractNegotiationServiceTest {
         return Policy.Builder.newInstance().permission(permission).build();
     }
 
-    private static Dataset createDataset(final String offerId, final Policy policy) {
-        final Distribution distribution = Distribution.Builder.newInstance()
-                                                              .format("HttpProxy")
-                                                              .dataService(new DataService())
-                                                              .build();
-        return Dataset.Builder.newInstance().offer(offerId, policy).distribution(distribution).build();
-    }
-
     private static CatalogItem createCatalogItem(final String assetId, final String offerId) {
         final Policy policy = createPolicy(assetId);
-        final Dataset dataset = createDataset(offerId, policy);
         return CatalogItem.builder()
                           .itemId(assetId)
-                          .policies(List.of(policy))
+                          .policy(policy)
                           .assetPropId(assetId)
-                          .datasets(List.of(dataset))
+                          .offerId(offerId)
                           .build();
     }
 
@@ -96,7 +87,7 @@ class ContractNegotiationServiceTest {
         final var assetId = "testTarget";
         final String offerId = "offerId";
         final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
-        when(policyCheckerService.isValid(anyList())).thenReturn(Boolean.TRUE);
+        when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 IdResponseDto.Builder.newInstance().id("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.completedFuture(
@@ -121,7 +112,7 @@ class ContractNegotiationServiceTest {
         final var assetId = "testTarget";
         final String offerId = "offerId";
         final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
-        when(policyCheckerService.isValid(anyList())).thenReturn(Boolean.TRUE);
+        when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 IdResponseDto.Builder.newInstance().id("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.failedFuture(
@@ -138,10 +129,10 @@ class ContractNegotiationServiceTest {
         final var assetId = "testTarget";
         final CatalogItem catalogItem = CatalogItem.builder()
                                                    .itemId(assetId)
-                                                   .policies(List.of())
+                                                   .policy(createPolicy(assetId))
                                                    .assetPropId(assetId)
                                                    .build();
-        when(policyCheckerService.isValid(anyList())).thenReturn(Boolean.FALSE);
+        when(policyCheckerService.isValid(any())).thenReturn(Boolean.FALSE);
 
         // act & assert
         assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem)).isInstanceOf(EdcClientException.class);

@@ -23,11 +23,9 @@
 package org.eclipse.tractusx.irs.edc.client.model;
 
 import java.time.Instant;
-import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
-import org.eclipse.edc.catalog.spi.Dataset;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
 
@@ -39,9 +37,9 @@ import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
 public class CatalogItem {
     private String assetPropId;
     private String itemId;
-    private List<Policy> policies;
+    private Policy policy;
     private String connectorId;
-    private List<Dataset> datasets;
+    private String offerId;
     private Instant validUntil;
 
 }

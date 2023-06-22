@@ -39,6 +39,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.edc.catalog.spi.Catalog;
+import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.common.CxTestDataContainer;
 import org.eclipse.tractusx.irs.common.Masker;
@@ -303,21 +304,20 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(providerWithSuffix, filterKey,
                     filterValue);
 
-            final List<CatalogItem> items = catalog.getDatasets()
-                                                   .stream()
-                                                   .map(contractOffer -> CatalogItem.builder()
-                                                                                    .itemId(contractOffer.getId())
-                                                                                    .assetPropId(
-                                                                                            contractOffer.getProperty(
-                                                                                                                 NAMESPACE_EDC_ID)
-                                                                                                         .toString())
-                                                                                    .connectorId(catalog.getId())
-                                                                                    .policies(contractOffer.getOffers()
-                                                                                                           .values()
-                                                                                                           .stream()
-                                                                                                           .toList())
-                                                                                    .build())
-                                                   .toList();
+            final List<CatalogItem> items = catalog.getDatasets().stream().map(contractOffer -> {
+                final Map.Entry<String, Policy> offer = contractOffer.getOffers()
+                                                                     .entrySet()
+                                                                     .stream()
+                                                                     .findFirst()
+                                                                     .orElseThrow();
+                return CatalogItem.builder()
+                                  .itemId(contractOffer.getId())
+                                  .assetPropId(contractOffer.getProperty(NAMESPACE_EDC_ID).toString())
+                                  .connectorId(catalog.getId())
+                                  .offerId(offer.getKey())
+                                  .policy(offer.getValue())
+                                  .build();
+            }).toList();
             final NegotiationResponse response = contractNegotiationService.negotiate(providerWithSuffix,
                     items.stream().findFirst().orElseThrow());
 

@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_CID;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createEdcTransformer;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -108,7 +108,7 @@ class SubmodelFacadeWiremockTest {
                 new EDCCatalogFacade(controlPlaneClient, config), cacheConfig);
 
         final PolicyCheckerService policyCheckerService = mock(PolicyCheckerService.class);
-        when(policyCheckerService.isValid(anyList())).thenReturn(Boolean.TRUE);
+        when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
                 policyCheckerService, config);
 
