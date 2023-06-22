@@ -41,7 +41,6 @@ import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -143,7 +142,6 @@ public class EdcControlPlaneClient {
 
     }
 
-    @Nullable
     private NegotiationState getContractNegotiationState(final IdResponseDto negotiationId,
             final HttpEntity<Object> objectHttpEntity) {
         final String negotiationStateResponse = edcRestTemplate.exchange(
@@ -176,19 +174,17 @@ public class EdcControlPlaneClient {
         return pollingService.<TransferProcessResponse>createJob()
                              .action(() -> {
                                  log.info("Check Transfer Process status");
+                                 final NegotiationState transferProcessState = getTransferProcessState(
+                                         transferProcessId, objectHttpEntity);
+                                 log.info("Response status of Transfer Process: {}", transferProcessState);
 
-                                 final TransferProcessResponse response = edcRestTemplate.exchange(
-                                         config.getControlplane().getEndpoint().getData() + "/transferprocesses/"
-                                                 + transferProcessId.getId(), HttpMethod.GET, objectHttpEntity,
-                                         TransferProcessResponse.class).getBody();
-
-                                 log.info("Response status of Transfer Process: {}", response);
-
-                                 if (response != null) {
-                                     return switch (response.getState()) {
-                                         case STATUS_COMPLETED -> Optional.of(response);
+                                 if (transferProcessState != null) {
+                                     return switch (transferProcessState.getState()) {
+                                         case STATUS_COMPLETED -> Optional.of(
+                                                 getTransferProcessResponse(transferProcessId, objectHttpEntity));
                                          case STATUS_ERROR -> throw new IllegalStateException(
-                                                 "TransferProcessResponse with id " + response.getResponseId()
+                                                 "TransferProcessResponse with id " + getTransferProcessResponse(
+                                                         transferProcessId, objectHttpEntity).getResponseId()
                                                          + " is in state ERROR");
                                          default -> Optional.empty();
                                      };
@@ -201,6 +197,22 @@ public class EdcControlPlaneClient {
                              .build()
                              .schedule();
 
+    }
+
+    private NegotiationState getTransferProcessState(final IdResponseDto transferProcessId,
+            final HttpEntity<Object> objectHttpEntity) {
+        final String transferProcessStateResponse = edcRestTemplate.exchange(
+                config.getControlplane().getEndpoint().getData() + "/transferprocesses/" + transferProcessId.getId()
+                        + "/state", HttpMethod.GET, objectHttpEntity, String.class).getBody();
+        return edcTransformer.transformJsonToNegotiationState(Objects.requireNonNull(transferProcessStateResponse),
+                StandardCharsets.UTF_8);
+    }
+
+    private TransferProcessResponse getTransferProcessResponse(final IdResponseDto transferProcessId,
+            final HttpEntity<Object> objectHttpEntity) {
+        return edcRestTemplate.exchange(
+                config.getControlplane().getEndpoint().getData() + "/transferprocesses/" + transferProcessId.getId(),
+                HttpMethod.GET, objectHttpEntity, TransferProcessResponse.class).getBody();
     }
 
     private HttpHeaders headers() {

@@ -23,6 +23,8 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.edc.client.EdcControlPlaneClient.STATUS_COMPLETED;
+import static org.eclipse.tractusx.irs.edc.client.EdcControlPlaneClient.STATUS_FINALIZED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -154,10 +156,9 @@ class EdcControlPlaneClientTest {
         final var negotiationId = IdResponseDto.Builder.newInstance().id("negotiationId").build();
         final var negotiationResult = NegotiationResponse.builder()
                                                          .contractAgreementId("testContractId")
-                                                         .state("FINALIZED")
+                                                         .state(STATUS_FINALIZED)
                                                          .build();
-        final var finalized = NegotiationState.builder().state("FINALIZED").build();
-        final var negotiationStateString = "FINALIZED";
+        final var finalized = NegotiationState.builder().state(STATUS_FINALIZED).build();
 
         doReturn(negotiationResult).when(edcTransformer)
                                    .transformJsonToNegotiationResponse(anyString(), eq(StandardCharsets.UTF_8));
@@ -165,7 +166,7 @@ class EdcControlPlaneClientTest {
                            .transformJsonToNegotiationState(anyString(), eq(StandardCharsets.UTF_8));
 
         when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(String.class))).thenReturn(
-                ResponseEntity.of(Optional.of(negotiationStateString)));
+                ResponseEntity.of(Optional.of(STATUS_FINALIZED)));
 
         // act
         final var result = testee.getNegotiationResult(negotiationId);
@@ -195,9 +196,14 @@ class EdcControlPlaneClientTest {
     void shouldReturnCompletedTransferProcessResult() throws Exception {
         // arrange
         final var processId = IdResponseDto.Builder.newInstance().id("transferProcessId").build();
-        final var response = TransferProcessResponse.builder().responseId("testResponse").state("COMPLETED").build();
+        final var response = TransferProcessResponse.builder().responseId("testResponse").state(STATUS_COMPLETED).build();
+        final var finalized = NegotiationState.builder().state(STATUS_COMPLETED).build();
+        doReturn(finalized).when(edcTransformer)
+                           .transformJsonToNegotiationState(anyString(), eq(StandardCharsets.UTF_8));
         when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(),
                 eq(TransferProcessResponse.class))).thenReturn(ResponseEntity.of(Optional.of(response)));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(),
+                eq(String.class))).thenReturn(ResponseEntity.of(Optional.of(STATUS_COMPLETED)));
 
         // act
         final var result = testee.getTransferProcess(processId);

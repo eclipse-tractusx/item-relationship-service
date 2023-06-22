@@ -53,7 +53,8 @@ public class EDCCatalogFacade {
     private final EdcConfiguration config;
 
     private static CatalogItem createCatalogItem(final Catalog pageableCatalog, final Dataset dataset) {
-        if (dataset.getOffers().size() > 1) {
+        final int maxNumberOfOffers = 1;
+        if (dataset.getOffers().size() > maxNumberOfOffers) {
             log.warn("Catalog Offer contains more than one Policy. Using the first one");
         }
         final Map.Entry<String, Policy> stringPolicyEntry = dataset.getOffers()

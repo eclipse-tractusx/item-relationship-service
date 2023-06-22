@@ -58,6 +58,7 @@ import org.springframework.web.client.ResourceAccessException;
 /**
  * Public API facade for EDC domain
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 public interface EdcSubmodelClient {
     CompletableFuture<List<Relationship>> getRelationships(String submodelEndpointAddress,
             RelationshipAspect traversalAspectType) throws EdcClientException;
