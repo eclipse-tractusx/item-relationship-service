@@ -29,6 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -102,7 +103,10 @@ public class PolicyStoreController {
                security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Item Relationship Service" },
                description = "Lists the registered policies that should be accepted in EDC negotiation.")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Returns the policies."),
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Returns the policies.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(
+                                                 schema = @Schema(implementation = Policy.class)))
+                                         }),
                             @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
