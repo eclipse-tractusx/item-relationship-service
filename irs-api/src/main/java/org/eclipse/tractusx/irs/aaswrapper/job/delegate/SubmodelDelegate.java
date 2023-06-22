@@ -22,7 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
-import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractIdFromSubprotocolBody.extractAssetId;
+import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractIdFromProtocolInformation.extractAssetId;
+import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractIdFromProtocolInformation.extractSufix;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.Map;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DecentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
@@ -63,13 +65,16 @@ public class SubmodelDelegate extends AbstractDelegate {
     private final JsonValidatorService jsonValidatorService;
     private final JsonUtil jsonUtil;
 
+    private final DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService;
+
     public SubmodelDelegate(final EdcSubmodelFacade submodelFacade, final SemanticsHubFacade semanticsHubFacade,
-            final JsonValidatorService jsonValidatorService, final JsonUtil jsonUtil) {
+            final JsonValidatorService jsonValidatorService, final JsonUtil jsonUtil, DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService) {
         super(null); // no next step
         this.submodelFacade = submodelFacade;
         this.semanticsHubFacade = semanticsHubFacade;
         this.jsonValidatorService = jsonValidatorService;
         this.jsonUtil = jsonUtil;
+        this.decentralDigitalTwinRegistryService = decentralDigitalTwinRegistryService;
     }
 
     @Override
@@ -86,7 +91,7 @@ public class SubmodelDelegate extends AbstractDelegate {
             if (jobData.isCollectAspects()) {
                 log.info("Collecting Submodels.");
                 filteredSubmodelDescriptorsByAspectType.forEach(submodelDescriptor -> itemContainerBuilder.submodels(
-                        getSubmodels(submodelDescriptor, itemContainerBuilder, itemId)));
+                        getSubmodels(submodelDescriptor, itemContainerBuilder, itemId, jobData.getBpn())));
             }
             log.debug("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
             log.debug("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
@@ -99,12 +104,12 @@ public class SubmodelDelegate extends AbstractDelegate {
     }
 
     private List<Submodel> getSubmodels(final SubmodelDescriptor submodelDescriptor,
-            final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId) {
+            final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId, final String bpn) {
         final List<Submodel> submodels = new ArrayList<>();
         submodelDescriptor.getEndpoints().forEach(endpoint -> {
             try {
                 final String jsonSchema = semanticsHubFacade.getModelJsonSchema(submodelDescriptor.getAspectType());
-                final String submodelRawPayload = requestSubmodelAsString(endpoint);
+                final String submodelRawPayload = requestSubmodelAsString(endpoint, bpn);
 
                 final ValidationResult validationResult = jsonValidatorService.validate(jsonSchema, submodelRawPayload);
 
@@ -145,9 +150,11 @@ public class SubmodelDelegate extends AbstractDelegate {
         return submodels;
     }
 
-    private String requestSubmodelAsString(final Endpoint endpoint) throws EdcClientException {
+    private String requestSubmodelAsString(final Endpoint endpoint, final String bpn) throws EdcClientException {
+        final String connectorEndpoint = decentralDigitalTwinRegistryService.fetchConnectorEndpoints(bpn).stream().findFirst().orElseThrow();
         return submodelFacade.getSubmodelRawPayload(
-                endpoint.getProtocolInformation().getHref(),
+                connectorEndpoint,
+                extractSufix(endpoint.getProtocolInformation().getHref()),
                 extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody()));
     }
 }
