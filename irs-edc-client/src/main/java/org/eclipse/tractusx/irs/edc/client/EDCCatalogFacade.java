@@ -27,6 +27,7 @@ import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfigurat
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -34,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.Dataset;
+import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.springframework.stereotype.Component;
@@ -49,6 +51,27 @@ public class EDCCatalogFacade {
 
     private final EdcControlPlaneClient controlPlaneClient;
     private final EdcConfiguration config;
+
+    private static CatalogItem createCatalogItem(final Catalog pageableCatalog, final Dataset dataset) {
+        if (dataset.getOffers().size() > 1) {
+            log.warn("Catalog Offer contains more than one Policy. Using the first one");
+        }
+        final Map.Entry<String, Policy> stringPolicyEntry = dataset.getOffers()
+                                                                   .entrySet()
+                                                                   .stream()
+                                                                   .findFirst()
+                                                                   .orElseThrow();
+        final var builder = CatalogItem.builder()
+                                       .itemId(dataset.getId())
+                                       .offerId(stringPolicyEntry.getKey())
+                                       .assetPropId(dataset.getProperty(NAMESPACE_EDC_ID).toString())
+                                       .policy(stringPolicyEntry.getValue());
+        if (pageableCatalog.getProperties().containsKey(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID)) {
+            builder.connectorId(
+                    pageableCatalog.getProperties().get(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID).toString());
+        }
+        return builder.build();
+    }
 
     /**
      * Paginates though the catalog and collects all CatalogItems up to the
@@ -83,17 +106,7 @@ public class EDCCatalogFacade {
         }
 
         log.info("Search for offer for asset id: {}", target);
-        return datasets.stream().map(dataset -> {
-            final var builder = CatalogItem.builder()
-                                           .itemId(dataset.getId())
-                                           .assetPropId(dataset.getProperty(NAMESPACE_EDC_ID).toString())
-                                           .policies(dataset.getOffers().values().stream().toList())
-                                           .datasets(datasets);
-            if (pageableCatalog.getProperties().containsKey(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID)) {
-                builder.connectorId(pageableCatalog.getProperties().get(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID).toString());
-            }
-            return builder.build();
-        }).toList();
+        return datasets.stream().map(dataset -> createCatalogItem(pageableCatalog, dataset)).toList();
     }
 
     private Optional<Dataset> findOfferIfExist(final String target, final Catalog catalog) {
