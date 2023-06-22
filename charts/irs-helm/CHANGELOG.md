@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Add parameter for `digitalTwinRegistry.type` and `digitalTwinRegistry.discoveryFinderUrl`
+
+### Changed
+- Minio is deployed by default with non-root rights
+
+## [5.3.1] - 2023-05-15
+### Fixed
+- `bpdm.bpnEndpoint` will not be set to an unresolvable URL if `bpdm.url` is not set.
 
 ## [5.3.0] - 2023-05-05
 ### Added
@@ -42,6 +51,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Custom environment variables are now rendered correctly in the deployment resource
+
+## [5.0.10] - 2023-04-21
+### Changed
+- Update IRS to version 2.4.1
 
 ## [5.0.9] - 2023-03-30
 ### Fixed

@@ -26,9 +26,11 @@ import static org.eclipse.tractusx.irs.controllers.IrsAppConstants.UUID_SIZE;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -38,6 +40,7 @@ import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.LinkedItem;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
@@ -87,6 +90,12 @@ public class TestMother {
         return registerJob(globalAssetId, 100, List.of(), false, false, direction);
     }
 
+    public static RegisterJob registerJobWithUrl(final String callbackUrl) {
+        final RegisterJob registerJob = registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", 100, List.of(), false, false, Direction.DOWNWARD);
+        registerJob.setCallbackUrl(callbackUrl);
+        return registerJob;
+    }
+
     public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth,
             final List<String> aspectTypes) {
         return registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", depth, aspectTypes,
@@ -101,7 +110,7 @@ public class TestMother {
     public static RegisterJob registerJob(final String globalAssetId, final Integer depth,
             final List<String> aspectTypes, final boolean collectAspects, final boolean lookupBPNs, final Direction direction) {
         final RegisterJob registerJob = new RegisterJob();
-        registerJob.setGlobalAssetId(globalAssetId);
+        registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).build());
         registerJob.setDepth(depth);
         registerJob.setAspects(aspectTypes);
         registerJob.setCollectAspects(collectAspects);
@@ -113,7 +122,9 @@ public class TestMother {
 
     public static RegisterBatchOrder registerBatchOrder(final String... globalAssetId) {
         final RegisterBatchOrder registerBatchOrder = new RegisterBatchOrder();
-        registerBatchOrder.setGlobalAssetIds(Set.of(globalAssetId));
+        registerBatchOrder.setKeys(Arrays.stream(globalAssetId)
+                                         .map(x -> PartChainIdentificationKey.builder().globalAssetId(x).build())
+                                         .collect(Collectors.toSet()));
 
         return registerBatchOrder;
     }

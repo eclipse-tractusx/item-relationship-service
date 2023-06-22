@@ -1,6 +1,6 @@
 = "Under-the-hood" concepts
 
-== Persistency
+== Persistence
 The IRS stores two types of data in a persistent way:
 
 - Job metadata
@@ -57,7 +57,7 @@ It's good to inform the user, why their request did not work, but only if they c
 == Parallelization and threading
 The heart of the IRS is the parallel execution of planned jobs. As almost each job requires multiple calls to various endpoints, those are done in parallel as well to reduce the total execution time for each job.
 
-Tasks execution is orchestrated by the JobOrchestrator class. It utilizes a cental ExecutorService, which manages the number of threads and schedules new Task as they come in.
+Tasks execution is orchestrated by the JobOrchestrator class. It utilizes a central ExecutorService, which manages the number of threads and schedules new Task as they come in.
 
 
 
@@ -82,3 +82,7 @@ Whenever a BPN is resolved via BPDM, the partner name is cached on IRS side, as 
 Whenever a semantic model schema is requested from the Semantic Hub, it is stored locally until the cache is evicted (configurable). The IRS can preload configured schema models on startup to reduce on demand call times.
 
 Additionally, models can be deployed with the system as a backup to the real Semantic Hub service.
+
+=== EDC Catalog
+
+Whenever a EDC catalog is requested, IRS stores all returned contract offers inside a cache. This cache will be used for subsequent requests to the same EDC provider. If the requested contract offer could not be found within the cache, the catalog will be requested again and the cache will be updated.

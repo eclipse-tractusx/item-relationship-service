@@ -27,6 +27,9 @@ The hostname where the IRS will be made available.
 ==== <digital-twin-registry-url>
 The URL of the Digital Twin Registry. The IRS uses this service to fetch AAS shells.
 
+==== <discovery-finder-url>
+The URL of the Discovery Finder. The IRS uses this service to discover EDC to a particular BPN.
+
 ==== <semantics-hub-url>
 The URL of the SemanticsHub. The IRS uses this service to fetch aspect schemas for payload validation.
 

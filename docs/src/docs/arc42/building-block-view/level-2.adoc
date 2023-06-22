@@ -91,7 +91,7 @@ include::../../../uml-diagrams/building-block-view/level-2-int-transfer-process-
 |The BlobStore is the database where the relationships and tombstones are stored for a requested item.
 
 |DigitalTwinRegistry
-|The DigitalTwinRegistry is the central database of registered assets.
+|The DigitalTwinRegistry is the central database of registered assets. In a decentralized network, the registry is no longer central, but every provider has its own registry.
 
 |ExecutorService
 |The ExecutorService enables the simultaneous execution of requests of transfer processes.

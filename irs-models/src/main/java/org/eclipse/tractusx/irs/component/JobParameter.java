@@ -58,6 +58,9 @@ public class JobParameter {
     @Max(Integer.MAX_VALUE)
     private Integer depth;
 
+    @Schema(implementation = String.class)
+    private String bpn;
+
     @Schema(implementation = Direction.class)
     private Direction direction;
 

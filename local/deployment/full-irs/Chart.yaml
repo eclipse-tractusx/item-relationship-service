@@ -110,3 +110,8 @@ dependencies:
     version: 0.0.5
     repository: "file://subcharts/irs-frontend-service"
     condition: install.irs.frontend
+
+  - name: discovery
+    version: 0.0.1
+    repository: "file://subcharts/discovery"
+    condition: install.discovery

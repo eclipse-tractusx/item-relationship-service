@@ -52,16 +52,11 @@ public class ContractNegotiationService {
 
     private final EdcControlPlaneClient edcControlPlaneClient;
 
-    private final EdcConfiguration config;
-
-    private final CatalogCache catalogCache;
-
     private final PolicyCheckerService policyCheckerService;
 
-    public NegotiationResponse negotiate(final String providerConnectorUrl, final String target)
+    public NegotiationResponse negotiate(final String providerConnectorUrl, final CatalogItem catalogItem)
             throws ContractNegotiationException, UsagePolicyException {
 
-        final CatalogItem catalogItem = catalogCache.getCatalogItem(providerConnectorUrl, target).orElseThrow();
         if (!policyCheckerService.isValid(catalogItem.getPolicy())) {
             log.info("Policy was not allowed, canceling negotiation.");
             throw new UsagePolicyException(catalogItem.getItemId());
@@ -69,14 +64,13 @@ public class ContractNegotiationService {
         final ContractOfferRequest contractOfferRequest = ContractOfferRequest.builder()
                                                                               .offerId(
                                                                                       catalogItem.getItemId())
-                                                                              .assetId(target)
+                                                                              .assetId(catalogItem.getAssetPropId())
                                                                               .policy(catalogItem.getPolicy())
                                                                               .build();
 
         final NegotiationRequest negotiationRequest = NegotiationRequest.builder()
                                                                         .connectorId(catalogItem.getConnectorId())
-                                                                        .connectorAddress(providerConnectorUrl
-                                                                                + config.getControlplane().getProviderSuffix())
+                                                                        .connectorAddress(providerConnectorUrl)
                                                                         .offer(contractOfferRequest)
                                                                         .build();
 
@@ -97,9 +91,9 @@ public class ContractNegotiationService {
                                                   .managedResources(TransferProcessRequest.DEFAULT_MANAGED_RESOURCES)
                                                   .connectorId(catalogItem.getConnectorId())
                                                   .connectorAddress(
-                                                          providerConnectorUrl + config.getControlplane().getProviderSuffix())
+                                                          providerConnectorUrl)
                                                   .contractId(response.getContractAgreementId())
-                                                  .assetId(target)
+                                                  .assetId(catalogItem.getAssetPropId())
                                                   .dataDestination(destination)
                                                   .build();
 
