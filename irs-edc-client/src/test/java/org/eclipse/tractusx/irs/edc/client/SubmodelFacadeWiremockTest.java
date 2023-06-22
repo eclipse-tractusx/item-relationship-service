@@ -110,7 +110,7 @@ class SubmodelFacadeWiremockTest {
         final PolicyCheckerService policyCheckerService = mock(PolicyCheckerService.class);
         when(policyCheckerService.isValid(anyList())).thenReturn(Boolean.TRUE);
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
-                policyCheckerService);
+                policyCheckerService, config);
 
         final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
         final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();

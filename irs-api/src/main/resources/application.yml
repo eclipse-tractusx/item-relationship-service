@@ -115,6 +115,7 @@ resilience4j:
         baseConfig: default
 
 edc:
+  callback-url: ${EDC_TRANSFER_CALLBACK_URL:test} # The URL where the EDR token callback will be sent to.
   controlplane:
     request-ttl: ${EDC_CONTROLPLANE_REQUEST_TTL:PT10M} # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
     endpoint:

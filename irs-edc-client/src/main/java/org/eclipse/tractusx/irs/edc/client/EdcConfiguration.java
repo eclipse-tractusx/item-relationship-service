@@ -39,6 +39,7 @@ public class EdcConfiguration {
 
     private ControlplaneConfig controlplane = new ControlplaneConfig();
     private SubmodelConfig submodel = new SubmodelConfig();
+    private String callbackUrl;
 
     /**
      * Container for controlplane config

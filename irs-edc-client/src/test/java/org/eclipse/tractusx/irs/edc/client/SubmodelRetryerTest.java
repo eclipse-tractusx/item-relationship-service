@@ -75,7 +75,7 @@ class SubmodelExponentialRetryTest {
         final CatalogCache catalogCache = new InMemoryCatalogCache(edcCatalogFacade, cacheConfiguration);
 
         final ContractNegotiationService negotiationService = new ContractNegotiationService(controlPlaneClient,
-                policyCheckerService);
+                policyCheckerService, config);
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
         final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
 
