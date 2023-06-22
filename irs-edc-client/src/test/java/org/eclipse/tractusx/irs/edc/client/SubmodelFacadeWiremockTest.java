@@ -54,7 +54,6 @@ import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -62,11 +61,9 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 class SubmodelFacadeWiremockTest {
-
-    private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
     private final static String connectorEndpoint = "https://connector.endpoint.com";
-    private final static String submodelSufix = "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel";
-    private final static String assetId = "9300395e-c0a5-4e88-bc57-a3973fec4c26";
+    private final static String submodelSuffix = "/shells/12345/submodels/5678/submodel";
+    private final static String assetId = "12345";
     private final EdcConfiguration config = new EdcConfiguration();
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
     private WireMockServer wireMockServer;
@@ -80,7 +77,7 @@ class SubmodelFacadeWiremockTest {
 
         config.getControlplane().getEndpoint().setData(buildApiMethodUrl());
         config.getControlplane().setRequestTtl(Duration.ofSeconds(5));
-        config.getSubmodel().setPath("/submodel");
+        config.getSubmodel().setPath(submodelSuffix);
         config.getSubmodel().setUrnPrefix("/urn");
 
         final RestTemplate restTemplate = new RestTemplateBuilder().build();
@@ -127,7 +124,7 @@ class SubmodelFacadeWiremockTest {
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
         prepareNegotiation();
-        givenThat(get(urlPathEqualTo("/submodel")).willReturn(aResponse().withStatus(200)
+        givenThat(get(urlPathEqualTo(submodelSuffix)).willReturn(aResponse().withStatus(200)
                                                                          .withHeader("Content-Type",
                                                                                  "application/json;charset=UTF-8")
                                                                          .withBodyFile(
@@ -135,7 +132,7 @@ class SubmodelFacadeWiremockTest {
 
         // Act
         final String submodel = submodelFacade.getSubmodelRawPayload(
-                connectorEndpoint, submodelSufix, assetId
+                connectorEndpoint, submodelSuffix, assetId
         ).get();
 
         // Assert
@@ -182,14 +179,14 @@ class SubmodelFacadeWiremockTest {
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
         prepareNegotiation();
-        givenThat(get(urlPathEqualTo("/submodel")).willReturn(aResponse().withStatus(200)
+        givenThat(get(urlPathEqualTo(submodelSuffix)).willReturn(aResponse().withStatus(200)
                                                                          .withHeader("Content-Type",
                                                                                  "application/json;charset=UTF-8")
                                                                          .withBodyFile("materialForRecycling.json")));
 
         // Act
         final String submodel = submodelFacade.getSubmodelRawPayload(
-                connectorEndpoint, submodelSufix, assetId
+                connectorEndpoint, submodelSuffix, assetId
         ).get();
 
         // Assert
@@ -201,14 +198,14 @@ class SubmodelFacadeWiremockTest {
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
         prepareNegotiation();
-        givenThat(get(urlPathEqualTo("/submodel")).willReturn(aResponse().withStatus(200)
+        givenThat(get(urlPathEqualTo(submodelSuffix)).willReturn(aResponse().withStatus(200)
                                                                          .withHeader("Content-Type",
                                                                                  "application/json;charset=UTF-8")
                                                                          .withBody("test")));
 
         // Act
         final String submodel = submodelFacade.getSubmodelRawPayload(
-                connectorEndpoint, submodelSufix, assetId
+                connectorEndpoint, submodelSuffix, assetId
         ).get();
 
         // Assert
@@ -219,14 +216,15 @@ class SubmodelFacadeWiremockTest {
     void shouldThrowExceptionWhenResponse_400() {
         // Arrange
         prepareNegotiation();
-        givenThat(get(urlPathEqualTo("/submodel")).willReturn(aResponse().withStatus(400)
+        givenThat(get(urlPathEqualTo(submodelSuffix)).willReturn(aResponse().withStatus(400)
                                                                          .withHeader("Content-Type",
                                                                                  "application/json;charset=UTF-8")
                                                                          .withBody("{ error: '400'}")));
 
         // Act
         final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelRawPayload(
-                                                                                              connectorEndpoint, submodelSufix, assetId
+                                                                                              connectorEndpoint,
+                                                                                              submodelSuffix, assetId
                                                                                       )
                                                                                       .get(5, TimeUnit.SECONDS);
 
@@ -239,14 +237,14 @@ class SubmodelFacadeWiremockTest {
     void shouldThrowExceptionWhenResponse_500() {
         // Arrange
         prepareNegotiation();
-        givenThat(get(urlPathEqualTo("/submodel")).willReturn(aResponse().withStatus(500)
+        givenThat(get(urlPathEqualTo(submodelSuffix)).willReturn(aResponse().withStatus(500)
                                                                          .withHeader("Content-Type",
                                                                                  "application/json;charset=UTF-8")
                                                                          .withBody("{ error: '500'}")));
 
         // Act
         final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelRawPayload(
-                connectorEndpoint, submodelSufix, assetId
+                connectorEndpoint, submodelSuffix, assetId
                                                                                       )
                                                                                       .get(5, TimeUnit.SECONDS);
 
