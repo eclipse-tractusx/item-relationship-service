@@ -6,7 +6,7 @@ import java.net.URISyntaxException;
 
 import org.junit.jupiter.api.Test;
 
-class ExtractIdFromProtocolInformationTest {
+class ExtractDataFromProtocolInformationTest {
 
     @Test
     void shouldExtractIdFromSubprotocol() {
@@ -14,7 +14,7 @@ class ExtractIdFromProtocolInformationTest {
         final String exampleSubprotocol = "other_id=fake-id;id=12345;idsEndpoint=http://edc.control.plane/";
 
         // when
-        final String actual = ExtractIdFromProtocolInformation.extractAssetId(exampleSubprotocol);
+        final String actual = ExtractDataFromProtocolInformation.extractAssetId(exampleSubprotocol);
 
         // then
         assertThat(actual).isEqualTo("12345");
@@ -26,7 +26,7 @@ class ExtractIdFromProtocolInformationTest {
         final String href = "https://edc.data.plane/shells/123/submodels/456/submodel";
 
         // when
-        final String actual = ExtractIdFromProtocolInformation.extractSuffix(href);
+        final String actual = ExtractDataFromProtocolInformation.extractSuffix(href);
 
         // then
         assertThat(actual).isEqualTo("/shells/123/submodels/456/submodel");

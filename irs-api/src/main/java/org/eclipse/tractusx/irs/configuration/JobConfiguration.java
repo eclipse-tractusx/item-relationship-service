@@ -31,7 +31,6 @@ import io.github.resilience4j.retry.RetryRegistry;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.eclipse.tractusx.irs.aaswrapper.registry.domain.ConnectorEndpointsService;
-import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DecentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASRecursiveJobHandler;

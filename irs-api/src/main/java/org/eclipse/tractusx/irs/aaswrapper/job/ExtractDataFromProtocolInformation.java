@@ -28,9 +28,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ExtractIdFromProtocolInformation {
-
-    private static final String ASSET_ID_PREFIX = "id=";
+/**
+ * Extract asset id and path suffix from Protocol Information
+ */
+public class ExtractDataFromProtocolInformation {
     private static final String ASSET_ID_SEPARATOR = ";";
 
     public static String extractAssetId(final String subprotocolBody) {

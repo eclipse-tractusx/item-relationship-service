@@ -22,8 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
-import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractIdFromProtocolInformation.extractAssetId;
-import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractIdFromProtocolInformation.extractSuffix;
+import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractAssetId;
+import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractSuffix;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
