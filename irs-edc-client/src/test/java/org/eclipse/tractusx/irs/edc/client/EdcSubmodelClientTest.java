@@ -32,7 +32,6 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -87,7 +86,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     private final static String CONNECTOR_ENDPOINT = "https://connector.endpoint.com";
     private final static String SUBMODEL_SUFIX = "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel";
-    private final static String ASSET_ID = "9300395e-c0a5-4e88-bc57-a3973fec4c26";
+    private final static String ASSET_ID = "12345";
 
     private final EndpointDataReferenceStorage endpointDataReferenceStorage = new EndpointDataReferenceStorage(
             Duration.ofMinutes(1));
@@ -196,7 +195,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Test
     void shouldThrowErrorWhenCatalogItemCouldNotBeFound() throws Exception {
         // arrange
-        when(catalogCache.getCatalogItem(any(), any())).thenReturn(Optional.empty());
+        when(edcControlPlaneClient.getCatalogWithFilter("https://connector.endpoint.com", "asset:prop:id", ASSET_ID)).thenReturn(
+                createCatalog(ASSET_ID, 0));
 
         // act & assert
         assertThatThrownBy(() -> testee.getSubmodelRawPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID)).isInstanceOf(EdcClientException.class)
@@ -218,6 +218,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Test
     void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndAssemblyPartRelationship() throws Exception {
         final String existingCatenaXId = "urn:uuid:15090ed9-0b5c-4761-ad71-c085cf84fa63";
+        when(catalogCache.getCatalogItem(any(), any())).thenReturn(
+                Optional.of(CatalogItem.builder().itemId(existingCatenaXId).build()));
         prepareTestdata(existingCatenaXId, "_assemblyPartRelationship");
 
         final List<Relationship> submodelResponse = testee.getRelationships(
@@ -232,6 +234,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Test
     void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsPlanned() throws Exception {
         final String catenaXId = "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c";
+        when(catalogCache.getCatalogItem(any(), any())).thenReturn(
+                Optional.of(CatalogItem.builder().itemId(catenaXId).build()));
         prepareTestdata(catenaXId, "_singleLevelBomAsPlanned");
 
         final List<Relationship> submodelResponse = testee.getRelationships(
@@ -250,6 +254,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Test
     void shouldReturnEmptyRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelUsageAsBuilt() throws Exception {
         final String catenaXId = "urn:uuid:d7977805-ef52-43c4-9e1d-2f7f0e82c17c";
+        when(catalogCache.getCatalogItem(any(), any())).thenReturn(
+                Optional.of(CatalogItem.builder().itemId(catenaXId).build()));
         prepareTestdata(catenaXId, "_singleLevelUsageAsBuilt");
 
         final List<Relationship> submodelResponse = testee.getRelationships(
@@ -263,6 +269,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     void shouldReturnEmptyRelationshipsWhenRequestingWithNotExistingCatenaXIdAndAssemblyPartRelationship()
             throws Exception {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+        when(catalogCache.getCatalogItem(any(), any())).thenReturn(
+                Optional.of(CatalogItem.builder().itemId(catenaXId).build()));
         prepareTestdata(catenaXId, "_assemblyPartRelationship");
 
         final List<Relationship> submodelResponse = testee.getRelationships(
@@ -275,12 +283,14 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Test
     void shouldReturnRawSerialPartTypizationWhenExisting() throws Exception {
         final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
+        when(edcControlPlaneClient.getCatalogWithFilter("https://connector.endpoint.com", "asset:prop:id", ASSET_ID)).thenReturn(
+                createCatalog(ASSET_ID, 3));
         prepareTestdata(existingCatenaXId, "_serialPartTypization");
 
         final String submodelResponse = testee.getSubmodelRawPayload(
                 "https://connector.endpoint.com",
                 "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
-                "9300395e-c0a5-4e88-bc57-a3973fec4c26").get(5, TimeUnit.SECONDS);
+                ASSET_ID).get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).startsWith(
                 "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"manufacturerId\"}");
@@ -290,12 +300,13 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     void shouldUseDecodedTargetId() throws Exception {
         final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
         prepareTestdata(existingCatenaXId, "_serialPartTypization");
-        final String target = URLEncoder.encode(existingCatenaXId, StandardCharsets.UTF_8);
+        when(edcControlPlaneClient.getCatalogWithFilter("https://connector.endpoint.com", "asset:prop:id", ASSET_ID)).thenReturn(
+                createCatalog(ASSET_ID, 3));
 
         final String submodelResponse = testee.getSubmodelRawPayload(
                                                       "https://connector.endpoint.com",
                                                       "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
-                                                      "9300395e-c0a5-4e88-bc57-a3973fec4c26")
+                                                      ASSET_ID)
                                               .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).startsWith(
@@ -306,7 +317,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     void shouldReturnSameRelationshipsForDifferentDirections() throws Exception {
         final String parentCatenaXId = "urn:uuid:bd661150-8491-4442-943b-3e6e96fb0049";
         final BomLifecycle asBuilt = BomLifecycle.AS_BUILT;
-
+        when(catalogCache.getCatalogItem(any(), any())).thenReturn(
+                Optional.of(CatalogItem.builder().itemId(parentCatenaXId).build()));
         prepareTestdata(parentCatenaXId, "_assemblyPartRelationship");
         final List<Relationship> assemblyPartRelationships = testee.getRelationships(
                 "http://localhost/" + parentCatenaXId + "/submodel",
@@ -353,8 +365,6 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     private void prepareTestdata(final String catenaXId, final String submodelDataSuffix)
             throws ContractNegotiationException, IOException, UsagePolicyException {
-        when(catalogCache.getCatalogItem(any(), any())).thenReturn(
-                Optional.of(CatalogItem.builder().itemId(catenaXId).build()));
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);
