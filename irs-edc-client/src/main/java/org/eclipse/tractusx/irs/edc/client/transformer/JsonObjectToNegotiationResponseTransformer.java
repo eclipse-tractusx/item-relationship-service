@@ -29,6 +29,9 @@ import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Transformer to convert JSON-LD to NegotiationResponse.
+ */
 public class JsonObjectToNegotiationResponseTransformer
         extends AbstractJsonLdTransformer<JsonObject, NegotiationResponse> {
 
@@ -48,7 +51,7 @@ public class JsonObjectToNegotiationResponseTransformer
     @Override
     public @Nullable NegotiationResponse transform(@NotNull final JsonObject jsonObject,
             @NotNull final TransformerContext transformerContext) {
-        NegotiationResponse.NegotiationResponseBuilder builder = NegotiationResponse.builder();
+        final NegotiationResponse.NegotiationResponseBuilder builder = NegotiationResponse.builder();
         jsonObject.forEach((key, value) -> {
             switch (key) {
                 case CONTRACT_NEGOTIATION_ID -> builder.responseId(this.transformString(value, transformerContext));

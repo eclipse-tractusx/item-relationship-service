@@ -38,19 +38,22 @@ import org.eclipse.edc.transform.spi.TransformerContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Transformer to convert NegotiationInitiateRequestDto to JSON-LD.
+ */
 public class JsonObjectFromNegotiationInitiateDtoTransformer
         extends AbstractJsonLdTransformer<NegotiationInitiateRequestDto, JsonObject> {
     private final JsonBuilderFactory jsonFactory;
 
-    public JsonObjectFromNegotiationInitiateDtoTransformer(JsonBuilderFactory jsonFactory) {
+    public JsonObjectFromNegotiationInitiateDtoTransformer(final JsonBuilderFactory jsonFactory) {
         super(NegotiationInitiateRequestDto.class, JsonObject.class);
         this.jsonFactory = jsonFactory;
     }
 
     @Override
-    public @Nullable JsonObject transform(@NotNull NegotiationInitiateRequestDto dto,
-            @NotNull TransformerContext context) {
-        JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
+    public @Nullable JsonObject transform(@NotNull final NegotiationInitiateRequestDto dto,
+            @NotNull final TransformerContext context) {
+        final JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
         builder.add(JsonLdKeywords.TYPE, NegotiationInitiateRequestDto.TYPE)
                .add(NegotiationInitiateRequestDto.CONNECTOR_ADDRESS, dto.getConnectorAddress())
                .add(NegotiationInitiateRequestDto.CONNECTOR_ID, dto.getConnectorId())
@@ -66,11 +69,11 @@ public class JsonObjectFromNegotiationInitiateDtoTransformer
         return builder.build();
     }
 
-    private JsonArrayBuilder asArray(List<CallbackAddress> callbackAddresses, TransformerContext context) {
-        JsonArrayBuilder bldr = Objects.requireNonNull(this.jsonFactory.createArrayBuilder());
+    private JsonArrayBuilder asArray(final List<CallbackAddress> callbackAddresses, final TransformerContext context) {
+        final JsonArrayBuilder builder = Objects.requireNonNull(this.jsonFactory.createArrayBuilder());
         callbackAddresses.stream()
                          .map(callbackAddress -> context.transform(callbackAddress, JsonObject.class))
-                         .forEach(bldr::add);
-        return bldr;
+                         .forEach(builder::add);
+        return builder;
     }
 }

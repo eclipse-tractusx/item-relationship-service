@@ -23,7 +23,6 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static java.util.stream.Collectors.toSet;
-import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
 
 import java.util.ArrayList;
@@ -35,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.Dataset;
+import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.springframework.stereotype.Component;
 
@@ -47,7 +47,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class EDCCatalogFacade {
 
-    public static final String NAMESPACE_EDC_PARTICIPANT_ID = NAMESPACE_EDC + "participantId";
     private final EdcControlPlaneClient controlPlaneClient;
     private final EdcConfiguration config;
 
@@ -90,8 +89,8 @@ public class EDCCatalogFacade {
                                            .assetPropId(dataset.getProperty(NAMESPACE_EDC_ID).toString())
                                            .policies(dataset.getOffers().values().stream().toList())
                                            .datasets(datasets);
-            if (pageableCatalog.getProperties().containsKey(NAMESPACE_EDC_PARTICIPANT_ID)) {
-                builder.connectorId(pageableCatalog.getProperties().get(NAMESPACE_EDC_PARTICIPANT_ID).toString());
+            if (pageableCatalog.getProperties().containsKey(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID)) {
+                builder.connectorId(pageableCatalog.getProperties().get(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID).toString());
             }
             return builder.build();
         }).toList();

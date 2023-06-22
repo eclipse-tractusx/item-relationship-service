@@ -33,7 +33,6 @@ import org.eclipse.edc.api.model.IdResponseDto;
 import org.eclipse.edc.connector.api.management.contractnegotiation.model.ContractOfferDescription;
 import org.eclipse.edc.connector.api.management.contractnegotiation.model.NegotiationInitiateRequestDto;
 import org.eclipse.edc.policy.model.Policy;
-import org.eclipse.edc.spi.EdcException;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
@@ -107,14 +106,8 @@ public class ContractNegotiationService {
 
     private NegotiationInitiateRequestDto createNegotiationRequestFromCatalogItem(final String providerConnectorUrl,
             final CatalogItem catalogItem) {
-        if (catalogItem.getDatasets().size() > 1) {
-            throw new EdcException("Invalid Catalog: Dataset with more than 1 offers.");
-        }
         final Map<String, Policy> offers = catalogItem.getDatasets().stream().findFirst().orElseThrow().getOffers();
 
-        if (offers.size() > 1) {
-            throw new EdcException("Invalid Catalog: Offer with more than 1 offer sets.");
-        }
         final Map.Entry<String, Policy> offer = offers.entrySet().stream().findFirst().orElseThrow();
         final var contractOfferDescription = ContractOfferDescription.Builder.newInstance()
                                                                              .offerId(offer.getKey())

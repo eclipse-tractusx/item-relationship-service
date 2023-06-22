@@ -38,13 +38,13 @@ import lombok.extern.jackson.Jacksonized;
 public class NegotiationResponse {
 
     @JsonProperty("id")
-    /* private */ String responseId;
-    /* private */ String contractAgreementId;
-    /* private */ String counterPartyAddress;
-    /* private */ String errorDetail;
-    /* private */ String protocol;
-    /* private */ String state;
-    /* private */ String type;
-    /* private */ List<String> callbackAddresses;
+    private String responseId;
+    private String contractAgreementId;
+    private String counterPartyAddress;
+    private String errorDetail;
+    private String protocol;
+    private String state;
+    private String type;
+    private List<String> callbackAddresses;
 
 }

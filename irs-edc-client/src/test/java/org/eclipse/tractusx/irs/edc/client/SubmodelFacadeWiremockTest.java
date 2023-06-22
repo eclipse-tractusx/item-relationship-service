@@ -31,7 +31,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_CID;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createEdcTransformer;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
@@ -175,7 +175,7 @@ class SubmodelFacadeWiremockTest {
         final EndpointDataReference ref = EndpointDataReference.Builder.newInstance()
                                                                        .authKey("testkey")
                                                                        .authCode("testcode")
-                                                                       .properties(Map.of(NAMESPACE_EDC + "cid",
+                                                                       .properties(Map.of(NAMESPACE_EDC_CID,
                                                                                contractAgreementId))
                                                                        .endpoint(buildApiMethodUrl())
                                                                        .build();

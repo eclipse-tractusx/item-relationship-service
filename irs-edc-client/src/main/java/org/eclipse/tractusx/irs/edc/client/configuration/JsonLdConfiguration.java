@@ -22,12 +22,23 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.configuration;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsonp.JSONPModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
+import org.eclipse.edc.policy.model.AtomicConstraint;
+import org.eclipse.edc.policy.model.LiteralExpression;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.edc.spi.monitor.Monitor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * JsonLD configuration and namespace constants.
+ */
 @Configuration
 public class JsonLdConfiguration {
 
@@ -35,12 +46,13 @@ public class JsonLdConfiguration {
     public static final String NAMESPACE_DSPACE = "https://w3id.org/dspace/v0.8/";
     public static final String NAMESPACE_DCAT = "https://www.w3.org/ns/dcat/";
     public static final String NAMESPACE_EDC = "https://w3id.org/edc/v0.0.1/ns/";
+    public static final String NAMESPACE_EDC_CID = NAMESPACE_EDC + "cid";
+    public static final String NAMESPACE_EDC_PARTICIPANT_ID = NAMESPACE_EDC + "participantId";
     public static final String NAMESPACE_EDC_ID = NAMESPACE_EDC + "id";
     public static final String NAMESPACE_TRACTUSX = "https://w3id.org/tractusx/v0.0.1/ns/";
     public static final String NAMESPACE_DCT = "https://purl.org/dc/terms/";
 
-    @Bean
-        /* package */ TitaniumJsonLd titaniumJsonLd(final Monitor monitor) {
+    @Bean /* package */ TitaniumJsonLd titaniumJsonLd(final Monitor monitor) {
         final TitaniumJsonLd titaniumJsonLd = new TitaniumJsonLd(monitor);
         titaniumJsonLd.registerNamespace("odrl", JsonLdConfiguration.NAMESPACE_ODRL);
         titaniumJsonLd.registerNamespace("dct", NAMESPACE_DCT);
@@ -51,8 +63,18 @@ public class JsonLdConfiguration {
         return titaniumJsonLd;
     }
 
-    @Bean
-        /* package */ Monitor monitor() {
+    @Bean /* package */ Monitor monitor() {
         return new ConsoleMonitor();
+    }
+
+    @Bean /* package */ ObjectMapper objectMapper() {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.registerModule(new Jdk8Module());
+        objectMapper.registerModule(new JSONPModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.registerSubtypes(AtomicConstraint.class, LiteralExpression.class);
+        return objectMapper;
     }
 }

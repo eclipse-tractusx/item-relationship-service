@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.edc.client.transformer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.data.MapEntry.entry;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.objectMapper;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -206,7 +207,7 @@ class EdcTransformerTest {
         jsonLd.registerNamespace("dcat", "https://www.w3.org/ns/dcat/");
         jsonLd.registerNamespace("dspace", "https://w3id.org/dspace/v0.8/");
 
-        ObjectMapper objectMapper = EdcObjectMapper.MAPPER;
+        ObjectMapper objectMapper = objectMapper();
         edcTransformer = new EdcTransformer(objectMapper, jsonLd);
     }
 

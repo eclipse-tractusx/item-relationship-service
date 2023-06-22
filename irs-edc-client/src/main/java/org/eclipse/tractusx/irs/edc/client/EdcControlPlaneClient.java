@@ -55,6 +55,7 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings({ "PMD.TooManyMethods" })
 public class EdcControlPlaneClient {
 
     public static final String STATUS_FINALIZED = "FINALIZED";

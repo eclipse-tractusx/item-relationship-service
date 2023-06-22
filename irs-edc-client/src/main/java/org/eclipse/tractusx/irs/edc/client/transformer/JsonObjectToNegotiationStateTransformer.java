@@ -29,6 +29,9 @@ import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Transformer to convert JSON-LD to NegotiationState.
+ */
 public class JsonObjectToNegotiationStateTransformer extends AbstractJsonLdTransformer<JsonObject, NegotiationState> {
     public static final String CONTRACT_NEGOTIATION_STATE = "https://w3id.org/edc/v0.0.1/ns/state";
 
@@ -41,7 +44,7 @@ public class JsonObjectToNegotiationStateTransformer extends AbstractJsonLdTrans
             @NotNull final TransformerContext transformerContext) {
         final NegotiationState.NegotiationStateBuilder builder = NegotiationState.builder();
         jsonObject.forEach((key, value) -> {
-            if (key.equals(CONTRACT_NEGOTIATION_STATE)) {
+            if (CONTRACT_NEGOTIATION_STATE.equals(key)) {
                 builder.state(this.transformString(value, transformerContext));
             }
         });

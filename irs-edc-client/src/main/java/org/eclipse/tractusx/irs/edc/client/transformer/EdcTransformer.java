@@ -70,7 +70,11 @@ import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.springframework.stereotype.Component;
 
+/**
+ * Transformer to convert between EDC models and JSON-LD.
+ */
 @Component
+@SuppressWarnings("PMD.ExcessiveImports")
 public class EdcTransformer {
     private final JsonObjectToCatalogTransformer jsonObjectToCatalogTransformer;
     private final JsonObjectFromNegotiationInitiateDtoTransformer jsonObjectFromNegotiationInitiateDtoTransformer;
@@ -84,7 +88,7 @@ public class EdcTransformer {
 
     public EdcTransformer(final ObjectMapper objectMapper, final TitaniumJsonLd titaniumJsonLd) {
         this.titaniumJsonLd = titaniumJsonLd;
-        JsonBuilderFactory jsonBuilderFactory = Json.createBuilderFactory(Map.of());
+        final JsonBuilderFactory jsonBuilderFactory = Json.createBuilderFactory(Map.of());
 
         jsonObjectFromNegotiationInitiateDtoTransformer = new JsonObjectFromNegotiationInitiateDtoTransformer(
                 jsonBuilderFactory);
@@ -97,7 +101,7 @@ public class EdcTransformer {
         jsonObjectToNegotiationResponseTransformer = new JsonObjectToNegotiationResponseTransformer();
         jsonObjectToNegotiationStateTransformer = new JsonObjectToNegotiationStateTransformer();
 
-        TypeTransformerRegistry typeTransformerRegistry = new TypeTransformerRegistryImpl();
+        final TypeTransformerRegistry typeTransformerRegistry = new TypeTransformerRegistryImpl();
         transformerContext = new TransformerContextImpl(typeTransformerRegistry);
 
         // JSON to Object

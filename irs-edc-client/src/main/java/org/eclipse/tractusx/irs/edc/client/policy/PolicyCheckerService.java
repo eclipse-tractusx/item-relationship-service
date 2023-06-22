@@ -62,7 +62,6 @@ public class PolicyCheckerService {
                                                        .anyMatch(allowedPolicy -> isValid(permission, allowedPolicy)));
     }
 
-    //TODO add tests
     public boolean isValid(final List<Policy> policies) {
         final List<PolicyDefinition> policyList = allowedPolicies.stream()
                                                                  .flatMap(this::addEncodedVersion)

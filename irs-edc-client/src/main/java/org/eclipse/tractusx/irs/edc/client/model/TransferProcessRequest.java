@@ -53,15 +53,15 @@ public class TransferProcessRequest {
     public static final String DEFAULT_PROTOCOL = "dataspace-protocol-http";
     public static final boolean DEFAULT_MANAGED_RESOURCES = false;
 
-    /*private*/ String assetId;
-    /*private*/ String connectorAddress;
-    /*private*/ String connectorId;
-    /*private*/ String contractId;
-    /*private*/ DataAddress dataDestination;
-    /*private*/ String protocol;
-    /*private*/ boolean managedResources;
-    /*private*/ List<CallbackAddress> callbackAddresses;
-    /*private*/ Map<String, String> properties;
-    /*private*/ Map<String, String> privateProperties;
+    private String assetId;
+    private String connectorAddress;
+    private String connectorId;
+    private String contractId;
+    private DataAddress dataDestination;
+    private String protocol;
+    private boolean managedResources;
+    private List<CallbackAddress> callbackAddresses;
+    private Map<String, String> properties;
+    private Map<String, String> privateProperties;
 
 }

@@ -39,18 +39,21 @@ import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Transformer to convert TransferProcessRequest to JSON-LD.
+ */
 public class JsonObjectFromTransferProcessRequestTransformer
         extends AbstractJsonLdTransformer<TransferProcessRequest, JsonObject> {
     private final JsonBuilderFactory jsonFactory;
 
-    public JsonObjectFromTransferProcessRequestTransformer(JsonBuilderFactory jsonFactory) {
+    public JsonObjectFromTransferProcessRequestTransformer(final JsonBuilderFactory jsonFactory) {
         super(TransferProcessRequest.class, JsonObject.class);
         this.jsonFactory = jsonFactory;
     }
 
     @Override
-    public @Nullable JsonObject transform(@NotNull TransferProcessRequest dto, @NotNull TransformerContext context) {
-        JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
+    public @Nullable JsonObject transform(@NotNull final TransferProcessRequest dto, @NotNull final TransformerContext context) {
+        final JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
         builder.add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_ASSET_ID, dto.getAssetId())
                .add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_CONNECTOR_ADDRESS, dto.getConnectorAddress())
                .add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_CONTRACT_ID, dto.getContractId())
@@ -80,8 +83,8 @@ public class JsonObjectFromTransferProcessRequestTransformer
         return builder.build();
     }
 
-    private JsonArrayBuilder asArray(List<CallbackAddress> callbackAddresses, TransformerContext context) {
-        JsonArrayBuilder arrayBuilder = Objects.requireNonNull(this.jsonFactory.createArrayBuilder());
+    private JsonArrayBuilder asArray(final List<CallbackAddress> callbackAddresses, final TransformerContext context) {
+        final JsonArrayBuilder arrayBuilder = Objects.requireNonNull(this.jsonFactory.createArrayBuilder());
         callbackAddresses.stream()
                          .map(callbackAddress -> context.transform(callbackAddress, JsonObject.class))
                          .forEach(arrayBuilder::add);

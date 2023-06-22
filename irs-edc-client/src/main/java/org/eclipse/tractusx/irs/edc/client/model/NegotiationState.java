@@ -33,5 +33,5 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 @Jacksonized
 public class NegotiationState {
-    /* private */ String state;
+    private String state;
 }

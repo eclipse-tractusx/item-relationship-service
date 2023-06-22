@@ -34,17 +34,21 @@ import org.eclipse.edc.transform.spi.TransformerContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Transformer to convert CatalogRequest to JSON-LD.
+ */
 public class JsonObjectFromCatalogRequestTransformer extends AbstractJsonLdTransformer<CatalogRequest, JsonObject> {
     private final JsonBuilderFactory jsonFactory;
 
-    public JsonObjectFromCatalogRequestTransformer(JsonBuilderFactory jsonFactory) {
+    public JsonObjectFromCatalogRequestTransformer(final JsonBuilderFactory jsonFactory) {
         super(CatalogRequest.class, JsonObject.class);
         this.jsonFactory = jsonFactory;
     }
 
     @Override
-    public @Nullable JsonObject transform(@NotNull CatalogRequest dto, @NotNull TransformerContext context) {
-        JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
+    public @Nullable JsonObject transform(@NotNull final CatalogRequest dto,
+            @NotNull final TransformerContext context) {
+        final JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
         builder.add(JsonLdKeywords.TYPE, CatalogRequest.EDC_CATALOG_REQUEST_TYPE)
                .add(CatalogRequest.EDC_CATALOG_REQUEST_PROVIDER_URL, dto.getProviderUrl())
                .add(CatalogRequest.EDC_CATALOG_REQUEST_PROTOCOL, dto.getProtocol());

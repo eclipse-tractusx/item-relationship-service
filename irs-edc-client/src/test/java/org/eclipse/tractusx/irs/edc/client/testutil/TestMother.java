@@ -22,12 +22,12 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.testutil;
 
-import static org.eclipse.tractusx.irs.edc.client.EDCCatalogFacade.NAMESPACE_EDC_PARTICIPANT_ID;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_DCAT;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_DCT;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_DSPACE;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_ODRL;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_TRACTUSX;
 import static org.mockito.Mockito.mock;
@@ -37,14 +37,21 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsonp.JSONPModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.DataService;
 import org.eclipse.edc.catalog.spi.Dataset;
 import org.eclipse.edc.catalog.spi.Distribution;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
+import org.eclipse.edc.policy.model.AtomicConstraint;
+import org.eclipse.edc.policy.model.LiteralExpression;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
-import org.eclipse.tractusx.irs.edc.client.transformer.EdcObjectMapper;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,7 +65,18 @@ public class TestMother {
         titaniumJsonLd.registerNamespace("edc", NAMESPACE_EDC);
         titaniumJsonLd.registerNamespace("dcat", NAMESPACE_DCAT);
         titaniumJsonLd.registerNamespace("dspace", NAMESPACE_DSPACE);
-        return new EdcTransformer(EdcObjectMapper.MAPPER, titaniumJsonLd);
+        return new EdcTransformer(objectMapper(), titaniumJsonLd);
+    }
+
+    public static ObjectMapper objectMapper() {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.registerModule(new Jdk8Module());
+        objectMapper.registerModule(new JSONPModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.registerSubtypes(AtomicConstraint.class, LiteralExpression.class);
+        return objectMapper;
     }
 
     public static Catalog createCatalog(final String assetId, final int numberOfOffers) {

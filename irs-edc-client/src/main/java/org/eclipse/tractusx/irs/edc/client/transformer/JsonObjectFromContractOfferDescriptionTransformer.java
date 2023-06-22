@@ -32,18 +32,22 @@ import org.eclipse.edc.transform.spi.TransformerContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Transformer to convert ContractOfferDescription to JSON-LD.
+ */
 public class JsonObjectFromContractOfferDescriptionTransformer
         extends AbstractJsonLdTransformer<ContractOfferDescription, JsonObject> {
     private final JsonBuilderFactory jsonFactory;
 
-    public JsonObjectFromContractOfferDescriptionTransformer(JsonBuilderFactory jsonFactory) {
+    public JsonObjectFromContractOfferDescriptionTransformer(final JsonBuilderFactory jsonFactory) {
         super(ContractOfferDescription.class, JsonObject.class);
         this.jsonFactory = jsonFactory;
     }
 
     @Override
-    public @Nullable JsonObject transform(@NotNull ContractOfferDescription dto, @NotNull TransformerContext context) {
-        JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
+    public @Nullable JsonObject transform(@NotNull final ContractOfferDescription dto,
+            final @NotNull TransformerContext context) {
+        final JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
         builder.add(JsonLdKeywords.TYPE, ContractOfferDescription.TYPE)
                .add(ContractOfferDescription.OFFER_ID, dto.getOfferId())
                .add(ContractOfferDescription.ASSET_ID, dto.getAssetId())

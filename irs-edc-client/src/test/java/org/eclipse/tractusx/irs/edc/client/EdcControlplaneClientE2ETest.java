@@ -51,12 +51,14 @@ import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+@Disabled
 class EdcControlplaneClientE2ETest {
 
     public static final String DATASPACE_PROTOCOL_HTTP = "dataspace-protocol-http";
@@ -72,7 +74,7 @@ class EdcControlplaneClientE2ETest {
         config.getControlplane().setRequestTtl(Duration.ofSeconds(5));
         config.getControlplane().setProviderSuffix("/api/v1/dsp");
         config.getControlplane().getApiKey().setHeader("X-Api-Key");
-        config.getControlplane().getApiKey().setSecret("");
+        config.getControlplane().getApiKey().setSecret("123456");
         config.getSubmodel().setPath("/submodel");
         config.getSubmodel().setUrnPrefix("/urn");
 
