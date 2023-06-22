@@ -24,16 +24,20 @@ package org.eclipse.tractusx.irs.aaswrapper.job;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ExtractIdFromProtocolInformation {
 
     private static final String ASSET_ID_PREFIX = "id=";
-    private static final String ASSET_ID_SUFFIX = ";";
+    private static final String ASSET_ID_SEPARATOR = ";";
 
     public static String extractAssetId(final String subprotocolBody) {
-        return subprotocolBody.substring(
-                subprotocolBody.indexOf(ASSET_ID_PREFIX) + 3,
-                subprotocolBody.indexOf(ASSET_ID_SUFFIX));
+        final Map<String, String> parametersFromPath = Stream.of(subprotocolBody.split(ASSET_ID_SEPARATOR))
+                                                  .map(str -> str.split("="))
+                                                  .collect(Collectors.toMap(e -> e[0], e -> e[1]));
+        return parametersFromPath.get("id");
     }
 
     public static String extractSuffix(final String href) throws URISyntaxException {

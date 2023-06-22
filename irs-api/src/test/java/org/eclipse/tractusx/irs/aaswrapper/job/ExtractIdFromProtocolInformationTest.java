@@ -11,13 +11,13 @@ class ExtractIdFromProtocolInformationTest {
     @Test
     void shouldExtractIdFromSubprotocol() {
         // given
-        final String exampleSubprotocol = "id=9300395e-c0a5-4e88-bc57-a3973fec4c26;idsEndpoint=http://edc.control.plane/";
+        final String exampleSubprotocol = "other_id=fake-id;id=12345;idsEndpoint=http://edc.control.plane/";
 
         // when
         final String actual = ExtractIdFromProtocolInformation.extractAssetId(exampleSubprotocol);
 
         // then
-        assertThat(actual).isEqualTo("9300395e-c0a5-4e88-bc57-a3973fec4c26");
+        assertThat(actual).isEqualTo("12345");
     }
 
     @Test
