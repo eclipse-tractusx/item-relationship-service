@@ -24,9 +24,14 @@ package org.eclipse.tractusx.irs.edc.client.configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
+import org.eclipse.edc.policy.model.AtomicConstraint;
+import org.eclipse.edc.policy.model.LiteralExpression;
+import org.eclipse.edc.policy.model.Operator;
 import org.eclipse.edc.spi.result.Result;
 import org.junit.jupiter.api.Test;
 
@@ -54,5 +59,20 @@ class JsonLdConfigurationTest {
         final Result<JsonObject> compact = titaniumJsonLd.compact(expandedObject);
         final JsonObject compactetObject = compact.getContent();
         assertThat(compactetObject).containsKey("edc:state");
+    }
+
+    @Test
+    void shouldMapContstraints() throws JsonProcessingException {
+        final AtomicConstraint atomicConstraint = AtomicConstraint.Builder.newInstance()
+                                                                          .operator(Operator.EQ)
+                                                                          .leftExpression(
+                                                                                  new LiteralExpression("idsc:PURPOSE"))
+                                                                          .rightExpression(
+                                                                                  new LiteralExpression("ID 3.0 Trace"))
+                                                                          .build();
+        final ObjectMapper objectMapper = new JsonLdConfiguration().objectMapper();
+        final String s = objectMapper.writeValueAsString(atomicConstraint);
+        System.out.println(s);
+        assertThat(s).isNotBlank().contains("dataspaceconnector:literalexpression");
     }
 }
