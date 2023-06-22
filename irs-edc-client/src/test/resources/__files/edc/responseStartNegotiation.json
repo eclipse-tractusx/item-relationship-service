@@ -1,6 +1,6 @@
 {
   "@type": "edc:IdResponseDto",
-  "@id": "1cbaec6e-c316-4e3e-8258-c07a648cc44a",
+  "@id": "1bbaec6e-c316-4e1e-8258-c07a648cc43c",
   "edc:createdAt": 1686830151573,
   "@context": {
     "dct": "https://purl.org/dc/terms/",

@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.apicatalog.jsonld.JsonLdError;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -42,7 +41,6 @@ import org.eclipse.edc.catalog.spi.Dataset;
 import org.eclipse.edc.catalog.spi.Distribution;
 import org.eclipse.edc.connector.api.management.contractnegotiation.model.ContractOfferDescription;
 import org.eclipse.edc.connector.api.management.contractnegotiation.model.NegotiationInitiateRequestDto;
-import org.eclipse.edc.connector.api.management.transferprocess.model.TransferRequestDto;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.policy.model.Action;
 import org.eclipse.edc.policy.model.AtomicConstraint;
@@ -54,6 +52,7 @@ import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -337,22 +336,20 @@ class EdcTransformerTest {
         final String contractId = "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c";
         final String assetId = "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a";
         final String connectorId = "BPNL00000003CRHK";
-        final TransferRequestDto transferRequestDto = TransferRequestDto.Builder.newInstance()
+        final DataAddress dataAddress = DataAddress.Builder.newInstance().type("HttpProxy").build();
+        final TransferProcessRequest transferRequestDto = TransferProcessRequest.builder()
                                                                                 .assetId(assetId)
                                                                                 .connectorId(connectorId)
                                                                                 .connectorAddress(providerConnector)
                                                                                 .protocol(protocol)
                                                                                 .contractId(contractId)
                                                                                 .managedResources(false)
-                                                                                .dataDestination(
-                                                                                        DataAddress.Builder.newInstance()
-                                                                                                           .type("HttpProxy")
-                                                                                                           .build())
+                                                                                .dataDestination(dataAddress)
                                                                                 .privateProperties(
                                                                                         Map.of("receiverHttpEndpoint",
                                                                                                 "https://backend.app/endpoint-data-reference"))
                                                                                 .build();
-        final JsonObject jsonObject = edcTransformer.transformTransferRequestDtoToJson(transferRequestDto);
+        final JsonObject jsonObject = edcTransformer.transformTransferProcessRequestToJson(transferRequestDto);
         final Optional<JsonObject> optional = jsonLd.compact(jsonObject).asOptional();
         assertThat(optional).isPresent();
         assertThat(optional.get().getJsonObject("edc:privateProperties")).isNotEmpty();

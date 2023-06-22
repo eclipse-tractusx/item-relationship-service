@@ -62,6 +62,21 @@ public class PolicyCheckerService {
                                                        .anyMatch(allowedPolicy -> isValid(permission, allowedPolicy)));
     }
 
+    //TODO add tests
+    public boolean isValid(final List<Policy> policies) {
+        final List<PolicyDefinition> policyList = allowedPolicies.stream()
+                                                                 .flatMap(this::addEncodedVersion)
+                                                                 .map(this::createPolicy)
+                                                                 .toList();
+        log.info("Checking policy {} against allowed policies: {}", StringMapper.mapToString(policies),
+                String.join(",", allowedPolicies));
+        return policies.stream()
+                       .flatMap(policy -> policy.getPermissions().stream())
+                       .anyMatch(permission -> policyList.stream()
+                                                         .anyMatch(
+                                                                 allowedPolicy -> isValid(permission, allowedPolicy)));
+    }
+
     private boolean isValid(final Permission permission, final PolicyDefinition policyDefinition) {
         return permission.getAction().getType().equals(policyDefinition.getPermissionActionType())
                 && permission.getConstraints().stream().anyMatch(constraint -> isValid(constraint, policyDefinition));

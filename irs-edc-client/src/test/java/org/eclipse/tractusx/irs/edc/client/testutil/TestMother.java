@@ -22,6 +22,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.testutil;
 
+import static org.eclipse.tractusx.irs.edc.client.EDCCatalogFacade.NAMESPACE_EDC_PARTICIPANT_ID;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_DCAT;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_DCT;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_DSPACE;
@@ -76,7 +77,7 @@ public class TestMother {
                                                                          .distribution(distribution)
                                                                          .build())
                                                 .toList();
-        return Catalog.Builder.newInstance().datasets(datasets).build();
+        return Catalog.Builder.newInstance().datasets(datasets).properties(Map.of(NAMESPACE_EDC_PARTICIPANT_ID, "BPNTEST")).build();
     }
 
     @NotNull

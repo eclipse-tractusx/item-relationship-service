@@ -25,11 +25,18 @@ package org.eclipse.tractusx.irs.edc.client;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.edc.api.model.IdResponseDto;
+import org.eclipse.edc.catalog.spi.DataService;
+import org.eclipse.edc.catalog.spi.Dataset;
+import org.eclipse.edc.catalog.spi.Distribution;
+import org.eclipse.edc.policy.model.Permission;
+import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
@@ -59,12 +66,37 @@ class ContractNegotiationServiceTest {
     @Mock
     private PolicyCheckerService policyCheckerService;
 
+    private static Policy createPolicy(final String assetId) {
+        final Permission permission = Permission.Builder.newInstance().target(assetId).build();
+        return Policy.Builder.newInstance().permission(permission).build();
+    }
+
+    private static Dataset createDataset(final String offerId, final Policy policy) {
+        final Distribution distribution = Distribution.Builder.newInstance()
+                                                              .format("HttpProxy")
+                                                              .dataService(new DataService())
+                                                              .build();
+        return Dataset.Builder.newInstance().offer(offerId, policy).distribution(distribution).build();
+    }
+
+    private static CatalogItem createCatalogItem(final String assetId, final String offerId) {
+        final Policy policy = createPolicy(assetId);
+        final Dataset dataset = createDataset(offerId, policy);
+        return CatalogItem.builder()
+                          .itemId(assetId)
+                          .policies(List.of(policy))
+                          .assetPropId(assetId)
+                          .datasets(List.of(dataset))
+                          .build();
+    }
+
     @Test
     void shouldNegotiateSuccessfully() throws ContractNegotiationException, UsagePolicyException {
         // arrange
         final var assetId = "testTarget";
-        final CatalogItem catalogItem = CatalogItem.builder().itemId(assetId).assetPropId(assetId).build();
-        when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
+        final String offerId = "offerId";
+        final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
+        when(policyCheckerService.isValid(anyList())).thenReturn(Boolean.TRUE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 IdResponseDto.Builder.newInstance().id("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.completedFuture(
@@ -87,8 +119,9 @@ class ContractNegotiationServiceTest {
     void shouldThrowErrorWhenRetrievingNegotiationResult() {
         // arrange
         final var assetId = "testTarget";
-        final CatalogItem catalogItem = CatalogItem.builder().itemId(assetId).assetPropId(assetId).build();
-        when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
+        final String offerId = "offerId";
+        final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
+        when(policyCheckerService.isValid(anyList())).thenReturn(Boolean.TRUE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 IdResponseDto.Builder.newInstance().id("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.failedFuture(
@@ -103,8 +136,12 @@ class ContractNegotiationServiceTest {
     void shouldThrowErrorWhenPolicyCheckerReturnFalse() {
         // arrange
         final var assetId = "testTarget";
-        final CatalogItem catalogItem = CatalogItem.builder().itemId(assetId).assetPropId(assetId).build();
-        when(policyCheckerService.isValid(any())).thenReturn(Boolean.FALSE);
+        final CatalogItem catalogItem = CatalogItem.builder()
+                                                   .itemId(assetId)
+                                                   .policies(List.of())
+                                                   .assetPropId(assetId)
+                                                   .build();
+        when(policyCheckerService.isValid(anyList())).thenReturn(Boolean.FALSE);
 
         // act & assert
         assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem)).isInstanceOf(EdcClientException.class);

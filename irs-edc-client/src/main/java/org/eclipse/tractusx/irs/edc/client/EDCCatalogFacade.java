@@ -23,6 +23,7 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static java.util.stream.Collectors.toSet;
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class EDCCatalogFacade {
 
+    public static final String NAMESPACE_EDC_PARTICIPANT_ID = NAMESPACE_EDC + "participantId";
     private final EdcControlPlaneClient controlPlaneClient;
     private final EdcConfiguration config;
 
@@ -81,23 +83,24 @@ public class EDCCatalogFacade {
             }
         }
 
-        final String connectorId = pageableCatalog.getId();
-
         log.info("Search for offer for asset id: {}", target);
-        return datasets.stream()
-                       .map(dataset -> CatalogItem.builder()
-                                                  .itemId(dataset.getId())
-                                                  .assetPropId(dataset.getProperty(NAMESPACE_EDC_ID).toString())
-                                                  .connectorId(connectorId)
-                                                  .policies(dataset.getOffers().values().stream().toList())
-                                                  .build())
-                       .toList();
+        return datasets.stream().map(dataset -> {
+            final var builder = CatalogItem.builder()
+                                           .itemId(dataset.getId())
+                                           .assetPropId(dataset.getProperty(NAMESPACE_EDC_ID).toString())
+                                           .policies(dataset.getOffers().values().stream().toList())
+                                           .datasets(datasets);
+            if (pageableCatalog.getProperties().containsKey(NAMESPACE_EDC_PARTICIPANT_ID)) {
+                builder.connectorId(pageableCatalog.getProperties().get(NAMESPACE_EDC_PARTICIPANT_ID).toString());
+            }
+            return builder.build();
+        }).toList();
     }
 
     private Optional<Dataset> findOfferIfExist(final String target, final Catalog catalog) {
         return catalog.getDatasets()
                       .stream()
-                      .filter(contractOffer -> contractOffer.getProperty(NAMESPACE_EDC_ID).toString().equals(target))
+                      .filter(dataset -> dataset.getProperty(NAMESPACE_EDC_ID).toString().equals(target))
                       .findFirst();
     }
 

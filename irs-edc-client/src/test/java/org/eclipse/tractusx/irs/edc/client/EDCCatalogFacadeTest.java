@@ -93,7 +93,7 @@ class EDCCatalogFacadeTest {
     @Test
     void shouldReturnOnePageIfOfferIsFound() {
         // arrange
-        final var assetId = "testTarget";
+        final var assetId = "testTarget2";
         final String connectorUrl = "testConnector";
         final var firstPage = createCatalog("testTarget", DEFAULT_PAGE_SIZE);
         final var secondPage = createCatalog("other", DEFAULT_PAGE_SIZE);

@@ -31,14 +31,16 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createEdcTransformer;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.Clock;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -63,7 +65,7 @@ import org.springframework.web.client.RestTemplate;
 
 class SubmodelFacadeWiremockTest {
 
-    private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
+    private final static String URL = "https://edc.io/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
     private final EdcConfiguration config = new EdcConfiguration();
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
     private WireMockServer wireMockServer;
@@ -106,7 +108,7 @@ class SubmodelFacadeWiremockTest {
                 new EDCCatalogFacade(controlPlaneClient, config), cacheConfig);
 
         final PolicyCheckerService policyCheckerService = mock(PolicyCheckerService.class);
-        when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
+        when(policyCheckerService.isValid(anyList())).thenReturn(Boolean.TRUE);
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
                 policyCheckerService);
 
@@ -133,7 +135,7 @@ class SubmodelFacadeWiremockTest {
                                                                                  "assemblyPartRelationship.json")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(url).get();
+        final String submodel = edcSubmodelClient.getSubmodelRawPayload(URL).get();
 
         // Assert
         assertThat(submodel).contains("\"catenaXId\": \"urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978\"");
@@ -143,7 +145,7 @@ class SubmodelFacadeWiremockTest {
         final var contentType = "application/json;charset=UTF-8";
         final var pathCatalog = "/catalog/request";
         final var pathNegotiate = "/contractnegotiations";
-        final var pathStartTransfer = "/transferprocess";
+        final var pathStartTransfer = "/transferprocesses";
         givenThat(post(urlPathEqualTo(pathCatalog)).willReturn(aResponse().withStatus(200)
                                                                           .withHeader("Content-Type", contentType)
                                                                           .withBodyFile("edc/responseCatalog.json")));
@@ -153,22 +155,28 @@ class SubmodelFacadeWiremockTest {
                                                                             .withBodyFile(
                                                                                     "edc/responseStartNegotiation.json")));
 
-        final var negotiationId = "1cbaec6e-c316-4e3e-8258-c07a648cc44a";
+        final var negotiationId = "1bbaec6e-c316-4e1e-8258-c07a648cc43c";
         givenThat(get(urlPathEqualTo(pathNegotiate + "/" + negotiationId)).willReturn(aResponse().withStatus(200)
                                                                                                  .withHeader(
                                                                                                          "Content-Type",
                                                                                                          contentType)
                                                                                                  .withBodyFile(
                                                                                                          "edc/responseGetNegotiationConfirmed.json")));
+        givenThat(get(urlPathEqualTo(pathNegotiate + "/" + negotiationId + "/state")).willReturn(
+                aResponse().withStatus(200)
+                           .withHeader("Content-Type", contentType)
+                           .withBodyFile("edc/responseGetNegotiationState.json")));
 
         givenThat(post(urlPathEqualTo(pathStartTransfer)).willReturn(aResponse().withStatus(200)
                                                                                 .withHeader("Content-Type", contentType)
                                                                                 .withBodyFile(
                                                                                         "edc/responseStartTransferprocess.json")));
-        final var contractAgreementId = "1bbaec6e-c316-4e1e-8258-c07a648cc43c";
+        final var contractAgreementId = "7681f966-36ea-4542-b5ea-0d0db81967de:urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7:a6144a2e-c1b1-4ec6-96e1-a221da134e4f";
         final EndpointDataReference ref = EndpointDataReference.Builder.newInstance()
                                                                        .authKey("testkey")
                                                                        .authCode("testcode")
+                                                                       .properties(Map.of(NAMESPACE_EDC + "cid",
+                                                                               contractAgreementId))
                                                                        .endpoint(buildApiMethodUrl())
                                                                        .build();
         storage.put(contractAgreementId, ref);
@@ -185,7 +193,7 @@ class SubmodelFacadeWiremockTest {
                                                                          .withBodyFile("materialForRecycling.json")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(url).get();
+        final String submodel = edcSubmodelClient.getSubmodelRawPayload(URL).get();
 
         // Assert
         assertThat(submodel).contains("\"materialName\": \"Cooper\",");
@@ -202,7 +210,7 @@ class SubmodelFacadeWiremockTest {
                                                                          .withBody("test")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(url).get();
+        final String submodel = edcSubmodelClient.getSubmodelRawPayload(URL).get();
 
         // Assert
         assertThat(submodel).isEqualTo("test");
@@ -218,7 +226,7 @@ class SubmodelFacadeWiremockTest {
                                                                          .withBody("{ error: '400'}")));
 
         // Act
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelRawPayload(url)
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelRawPayload(URL)
                                                                                          .get(5, TimeUnit.SECONDS);
 
         // Assert
@@ -236,7 +244,7 @@ class SubmodelFacadeWiremockTest {
                                                                          .withBody("{ error: '500'}")));
 
         // Act
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelRawPayload(url)
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelRawPayload(URL)
                                                                                          .get(5, TimeUnit.SECONDS);
 
         // Assert

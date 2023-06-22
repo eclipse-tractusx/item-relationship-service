@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
+
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +52,7 @@ public class EdcCallbackController {
         log.debug("Received EndpointDataReference: {}", StringMapper.mapToString(dataReference));
         log.debug("Received EndpointDataReference with ID {} and endpoint {}", dataReference.getId(),
                 dataReference.getEndpoint());
-        final var contractAgreementId = dataReference.getProperties().get("cid");
+        final var contractAgreementId = dataReference.getProperties().get(NAMESPACE_EDC + "cid");
         storage.put(contractAgreementId, dataReference);
         log.info("Endpoint Data Reference received and cached for agreement: {}", Masker.mask(contractAgreementId));
     }

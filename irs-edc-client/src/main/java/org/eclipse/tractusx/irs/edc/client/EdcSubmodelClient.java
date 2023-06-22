@@ -300,7 +300,6 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final String providerWithSuffix = appendSuffix(endpointAddress,
                     config.getControlplane().getProviderSuffix());
 
-            // TODO move method to catalogCache and facade
             final Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(providerWithSuffix, filterKey,
                     filterValue);
 

@@ -36,8 +36,6 @@ import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.connector.api.management.contractnegotiation.model.ContractOfferDescription;
 import org.eclipse.edc.connector.api.management.contractnegotiation.model.NegotiationInitiateRequestDto;
-import org.eclipse.edc.connector.api.management.contractnegotiation.transform.JsonObjectFromNegotiationStateTransformer;
-import org.eclipse.edc.connector.api.management.transferprocess.model.TransferRequestDto;
 import org.eclipse.edc.connector.api.management.transferprocess.transform.JsonObjectFromTransferProcessDtoTransformer;
 import org.eclipse.edc.connector.core.transform.TransformerContextImpl;
 import org.eclipse.edc.connector.core.transform.TypeTransformerRegistryImpl;
@@ -69,16 +67,15 @@ import org.eclipse.edc.spi.result.Result;
 import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
+import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EdcTransformer {
     private final JsonObjectToCatalogTransformer jsonObjectToCatalogTransformer;
-    private final TypeTransformerRegistry typeTransformerRegistry;
     private final JsonObjectFromNegotiationInitiateDtoTransformer jsonObjectFromNegotiationInitiateDtoTransformer;
-    private final JsonObjectFromTransferRequestDtoTransformer jsonObjectFromTransferRequestDtoTransformer;
+    private final JsonObjectFromTransferProcessRequestTransformer jsonObjectFromTransferProcessRequestTransformer;
     private final JsonObjectFromContractOfferDescriptionTransformer jsonObjectFromContractOfferDescriptionTransformer;
-    private final JsonObjectFromQuerySpecTransformer jsonObjectFromQuerySpecTransformer;
     private final JsonObjectFromCatalogRequestTransformer jsonObjectFromCatalogRequestTransformer;
     private final TitaniumJsonLd titaniumJsonLd;
     private final TransformerContextImpl transformerContext;
@@ -92,16 +89,15 @@ public class EdcTransformer {
         jsonObjectFromNegotiationInitiateDtoTransformer = new JsonObjectFromNegotiationInitiateDtoTransformer(
                 jsonBuilderFactory);
         jsonObjectToCatalogTransformer = new JsonObjectToCatalogTransformer();
-        jsonObjectFromTransferRequestDtoTransformer = new JsonObjectFromTransferRequestDtoTransformer(
-                jsonBuilderFactory, objectMapper);
+        jsonObjectFromTransferProcessRequestTransformer = new JsonObjectFromTransferProcessRequestTransformer(
+                jsonBuilderFactory);
         jsonObjectFromContractOfferDescriptionTransformer = new JsonObjectFromContractOfferDescriptionTransformer(
                 jsonBuilderFactory);
-        jsonObjectFromQuerySpecTransformer = new JsonObjectFromQuerySpecTransformer(jsonBuilderFactory);
         jsonObjectFromCatalogRequestTransformer = new JsonObjectFromCatalogRequestTransformer(jsonBuilderFactory);
         jsonObjectToNegotiationResponseTransformer = new JsonObjectToNegotiationResponseTransformer();
         jsonObjectToNegotiationStateTransformer = new JsonObjectToNegotiationStateTransformer();
 
-        typeTransformerRegistry = new TypeTransformerRegistryImpl();
+        TypeTransformerRegistry typeTransformerRegistry = new TypeTransformerRegistryImpl();
         transformerContext = new TransformerContextImpl(typeTransformerRegistry);
 
         // JSON to Object
@@ -123,9 +119,9 @@ public class EdcTransformer {
         // JSON from Object
         typeTransformerRegistry.register(jsonObjectFromNegotiationInitiateDtoTransformer);
         typeTransformerRegistry.register(jsonObjectFromCatalogRequestTransformer);
-        typeTransformerRegistry.register(jsonObjectFromTransferRequestDtoTransformer);
-        typeTransformerRegistry.register(jsonObjectFromQuerySpecTransformer);
+        typeTransformerRegistry.register(jsonObjectFromTransferProcessRequestTransformer);
         typeTransformerRegistry.register(jsonObjectFromContractOfferDescriptionTransformer);
+        typeTransformerRegistry.register(new JsonObjectFromQuerySpecTransformer(jsonBuilderFactory));
         typeTransformerRegistry.register(
                 new JsonObjectFromTransferProcessDtoTransformer(jsonBuilderFactory, objectMapper));
         typeTransformerRegistry.register(new JsonObjectFromCatalogTransformer(jsonBuilderFactory, objectMapper));
@@ -140,13 +136,13 @@ public class EdcTransformer {
 
     public Catalog transformCatalog(final String jsonString, final Charset charset) {
         final JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(charset)));
+
         final Result<JsonObject> expand = titaniumJsonLd.expand(
                 JsonDocument.of(reader.read()).getJsonContent().orElseThrow().asJsonObject());
         return jsonObjectToCatalogTransformer.transform(expand.getContent(), transformerContext);
     }
 
     public NegotiationResponse transformJsonToNegotiationResponse(final String jsonString, final Charset charset) {
-        // TODO (ds-jhartmann) look into JsonObjectToCatalogTransformer to see how the id transform is handled there
         final JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(charset)));
         final Result<JsonObject> expand = titaniumJsonLd.expand(
                 JsonDocument.of(reader.read()).getJsonContent().orElseThrow().asJsonObject());
@@ -167,8 +163,10 @@ public class EdcTransformer {
         return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
     }
 
-    public JsonObject transformTransferRequestDtoToJson(final TransferRequestDto transferRequestDto) {
-        return jsonObjectFromTransferRequestDtoTransformer.transform(transferRequestDto, transformerContext);
+    public JsonObject transformTransferProcessRequestToJson(final TransferProcessRequest transferRequestDto) {
+        final JsonObject transform = jsonObjectFromTransferProcessRequestTransformer.transform(transferRequestDto,
+                transformerContext);
+        return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
     }
 
     public JsonObject transformContractOfferDescriptionToJson(final ContractOfferDescription contractOfferDescription) {

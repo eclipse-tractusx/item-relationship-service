@@ -28,57 +28,54 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonBuilderFactory;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
-import org.eclipse.edc.connector.api.management.transferprocess.model.TransferRequestDto;
-import org.eclipse.edc.jsonld.spi.JsonLdKeywords;
 import org.eclipse.edc.jsonld.spi.transformer.AbstractJsonLdTransformer;
 import org.eclipse.edc.spi.types.domain.callback.CallbackAddress;
 import org.eclipse.edc.transform.spi.TransformerContext;
+import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class JsonObjectFromTransferRequestDtoTransformer
-        extends AbstractJsonLdTransformer<TransferRequestDto, JsonObject> {
+public class JsonObjectFromTransferProcessRequestTransformer
+        extends AbstractJsonLdTransformer<TransferProcessRequest, JsonObject> {
     private final JsonBuilderFactory jsonFactory;
-    private final ObjectMapper objectMapper;
 
-    public JsonObjectFromTransferRequestDtoTransformer(JsonBuilderFactory jsonFactory, ObjectMapper objectMapper) {
-        super(TransferRequestDto.class, JsonObject.class);
+    public JsonObjectFromTransferProcessRequestTransformer(JsonBuilderFactory jsonFactory) {
+        super(TransferProcessRequest.class, JsonObject.class);
         this.jsonFactory = jsonFactory;
-        this.objectMapper = objectMapper;
     }
 
     @Override
-    public @Nullable JsonObject transform(@NotNull TransferRequestDto dto, @NotNull TransformerContext context) {
+    public @Nullable JsonObject transform(@NotNull TransferProcessRequest dto, @NotNull TransformerContext context) {
         JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
-        builder.add(JsonLdKeywords.TYPE, TransferRequestDto.EDC_TRANSFER_REQUEST_DTO_TYPE)
-               .add(TransferRequestDto.EDC_TRANSFER_REQUEST_DTO_ASSET_ID, dto.getAssetId())
-               .add(TransferRequestDto.EDC_TRANSFER_REQUEST_DTO_CONNECTOR_ADDRESS, dto.getConnectorAddress())
-               .add(TransferRequestDto.EDC_TRANSFER_REQUEST_DTO_CONNECTOR_ID, dto.getConnectorId())
-               .add(TransferRequestDto.EDC_TRANSFER_REQUEST_DTO_CONTRACT_ID, dto.getContractId())
-               .add(TransferRequestDto.EDC_TRANSFER_REQUEST_DTO_DATA_DESTINATION,
+        builder.add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_ASSET_ID, dto.getAssetId())
+               .add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_CONNECTOR_ADDRESS, dto.getConnectorAddress())
+               .add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_CONTRACT_ID, dto.getContractId())
+               .add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_DATA_DESTINATION,
                        context.transform(dto.getDataDestination(), JsonObject.class))
-               .add(TransferRequestDto.EDC_TRANSFER_REQUEST_DTO_PROTOCOL, dto.getProtocol())
-               .add(TransferRequestDto.EDC_TRANSFER_REQUEST_DTO_MANAGED_RESOURCES, dto.isManagedResources());
+               .add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_PROTOCOL, dto.getProtocol())
+               .add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_MANAGED_RESOURCES, dto.isManagedResources());
 
+        Optional.ofNullable(dto.getConnectorId())
+                .ifPresent(s -> builder.add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_CONNECTOR_ID,
+                        dto.getConnectorId()));
         Optional.ofNullable(dto.getCallbackAddresses())
-                .ifPresent(s -> builder.add(TransferRequestDto.EDC_TRANSFER_REQUEST_DTO_CALLBACK_ADDRESSES,
+                .ifPresent(s -> builder.add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_CALLBACK_ADDRESSES,
                         asArray(dto.getCallbackAddresses(), context)));
 
         if (dto.getProperties() != null && !dto.getProperties().isEmpty()) {
             final JsonObjectBuilder objectBuilder = jsonFactory.createObjectBuilder();
             dto.getProperties().forEach((s, s1) -> objectBuilder.add(NAMESPACE_EDC + s, s1));
-            builder.add(TransferRequestDto.EDC_TRANSFER_REQUEST_DTO_PROPERTIES, objectBuilder);
+            builder.add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_PROPERTIES, objectBuilder);
         }
 
         if (dto.getPrivateProperties() != null && !dto.getPrivateProperties().isEmpty()) {
             final JsonObjectBuilder objectBuilder = jsonFactory.createObjectBuilder();
             dto.getPrivateProperties().forEach((s, s1) -> objectBuilder.add(NAMESPACE_EDC + s, s1));
-            builder.add(TransferRequestDto.EDC_TRANSFER_REQUEST_DTO_PRIVATE_PROPERTIES, objectBuilder);
+            builder.add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_PRIVATE_PROPERTIES, objectBuilder);
         }
         return builder.build();
     }

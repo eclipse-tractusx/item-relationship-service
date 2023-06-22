@@ -40,12 +40,14 @@ import org.eclipse.edc.api.model.IdResponseDto;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.catalog.spi.Dataset;
+import org.eclipse.edc.catalog.spi.Distribution;
 import org.eclipse.edc.connector.api.management.contractnegotiation.model.ContractOfferDescription;
 import org.eclipse.edc.connector.api.management.contractnegotiation.model.NegotiationInitiateRequestDto;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.policy.model.PolicyRegistrationTypes;
 import org.eclipse.edc.spi.query.Criterion;
 import org.eclipse.edc.spi.query.QuerySpec;
+import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -100,13 +102,13 @@ class EdcControlplaneClientE2ETest {
                                                                     .build();
 
         // Act
-        final Catalog submodel = controlPlaneClient.getCatalog(catalogRequest);
+        final Catalog catalog = controlPlaneClient.getCatalog(catalogRequest);
 
         // Assert
-        assertThat(submodel.getDatasets()).hasSize(50);
-        assertThat(submodel.getContractOffers()).isNull();
-        assertThat(submodel.getDataServices()).isNotEmpty();
-        assertThat(submodel.getProperties()).isNotEmpty();
+        assertThat(catalog.getDatasets()).hasSize(50);
+        assertThat(catalog.getContractOffers()).isNull();
+        assertThat(catalog.getDataServices()).isNotEmpty();
+        assertThat(catalog.getProperties()).isNotEmpty();
     }
 
     @Test
@@ -168,7 +170,8 @@ class EdcControlplaneClientE2ETest {
 
         // Act
         final Catalog catalog = controlPlaneClient.getCatalog(catalogRequest);
-        final Map<String, Policy> offers = catalog.getDatasets().stream().findFirst().orElseThrow().getOffers();
+        final Dataset dataset = catalog.getDatasets().stream().findFirst().orElseThrow();
+        final Map<String, Policy> offers = dataset.getOffers();
         final Map.Entry<String, Policy> offer = offers.entrySet().stream().findFirst().orElseThrow();
 
         // Arrange
@@ -203,7 +206,22 @@ class EdcControlplaneClientE2ETest {
         final NegotiationResponse negotiationResponse = negotiationResult.get();
         assertThat(negotiationResponse.getResponseId()).isNotBlank();
 
-        final TransferProcessRequest transferProcessRequest = TransferProcessRequest.builder().build();
+        final Distribution distribution = dataset.getDistributions().get(0);
+        final DataAddress dataAddress = DataAddress.Builder.newInstance().type(distribution.getFormat()).build();
+        final TransferProcessRequest transferProcessRequest = TransferProcessRequest.builder()
+                                                                                    .assetId(
+                                                                                            negotiationRequest.getOffer()
+                                                                                                              .getAssetId())
+                                                                                    .connectorAddress(
+                                                                                            negotiationResponse.getCounterPartyAddress())
+                                                                                    .contractId(
+                                                                                            negotiationResponse.getContractAgreementId())
+                                                                                    .dataDestination(dataAddress)
+                                                                                    .protocol(DATASPACE_PROTOCOL_HTTP)
+                                                                                    .privateProperties(
+                                                                                            Map.of("receiverHttpEndpoint",
+                                                                                                    "https://backend.app/endpoint-data-reference"))
+                                                                                    .build();
         final IdResponseDto transferProcessResponse = controlPlaneClient.startTransferProcess(transferProcessRequest);
         assertThat(transferProcessResponse.getId()).isNotBlank();
     }
