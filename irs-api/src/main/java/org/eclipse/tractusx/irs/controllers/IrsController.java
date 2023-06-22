@@ -23,6 +23,8 @@
 package org.eclipse.tractusx.irs.controllers;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
+import static org.eclipse.tractusx.irs.common.ApiConstants.FORBIDDEN_DESC;
+import static org.eclipse.tractusx.irs.common.ApiConstants.UNAUTHORIZED_DESC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
@@ -85,6 +87,8 @@ import org.springframework.web.bind.annotation.RestController;
 })
 public class IrsController {
 
+
+
     private final IrsItemGraphQueryService itemJobService;
     private final SemanticHubService semanticHubService;
     private final AuthorizationService authorizationService;
@@ -107,13 +111,13 @@ public class IrsController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
+                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
+                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -153,13 +157,13 @@ public class IrsController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
+                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
+                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -202,13 +206,13 @@ public class IrsController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
+                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
+                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -249,13 +253,13 @@ public class IrsController {
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-400"))
                                          }),
-                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
+                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
+                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -287,13 +291,13 @@ public class IrsController {
                                                               examples = { @ExampleObject(name = "complete", ref = "#/components/examples/aspect-models-list")
                                                               })
                                          }),
-                            @ApiResponse(responseCode = "401", description = "No valid authentication credentials.",
+                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
                                                                                         ref = "#/components/examples/error-response-401"))
                                          }),
-                            @ApiResponse(responseCode = "403", description = "Authorization refused by server.",
+                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",

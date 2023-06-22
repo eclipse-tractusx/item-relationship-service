@@ -29,11 +29,14 @@ import static org.awaitility.Awaitility.await;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -53,6 +56,7 @@ import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.JobStatusResult;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
@@ -114,12 +118,29 @@ public class E2ETestStepDefinitions {
 
     @Given("I register an IRS job for globalAssetId {string}")
     public void iRegisterAnIRSJobForGlobalAssetId(String globalAssetId) {
-        registerJobBuilder.globalAssetId(globalAssetId);
+        registerJobBuilder.key(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).build());
+    }
+
+    @Given("I register an IRS job for globalAssetId {string} and BPN {string}")
+    public void iRegisterAnIRSJobForGlobalAssetIdAndBpn(String globalAssetId, String bpn) {
+        registerJobBuilder.key(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).bpn(bpn).build());
     }
 
     @Given("I register an IRS batch job for globalAssetIds:")
     public void iRegisterAnIRSBatchForGlobalAssetIds(List<String> globalAssetIds) {
-        registerBatchOrderBuilder.globalAssetIds(Set.copyOf(globalAssetIds));
+        registerBatchOrderBuilder.keys(globalAssetIds.stream()
+                                                     .map(x -> PartChainIdentificationKey.builder()
+                                                                                         .globalAssetId(x)
+                                                                                         .build())
+                                                     .collect(Collectors.toSet()));
+    }
+
+    @Given("I register an IRS batch job for globalAssetIds and BPN:")
+    public void iRegisterAnIRSBatchForGlobalAssetIds(Map<String, String> keys) {
+        final Set<PartChainIdentificationKey> keySet = new HashSet<>();
+        keys.forEach((globalAssetId, bpn) -> keySet.add(
+                PartChainIdentificationKey.builder().globalAssetId(globalAssetId).bpn(bpn).build()));
+        registerBatchOrderBuilder.keys(keySet);
     }
 
     @And("collectAspects {string}")
@@ -208,15 +229,16 @@ public class E2ETestStepDefinitions {
         final RegisterBatchOrder order = registerBatchOrderBuilder.build();
         authProperties = authenticationPropertiesBuilder.build();
 
-        final BatchOrderCreated createdOrderResponse = given().spec(authProperties.getNewAuthenticationRequestSpecification())
-                                                    .contentType(ContentType.JSON)
-                                                    .body(order)
-                                                    .when()
-                                                    .post("/irs/orders")
-                                                    .then()
-                                                    .statusCode(HttpStatus.CREATED.value())
-                                                    .extract()
-                                                    .as(BatchOrderCreated.class);
+        final BatchOrderCreated createdOrderResponse = given().spec(
+                                                                      authProperties.getNewAuthenticationRequestSpecification())
+                                                              .contentType(ContentType.JSON)
+                                                              .body(order)
+                                                              .when()
+                                                              .post("/irs/orders")
+                                                              .then()
+                                                              .statusCode(HttpStatus.CREATED.value())
+                                                              .extract()
+                                                              .as(BatchOrderCreated.class);
 
         assertThat(createdOrderResponse.id()).isNotNull();
         orderId = createdOrderResponse.id();
@@ -225,12 +247,24 @@ public class E2ETestStepDefinitions {
     @When("I get the batch-id of {string} batch")
     public void iGetTheBatchIdOfBatch(String which) {
         final UUID foundBatchId = switch (which) {
-            case "first" -> batchOrderResponse.getBatches().stream().filter(batch -> batch.getBatchNumber().equals(1)).findFirst()
-                                             .map(BatchOrderResponse.BatchResponse::getBatchId).orElseThrow();
-            case "last" -> batchOrderResponse.getBatches().stream().filter(batch -> batch.getBatchNumber().equals(batchOrderResponse.getBatches().size())).findFirst()
-                                             .map(BatchOrderResponse.BatchResponse::getBatchId).orElseThrow();
-            case "any" -> batchOrderResponse.getBatches().stream().findAny()
-                                             .map(BatchOrderResponse.BatchResponse::getBatchId).orElseThrow();
+            case "first" -> batchOrderResponse.getBatches()
+                                              .stream()
+                                              .filter(batch -> batch.getBatchNumber().equals(1))
+                                              .findFirst()
+                                              .map(BatchOrderResponse.BatchResponse::getBatchId)
+                                              .orElseThrow();
+            case "last" -> batchOrderResponse.getBatches()
+                                             .stream()
+                                             .filter(batch -> batch.getBatchNumber()
+                                                                   .equals(batchOrderResponse.getBatches().size()))
+                                             .findFirst()
+                                             .map(BatchOrderResponse.BatchResponse::getBatchId)
+                                             .orElseThrow();
+            case "any" -> batchOrderResponse.getBatches()
+                                            .stream()
+                                            .findAny()
+                                            .map(BatchOrderResponse.BatchResponse::getBatchId)
+                                            .orElseThrow();
             default -> throw new PendingException(String.format("Type: '%s' not supported.", which));
         };
 
@@ -274,9 +308,9 @@ public class E2ETestStepDefinitions {
     @Then("I check, if the order contains {int} batches")
     public void iCheckIfTheOrderContainsBatches(int batchesSize) {
         batchOrderResponse = given().spec(authProperties.getNewAuthenticationRequestSpecification())
-                              .contentType(ContentType.JSON)
-                              .get("/irs/orders/" + orderId)
-                              .as(BatchOrderResponse.class);
+                                    .contentType(ContentType.JSON)
+                                    .get("/irs/orders/" + orderId)
+                                    .as(BatchOrderResponse.class);
 
         assertThat(batchOrderResponse.getBatches()).hasSize(batchesSize);
     }
@@ -284,9 +318,9 @@ public class E2ETestStepDefinitions {
     @Then("I check, if the batch contains {int} jobs")
     public void iCheckIfTheBatchContainsJobs(int jobSize) {
         batchResponse = given().spec(authProperties.getNewAuthenticationRequestSpecification())
-                                    .contentType(ContentType.JSON)
-                                    .get("/irs/orders/" + orderId + "/batches/" + batchId)
-                                    .as(BatchResponse.class);
+                               .contentType(ContentType.JSON)
+                               .get("/irs/orders/" + orderId + "/batches/" + batchId)
+                               .as(BatchResponse.class);
 
         assertThat(batchResponse.getJobsInBatchChecksum()).isEqualTo(jobSize);
     }
@@ -340,8 +374,7 @@ public class E2ETestStepDefinitions {
         if ("relationships".equals(valueType)) {
             final List<Relationship> actualRelationships = completedJob.getRelationships();
             final List<Relationship> expectedRelationships = getExpectedRelationships(fileName);
-            assertThat(actualRelationships).hasSameSizeAs(expectedRelationships)
-                                           .containsAll(expectedRelationships);
+            assertThat(actualRelationships).hasSameSizeAs(expectedRelationships).containsAll(expectedRelationships);
         } else if ("submodels".equals(valueType)) {
             final List<Submodel> actualSubmodels = completedJob.getSubmodels();
             final List<Submodel> expectedSubmodels = getExpectedSubmodels(fileName);
@@ -354,9 +387,10 @@ public class E2ETestStepDefinitions {
     @And("I check, if batch {int} contains {int} job")
     public void iCheckIfBatchContainsJob(int batchNumber, int jobSize) {
         final Optional<BatchOrderResponse.BatchResponse> foundBatch = batchOrderResponse.getBatches()
-                                                                                   .stream()
-                                                                                   .filter(batch -> batch.getBatchNumber().equals(batchNumber))
-                                                                                   .findFirst();
+                                                                                        .stream()
+                                                                                        .filter(batch -> batch.getBatchNumber()
+                                                                                                              .equals(batchNumber))
+                                                                                        .findFirst();
 
         assertThat(foundBatch).isPresent();
         assertThat(foundBatch.get().getJobsInBatchChecksum()).isEqualTo(jobSize);
@@ -404,7 +438,8 @@ public class E2ETestStepDefinitions {
 
     @And("bomLifecycle is {string}")
     public void bomLifecycleIs(String bomLifecycle) {
-        assertThat(completedJob.getJob().getParameter().getBomLifecycle()).isEqualTo(BomLifecycle.fromValue(bomLifecycle));
+        assertThat(completedJob.getJob().getParameter().getBomLifecycle()).isEqualTo(
+                BomLifecycle.fromValue(bomLifecycle));
     }
 
     @And("callbackUrl is {string}")

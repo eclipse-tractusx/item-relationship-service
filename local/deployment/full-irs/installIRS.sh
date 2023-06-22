@@ -32,6 +32,22 @@ then
     kubectl wait deployment -n irs --for condition=Available --timeout=90s keycloak
     kubectl wait deployment -n irs --for condition=Available --timeout=90s irs-provider-backend
 
+    HELM_CHART_NAME=discovery
+    HELM_CHART=$(helm list -q -f "$HELM_CHART_NAME")
+
+    if [ "$HELM_CHART" != "" ];
+    then
+        echo -e "${BLUE}Un-installing helm chart: $HELM_CHART_NAME ${NC}"
+        helm uninstall $HELM_CHART_NAME --namespace irs
+    fi
+
+    echo -e "${BLUE}Installing helm chart: $HELM_CHART_NAME ${NC}"
+    helm install $HELM_CHART_NAME \
+        --set install.discovery=true \
+        --namespace irs --create-namespace .
+
+    echo -e "${BLUE}Waiting for the deployments to be available${NC}"
+    kubectl wait deployment -n irs --for condition=Available --timeout=90s discovery
 fi
 
 if $INSTALL_IRS_BACKEND

@@ -106,12 +106,12 @@ class SubmodelFacadeWiremockTest {
         final PolicyCheckerService policyCheckerService = mock(PolicyCheckerService.class);
         when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
-                config, catalogCache, policyCheckerService);
+                policyCheckerService);
 
         final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
         final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
         this.submodelFacade = new EdcSubmodelClientImpl(config, contractNegotiationService, dataPlaneClient, storage,
-                pollingService, meterRegistry, retryRegistry);
+                pollingService, meterRegistry, retryRegistry, catalogCache, controlPlaneClient);
     }
 
     @AfterEach

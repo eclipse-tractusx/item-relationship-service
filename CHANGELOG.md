@@ -5,9 +5,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Handling of Decentral Digital Twin Registry as a way of request AAS for identifier
+  - Extend Register Job with key field that contain BPN and globalAssetId
+  - Requesting BPN endpoint catalog over Discrovery Finder
+  - Requesting EDC endpoint addresses for BPN over EDC Discovery Finder
+  - Add filter for catalog item search in EDC
+  - Authorize Digital Twin client with EDC Endpoint Reference
 
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
+
+## [2.6.1] - 2023-05-15
+### Added
+- Validation if bpnEndpoint is set in properties before starting a job with lookupBPNs set to true
+- Automate release workflow
+- Validate if callback url starts with http or https before register a job
 
 ## [2.6.0] - 2023-05-05
 ### Added
@@ -42,6 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.4.0] - 2023-03-30
 ### Added
 - IRS is now able to cache the EDC catalog. Caching can be disabled via application config. Maximum amount of cached items and item time-to-live can be configured as well. 
+- EDC policies retrieved from contract offer are now added to the contract negotiation
 
 ### Changed
 - API endpoints have now additional layer of security and require BPN claim in token. Allowed BPN that can access API can be configured with (*env:API_ALLOWED_BPN*) variable.
@@ -214,7 +228,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.1...HEAD
+[2.6.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.0...2.6.1
 [2.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.5.1...2.6.0
 [2.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.5.0...2.5.1
 [2.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.4.0...2.5.0

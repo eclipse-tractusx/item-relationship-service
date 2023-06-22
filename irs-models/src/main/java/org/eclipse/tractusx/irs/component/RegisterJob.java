@@ -28,9 +28,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -53,18 +51,11 @@ public class RegisterJob {
     private static final String MAX_TREE_DEPTH_DESC = "100";
     private static final int MIN_TREE_DEPTH = 1;
     private static final int MAX_TREE_DEPTH = 100;
-    private static final String GLOBAL_ASSET_ID_REGEX = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
     private static final String ASPECT_MODEL_REGEX = "^(urn:bamm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$";
-    private static final int UUID_SIZE = 36;
-    private static final int URN_PREFIX_SIZE = 9;
-    private static final int GLOBAL_ASSET_ID_SIZE = URN_PREFIX_SIZE + UUID_SIZE;
 
-    @Pattern(regexp = GLOBAL_ASSET_ID_REGEX)
-    @NotBlank
-    @Size(min = GLOBAL_ASSET_ID_SIZE, max = GLOBAL_ASSET_ID_SIZE)
-    @Schema(description = "Id of global asset.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-            implementation = String.class, minLength = GLOBAL_ASSET_ID_SIZE, maxLength = GLOBAL_ASSET_ID_SIZE)
-    private String globalAssetId;
+    @NotNull
+    @Schema(description = "Key object contains required attributes for identify part chain entry node.", implementation = PartChainIdentificationKey.class)
+    private PartChainIdentificationKey key;
 
     @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)
     private BomLifecycle bomLifecycle;
@@ -87,7 +78,7 @@ public class RegisterJob {
     @Schema(description = "Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false.")
     private boolean lookupBPNs;
 
-    @URL
+    @URL(regexp = "^(http|https).*")
     @Schema(description = "Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: id and state.",
             example = "https://hostname.com/callback?id={id}&state={state}")
     private String callbackUrl;

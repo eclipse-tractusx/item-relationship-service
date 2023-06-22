@@ -33,6 +33,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.assertj.core.api.ThrowableAssert;
+import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.component.Relationship;
@@ -178,6 +179,49 @@ class EdcSubmodelFacadeTest {
 
         // assert
         assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
+    }
+
+    @Test
+    void shouldThrowEdcClientExceptionForEndpointReference() throws EdcClientException {
+        // arrange
+        final EdcClientException e = new EdcClientException("test");
+        when(client.getEndpointReferenceForAsset(any(), any(), any())).thenThrow(e);
+
+        // act
+        ThrowableAssert.ThrowingCallable action = () -> testee.getEndpointReferenceForAsset("", "", "");
+
+        // assert
+        assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
+    }
+
+    @Test
+    void shouldThrowExecutionExceptionForEndpointReference() throws EdcClientException {
+        // arrange
+        final ExecutionException e = new ExecutionException(new EdcClientException("test"));
+        final CompletableFuture<EndpointDataReference> future = CompletableFuture.failedFuture(e);
+        when(client.getEndpointReferenceForAsset(any(), any(), any())).thenReturn(future);
+
+        // act
+        ThrowableAssert.ThrowingCallable action = () -> testee.getEndpointReferenceForAsset("", "", "");
+
+        // assert
+        assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
+    }
+
+    @Test
+    void shouldRestoreInterruptOnInterruptExceptionForEndpointReference()
+            throws EdcClientException, ExecutionException, InterruptedException {
+        // arrange
+        final CompletableFuture<EndpointDataReference> future = mock(CompletableFuture.class);
+        final InterruptedException e = new InterruptedException();
+        when(future.get()).thenThrow(e);
+        when(client.getEndpointReferenceForAsset(any(), any(), any())).thenReturn(future);
+
+        // act
+        testee.getEndpointReferenceForAsset("", "", "");
+
+        // assert
+        assertThat(Thread.currentThread().isInterrupted()).isTrue();
     }
 
 }

@@ -11,6 +11,9 @@ JWT token should also contain two fields:
 === IRS as DTR client
 The IRS acts as a client for the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect. The IRS uses client credentials to authenticate requests to the DTR. Due to this, the IRS account needs to have access to every item in the DTR, unrelated to the permissions of the account calling the IRS API.
 
+=== IRS as decentralized DTR client
+In a decentralized network, IRS uses the EDC client to access the provider DTR. This way, no authentication, other than the EDC contract negotiation, is needed to access the DTR.
+
 === IRS as EDC client
 The IRS accesses the Catena-X network via the EDC consumer connector. This component requires authentication via a DAPS certificate, which was provided to the IRS via the network authority.
 

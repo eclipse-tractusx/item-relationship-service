@@ -61,7 +61,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.org.awaitility.Awaitility;
 
 @Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+                properties = { "bpdm.bpnEndpoint=http://localbpdm.com",
+                               "digitalTwinRegistry.type=central"
+                })
 @ContextConfiguration(initializers = IrsFunctionalTest.MinioConfigInitializer.class)
 @ActiveProfiles(profiles = { "local" })
 class IrsFunctionalTest {
@@ -140,6 +143,7 @@ class IrsFunctionalTest {
         assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isZero();
         assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getFailed()).isZero();
     }
+
     @Test
     void shouldFillSummaryWithBPNLookup() {
         final RegisterJob registerJob = TestMother.registerJobWithLookupBPNs();
@@ -165,7 +169,8 @@ class IrsFunctionalTest {
     }
 
     private void thereIsJwtAuthentication() {
-        final JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwt(), List.of(new SimpleGrantedAuthority("view_irs")));
+        final JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwt(),
+                List.of(new SimpleGrantedAuthority("view_irs")));
         jwtAuthenticationToken.setAuthenticated(true);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         Mockito.when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);

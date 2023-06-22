@@ -52,6 +52,9 @@ A job is processed in this order:
 |*Digital Twin Client*
 |The Digital Twin Client is the interface to the Digital Twin Registry. It provides an interface for the Asset Administration Shells.
 
+|*Decentralized Digital Twin Client*
+|In a decentralized network, the Digital Twin Client connects to the EDC which then proxies the requests to the digital twin registry on provider side.
+
 |*EDC Client*
 |The EDC Client is used to communicate with the EDC network, negotiate contracts and retrieve submodel data.
 |===

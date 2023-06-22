@@ -58,7 +58,7 @@ public class TrustedPortConfiguration {
     }
 
     @Bean
-    public WebServerFactoryCustomizer<?> servletContainer() {
+    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> servletContainer() {
 
         final Connector[] additionalConnectors = this.additionalConnector();
 

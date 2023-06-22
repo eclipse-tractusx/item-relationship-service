@@ -25,7 +25,8 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
-import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
+import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryKey;
+import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -39,12 +40,12 @@ import org.springframework.web.client.RestClientException;
 @Slf4j
 public class DigitalTwinDelegate extends AbstractDelegate {
 
-    private final DigitalTwinRegistryFacade digitalTwinRegistryFacade;
+    private final DigitalTwinRegistryService digitalTwinRegistryService;
 
     public DigitalTwinDelegate(final AbstractDelegate nextStep,
-            final DigitalTwinRegistryFacade digitalTwinRegistryFacade) {
+            final DigitalTwinRegistryService digitalTwinRegistryService) {
         super(nextStep);
-        this.digitalTwinRegistryFacade = digitalTwinRegistryFacade;
+        this.digitalTwinRegistryService = digitalTwinRegistryService;
     }
 
     @Override
@@ -52,7 +53,9 @@ public class DigitalTwinDelegate extends AbstractDelegate {
             final AASTransferProcess aasTransferProcess, final String itemId) {
 
         try {
-            final AssetAdministrationShellDescriptor aaShell = digitalTwinRegistryFacade.getAAShellDescriptor(itemId);
+            final AssetAdministrationShellDescriptor aaShell = digitalTwinRegistryService.getAAShellDescriptor(
+                    new DigitalTwinRegistryKey(itemId, jobData.getBpn())
+            );
 
             itemContainerBuilder.shell(aaShell);
         } catch (final RestClientException e) {

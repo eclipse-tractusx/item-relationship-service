@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -59,7 +60,7 @@ class EdcDataPlaneClientTest {
                                                                            .authCode("testcode")
                                                                            .endpoint("testEndpoint")
                                                                            .build();
-        when(restTemplate.exchange(any(), eq(HttpMethod.GET), any(), eq(String.class), any(Object.class))).thenReturn(
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(String.class))).thenReturn(
                 ResponseEntity.of(Optional.of(expectedData)));
 
         // act
@@ -79,7 +80,7 @@ class EdcDataPlaneClientTest {
                                                                            .authCode("testcode")
                                                                            .endpoint("testEndpoint")
                                                                            .build();
-        when(restTemplate.exchange(any(), eq(HttpMethod.POST), any(), eq(String.class), any(Object.class))).thenReturn(
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(String.class))).thenReturn(
                 ResponseEntity.of(Optional.of(expectedData)));
 
         // act
