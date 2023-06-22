@@ -33,6 +33,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.eclipse.tractusx.irs.aaswrapper.registry.domain.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DecentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
@@ -53,10 +54,10 @@ class SubmodelDelegateTest {
     final EdcSubmodelFacade submodelFacade = mock(EdcSubmodelFacade.class);
     final SemanticsHubFacade semanticsHubFacade = mock(SemanticsHubFacade.class);
     final JsonValidatorService jsonValidatorService = mock(JsonValidatorService.class);
-    final DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService = mock(
-            DecentralDigitalTwinRegistryService.class);
+    final ConnectorEndpointsService connectorEndpointsService = mock(
+            ConnectorEndpointsService.class);
     final SubmodelDelegate submodelDelegate = new SubmodelDelegate(submodelFacade,
-            semanticsHubFacade, jsonValidatorService, new JsonUtil(), decentralDigitalTwinRegistryService);
+            semanticsHubFacade, jsonValidatorService, new JsonUtil(), connectorEndpointsService);
 
     @Test
     void shouldFilterSubmodelDescriptorsByAspectTypeFilter() {

@@ -31,6 +31,7 @@ import java.util.Map;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.aaswrapper.registry.domain.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DecentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -64,16 +65,16 @@ public class SubmodelDelegate extends AbstractDelegate {
     private final SemanticsHubFacade semanticsHubFacade;
     private final JsonValidatorService jsonValidatorService;
     private final JsonUtil jsonUtil;
-    private final DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService;
+    private final ConnectorEndpointsService connectorEndpointsService;
 
     public SubmodelDelegate(final EdcSubmodelFacade submodelFacade, final SemanticsHubFacade semanticsHubFacade,
-            final JsonValidatorService jsonValidatorService, final JsonUtil jsonUtil, DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService) {
+            final JsonValidatorService jsonValidatorService, final JsonUtil jsonUtil, ConnectorEndpointsService connectorEndpointsService) {
         super(null); // no next step
         this.submodelFacade = submodelFacade;
         this.semanticsHubFacade = semanticsHubFacade;
         this.jsonValidatorService = jsonValidatorService;
         this.jsonUtil = jsonUtil;
-        this.decentralDigitalTwinRegistryService = decentralDigitalTwinRegistryService;
+        this.connectorEndpointsService = connectorEndpointsService;
     }
 
     @Override
@@ -150,7 +151,7 @@ public class SubmodelDelegate extends AbstractDelegate {
     }
 
     private String requestSubmodelAsString(final Endpoint endpoint, final String bpn) throws EdcClientException {
-        final String connectorEndpoint = decentralDigitalTwinRegistryService.fetchConnectorEndpoints(bpn).stream().findFirst().orElseThrow();
+        final String connectorEndpoint = connectorEndpointsService.fetchConnectorEndpoints(bpn).stream().findFirst().orElseThrow();
         return submodelFacade.getSubmodelRawPayload(
                 connectorEndpoint,
                 extractSufix(endpoint.getProtocolInformation().getHref()),

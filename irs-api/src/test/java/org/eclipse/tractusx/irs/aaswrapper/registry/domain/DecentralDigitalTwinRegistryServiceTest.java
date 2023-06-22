@@ -38,15 +38,16 @@ import org.junit.jupiter.api.Test;
 
 class DecentralDigitalTwinRegistryServiceTest {
 
-    private final DiscoveryFinderClient discoveryFinderClient = mock(DiscoveryFinderClient.class);
     private final EndpointDataForConnectorsService endpointDataForConnectorsService = mock(
             EndpointDataForConnectorsService.class);
 
     private final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient = mock(
             DecentralDigitalTwinRegistryClient.class);
 
+    private final ConnectorEndpointsService connectorEndpointsService = mock(ConnectorEndpointsService.class);
+
     private final DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService = new DecentralDigitalTwinRegistryService(
-            discoveryFinderClient, endpointDataForConnectorsService, decentralDigitalTwinRegistryClient);
+            endpointDataForConnectorsService, decentralDigitalTwinRegistryClient, connectorEndpointsService);
 
     @Test
     void shouldReturnExpectedShell() {
@@ -59,8 +60,8 @@ class DecentralDigitalTwinRegistryServiceTest {
                                                                                    .build();
         final List<DiscoveryEndpoint> discoveryEndpoints = List.of(
                 new DiscoveryEndpoint("type", "desc", "address", "doc", "resId"));
-        when(discoveryFinderClient.findDiscoveryEndpoints(any(DiscoveryFinderRequest.class))).thenReturn(
-                new DiscoveryResponse(discoveryEndpoints));
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                Collections.emptyList());
         when(endpointDataForConnectorsService.findEndpointDataForConnectors(anyList())).thenReturn(
                 List.of(endpointDataReference));
         when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
