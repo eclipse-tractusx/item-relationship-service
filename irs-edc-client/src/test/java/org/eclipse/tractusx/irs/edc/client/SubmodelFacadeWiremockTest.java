@@ -64,6 +64,9 @@ import org.springframework.web.client.RestTemplate;
 class SubmodelFacadeWiremockTest {
 
     private final static String url = "https://edc.io/BPNL0000000BB2OK/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
+    private final static String connectorEndpoint = "https://connector.endpoint.com";
+    private final static String submodelSufix = "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel";
+    private final static String assetId = "9300395e-c0a5-4e88-bc57-a3973fec4c26";
     private final EdcConfiguration config = new EdcConfiguration();
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
     private WireMockServer wireMockServer;
@@ -131,7 +134,9 @@ class SubmodelFacadeWiremockTest {
                                                                                  "assemblyPartRelationship.json")));
 
         // Act
-        final String submodel = submodelFacade.getSubmodelRawPayload(url).get();
+        final String submodel = submodelFacade.getSubmodelRawPayload(
+                connectorEndpoint, submodelSufix, assetId
+        ).get();
 
         // Assert
         assertThat(submodel).contains("\"catenaXId\": \"urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978\"");
@@ -183,7 +188,9 @@ class SubmodelFacadeWiremockTest {
                                                                          .withBodyFile("materialForRecycling.json")));
 
         // Act
-        final String submodel = submodelFacade.getSubmodelRawPayload(url).get();
+        final String submodel = submodelFacade.getSubmodelRawPayload(
+                connectorEndpoint, submodelSufix, assetId
+        ).get();
 
         // Assert
         assertThat(submodel).contains("\"materialName\": \"Cooper\",");
@@ -200,7 +207,9 @@ class SubmodelFacadeWiremockTest {
                                                                          .withBody("test")));
 
         // Act
-        final String submodel = submodelFacade.getSubmodelRawPayload(url).get();
+        final String submodel = submodelFacade.getSubmodelRawPayload(
+                connectorEndpoint, submodelSufix, assetId
+        ).get();
 
         // Assert
         assertThat(submodel).isEqualTo("test");
@@ -216,7 +225,9 @@ class SubmodelFacadeWiremockTest {
                                                                          .withBody("{ error: '400'}")));
 
         // Act
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelRawPayload(url)
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelRawPayload(
+                                                                                              connectorEndpoint, submodelSufix, assetId
+                                                                                      )
                                                                                       .get(5, TimeUnit.SECONDS);
 
         // Assert
@@ -234,7 +245,9 @@ class SubmodelFacadeWiremockTest {
                                                                          .withBody("{ error: '500'}")));
 
         // Act
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelRawPayload(url)
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> submodelFacade.getSubmodelRawPayload(
+                connectorEndpoint, submodelSufix, assetId
+                                                                                      )
                                                                                       .get(5, TimeUnit.SECONDS);
 
         // Assert

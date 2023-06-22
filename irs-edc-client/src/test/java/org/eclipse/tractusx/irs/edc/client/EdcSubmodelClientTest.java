@@ -84,6 +84,11 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     private static final String ENDPOINT_ADDRESS = "http://localhost/urn:123456/submodel";
     private static final String PROVIDER_SUFFIX = "/test";
+
+    private final static String CONNECTOR_ENDPOINT = "https://connector.endpoint.com";
+    private final static String SUBMODEL_SUFIX = "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel";
+    private final static String ASSET_ID = "9300395e-c0a5-4e88-bc57-a3973fec4c26";
+
     private final EndpointDataReferenceStorage endpointDataReferenceStorage = new EndpointDataReferenceStorage(
             Duration.ofMinutes(1));
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -194,7 +199,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(catalogCache.getCatalogItem(any(), any())).thenReturn(Optional.empty());
 
         // act & assert
-        assertThatThrownBy(() -> testee.getSubmodelRawPayload(ENDPOINT_ADDRESS)).isInstanceOf(EdcClientException.class)
+        assertThatThrownBy(() -> testee.getSubmodelRawPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID)).isInstanceOf(EdcClientException.class)
                                                                                 .hasMessageContaining(
                                                                                         "No value present");
     }
@@ -273,7 +278,9 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         prepareTestdata(existingCatenaXId, "_serialPartTypization");
 
         final String submodelResponse = testee.getSubmodelRawPayload(
-                "http://localhost/" + existingCatenaXId + "/submodel").get(5, TimeUnit.SECONDS);
+                "https://connector.endpoint.com",
+                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
+                "9300395e-c0a5-4e88-bc57-a3973fec4c26").get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).startsWith(
                 "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"manufacturerId\"}");
@@ -285,7 +292,10 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         prepareTestdata(existingCatenaXId, "_serialPartTypization");
         final String target = URLEncoder.encode(existingCatenaXId, StandardCharsets.UTF_8);
 
-        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/" + target + "/submodel")
+        final String submodelResponse = testee.getSubmodelRawPayload(
+                                                      "https://connector.endpoint.com",
+                                                      "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
+                                                      "9300395e-c0a5-4e88-bc57-a3973fec4c26")
                                               .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).startsWith(

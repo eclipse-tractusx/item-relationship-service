@@ -46,6 +46,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class EdcSubmodelFacadeTest {
 
+    private final static String CONNECTOR_ENDPOINT = "https://connector.endpoint.com";
+    private final static String SUBMODEL_SUFIX = "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel";
+    private final static String ASSET_ID = "9300395e-c0a5-4e88-bc57-a3973fec4c26";
+
     @InjectMocks
     private EdcSubmodelFacade testee;
 
@@ -100,10 +104,10 @@ class EdcSubmodelFacadeTest {
         // arrange
         final ExecutionException e = new ExecutionException(new EdcClientException("test"));
         final CompletableFuture<String> future = CompletableFuture.failedFuture(e);
-        when(client.getSubmodelRawPayload(any())).thenReturn(future);
+        when(client.getSubmodelRawPayload(any(), any(), any())).thenReturn(future);
 
         // act
-        ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelRawPayload("", "123");
+        ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelRawPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID);
 
         // assert
         assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
@@ -113,10 +117,10 @@ class EdcSubmodelFacadeTest {
     void shouldThrowEdcClientExceptionForSubmodel() throws EdcClientException {
         // arrange
         final EdcClientException e = new EdcClientException("test");
-        when(client.getSubmodelRawPayload(any())).thenThrow(e);
+        when(client.getSubmodelRawPayload(any(), any(), any())).thenThrow(e);
 
         // act
-        ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelRawPayload("", "123");
+        ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelRawPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID);
 
         // assert
         assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
@@ -129,10 +133,10 @@ class EdcSubmodelFacadeTest {
         final CompletableFuture<String> future = mock(CompletableFuture.class);
         final InterruptedException e = new InterruptedException();
         when(future.get()).thenThrow(e);
-        when(client.getSubmodelRawPayload(any())).thenReturn(future);
+        when(client.getSubmodelRawPayload(any(), any(), any())).thenReturn(future);
 
         // act
-        testee.getSubmodelRawPayload("", "123");
+        testee.getSubmodelRawPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID);
 
         // assert
         assertThat(Thread.currentThread().isInterrupted()).isTrue();

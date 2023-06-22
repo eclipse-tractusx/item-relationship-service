@@ -64,7 +64,6 @@ public class SubmodelDelegate extends AbstractDelegate {
     private final SemanticsHubFacade semanticsHubFacade;
     private final JsonValidatorService jsonValidatorService;
     private final JsonUtil jsonUtil;
-
     private final DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService;
 
     public SubmodelDelegate(final EdcSubmodelFacade submodelFacade, final SemanticsHubFacade semanticsHubFacade,
