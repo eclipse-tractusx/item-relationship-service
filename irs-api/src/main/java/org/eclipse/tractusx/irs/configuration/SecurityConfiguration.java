@@ -31,9 +31,12 @@ import org.eclipse.tractusx.irs.common.ApiConstants;
 import org.eclipse.tractusx.irs.configuration.converter.JwtAuthenticationConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
@@ -68,25 +71,26 @@ public class SecurityConfiguration {
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     @Bean
     /* package */ SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.httpBasic().disable();
-        httpSecurity.formLogin().disable();
-        httpSecurity.csrf().disable();
-        httpSecurity.logout().disable();
-        httpSecurity.cors();
+        httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
+        httpSecurity.formLogin(AbstractHttpConfigurer::disable);
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.logout(AbstractHttpConfigurer::disable);
+        httpSecurity.cors(Customizer.withDefaults());
 
-        httpSecurity.headers()
-                    .httpStrictTransportSecurity()
-                    .maxAgeInSeconds(Duration.ofDays(HSTS_MAX_AGE_DAYS).toSeconds())
-                    .includeSubDomains(true)
-                    .preload(true)
-                    .requestMatcher(AnyRequestMatcher.INSTANCE);
+        httpSecurity.headers(headers -> headers.httpStrictTransportSecurity(
+                httpStrictTransportSecurity ->
+                        httpStrictTransportSecurity.maxAgeInSeconds(Duration.ofDays(HSTS_MAX_AGE_DAYS).toSeconds())
+                                                   .includeSubDomains(true)
+                                                   .preload(true)
+                                                   .requestMatcher(AnyRequestMatcher.INSTANCE)));
 
-        httpSecurity.headers().xssProtection().headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK);
+        httpSecurity.headers(headers -> headers.xssProtection(xXssConfig ->
+                xXssConfig.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)));
 
-        httpSecurity.headers().frameOptions().sameOrigin();
+        httpSecurity.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
-        httpSecurity.sessionManagement()
-                    .sessionCreationPolicy(STATELESS);
+        httpSecurity.sessionManagement(sessionManagement -> sessionManagement
+                .sessionCreationPolicy(STATELESS));
 
         httpSecurity.authorizeHttpRequests(auth -> auth
                     .requestMatchers(WHITELIST)
@@ -94,10 +98,10 @@ public class SecurityConfiguration {
                     .requestMatchers("/**")
                     .authenticated());
 
-        httpSecurity.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt()
-                                                                                      .jwtAuthenticationConverter(
-                                                                                              new JwtAuthenticationConverter()))
-                    .oauth2Client();
+        httpSecurity.oauth2ResourceServer(oauth2ResourceServer ->
+                            oauth2ResourceServer.jwt(jwt ->
+                                    jwt.jwtAuthenticationConverter(new JwtAuthenticationConverter())))
+                    .oauth2Client(Customizer.withDefaults());
 
         return httpSecurity.build();
     }

@@ -16,18 +16,19 @@ node "Kubernetes Cluster" as k8s {
     package "Provider Side" {
         component "EDC Provider" as provider
         collections "Provider Backend" as submodel
+        component "Decentral Registry" as dtr
     }
 
     component Keycloak
     component "DAPS" as daps
 
-    component "DT Registry" as dtr
+    component "Discovery Service" as ds
     component "Semantic Hub" as semHub
     component "IRS Debugging Frontend" as frontend
 
     IRS --> Minio
     IRS --> consumer
-    IRS --> dtr
+    IRS --> ds
 
     daps ---> provider
     daps ---> consumer
@@ -35,8 +36,9 @@ node "Kubernetes Cluster" as k8s {
     provider <-> consumer
 
     provider -- submodel
+    provider -- dtr
 
-    Keycloak ---> dtr
+    Keycloak ---> ds
     Keycloak ---> IRS
     Keycloak ---> semHub
 
