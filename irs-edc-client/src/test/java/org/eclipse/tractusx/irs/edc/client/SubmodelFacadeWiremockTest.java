@@ -78,6 +78,10 @@ class SubmodelFacadeWiremockTest {
         configureFor(this.wireMockServer.port());
 
         config.getControlplane().getEndpoint().setData(buildApiMethodUrl());
+        config.getControlplane().getEndpoint().setCatalog("/catalog/request");
+        config.getControlplane().getEndpoint().setContractNegotiation("/contractnegotiations");
+        config.getControlplane().getEndpoint().setTransferProcess("/transferprocesses");
+        config.getControlplane().getEndpoint().setStateSuffix("/state");
         config.getControlplane().setRequestTtl(Duration.ofSeconds(5));
         config.getControlplane().setProviderSuffix("/api/v1/dsp");
         config.getSubmodel().setPath("/submodel");

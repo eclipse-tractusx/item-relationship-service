@@ -60,7 +60,6 @@ public class EdcControlPlaneClient {
     public static final String STATUS_FINALIZED = "FINALIZED";
     public static final String STATUS_COMPLETED = "COMPLETED";
     public static final String STATUS_ERROR = "ERROR";
-    public static final String CATALOG_REQUEST_PATH = "/catalog/request";
 
     private final RestTemplate edcRestTemplate;
     private final AsyncPollingService pollingService;
@@ -75,12 +74,13 @@ public class EdcControlPlaneClient {
     }
 
     /* package */ Catalog getCatalog(final CatalogRequest requestBody) {
-        final var catalogUrl = config.getControlplane().getEndpoint().getData() + CATALOG_REQUEST_PATH;
+        final var endpoint = config.getControlplane().getEndpoint();
+        final var url = endpoint.getData() + endpoint.getCatalog();
 
         final String requestJson = edcTransformer.transformCatalogRequestToJson(requestBody).toString();
 
-        final String catalog = edcRestTemplate.exchange(catalogUrl, HttpMethod.POST,
-                new HttpEntity<>(requestJson, headers()), String.class).getBody();
+        final String catalog = edcRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(requestJson, headers()),
+                String.class).getBody();
         return edcTransformer.transformCatalog(Objects.requireNonNull(catalog), StandardCharsets.UTF_8);
     }
 
@@ -107,9 +107,13 @@ public class EdcControlPlaneClient {
     }
 
     /* package */ IdResponseDto startNegotiations(final NegotiationInitiateRequestDto request) {
+        final var endpoint = config.getControlplane().getEndpoint();
+        final String url = endpoint.getData() + endpoint.getContractNegotiation();
+
         final String jsonObject = edcTransformer.transformNegotiationInitiateRequestDtoToJson(request).toString();
-        return edcRestTemplate.exchange(config.getControlplane().getEndpoint().getData() + "/contractnegotiations",
-                HttpMethod.POST, new HttpEntity<>(jsonObject, headers()), IdResponseDto.class).getBody();
+
+        return edcRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(jsonObject, headers()),
+                IdResponseDto.class).getBody();
     }
 
     /* package */ CompletableFuture<NegotiationResponse> getNegotiationResult(final IdResponseDto negotiationId) {
@@ -144,18 +148,24 @@ public class EdcControlPlaneClient {
 
     private NegotiationState getContractNegotiationState(final IdResponseDto negotiationId,
             final HttpEntity<Object> objectHttpEntity) {
-        final String negotiationStateResponse = edcRestTemplate.exchange(
-                config.getControlplane().getEndpoint().getData() + "/contractnegotiations/" + negotiationId.getId()
-                        + "/state", HttpMethod.GET, objectHttpEntity, String.class).getBody();
+        final var endpoint = config.getControlplane().getEndpoint();
+        final String url = endpoint.getData() + endpoint.getContractNegotiation() + "/" + negotiationId.getId()
+                + endpoint.getStateSuffix();
+
+        final String negotiationStateResponse = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
+                String.class).getBody();
+
         return edcTransformer.transformJsonToNegotiationState(Objects.requireNonNull(negotiationStateResponse),
                 StandardCharsets.UTF_8);
     }
 
     private NegotiationResponse getContractNegotiationResponse(final IdResponseDto negotiationId,
             final HttpEntity<Object> objectHttpEntity) {
-        final String negotiationResponse = edcRestTemplate.exchange(
-                config.getControlplane().getEndpoint().getData() + "/contractnegotiations/" + negotiationId.getId(),
-                HttpMethod.GET, objectHttpEntity, String.class).getBody();
+        final var endpoint = config.getControlplane().getEndpoint();
+        final String url = endpoint.getData() + endpoint.getContractNegotiation() + "/" + negotiationId.getId();
+
+        final String negotiationResponse = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity, String.class)
+                                                          .getBody();
 
         return edcTransformer.transformJsonToNegotiationResponse(Objects.requireNonNull(negotiationResponse),
                 StandardCharsets.UTF_8);
@@ -201,18 +211,22 @@ public class EdcControlPlaneClient {
 
     private NegotiationState getTransferProcessState(final IdResponseDto transferProcessId,
             final HttpEntity<Object> objectHttpEntity) {
-        final String transferProcessStateResponse = edcRestTemplate.exchange(
-                config.getControlplane().getEndpoint().getData() + "/transferprocesses/" + transferProcessId.getId()
-                        + "/state", HttpMethod.GET, objectHttpEntity, String.class).getBody();
+        final var endpoint = config.getControlplane().getEndpoint();
+        final String url = endpoint.getData() + endpoint.getTransferProcess() + "/" + transferProcessId.getId()
+                + endpoint.getStateSuffix();
+
+        final String transferProcessStateResponse = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
+                String.class).getBody();
+
         return edcTransformer.transformJsonToNegotiationState(Objects.requireNonNull(transferProcessStateResponse),
                 StandardCharsets.UTF_8);
     }
 
     private TransferProcessResponse getTransferProcessResponse(final IdResponseDto transferProcessId,
             final HttpEntity<Object> objectHttpEntity) {
-        return edcRestTemplate.exchange(
-                config.getControlplane().getEndpoint().getData() + "/transferprocesses/" + transferProcessId.getId(),
-                HttpMethod.GET, objectHttpEntity, TransferProcessResponse.class).getBody();
+        final var endpoint = config.getControlplane().getEndpoint();
+        final String url = endpoint.getData() + endpoint.getTransferProcess() + "/" + transferProcessId.getId();
+        return edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity, TransferProcessResponse.class).getBody();
     }
 
     private HttpHeaders headers() {

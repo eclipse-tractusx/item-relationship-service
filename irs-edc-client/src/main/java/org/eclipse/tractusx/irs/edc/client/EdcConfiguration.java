@@ -64,6 +64,10 @@ public class EdcConfiguration {
         @Data
         public static class EndpointConfig {
             private String data;
+            private String catalog;
+            private String contractNegotiation;
+            private String transferProcess;
+            private String stateSuffix;
 
         }
 
