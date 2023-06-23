@@ -36,8 +36,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
-import org.eclipse.tractusx.irs.persistence.BlobPersistence;
-import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

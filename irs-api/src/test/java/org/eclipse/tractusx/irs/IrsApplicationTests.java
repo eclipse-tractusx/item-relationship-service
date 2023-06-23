@@ -44,7 +44,7 @@ import org.eclipse.tractusx.irs.connector.job.JobInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
-import org.eclipse.tractusx.irs.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -80,8 +80,8 @@ class IrsApplicationTests {
         final InputStream fixedYaml = Files.newInputStream(Path.of("../docs/src/api/irs-v1.0.yaml"));
 
         final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        final Map<String, Object> fixedYamlMap = mapper.readValue(fixedYaml, Map.class);
-        final Map<String, Object> generatedYamlMap = mapper.readValue(generatedYaml, Map.class);
+        final Map<String, Object> fixedYamlMap = mapper.readerForMapOf(Object.class).readValue(fixedYaml);
+        final Map<String, Object> generatedYamlMap = mapper.readerForMapOf(Object.class).readValue(generatedYaml);
 
         assertThat(generatedYamlMap).isEqualTo(fixedYamlMap);
     }

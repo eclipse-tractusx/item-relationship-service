@@ -100,6 +100,14 @@ blobstore:
   secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
   bucketName: irsbucket # the name of the S3 bucket to be created / used by the IRS
 
+policystore:
+  persistence:
+    endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
+    accessKey: "${MINIO_ACCESS_KEY}" # S3 access key
+    secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
+    bucketName: irs-policy-bucket # the name of the S3 bucket to be created / used by the policy store
+    daysToLive: -1 # number of days to keep policies in the store, use -1 to disable cleanup
+
 resilience4j:
   retry: # REST client retry configuration
     configs:

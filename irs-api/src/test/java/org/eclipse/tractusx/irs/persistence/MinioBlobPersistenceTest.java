@@ -40,6 +40,8 @@ import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
 import io.minio.errors.ErrorResponseException;
 import io.minio.messages.ErrorResponse;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
+import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,7 +58,7 @@ class MinioBlobPersistenceTest {
 
     @BeforeEach
     void setUp() throws BlobPersistenceException {
-        testee = new MinioBlobPersistence("test-bucket", client);
+        testee = new MinioBlobPersistence("test-bucket", client, 1);
     }
 
     @Test

@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import lombok.Value;
-import org.eclipse.tractusx.irs.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 
 @Value
 public class InMemoryBlobStore implements BlobPersistence {

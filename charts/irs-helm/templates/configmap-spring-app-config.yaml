@@ -40,6 +40,12 @@ data:
       accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
       secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
 
+    policystore:
+      persistence:
+        endpoint: {{ tpl (.Values.minioUrl | default "") . | quote }}
+        accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
+        secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
+
     spring:
       security:
         oauth2:
