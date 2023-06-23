@@ -136,24 +136,30 @@ public class EdcTransformer {
     }
 
     public Catalog transformCatalog(final String jsonString, final Charset charset) {
-        final JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(charset)));
+        final Result<JsonObject> expand;
+        try (JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(charset)))) {
 
-        final Result<JsonObject> expand = titaniumJsonLd.expand(
-                JsonDocument.of(reader.read()).getJsonContent().orElseThrow().asJsonObject());
+            expand = titaniumJsonLd.expand(
+                    JsonDocument.of(reader.read()).getJsonContent().orElseThrow().asJsonObject());
+        }
         return jsonObjectToCatalogTransformer.transform(expand.getContent(), transformerContext);
     }
 
     public NegotiationResponse transformJsonToNegotiationResponse(final String jsonString, final Charset charset) {
-        final JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(charset)));
-        final Result<JsonObject> expand = titaniumJsonLd.expand(
-                JsonDocument.of(reader.read()).getJsonContent().orElseThrow().asJsonObject());
+        final Result<JsonObject> expand;
+        try (JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(charset)))) {
+            expand = titaniumJsonLd.expand(
+                    JsonDocument.of(reader.read()).getJsonContent().orElseThrow().asJsonObject());
+        }
         return jsonObjectToNegotiationResponseTransformer.transform(expand.getContent(), transformerContext);
     }
 
     public NegotiationState transformJsonToNegotiationState(final String jsonString, final Charset charset) {
-        final JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(charset)));
-        final Result<JsonObject> expand = titaniumJsonLd.expand(
-                JsonDocument.of(reader.read()).getJsonContent().orElseThrow().asJsonObject());
+        final Result<JsonObject> expand;
+        try (JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(charset)))) {
+            expand = titaniumJsonLd.expand(
+                    JsonDocument.of(reader.read()).getJsonContent().orElseThrow().asJsonObject());
+        }
         return jsonObjectToNegotiationStateTransformer.transform(expand.getContent(), transformerContext);
     }
 
