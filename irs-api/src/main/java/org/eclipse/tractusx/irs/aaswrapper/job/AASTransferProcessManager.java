@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job;
 
+import static org.eclipse.tractusx.irs.configuration.JobConfiguration.JOB_BLOB_PERSISTENCE;
+
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -29,13 +31,14 @@ import java.util.function.Consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.AbstractDelegate;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.TransferProcessManager;
-import org.eclipse.tractusx.irs.persistence.BlobPersistence;
-import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * Process manager for AAS Object transfers.
@@ -51,7 +54,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
     private final AbstractDelegate abstractDelegate;
 
     public AASTransferProcessManager(final AbstractDelegate abstractDelegate, final ExecutorService executor,
-            final BlobPersistence blobStore) {
+            @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore) {
         this.abstractDelegate = abstractDelegate;
         this.executor = executor;
         this.blobStore = blobStore;
@@ -80,7 +83,8 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
             final String itemId = dataRequest.getItemId();
 
             log.info("Starting processing Digital Twin Registry with itemId {}", itemId);
-            final ItemContainer itemContainer = abstractDelegate.process(ItemContainer.builder(), jobData, aasTransferProcess, itemId);
+            final ItemContainer itemContainer = abstractDelegate.process(ItemContainer.builder(), jobData,
+                    aasTransferProcess, itemId);
             storeItemContainer(processId, itemContainer);
 
             transferProcessCompleted.accept(aasTransferProcess);

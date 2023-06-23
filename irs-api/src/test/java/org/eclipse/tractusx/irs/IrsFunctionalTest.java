@@ -203,7 +203,10 @@ class IrsFunctionalTest {
             final String hostAddress = minioContainer.getHostAddress();
             TestPropertySourceUtils.addInlinedPropertiesToEnvironment(applicationContext,
                     "blobstore.endpoint=http://" + hostAddress, "blobstore.accessKey=" + ACCESS_KEY,
-                    "blobstore.secretKey=" + SECRET_KEY);
+                    "blobstore.secretKey=" + SECRET_KEY, "policystore.persistence.endpoint=http://" + hostAddress,
+                    "policystore.persistence.accessKey=" + ACCESS_KEY,
+                    "policystore.persistence.secretKey=" + SECRET_KEY,
+                    "policystore.persistence.bucketName=policy-test");
         }
     }
 

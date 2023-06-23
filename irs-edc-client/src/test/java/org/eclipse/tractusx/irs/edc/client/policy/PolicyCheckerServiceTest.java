@@ -23,7 +23,9 @@
 package org.eclipse.tractusx.irs.edc.client.policy;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.eclipse.edc.policy.model.Action;
@@ -32,11 +34,25 @@ import org.eclipse.edc.policy.model.LiteralExpression;
 import org.eclipse.edc.policy.model.Operator;
 import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class PolicyCheckerServiceTest {
 
-    private final PolicyCheckerService policyCheckerService = new PolicyCheckerService(List.of("ID 3.0 Trace"));
+    private PolicyCheckerService policyCheckerService;
+    @Mock
+    private AcceptedPoliciesProvider policyStore;
+
+    @BeforeEach
+    void setUp() {
+        final var policyList = List.of(new AcceptedPolicy("ID 3.0 Trace", OffsetDateTime.now().plusYears(1)));
+        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        policyCheckerService = new PolicyCheckerService(policyStore);
+    }
 
     @Test
     void shouldConfirmValidPolicy() {
@@ -121,4 +137,5 @@ class PolicyCheckerServiceTest {
         // then
         assertThat(result).isTrue();
     }
+
 }
