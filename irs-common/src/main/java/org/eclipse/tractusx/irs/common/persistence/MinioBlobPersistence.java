@@ -20,7 +20,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.persistence;
+package org.eclipse.tractusx.irs.common.persistence;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -68,18 +68,19 @@ import org.jetbrains.annotations.NotNull;
 })
 public class MinioBlobPersistence implements BlobPersistence {
 
-    private static final Integer EXPIRE_AFTER_DAYS = 7;
     private final MinioClient minioClient;
     private final String bucketName;
+    private final int daysToLive;
 
     public MinioBlobPersistence(final String endpoint, final String accessKey, final String secretKey,
-            final String bucketName) throws BlobPersistenceException {
-        this(bucketName, createClient(endpoint, accessKey, secretKey));
+            final String bucketName, final int daysToLive) throws BlobPersistenceException {
+        this(bucketName, createClient(endpoint, accessKey, secretKey), daysToLive);
     }
 
-    public MinioBlobPersistence(final String bucketName, final MinioClient client) throws BlobPersistenceException {
+    public MinioBlobPersistence(final String bucketName, final MinioClient client, final int daysToLive) throws BlobPersistenceException {
         this.bucketName = bucketName;
         this.minioClient = client;
+        this.daysToLive = daysToLive;
 
         try {
             createBucketIfNotExists(bucketName);
@@ -94,7 +95,9 @@ public class MinioBlobPersistence implements BlobPersistence {
 
         if (!this.bucketExists(bucketName)) {
             this.minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-            this.setExpirationLifecycle(bucketName);
+            if (this.daysToLive > 0) {
+                this.setExpirationLifecycle(bucketName);
+            }
         }
     }
 
@@ -115,7 +118,7 @@ public class MinioBlobPersistence implements BlobPersistence {
             throws ErrorResponseException, InsufficientDataException, InternalException, InvalidKeyException,
             InvalidResponseException, IOException, NoSuchAlgorithmException, ServerException, XmlParserException {
 
-        final Expiration expiration = new Expiration((ResponseDate) null, EXPIRE_AFTER_DAYS, null);
+        final Expiration expiration = new Expiration((ResponseDate) null, daysToLive, null);
         final LifecycleRule rule = createExpirationRule(expiration);
         final LifecycleConfiguration lifecycleConfig = new LifecycleConfiguration(List.of(rule));
         minioClient.setBucketLifecycle(

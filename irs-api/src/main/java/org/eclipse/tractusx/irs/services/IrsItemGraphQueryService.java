@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.services;
 
+import static org.eclipse.tractusx.irs.configuration.JobConfiguration.JOB_BLOB_PERSISTENCE;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,7 +36,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
@@ -66,12 +67,13 @@ import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
-import org.eclipse.tractusx.irs.persistence.BlobPersistence;
-import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PagedListHolder;
@@ -88,7 +90,6 @@ import org.springframework.web.server.ResponseStatusException;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @SuppressWarnings({ "PMD.ExcessiveImports",
                     "PMD.TooManyMethods"
 })
@@ -106,8 +107,21 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    @Value("${bpdm.bpnEndpoint:}")
-    private String bpdmUrl;
+    private final String bpdmUrl;
+
+    public IrsItemGraphQueryService(final JobOrchestrator<ItemDataRequest, AASTransferProcess> orchestrator,
+            final JobStore jobStore, @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore,
+            final MeterRegistryService meterRegistryService, final SemanticsHubFacade semanticsHubFacade,
+            final ApplicationEventPublisher applicationEventPublisher,
+            @Value("${bpdm.bpnEndpoint:}") final String bpdmUrl) {
+        this.orchestrator = orchestrator;
+        this.jobStore = jobStore;
+        this.blobStore = blobStore;
+        this.meterRegistryService = meterRegistryService;
+        this.semanticsHubFacade = semanticsHubFacade;
+        this.applicationEventPublisher = applicationEventPublisher;
+        this.bpdmUrl = bpdmUrl;
+    }
 
     @Override
     public PageResult getJobsByState(final @NonNull List<JobState> states, final Pageable pageable) {
@@ -162,10 +176,12 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             throw new IllegalArgumentException("BomLifecycle asPlanned with direction upward is not supported yet!");
         }
         if (params.isLookupBPNs() && StringUtils.isBlank(bpdmUrl)) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't start job with BPN lookup - configured bpdm endpoint is empty!");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Can't start job with BPN lookup - configured bpdm endpoint is empty!");
         }
 
-        final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getKey().getGlobalAssetId(), params, batchId);
+        final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getKey().getGlobalAssetId(),
+                params, batchId);
         meterRegistryService.incrementNumberOfCreatedJobs();
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
@@ -207,11 +223,11 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             final Set<String> availableUrns = new HashSet<>(availableModels.stream().map(AspectModel::urn).toList());
 
             final List<String> invalidAspectTypes = aspectTypeValues.stream()
-                                                         .filter(s ->
-                                                                 !availableUrns.contains(s)
-                                                                 && !availableNames.contains(s)
-                                                                 || !s.matches("^(urn:bamm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$"))
-                                                         .toList();
+                                                                    .filter(s -> !availableUrns.contains(s)
+                                                                            && !availableNames.contains(s)
+                                                                            || !s.matches(
+                                                                            "^(urn:bamm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$"))
+                                                                    .toList();
             if (!invalidAspectTypes.isEmpty()) {
                 throw new IllegalArgumentException(
                         String.format("Aspects did not match the available aspects: '%s'", invalidAspectTypes));
@@ -229,7 +245,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         canceled.ifPresent(cancelledJob -> applicationEventPublisher.publishEvent(
                 new JobProcessingFinishedEvent(cancelledJob.getJobIdString(), cancelledJob.getJob().getState().name(),
                         cancelledJob.getJobParameter().getCallbackUrl(), cancelledJob.getBatchId())));
-        return canceled.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId)).getJob();
+        return canceled.orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId)).getJob();
     }
 
     @Override
@@ -373,13 +390,14 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     private ItemContainer retrieveJobResultRelationships(final UUID jobId) {
         try {
             final Optional<byte[]> blob = blobStore.getBlob(jobId.toString());
-            final byte[] bytes = blob.orElseThrow(
-                    () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find stored data for multiJob with id " + jobId));
+            final byte[] bytes = blob.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Could not find stored data for multiJob with id " + jobId));
             return toItemContainer(bytes);
         } catch (BlobPersistenceException e) {
             log.error("Unable to read blob", e);
             meterRegistryService.incrementException();
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not load stored data for multiJob with id " + jobId, e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Could not load stored data for multiJob with id " + jobId, e);
         }
     }
 

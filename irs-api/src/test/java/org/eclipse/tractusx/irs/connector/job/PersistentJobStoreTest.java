@@ -43,8 +43,8 @@ import java.util.UUID;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
 import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
-import org.eclipse.tractusx.irs.persistence.MinioBlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
+import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.testing.containers.MinioContainer;
 import org.eclipse.tractusx.irs.util.JsonUtil;
@@ -94,7 +94,7 @@ class PersistentJobStoreTest {
     @BeforeEach
     void setUp() throws BlobPersistenceException {
         final MinioBlobPersistence blobStore = new MinioBlobPersistence("http://" + minioContainer.getHostAddress(),
-                ACCESS_KEY, SECRET_KEY, "testbucket");
+                ACCESS_KEY, SECRET_KEY, "testbucket", 1);
         blobStoreSpy = Mockito.spy(blobStore);
         sut = new PersistentJobStore(blobStoreSpy, meterRegistryService);
     }

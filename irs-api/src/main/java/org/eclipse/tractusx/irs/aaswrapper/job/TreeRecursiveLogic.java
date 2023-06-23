@@ -22,15 +22,17 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job;
 
+import static org.eclipse.tractusx.irs.configuration.JobConfiguration.JOB_BLOB_PERSISTENCE;
+
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
-import org.eclipse.tractusx.irs.persistence.BlobPersistence;
-import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * Retrieves item graph from potentially multiple calls to IRS API behind
@@ -43,12 +45,12 @@ import org.eclipse.tractusx.irs.util.JsonUtil;
  * by querying multiple IRS API instances.
  */
 @Slf4j
-@RequiredArgsConstructor
 public class TreeRecursiveLogic {
 
     /**
      * Blob store API.
      */
+
     private final BlobPersistence blobStoreApi;
     /**
      * Json Converter.
@@ -59,6 +61,13 @@ public class TreeRecursiveLogic {
      * Assembles partial parts trees.
      */
     private final ItemTreesAssembler assembler;
+
+    public TreeRecursiveLogic(@Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStoreApi,
+            final JsonUtil jsonUtil, final ItemTreesAssembler assembler) {
+        this.blobStoreApi = blobStoreApi;
+        this.jsonUtil = jsonUtil;
+        this.assembler = assembler;
+    }
 
     /**
      * Assembles multiple partial item graph into one overall item graph.
@@ -71,7 +80,8 @@ public class TreeRecursiveLogic {
             final String targetBlobName) {
         final var partialTrees = completedTransfers.stream()
                                                    .map(this::downloadPartialItemGraphBlobs)
-                                                   .map(payload -> jsonUtil.fromString(new String(payload, StandardCharsets.UTF_8),
+                                                   .map(payload -> jsonUtil.fromString(
+                                                           new String(payload, StandardCharsets.UTF_8),
                                                            ItemContainer.class));
         final var assembledTree = assembler.retrieveItemGraph(partialTrees);
         final String json = jsonUtil.asString(assembledTree);
