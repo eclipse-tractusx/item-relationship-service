@@ -110,7 +110,7 @@ public class TestMother {
     public static RegisterJob registerJob(final String globalAssetId, final Integer depth,
             final List<String> aspectTypes, final boolean collectAspects, final boolean lookupBPNs, final Direction direction) {
         final RegisterJob registerJob = new RegisterJob();
-        registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).build());
+        registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).bpn("bpn123").build());
         registerJob.setDepth(depth);
         registerJob.setAspects(aspectTypes);
         registerJob.setCollectAspects(collectAspects);
