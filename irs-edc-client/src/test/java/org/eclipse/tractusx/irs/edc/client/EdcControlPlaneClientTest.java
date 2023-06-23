@@ -46,7 +46,7 @@ import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
-import org.eclipse.tractusx.irs.edc.client.model.ResponseId;
+import org.eclipse.tractusx.irs.edc.client.model.Response;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
@@ -133,8 +133,8 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnValidNegotiationId() {
         // arrange
-        final var negotiationId = ResponseId.builder().id("test").build();
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(ResponseId.class))).thenReturn(
+        final var negotiationId = Response.builder().responseId("test").build();
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(Response.class))).thenReturn(
                 ResponseEntity.of(Optional.of(negotiationId)));
         final NegotiationRequest request = NegotiationRequest.builder().build();
         final JsonObject emptyJsonObject = JsonObject.EMPTY_JSON_OBJECT;
@@ -151,7 +151,7 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnConfirmedNegotiationResult() throws Exception {
         // arrange
-        final var negotiationId = ResponseId.builder().id("negotiationId").build();
+        final var negotiationId = Response.builder().responseId("negotiationId").build();
         final var negotiationResult = NegotiationResponse.builder()
                                                          .contractAgreementId("testContractId")
                                                          .state(STATUS_FINALIZED)
@@ -177,9 +177,9 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnValidTransferProcessId() {
         // arrange
-        final var processId = ResponseId.builder().id("transferProcessId").build();
+        final var processId = Response.builder().responseId("transferProcessId").build();
         final var request = TransferProcessRequest.builder().assetId("testRequest").build();
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(ResponseId.class))).thenReturn(
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(Response.class))).thenReturn(
                 ResponseEntity.of(Optional.of(processId)));
         doReturn(JsonObject.EMPTY_JSON_OBJECT).when(edcTransformer).transformTransferProcessRequestToJson(request);
 
@@ -193,7 +193,7 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnCompletedTransferProcessResult() throws Exception {
         // arrange
-        final var processId = ResponseId.builder().id("transferProcessId").build();
+        final var processId = Response.builder().responseId("transferProcessId").build();
         final var response = TransferProcessResponse.builder()
                                                     .responseId("testResponse")
                                                     .state(STATUS_COMPLETED)

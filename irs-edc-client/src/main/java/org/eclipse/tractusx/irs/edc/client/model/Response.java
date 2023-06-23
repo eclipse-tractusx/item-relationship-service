@@ -33,7 +33,7 @@ import lombok.extern.jackson.Jacksonized;
 @Value
 @Builder(toBuilder = true)
 @Jacksonized
-public class ResponseId {
+public class Response {
     @JsonProperty("@id")
-    private String id;
+    private String responseId;
 }

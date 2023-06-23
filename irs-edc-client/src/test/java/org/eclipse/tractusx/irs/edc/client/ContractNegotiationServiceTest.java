@@ -36,7 +36,7 @@ import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
-import org.eclipse.tractusx.irs.edc.client.model.ResponseId;
+import org.eclipse.tractusx.irs.edc.client.model.Response;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.junit.jupiter.api.Test;
@@ -79,12 +79,12 @@ class ContractNegotiationServiceTest {
         final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
         when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
-                ResponseId.builder().id("negotiationId").build());
+                Response.builder().responseId("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.completedFuture(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(response);
         when(edcControlPlaneClient.startTransferProcess(any())).thenReturn(
-                ResponseId.builder().id("transferProcessId").build());
+                Response.builder().responseId("transferProcessId").build());
         when(edcControlPlaneClient.getTransferProcess(any())).thenReturn(
                 CompletableFuture.completedFuture(TransferProcessResponse.builder().build()));
 
@@ -104,7 +104,7 @@ class ContractNegotiationServiceTest {
         final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
         when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
-                ResponseId.builder().id("negotiationId").build());
+                Response.builder().responseId("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.failedFuture(
                 new RuntimeException("Test exception"));
         when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(response);

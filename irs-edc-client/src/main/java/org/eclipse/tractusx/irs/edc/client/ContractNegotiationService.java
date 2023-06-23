@@ -37,7 +37,7 @@ import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
-import org.eclipse.tractusx.irs.edc.client.model.ResponseId;
+import org.eclipse.tractusx.irs.edc.client.model.Response;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessDataDestination;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
@@ -68,9 +68,9 @@ public class ContractNegotiationService {
         final NegotiationRequest negotiationRequest = createNegotiationRequestFromCatalogItem(providerConnectorUrl,
                 catalogItem);
 
-        final ResponseId negotiationId = edcControlPlaneClient.startNegotiations(negotiationRequest);
+        final Response negotiationId = edcControlPlaneClient.startNegotiations(negotiationRequest);
 
-        log.info("Fetch negotiation id: {}", negotiationId.getId());
+        log.info("Fetch negotiation id: {}", negotiationId.getResponseId());
 
         final CompletableFuture<NegotiationResponse> responseFuture = edcControlPlaneClient.getNegotiationResult(
                 negotiationId);
@@ -79,14 +79,14 @@ public class ContractNegotiationService {
         final TransferProcessRequest transferProcessRequest = createTransferProcessRequest(providerConnectorUrl,
                 catalogItem, negotiationResponse);
 
-        final ResponseId transferProcessId = edcControlPlaneClient.startTransferProcess(transferProcessRequest);
+        final Response transferProcessId = edcControlPlaneClient.startTransferProcess(transferProcessRequest);
 
         // can be added to cache after completed
         edcControlPlaneClient.getTransferProcess(transferProcessId).exceptionally(throwable -> {
             log.error("Error while receiving transfer process", throwable);
             return null;
         });
-        log.info("Transfer process completed for transferProcessId: {}", transferProcessId.getId());
+        log.info("Transfer process completed for transferProcessId: {}", transferProcessId.getResponseId());
         return negotiationResponse;
     }
 
@@ -106,9 +106,8 @@ public class ContractNegotiationService {
                                                                         .assetId(catalogItem.getAssetPropId())
                                                                         .dataDestination(destination);
         if (StringUtils.isNotBlank(config.getCallbackUrl())) {
-        log.info("Setting EDR callback to {}",config.getCallbackUrl());
-            transferProcessRequestBuilder.privateProperties(
-                    Map.of("receiverHttpEndpoint", config.getCallbackUrl()));
+            log.info("Setting EDR callback to {}", config.getCallbackUrl());
+            transferProcessRequestBuilder.privateProperties(Map.of("receiverHttpEndpoint", config.getCallbackUrl()));
         }
         return transferProcessRequestBuilder.build();
     }
