@@ -749,6 +749,134 @@ paths:
       summary: Get a batch with a given batchId for a given orderId.
       tags:
         - Item Relationship Service
+  /irs/policies:
+    get:
+      description: Lists the registered policies that should be accepted in EDC negotiation.
+      operationId: getAllowedPolicies
+      responses:
+        "200":
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Policy'
+          description: Returns the policies.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: No valid authentication credentials.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorization refused by server.
+      security:
+        - oAuth2:
+            - profile email
+      summary: Lists the registered policies that should be accepted in EDC negotiation.
+      tags:
+        - Item Relationship Service
+    post:
+      description: Register a policy that should be accepted in EDC negotiation.
+      operationId: registerAllowedPolicy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePolicyRequest'
+        required: true
+      responses:
+        "201":
+          description: Created
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Policy registration failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: No valid authentication credentials.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorization refused by server.
+      security:
+        - oAuth2:
+            - profile email
+      summary: Register a policy that should be accepted in EDC negotiation.
+      tags:
+        - Item Relationship Service
+  /irs/policies/{policyId}:
+    delete:
+      description: Removes a policy that should no longer be accepted in EDC negotiation.
+      operationId: deleteAllowedPolicy
+      parameters:
+        - in: path
+          name: policyId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Policy deletion failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: No valid authentication credentials.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorization refused by server.
+      security:
+        - oAuth2:
+            - profile email
+      summary: Removes a policy that should no longer be accepted in EDC negotiation.
+      tags:
+        - Item Relationship Service
 components:
   examples:
     canceled-job-response:
@@ -761,7 +889,7 @@ components:
         state: CANCELED
     canceled-job-result:
       value:
-        bpns: [ ]
+        bpns: []
         job:
           completedOn: 2022-02-03T14:48:54.709Z
           createdOn: 2022-02-03T14:48:54.709Z
@@ -789,9 +917,9 @@ components:
               completed: 0
               failed: 0
               running: 0
-        relationships: [ ]
-        submodels: [ ]
-        tombstones: [ ]
+        relationships: []
+        submodels: []
+        tombstones: []
     complete-batch-result:
       value:
         batchId: f253718e-a270-4367-901b-9d50d9bd8462
@@ -962,7 +1090,7 @@ components:
         statusCode: 404 NOT_FOUND
     failed-job-result:
       value:
-        bpns: [ ]
+        bpns: []
         job:
           createdOn: 2022-02-03T14:48:54.709Z
           exception:
@@ -989,9 +1117,9 @@ components:
               completed: 0
               failed: 0
               running: 0
-        relationships: [ ]
-        submodels: [ ]
-        tombstones: [ ]
+        relationships: []
+        submodels: []
+        tombstones: []
     job-handle:
       value:
         id: 6c311d29-5753-46d4-b32c-19b918ea93b0
@@ -1103,7 +1231,7 @@ components:
               retryCounter: 0
     partial-job-result:
       value:
-        bpns: [ ]
+        bpns: []
         job:
           completedOn: 2022-02-03T14:48:54.709Z
           createdOn: 2022-02-03T14:48:54.709Z
@@ -1131,9 +1259,9 @@ components:
               completed: 0
               failed: 0
               running: 0
-        relationships: [ ]
-        submodels: [ ]
-        tombstones: [ ]
+        relationships: []
+        submodels: []
+        tombstones: []
     aspect-models-list:
       value:
         lastUpdated: 2023-02-13T08:18:11.990659500Z
@@ -1314,6 +1442,21 @@ components:
           type: string
         manufacturerName:
           type: string
+    CreatePolicyRequest:
+      type: object
+      additionalProperties: false
+      description: Request to add a policy
+      properties:
+        policyId:
+          type: string
+          description: The ID of the policy to add
+        validUntil:
+          type: string
+          format: date-time
+          description: Timestamp after which the policy will no longer be accepted in negotiations
+      required:
+        - policyId
+        - validUntil
     EdcNotification:
       type: object
       additionalProperties: false
@@ -1726,6 +1869,18 @@ components:
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
       required:
         - globalAssetId
+    Policy:
+      type: object
+      additionalProperties: false
+      properties:
+        createdOn:
+          type: string
+          format: date-time
+        policyId:
+          type: string
+        validUntil:
+          type: string
+          format: date-time
     ProcessingError:
       type: object
       additionalProperties: false
@@ -1821,8 +1976,8 @@ components:
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
-                    \ There are four uri variable placeholders that can be used: orderId,\
-                    \ batchId, orderState and batchState."
+            \ There are four uri variable placeholders that can be used: orderId,\
+            \ batchId, orderState and batchState."
           example: "https://hostname.com/callback?orderId={orderId}&batchId={batchId}&orderState={orderState}&batchState={batchState}"
         collectAspects:
           type: boolean
@@ -1883,8 +2038,8 @@ components:
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
-                    \ There are two uri variable placeholders that can be used: jobId and\
-                    \ jobState."
+            \ There are two uri variable placeholders that can be used: jobId and\
+            \ jobState."
           example: "https://hostname.com/callback?jobId={jobId}&jobState={jobState}"
         globalAssetId:
           type: string

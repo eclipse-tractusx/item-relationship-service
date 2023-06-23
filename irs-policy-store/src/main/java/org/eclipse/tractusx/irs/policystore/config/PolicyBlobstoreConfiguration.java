@@ -20,15 +20,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+package org.eclipse.tractusx.irs.policystore.config;
 
-package org.eclipse.tractusx.irs.persistence;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * Exception for everything related to BlobPersistence actions
+ * Config values for blobstore
  */
-public class BlobPersistenceException extends Exception {
-
-    public BlobPersistenceException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
+@Configuration
+@ConfigurationProperties(prefix = "policystore.persistence")
+@Getter
+@Setter
+public class PolicyBlobstoreConfiguration {
+    private String endpoint;
+    private String accessKey;
+    private String secretKey;
+    private String bucketName;
+    private int daysToLive;
 }

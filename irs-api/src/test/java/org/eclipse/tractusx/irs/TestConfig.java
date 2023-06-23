@@ -22,7 +22,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs;
 
-import org.eclipse.tractusx.irs.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.configuration.JobConfiguration;
+import org.eclipse.tractusx.irs.policystore.config.PolicyConfiguration;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -31,8 +33,13 @@ import org.springframework.context.annotation.Primary;
 public class TestConfig {
 
     @Primary
-    @Bean
+    @Bean(JobConfiguration.JOB_BLOB_PERSISTENCE)
     public BlobPersistence inMemoryBlobStore() {
+        return new InMemoryBlobStore();
+    }
+
+    @Bean(PolicyConfiguration.POLICY_BLOB_PERSISTENCE)
+    public BlobPersistence inMemoryBlobStore2() {
         return new InMemoryBlobStore();
     }
 }

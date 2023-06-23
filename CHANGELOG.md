@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Requesting EDC endpoint addresses for BPN over EDC Discovery Finder
   - Add filter for catalog item search in EDC
   - Authorize Digital Twin client with EDC Endpoint Reference
+- Added new Policy Store API to manage acceptable EDC policies
+  - `GET /irs/policies`
+  - `POST /irs/policies`
+  - `DELETE /irs/policies/{policyId}`
 
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
