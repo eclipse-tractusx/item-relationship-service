@@ -232,14 +232,21 @@ def create_registry_asset(edc_upload_urls_, edc_asset_path_, edc_contract_defini
 
         catalog_url_ = edc_upload_url_ + catalog_path_
         payload_ = {
-            "@context": {},
-            "protocol": "dataspace-protocol-http",
-            "providerUrl": f"{edc_url_}/api/v1/dsp",
-            "querySpec": {
-                "filterExpression": {
-                    "operandLeft": "https://w3id.org/edc/v0.0.1/ns/type",
-                    "operator": "=",
-                    "operandRight": "data.core.digitalTwinRegistry"
+            "@context": {
+                "dct": "https://purl.org/dc/terms/",
+                "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+                "edc": "https://w3id.org/edc/v0.0.1/ns/",
+                "odrl": "http://www.w3.org/ns/odrl/2/",
+                "dcat": "https://www.w3.org/ns/dcat/",
+                "dspace": "https://w3id.org/dspace/v0.8/"},
+            "edc:protocol": "dataspace-protocol-http",
+            "edc:providerUrl": f"{edc_url_}/api/v1/dsp",
+            "edc:querySpec": {
+                "edc:filterExpression": {
+                    "@type": "edc:Criterion",
+                    "edc:operandLeft": "https://w3id.org/edc/v0.0.1/ns/type",
+                    "edc:operator": "=",
+                    "edc:operandRight": "data.core.digitalTwinRegistry"
                 }
             }
         }
@@ -250,7 +257,7 @@ def create_registry_asset(edc_upload_urls_, edc_asset_path_, edc_contract_defini
         print(response_.status_code)
         catalog_response_ = response_.json()
         if response_.status_code == 200 and len(catalog_response_['dcat:dataset']) >= 1:
-            first_offer_ = catalog_response_['dcat:dataset'][0]
+            first_offer_ = catalog_response_['dcat:dataset']
             print(
                 f"Offer with type {first_offer_['edc:type']} already exists. Skipping creation.")
         else:
