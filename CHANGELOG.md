@@ -17,6 +17,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `POST /irs/policies`
   - `DELETE /irs/policies/{policyId}`
 
+### Changed
+- Updated EDC Client to use version 0.4.1
+  - Adjusted Protocol from IDS to DSP
+  - Paths for catalog, contract negotiation and transfer process are now configurable via properties
+    - `edc.controlplane.endpoint.catalog`
+    - `edc.controlplane.endpoint.contract-negotiation` 
+    - `edc.controlplane.endpoint.transfer-process`
+- EDR Callback is now configurable via property `edc.callback-url`
+
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
