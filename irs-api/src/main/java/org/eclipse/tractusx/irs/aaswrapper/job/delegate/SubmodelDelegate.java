@@ -68,7 +68,8 @@ public class SubmodelDelegate extends AbstractDelegate {
     private final ConnectorEndpointsService connectorEndpointsService;
 
     public SubmodelDelegate(final EdcSubmodelFacade submodelFacade, final SemanticsHubFacade semanticsHubFacade,
-            final JsonValidatorService jsonValidatorService, final JsonUtil jsonUtil, ConnectorEndpointsService connectorEndpointsService) {
+            final JsonValidatorService jsonValidatorService, final JsonUtil jsonUtil,
+            final ConnectorEndpointsService connectorEndpointsService) {
         super(null); // no next step
         this.submodelFacade = submodelFacade;
         this.semanticsHubFacade = semanticsHubFacade;

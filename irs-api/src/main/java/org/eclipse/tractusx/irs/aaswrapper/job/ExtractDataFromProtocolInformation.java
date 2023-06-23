@@ -28,9 +28,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * Extract asset id and path suffix from Protocol Information
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExtractDataFromProtocolInformation {
     private static final String ASSET_ID_SEPARATOR = ";";
 
