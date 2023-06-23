@@ -30,14 +30,14 @@ import java.util.concurrent.ExecutionException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.edc.api.model.IdResponseDto;
-import org.eclipse.edc.connector.api.management.contractnegotiation.model.ContractOfferDescription;
-import org.eclipse.edc.connector.api.management.contractnegotiation.model.NegotiationInitiateRequestDto;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
+import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
+import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.ResponseId;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessDataDestination;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
@@ -65,10 +65,10 @@ public class ContractNegotiationService {
             throw new UsagePolicyException(catalogItem.getItemId());
         }
 
-        final NegotiationInitiateRequestDto negotiationRequest = createNegotiationRequestFromCatalogItem(
-                providerConnectorUrl, catalogItem);
+        final NegotiationRequest negotiationRequest = createNegotiationRequestFromCatalogItem(providerConnectorUrl,
+                catalogItem);
 
-        final IdResponseDto negotiationId = edcControlPlaneClient.startNegotiations(negotiationRequest);
+        final ResponseId negotiationId = edcControlPlaneClient.startNegotiations(negotiationRequest);
 
         log.info("Fetch negotiation id: {}", negotiationId.getId());
 
@@ -79,7 +79,7 @@ public class ContractNegotiationService {
         final TransferProcessRequest transferProcessRequest = createTransferProcessRequest(providerConnectorUrl,
                 catalogItem, negotiationResponse);
 
-        final IdResponseDto transferProcessId = edcControlPlaneClient.startTransferProcess(transferProcessRequest);
+        final ResponseId transferProcessId = edcControlPlaneClient.startTransferProcess(transferProcessRequest);
 
         // can be added to cache after completed
         edcControlPlaneClient.getTransferProcess(transferProcessId).exceptionally(throwable -> {
@@ -96,34 +96,37 @@ public class ContractNegotiationService {
                                                    .type(TransferProcessDataDestination.DEFAULT_TYPE)
                                                    .build();
         final var transferProcessRequestBuilder = TransferProcessRequest.builder()
-                                                                 .protocol(TransferProcessRequest.DEFAULT_PROTOCOL)
-                                                                 .managedResources(
-                                                                         TransferProcessRequest.DEFAULT_MANAGED_RESOURCES)
-                                                                 .connectorId(catalogItem.getConnectorId())
-                                                                 .connectorAddress(providerConnectorUrl)
-                                                                 .contractId(response.getContractAgreementId())
-                                                                 .assetId(catalogItem.getAssetPropId())
-                                                                 .dataDestination(destination);
+                                                                        .protocol(
+                                                                                TransferProcessRequest.DEFAULT_PROTOCOL)
+                                                                        .managedResources(
+                                                                                TransferProcessRequest.DEFAULT_MANAGED_RESOURCES)
+                                                                        .connectorId(catalogItem.getConnectorId())
+                                                                        .connectorAddress(providerConnectorUrl)
+                                                                        .contractId(response.getContractAgreementId())
+                                                                        .assetId(catalogItem.getAssetPropId())
+                                                                        .dataDestination(destination);
         if (StringUtils.isNotBlank(config.getCallbackUrl())) {
-            transferProcessRequestBuilder.privateProperties(Map.of("edc:receiverHttpEndpoint", config.getCallbackUrl()));
+        log.info("Setting EDR callback to {}",config.getCallbackUrl());
+            transferProcessRequestBuilder.privateProperties(
+                    Map.of("receiverHttpEndpoint", config.getCallbackUrl()));
         }
         return transferProcessRequestBuilder.build();
     }
 
-    private NegotiationInitiateRequestDto createNegotiationRequestFromCatalogItem(final String providerConnectorUrl,
+    private NegotiationRequest createNegotiationRequestFromCatalogItem(final String providerConnectorUrl,
             final CatalogItem catalogItem) {
-        final var contractOfferDescription = ContractOfferDescription.Builder.newInstance()
-                                                                             .offerId(catalogItem.getOfferId())
-                                                                             .assetId(catalogItem.getPolicy().getTarget())
-                                                                             .policy(catalogItem.getPolicy())
-                                                                             .build();
+        final var contractOfferDescription = ContractOfferDescription.builder()
+                                                                     .offerId(catalogItem.getOfferId())
+                                                                     .assetId(catalogItem.getPolicy().getTarget())
+                                                                     .policy(catalogItem.getPolicy())
+                                                                     .build();
 
-        return NegotiationInitiateRequestDto.Builder.newInstance()
-                                                    .connectorId(catalogItem.getConnectorId())
-                                                    .connectorAddress(providerConnectorUrl)
-                                                    .protocol(EDC_PROTOCOL)
-                                                    .offer(contractOfferDescription)
-                                                    .build();
+        return NegotiationRequest.builder()
+                                 .connectorId(catalogItem.getConnectorId())
+                                 .connectorAddress(providerConnectorUrl)
+                                 .protocol(EDC_PROTOCOL)
+                                 .offer(contractOfferDescription)
+                                 .build();
     }
 
     private NegotiationResponse getNegotiationResponse(final CompletableFuture<NegotiationResponse> negotiationResponse)

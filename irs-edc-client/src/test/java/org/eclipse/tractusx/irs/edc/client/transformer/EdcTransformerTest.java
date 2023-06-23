@@ -40,8 +40,6 @@ import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.catalog.spi.DataService;
 import org.eclipse.edc.catalog.spi.Dataset;
 import org.eclipse.edc.catalog.spi.Distribution;
-import org.eclipse.edc.connector.api.management.contractnegotiation.model.ContractOfferDescription;
-import org.eclipse.edc.connector.api.management.contractnegotiation.model.NegotiationInitiateRequestDto;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.policy.model.Action;
 import org.eclipse.edc.policy.model.AtomicConstraint;
@@ -52,6 +50,8 @@ import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.edc.spi.types.domain.DataAddress;
+import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
+import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.jetbrains.annotations.NotNull;
@@ -161,22 +161,22 @@ class EdcTransformerTest {
                               .build();
     }
 
-    private static NegotiationInitiateRequestDto createNegotiation(final String consumerBPN, final String providerBPN,
+    private static NegotiationRequest createNegotiation(final String consumerBPN, final String providerBPN,
             final String providerConnector, final String protocol, final String offerId, final String assetId) {
         final Policy policy = createPolicy(assetId);
 
-        final ContractOfferDescription contractOfferDescription = ContractOfferDescription.Builder.newInstance()
-                                                                                                  .offerId(offerId)
-                                                                                                  .assetId(assetId)
-                                                                                                  .policy(policy)
-                                                                                                  .build();
-        return NegotiationInitiateRequestDto.Builder.newInstance()
-                                                    .connectorId(consumerBPN)
-                                                    .connectorId(providerBPN)
-                                                    .connectorAddress(providerConnector)
-                                                    .protocol(protocol)
-                                                    .offer(contractOfferDescription)
-                                                    .build();
+        final ContractOfferDescription contractOfferDescription = ContractOfferDescription.builder()
+                                                                                          .offerId(offerId)
+                                                                                          .assetId(assetId)
+                                                                                          .policy(policy)
+                                                                                          .build();
+        return NegotiationRequest.builder()
+                                 .connectorId(consumerBPN)
+                                 .connectorId(providerBPN)
+                                 .connectorAddress(providerConnector)
+                                 .protocol(protocol)
+                                 .offer(contractOfferDescription)
+                                 .build();
     }
 
     private static Policy createPolicy(final String assetId) {
@@ -293,12 +293,11 @@ class EdcTransformerTest {
     void shouldSerializeContractOfferDescriptionToJsonObject() {
         final String offerId = "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c";
         final String assetId = "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a";
-        final ContractOfferDescription contractOfferDescription = ContractOfferDescription.Builder.newInstance()
-                                                                                                  .offerId(offerId)
-                                                                                                  .policy(createPolicy(
-                                                                                                          assetId))
-                                                                                                  .assetId(assetId)
-                                                                                                  .build();
+        final ContractOfferDescription contractOfferDescription = ContractOfferDescription.builder()
+                                                                                          .offerId(offerId)
+                                                                                          .policy(createPolicy(assetId))
+                                                                                          .assetId(assetId)
+                                                                                          .build();
         final JsonObject contractOfferDescriptionToJson = edcTransformer.transformContractOfferDescriptionToJson(
                 contractOfferDescription);
         final Optional<JsonObject> optional = jsonLd.compact(contractOfferDescriptionToJson).asOptional();
@@ -317,14 +316,13 @@ class EdcTransformerTest {
         final String protocol = "dataspace-protocol-http";
         final String offerId = "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c";
         final String assetId = "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a";
-        final NegotiationInitiateRequestDto negotiationInitiateRequestDto = createNegotiation(consumerBPN, providerBPN,
+        final NegotiationRequest negotiationInitiateRequestDto = createNegotiation(consumerBPN, providerBPN,
                 providerConnector, protocol, offerId, assetId);
 
-        final JsonObject negotiationJson = edcTransformer.transformNegotiationInitiateRequestDtoToJson(
+        final JsonObject negotiationJson = edcTransformer.transformNegotiationRequestToJson(
                 negotiationInitiateRequestDto);
 
         assertThat(negotiationJson).isNotEmpty();
-        assertThat(negotiationJson).contains(entry("@type", Json.createValue("edc:NegotiationInitiateRequestDto")));
         assertThat(negotiationJson).contains(entry("edc:connectorAddress", Json.createValue(providerConnector)));
         assertThat(negotiationJson).contains(entry("edc:connectorId", Json.createValue(consumerBPN)));
         assertThat(negotiationJson).contains(entry("edc:protocol", Json.createValue(protocol)));

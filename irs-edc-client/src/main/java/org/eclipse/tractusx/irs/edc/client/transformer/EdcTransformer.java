@@ -34,9 +34,6 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
-import org.eclipse.edc.connector.api.management.contractnegotiation.model.ContractOfferDescription;
-import org.eclipse.edc.connector.api.management.contractnegotiation.model.NegotiationInitiateRequestDto;
-import org.eclipse.edc.connector.api.management.transferprocess.transform.JsonObjectFromTransferProcessDtoTransformer;
 import org.eclipse.edc.connector.core.transform.TransformerContextImpl;
 import org.eclipse.edc.connector.core.transform.TypeTransformerRegistryImpl;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
@@ -65,6 +62,8 @@ import org.eclipse.edc.jsonld.transformer.to.JsonValueToGenericTypeTransformer;
 import org.eclipse.edc.protocol.dsp.transferprocess.transformer.type.from.JsonObjectFromDataAddressTransformer;
 import org.eclipse.edc.spi.result.Result;
 import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
+import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
+import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
@@ -126,8 +125,6 @@ public class EdcTransformer {
         typeTransformerRegistry.register(jsonObjectFromTransferProcessRequestTransformer);
         typeTransformerRegistry.register(jsonObjectFromContractOfferDescriptionTransformer);
         typeTransformerRegistry.register(new JsonObjectFromQuerySpecTransformer(jsonBuilderFactory));
-        typeTransformerRegistry.register(
-                new JsonObjectFromTransferProcessDtoTransformer(jsonBuilderFactory, objectMapper));
         typeTransformerRegistry.register(new JsonObjectFromCatalogTransformer(jsonBuilderFactory, objectMapper));
         typeTransformerRegistry.register(new JsonObjectFromDatasetTransformer(jsonBuilderFactory, objectMapper));
         typeTransformerRegistry.register(new JsonObjectFromPolicyTransformer(jsonBuilderFactory));
@@ -160,15 +157,14 @@ public class EdcTransformer {
         return jsonObjectToNegotiationStateTransformer.transform(expand.getContent(), transformerContext);
     }
 
-    public JsonObject transformNegotiationInitiateRequestDtoToJson(
-            final NegotiationInitiateRequestDto negotiationInitiateRequestDto) {
-        final JsonObject transform = jsonObjectFromNegotiationInitiateDtoTransformer.transform(
-                negotiationInitiateRequestDto, transformerContext);
+    public JsonObject transformNegotiationRequestToJson(final NegotiationRequest negotiationRequest) {
+        final JsonObject transform = jsonObjectFromNegotiationInitiateDtoTransformer.transform(negotiationRequest,
+                transformerContext);
         return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
     }
 
-    public JsonObject transformTransferProcessRequestToJson(final TransferProcessRequest transferRequestDto) {
-        final JsonObject transform = jsonObjectFromTransferProcessRequestTransformer.transform(transferRequestDto,
+    public JsonObject transformTransferProcessRequestToJson(final TransferProcessRequest transferProcessRequest) {
+        final JsonObject transform = jsonObjectFromTransferProcessRequestTransformer.transform(transferProcessRequest,
                 transformerContext);
         return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
     }

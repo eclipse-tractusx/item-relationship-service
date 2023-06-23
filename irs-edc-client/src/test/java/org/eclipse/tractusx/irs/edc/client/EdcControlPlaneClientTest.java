@@ -41,12 +41,12 @@ import java.util.concurrent.TimeUnit;
 
 import jakarta.json.JsonObject;
 import org.assertj.core.api.Assertions;
-import org.eclipse.edc.api.model.IdResponseDto;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
-import org.eclipse.edc.connector.api.management.contractnegotiation.model.NegotiationInitiateRequestDto;
+import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
+import org.eclipse.tractusx.irs.edc.client.model.ResponseId;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
@@ -133,15 +133,13 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnValidNegotiationId() {
         // arrange
-        final var negotiationId = IdResponseDto.Builder.newInstance().id("test").build();
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(IdResponseDto.class))).thenReturn(
+        final var negotiationId = ResponseId.builder().id("test").build();
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(ResponseId.class))).thenReturn(
                 ResponseEntity.of(Optional.of(negotiationId)));
-        final NegotiationInitiateRequestDto request = NegotiationInitiateRequestDto.Builder.newInstance().build();
+        final NegotiationRequest request = NegotiationRequest.builder().build();
         final JsonObject emptyJsonObject = JsonObject.EMPTY_JSON_OBJECT;
 
-        doReturn(emptyJsonObject).when(edcTransformer)
-                                 .transformNegotiationInitiateRequestDtoToJson(
-                                         any(NegotiationInitiateRequestDto.class));
+        doReturn(emptyJsonObject).when(edcTransformer).transformNegotiationRequestToJson(any(NegotiationRequest.class));
 
         // act
         final var result = testee.startNegotiations(request);
@@ -153,7 +151,7 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnConfirmedNegotiationResult() throws Exception {
         // arrange
-        final var negotiationId = IdResponseDto.Builder.newInstance().id("negotiationId").build();
+        final var negotiationId = ResponseId.builder().id("negotiationId").build();
         final var negotiationResult = NegotiationResponse.builder()
                                                          .contractAgreementId("testContractId")
                                                          .state(STATUS_FINALIZED)
@@ -179,9 +177,9 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnValidTransferProcessId() {
         // arrange
-        final var processId = IdResponseDto.Builder.newInstance().id("transferProcessId").build();
+        final var processId = ResponseId.builder().id("transferProcessId").build();
         final var request = TransferProcessRequest.builder().assetId("testRequest").build();
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(IdResponseDto.class))).thenReturn(
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(ResponseId.class))).thenReturn(
                 ResponseEntity.of(Optional.of(processId)));
         doReturn(JsonObject.EMPTY_JSON_OBJECT).when(edcTransformer).transformTransferProcessRequestToJson(request);
 
@@ -195,15 +193,18 @@ class EdcControlPlaneClientTest {
     @Test
     void shouldReturnCompletedTransferProcessResult() throws Exception {
         // arrange
-        final var processId = IdResponseDto.Builder.newInstance().id("transferProcessId").build();
-        final var response = TransferProcessResponse.builder().responseId("testResponse").state(STATUS_COMPLETED).build();
+        final var processId = ResponseId.builder().id("transferProcessId").build();
+        final var response = TransferProcessResponse.builder()
+                                                    .responseId("testResponse")
+                                                    .state(STATUS_COMPLETED)
+                                                    .build();
         final var finalized = NegotiationState.builder().state(STATUS_COMPLETED).build();
         doReturn(finalized).when(edcTransformer)
                            .transformJsonToNegotiationState(anyString(), eq(StandardCharsets.UTF_8));
         when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(),
                 eq(TransferProcessResponse.class))).thenReturn(ResponseEntity.of(Optional.of(response)));
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(),
-                eq(String.class))).thenReturn(ResponseEntity.of(Optional.of(STATUS_COMPLETED)));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(String.class))).thenReturn(
+                ResponseEntity.of(Optional.of(STATUS_COMPLETED)));
 
         // act
         final var result = testee.getTransferProcess(processId);

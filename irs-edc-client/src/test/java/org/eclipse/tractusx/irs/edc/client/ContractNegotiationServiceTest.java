@@ -25,16 +25,10 @@ package org.eclipse.tractusx.irs.edc.client;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import org.eclipse.edc.api.model.IdResponseDto;
-import org.eclipse.edc.catalog.spi.DataService;
-import org.eclipse.edc.catalog.spi.Dataset;
-import org.eclipse.edc.catalog.spi.Distribution;
 import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
@@ -42,6 +36,7 @@ import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.ResponseId;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.junit.jupiter.api.Test;
@@ -73,12 +68,7 @@ class ContractNegotiationServiceTest {
 
     private static CatalogItem createCatalogItem(final String assetId, final String offerId) {
         final Policy policy = createPolicy(assetId);
-        return CatalogItem.builder()
-                          .itemId(assetId)
-                          .policy(policy)
-                          .assetPropId(assetId)
-                          .offerId(offerId)
-                          .build();
+        return CatalogItem.builder().itemId(assetId).policy(policy).assetPropId(assetId).offerId(offerId).build();
     }
 
     @Test
@@ -89,12 +79,12 @@ class ContractNegotiationServiceTest {
         final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
         when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
-                IdResponseDto.Builder.newInstance().id("negotiationId").build());
+                ResponseId.builder().id("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.completedFuture(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(response);
         when(edcControlPlaneClient.startTransferProcess(any())).thenReturn(
-                IdResponseDto.Builder.newInstance().id("transferProcessId").build());
+                ResponseId.builder().id("transferProcessId").build());
         when(edcControlPlaneClient.getTransferProcess(any())).thenReturn(
                 CompletableFuture.completedFuture(TransferProcessResponse.builder().build()));
 
@@ -114,7 +104,7 @@ class ContractNegotiationServiceTest {
         final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
         when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
-                IdResponseDto.Builder.newInstance().id("negotiationId").build());
+                ResponseId.builder().id("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.failedFuture(
                 new RuntimeException("Test exception"));
         when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(response);

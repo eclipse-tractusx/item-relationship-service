@@ -70,18 +70,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <!--            can probably be removed-->
-            <groupId>org.eclipse.edc</groupId>
-            <artifactId>management-api</artifactId>
-            <version>0.1.0</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>runtime-metamodel</artifactId>
-                    <groupId>org.eclipse.edc</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.edc</groupId>
             <artifactId>json-ld</artifactId>
             <version>0.1.0</version>

@@ -22,44 +22,24 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
-import org.eclipse.edc.spi.types.domain.callback.CallbackAddress;
+import org.eclipse.edc.policy.model.Policy;
 
-/**
- * EDC negotiation request.
- */
 @Value
 @Builder(toBuilder = true)
 @Jacksonized
-public class NegotiationRequest {
-    public static final String CONNECTOR_ADDRESS = "https://w3id.org/edc/v0.0.1/ns/connectorAddress";
-    public static final String PROTOCOL = "https://w3id.org/edc/v0.0.1/ns/protocol";
-    public static final String CONNECTOR_ID = "https://w3id.org/edc/v0.0.1/ns/connectorId";
-    public static final String PROVIDER_ID = "https://w3id.org/edc/v0.0.1/ns/providerId";
-    public static final String CONSUMER_ID = "https://w3id.org/edc/v0.0.1/ns/consumerId";
-    public static final String OFFER = "https://w3id.org/edc/v0.0.1/ns/offer";
-    public static final String CALLBACK_ADDRESSES = "https://w3id.org/edc/v0.0.1/ns/callbackAddresses";
+public class ContractOfferDescription {
+    public static final String TYPE = "https://w3id.org/edc/v0.0.1/ns/ContractOfferDescription";
     public static final String OFFER_ID = "https://w3id.org/edc/v0.0.1/ns/offerId";
     public static final String ASSET_ID = "https://w3id.org/edc/v0.0.1/ns/assetId";
     public static final String POLICY = "https://w3id.org/edc/v0.0.1/ns/policy";
-
-    @NotBlank(message = "connectorAddress is mandatory")
-    private String connectorAddress;
-    @NotBlank(message = "protocol is mandatory")
-    private String protocol;
-    @NotBlank(message = "connectorId is mandatory")
-    private String connectorId;
-    @NotNull(message = "offer cannot be null")
-    private ContractOfferDescription offer;
-    private String providerId;
-    private String consumerId;
-    private List<CallbackAddress> callbackAddresses = new ArrayList<>();
+    private @NotBlank(message = "offerId is mandatory") String offerId;
+    private @NotBlank(message = "assetId is mandatory") String assetId;
+    private @NotNull(message = "policy cannot be null") Policy policy;
+    private @Positive(message = "validity must be positive") long validity;
 }
-

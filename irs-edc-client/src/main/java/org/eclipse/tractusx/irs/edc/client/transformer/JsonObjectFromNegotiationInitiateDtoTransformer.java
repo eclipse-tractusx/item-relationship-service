@@ -30,42 +30,40 @@ import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonBuilderFactory;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
-import org.eclipse.edc.connector.api.management.contractnegotiation.model.NegotiationInitiateRequestDto;
-import org.eclipse.edc.jsonld.spi.JsonLdKeywords;
 import org.eclipse.edc.jsonld.spi.transformer.AbstractJsonLdTransformer;
 import org.eclipse.edc.spi.types.domain.callback.CallbackAddress;
 import org.eclipse.edc.transform.spi.TransformerContext;
+import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Transformer to convert NegotiationInitiateRequestDto to JSON-LD.
+ * Transformer to convert NegotiationRequest to JSON-LD.
  */
 public class JsonObjectFromNegotiationInitiateDtoTransformer
-        extends AbstractJsonLdTransformer<NegotiationInitiateRequestDto, JsonObject> {
+        extends AbstractJsonLdTransformer<NegotiationRequest, JsonObject> {
     private final JsonBuilderFactory jsonFactory;
 
     public JsonObjectFromNegotiationInitiateDtoTransformer(final JsonBuilderFactory jsonFactory) {
-        super(NegotiationInitiateRequestDto.class, JsonObject.class);
+        super(NegotiationRequest.class, JsonObject.class);
         this.jsonFactory = jsonFactory;
     }
 
     @Override
-    public @Nullable JsonObject transform(@NotNull final NegotiationInitiateRequestDto dto,
+    public @Nullable JsonObject transform(@NotNull final NegotiationRequest dto,
             @NotNull final TransformerContext context) {
         final JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
-        builder.add(JsonLdKeywords.TYPE, NegotiationInitiateRequestDto.TYPE)
-               .add(NegotiationInitiateRequestDto.CONNECTOR_ADDRESS, dto.getConnectorAddress())
-               .add(NegotiationInitiateRequestDto.CONNECTOR_ID, dto.getConnectorId())
-               .add(NegotiationInitiateRequestDto.OFFER, context.transform(dto.getOffer(), JsonObject.class))
-               .add(NegotiationInitiateRequestDto.PROTOCOL, dto.getProtocol());
+        builder.add(NegotiationRequest.CONNECTOR_ADDRESS, dto.getConnectorAddress())
+               .add(NegotiationRequest.CONNECTOR_ID, dto.getConnectorId())
+               .add(NegotiationRequest.OFFER, context.transform(dto.getOffer(), JsonObject.class))
+               .add(NegotiationRequest.PROTOCOL, dto.getProtocol());
         Optional.ofNullable(dto.getProviderId())
-                .ifPresent(s -> builder.add(NegotiationInitiateRequestDto.PROVIDER_ID, dto.getProviderId()));
+                .ifPresent(s -> builder.add(NegotiationRequest.PROVIDER_ID, dto.getProviderId()));
         Optional.ofNullable(dto.getCallbackAddresses())
-                .ifPresent(s -> builder.add(NegotiationInitiateRequestDto.CALLBACK_ADDRESSES,
+                .ifPresent(s -> builder.add(NegotiationRequest.CALLBACK_ADDRESSES,
                         asArray(dto.getCallbackAddresses(), context)));
         Optional.ofNullable(dto.getConsumerId())
-                .ifPresent(s -> builder.add(NegotiationInitiateRequestDto.CONSUMER_ID, dto.getConsumerId()));
+                .ifPresent(s -> builder.add(NegotiationRequest.CONSUMER_ID, dto.getConsumerId()));
         return builder.build();
     }
 
