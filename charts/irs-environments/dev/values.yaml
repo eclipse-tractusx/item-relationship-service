@@ -193,7 +193,7 @@ tractusx-connector:
 
   # URL where the EndpointDataReference callback will be sent to
   backendService:
-    httpProxyTokenReceiverUrl: ""
+    httpProxyTokenReceiverUrl: "http://irs-dev-irs-helm:8181/internal/endpoint-data-reference"
 
   ################################
   # EDC Vault/DAPS Configuration #
