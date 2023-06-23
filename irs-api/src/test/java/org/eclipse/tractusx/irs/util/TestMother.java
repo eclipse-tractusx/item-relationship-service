@@ -235,7 +235,10 @@ public class TestMother {
 
     public static Endpoint endpoint(String endpointAddress) {
         return Endpoint.builder()
-                       .protocolInformation(ProtocolInformation.builder().href(endpointAddress).build())
+                       .protocolInformation(ProtocolInformation.builder()
+                                                               .href(endpointAddress)
+                                                               .subprotocolBody("other_id=fake-id;id=12345;idsEndpoint=http://edc.control.plane/")
+                                                               .build())
                        .build();
     }
 
