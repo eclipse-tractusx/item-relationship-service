@@ -170,7 +170,7 @@ def create_submodel_descriptor_3_0(id_short_, identification_, semantic_id_, end
                         "endpointProtocol": "AAS/IDS",
                         "endpointProtocolVersion": "0.1",
                         "subprotocol": "IDS",
-                        "subprotocolBody": "TDB",
+                        "subprotocolBody": "asset:prop:id=" + identification_,
                         "subprotocolBodyEncoding": "plain"
                     }
                 }
