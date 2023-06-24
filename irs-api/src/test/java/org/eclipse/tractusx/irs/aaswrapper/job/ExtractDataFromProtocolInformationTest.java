@@ -11,7 +11,7 @@ class ExtractDataFromProtocolInformationTest {
     @Test
     void shouldExtractIdFromSubprotocol() {
         // given
-        final String exampleSubprotocol = "other_id=fake-id;id=12345;idsEndpoint=http://edc.control.plane/";
+        final String exampleSubprotocol = "other_id=fake-id;asset:prop:id=12345;idsEndpoint=http://edc.control.plane/";
 
         // when
         final String actual = ExtractDataFromProtocolInformation.extractAssetId(exampleSubprotocol);
