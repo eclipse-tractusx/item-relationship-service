@@ -997,7 +997,7 @@ components:
                 text: The shell for a vehicle
             globalAssetId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
             idShort: future concept x
-            identification: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+            id: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
             specificAssetIds:
               - key: engineserialid
                 value: "12309481209312"
@@ -1173,7 +1173,7 @@ components:
                 text: The shell for a vehicle
             globalAssetId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
             idShort: future concept x
-            identification: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+            id: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
             specificAssetIds:
               - key: engineserialid
                 value: "12309481209312"
@@ -1303,7 +1303,7 @@ components:
           example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
         idShort:
           type: string
-        identification:
+        id:
           type: string
         specificAssetIds:
           type: array

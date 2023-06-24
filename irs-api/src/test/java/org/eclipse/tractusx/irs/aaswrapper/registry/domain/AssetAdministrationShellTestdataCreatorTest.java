@@ -79,7 +79,7 @@ class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigura
         assertThat(aasDescriptor.getDescription()).isNotNull();
         assertThat(aasDescriptor.getGlobalAssetId()).isNotNull();
         assertThat(aasDescriptor.getIdShort()).isNotNull();
-        assertThat(aasDescriptor.getIdentification()).isNotNull();
+        assertThat(aasDescriptor.getId()).isNotNull();
         assertThat(aasDescriptor.getSpecificAssetIds()).isNotNull();
         assertThat(aasDescriptor.getSubmodelDescriptors()).isNotNull();
     }

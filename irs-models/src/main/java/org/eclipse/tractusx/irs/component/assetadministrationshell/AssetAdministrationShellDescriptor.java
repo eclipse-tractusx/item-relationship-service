@@ -70,9 +70,9 @@ public class AssetAdministrationShellDescriptor {
      */
     private String idShort;
     /**
-     * identification
+     * id
      */
-    private String identification;
+    private String id;
     /**
      * specificAssetIds
      */

@@ -325,7 +325,7 @@ public class OpenApiExamples {
                                                                                 .build()))
                                                  .globalAssetId("urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9")
                                                  .idShort("future concept x")
-                                                 .identification("882fc530-b69b-4707-95f6-5dbc5e9baaa8")
+                                                 .id("882fc530-b69b-4707-95f6-5dbc5e9baaa8")
                                                  .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
                                                                                                  .key("engineserialid")
                                                                                                  .value("12309481209312")
