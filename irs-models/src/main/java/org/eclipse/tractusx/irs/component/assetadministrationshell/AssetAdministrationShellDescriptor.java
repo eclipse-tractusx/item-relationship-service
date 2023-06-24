@@ -72,6 +72,7 @@ public class AssetAdministrationShellDescriptor {
     /**
      * id
      */
+    @SuppressWarnings("PMD.ShortVariable")
     private String id;
     /**
      * specificAssetIds
