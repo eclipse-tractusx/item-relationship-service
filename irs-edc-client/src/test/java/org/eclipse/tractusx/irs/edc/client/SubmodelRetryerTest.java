@@ -52,6 +52,7 @@ import org.springframework.web.client.RestTemplate;
 @ExtendWith(MockitoExtension.class)
 class SubmodelExponentialRetryTest {
 
+    public static final String ASSET_ID = "d46b51ae-08b6-42d7-a30d-0f8d118c8e0d-ce85f148-e3cf-42fe-9381-d1f276333fc4";
     private final RetryRegistry retryRegistry = new InMemoryRetryRegistry();
     @Mock
     private RestTemplate restTemplate;
@@ -66,6 +67,7 @@ class SubmodelExponentialRetryTest {
         final EdcConfiguration config = new EdcConfiguration();
         config.getSubmodel().setUrnPrefix("/urn");
         config.getSubmodel().setPath("/submodel");
+        config.getControlplane().setProviderSuffix("/ids");
 
         final EdcControlPlaneClient controlPlaneClient = new EdcControlPlaneClient(restTemplate, pollingService, config,
                 createEdcTransformer());
@@ -95,7 +97,7 @@ class SubmodelExponentialRetryTest {
 
         // Act
         assertThatThrownBy(() -> testee.getSubmodelRawPayload(
-                "http://test.com/urn:uuid:12345/submodel?content=value")).hasCauseInstanceOf(
+                "http://test.com/" + ASSET_ID + "/submodel?content=value")).hasCauseInstanceOf(
                 HttpServerErrorException.class);
 
         // Assert
@@ -111,7 +113,8 @@ class SubmodelExponentialRetryTest {
 
         // Act
         assertThatThrownBy(() -> testee.getSubmodelRawPayload(
-                "http://test.com/urn:uuid:12345/submodel?content=value")).hasCauseInstanceOf(RuntimeException.class);
+                "http://test.com/" + ASSET_ID + "/submodel?content=value")).hasCauseInstanceOf(
+                RuntimeException.class);
 
         // Assert
         verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class),

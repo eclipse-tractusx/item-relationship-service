@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
@@ -129,6 +131,7 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 @SuppressWarnings("PMD.TooManyMethods")
 class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
+    public static final String UUID_REGEX = "\\p{XDigit}{8}-\\p{XDigit}{4}-\\p{XDigit}{4}-\\p{XDigit}{4}-\\p{XDigit}{12}";
     private final EdcConfiguration config;
     private final ContractNegotiationService contractNegotiationService;
     private final EdcDataPlaneClient edcDataPlaneClient;
@@ -161,7 +164,15 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private NegotiationResponse fetchNegotiationResponse(final String submodelEndpointAddress)
             throws EdcClientException {
-        final int indexOfUrn = findIndexOf(submodelEndpointAddress, config.getSubmodel().getUrnPrefix());
+        Pattern pairRegex = Pattern.compile(UUID_REGEX + "-" + UUID_REGEX);
+        Matcher matcher = pairRegex.matcher(submodelEndpointAddress);
+        if (!matcher.find()) {
+            throw new EdcClientException(
+                    "Cannot extract assetId from endpoint address, malformed format: " + submodelEndpointAddress);
+        }
+        final String assetId = matcher.group(0);
+
+        final int indexOfUrn = findIndexOf(submodelEndpointAddress, assetId);
         final int indexOfSubModel = findIndexOf(submodelEndpointAddress, config.getSubmodel().getPath());
 
         if (indexOfUrn == -1 || indexOfSubModel == -1) {
@@ -170,8 +181,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         }
 
         final String providerConnectorUrl = submodelEndpointAddress.substring(0, indexOfUrn);
-        final String target = submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
-        final String decodedTarget = URLDecoder.decode(target, StandardCharsets.UTF_8);
+        final String decodedTarget = URLDecoder.decode(assetId, StandardCharsets.UTF_8);
         final String providerWithSuffix = appendSuffix(providerConnectorUrl,
                 config.getControlplane().getProviderSuffix());
         log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerWithSuffix,

@@ -5,10 +5,10 @@
     "@id": "58505404-4da1-427a-82aa-b79482bcd1f0",
     "@type": "dcat:Dataset",
     "odrl:hasPolicy": {
-      "@id": "7681f966-36ea-4542-b5ea-0d0db81967de:urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7:66131c58-32af-4df0-825d-77f7df6017c1",
+      "@id": "7681f966-36ea-4542-b5ea-0d0db81967de:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7:66131c58-32af-4df0-825d-77f7df6017c1",
       "@type": "odrl:Set",
       "odrl:permission": {
-        "odrl:target": "urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7",
+        "odrl:target": "5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7",
         "odrl:action": {
           "odrl:type": "USE"
         },
@@ -22,7 +22,7 @@
       },
       "odrl:prohibition": [],
       "odrl:obligation": [],
-      "odrl:target": "urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7"
+      "odrl:target": "5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7"
     },
     "dcat:distribution": [
       {
@@ -41,7 +41,7 @@
       }
     ],
     "edc:description": "IRS EDC Demo Asset",
-    "edc:id": "urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7"
+    "edc:id": "5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7"
   },
   "dcat:service": {
     "@id": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443",
