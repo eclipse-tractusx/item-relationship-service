@@ -26,6 +26,7 @@ import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -54,6 +55,7 @@ public class RegisterJob {
     private static final String ASPECT_MODEL_REGEX = "^(urn:bamm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$";
 
     @NotNull
+    @Valid
     @Schema(description = "Key object contains required attributes for identify part chain entry node.", implementation = PartChainIdentificationKey.class)
     private PartChainIdentificationKey key;
 
