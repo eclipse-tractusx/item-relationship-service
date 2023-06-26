@@ -60,6 +60,7 @@ public class EdcControlPlaneClient {
     public static final String STATUS_FINALIZED = "FINALIZED";
     public static final String STATUS_COMPLETED = "COMPLETED";
     public static final String STATUS_ERROR = "ERROR";
+    public static final String DATASPACE_PROTOCOL_HTTP = "dataspace-protocol-http";
 
     private final RestTemplate edcRestTemplate;
     private final AsyncPollingService pollingService;
@@ -100,7 +101,7 @@ public class EdcControlPlaneClient {
         }
         return CatalogRequest.Builder.newInstance()
                                      .providerUrl(providerUrl)
-                                     .protocol("dataspace-protocol-http")
+                                     .protocol(DATASPACE_PROTOCOL_HTTP)
                                      .querySpec(querySpec.build())
                                      .build();
     }
@@ -110,6 +111,7 @@ public class EdcControlPlaneClient {
         final QuerySpec querySpec = QuerySpec.Builder.newInstance().filter(new Criterion(key, "=", value)).build();
         final var catalogRequest = CatalogRequest.Builder.newInstance()
                                                          .providerUrl(providerConnectorUrl)
+                                                         .protocol(DATASPACE_PROTOCOL_HTTP)
                                                          .querySpec(querySpec)
                                                          .build();
         return getCatalog(catalogRequest);
