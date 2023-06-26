@@ -39,7 +39,7 @@ import org.springframework.web.client.RestClientException;
 @RequiredArgsConstructor
 public class EndpointDataForConnectorsService {
 
-    private static final String DT_REGISTRY_ASSET_TYPE = "asset:prop:type";
+    private static final String DT_REGISTRY_ASSET_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
     private static final String DT_REGISTRY_ASSET_VALUE = "data.core.digitalTwinRegistry";
 
     private final EdcSubmodelFacade edcSubmodelFacade;
