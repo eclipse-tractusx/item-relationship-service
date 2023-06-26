@@ -170,7 +170,7 @@ def create_submodel_descriptor_3_0(id_short_, identification_, semantic_id_, end
                         "endpointProtocol": "AAS/IDS",
                         "endpointProtocolVersion": "0.1",
                         "subprotocol": "IDS",
-                        "subprotocolBody": "asset:prop:id=" + identification_,
+                        "subprotocolBody": "id=" + identification_,
                         "subprotocolBodyEncoding": "plain"
                     }
                 }
@@ -400,12 +400,12 @@ if __name__ == "__main__":
                                                                                                                      "")
                     specific_asset_ids.append({
                         "value": tmp_data[tmp_key][0]["partTypeInformation"]["manufacturerPartId"],
-                        "key": "manufacturerPartId"
+                        "name": "manufacturerPartId"
                     })
             print(name_at_manufacturer)
 
             specific_asset_ids.append({
-                "key": "manufacturerId",
+                "name": "manufacturerId",
                 "value": tmp_data["bpnl"]
             })
 
@@ -482,7 +482,8 @@ if __name__ == "__main__":
                 else:
                     payload = create_aas_shell(catenax_id, name_at_manufacturer, identification, specific_asset_ids,
                                                submodel_descriptors)
-                response = session.request(method="POST", url=f"{aas_url}/registry/shell-descriptors",
+                print(payload)
+                response = session.request(method="POST", url=f"{aas_url}/api/v3.0/shell-descriptors",
                                            headers=headers,
                                            data=payload)
                 print_response(response)

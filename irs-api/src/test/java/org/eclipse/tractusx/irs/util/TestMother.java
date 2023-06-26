@@ -236,7 +236,7 @@ public class TestMother {
         return Endpoint.builder()
                        .protocolInformation(ProtocolInformation.builder()
                                                                .href(endpointAddress)
-                                                               .subprotocolBody("other_id=fake-id;asset:prop:id=12345;idsEndpoint=http://edc.control.plane/")
+                                                               .subprotocolBody("other_id=fake-id;id=12345;idsEndpoint=http://edc.control.plane/")
                                                                .build())
                        .build();
     }

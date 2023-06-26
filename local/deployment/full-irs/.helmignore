@@ -6,3 +6,4 @@ testData/
 .gitignore
 start.sh
 upload-testdata.sh
+img/

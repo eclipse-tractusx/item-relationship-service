@@ -42,7 +42,7 @@ public class ExtractDataFromProtocolInformation {
         final Map<String, String> parametersFromPath = Stream.of(subprotocolBody.split(ASSET_ID_SEPARATOR))
                                                   .map(str -> str.split("="))
                                                   .collect(Collectors.toMap(e -> e[0], e -> e[1]));
-        return parametersFromPath.get("asset:prop:id");
+        return parametersFromPath.get("id");
     }
 
     public static String extractSuffix(final String href) throws URISyntaxException {
